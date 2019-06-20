@@ -1,0 +1,193 @@
+Build: 1.14.2-26.0.35 - Thu Jun 20 01:10:15 GMT 2019
+	lex:
+		Fix some compile errors in test classes.
+
+	lex:
+		Fix lighting not being sent to client when large amounts of blocks
+		change at once. Closes #5839 Remove RecipeType/VanillaRecipeTypes, as
+		1.14 has a vanilla system for this.
+
+=========
+Build: 1.14.2-26.0.33 - Mon Jun 17 21:08:30 GMT 2019
+	lex:
+		Fix Vanilla resources loading from classpath, instead of the extra jar.
+		Causing issues in dev time, and Forge replacements. Closes #5824
+
+=========
+Build: 1.14.2-26.0.32 - Sun Jun 16 07:48:59 GMT 2019
+	lex:
+		Make ReverseTagWrapper unmodifiable, fix error in log when mods folder
+		doesn't exist initial scan.
+
+	lex:
+		Add temporary hard crash when mods error until we can load our error
+		screen.
+
+=========
+Build: 1.14.2-26.0.30 - Sun Jun 16 04:48:14 GMT 2019
+	cpw:
+		Skip running the datagenerator on unrequested mods. Add a run config for
+		the data task for modders to use
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.29 - Sun Jun 16 03:11:29 GMT 2019
+	cpw:
+		Remove paulscode hack. It is not needed in 1.14, since paulscode is no
+		longer used.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.28 - Sun Jun 16 01:35:44 GMT 2019
+	lex:
+		Expose the data entry point and generate Forge's Tags using it.
+
+	cpw:
+		Add params for the exception message
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+		tweak logging
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+	cpw:
+		Modify lex's data handler to use proper mod lifecycle event mechanisms
+		instead. New Lifecycle Event for requesting data harvesting. Mods will
+		be constructed, the registry will fire, and then a new Data event will
+		fire. Submit new data tag files to the data gatherer if you wish. The
+		game will shutdown after this. No other mod elements will happen.
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.25 - Thu Jun 13 02:28:25 GMT 2019
+	lex:
+		Add reverse tag cache, to make looking up tags for items/blocks/etc..
+		less costly.
+
+	28928887+marcus8448:
+		Update Example Mod (#5781)
+
+=========
+Build: 1.14.2-26.0.23 - Wed Jun 12 23:22:23 GMT 2019
+	mods.itsmeow:
+		Fix AT for EntitySpawnPlacementRegistry.register (#5799)
+
+=========
+Build: 1.14.2-26.0.22 - Wed Jun 12 23:16:39 GMT 2019
+	hycrafthd:
+		Implement getValue in ClearableRegistry fixing DimensionArgument.
+		(#5809)
+		Fix DimensionArgument
+
+=========
+Build: 1.14.2-26.0.21 - Wed Jun 12 05:06:33 GMT 2019
+	kashike:
+		Use dragon_immune block tag instead of manually checking blocks (#5792)
+
+	bonzoweb:
+		Fix RenderSpecificHandEvent firing with wrong hand (#5789)
+
+=========
+Build: 1.14.2-26.0.19 - Wed Jun 12 05:00:33 GMT 2019
+	tterrag:
+		Fix #5806 sheep drop shears instead of wool
+		lol
+
+=========
+Build: 1.14.2-26.0.18 - Wed Jun 12 04:54:30 GMT 2019
+	tterrag:
+		Fix incorrect method used in ShrubFeature patch
+
+=========
+Build: 1.14.2-26.0.17 - Wed Jun 12 04:48:37 GMT 2019
+	tterrag:
+		Rework AbstractTreeFeature patches to reduce impact and avoid name
+		conflicts
+
+=========
+Build: 1.14.2-26.0.16 - Mon Jun 10 22:14:58 GMT 2019
+	tterrag:
+		Add IContainerFactory for reading custom container data on the client
+
+=========
+Build: 1.14.2-26.0.15 - Mon Jun 10 21:04:07 GMT 2019
+	lex:
+		Fix Fishing and Mineshaft Minecarts loot tables erroring. #5785 Fix
+		Client block breaking speed not matching the server. #5790 Fix Village
+		Siege event location, and MC-154328 preventing Sieges starting. #5800
+		Fix EntityJoinWorldEvent not firing on client, or some server code
+		paths. #5786
+
+=========
+Build: 1.14.2-26.0.14 - Mon Jun 10 04:13:40 GMT 2019
+	tterrag:
+		Adjust NetworkEvent#enqueueWork to match vanilla logic
+		In singleplayer our packet work could get delayed until the next tick, 
+		breaking the expectation of packet read order. Fixes that using 
+		NetworkHooks.openGui would result in missing inventory data on the
+		client
+
+=========
+Build: 1.14.2-26.0.13 - Sun Jun 09 18:19:15 GMT 2019
+	lex:
+		Fix gameDir argument error on dedicated server.
+
+=========
+Build: 1.14.2-26.0.12 - Sun Jun 09 08:24:28 GMT 2019
+	tterrag:
+		Add registry flag for syncing
+
+	tterrag:
+		Add forge registries for most vanilla registries
+		Made all registry names consistent with their vanilla counterparts Also
+		added a system for legacy registry names, so no data will be lost 
+		Cleaned up formatting in GameData and ForgeRegistries
+
+=========
+Build: 1.14.2-26.0.10 - Sun Jun 09 04:19:52 GMT 2019
+	tterrag:
+		Add forge registry for container types, expose
+		ScreenManager.registerFactory
+
+	tterrag:
+		Fix issues preventing test mods loading
+
+=========
+Build: 1.14.2-26.0.8 - Sat Jun 08 18:30:30 GMT 2019
+	cpw:
+		Don't NPE during construction of ModLoadingException..
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.7 - Sat Jun 08 16:22:18 GMT 2019
+	lex:
+		Fix misobfed methods due to mapping conflict.
+
+=========
+Build: 1.14.2-26.0.6 - Sat Jun 08 14:45:48 GMT 2019
+	cpw:
+		Update mappings
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>
+
+=========
+Build: 1.14.2-26.0.5 - Sat Jun 08 05:33:37 GMT 2019
+	tterrag:
+		Fix block activation not occurring serverside
+		Missing block of code from the old patch caused it to be skipped
+
+=========
+Build: 1.14.2-26.0.4 - Sat Jun 08 05:02:43 GMT 2019
+	tterrag:
+		Rework model patches/classes for new bake signature
+
+=========
+Build: 1.14.2-26.0.3 - Sat Jun 08 02:41:53 GMT 2019
+	lex:
+		Fix NamespacedWrapper not delegating a new getter. Fixing data loading
+		spam at world start. Update red/yellow/green tags with new vanilla item
+		names. Reenabled test source directory in project and made ModelDataTest
+		compile.
+
+=========
+Build: 1.14.2-26.0.2 - Fri Jun 07 21:49:40 GMT 2019
+	cpw:
+		Fix realms class name
+		Signed-off-by: cpw <cpw+github@weeksfamily.ca>

@@ -1,16 +1,16 @@
 package xiroc.dungeoncrawl.theme;
 
-import xiroc.dungeoncrawl.build.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class Theme {
-	
+
 	// public static final Theme DEFAULT = new Theme();
 
-	public final WeightedRandomBlock ceiling;
-	public final WeightedRandomBlock wall;
-	public final WeightedRandomBlock floor;
+	public final IBlockStateProvider ceiling;
+	public final IBlockStateProvider wall;
+	public final IBlockStateProvider floor;
 
-	public Theme(WeightedRandomBlock ceiling, WeightedRandomBlock wall, WeightedRandomBlock floor) {
+	public Theme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor) {
 		this.ceiling = ceiling;
 		this.wall = wall;
 		this.floor = floor;

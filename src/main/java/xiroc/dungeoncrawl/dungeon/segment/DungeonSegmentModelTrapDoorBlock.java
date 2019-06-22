@@ -13,5 +13,7 @@ public class DungeonSegmentModelTrapDoorBlock extends DungeonSegmentModelBlock {
 		this.open = open;
 		this.half = half;
 	}
+	
+	
 
 }

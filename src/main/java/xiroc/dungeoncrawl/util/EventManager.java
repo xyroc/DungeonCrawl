@@ -3,12 +3,14 @@ package xiroc.dungeoncrawl.util;
 import java.util.Random;
 
 import net.minecraft.item.Items;
+import net.minecraft.util.Rotation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.build.block.BlockRegistry;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.DungeonLayerType;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 
 public class EventManager {
 
@@ -22,6 +24,12 @@ public class EventManager {
 				DungeonLayer layer = new DungeonLayer(DungeonLayerType.NORMAL);
 				layer.buildMap(new Random());
 				layer.testBuildToWorld(event.getWorld(), event.getPos());
+			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
+				DungeonCrawl.LOGGER.info("Building a dungeon model...");
+				DungeonSegmentModel.build(DungeonSegmentModel.CORRIDOR_EAST_WEST_ALL_OPEN, event.getWorld(), event.getPos());
+			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
+				DungeonCrawl.LOGGER.info("Building a dungeon model...");
+				DungeonSegmentModel.buildRotated(DungeonSegmentModel.CORRIDOR_EAST_WEST_ALL_OPEN, event.getWorld(), event.getPos(), Rotation.COUNTERCLOCKWISE_90);
 			}
 		}
 	}

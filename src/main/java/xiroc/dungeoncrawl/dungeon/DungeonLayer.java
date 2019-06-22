@@ -51,6 +51,7 @@ public class DungeonLayer {
 		int endX = end.x;
 		int endZ = end.z;
 		if (startX > endX) {
+			this.segments[startX][startZ].openSide(Direction.WEST);
 			for (int x = startX; x > (startZ == endZ ? endX + 1 : endX); x--) {
 				DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 				corridor.setPosition(x - 1, startZ);
@@ -60,6 +61,7 @@ public class DungeonLayer {
 				this.segments[x - 1][startZ] = corridor;
 			}
 			if (startZ > endZ) {
+				this.segments[endX][endZ].openSide(Direction.SOUTH);
 				for (int z = startZ; z > endZ + 1; z--) {
 					DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 					corridor.setPosition(endX, z - 1);
@@ -69,6 +71,7 @@ public class DungeonLayer {
 					this.segments[endX][z - 1] = corridor;
 				}
 			} else if (startZ < endZ) {
+				this.segments[endX][endZ].openSide(Direction.NORTH);
 				for (int z = startZ; z < endZ - 1; z++) {
 					DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 					corridor.setPosition(endX, z + 1);
@@ -79,6 +82,7 @@ public class DungeonLayer {
 				}
 			}
 		} else if (startX < endX) {
+			this.segments[startX][startZ].openSide(Direction.EAST);
 			for (int x = startX; x < (startZ == endZ ? endX - 1 : endX); x++) {
 				DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 				corridor.setPosition(x + 1, startZ);
@@ -88,6 +92,7 @@ public class DungeonLayer {
 				this.segments[x + 1][startZ] = corridor;
 			}
 			if (startZ > endZ) {
+				this.segments[endX][endZ].openSide(Direction.SOUTH);
 				for (int z = startZ; z > endZ + 1; z--) {
 					DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 					corridor.setPosition(endX, z - 1);
@@ -97,6 +102,7 @@ public class DungeonLayer {
 					this.segments[endX][z - 1] = corridor;
 				}
 			} else if (startZ < endZ) {
+				this.segments[endX][endZ].openSide(Direction.NORTH);
 				for (int z = startZ; z < endZ - 1; z++) {
 					DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 					corridor.setPosition(endX, z + 1);
@@ -108,6 +114,7 @@ public class DungeonLayer {
 			}
 		} else {
 			if (startZ > endZ) {
+				this.segments[endX][endZ].openSide(Direction.SOUTH);
 				for (int z = startZ; z > endZ + 1; z--) {
 					DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 					corridor.setPosition(endX, z - 1);
@@ -118,6 +125,7 @@ public class DungeonLayer {
 				}
 			} else if (startZ < endZ) {
 				for (int z = startZ; z < endZ - 1; z++) {
+					this.segments[endX][endZ].openSide(Direction.NORTH);
 					DungeonSegment corridor = new DungeonSegment(this, DungeonSegmentType.CORRIDOR);
 					corridor.setPosition(endX, z + 1);
 					corridor.setDirection(Direction.SOUTH);

@@ -1,10 +1,15 @@
 package xiroc.dungeoncrawl.dungeon.segment;
 
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
+import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonSegment {
+	
+	public static final int SIZE = 8;
 
 	public DungeonLayer layer;
 	public DungeonSegmentType type;
@@ -20,6 +25,31 @@ public class DungeonSegment {
 		this.sides = new boolean[6];
 		for (int i = 0; i < sides.length; i++)
 			sides[i] = false;
+	}
+
+	public void build(Theme theme, World world, BlockPos pos) {
+		int posX = pos.getX();
+		int posY = pos.getY();
+		int posZ = pos.getZ();
+		switch (type) {
+		case START:
+			for (int x = 0; x < SIZE; x++)
+				for (int z = 0; z < SIZE; z++) {
+					world.setBlockState(new BlockPos(posX + x, posY, posZ), theme.floor.get());
+					world.setBlockState(new BlockPos(posX + x, posY + 7, posZ), theme.ceiling.get());
+					
+				}
+
+			return;
+		case CORRIDOR:
+			break;
+		case ROOM:
+			break;
+		case END:
+			break;
+		default:
+			break;
+		}
 	}
 
 	public void setPosition(int x, int z) {

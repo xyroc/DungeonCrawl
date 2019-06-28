@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.FourWayBlock;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.StairsBlock;
@@ -16,24 +17,40 @@ import xiroc.dungeoncrawl.build.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
-public class DungeonSegmentModelBlock implements ISegmentBlock {
+public class DungeonSegmentModelBlock {
 
 	public DungeonSegmentModelBlockType type;
 	public Direction facing;
-	public boolean upsideDown;
+	public Boolean upsideDown;
+
+	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type) {
+		this.type = type;
+	}
 
 	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type, Direction facing, boolean upsideDown) {
+		if (facing == null && !upsideDown) {
+			this.type = type;
+			return;
+		}
 		this.type = type;
 		this.facing = facing;
 		this.upsideDown = upsideDown;
 	}
 
 	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme) {
-		if (block == null)
+		if (block == null || block.type == null)
 			return Blocks.AIR.getDefaultState();
 		switch (block.type) {
 		case NONE:
 			return null;
+		case WATER:
+			return Blocks.WATER.getDefaultState();
+		case LAVA:
+			return Blocks.LAVA.getDefaultState();
+		case IRON_BARS:
+			DungeonSegmentModelFourWayBlock fwb = (DungeonSegmentModelFourWayBlock) block;
+			return Blocks.IRON_BARS.getDefaultState().with(FourWayBlock.NORTH, fwb.north).with(FourWayBlock.EAST, fwb.east).with(FourWayBlock.SOUTH, fwb.south).with(FourWayBlock.WEST, fwb.west).with(FourWayBlock.WATERLOGGED,
+					fwb.waterlogged);
 		case CEILING:
 			return theme.ceiling.get();
 		case CEILING_STAIRS:
@@ -72,11 +89,17 @@ public class DungeonSegmentModelBlock implements ISegmentBlock {
 	}
 
 	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, Rotation rotation) {
-		if (block == null)
+		if (block == null || block.type == null)
 			return Blocks.AIR.getDefaultState();
 		switch (block.type) {
 		case NONE:
 			return null;
+		case WATER:
+			return Blocks.WATER.getDefaultState();
+		case LAVA:
+			return Blocks.LAVA.getDefaultState();
+		case IRON_BARS:
+			return RotationHelper.tanslateFourWayBlock(getBlockState(block, theme), rotation);
 		case CEILING:
 			return theme.ceiling.get();
 		case CEILING_STAIRS:

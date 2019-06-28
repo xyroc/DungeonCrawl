@@ -11,6 +11,8 @@ import xiroc.dungeoncrawl.build.block.BlockRegistry;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.DungeonLayerType;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.theme.Theme;
 
 public class EventManager {
 
@@ -26,10 +28,25 @@ public class EventManager {
 				layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
 				DungeonCrawl.LOGGER.info("Building a dungeon model...");
-				DungeonSegmentModel.build(DungeonSegmentModel.CORRIDOR_EAST_WEST_ALL_OPEN, event.getWorld(), event.getPos());
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.STAIRS_BOTTOM_1, event.getWorld(), event.getPos(), Theme.TEST);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
 				DungeonCrawl.LOGGER.info("Building a dungeon model...");
-				DungeonSegmentModel.buildRotated(DungeonSegmentModel.CORRIDOR_EAST_WEST_ALL_OPEN, event.getWorld(), event.getPos(), Rotation.COUNTERCLOCKWISE_90);
+				DungeonSegmentModel.buildRotated(DungeonSegmentModelRegistry.STAIRS_TOP_2_2, event.getWorld(), event.getPos(), Theme.TEST, Rotation.CLOCKWISE_90);
+			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ")) {
+				if (event.getWorld().isRemote)
+					return;
+				DungeonCrawl.LOGGER.info("Reading a dungeon model...");
+				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 8, 8);
+			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ2")) {
+				if (event.getWorld().isRemote)
+					return;
+				DungeonCrawl.LOGGER.info("Reading a custom sized dungeon model...");
+				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 7, 8, 7);
+			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_PRINT")) {
+				if (event.getWorld().isRemote)
+					return;
+				DungeonCrawl.LOGGER.info("Printing a dungeon model...");
+				DungeonCrawl.LOGGER.info(DungeonSegmentModelReader.readModelToArrayString(event.getWorld(), event.getPos(), 8, 8, 8));
 			}
 		}
 	}

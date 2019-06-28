@@ -28,18 +28,11 @@ public class DungeonSegment {
 	}
 
 	public void build(Theme theme, World world, BlockPos pos) {
-		int posX = pos.getX();
+		/*int posX = pos.getX();
 		int posY = pos.getY();
-		int posZ = pos.getZ();
+		int posZ = pos.getZ();*/
 		switch (type) {
 		case START:
-			for (int x = 0; x < SIZE; x++)
-				for (int z = 0; z < SIZE; z++) {
-					world.setBlockState(new BlockPos(posX + x, posY, posZ), theme.floor.get());
-					world.setBlockState(new BlockPos(posX + x, posY + 7, posZ), theme.ceiling.get());
-					
-				}
-
 			return;
 		case CORRIDOR:
 			break;

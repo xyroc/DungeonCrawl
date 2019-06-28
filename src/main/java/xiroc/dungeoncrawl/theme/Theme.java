@@ -7,8 +7,15 @@ import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class Theme {
 
-	public static final Theme DEFAULT = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE, () -> Blocks.OAK_STAIRS.getDefaultState(),
-			() -> Blocks.STONE_BRICK_STAIRS.getDefaultState(), () -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
+	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.GRAVEL, () -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.STAIRS_STONE_BRICKS,
+			() -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
+
+	public static final Theme DEFAULT = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE, () -> Blocks.OAK_STAIRS.getDefaultState(),
+			BlockRegistry.STAIRS_STONE_COBBLESTONE, () -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
+
+	public static final Theme NETHER = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.NETHERRACK_NETHERBRICK, BlockRegistry.NETHERRACK_NETHERBRICK_SOULSAND, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(),
+			BlockRegistry.STAIRS_NETHERBRICK_QUARTZ, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(), () -> Blocks.QUARTZ_PILLAR.getDefaultState(), () -> Blocks.IRON_TRAPDOOR.getDefaultState(),
+			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
 
 	public final IBlockStateProvider ceiling;
 	public final IBlockStateProvider wall;

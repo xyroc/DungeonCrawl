@@ -20,6 +20,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xiroc.dungeoncrawl.build.block.BlockRegistry;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
 import xiroc.dungeoncrawl.util.EventManager;
 
 @Mod(DungeonCrawl.MODID)
@@ -39,6 +40,7 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
+		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
 		BlockRegistry.load();
 	}
 
@@ -63,6 +65,7 @@ public class DungeonCrawl {
 
 	public static ResourceLocation locate(String path) {
 		return new ResourceLocation(MODID, path);
+		// StrongholdStructure
 	}
 
 }

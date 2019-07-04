@@ -6,14 +6,14 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 
 public class RotationHelper {
-	
+
 	public static BlockState tanslateFourWayBlock(BlockState state, Rotation rotation) {
 		boolean north = state.get(FourWayBlock.NORTH);
 		boolean east = state.get(FourWayBlock.EAST);
 		boolean south = state.get(FourWayBlock.SOUTH);
 		boolean west = state.get(FourWayBlock.WEST);
 		boolean waterlogged = state.get(FourWayBlock.WATERLOGGED);
-		switch(rotation) {
+		switch (rotation) {
 		case NONE:
 			return state;
 		case CLOCKWISE_180:
@@ -26,7 +26,7 @@ public class RotationHelper {
 			return state;
 		}
 	}
-	
+
 	public static Direction translateDirection(Direction direction, Rotation rotation) {
 		switch (rotation) {
 		case CLOCKWISE_180:
@@ -96,6 +96,51 @@ public class RotationHelper {
 			return Direction.EAST;
 		default:
 			return null;
+		}
+	}
+
+	public static Rotation getRotationFromFacing(Direction facing) {
+		switch (facing) {
+		case NORTH:
+			return Rotation.COUNTERCLOCKWISE_90;
+		case EAST:
+			return Rotation.NONE;
+		case SOUTH:
+			return Rotation.CLOCKWISE_90;
+		case WEST:
+			return Rotation.CLOCKWISE_180;
+		default:
+			return Rotation.NONE;
+		}
+	}
+
+	public static Rotation getRotationFromInt(int rotation) {
+		switch (rotation) {
+		case 0:
+			return Rotation.NONE;
+		case 1:
+			return Rotation.CLOCKWISE_90;
+		case 2:
+			return Rotation.CLOCKWISE_180;
+		case 3:
+			return Rotation.COUNTERCLOCKWISE_90;
+		default:
+			return Rotation.NONE;
+		}
+	}
+
+	public static int getIntFromRotation(Rotation rotation) {
+		switch (rotation) {
+		case CLOCKWISE_180:
+			return 2;
+		case CLOCKWISE_90:
+			return 1;
+		case COUNTERCLOCKWISE_90:
+			return 3;
+		case NONE:
+			return 0;
+		default:
+			return 0;
 		}
 	}
 

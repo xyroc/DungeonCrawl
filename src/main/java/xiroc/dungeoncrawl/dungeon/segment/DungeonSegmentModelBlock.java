@@ -39,7 +39,7 @@ public class DungeonSegmentModelBlock {
 
 	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme) {
 		if (block == null || block.type == null)
-			return Blocks.AIR.getDefaultState();
+			return Blocks.CAVE_AIR.getDefaultState();
 		switch (block.type) {
 		case NONE:
 			return null;
@@ -90,7 +90,7 @@ public class DungeonSegmentModelBlock {
 
 	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, Rotation rotation) {
 		if (block == null || block.type == null)
-			return Blocks.AIR.getDefaultState();
+			return Blocks.CAVE_AIR.getDefaultState();
 		switch (block.type) {
 		case NONE:
 			return null;

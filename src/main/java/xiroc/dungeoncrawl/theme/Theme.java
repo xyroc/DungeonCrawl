@@ -51,5 +51,16 @@ public class Theme {
 		this.trapDoorDecoration = () -> trapDoorDecoration;
 		this.torchDark = () -> torchDark;
 	}
+	
+	public static Theme get(int theme) {
+		switch(theme) {
+		case 0:
+			return DEFAULT;
+		case 1:
+			return NETHER;
+		default:
+			return DEFAULT;
+		}
+	}
 
 }

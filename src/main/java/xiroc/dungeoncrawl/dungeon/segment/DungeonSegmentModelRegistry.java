@@ -98,10 +98,11 @@ public class DungeonSegmentModelRegistry {
 	public static final DungeonSegmentModelFourWayBlock IRON_BARS_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, false, true, true);
 
 	public static DungeonSegmentModel CORRIDOR_EW;
-	public static DungeonSegmentModel CORRIDOR_EW_2;
-	public static DungeonSegmentModel CORRIDOR_EW_3;
+	public static DungeonSegmentModel CORRIDOR_EW_TURN;
 	public static DungeonSegmentModel CORRIDOR_EW_OPEN;
 	public static DungeonSegmentModel CORRIDOR_EW_ALL_OPEN;
+	public static DungeonSegmentModel CORRIDOR_EW_2;
+	public static DungeonSegmentModel CORRIDOR_EW_3;
 
 	public static DungeonSegmentModel STAIRS;
 	public static DungeonSegmentModel STAIRS_TOP_1;
@@ -120,10 +121,11 @@ public class DungeonSegmentModelRegistry {
 			return;
 		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
 		CORRIDOR_EW = loadFromFile("models/dungeon/corridor_ew.json", resourceManager);
-		CORRIDOR_EW_2 = loadFromFile("models/dungeon/corridor_ew_2.json", resourceManager);
-		CORRIDOR_EW_3 = loadFromFile("models/dungeon/corridor_ew_3.json", resourceManager);
+		CORRIDOR_EW_TURN = loadFromFile("models/dungeon/corridor_ew_turn.json", resourceManager);
 		CORRIDOR_EW_OPEN = loadFromFile("models/dungeon/corridor_ew_open.json", resourceManager);
 		CORRIDOR_EW_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_all_open.json", resourceManager);
+		CORRIDOR_EW_2 = loadFromFile("models/dungeon/corridor_ew_2.json", resourceManager);
+		CORRIDOR_EW_3 = loadFromFile("models/dungeon/corridor_ew_3.json", resourceManager);
 		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager);
 		STAIRS_TOP_1 = loadFromFile("models/dungeon/stairs_top_open_1.json", resourceManager);
 		STAIRS_TOP_2_1 = loadFromFile("models/dungeon/stairs_top_open_2_1.json", resourceManager);

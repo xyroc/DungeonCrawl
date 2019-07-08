@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.gen.WorldGenRegion;
+import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegment;
@@ -24,7 +24,7 @@ public class DungeonBuilder {
 
 	public BlockPos startPos;
 
-	public DungeonBuilder(WorldGenRegion world, ChunkPos pos, Random rand) {
+	public DungeonBuilder(IWorld world, ChunkPos pos, Random rand) {
 		this.rand = rand;
 		this.start = new Position2D(rand.nextInt(16), rand.nextInt(16));
 		this.startPos = new BlockPos(pos.x * 16 + rand.nextInt(16), world.getChunkProvider().getChunkGenerator().getGroundHeight(), pos.z * 16 + rand.nextInt(16));
@@ -81,7 +81,9 @@ public class DungeonBuilder {
 		case CORRIDOR:
 			switch (segment.connectedSegments) {
 			case 2:
-				return DungeonSegmentModelRegistry.CORRIDOR_EW;
+				if (north && south || east && west)
+					return DungeonSegmentModelRegistry.CORRIDOR_EW;
+				return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
 			case 3:
 				return DungeonSegmentModelRegistry.CORRIDOR_EW_OPEN;
 			case 4:

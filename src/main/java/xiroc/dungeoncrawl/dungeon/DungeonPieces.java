@@ -92,7 +92,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.START, sides, posX, posZ, connectedSides);
+			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.END, sides, posX, posZ, connectedSides);
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
 				return false;
@@ -130,7 +130,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.END, sides, posX, posZ, connectedSides);
+			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.START, sides, posX, posZ, connectedSides);
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
 				return false;
@@ -346,6 +346,43 @@ public class DungeonPieces {
 			default:
 				DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unknown rotation " + rotation);
 				break;
+			}
+		}
+
+		public static Direction getOneWayDirection(DungeonPiece piece) {
+			if (piece.sides[0])
+				return Direction.NORTH;
+			if (piece.sides[1])
+				return Direction.EAST;
+			if (piece.sides[2])
+				return Direction.SOUTH;
+			if (piece.sides[3])
+				return Direction.WEST;
+			return Direction.NORTH;
+		}
+
+		public static Direction getOpenSide(DungeonPiece piece, int n) {
+			int c = 0;
+			for (int i = 0; i < 4; i++) {
+				if (piece.sides[i] && c++ == n)
+					return getDirectionFromInt(i);
+			}
+
+			return Direction.NORTH;
+		}
+
+		public static Direction getDirectionFromInt(int dir) {
+			switch (dir) {
+			case 0:
+				return Direction.NORTH;
+			case 1:
+				return Direction.EAST;
+			case 2:
+				return Direction.SOUTH;
+			case 3:
+				return Direction.WEST;
+			default:
+				return Direction.NORTH;
 			}
 		}
 

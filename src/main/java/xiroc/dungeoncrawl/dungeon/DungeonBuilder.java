@@ -64,20 +64,7 @@ public class DungeonBuilder {
 		boolean west = segment.sides[3];
 		switch (segment.type) {
 		case START:
-			switch (segment.connectedSegments) {
-			case 1:
-				return DungeonSegmentModelRegistry.STAIRS_BOTTOM_1;
-			case 2:
-				if (north && south || east && west)
-					return DungeonSegmentModelRegistry.STAIRS_BOTTOM_2_1;
-				return DungeonSegmentModelRegistry.STAIRS_BOTTOM_2_2;
-			case 3:
-				return DungeonSegmentModelRegistry.STAIRS_BOTTOM_3;
-			case 4:
-				return DungeonSegmentModelRegistry.STAIRS_BOTTOM_4;
-			default:
-				return null;
-			}
+			return DungeonSegmentModelRegistry.STAIRS_BOTTOM;
 		case CORRIDOR:
 			switch (segment.connectedSegments) {
 			case 2:
@@ -96,20 +83,7 @@ public class DungeonBuilder {
 		case ROOM:
 			return null;
 		case END:
-			switch (segment.connectedSegments) {
-			case 1:
-				return DungeonSegmentModelRegistry.STAIRS_TOP_1;
-			case 2:
-				if (north && south || east && west)
-					return DungeonSegmentModelRegistry.STAIRS_TOP_2_1;
-				return DungeonSegmentModelRegistry.STAIRS_TOP_2_2;
-			case 3:
-				return DungeonSegmentModelRegistry.STAIRS_TOP_3;
-			case 4:
-				return DungeonSegmentModelRegistry.STAIRS_TOP_4;
-			default:
-				return null;
-			}
+			return DungeonSegmentModelRegistry.STAIRS_TOP;
 		default:
 			return null;
 		}

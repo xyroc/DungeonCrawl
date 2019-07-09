@@ -105,16 +105,8 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel CORRIDOR_EW_3;
 
 	public static DungeonSegmentModel STAIRS;
-	public static DungeonSegmentModel STAIRS_TOP_1;
-	public static DungeonSegmentModel STAIRS_TOP_2_1;
-	public static DungeonSegmentModel STAIRS_TOP_2_2;
-	public static DungeonSegmentModel STAIRS_TOP_3;
-	public static DungeonSegmentModel STAIRS_TOP_4;
-	public static DungeonSegmentModel STAIRS_BOTTOM_1;
-	public static DungeonSegmentModel STAIRS_BOTTOM_2_1;
-	public static DungeonSegmentModel STAIRS_BOTTOM_2_2;
-	public static DungeonSegmentModel STAIRS_BOTTOM_3;
-	public static DungeonSegmentModel STAIRS_BOTTOM_4;
+	public static DungeonSegmentModel STAIRS_TOP;
+	public static DungeonSegmentModel STAIRS_BOTTOM;
 
 	public static void load(IResourceManager resourceManager) {
 		if (LOADED)
@@ -127,16 +119,8 @@ public class DungeonSegmentModelRegistry {
 		CORRIDOR_EW_2 = loadFromFile("models/dungeon/corridor_ew_2.json", resourceManager);
 		CORRIDOR_EW_3 = loadFromFile("models/dungeon/corridor_ew_3.json", resourceManager);
 		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager);
-		STAIRS_TOP_1 = loadFromFile("models/dungeon/stairs_top_open_1.json", resourceManager);
-		STAIRS_TOP_2_1 = loadFromFile("models/dungeon/stairs_top_open_2_1.json", resourceManager);
-		STAIRS_TOP_2_2 = loadFromFile("models/dungeon/stairs_top_open_2_2.json", resourceManager);
-		STAIRS_TOP_3 = loadFromFile("models/dungeon/stairs_top_open_3.json", resourceManager);
-		STAIRS_TOP_4 = loadFromFile("models/dungeon/stairs_top_open_4.json", resourceManager);
-		STAIRS_BOTTOM_1 = loadFromFile("models/dungeon/stairs_bottom_open_1.json", resourceManager);
-		STAIRS_BOTTOM_2_1 = loadFromFile("models/dungeon/stairs_bottom_open_2_1.json", resourceManager);
-		STAIRS_BOTTOM_2_2 = loadFromFile("models/dungeon/stairs_bottom_open_2_2.json", resourceManager);
-		STAIRS_BOTTOM_3 = loadFromFile("models/dungeon/stairs_bottom_open_3.json", resourceManager);
-		STAIRS_BOTTOM_4 = loadFromFile("models/dungeon/stairs_bottom_open_4.json", resourceManager);
+		STAIRS_TOP= loadFromFile("models/dungeon/stairs_top.json", resourceManager);
+		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager);
 		LOADED = true;
 	}
 

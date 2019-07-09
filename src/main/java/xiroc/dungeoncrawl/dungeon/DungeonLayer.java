@@ -140,7 +140,8 @@ public class DungeonLayer {
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z + 1] = corridor;
 				}
-			}
+			} else
+				this.segments[endX][endZ].openSide(Direction.EAST);
 		} else if (startX < endX) {
 			this.segments[startX][startZ].openSide(Direction.EAST);
 			for (int x = startX; x < (startZ == endZ ? endX - 1 : endX); x++) {
@@ -186,9 +187,11 @@ public class DungeonLayer {
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z + 1] = corridor;
 				}
-			}
+			} else
+				this.segments[endX][endZ].openSide(Direction.WEST);
 		} else {
 			if (startZ > endZ) {
+				this.segments[startX][startZ].openSide(Direction.NORTH);
 				this.segments[endX][endZ].openSide(Direction.SOUTH);
 				for (int z = startZ; z > endZ + 1; z--) {
 					if (this.segments[endX][z - 1] != null) {
@@ -210,6 +213,8 @@ public class DungeonLayer {
 					this.segments[endX][z - 1] = corridor;
 				}
 			} else if (startZ < endZ) {
+				this.segments[startX][startZ].openSide(Direction.SOUTH);
+				this.segments[endX][endZ].openSide(Direction.NORTH);
 				for (int z = startZ; z < endZ - 1; z++) {
 					if (this.segments[endX][z + 1] != null) {
 						// this.segments[endX][z + 1].openSide((z + 1) == endZ ? Direction.WEST :
@@ -230,15 +235,16 @@ public class DungeonLayer {
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z + 1] = corridor;
 				}
-			}
+			} else
+				DungeonCrawl.LOGGER.warn("Tried to build a connection between two positions but they were the same. ( " + startX + " / " + startZ + " ) -> ( " + endX + "/" + endZ + " )");
 		}
 	}
 
-	// TODO test if it works
+	// TODO not approved yet
 	public void rotatePiece(DungeonPiece piece) {
 		switch (piece.connectedSides) {
 		case 1:
-			piece.setRotation(RotationHelper.getOppositeRotationFromFacing(DungeonPiece.getOneWayDirection(piece)));
+			piece.setRotation(RotationHelper.getRotationFromFacing(DungeonPiece.getOneWayDirection(piece)));
 			return;
 		case 2:
 			if (piece.sides[0] && piece.sides[2])

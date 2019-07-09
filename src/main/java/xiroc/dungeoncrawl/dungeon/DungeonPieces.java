@@ -19,6 +19,7 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.build.block.BlockRegistry;
 import xiroc.dungeoncrawl.build.block.Chest;
 import xiroc.dungeoncrawl.build.block.Spawner;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegment;
@@ -97,7 +98,8 @@ public class DungeonPieces {
 			if (model == null)
 				return false;
 			DungeonCrawl.LOGGER.info("building " + this);
-			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), getRotation());
+			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
+			addWalls(this, worldIn);
 			return true;
 		}
 
@@ -116,7 +118,8 @@ public class DungeonPieces {
 			if (model == null)
 				return false;
 			DungeonCrawl.LOGGER.info("building " + this);
-			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), getRotation());
+			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
+			addWalls(this, worldIn);
 			return true;
 		}
 
@@ -135,7 +138,8 @@ public class DungeonPieces {
 			if (model == null)
 				return false;
 			DungeonCrawl.LOGGER.info("building " + this);
-			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), getRotation());
+			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
+			addWalls(this, worldIn);
 			return true;
 		}
 
@@ -386,6 +390,25 @@ public class DungeonPieces {
 			}
 		}
 
+	}
+
+	public static void addWalls(DungeonPiece piece, IWorld world) {
+		if (!piece.sides[0])
+			for (int x = 2; x < 6; x++)
+				for (int y = 2; y < 6; y++)
+					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + x, piece.y + y, piece.z);
+		if (!piece.sides[1])
+			for (int z = 2; z < 6; z++)
+				for (int y = 2; y < 6; y++)
+					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + 7, piece.y + y, piece.z + z);
+		if (!piece.sides[2])
+			for (int x = 2; x < 6; x++)
+				for (int y = 2; y < 6; y++)
+					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + x, piece.y + y, piece.z + 7);
+		if (!piece.sides[3])
+			for (int z = 2; z < 6; z++)
+				for (int y = 2; y < 6; y++)
+					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x, piece.y + y, piece.z + z);
 	}
 
 }

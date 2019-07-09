@@ -43,7 +43,7 @@ public class DungeonSegmentTestHelper {
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
 				DungeonCrawl.LOGGER.info("Building a dungeon model...");
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.CORRIDOR_EW_TURN, event.getWorld(), event.getPos(), Theme.TEST);
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.STAIRS_TOP, event.getWorld(), event.getPos(), Theme.TEST);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
 				DungeonCrawl.LOGGER.info("Building a dungeon model...");
 				DungeonSegmentModel.buildRotated(DungeonSegmentModelRegistry.CORRIDOR_EW_TURN, event.getWorld(), event.getPos(), Theme.TEST, RotationHelper.getRotationFromCW90DoubleFacing(Direction.WEST, Direction.SOUTH));

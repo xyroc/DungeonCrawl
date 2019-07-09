@@ -6,11 +6,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 
 public class RotationHelper {
-	
-	public static final Direction[] EAST_SOUTH_WEST = new Direction[] {Direction.EAST, Direction.SOUTH, Direction.WEST};
-	public static final Direction[] EAST_NORTH_WEST = new Direction[] {Direction.EAST, Direction.NORTH, Direction.WEST};
-	public static final Direction[] NORTH_SOUT_EAST = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.EAST};
-	public static final Direction[] NORTH_SOUTH_WEST = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.WEST};
+
+	public static final Direction[] EAST_SOUTH_WEST = new Direction[] { Direction.EAST, Direction.SOUTH, Direction.WEST };
+	public static final Direction[] EAST_NORTH_WEST = new Direction[] { Direction.EAST, Direction.NORTH, Direction.WEST };
+	public static final Direction[] NORTH_SOUT_EAST = new Direction[] { Direction.NORTH, Direction.SOUTH, Direction.EAST };
+	public static final Direction[] NORTH_SOUTH_WEST = new Direction[] { Direction.NORTH, Direction.SOUTH, Direction.WEST };
 
 	public static BlockState tanslateFourWayBlock(BlockState state, Rotation rotation) {
 		boolean north = state.get(FourWayBlock.NORTH);
@@ -178,13 +178,13 @@ public class RotationHelper {
 	}
 
 	public static Rotation getRotationFromTripleFacing(Direction dir1, Direction dir2, Direction dir3) {
-		if(containsAllThree(dir1, dir2, dir3, EAST_SOUTH_WEST))
+		if (containsAllThree(dir1, dir2, dir3, EAST_SOUTH_WEST))
 			return Rotation.NONE;
-		else if(containsAllThree(dir1, dir2, dir3, EAST_NORTH_WEST))
+		else if (containsAllThree(dir1, dir2, dir3, EAST_NORTH_WEST))
 			return Rotation.CLOCKWISE_180;
-		else if(containsAllThree(dir1, dir2, dir3, NORTH_SOUT_EAST))
+		else if (containsAllThree(dir1, dir2, dir3, NORTH_SOUT_EAST))
 			return Rotation.COUNTERCLOCKWISE_90;
-		else if(containsAllThree(dir1, dir2, dir3, NORTH_SOUTH_WEST))
+		else if (containsAllThree(dir1, dir2, dir3, NORTH_SOUTH_WEST))
 			return Rotation.CLOCKWISE_90;
 		return Rotation.NONE;
 

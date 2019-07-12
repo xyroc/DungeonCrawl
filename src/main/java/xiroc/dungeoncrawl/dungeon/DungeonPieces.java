@@ -78,7 +78,6 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
 				return false;
-			DungeonCrawl.LOGGER.info("building " + this);
 			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), getRotation());
 			return true;
 		}
@@ -97,7 +96,6 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
 				return false;
-			DungeonCrawl.LOGGER.info("building " + this);
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
 			addWalls(this, worldIn);
 			return true;
@@ -117,7 +115,6 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
 				return false;
-			DungeonCrawl.LOGGER.info("building " + this);
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
 			addWalls(this, worldIn);
 			return true;
@@ -137,7 +134,6 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
 				return false;
-			DungeonCrawl.LOGGER.info("building " + this);
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
 			addWalls(this, worldIn);
 			return true;

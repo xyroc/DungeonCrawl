@@ -63,7 +63,7 @@ public class DungeonLayer {
 		this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
 		// DungeonCrawl.LOGGER.info("Building connection from start to end...");
 		this.buildConnection(start, end);
-		// this.extend(map, start, end, rand);
+		this.extend(map, start, end, rand);
 	}
 
 	public void extend(DungeonLayerMap map, Position2D start, Position2D end, Random rand) {

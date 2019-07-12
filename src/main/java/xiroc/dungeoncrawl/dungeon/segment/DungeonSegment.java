@@ -19,8 +19,8 @@ public class DungeonSegment {
 		this.sides = new boolean[6];
 		this.connectedSegments = 0;
 	}
-	
-	public DungeonSegment(DungeonSegmentType type, boolean [] sides, int posX, int posY, int connectedSegments) {
+
+	public DungeonSegment(DungeonSegmentType type, boolean[] sides, int posX, int posY, int connectedSegments) {
 		this.type = type;
 		this.direction = Direction.NORTH;
 		this.setPosition(posX, posY);
@@ -36,26 +36,38 @@ public class DungeonSegment {
 	public void openSide(Direction side) {
 		switch (side) {
 		case NORTH:
+			if (sides[0])
+				return;
 			sides[0] = true;
 			connectedSegments++;
 			return;
 		case EAST:
+			if (sides[1])
+				return;
 			sides[1] = true;
 			connectedSegments++;
 			return;
 		case SOUTH:
+			if (sides[2])
+				return;
 			sides[2] = true;
 			connectedSegments++;
 			return;
 		case WEST:
+			if (sides[3])
+				return;
 			sides[3] = true;
 			connectedSegments++;
 			return;
 		case UP:
+			if (sides[4])
+				return;
 			sides[4] = true;
 			connectedSegments++;
 			return;
 		case DOWN:
+			if (sides[5])
+				return;
 			sides[5] = true;
 			connectedSegments++;
 			return;

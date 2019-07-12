@@ -11,7 +11,7 @@ logoFile="logo.png" #optional
 credits="Idea by XIROC" #optional
 authors="XIROC" #optional
 description='''
-This is a roguelike dungeon mod coded completely from scratch
+Dungeons...
 '''
 [[dependencies.dungeoncrawl]] #optional
     # the modid of the dependency

@@ -162,7 +162,7 @@ public class DungeonSegmentModel {
 			Spawner.setupSpawner(world, pos, Spawner.getRandomEntityType(world.rand));
 			return;
 		} else if (state.getBlock() == Blocks.CHEST) {
-			Chest.setupChest(world, state, pos, 0); // TODO Lootlevel
+			Chest.setupChest(world, state, pos, 0, world.getSeed()); // TODO Lootlevel
 			return;
 		}
 		world.setBlockState(pos, state);

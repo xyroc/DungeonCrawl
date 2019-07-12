@@ -19,14 +19,14 @@ import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.build.block.BlockRegistry;
-import xiroc.dungeoncrawl.build.block.Chest;
-import xiroc.dungeoncrawl.build.block.Spawner;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegment;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentType;
+import xiroc.dungeoncrawl.part.block.BlockRegistry;
+import xiroc.dungeoncrawl.part.block.Chest;
+import xiroc.dungeoncrawl.part.block.Spawner;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.RotationHelper;
 

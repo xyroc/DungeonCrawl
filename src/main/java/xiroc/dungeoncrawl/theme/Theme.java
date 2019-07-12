@@ -2,7 +2,7 @@ package xiroc.dungeoncrawl.theme;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import xiroc.dungeoncrawl.build.block.BlockRegistry;
+import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class Theme {

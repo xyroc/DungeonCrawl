@@ -6,8 +6,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.build.block.Chest;
-import xiroc.dungeoncrawl.build.block.Spawner;
+import xiroc.dungeoncrawl.part.block.Chest;
+import xiroc.dungeoncrawl.part.block.Spawner;
 import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonSegmentModel {

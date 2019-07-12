@@ -9,13 +9,13 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.build.block.BlockRegistry;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.DungeonLayerType;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonSegmentTestHelper {

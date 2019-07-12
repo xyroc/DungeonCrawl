@@ -13,7 +13,7 @@ import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
-import xiroc.dungeoncrawl.build.block.BlockRegistry;
+import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.RotationHelper;
 

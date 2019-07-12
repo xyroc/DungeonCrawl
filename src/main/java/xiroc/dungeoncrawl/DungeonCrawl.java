@@ -18,8 +18,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import xiroc.dungeoncrawl.build.block.BlockRegistry;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
 import xiroc.dungeoncrawl.util.EventManager;
 

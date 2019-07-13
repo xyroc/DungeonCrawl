@@ -5,8 +5,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 
 public class DungeonSegment {
 
-	public static final int SIZE = 8;
-
 	public DungeonSegmentType type;
 	public Direction direction;
 	public int connectedSegments, posX, posZ;

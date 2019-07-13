@@ -33,6 +33,7 @@ import xiroc.dungeoncrawl.util.RotationHelper;
 public class DungeonPieces {
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
+	public static final CompoundNBT DEFAULT_LARGE_NBT = getDefaultLargeNBT();
 
 	private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder()
 			.add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE)
@@ -53,6 +54,67 @@ public class DungeonPieces {
 		nbt.putInt("theme", 0);
 		nbt.putInt("rotation", 0);
 		return nbt;
+	}
+
+	public static CompoundNBT getDefaultLargeNBT() {
+		CompoundNBT nbt = new CompoundNBT();
+		nbt.putBoolean("north1", false);
+		nbt.putBoolean("north2", false);
+		nbt.putBoolean("east1", false);
+		nbt.putBoolean("east2", false);
+		nbt.putBoolean("south1", false);
+		nbt.putBoolean("south2", false);
+		nbt.putBoolean("west1", false);
+		nbt.putBoolean("west2", false);
+		nbt.putInt("connectedSides", 0);
+		nbt.putInt("posX", -1);
+		nbt.putInt("posZ", -1);
+		nbt.putInt("theme", 0);
+		nbt.putInt("rotation", 0);
+		return nbt;
+	}
+
+	public static class RoomLarge extends DungeonPiece {
+
+		public RoomLarge(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
+			super(p_i51343_1_, p_i51343_2_);
+			sides = new boolean[8];
+			sides[0] = p_i51343_2_.getBoolean("north1");
+			sides[1] = p_i51343_2_.getBoolean("north2");
+			sides[2] = p_i51343_2_.getBoolean("east1");
+			sides[3] = p_i51343_2_.getBoolean("east2");
+			sides[4] = p_i51343_2_.getBoolean("south1");
+			sides[5] = p_i51343_2_.getBoolean("south2");
+			sides[6] = p_i51343_2_.getBoolean("west1");
+			sides[7] = p_i51343_2_.getBoolean("west2");
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+				ChunkPos p_74875_4_) {
+			return false;
+		}
+
+		@Override
+		public void readAdditional(CompoundNBT tagCompound) {
+			tagCompound.putBoolean("north1", sides[0]);
+			tagCompound.putBoolean("north2", sides[1]);
+			tagCompound.putBoolean("east1", sides[2]);
+			tagCompound.putBoolean("east2", sides[3]);
+			tagCompound.putBoolean("south1", sides[4]);
+			tagCompound.putBoolean("south2", sides[5]);
+			tagCompound.putBoolean("west1", sides[6]);
+			tagCompound.putBoolean("west2", sides[7]);
+			tagCompound.putInt("connectedSides", connectedSides);
+			tagCompound.putInt("posX", posX);
+			tagCompound.putInt("posZ", posZ);
+			tagCompound.putInt("x", x);
+			tagCompound.putInt("y", y);
+			tagCompound.putInt("z", z);
+			tagCompound.putInt("theme", theme);
+			tagCompound.putInt("rotation", RotationHelper.getIntFromRotation(this.rotation));
+		}
+
 	}
 
 	public static class Room extends DungeonPiece {

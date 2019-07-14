@@ -74,6 +74,20 @@ public class DungeonPieces {
 		return nbt;
 	}
 
+	public static class RoomLargePlaceholder extends DungeonPiece {
+
+		public RoomLargePlaceholder(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
+			super(p_i51343_1_, p_i51343_2_);
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+				ChunkPos p_74875_4_) {
+			return false;
+		}
+
+	}
+
 	public static class RoomLarge extends DungeonPiece {
 
 		public RoomLarge(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
@@ -92,6 +106,7 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
+			// TODO build
 			return false;
 		}
 
@@ -115,6 +130,14 @@ public class DungeonPieces {
 			tagCompound.putInt("rotation", RotationHelper.getIntFromRotation(this.rotation));
 		}
 
+		public static void addWalls(RoomLarge piece, IWorld world) {
+			if (!piece.sides[0])
+				for (int x = 2; x < 6; x++)
+					for (int y = 2; y < 6; y++)
+						piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world,
+								piece.x + x, piece.y + y, piece.z);
+		}
+
 	}
 
 	public static class Room extends DungeonPiece {
@@ -126,6 +149,7 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
+			// TODO build
 			return false;
 		}
 
@@ -461,7 +485,7 @@ public class DungeonPieces {
 				if (piece.sides[i] && c++ == n)
 					return getDirectionFromInt(i);
 			}
-
+			DungeonCrawl.LOGGER.error("getOpenSide(" + piece + ", " + n + ") malfunctioned. This error did most likely occur due to an error in the mod. (" + piece.connectedSides + " open sides)");
 			return Direction.NORTH;
 		}
 

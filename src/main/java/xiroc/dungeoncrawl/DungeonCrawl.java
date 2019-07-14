@@ -65,7 +65,6 @@ public class DungeonCrawl {
 
 	public static ResourceLocation locate(String path) {
 		return new ResourceLocation(MODID, path);
-		// StrongholdStructure
 	}
 
 }

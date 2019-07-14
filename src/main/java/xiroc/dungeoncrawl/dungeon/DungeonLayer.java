@@ -102,6 +102,7 @@ public class DungeonLayer {
 				if (this.segments[x - 1][startZ] != null) {
 					this.segments[x - 1][startZ].openSide((x - 1) == endX ? Direction.NORTH : Direction.WEST);
 					this.segments[x - 1][startZ].openSide(Direction.EAST);
+					this.rotatePiece(this.segments[x - 1][startZ]);
 					continue;
 				}
 				DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
@@ -120,6 +121,7 @@ public class DungeonLayer {
 					if (this.segments[endX][z - 1] != null) {
 						this.segments[endX][z - 1].openSide(Direction.NORTH);
 						this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.WEST : Direction.SOUTH);
+						this.rotatePiece(this.segments[endX][z - 1]);
 						continue;
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
@@ -137,6 +139,7 @@ public class DungeonLayer {
 					if (this.segments[endX][z + 1] != null) {
 						this.segments[endX][z + 1].openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
 						this.segments[endX][z + 1].openSide(Direction.NORTH);
+						this.rotatePiece(this.segments[endX][z + 1]);
 						continue;
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
@@ -156,6 +159,7 @@ public class DungeonLayer {
 				if (this.segments[x + 1][startZ] != null) {
 					this.segments[x + 1][startZ].openSide((x + 1) == endX ? Direction.SOUTH : Direction.EAST);
 					this.segments[x + 1][startZ].openSide(Direction.WEST);
+					this.rotatePiece(this.segments[x + 1][startZ]);
 					continue;
 				}
 				DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
@@ -174,6 +178,7 @@ public class DungeonLayer {
 					if (this.segments[endX][z - 1] != null) {
 						this.segments[endX][z - 1].openSide(Direction.NORTH);
 						this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.WEST : Direction.SOUTH);
+						this.rotatePiece(this.segments[endX][z - 1]);
 						continue;
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
@@ -191,6 +196,7 @@ public class DungeonLayer {
 					if (this.segments[endX][z + 1] != null) {
 						this.segments[endX][z + 1].openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
 						this.segments[endX][z + 1].openSide(Direction.NORTH);
+						this.rotatePiece(this.segments[endX][z + 1]);
 						continue;
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
@@ -214,6 +220,7 @@ public class DungeonLayer {
 						// this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.WEST :
 						// Direction.SOUTH);
 						this.segments[endX][z - 1].openSide(Direction.SOUTH);
+						this.rotatePiece(this.segments[endX][z - 1]);
 						continue;
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
@@ -236,6 +243,7 @@ public class DungeonLayer {
 						// Direction.SOUTH);
 						this.segments[endX][z + 1].openSide(Direction.SOUTH);
 						this.segments[endX][z + 1].openSide(Direction.NORTH);
+						this.rotatePiece(this.segments[endX][z + 1]);
 						continue;
 					}
 					this.segments[endX][endZ].openSide(Direction.NORTH);

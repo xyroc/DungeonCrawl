@@ -108,6 +108,8 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel STAIRS_TOP;
 	public static DungeonSegmentModel STAIRS_BOTTOM;
 
+	public static DungeonSegmentModel ROOM;
+
 	public static void load(IResourceManager resourceManager) {
 		if (LOADED)
 			return;
@@ -119,8 +121,9 @@ public class DungeonSegmentModelRegistry {
 		CORRIDOR_EW_2 = loadFromFile("models/dungeon/corridor_ew_2.json", resourceManager);
 		CORRIDOR_EW_3 = loadFromFile("models/dungeon/corridor_ew_3.json", resourceManager);
 		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager);
-		STAIRS_TOP= loadFromFile("models/dungeon/stairs_top.json", resourceManager);
+		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager);
 		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager);
+		ROOM = loadFromFile("models/dungeon/room.json", resourceManager);
 		LOADED = true;
 	}
 

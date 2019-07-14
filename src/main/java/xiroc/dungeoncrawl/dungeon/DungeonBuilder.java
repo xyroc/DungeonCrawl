@@ -81,7 +81,7 @@ public class DungeonBuilder {
 		case STAIRS:
 			return DungeonSegmentModelRegistry.STAIRS;
 		case ROOM:
-			return null;
+			return DungeonSegmentModelRegistry.ROOM;
 		case END:
 			return DungeonSegmentModelRegistry.STAIRS_TOP;
 		default:

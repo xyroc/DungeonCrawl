@@ -2,6 +2,8 @@ package xiroc.dungeoncrawl.dungeon.segment;
 
 import java.util.Random;
 
+import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
@@ -67,7 +69,7 @@ public class DungeonSegmentModelBlock {
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
 			int i = new Random().nextInt(10);
-			if (i < 3)
+			if (i < 2)
 				return BlockRegistry.SPAWNER;
 			if (i == 5)
 				return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
@@ -80,6 +82,10 @@ public class DungeonSegmentModelBlock {
 			return theme.wall.get();
 		case WALL_LOG:
 			return theme.wallLog.get().with(RotatedPillarBlock.AXIS, Direction.Axis.Y);
+		case BARREL:
+			return Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, block.facing);
+		case ANVIL:
+			return Blocks.ANVIL.getDefaultState().with(AnvilBlock.FACING, block.facing);
 		default:
 			if (block instanceof DungeonSegmentModelTrapDoorBlock)
 				return theme.trapDoorDecoration.get().with(TrapDoorBlock.OPEN, ((DungeonSegmentModelTrapDoorBlock) block).open).with(TrapDoorBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM).with(HorizontalBlock.HORIZONTAL_FACING,
@@ -116,7 +122,7 @@ public class DungeonSegmentModelBlock {
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
 			int i = new Random().nextInt(10);
-			if (i < 3)
+			if (i < 2)
 				return BlockRegistry.SPAWNER;
 			if (i == 5)
 				return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, RotationHelper.translateDirection(block.facing, rotation));
@@ -129,6 +135,10 @@ public class DungeonSegmentModelBlock {
 			return theme.wall.get();
 		case WALL_LOG:
 			return theme.wallLog.get().with(RotatedPillarBlock.AXIS, Direction.Axis.Y);
+		case BARREL:
+			return Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, RotationHelper.translateDirection(block.facing, rotation));
+		case ANVIL:
+			return Blocks.ANVIL.getDefaultState().with(AnvilBlock.FACING, RotationHelper.translateDirection(block.facing, rotation));
 		default:
 			if (block instanceof DungeonSegmentModelTrapDoorBlock)
 				return theme.trapDoorDecoration.get().with(TrapDoorBlock.OPEN, ((DungeonSegmentModelTrapDoorBlock) block).open).with(TrapDoorBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM).with(HorizontalBlock.HORIZONTAL_FACING,

@@ -6,9 +6,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.part.block.Chest;
-import xiroc.dungeoncrawl.part.block.Spawner;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class DungeonSegmentModel {
 
@@ -172,14 +171,7 @@ public class DungeonSegmentModel {
 	public static void setupBlockState(BlockState state, World world, BlockPos pos) {
 		if (state == null)
 			return;
-		if (state.getBlock() == Blocks.SPAWNER) {
-			Spawner.setupSpawner(world, pos, Spawner.getRandomEntityType(world.rand));
-			return;
-		} else if (state.getBlock() == Blocks.CHEST) {
-			Chest.setupChest(world, state, pos, 0, world.getSeed()); // TODO Lootlevel
-			return;
-		}
-		world.setBlockState(pos, state);
+		IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), 0); // TODO lootLevel
 	}
 
 	public BlockState[][][] transform() {

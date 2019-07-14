@@ -22,6 +22,7 @@ import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
 import xiroc.dungeoncrawl.util.EventManager;
+import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 @Mod(DungeonCrawl.MODID)
 public class DungeonCrawl {
@@ -41,6 +42,7 @@ public class DungeonCrawl {
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
 		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
+		IBlockPlacementHandler.load();
 		BlockRegistry.load();
 	}
 

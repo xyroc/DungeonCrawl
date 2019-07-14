@@ -25,9 +25,8 @@ import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentType;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.part.block.Chest;
-import xiroc.dungeoncrawl.part.block.Spawner;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
 public class DungeonPieces {
@@ -147,8 +146,8 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
 				return false;
-			build(model, worldIn, new BlockPos(x, y, z), Theme.NETHER);
-			addWalls(this, worldIn);
+			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
+			addWalls(this, worldIn, Theme.get(theme));
 			return false;
 		}
 
@@ -185,7 +184,7 @@ public class DungeonPieces {
 			if (model == null)
 				return false;
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
-			addWalls(this, worldIn);
+			addWalls(this, worldIn, Theme.get(theme));
 			return true;
 		}
 
@@ -204,7 +203,7 @@ public class DungeonPieces {
 			if (model == null)
 				return false;
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
-			addWalls(this, worldIn);
+			addWalls(this, worldIn, Theme.get(theme));
 			return true;
 		}
 
@@ -223,7 +222,7 @@ public class DungeonPieces {
 			if (model == null)
 				return false;
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
-			addWalls(this, worldIn);
+			addWalls(this, worldIn, Theme.get(theme));
 			return true;
 		}
 
@@ -339,17 +338,9 @@ public class DungeonPieces {
 			BlockPos pos = new BlockPos(this.getXWithOffset(x, z), this.getYWithOffset(y), this.getZWithOffset(x, z));
 			if (state == null)
 				return;
-			if (state.getBlock() == Blocks.SPAWNER) {
-				Spawner.setupSpawner(world, pos, Spawner.getRandomEntityType(world.getRandom()));
-				return;
-			} else if (state.getBlock() == Blocks.CHEST) {
-				Chest.setupChest(world, state, pos, 0, world.getSeed()); // TODO Lootlevel
-				return;
-			}
-			world.setBlockState(pos, state, 2);
-			if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+			IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), 0); // TODO lootLevel
+			if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock()))
 				world.getChunk(pos).markBlockForPostprocessing(pos);
-			}
 		}
 
 		public void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme) {
@@ -376,7 +367,8 @@ public class DungeonPieces {
 		}
 
 		public void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, Rotation rotation) {
-			// DungeonCrawl.LOGGER.info(" (" + pos.getX() + " / " + pos.getY() + " / " + pos.getZ() + ")");
+			// DungeonCrawl.LOGGER.info(" (" + pos.getX() + " / " + pos.getY() + " / " +
+			// pos.getZ() + ")");
 			int fwb = 0;
 			int td = 0;
 			switch (rotation) {
@@ -488,23 +480,23 @@ public class DungeonPieces {
 
 	}
 
-	public static void addWalls(DungeonPiece piece, IWorld world) {
+	public static void addWalls(DungeonPiece piece, IWorld world, Theme theme) {
 		if (!piece.sides[0])
 			for (int x = 2; x < 6; x++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + x, piece.y + y, piece.z);
+					piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z);
 		if (!piece.sides[1])
 			for (int z = 2; z < 6; z++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + 7, piece.y + y, piece.z + z);
+					piece.setBlockState(theme.wall.get(), world, piece.x + 7, piece.y + y, piece.z + z);
 		if (!piece.sides[2])
 			for (int x = 2; x < 6; x++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + x, piece.y + y, piece.z + 7);
+					piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z + 7);
 		if (!piece.sides[3])
 			for (int z = 2; z < 6; z++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x, piece.y + y, piece.z + z);
+					piece.setBlockState(theme.wall.get(), world, piece.x, piece.y + y, piece.z + z);
 	}
 
 }

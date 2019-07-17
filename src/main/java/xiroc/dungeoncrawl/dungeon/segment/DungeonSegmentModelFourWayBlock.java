@@ -6,7 +6,8 @@ public class DungeonSegmentModelFourWayBlock extends DungeonSegmentModelBlock {
 
 	public boolean north, east, south, west, waterlogged;
 
-	public DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType type, boolean north, boolean east, boolean south, boolean west, boolean waterlogged) {
+	public DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType type, boolean north, boolean east,
+			boolean south, boolean west, boolean waterlogged) {
 		super(type, Direction.NORTH, false);
 		this.north = north;
 		this.east = east;

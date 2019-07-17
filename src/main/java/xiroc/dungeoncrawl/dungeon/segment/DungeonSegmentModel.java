@@ -171,7 +171,7 @@ public class DungeonSegmentModel {
 	public static void setupBlockState(BlockState state, World world, BlockPos pos) {
 		if (state == null)
 			return;
-		IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), 0); // TODO lootLevel
+		IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), 0); // lootLevel
 	}
 
 	public BlockState[][][] transform() {

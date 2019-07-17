@@ -36,17 +36,22 @@ public class DungeonSegmentTestHelper {
 				layer.testBuildToWorld(event.getWorld(), event.getPos());
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {
-				DungeonBuilder builder = new DungeonBuilder(event.getWorld(), new ChunkPos(event.getPos()), event.getWorld().rand);
+				DungeonBuilder builder = new DungeonBuilder(event.getWorld(), new ChunkPos(event.getPos()),
+						event.getWorld().rand);
 				for (DungeonPiece piece : builder.build())
-					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null, new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
+					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null,
+							new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
 
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
 				DungeonCrawl.LOGGER.info("Building a dungeon model...");
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.STAIRS_TOP, event.getWorld(), event.getPos(), Theme.TEST);
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.STAIRS_TOP, event.getWorld(), event.getPos(),
+						Theme.TEST);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
 				DungeonCrawl.LOGGER.info("Building a dungeon model...");
-				DungeonSegmentModel.buildRotated(DungeonSegmentModelRegistry.CORRIDOR_EW_TURN, event.getWorld(), event.getPos(), Theme.TEST, RotationHelper.getRotationFromCW90DoubleFacing(Direction.WEST, Direction.SOUTH));
+				DungeonSegmentModel.buildRotated(DungeonSegmentModelRegistry.CORRIDOR_EW_TURN, event.getWorld(),
+						event.getPos(), Theme.TEST,
+						RotationHelper.getRotationFromCW90DoubleFacing(Direction.WEST, Direction.SOUTH));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ")) {
 				if (event.getWorld().isRemote)
 					return;
@@ -61,7 +66,8 @@ public class DungeonSegmentTestHelper {
 				if (event.getWorld().isRemote)
 					return;
 				DungeonCrawl.LOGGER.info("Printing a dungeon model...");
-				DungeonCrawl.LOGGER.info(DungeonSegmentModelReader.readModelToArrayString(event.getWorld(), event.getPos(), 8, 8, 8));
+				DungeonCrawl.LOGGER.info(
+						DungeonSegmentModelReader.readModelToArrayString(event.getWorld(), event.getPos(), 8, 8, 8));
 			}
 		}
 	}

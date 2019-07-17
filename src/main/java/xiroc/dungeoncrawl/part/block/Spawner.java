@@ -14,7 +14,8 @@ public class Spawner implements IBlockPlacementHandler {
 	@Override
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel) {
 		world.setBlockState(pos, BlockRegistry.SPAWNER, 2);
-		((MobSpawnerTileEntity) world.getTileEntity(pos)).getSpawnerBaseLogic().setEntityType(getRandomEntityType(rand));
+		((MobSpawnerTileEntity) world.getTileEntity(pos)).getSpawnerBaseLogic()
+				.setEntityType(getRandomEntityType(rand));
 	}
 
 	public static EntityType<?> getRandomEntityType(Random rand) {

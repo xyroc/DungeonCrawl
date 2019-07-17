@@ -75,13 +75,19 @@ public class BlockRegistry {
 	public static void load() {
 		long time = System.currentTimeMillis();
 		DungeonCrawl.LOGGER.info("Calculating WeightedRandomBlocks");
-		STONE_BRICKS_NORMAL_MOSSY_CRACKED = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS });
-		STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS, TIB_COBBLESTONE });
-		STONE_BRICKS_GRAVEL_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_GRAVEL, TIB_COBBLESTONE });
+		STONE_BRICKS_NORMAL_MOSSY_CRACKED = new WeightedRandomBlock(
+				new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS });
+		STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS,
+				TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS, TIB_COBBLESTONE });
+		STONE_BRICKS_GRAVEL_COBBLESTONE = new WeightedRandomBlock(
+				new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_GRAVEL, TIB_COBBLESTONE });
 		NETHERRACK_NETHERBRICK = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK });
-		NETHERRACK_NETHERBRICK_SOULSAND = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK, TIB_SOUL_SAND });
-		STAIRS_STONE_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STAIRS_STONE_BRICKS, TIB_STAIRS_COBBLESTONE });
-		STAIRS_NETHERBRICK_QUARTZ = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STAIRS_NETHER_BRICK, TIB_STAIRS_QUARTZ });
+		NETHERRACK_NETHERBRICK_SOULSAND = new WeightedRandomBlock(
+				new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK, TIB_SOUL_SAND });
+		STAIRS_STONE_COBBLESTONE = new WeightedRandomBlock(
+				new TupleIntBlock[] { TIB_STAIRS_STONE_BRICKS, TIB_STAIRS_COBBLESTONE });
+		STAIRS_NETHERBRICK_QUARTZ = new WeightedRandomBlock(
+				new TupleIntBlock[] { TIB_STAIRS_NETHER_BRICK, TIB_STAIRS_QUARTZ });
 		DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
 	}
 

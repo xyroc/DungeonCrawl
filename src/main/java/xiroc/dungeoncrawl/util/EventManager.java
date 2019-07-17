@@ -20,7 +20,8 @@ public class EventManager {
 	@SubscribeEvent
 	public static void onFeatureRegistry(RegistryEvent.Register<Feature<?>> event) {
 		DungeonCrawl.LOGGER.info("Registering features");
-		event.getRegistry().register(new Dungeon(NoFeatureConfig::deserialize).setRegistryName(DungeonCrawl.locate("dungeon")));
+		event.getRegistry()
+				.register(new Dungeon(NoFeatureConfig::deserialize).setRegistryName(DungeonCrawl.locate("dungeon")));
 	}
 
 	@SubscribeEvent
@@ -28,7 +29,9 @@ public class EventManager {
 		DungeonCrawl.LOGGER.info("Adding features");
 		for (Biome biome : ForgeRegistries.BIOMES) {
 			DungeonCrawl.LOGGER.info("BIOME >> " + biome.getRegistryName());
-			biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, Biome.createDecoratedFeature(new Dungeon(NoFeatureConfig::deserialize), NoFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
+			biome.addFeature(Decoration.UNDERGROUND_STRUCTURES,
+					Biome.createDecoratedFeature(new Dungeon(NoFeatureConfig::deserialize),
+							NoFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
 			biome.addStructure(new Dungeon(NoFeatureConfig::deserialize), NoFeatureConfig.NO_FEATURE_CONFIG);
 		}
 	}

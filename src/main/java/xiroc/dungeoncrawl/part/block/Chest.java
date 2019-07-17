@@ -12,7 +12,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class Chest implements IBlockPlacementHandler {
-		
+
 	@Override
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel) {
 		world.setBlockState(pos, state, 2);

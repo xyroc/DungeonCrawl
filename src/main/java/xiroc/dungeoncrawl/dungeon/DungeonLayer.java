@@ -56,6 +56,7 @@ public class DungeonLayer {
 		this.segments = new DungeonPiece[this.width][this.length];
 		DungeonLayerMap map = new DungeonLayerMap(this.width, this.length);
 		Position2D end = map.getRandomFreePosition(rand);
+		DungeonCrawl.LOGGER.info("Start mark : " + map.markPositionAsOccupied(start));
 		this.start = start;
 		this.end = end;
 		// DungeonCrawl.LOGGER.debug("Start is at (" + start.x + "/" + start.z + ") and
@@ -75,8 +76,8 @@ public class DungeonLayer {
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);
 			if (this.segments[additions[i].x][additions[i].z] != null) {
-				DungeonCrawl.LOGGER
-						.info("Placing a room into a corridor at (" + additions[i].x + " / " + additions[i].z + " )");
+				DungeonCrawl.LOGGER.info("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z
+						+ " ) " + " ( " + this.segments[additions[i].x][additions[i].z] + " )");
 				room.sides = this.segments[additions[i].x][additions[i].z].sides;
 				room.connectedSides = this.segments[additions[i].x][additions[i].z].connectedSides;
 			}

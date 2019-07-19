@@ -1,6 +1,7 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -15,7 +16,6 @@ public class DungeonLayerMap {
 		this.width = width;
 		this.length = length;
 		this.freePositions = new ArrayList<Position2D>();
-		;
 		for (int x = 0; x < width; x++)
 			for (int z = 0; z < length; z++)
 				freePositions.add(new Position2D(x, z));
@@ -25,6 +25,18 @@ public class DungeonLayerMap {
 		Position2D pos = freePositions.get(rand.nextInt(freePositions.size()));
 		freePositions.remove(pos);
 		return pos;
+	}
+
+	public boolean markPositionAsOccupied(Position2D pos) {
+		Iterator<Position2D> iterator = freePositions.iterator();
+		while (iterator.hasNext()) {
+			Position2D current = iterator.next();
+			if (pos.x == current.x && pos.z == current.z) {
+				iterator.remove();
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

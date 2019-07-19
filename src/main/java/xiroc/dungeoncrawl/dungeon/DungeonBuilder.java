@@ -10,6 +10,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.DungeonPieces.Stairs;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegment;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
@@ -39,8 +40,13 @@ public class DungeonBuilder {
 
 	public List<DungeonPiece> build() {
 		List<DungeonPiece> list = Lists.newArrayList();
-		for (int i = 0; i < layers.length; i++)
+		for (int i = 0; i < layers.length; i++) {
 			list.addAll(buildLayer(layers[i], i, startPos));
+			Stairs stairs = new Stairs(null, DungeonPieces.DEFAULT_NBT);
+			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16,
+					startPos.getZ() + layers[i].start.z * 8);
+			list.add(stairs);
+		}
 		return list;
 	}
 

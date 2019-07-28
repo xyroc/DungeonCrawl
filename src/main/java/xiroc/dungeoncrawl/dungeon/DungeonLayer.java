@@ -43,8 +43,7 @@ public class DungeonLayer {
 		Position2D end = map.getRandomFreePosition(rand);
 		this.start = start;
 		this.end = end;
-		DungeonCrawl.LOGGER
-				.debug("Start is at (" + start.x + "/" + start.z + ") and End is at (" + end.x + "/" + end.z + ")");
+		DungeonCrawl.LOGGER.debug("Start is at (" + start.x + "/" + start.z + ") and End is at (" + end.x + "/" + end.z + ")");
 		this.segments[start.x][start.z] = new DungeonPieces.StairsBot(null, DungeonPieces.DEFAULT_NBT);
 		this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
 		DungeonCrawl.LOGGER.info("Building connection from start to end...");
@@ -76,8 +75,7 @@ public class DungeonLayer {
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);
 			if (this.segments[additions[i].x][additions[i].z] != null) {
-				DungeonCrawl.LOGGER.info("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z
-						+ " ) " + " ( " + this.segments[additions[i].x][additions[i].z] + " )");
+				DungeonCrawl.LOGGER.info("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z + " ) " + " ( " + this.segments[additions[i].x][additions[i].z] + " )");
 				room.sides = this.segments[additions[i].x][additions[i].z].sides;
 				room.connectedSides = this.segments[additions[i].x][additions[i].z].connectedSides;
 			}
@@ -107,18 +105,14 @@ public class DungeonLayer {
 			this.segments[startX][startZ].openSide(Direction.WEST);
 			for (int x = startX; x > (startZ == endZ ? endX + 1 : endX); x--) {
 				if (this.segments[x - 1][startZ] != null) {
-					this.segments[x - 1][startZ].openSide(
-							(x - 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.WEST); // ?
+					this.segments[x - 1][startZ].openSide((x - 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.WEST); // ?
 					this.segments[x - 1][startZ].openSide(Direction.EAST);
 					this.rotatePiece(this.segments[x - 1][startZ]);
 					continue;
 				}
 				DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 				corridor.setPosition(x - 1, startZ);
-				corridor.setRotation((x - 1) == endX
-						? RotationHelper.getRotationFromCW90DoubleFacing(
-								startZ > endZ ? Direction.NORTH : Direction.SOUTH, Direction.EAST)
-						: RotationHelper.getRotationFromFacing(Direction.WEST));
+				corridor.setRotation((x - 1) == endX ? RotationHelper.getRotationFromCW90DoubleFacing(startZ > endZ ? Direction.NORTH : Direction.SOUTH, Direction.EAST) : RotationHelper.getRotationFromFacing(Direction.WEST));
 				corridor.openSide((x - 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.WEST);
 				corridor.openSide(Direction.EAST);
 				this.segments[x - 1][startZ] = corridor;
@@ -134,9 +128,7 @@ public class DungeonLayer {
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 					corridor.setPosition(endX, z - 1);
-					corridor.setRotation((z - 1) == endZ
-							? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-							: RotationHelper.getRotationFromFacing(Direction.NORTH));
+					corridor.setRotation((z - 1) == endZ ? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST) : RotationHelper.getRotationFromFacing(Direction.NORTH));
 					corridor.openSide(Direction.SOUTH);
 					corridor.openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH);
 					this.segments[endX][z - 1] = corridor;
@@ -152,9 +144,7 @@ public class DungeonLayer {
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 					corridor.setPosition(endX, z + 1);
-					corridor.setRotation((z + 1) == endZ
-							? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-							: RotationHelper.getRotationFromFacing(Direction.SOUTH));
+					corridor.setRotation((z + 1) == endZ ? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST) : RotationHelper.getRotationFromFacing(Direction.SOUTH));
 					corridor.openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z + 1] = corridor;
@@ -165,18 +155,14 @@ public class DungeonLayer {
 			this.segments[startX][startZ].openSide(Direction.EAST);
 			for (int x = startX; x < (startZ == endZ ? endX - 1 : endX); x++) {
 				if (this.segments[x + 1][startZ] != null) {
-					this.segments[x + 1][startZ].openSide(
-							(x + 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.EAST); // ?
+					this.segments[x + 1][startZ].openSide((x + 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.EAST); // ?
 					this.segments[x + 1][startZ].openSide(Direction.WEST);
 					this.rotatePiece(this.segments[x + 1][startZ]);
 					continue;
 				}
 				DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 				corridor.setPosition(x + 1, startZ);
-				corridor.setRotation((x + 1) == endX
-						? RotationHelper.getRotationFromCW90DoubleFacing(
-								startZ > endZ ? Direction.NORTH : Direction.SOUTH, Direction.WEST)
-						: RotationHelper.getRotationFromFacing(Direction.EAST));
+				corridor.setRotation((x + 1) == endX ? RotationHelper.getRotationFromCW90DoubleFacing(startZ > endZ ? Direction.NORTH : Direction.SOUTH, Direction.WEST) : RotationHelper.getRotationFromFacing(Direction.EAST));
 				corridor.openSide((x + 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.EAST);
 				corridor.openSide(Direction.WEST);
 				this.segments[x + 1][startZ] = corridor;
@@ -192,9 +178,7 @@ public class DungeonLayer {
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 					corridor.setPosition(endX, z - 1);
-					corridor.setRotation((z - 1) == endZ
-							? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-							: RotationHelper.getRotationFromFacing(Direction.NORTH));
+					corridor.setRotation((z - 1) == endZ ? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST) : RotationHelper.getRotationFromFacing(Direction.NORTH));
 					corridor.openSide(Direction.SOUTH);
 					corridor.openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH);
 					this.segments[endX][z - 1] = corridor;
@@ -210,9 +194,7 @@ public class DungeonLayer {
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 					corridor.setPosition(endX, z + 1);
-					corridor.setRotation((z + 1) == endZ
-							? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-							: RotationHelper.getRotationFromFacing(Direction.SOUTH));
+					corridor.setRotation((z + 1) == endZ ? RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST) : RotationHelper.getRotationFromFacing(Direction.SOUTH));
 					corridor.openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z + 1] = corridor;
@@ -268,8 +250,7 @@ public class DungeonLayer {
 					this.segments[endX][z + 1] = corridor;
 				}
 			} else
-				DungeonCrawl.LOGGER.warn("Tried to build a connection between two positions but they were the same. ( "
-						+ startX + " / " + startZ + " ) -> ( " + endX + "/" + endZ + " )");
+				DungeonCrawl.LOGGER.warn("Tried to build a connection between two positions but they were the same. ( " + startX + " / " + startZ + " ) -> ( " + endX + "/" + endZ + " )");
 		}
 	}
 
@@ -285,12 +266,10 @@ public class DungeonLayer {
 			else if (piece.sides[1] && piece.sides[3])
 				piece.setRotation(RotationHelper.getRotationFromFacing(Direction.EAST));
 			else
-				piece.setRotation(RotationHelper.getRotationFromCW90DoubleFacing(DungeonPiece.getOpenSide(piece, 0),
-						DungeonPiece.getOpenSide(piece, 1)));
+				piece.setRotation(RotationHelper.getRotationFromCW90DoubleFacing(DungeonPiece.getOpenSide(piece, 0), DungeonPiece.getOpenSide(piece, 1)));
 			break;
 		case 3:
-			piece.setRotation(RotationHelper.getRotationFromTripleFacing(DungeonPiece.getOpenSide(piece, 0),
-					DungeonPiece.getOpenSide(piece, 1), DungeonPiece.getOpenSide(piece, 2)));
+			piece.setRotation(RotationHelper.getRotationFromTripleFacing(DungeonPiece.getOpenSide(piece, 0), DungeonPiece.getOpenSide(piece, 1), DungeonPiece.getOpenSide(piece, 2)));
 			break;
 		}
 	}
@@ -309,13 +288,11 @@ public class DungeonLayer {
 		int posZ = start.getZ();
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < length; z++) {
-				world.setBlockState(new BlockPos(posX + x, posY, posZ + z), segments[x][z] == null
-						? Blocks.AIR.getDefaultState()
-						: segments[x][z] instanceof DungeonPieces.StairsBot ? Blocks.GREEN_WOOL.getDefaultState()
-								: segments[x][z] instanceof DungeonPieces.StairsTop ? Blocks.RED_WOOL.getDefaultState()
-										: segments[x][z] instanceof DungeonPieces.Room
-												? Blocks.BLUE_WOOL.getDefaultState()
-												: Blocks.WHITE_WOOL.getDefaultState());
+				world.setBlockState(new BlockPos(posX + x, posY, posZ + z),
+						segments[x][z] == null ? Blocks.AIR.getDefaultState()
+								: segments[x][z] instanceof DungeonPieces.StairsBot ? Blocks.GREEN_WOOL.getDefaultState()
+										: segments[x][z] instanceof DungeonPieces.StairsTop ? Blocks.RED_WOOL.getDefaultState()
+												: segments[x][z] instanceof DungeonPieces.Room ? Blocks.BLUE_WOOL.getDefaultState() : Blocks.WHITE_WOOL.getDefaultState());
 			}
 		}
 	}

@@ -29,13 +29,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	// MineshaftStructure MineshaftPieces
 
 	public static final IStructurePieceType ROOM = IStructurePieceType.register(DungeonPieces.Room::new, "ROOM");
-	public static final IStructurePieceType CORRIDOR = IStructurePieceType.register(DungeonPieces.Corridor::new,
-			"CRRDR");
-	public static final IStructurePieceType STAIRSTOP = IStructurePieceType.register(DungeonPieces.StairsTop::new,
-			"STTP");
+	public static final IStructurePieceType CORRIDOR = IStructurePieceType.register(DungeonPieces.Corridor::new, "CRRDR");
+	public static final IStructurePieceType STAIRSTOP = IStructurePieceType.register(DungeonPieces.StairsTop::new, "STTP");
 	public static final IStructurePieceType STAIRS = IStructurePieceType.register(DungeonPieces.Stairs::new, "STRS");
-	public static final IStructurePieceType STAIRSBOT = IStructurePieceType.register(DungeonPieces.StairsBot::new,
-			"STBT");
+	public static final IStructurePieceType STAIRSBOT = IStructurePieceType.register(DungeonPieces.StairsBot::new, "STBT");
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
@@ -55,25 +52,46 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	}
 
 	@Override
-	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand,
-			BlockPos pos, NoFeatureConfig config) {
-		if (!worldIn.getWorldInfo().isMapFeaturesEnabled()) {
-			DungeonCrawl.LOGGER.info("no Map Features");
-			return false;
-		} else {
-			int i = pos.getX() >> 4;
-			int j = pos.getZ() >> 4;
-			int k = i << 4;
-			int l = j << 4;
+	public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+		/*
+		 * if (!worldIn.getWorldInfo().isMapFeaturesEnabled()) {
+		 * DungeonCrawl.LOGGER.info("no Map Features"); return false; } else { int i =
+		 * pos.getX() >> 4; int j = pos.getZ() >> 4; int k = i << 4; int l = j << 4;
+		 * ChunkPos chunkpos = new ChunkPos(pos.getX() / 16, pos.getZ() / 16); if
+		 * (hasStartAt(generator, rand, chunkpos.x, chunkpos.z)) { Dungeon.Start
+		 * structurestart = new Dungeon.Start(this, chunkpos.x, chunkpos.z,
+		 * worldIn.getBiome(pos), new MutableBoundingBox(0, 0, 0, 128, 128, 128), 0,
+		 * worldIn.getSeed()); structurestart.generateStructure(worldIn, rand, new
+		 * MutableBoundingBox(k, l, k + 15, l + 15), new ChunkPos(i, j)); } return true;
+		 * }
+		 */
+		if (worldIn.getWorldInfo().isMapFeaturesEnabled()) {
 			ChunkPos chunkpos = new ChunkPos(pos.getX() / 16, pos.getZ() / 16);
 			if (hasStartAt(generator, rand, chunkpos.x, chunkpos.z)) {
-				Dungeon.Start structurestart = new Dungeon.Start(this, chunkpos.x, chunkpos.z, worldIn.getBiome(pos),
-						new MutableBoundingBox(0, 0, 0, 128, 128, 128), 0, worldIn.getSeed());
-				structurestart.generateStructure(worldIn, rand, new MutableBoundingBox(k, l, k + 15, l + 15),
-						new ChunkPos(i, j));
+				long now = System.currentTimeMillis();
+				DungeonCrawl.LOGGER.info("Building dungeon logic...");
+				int i = pos.getX() >> 4;
+				int j = pos.getZ() >> 4;
+				MutableBoundingBox bound = new MutableBoundingBox(0, 0, 0, 0, 0, 0);
+				ChunkPos cpos = new ChunkPos(i, j);
+				List<DungeonPiece> pieces = Lists.newArrayList();
+				DungeonBuilder builder = new DungeonBuilder(worldIn, cpos, rand);
+				pieces.addAll(builder.build());
+				DungeonCrawl.LOGGER.info("Built dungeon logic ( " + (System.currentTimeMillis() - now) + " ms)");
+				synchronized (pieces) {
+					DungeonCrawl.LOGGER.info("Processing a total of " + pieces.size() + " pieces...");
+					Iterator<DungeonPiece> iterator = pieces.iterator();
+					while (iterator.hasNext()) {
+						DungeonPiece structurepiece = iterator.next();
+						structurepiece.addComponentParts(worldIn, rand, bound, cpos);
+						iterator.remove();
+					}
+					DungeonCrawl.LOGGER.info("-/-");
+				}
 			}
 			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -97,14 +115,12 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 		ChunkGenerator<?> generator;
 
-		public Start(Structure<?> p_i51341_1_, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn,
-				int referenceIn, long seed) {
+		public Start(Structure<?> p_i51341_1_, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn, int referenceIn, long seed) {
 			super(p_i51341_1_, chunkX, chunkZ, biomeIn, boundsIn, referenceIn, seed);
 		}
 
 		@Override
-		public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
-				Biome biomeIn) {
+		public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn) {
 			this.generator = generator;
 
 		}

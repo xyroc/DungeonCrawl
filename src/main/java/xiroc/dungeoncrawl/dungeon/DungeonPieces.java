@@ -34,10 +34,8 @@ public class DungeonPieces {
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
 	public static final CompoundNBT DEFAULT_LARGE_NBT = getDefaultLargeNBT();
 
-	private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder()
-			.add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE)
-			.add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE)
-			.add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();
+	private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE)
+			.add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();
 
 	public static CompoundNBT getDefaultNBT() {
 		CompoundNBT nbt = new CompoundNBT();
@@ -80,8 +78,7 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			return false;
 		}
 
@@ -103,8 +100,7 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			// TODO build
 			return false;
 		}
@@ -133,8 +129,7 @@ public class DungeonPieces {
 			if (!piece.sides[0])
 				for (int x = 2; x < 6; x++)
 					for (int y = 2; y < 6; y++)
-						piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world,
-								piece.x + x, piece.y + y, piece.z);
+						piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + x, piece.y + y, piece.z);
 		}
 
 	}
@@ -146,8 +141,7 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.ROOM, sides, posX, posZ, connectedSides);
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
@@ -166,8 +160,7 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.CORRIDOR, sides, posX, posZ, connectedSides);
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
@@ -185,8 +178,7 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.END, sides, posX, posZ, connectedSides);
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
@@ -205,8 +197,7 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.STAIRS, sides, posX, posZ, connectedSides);
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
@@ -225,8 +216,7 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			DungeonSegment piece = new DungeonSegment(DungeonSegmentType.START, sides, posX, posZ, connectedSides);
 			DungeonSegmentModel model = DungeonBuilder.getModel(piece);
 			if (model == null)
@@ -377,8 +367,7 @@ public class DungeonPieces {
 			}
 		}
 
-		public void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme,
-				Rotation rotation) {
+		public void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, Rotation rotation) {
 			// DungeonCrawl.LOGGER.info(" (" + pos.getX() + " / " + pos.getY() + " / " +
 			// pos.getZ() + ")");
 			int fwb = 0;
@@ -392,18 +381,14 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme,
-										Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, Rotation.CLOCKWISE_90);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme,
-										Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, Rotation.CLOCKWISE_90);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-										Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, Rotation.CLOCKWISE_90);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y,
-									pos.getZ() + x);
+							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
 						}
 					}
 				}
@@ -416,18 +401,14 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme,
-										Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, Rotation.COUNTERCLOCKWISE_90);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme,
-										Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, Rotation.COUNTERCLOCKWISE_90);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-										Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, Rotation.COUNTERCLOCKWISE_90);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + z, pos.getY() + y,
-									pos.getZ() + model.width - x - 1);
+							setBlockState(state, world, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
 						}
 					}
 				}
@@ -440,18 +421,14 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme,
-										Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, Rotation.CLOCKWISE_180);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme,
-										Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, Rotation.CLOCKWISE_180);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-										Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, Rotation.CLOCKWISE_180);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y,
-									pos.getZ() + model.length - z - 1);
+							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
 						}
 					}
 				}
@@ -483,9 +460,7 @@ public class DungeonPieces {
 				if (piece.sides[i] && c++ == n)
 					return getDirectionFromInt(i);
 			}
-			DungeonCrawl.LOGGER.error("getOpenSide(" + piece + ", " + n
-					+ ") malfunctioned. This error did most likely occur due to an error in the mod. ("
-					+ piece.connectedSides + " open sides)");
+			DungeonCrawl.LOGGER.error("getOpenSide(" + piece + ", " + n + ") malfunctioned. This error did most likely occur due to an error in the mod. (" + piece.connectedSides + " open sides)");
 			return Direction.NORTH;
 		}
 

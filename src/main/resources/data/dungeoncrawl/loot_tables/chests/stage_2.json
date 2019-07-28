@@ -1,0 +1,262 @@
+{
+    "pools": [
+        {
+        	"name": "dungeon_chest_stage_2",
+        	"rolls": {
+        		"min": 12,
+        		"max": 16
+        	},
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:coal",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 2
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_ingot",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 4,
+                                "max": 19
+                            }
+                        }
+                    ],
+                    "weight": 14
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:gold_ingot",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 3,
+                                "max": 12
+                            }
+                        }
+                    ],
+                    "weight": 8
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:oak_planks",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:acacia_planks",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:jungle_planks",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:cobweb",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 16
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:bone",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 4,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:rotten_flesh",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 3,
+                                "max": 7
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:iron_sword",
+                	"weight": 3,
+                	"functions": [
+                		{
+                			"function": "enchant_with_levels",
+                			"levels": 10
+                		},
+                		{
+                			"function": "set_name",
+                			"name": "Refined Blade"
+                		}
+                		
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:diamond_sword",
+                	"weight": 1,
+                	"functions": [
+                		{
+                			"function": "enchant_randomly",
+                			"enchantments": [
+                				"sharpness"
+                			] 
+                		},
+                		{
+                			"function": "set_name",
+                			"name": "The Slayer"
+                		}
+                		
+                	]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_axe",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:golden_sword",
+                    "weight": 4
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:golden_sword",
+                	"weight": 4,
+                	"functions": [
+                		{
+                			"function": "enchant_randomly",
+                			"enchantments": [
+                				"fire_aspect"
+                			] 
+                		},
+                		{
+                			"function": "set_name",
+                			"name": "Doom"
+                		}
+                		
+                	]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:golden_axe",
+                    "weight": 2
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:saddle",
+                	"weight:": 2
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:golden_apple",
+                	"weight": 6,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 3
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:enchanted_golden_apple",
+            		"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:music_disc_13",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:music_disc_cat",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:name_tag",
+                	"weight": 2
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:book",
+                    "weight": 2,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": 15,
+                            "treasure": true
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

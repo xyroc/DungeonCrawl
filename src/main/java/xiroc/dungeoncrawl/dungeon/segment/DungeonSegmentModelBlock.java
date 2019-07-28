@@ -51,21 +51,18 @@ public class DungeonSegmentModelBlock {
 			return Blocks.LAVA.getDefaultState();
 		case IRON_BARS:
 			DungeonSegmentModelFourWayBlock fwb = (DungeonSegmentModelFourWayBlock) block;
-			return Blocks.IRON_BARS.getDefaultState().with(FourWayBlock.NORTH, fwb.north)
-					.with(FourWayBlock.EAST, fwb.east).with(FourWayBlock.SOUTH, fwb.south)
-					.with(FourWayBlock.WEST, fwb.west).with(FourWayBlock.WATERLOGGED, fwb.waterlogged);
+			return Blocks.IRON_BARS.getDefaultState().with(FourWayBlock.NORTH, fwb.north).with(FourWayBlock.EAST, fwb.east).with(FourWayBlock.SOUTH, fwb.south).with(FourWayBlock.WEST, fwb.west).with(FourWayBlock.WATERLOGGED,
+					fwb.waterlogged);
 		case CEILING:
 			return theme.ceiling.get();
 		case CEILING_STAIRS:
-			return theme.ceilingStairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF,
-					block.upsideDown ? Half.TOP : Half.BOTTOM);
+			return theme.ceilingStairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case CHEST_COMMON:
 			return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
 		case FLOOR:
 			return theme.floor.get();
 		case FLOOR_STAIRS:
-			return theme.floorStairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF,
-					block.upsideDown ? Half.TOP : Half.BOTTOM);
+			return theme.floorStairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case TORCH_DARK:
 			return theme.torchDark.get().with(HorizontalBlock.HORIZONTAL_FACING, block.facing);
 		case OTHER:
@@ -80,8 +77,7 @@ public class DungeonSegmentModelBlock {
 		case SPAWNER:
 			return BlockRegistry.SPAWNER;
 		case STAIRS:
-			return theme.stairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF,
-					block.upsideDown ? Half.TOP : Half.BOTTOM);
+			return theme.stairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case WALL:
 			return theme.wall.get();
 		case WALL_LOG:
@@ -92,10 +88,8 @@ public class DungeonSegmentModelBlock {
 			return Blocks.ANVIL.getDefaultState().with(AnvilBlock.FACING, block.facing);
 		default:
 			if (block instanceof DungeonSegmentModelTrapDoorBlock)
-				return theme.trapDoorDecoration.get()
-						.with(TrapDoorBlock.OPEN, ((DungeonSegmentModelTrapDoorBlock) block).open)
-						.with(TrapDoorBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM)
-						.with(HorizontalBlock.HORIZONTAL_FACING, block.facing);
+				return theme.trapDoorDecoration.get().with(TrapDoorBlock.OPEN, ((DungeonSegmentModelTrapDoorBlock) block).open).with(TrapDoorBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM).with(HorizontalBlock.HORIZONTAL_FACING,
+						block.facing);
 			return Blocks.AIR.getDefaultState();
 		}
 	}
@@ -115,20 +109,15 @@ public class DungeonSegmentModelBlock {
 		case CEILING:
 			return theme.ceiling.get();
 		case CEILING_STAIRS:
-			return theme.ceilingStairs.get()
-					.with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation))
-					.with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
+			return theme.ceilingStairs.get().with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation)).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case CHEST_COMMON:
 			return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
 		case FLOOR:
 			return theme.floor.get();
 		case FLOOR_STAIRS:
-			return theme.floorStairs.get()
-					.with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation))
-					.with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
+			return theme.floorStairs.get().with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation)).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case TORCH_DARK:
-			return theme.torchDark.get().with(HorizontalBlock.HORIZONTAL_FACING,
-					RotationHelper.translateDirection(block.facing, rotation));
+			return theme.torchDark.get().with(HorizontalBlock.HORIZONTAL_FACING, RotationHelper.translateDirection(block.facing, rotation));
 		case OTHER:
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
@@ -136,32 +125,24 @@ public class DungeonSegmentModelBlock {
 			if (i < 2)
 				return BlockRegistry.SPAWNER;
 			if (i == 5)
-				return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING,
-						RotationHelper.translateDirection(block.facing, rotation));
+				return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, RotationHelper.translateDirection(block.facing, rotation));
 			return theme.floor.get();
 		case SPAWNER:
 			return BlockRegistry.SPAWNER;
 		case STAIRS:
-			return theme.stairs.get()
-					.with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation))
-					.with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
+			return theme.stairs.get().with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation)).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case WALL:
 			return theme.wall.get();
 		case WALL_LOG:
 			return theme.wallLog.get().with(RotatedPillarBlock.AXIS, Direction.Axis.Y);
 		case BARREL:
-			return Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING,
-					RotationHelper.translateDirection(block.facing, rotation));
+			return Blocks.BARREL.getDefaultState().with(BarrelBlock.PROPERTY_FACING, RotationHelper.translateDirection(block.facing, rotation));
 		case ANVIL:
-			return Blocks.ANVIL.getDefaultState().with(AnvilBlock.FACING,
-					RotationHelper.translateDirection(block.facing, rotation));
+			return Blocks.ANVIL.getDefaultState().with(AnvilBlock.FACING, RotationHelper.translateDirection(block.facing, rotation));
 		default:
 			if (block instanceof DungeonSegmentModelTrapDoorBlock)
-				return theme.trapDoorDecoration.get()
-						.with(TrapDoorBlock.OPEN, ((DungeonSegmentModelTrapDoorBlock) block).open)
-						.with(TrapDoorBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM)
-						.with(HorizontalBlock.HORIZONTAL_FACING,
-								RotationHelper.translateDirection(block.facing, rotation));
+				return theme.trapDoorDecoration.get().with(TrapDoorBlock.OPEN, ((DungeonSegmentModelTrapDoorBlock) block).open).with(TrapDoorBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM).with(HorizontalBlock.HORIZONTAL_FACING,
+						RotationHelper.translateDirection(block.facing, rotation));
 			return Blocks.AIR.getDefaultState();
 		}
 	}

@@ -28,9 +28,8 @@ public class DungeonBuilder {
 	public DungeonBuilder(IWorld world, ChunkPos pos, Random rand) {
 		this.rand = rand;
 		this.start = new Position2D(rand.nextInt(16), rand.nextInt(16));
-		this.startPos = new BlockPos(pos.x * 16 + rand.nextInt(16),
-				world.getChunkProvider().getChunkGenerator().getGroundHeight(), pos.z * 16 + rand.nextInt(16));
-		this.layers = new DungeonLayer[world.getChunkProvider().getChunkGenerator().getSeaLevel() / 16];
+		this.startPos = new BlockPos(pos.x * 16 + rand.nextInt(16), world.getChunkProvider().getChunkGenerator().getGroundHeight() - 16, pos.z * 16 + rand.nextInt(16));
+		this.layers = new DungeonLayer[startPos.getY() / 16];
 		DungeonCrawl.LOGGER.info(this.layers.length + " layers");
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL);
@@ -43,8 +42,7 @@ public class DungeonBuilder {
 		for (int i = 0; i < layers.length; i++) {
 			list.addAll(buildLayer(layers[i], i, startPos));
 			Stairs stairs = new Stairs(null, DungeonPieces.DEFAULT_NBT);
-			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16,
-					startPos.getZ() + layers[i].start.z * 8);
+			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16, startPos.getZ() + layers[i].start.z * 8);
 			list.add(stairs);
 		}
 		return list;
@@ -55,8 +53,7 @@ public class DungeonBuilder {
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {
 				if (layer.segments[x][z] != null) {
-					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16,
-							startPos.getZ() + z * 8);
+					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16, startPos.getZ() + z * 8);
 					list.add(layer.segments[x][z]);
 				}
 			}

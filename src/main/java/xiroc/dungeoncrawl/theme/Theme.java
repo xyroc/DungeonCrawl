@@ -7,22 +7,14 @@ import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class Theme {
 
-	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS,
-			() -> BlockRegistry.GRAVEL, () -> Blocks.OAK_STAIRS.getDefaultState(),
-			() -> BlockRegistry.STAIRS_STONE_BRICKS, () -> Blocks.OAK_STAIRS.getDefaultState(),
-			() -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(),
-			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
+	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.GRAVEL, () -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.STAIRS_STONE_BRICKS,
+			() -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
 
-	public static final Theme DEFAULT = new Theme(() -> BlockRegistry.STONE_BRICKS,
-			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
-			() -> Blocks.OAK_STAIRS.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
-			() -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG,
-			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
+	public static final Theme DEFAULT = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE, () -> Blocks.OAK_STAIRS.getDefaultState(),
+			BlockRegistry.STAIRS_STONE_COBBLESTONE, () -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
 
-	public static final Theme NETHER = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.NETHERRACK_NETHERBRICK,
-			BlockRegistry.NETHERRACK_NETHERBRICK_SOULSAND, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(),
-			BlockRegistry.STAIRS_NETHERBRICK_QUARTZ, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(),
-			() -> Blocks.QUARTZ_PILLAR.getDefaultState(), () -> Blocks.IRON_TRAPDOOR.getDefaultState(),
+	public static final Theme NETHER = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.NETHERRACK_NETHERBRICK, BlockRegistry.NETHERRACK_NETHERBRICK_SOULSAND, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(),
+			BlockRegistry.STAIRS_NETHERBRICK_QUARTZ, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(), () -> Blocks.QUARTZ_PILLAR.getDefaultState(), () -> Blocks.IRON_TRAPDOOR.getDefaultState(),
 			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
 
 	public final IBlockStateProvider ceiling;
@@ -35,9 +27,8 @@ public class Theme {
 	public final IBlockStateProvider trapDoorDecoration;
 	public final IBlockStateProvider torchDark;
 
-	public Theme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor,
-			IBlockStateProvider stairs, IBlockStateProvider ceilingStairs, IBlockStateProvider floorStairs,
-			IBlockStateProvider wallLog, IBlockStateProvider trapDoorDecoration, IBlockStateProvider torchDark) {
+	public Theme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor, IBlockStateProvider stairs, IBlockStateProvider ceilingStairs, IBlockStateProvider floorStairs, IBlockStateProvider wallLog,
+			IBlockStateProvider trapDoorDecoration, IBlockStateProvider torchDark) {
 		this.ceiling = ceiling;
 		this.wall = wall;
 		this.wallLog = wallLog;
@@ -49,8 +40,7 @@ public class Theme {
 		this.torchDark = torchDark;
 	}
 
-	public Theme(BlockState ceiling, BlockState wall, BlockState floor, BlockState stairs, BlockState ceilingStairs,
-			BlockState floorStairs, BlockState wallLog, BlockState trapDoorDecoration, BlockState torchDark) {
+	public Theme(BlockState ceiling, BlockState wall, BlockState floor, BlockState stairs, BlockState ceilingStairs, BlockState floorStairs, BlockState wallLog, BlockState trapDoorDecoration, BlockState torchDark) {
 		this.ceiling = () -> ceiling;
 		this.wall = () -> wall;
 		this.wallLog = () -> wallLog;

@@ -32,9 +32,8 @@ public interface IBlockPlacementHandler {
 
 	public static IBlockPlacementHandler getHandler(Block block) {
 		IBlockPlacementHandler handler = handlers.get(block);
-		if (handler == null) {
+		if (handler == null)
 			return DEFAULT;
-		}
 		return handler;
 	}
 

@@ -10,6 +10,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.storage.loot.LootTables;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.Loot;
 
 public class Chest implements IBlockPlacementHandler {
 
@@ -22,11 +23,11 @@ public class Chest implements IBlockPlacementHandler {
 	public static ResourceLocation getLootTable(int lootLevel) {
 		switch (lootLevel) {
 		case 0:
-			return LootTables.CHESTS_SIMPLE_DUNGEON;
+			return Loot.STAGE_1;
 		case 1:
-			return LootTables.CHESTS_DESERT_PYRAMID;
+			return Loot.STAGE_2;
 		case 2:
-			return LootTables.CHESTS_NETHER_BRIDGE;
+			return Loot.STAGE_3;
 		case 3:
 			return LootTables.CHESTS_STRONGHOLD_CORRIDOR;
 		default:

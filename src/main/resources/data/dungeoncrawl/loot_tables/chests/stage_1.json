@@ -155,7 +155,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:iron_sword",
-                	"weight": 2,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "enchant_with_levels",

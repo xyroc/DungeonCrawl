@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.util;
 
-import java.util.Random;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
@@ -11,8 +10,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.DungeonLayer;
-import xiroc.dungeoncrawl.dungeon.DungeonLayerType;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 
@@ -33,16 +30,6 @@ public class DungeonSegmentTestHelper {
 		if (event.getEntityPlayer().isCreative() && event.getItemStack().getItem() == Items.STICK) {
 			if (event.getItemStack().getDisplayName().getString().equals("STONE_BRICKS")) {
 				event.getWorld().setBlockState(event.getPos(), BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED.get());
-			} else if (event.getItemStack().getDisplayName().getString().equals("DUNGEON")) {
-				DungeonCrawl.LOGGER.info("Building a test dungeon map...");
-				DungeonLayer layer = new DungeonLayer(DungeonLayerType.NORMAL);
-				layer.buildMap(new Random());
-				// layer.testBuildToWorld(event.getWorld(), event.getPos());
-			} else if (event.getItemStack().getDisplayName().getString().equals("TT_001")) {
-				DungeonLayer layer = new DungeonLayer(DungeonLayerType.NORMAL);
-				layer.buildMap(new Random());
-				layer.testBuildToWorld(event.getWorld(), event.getPos());
-				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {
 				DungeonBuilder builder = new DungeonBuilder(event.getWorld(), new ChunkPos(event.getPos()), event.getWorld().rand);
 				for (DungeonPiece piece : builder.build())

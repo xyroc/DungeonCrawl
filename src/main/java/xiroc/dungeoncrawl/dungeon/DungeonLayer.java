@@ -36,30 +36,16 @@ public class DungeonLayer {
 		this.length = length;
 	}
 
-	public void buildMap(Random rand) {
-		this.segments = new DungeonPiece[this.width][this.length];
-		DungeonLayerMap map = new DungeonLayerMap(this.width, this.length);
-		Position2D start = map.getRandomFreePosition(rand);
-		Position2D end = map.getRandomFreePosition(rand);
-		this.start = start;
-		this.end = end;
-		this.segments[start.x][start.z] = new DungeonPieces.StairsBot(null, DungeonPieces.DEFAULT_NBT);
-		this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
-		this.buildConnection(start, end);
-		this.extend(map, start, end, rand);
-	}
-
 	public void buildMap(Random rand, Position2D start, boolean noEnd) {
 		this.segments = new DungeonPiece[this.width][this.length];
 		DungeonLayerMap map = new DungeonLayerMap(this.width, this.length);
+		if (!map.markPositionAsOccupied(start))
+			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
 		Position2D end = map.getRandomFreePosition(rand);
-//		DungeonCrawl.LOGGER.info("Start mark : " + map.markPositionAsOccupied(start));
 		this.start = start;
 		this.end = end;
-		// DungeonCrawl.LOGGER.debug("Start is at (" + start.x + "/" + start.z + ") and
-		// End is at (" + end.x + "/" + end.z + ")");
 		this.segments[start.x][start.z] = new DungeonPieces.StairsBot(null, DungeonPieces.DEFAULT_NBT);
-		this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
+		this.segments[end.x][end.z] = noEnd ? new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT) : new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
 		this.buildConnection(start, end);
 		this.extend(map, start, end, rand);
 	}

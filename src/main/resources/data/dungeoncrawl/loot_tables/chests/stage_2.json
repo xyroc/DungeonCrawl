@@ -141,7 +141,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:iron_sword",
-                	"weight": 3,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "enchant_with_levels",
@@ -180,12 +180,12 @@
                 {
                     "type": "item",
                     "name": "minecraft:golden_sword",
-                    "weight": 4
+                    "weight": 1
                 },
                 {
                 	"type": "item",
                 	"name": "minecraft:golden_sword",
-                	"weight": 4,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "enchant_randomly",

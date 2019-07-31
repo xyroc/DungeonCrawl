@@ -39,7 +39,7 @@ public class DungeonSegmentModelBlock {
 		this.upsideDown = upsideDown;
 	}
 
-	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, long seed) {
+	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, Random rand) {
 		if (block == null || block.type == null)
 			return Blocks.CAVE_AIR.getDefaultState();
 		switch (block.type) {
@@ -70,7 +70,7 @@ public class DungeonSegmentModelBlock {
 		case OTHER:
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
-			int i = new Random(seed).nextInt(10);
+			int i = rand.nextInt(10);
 			if (i < 2)
 				return BlockRegistry.SPAWNER;
 			if (i == 5)
@@ -96,7 +96,7 @@ public class DungeonSegmentModelBlock {
 		}
 	}
 
-	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, long seed, Rotation rotation) {
+	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, Random rand, Rotation rotation) {
 		if (block == null || block.type == null)
 			return Blocks.CAVE_AIR.getDefaultState();
 		switch (block.type) {
@@ -109,7 +109,7 @@ public class DungeonSegmentModelBlock {
 		case LAVA:
 			return Blocks.LAVA.getDefaultState();
 		case IRON_BARS:
-			return RotationHelper.tanslateFourWayBlock(getBlockState(block, theme, seed), rotation);
+			return RotationHelper.tanslateFourWayBlock(getBlockState(block, theme, rand), rotation);
 		case CEILING:
 			return theme.ceiling.get();
 		case CEILING_STAIRS:
@@ -125,7 +125,7 @@ public class DungeonSegmentModelBlock {
 		case OTHER:
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
-			int i = new Random(seed).nextInt(10);
+			int i = rand.nextInt(10);
 			if (i < 2)
 				return BlockRegistry.SPAWNER;
 			if (i == 5)

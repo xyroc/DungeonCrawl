@@ -32,8 +32,14 @@ import xiroc.dungeoncrawl.util.RotationHelper;
 public class DungeonPieces {
 
 	/*
-	 * ID PIECE 0 Corridor 1 StairsBot 2 Stairs 3 StairsTop 5 Room 10 Entrance 11
-	 * EntranceBuilder 99 RoomLargePlaceholder
+	 * ID	PIECE 
+	 * 0	Corridor
+	 * 1	StairsBot
+	 * 2	Stairs
+	 * 3	StairsTop
+	 * 5	Room
+	 * 11	EntranceBuilder
+	 * 99	RoomLargePlaceholder
 	 */
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
@@ -166,11 +172,11 @@ public class DungeonPieces {
 						if (model.model[x][y][z] == null)
 							state = Blocks.AIR.getDefaultState();
 						else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-							state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed());
+							state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom());
 						else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-							state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed());
+							state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom());
 						else
-							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed());
+							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom());
 						if (state == null)
 							continue;
 						setBlockState(state, world, pos.getX() + x, pos.getY() + y, pos.getZ() + z);
@@ -193,11 +199,11 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed(), Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed(), Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed(), Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							if (state == null)
 								continue;
 							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
@@ -213,11 +219,11 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed(), Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed(), Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed(), Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							if (state == null)
 								continue;
 							setBlockState(state, world, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
@@ -233,11 +239,11 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed(), Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed(), Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed(), Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							if (state == null)
 								continue;
 							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
@@ -581,11 +587,11 @@ public class DungeonPieces {
 						if (model.model[x][y][z] == null)
 							state = Blocks.AIR.getDefaultState();
 						else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-							state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed());
+							state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom());
 						else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-							state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed());
+							state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom());
 						else
-							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed());
+							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom());
 						if (state == null)
 							continue;
 						setBlockState(state, world, pos.getX() + x, pos.getY() + y, pos.getZ() + z);
@@ -608,11 +614,11 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed(), Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed(), Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed(), Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							if (state == null)
 								continue;
 							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
@@ -628,11 +634,11 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed(), Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed(), Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed(), Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							if (state == null)
 								continue;
 							setBlockState(state, world, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
@@ -648,11 +654,11 @@ public class DungeonPieces {
 							if (model.model[x][y][z] == null)
 								state = Blocks.AIR.getDefaultState();
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
-								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getSeed(), Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
-								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getSeed(), Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getSeed(), Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							if (state == null)
 								continue;
 							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);

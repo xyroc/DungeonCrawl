@@ -46,7 +46,7 @@ public class DungeonBuilder {
 		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / " + startPos.getZ() + "), " + +this.layers.length + " layers");
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL);
-			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, false);
+			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i == layers.length - 1);
 		}
 	}
 

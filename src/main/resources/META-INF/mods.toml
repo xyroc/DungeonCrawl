@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[26,)" #mandatory
+loaderVersion="[27,)" #mandatory
 #issueTrackerURL="http://my.issue.tracker/" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
@@ -8,11 +8,9 @@ displayName="Dungeon Crawl" #mandatory
 #updateJSONURL="URL" #optional
 #displayURL="URL" #optional
 logoFile="logo.png" #optional
-credits="Idea by XIROC" #optional
+credits="Original Mod by greymerk (Roguelike Dungeons)" #optional
 authors="XIROC" #optional
-description='''
-Dungeons...
-'''
+description='''Dungeons...'''
 [[dependencies.dungeoncrawl]] #optional
     # the modid of the dependency
     modId="forge" #mandatory

@@ -39,12 +39,14 @@ public class DungeonSegmentModelBlock {
 		this.upsideDown = upsideDown;
 	}
 
-	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme) {
+	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, long seed) {
 		if (block == null || block.type == null)
 			return Blocks.CAVE_AIR.getDefaultState();
 		switch (block.type) {
 		case NONE:
 			return null;
+		case WOOD:
+			return Blocks.OAK_PLANKS.getDefaultState();
 		case WATER:
 			return Blocks.WATER.getDefaultState();
 		case LAVA:
@@ -68,7 +70,7 @@ public class DungeonSegmentModelBlock {
 		case OTHER:
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
-			int i = new Random().nextInt(10);
+			int i = new Random(seed).nextInt(10);
 			if (i < 2)
 				return BlockRegistry.SPAWNER;
 			if (i == 5)
@@ -94,18 +96,20 @@ public class DungeonSegmentModelBlock {
 		}
 	}
 
-	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, Rotation rotation) {
+	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, long seed, Rotation rotation) {
 		if (block == null || block.type == null)
 			return Blocks.CAVE_AIR.getDefaultState();
 		switch (block.type) {
 		case NONE:
 			return null;
+		case WOOD:
+			return Blocks.OAK_PLANKS.getDefaultState();
 		case WATER:
 			return Blocks.WATER.getDefaultState();
 		case LAVA:
 			return Blocks.LAVA.getDefaultState();
 		case IRON_BARS:
-			return RotationHelper.tanslateFourWayBlock(getBlockState(block, theme), rotation);
+			return RotationHelper.tanslateFourWayBlock(getBlockState(block, theme, seed), rotation);
 		case CEILING:
 			return theme.ceiling.get();
 		case CEILING_STAIRS:
@@ -121,7 +125,7 @@ public class DungeonSegmentModelBlock {
 		case OTHER:
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
-			int i = new Random().nextInt(10);
+			int i = new Random(seed).nextInt(10);
 			if (i < 2)
 				return BlockRegistry.SPAWNER;
 			if (i == 5)

@@ -6,8 +6,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class Spawner implements IBlockPlacementHandler {
@@ -15,7 +17,12 @@ public class Spawner implements IBlockPlacementHandler {
 	@Override
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel) {
 		world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 2);
-		((MobSpawnerTileEntity) world.getTileEntity(pos)).getSpawnerBaseLogic().setEntityType(getRandomEntityType(rand));
+		TileEntity tileentity = world.getTileEntity(pos);
+		if (tileentity instanceof MobSpawnerTileEntity) {
+			((MobSpawnerTileEntity) tileentity).getSpawnerBaseLogic().setEntityType(getRandomEntityType(rand));
+		} else {
+			DungeonCrawl.LOGGER.error("Failed to fetch mob spawner entity at ({}, {}, {})", pos.getX(), pos.getY(), pos.getZ());
+		}
 	}
 
 	public static EntityType<?> getRandomEntityType(Random rand) {

@@ -109,6 +109,8 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel STAIRS_BOTTOM;
 
 	public static DungeonSegmentModel ROOM;
+	
+	public static DungeonSegmentModel ENTRANCE;
 
 	public static void load(IResourceManager resourceManager) {
 		if (LOADED)
@@ -124,6 +126,7 @@ public class DungeonSegmentModelRegistry {
 		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager);
 		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager);
 		ROOM = loadFromFile("models/dungeon/room.json", resourceManager);
+		ENTRANCE = loadFromFile("models/dungeon/entrance.json", resourceManager);
 		LOADED = true;
 	}
 

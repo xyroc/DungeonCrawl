@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -15,10 +14,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.DungeonLayerType;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonSegmentTestHelper {
 
@@ -54,16 +50,16 @@ public class DungeonSegmentTestHelper {
 
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonCrawl.LOGGER.info("Building a dungeon model...");
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.STAIRS_TOP, event.getWorld(), event.getPos(), Theme.TEST);
+				DungeonCrawl.LOGGER.info("Not building a dungeon model at all...");
+//				DungeonSegmentModel.build(DungeonSegmentModelRegistry.STAIRS_TOP, event.getWorld(), event.getPos(), Theme.TEST);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
-				DungeonCrawl.LOGGER.info("Building a dungeon model...");
-				DungeonSegmentModel.buildRotated(DungeonSegmentModelRegistry.CORRIDOR_EW_TURN, event.getWorld(), event.getPos(), Theme.TEST, RotationHelper.getRotationFromCW90DoubleFacing(Direction.WEST, Direction.SOUTH));
+				DungeonCrawl.LOGGER.info("Not building a dungeon model at all...");
+//				DungeonSegmentModel.buildRotated(DungeonSegmentModelRegistry.CORRIDOR_EW_TURN, event.getWorld(), event.getPos(), Theme.TEST, RotationHelper.getRotationFromCW90DoubleFacing(Direction.WEST, Direction.SOUTH));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ")) {
 				if (event.getWorld().isRemote)
 					return;
 				DungeonCrawl.LOGGER.info("Reading a dungeon model...");
-				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 8, 8);
+				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 14, 8);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ2")) {
 				if (event.getWorld().isRemote)
 					return;

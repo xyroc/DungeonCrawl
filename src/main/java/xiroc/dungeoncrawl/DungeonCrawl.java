@@ -2,6 +2,7 @@ package xiroc.dungeoncrawl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,6 +12,7 @@ import com.google.gson.GsonBuilder;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ServerWorld;
+import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,9 +20,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -41,7 +43,8 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
+//		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
+		Feature.STRUCTURES.put(Dungeon.NAME.toLowerCase(Locale.ROOT), Dungeon.DUNGEON_FEATURE);
 		IBlockPlacementHandler.load();
 		BlockRegistry.load();
 	}

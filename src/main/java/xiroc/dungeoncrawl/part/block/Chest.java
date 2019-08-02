@@ -7,7 +7,6 @@ import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.storage.loot.LootTables;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Loot;
@@ -28,8 +27,6 @@ public class Chest implements IBlockPlacementHandler {
 			return Loot.STAGE_2;
 		case 2:
 			return Loot.STAGE_3;
-		case 3:
-			return LootTables.CHESTS_STRONGHOLD_CORRIDOR;
 		default:
 			DungeonCrawl.LOGGER.warn("Unknown Loot Level: " + lootLevel);
 			return null;

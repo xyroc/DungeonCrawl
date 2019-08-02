@@ -31,16 +31,14 @@ import xiroc.dungeoncrawl.util.RotationHelper;
 
 public class DungeonPieces {
 
-	/*
-	 * ID	PIECE 
-	 * 0	Corridor
-	 * 1	StairsBot
-	 * 2	Stairs
-	 * 3	StairsTop
-	 * 5	Room
-	 * 11	EntranceBuilder
-	 * 99	RoomLargePlaceholder
-	 */
+//	  ID 	 PIECE 
+//	   0	 Corridor 
+//	   1	 StairsBot 
+//	   2	 Stairs 
+//	   3 	 StairsTop 
+//	   5	 Room 
+//	  11	 EntranceBuilder
+//	  99	 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
 	public static final CompoundNBT DEFAULT_LARGE_NBT = getDefaultLargeNBT();
@@ -60,6 +58,7 @@ public class DungeonPieces {
 		nbt.putInt("posX", -1);
 		nbt.putInt("posZ", -1);
 		nbt.putInt("theme", 0);
+		nbt.putInt("stage", -1);
 		nbt.putInt("rotation", 0);
 		return nbt;
 	}
@@ -105,7 +104,7 @@ public class DungeonPieces {
 	public static class DungeonPieceLarge extends StructurePiece {
 
 		public Rotation rotation;
-		public int connectedSides, posX, posZ, theme, x, y, z;
+		public int connectedSides, posX, posZ, theme, x, y, z, stage;
 		public boolean[] sides;
 
 		public DungeonPieceLarge(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
@@ -149,20 +148,20 @@ public class DungeonPieces {
 			tagCompound.putInt("y", y);
 			tagCompound.putInt("z", z);
 			tagCompound.putInt("theme", theme);
+			tagCompound.putInt("stage", stage);
 			tagCompound.putInt("rotation", RotationHelper.getIntFromRotation(this.rotation));
 		}
 
-		public void setBlockState(BlockState state, IWorld world, int x, int y, int z) {
+		public void setBlockState(BlockState state, IWorld world, int x, int y, int z, int lootLevel) {
 			BlockPos pos = new BlockPos(this.getXWithOffset(x, z), this.getYWithOffset(y), this.getZWithOffset(x, z));
 			if (state == null)
 				return;
-			IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), 0); // TODO
-																														// lootLevel
+			IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), lootLevel); // TODO lootLevel
 			if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock()))
 				world.getChunk(pos).markBlockForPostprocessing(pos);
 		}
 
-		public void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme) {
+		public void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, int lootLevel) {
 			int fwb = 0;
 			int td = 0;
 			for (int x = 0; x < model.width; x++) {
@@ -179,15 +178,13 @@ public class DungeonPieces {
 							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom());
 						if (state == null)
 							continue;
-						setBlockState(state, world, pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+						setBlockState(state, world, pos.getX() + x, pos.getY() + y, pos.getZ() + z, lootLevel);
 					}
 				}
 			}
 		}
 
-		public void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, Rotation rotation) {
-			// DungeonCrawl.LOGGER.info(" (" + pos.getX() + " / " + pos.getY() + " / " +
-			// pos.getZ() + ")");
+		public void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, int lootLevel, Rotation rotation) {
 			int fwb = 0;
 			int td = 0;
 			switch (rotation) {
@@ -206,7 +203,7 @@ public class DungeonPieces {
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
+							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x, lootLevel);
 						}
 					}
 				}
@@ -226,7 +223,7 @@ public class DungeonPieces {
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
+							setBlockState(state, world, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1, lootLevel);
 						}
 					}
 				}
@@ -246,13 +243,13 @@ public class DungeonPieces {
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
+							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1, lootLevel);
 						}
 					}
 				}
 				break;
 			case NONE:
-				build(model, world, pos, theme);
+				build(model, world, pos, theme, lootLevel);
 				break;
 			default:
 				DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unknown rotation " + rotation);
@@ -309,7 +306,7 @@ public class DungeonPieces {
 			if (!piece.sides[0])
 				for (int x = 2; x < 6; x++)
 					for (int y = 2; y < 6; y++)
-						piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + x, piece.y + y, piece.z);
+						piece.setBlockState(BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE.get(), world, piece.x + x, piece.y + y, piece.z, 0);
 		}
 
 	}
@@ -325,7 +322,7 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this);
 			if (model == null)
 				return false;
-			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
+			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage);
 			addWalls(this, worldIn, Theme.get(theme));
 			return false;
 		}
@@ -348,7 +345,7 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this);
 			if (model == null)
 				return false;
-			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), getRotation());
+			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage, getRotation());
 			return true;
 		}
 
@@ -374,11 +371,18 @@ public class DungeonPieces {
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
 			int height = getGroudHeight(worldIn, x + 4, z + 4);
 			int ch = y;
+			Theme buildTheme = Theme.get(theme);
 			while (ch < height) {
-				build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), Theme.get(theme));
+				build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), buildTheme, stage);
+				for (int x1 = 0; x1 < 8; x1++)
+					for (int y1 = 0; y1 < 8; y1++)
+						setBlockState(buildTheme.wall.get(), worldIn, x + x1, ch + y1, z + 7, 0);
+				for (int z1 = 0; z1 < 8; z1++)
+					for (int y1 = 0; y1 < 8; y1++)
+						setBlockState(buildTheme.wall.get(), worldIn, x + 7, ch + y1, z + z1, 0);
 				ch += 8;
 			}
-			build(DungeonSegmentModelRegistry.ENTRANCE, worldIn, new BlockPos(x, ch, z), Theme.get(theme));
+			build(DungeonSegmentModelRegistry.ENTRANCE, worldIn, new BlockPos(x, ch, z), buildTheme, stage);
 			return false;
 		}
 
@@ -395,7 +399,7 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this);
 			if (model == null)
 				return false;
-			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
+			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage);
 			addWalls(this, worldIn, Theme.get(theme));
 			return true;
 		}
@@ -418,8 +422,14 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this);
 			if (model == null)
 				return false;
-			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
-			addWalls(this, worldIn, Theme.get(theme));
+			Theme buildTheme = Theme.get(theme);
+			build(model, worldIn, new BlockPos(x, y, z), buildTheme, stage);
+			for (int x1 = 0; x1 < 8; x1++)
+				for (int y1 = 0; y1 < 8; y1++)
+					setBlockState(buildTheme.wall.get(), worldIn, x + x1, y + y1, z + 7, 0);
+			for (int z1 = 0; z1 < 8; z1++)
+				for (int y1 = 0; y1 < 8; y1++)
+					setBlockState(buildTheme.wall.get(), worldIn, x + 7, y + y1, z + z1, 0);
 			return true;
 		}
 
@@ -446,7 +456,7 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this);
 			if (model == null)
 				return false;
-			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme));
+			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage);
 			addWalls(this, worldIn, Theme.get(theme));
 			return true;
 		}
@@ -461,7 +471,7 @@ public class DungeonPieces {
 	public static abstract class DungeonPiece extends StructurePiece {
 
 		public Rotation rotation;
-		public int connectedSides, posX, posZ, theme, x, y, z;
+		public int connectedSides, posX, posZ, theme, x, y, z, stage;
 		public boolean[] sides;
 
 		public DungeonPiece(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
@@ -480,6 +490,7 @@ public class DungeonPieces {
 			y = p_i51343_2_.getInt("y");
 			z = p_i51343_2_.getInt("z");
 			theme = p_i51343_2_.getInt("theme");
+			stage = p_i51343_2_.getInt("stage");
 			rotation = RotationHelper.getRotationFromInt(p_i51343_2_.getInt("rotation"));
 			this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
 		}
@@ -563,21 +574,21 @@ public class DungeonPieces {
 			tagCompound.putInt("x", x);
 			tagCompound.putInt("y", y);
 			tagCompound.putInt("z", z);
+			tagCompound.putInt("stage", stage);
 			tagCompound.putInt("theme", theme);
 			tagCompound.putInt("rotation", RotationHelper.getIntFromRotation(this.rotation));
 		}
 
-		public void setBlockState(BlockState state, IWorld world, int x, int y, int z) {
+		public void setBlockState(BlockState state, IWorld world, int x, int y, int z, int lootLevel) {
 			BlockPos pos = new BlockPos(x, y, z);
 			if (state == null)
 				return;
-//			DungeonCrawl.LOGGER.info("(" + pos.getX() + " / " + pos.getY() + " / " + pos.getZ() + ")");
-			IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), 0); // TODO lootLevel
+			IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), lootLevel);
 			if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock()))
 				world.getChunk(pos).markBlockForPostprocessing(pos);
 		}
 
-		public void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme) {
+		public void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, int lootLevel) {
 			int fwb = 0;
 			int td = 0;
 			for (int x = 0; x < model.width; x++) {
@@ -594,15 +605,13 @@ public class DungeonPieces {
 							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom());
 						if (state == null)
 							continue;
-						setBlockState(state, world, pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+						setBlockState(state, world, pos.getX() + x, pos.getY() + y, pos.getZ() + z, lootLevel);
 					}
 				}
 			}
 		}
 
-		public void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, Rotation rotation) {
-			// DungeonCrawl.LOGGER.info(" (" + pos.getX() + " / " + pos.getY() + " / " +
-			// pos.getZ() + ")");
+		public void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, int lootLevel, Rotation rotation) {
 			int fwb = 0;
 			int td = 0;
 			switch (rotation) {
@@ -621,7 +630,7 @@ public class DungeonPieces {
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_90);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
+							setBlockState(state, world, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x, lootLevel);
 						}
 					}
 				}
@@ -641,7 +650,7 @@ public class DungeonPieces {
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
+							setBlockState(state, world, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1, lootLevel);
 						}
 					}
 				}
@@ -661,13 +670,13 @@ public class DungeonPieces {
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), Rotation.CLOCKWISE_180);
 							if (state == null)
 								continue;
-							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
+							setBlockState(state, world, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1, lootLevel);
 						}
 					}
 				}
 				break;
 			case NONE:
-				build(model, world, pos, theme);
+				build(model, world, pos, theme, lootLevel);
 				break;
 			default:
 				DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unknown rotation " + rotation);
@@ -719,19 +728,19 @@ public class DungeonPieces {
 		if (!piece.sides[0])
 			for (int x = 2; x < 6; x++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z);
+					piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z, 0);
 		if (!piece.sides[1])
 			for (int z = 2; z < 6; z++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.wall.get(), world, piece.x + 7, piece.y + y, piece.z + z);
+					piece.setBlockState(theme.wall.get(), world, piece.x + 7, piece.y + y, piece.z + z, 0);
 		if (!piece.sides[2])
 			for (int x = 2; x < 6; x++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z + 7);
+					piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z + 7, 0);
 		if (!piece.sides[3])
 			for (int z = 2; z < 6; z++)
 				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.wall.get(), world, piece.x, piece.y + y, piece.z + z);
+					piece.setBlockState(theme.wall.get(), world, piece.x, piece.y + y, piece.z + z, 0);
 	}
 
 	public static int getGroudHeight(IWorld world, int x, int z) {

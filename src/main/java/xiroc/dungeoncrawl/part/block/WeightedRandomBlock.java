@@ -28,7 +28,6 @@ public class WeightedRandomBlock implements IRandom<BlockState>, IBlockStateProv
 		for (Tuple<Integer, BlockState> entry : values) {
 			float weight = (float) entry.getA() / (float) totalWeight;
 			map[i] = new TupleFloatBlock(weight + f, entry.getB());
-			// DungeonCrawl.LOGGER.debug("map#" + i + " -> " + map[i].getA());
 			f += weight;
 			i++;
 		}

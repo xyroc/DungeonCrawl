@@ -40,6 +40,7 @@ public class BlockRegistry {
 	public static final TupleIntBlock TIB_GRASS = new TupleIntBlock(1, GRASS);
 	public static final TupleIntBlock TIB_GRAVEL = new TupleIntBlock(2, GRAVEL);
 	public static final TupleIntBlock TIB_COBBLESTONE = new TupleIntBlock(2, COBBLESTONE);
+	public static final TupleIntBlock TIB_MOSSY_COBBLESTONE = new TupleIntBlock(2, Blocks.MOSSY_COBBLESTONE.getDefaultState());
 	public static final TupleIntBlock TIB_NETHERRACK = new TupleIntBlock(2, NETHERRACK);
 	public static final TupleIntBlock TIB_NETHER_BRICK = new TupleIntBlock(2, NETHER_BRICK);
 	public static final TupleIntBlock TIB_SOUL_SAND = new TupleIntBlock(1, SOUL_SAND);
@@ -76,7 +77,7 @@ public class BlockRegistry {
 		long time = System.currentTimeMillis();
 		DungeonCrawl.LOGGER.info("Calculating WeightedRandomBlocks");
 		STONE_BRICKS_NORMAL_MOSSY_CRACKED = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS });
-		STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS, TIB_COBBLESTONE });
+		STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS, TIB_COBBLESTONE, TIB_MOSSY_COBBLESTONE });
 		STONE_BRICKS_GRAVEL_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_GRAVEL, TIB_COBBLESTONE });
 		NETHERRACK_NETHERBRICK = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK });
 		NETHERRACK_NETHERBRICK_SOULSAND = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK, TIB_SOUL_SAND });

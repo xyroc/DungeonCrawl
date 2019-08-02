@@ -58,7 +58,7 @@ public class DungeonLayer {
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);
 			if (this.segments[additions[i].x][additions[i].z] != null) {
-				DungeonCrawl.LOGGER.info("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z + " ) " + " ( " + this.segments[additions[i].x][additions[i].z] + " )");
+				DungeonCrawl.LOGGER.info("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z + "). " + " Replaced piece: " + this.segments[additions[i].x][additions[i].z]);
 				room.sides = this.segments[additions[i].x][additions[i].z].sides;
 				room.connectedSides = this.segments[additions[i].x][additions[i].z].connectedSides;
 			}
@@ -88,7 +88,7 @@ public class DungeonLayer {
 			this.segments[startX][startZ].openSide(Direction.WEST);
 			for (int x = startX; x > (startZ == endZ ? endX + 1 : endX); x--) {
 				if (this.segments[x - 1][startZ] != null) {
-					this.segments[x - 1][startZ].openSide((x - 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.WEST); // ?
+					this.segments[x - 1][startZ].openSide((x - 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.WEST);
 					this.segments[x - 1][startZ].openSide(Direction.EAST);
 					this.rotatePiece(this.segments[x - 1][startZ]);
 					continue;
@@ -105,7 +105,7 @@ public class DungeonLayer {
 				for (int z = startZ; z > endZ + 1; z--) {
 					if (this.segments[endX][z - 1] != null) {
 						this.segments[endX][z - 1].openSide(Direction.SOUTH);
-						this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH); // changed
+						this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH);
 						this.rotatePiece(this.segments[endX][z - 1]);
 						continue;
 					}
@@ -138,7 +138,7 @@ public class DungeonLayer {
 			this.segments[startX][startZ].openSide(Direction.EAST);
 			for (int x = startX; x < (startZ == endZ ? endX - 1 : endX); x++) {
 				if (this.segments[x + 1][startZ] != null) {
-					this.segments[x + 1][startZ].openSide((x + 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.EAST); // ?
+					this.segments[x + 1][startZ].openSide((x + 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.EAST);
 					this.segments[x + 1][startZ].openSide(Direction.WEST);
 					this.rotatePiece(this.segments[x + 1][startZ]);
 					continue;
@@ -155,7 +155,7 @@ public class DungeonLayer {
 				for (int z = startZ; z > endZ + 1; z--) {
 					if (this.segments[endX][z - 1] != null) {
 						this.segments[endX][z - 1].openSide(Direction.SOUTH);
-						this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.EAST : Direction.NORTH); // changed
+						this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.EAST : Direction.NORTH);
 						this.rotatePiece(this.segments[endX][z - 1]);
 						continue;
 					}
@@ -170,7 +170,7 @@ public class DungeonLayer {
 				this.segments[endX][endZ].openSide(Direction.NORTH);
 				for (int z = startZ; z < endZ - 1; z++) {
 					if (this.segments[endX][z + 1] != null) {
-						this.segments[endX][z + 1].openSide((z + 1) == endZ ? Direction.EAST : Direction.SOUTH); // changed
+						this.segments[endX][z + 1].openSide((z + 1) == endZ ? Direction.EAST : Direction.SOUTH);
 						this.segments[endX][z + 1].openSide(Direction.NORTH);
 						this.rotatePiece(this.segments[endX][z + 1]);
 						continue;
@@ -191,20 +191,14 @@ public class DungeonLayer {
 				for (int z = startZ; z > endZ + 1; z--) {
 					if (this.segments[endX][z - 1] != null) {
 						this.segments[endX][z - 1].openSide(Direction.NORTH);
-						// this.segments[endX][z - 1].openSide((z - 1) == endZ ? Direction.WEST :
-						// Direction.SOUTH);
 						this.segments[endX][z - 1].openSide(Direction.SOUTH);
 						this.rotatePiece(this.segments[endX][z - 1]);
 						continue;
 					}
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 					corridor.setPosition(endX, z - 1);
-					// corridor.setRotation((z - 1) == endZ ?
-					// RotationHelper.getRotationFromCW90DoubleFacing(Direction.NORTH,
-					// Direction.WEST) : RotationHelper.getRotationFromFacing(Direction.NORTH));
 					corridor.setRotation(RotationHelper.getRotationFromFacing(Direction.NORTH));
 					corridor.openSide(Direction.SOUTH);
-					// corridor.openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH);
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z - 1] = corridor;
 				}
@@ -213,8 +207,6 @@ public class DungeonLayer {
 				this.segments[endX][endZ].openSide(Direction.NORTH);
 				for (int z = startZ; z < endZ - 1; z++) {
 					if (this.segments[endX][z + 1] != null) {
-						// this.segments[endX][z + 1].openSide((z + 1) == endZ ? Direction.WEST :
-						// Direction.SOUTH);
 						this.segments[endX][z + 1].openSide(Direction.SOUTH);
 						this.segments[endX][z + 1].openSide(Direction.NORTH);
 						this.rotatePiece(this.segments[endX][z + 1]);
@@ -223,11 +215,7 @@ public class DungeonLayer {
 					this.segments[endX][endZ].openSide(Direction.NORTH);
 					DungeonPiece corridor = new DungeonPieces.Corridor(null, DungeonPieces.DEFAULT_NBT);
 					corridor.setPosition(endX, z + 1);
-					// corridor.setRotation((z + 1) == endZ ?
-					// RotationHelper.getRotationFromCW90DoubleFacing(Direction.SOUTH,
-					// Direction.WEST) : RotationHelper.getRotationFromFacing(Direction.SOUTH));
 					corridor.setRotation(RotationHelper.getRotationFromFacing(Direction.SOUTH));
-					// corridor.openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
 					corridor.openSide(Direction.SOUTH);
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z + 1] = corridor;
@@ -237,7 +225,7 @@ public class DungeonLayer {
 		}
 	}
 
-	// TODO not approved yet
+	// not tested specifically, but seems to be working anyway :D
 	public void rotatePiece(DungeonPiece piece) {
 		switch (piece.connectedSides) {
 		case 1:
@@ -263,7 +251,7 @@ public class DungeonLayer {
 	}
 
 	/**
-	 * Test function
+	 * Test function: builds a dungeon layer in miniature form with wool for testing purposes (Size 16x1x16 Blocks)
 	 */
 	public void testBuildToWorld(World world, BlockPos start) {
 		int posX = start.getX();

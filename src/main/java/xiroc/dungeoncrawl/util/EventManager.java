@@ -7,6 +7,7 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.placement.NoPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -23,13 +24,18 @@ public class EventManager {
 		event.getRegistry().register(Dungeon.DUNGEON);
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
 		DungeonCrawl.LOGGER.info("Adding features and structures");
 		for (Biome biome : ForgeRegistries.BIOMES) {
-			DungeonCrawl.LOGGER.info("BIOME >> " + biome.getRegistryName());
-			biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, Biome.createDecoratedFeature(Dungeon.DUNGEON_FEATURE, NoFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
-			biome.addStructure(Dungeon.DUNGEON_FEATURE, NoFeatureConfig.NO_FEATURE_CONFIG);
+			if (!DungeonCrawl.BIOME_BLACKLIST.contains(biome.getRegistryName().toString())) {
+				DungeonCrawl.LOGGER.debug("Biome >> " + biome.getRegistryName());
+				biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, Biome.createDecoratedFeature(Dungeon.DUNGEON_FEATURE, NoFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
+				if (!DungeonCrawl.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())) {
+					DungeonCrawl.LOGGER.debug("Generation Biome >> " + biome.getRegistryName());
+					biome.addStructure(Dungeon.DUNGEON_FEATURE, NoFeatureConfig.NO_FEATURE_CONFIG);
+				}
+			}
 		}
 	}
 

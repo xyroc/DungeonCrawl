@@ -54,6 +54,8 @@ public class Theme {
 
 	public static Theme get(int theme) {
 		switch (theme) {
+		case -1:
+			return TEST;
 		case 0:
 			return DEFAULT;
 		case 1:

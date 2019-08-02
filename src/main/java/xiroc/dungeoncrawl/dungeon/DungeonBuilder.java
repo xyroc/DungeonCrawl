@@ -56,17 +56,20 @@ public class DungeonBuilder {
 			list.addAll(buildLayer(layers[i], i, startPos));
 			DungeonPiece stairs = i == 0 ? new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT) : new Stairs(null, DungeonPieces.DEFAULT_NBT);
 			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16, startPos.getZ() + layers[i].start.z * 8);
+			stairs.stage = 1;
 			list.add(stairs);
 		}
 		return list;
 	}
 
 	public List<DungeonPiece> buildLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
+		int stage = lyr > 2 ? 2 : lyr;
 		List<DungeonPiece> list = Lists.newArrayList();
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {
 				if (layer.segments[x][z] != null) {
 					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16, startPos.getZ() + z * 8);
+					layer.segments[x][z].stage = stage;
 					list.add(layer.segments[x][z]);
 				}
 			}

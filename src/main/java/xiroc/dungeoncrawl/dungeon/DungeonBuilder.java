@@ -60,7 +60,7 @@ public class DungeonBuilder {
 			list.addAll(buildLayer(layers[i], i, startPos));
 			DungeonPiece stairs = i == 0 ? new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT) : new Stairs(null, DungeonPieces.DEFAULT_NBT);
 			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16, startPos.getZ() + layers[i].start.z * 8);
-			stairs.stage = 1;
+			stairs.stage = 0;
 			list.add(stairs);
 		}
 		return list;

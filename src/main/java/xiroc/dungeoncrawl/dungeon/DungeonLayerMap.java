@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

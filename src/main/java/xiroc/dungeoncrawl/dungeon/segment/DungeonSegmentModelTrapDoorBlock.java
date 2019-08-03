@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.segment;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 

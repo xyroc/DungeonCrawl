@@ -1,5 +1,19 @@
 package xiroc.dungeoncrawl;
 
+/*
+GENRERAL LICENSE FOR DungeonCrawl v1.0
+
+(1) DungeonCrawl is the intellectual property of XYROC (otherwise known as XIROC1337). Distribution of the compiled mod on any other site than curseforge.com, minecraft.curseforge.com, xiroc.ovh or minecraftforum.net is strictly forbidden. Further, all sites included in the following list are NOT allowed to redistribute the mod or profit from it in any way:
+https://raw.githubusercontent.com/StopModReposts/Illegal-Mod-Sites/master/SITES.md
+Redistributing this mod on the above mentioned illegal sites is a violation of copyright.
+
+(2) Modpack creators are only allowed to include this mod in FREE-TO-PLAY modpacks. Including this mod in modpacks that require payment to become playable or accessible for the user is forbidden.
+
+(3) You are allowed to read, use and share the Source Code of this mod, for example to create similar projects. However, completely copying the mod or copying large parts of the source (= more than 20%) without the explicit approval of the mod author is forbidden.
+
+DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved
+ */
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,16 +55,18 @@ public class DungeonCrawl {
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	/**
-	 * Contains all biomes that should not generate dungeons at all. DO NOT PUT BIOME_OVERWORLD_BLACKLIST ENTRIES IN HERE!
+	 * Contains all biomes that should not generate dungeons at all. DO NOT PUT
+	 * BIOME_OVERWORLD_BLACKLIST ENTRIES IN HERE!
 	 */
 	public static List<String> BIOME_BLACKLIST = Lists.newArrayList("minecraft:the_end", "minecraft:nether", "minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_highlands", "minecraft:end_barrens", "minecraft:the_void");
 
 	/**
-	 * Contains biomes in the overworld where dungeons should not be generated. These biomes might contain small dungeon parts from neighbour biomes tho.
+	 * Contains biomes in the overworld where dungeons should not be generated.
+	 * These biomes might contain small dungeon parts from neighbour biomes tho.
 	 * Removed: river, frozen_river and beach
 	 */
-	public static List<String> BIOME_OVERWORLD_BLACKLIST = Lists.newArrayList("minecraft:ocean", "minecraft:deep_ocean", "minecraft:warm_ocean", "minecraft:lukewarm_ocean",
-			"minecraft:cold_ocean", "minecraft:deep_warm_ocean", "minecraft:deep_lukewarm_ocean", "minecraft:deep_cold_ocean", "minecraft:deep_frozen_ocean");
+	public static List<String> BIOME_OVERWORLD_BLACKLIST = Lists.newArrayList("minecraft:ocean", "minecraft:deep_ocean", "minecraft:warm_ocean", "minecraft:lukewarm_ocean", "minecraft:cold_ocean", "minecraft:deep_warm_ocean",
+			"minecraft:deep_lukewarm_ocean", "minecraft:deep_cold_ocean", "minecraft:deep_frozen_ocean");
 
 	public DungeonCrawl() {
 		LOGGER.info("Here we go!");

@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.Random;
 
 import net.minecraft.block.Blocks;
@@ -251,7 +255,8 @@ public class DungeonLayer {
 	}
 
 	/**
-	 * Test function: builds a dungeon layer in miniature form with wool for testing purposes (Size 16x1x16 Blocks)
+	 * Test function: builds a dungeon layer in miniature form with wool for testing
+	 * purposes (Size 16x1x16 Blocks)
 	 */
 	public void testBuildToWorld(World world, BlockPos start) {
 		int posX = start.getX();

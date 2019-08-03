@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.segment;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.io.IOException;
 
 import net.minecraft.resources.IResourceManager;
@@ -109,7 +113,7 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel STAIRS_BOTTOM;
 
 	public static DungeonSegmentModel ROOM;
-	
+
 	public static DungeonSegmentModel ENTRANCE;
 
 	public static void load(IResourceManager resourceManager) {

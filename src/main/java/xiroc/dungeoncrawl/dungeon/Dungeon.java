@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.Locale;
 import java.util.Random;
 import java.util.function.Function;
@@ -43,14 +47,14 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 	@Override
 	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
-		if(chunkPosX % 12 == 0 && chunkPosZ % 12 == 0) {
+		if (chunkPosX % 12 == 0 && chunkPosZ % 12 == 0) {
 			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 64, chunkPosZ * 16 + 64, 128)) {
 				if (!chunkGen.hasStructure(biome, DUNGEON_FEATURE)) {
 					return false;
 				}
 			}
 //			DungeonCrawl.LOGGER.debug("Rolling [" + chunkPosX + ", " + chunkPosZ + "]");
-			return rand.nextDouble() < 0.35;
+			return rand.nextDouble() < 0.25;
 		} else
 			return false;
 	}

@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.theme;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;

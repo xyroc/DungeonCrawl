@@ -105,8 +105,17 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel CORRIDOR_EW_TURN;
 	public static DungeonSegmentModel CORRIDOR_EW_OPEN;
 	public static DungeonSegmentModel CORRIDOR_EW_ALL_OPEN;
+	
 	public static DungeonSegmentModel CORRIDOR_EW_2;
+	public static DungeonSegmentModel CORRIDOR_EW_2_TURN;
+	public static DungeonSegmentModel CORRIDOR_EW_2_OPEN;
+	public static DungeonSegmentModel CORRIDOR_EW_2_ALL_OPEN;
+
 	public static DungeonSegmentModel CORRIDOR_EW_3;
+	public static DungeonSegmentModel CORRIDOR_EW_3_TURN;
+	public static DungeonSegmentModel CORRIDOR_EW_3_OPEN;
+	public static DungeonSegmentModel CORRIDOR_EW_3_ALL_OPEN;
+
 
 	public static DungeonSegmentModel STAIRS;
 	public static DungeonSegmentModel STAIRS_TOP;
@@ -125,7 +134,14 @@ public class DungeonSegmentModelRegistry {
 		CORRIDOR_EW_OPEN = loadFromFile("models/dungeon/corridor_ew_open.json", resourceManager);
 		CORRIDOR_EW_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_all_open.json", resourceManager);
 		CORRIDOR_EW_2 = loadFromFile("models/dungeon/corridor_ew_2.json", resourceManager);
+		CORRIDOR_EW_2_TURN = loadFromFile("models/dungeon/corridor_ew_2_turn.json", resourceManager);
+		CORRIDOR_EW_2_OPEN = loadFromFile("models/dungeon/corridor_ew_2_open.json", resourceManager);
+		CORRIDOR_EW_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_2_all_open.json", resourceManager);
 		CORRIDOR_EW_3 = loadFromFile("models/dungeon/corridor_ew_3.json", resourceManager);
+		CORRIDOR_EW_3_TURN = loadFromFile("models/dungeon/corridor_ew_3_turn.json", resourceManager);
+		CORRIDOR_EW_3_OPEN = loadFromFile("models/dungeon/corridor_ew_3_open.json", resourceManager);
+		CORRIDOR_EW_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_3_all_open.json", resourceManager);
+
 		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager);
 		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager);
 		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager);

@@ -8,15 +8,16 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.DungeonPieces;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
+import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonSegmentTestHelper {
 
@@ -41,22 +42,23 @@ public class DungeonSegmentTestHelper {
 					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null, new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
-				piece.setRealPosition(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
-				piece.theme = -1;
-				piece.addComponentParts(event.getWorld(), event.getWorld().rand, new MutableBoundingBox(), new ChunkPos(event.getPos().getX() >> 4, event.getPos().getZ() >> 4));
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN, event.getWorld(), event.getPos(), Theme.TEST, 0);
+//				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
+//				piece.setRealPosition(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
+//				piece.theme = -1;
+//				piece.addComponentParts(event.getWorld(), event.getWorld().rand, new MutableBoundingBox(), new ChunkPos(event.getPos().getX() >> 4, event.getPos().getZ() >> 4));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
 				DungeonCrawl.LOGGER.info("Not building a dungeon model at all...");
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ")) {
 				if (event.getWorld().isRemote)
 					return;
 				DungeonCrawl.LOGGER.info("Reading a dungeon model...");
-				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 14, 8);
+				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 8, 8);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ2")) {
 				if (event.getWorld().isRemote)
 					return;
 				DungeonCrawl.LOGGER.info("Reading a custom sized dungeon model...");
-				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 7, 8, 7);
+				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 7, 8);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_PRINT")) {
 				if (event.getWorld().isRemote)
 					return;

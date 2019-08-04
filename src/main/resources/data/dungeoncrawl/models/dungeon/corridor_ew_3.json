@@ -1,6 +1,6 @@
 {
   "width": 8,
-  "height": 8,
+  "height": 7,
   "length": 8,
   "model": [
     [
@@ -38,7 +38,10 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "FLOOR"
@@ -47,9 +50,6 @@
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "WALL"
         },
         {
@@ -65,18 +65,10 @@
           "facing": "NORTH",
           "upsideDown": false
         },
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
         null,
         null,
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -173,32 +165,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -240,16 +206,16 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "FLOOR"
         },
         {
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "WALL"
@@ -291,10 +257,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -309,10 +283,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -371,32 +353,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -438,7 +394,10 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "FLOOR"
@@ -447,9 +406,6 @@
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "WALL"
         },
         {
@@ -465,18 +421,10 @@
           "facing": "NORTH",
           "upsideDown": false
         },
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
         null,
         null,
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -573,32 +521,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -640,16 +562,16 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "FLOOR"
         },
         {
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "WALL"
@@ -691,10 +613,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -709,10 +639,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -771,32 +709,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -838,16 +750,16 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "FLOOR"
         },
         {
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "WALL"
@@ -889,10 +801,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -907,10 +827,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -969,32 +897,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -1036,7 +938,10 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "FLOOR"
@@ -1045,9 +950,6 @@
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "WALL"
         },
         {
@@ -1063,18 +965,10 @@
           "facing": "NORTH",
           "upsideDown": false
         },
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
         null,
         null,
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -1171,32 +1065,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -1238,16 +1106,16 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "FLOOR"
         },
         {
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "WALL"
@@ -1289,10 +1157,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -1307,10 +1183,18 @@
         {
           "type": "WALL"
         },
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "FWB_PLACEHOLDER",
+          "facing": "NORTH",
+          "upsideDown": false
+        },
         {
           "type": "WALL"
         },
@@ -1369,32 +1253,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -1436,7 +1294,10 @@
           "type": "WALL"
         },
         {
-          "type": "LAVA"
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "FLOOR"
@@ -1445,9 +1306,6 @@
           "type": "FLOOR"
         },
         {
-          "type": "LAVA"
-        },
-        {
           "type": "WALL"
         },
         {
@@ -1463,18 +1321,10 @@
           "facing": "NORTH",
           "upsideDown": false
         },
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
         null,
         null,
-        {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
-        },
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -1571,32 +1421,6 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "NONE"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         },
         {
           "type": "NONE"
@@ -1606,7 +1430,67 @@
   ],
   "fourWayBlocks": [
     {
+      "north": true,
+      "east": false,
+      "south": false,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
       "north": false,
+      "east": false,
+      "south": true,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
+      "east": false,
+      "south": false,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": false,
+      "east": false,
+      "south": true,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
+      "east": false,
+      "south": false,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": false,
+      "east": false,
+      "south": true,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
       "east": true,
       "south": false,
       "west": false,
@@ -1618,7 +1502,7 @@
     {
       "north": false,
       "east": true,
-      "south": false,
+      "south": true,
       "west": false,
       "waterlogged": false,
       "type": "IRON_BARS",
@@ -1629,7 +1513,7 @@
       "north": true,
       "east": true,
       "south": false,
-      "west": true,
+      "west": false,
       "waterlogged": false,
       "type": "IRON_BARS",
       "facing": "NORTH",
@@ -1639,27 +1523,7 @@
       "north": false,
       "east": true,
       "south": true,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
-      "east": true,
-      "south": false,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
-      "east": true,
-      "south": false,
-      "west": true,
+      "west": false,
       "waterlogged": false,
       "type": "IRON_BARS",
       "facing": "NORTH",
@@ -1669,7 +1533,7 @@
       "north": true,
       "east": true,
       "south": false,
-      "west": true,
+      "west": false,
       "waterlogged": false,
       "type": "IRON_BARS",
       "facing": "NORTH",
@@ -1679,7 +1543,7 @@
       "north": false,
       "east": true,
       "south": true,
-      "west": true,
+      "west": false,
       "waterlogged": false,
       "type": "IRON_BARS",
       "facing": "NORTH",
@@ -1687,66 +1551,6 @@
     },
     {
       "north": true,
-      "east": true,
-      "south": false,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
-      "east": true,
-      "south": true,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
-      "east": true,
-      "south": false,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
-      "east": true,
-      "south": false,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": true,
-      "east": true,
-      "south": false,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
-      "east": true,
-      "south": true,
-      "west": true,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
       "east": false,
       "south": false,
       "west": true,
@@ -1758,6 +1562,16 @@
     {
       "north": false,
       "east": false,
+      "south": true,
+      "west": true,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
+      "east": false,
       "south": false,
       "west": true,
       "waterlogged": false,
@@ -1765,14 +1579,96 @@
       "facing": "NORTH",
       "upsideDown": false
     },
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
+    {
+      "north": false,
+      "east": false,
+      "south": true,
+      "west": true,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
+      "east": false,
+      "south": false,
+      "west": true,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": false,
+      "east": false,
+      "south": true,
+      "west": true,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
+      "east": false,
+      "south": false,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": false,
+      "east": false,
+      "south": true,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
+      "east": false,
+      "south": false,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": false,
+      "east": false,
+      "south": true,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": true,
+      "east": false,
+      "south": false,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
+    {
+      "north": false,
+      "east": false,
+      "south": true,
+      "west": false,
+      "waterlogged": false,
+      "type": "IRON_BARS",
+      "facing": "NORTH",
+      "upsideDown": false
+    },
     null,
     null,
     null,

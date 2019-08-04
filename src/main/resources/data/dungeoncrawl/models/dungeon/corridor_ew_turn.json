@@ -1,6 +1,6 @@
 {
   "width": 8,
-  "height": 8,
+  "height": 7,
   "length": 8,
   "model": [
     [
@@ -181,32 +181,6 @@
         {
           "type": "NONE"
         }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        }
       ]
     ],
     [
@@ -381,32 +355,6 @@
         {
           "type": "WALL"
         }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        }
       ]
     ],
     [
@@ -453,7 +401,9 @@
           "type": "FLOOR"
         },
         {
-          "type": "FLOOR"
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "facing": "NORTH",
+          "upsideDown": false
         },
         {
           "type": "FLOOR"
@@ -583,32 +533,6 @@
         {
           "type": "WALL"
         }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        }
       ]
     ],
     [
@@ -768,32 +692,6 @@
         },
         {
           "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         }
       ]
     ],
@@ -954,32 +852,6 @@
         },
         {
           "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         }
       ]
     ],
@@ -1156,32 +1028,6 @@
         },
         {
           "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         }
       ]
     ],
@@ -1381,32 +1227,6 @@
         {
           "type": "WALL"
         }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        }
       ]
     ],
     [
@@ -1564,32 +1384,6 @@
         },
         {
           "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
-        },
-        {
-          "type": "NONE"
         }
       ],
       [

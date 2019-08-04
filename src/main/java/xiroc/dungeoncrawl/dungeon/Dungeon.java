@@ -40,6 +40,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public static final IStructurePieceType STAIRSTOP = IStructurePieceType.register(DungeonPieces.StairsTop::new, "DUNGEON_STTP");
 	public static final IStructurePieceType STAIRS = IStructurePieceType.register(DungeonPieces.Stairs::new, "DUNGEON_STRS");
 	public static final IStructurePieceType STAIRSBOT = IStructurePieceType.register(DungeonPieces.StairsBot::new, "DUNGEON_STBT");
+	public static final IStructurePieceType HOLE = IStructurePieceType.register(DungeonPieces.Hole::new, "DUNGEON_HOLE");
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);

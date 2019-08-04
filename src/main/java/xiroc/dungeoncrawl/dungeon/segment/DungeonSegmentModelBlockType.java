@@ -9,7 +9,8 @@ import net.minecraft.block.Blocks;
 
 public enum DungeonSegmentModelBlockType {
 
-	NONE, CEILING, CEILING_STAIRS, WALL, WALL_LOG, FLOOR, FLOOR_STAIRS, STAIRS, SPAWNER, CHEST_COMMON, RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, LAVA, WATER, IRON_BARS, ANVIL, BARREL, WOOD, OTHER, FWB_PLACEHOLDER;
+	NONE, CEILING, CEILING_STAIRS, WALL, WALL_LOG, FLOOR, FLOOR_STAIRS, STAIRS, SPAWNER, CHEST_COMMON, RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, LAVA, WATER, IRON_BARS, ANVIL, BARREL, WOOD, RAND_FLOOR_WATER, OTHER,
+	FWB_PLACEHOLDER;
 
 	public static DungeonSegmentModelBlockType get(Block block) {
 		if (block == Blocks.AIR)
@@ -22,6 +23,8 @@ public enum DungeonSegmentModelBlockType {
 			return WATER;
 		if (block == Blocks.LAVA)
 			return LAVA;
+		if (block == Blocks.CLAY)
+			return RAND_FLOOR_WATER;
 		if (block == Blocks.OAK_STAIRS)
 			return FLOOR_STAIRS;
 		if (block == Blocks.STONE_BRICK_STAIRS)

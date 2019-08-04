@@ -16,9 +16,11 @@ import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
+import xiroc.dungeoncrawl.dungeon.DungeonPieces.Hole;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.Stairs;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.segment.RandomDungeonSegmentModel;
 import xiroc.dungeoncrawl.util.Position2D;
 
 public class DungeonBuilder {
@@ -57,31 +59,53 @@ public class DungeonBuilder {
 	public List<DungeonPiece> build() {
 		List<DungeonPiece> list = Lists.newArrayList();
 		for (int i = 0; i < layers.length; i++) {
-			list.addAll(buildLayer(layers[i], i, startPos));
+			buildLayer(layers[i], i, startPos);
+//			list.addAll(buildLayer(layers[i], i, startPos));
 			DungeonPiece stairs = i == 0 ? new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT) : new Stairs(null, DungeonPieces.DEFAULT_NBT);
 			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16, startPos.getZ() + layers[i].start.z * 8);
 			stairs.stage = 0;
 			list.add(stairs);
 		}
+		postProcessDungeon(list, rand);
 		return list;
 	}
 
-	public List<DungeonPiece> buildLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
+	public void buildLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
 		int stage = lyr > 2 ? 2 : lyr;
-		List<DungeonPiece> list = Lists.newArrayList();
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {
 				if (layer.segments[x][z] != null) {
 					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16, startPos.getZ() + z * 8);
 					layer.segments[x][z].stage = stage;
-					list.add(layer.segments[x][z]);
+//					list.add(layer.segments[x][z]);
 				}
 			}
 		}
-		return list;
 	}
 
-	public static DungeonSegmentModel getModel(DungeonPiece piece) {
+	public void postProcessDungeon(List<DungeonPiece> list, Random rand) {
+		for (int i = 0; i < layers.length; i++) {
+			int stage = i > 2 ? 2 : i;
+			DungeonLayer layer = layers[i];
+			for (int x = 0; x < layer.width; x++) {
+				for (int z = 0; z < layer.length; z++) {
+					if (layer.segments[x][z] != null) {
+						if (layer.segments[x][z].getType() == 0 && (i < layers.length - 1 ? layers[i + 1].segments[x][z] == null : true) && rand.nextDouble() < 0.03) {
+							Hole hole = new Hole(null, DungeonPieces.DEFAULT_NBT);
+							hole.sides = layer.segments[x][z].sides;
+							hole.connectedSides = layer.segments[x][z].connectedSides;
+							hole.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 16, startPos.getZ() + z * 8);
+							hole.stage = stage;
+							layer.segments[x][z] = hole;
+						}
+						list.add(layer.segments[x][z]);
+					}
+				}
+			}
+		}
+	}
+
+	public static DungeonSegmentModel getModel(DungeonPiece piece, Random rand) {
 		boolean north = piece.sides[0];
 		boolean east = piece.sides[1];
 		boolean south = piece.sides[2];
@@ -91,18 +115,21 @@ public class DungeonBuilder {
 			switch (piece.connectedSides) {
 			case 2:
 				if (north && south || east && west)
-					return DungeonSegmentModelRegistry.CORRIDOR_EW;
-				return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
+					return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
+//					return DungeonSegmentModelRegistry.CORRIDOR_EW;
+//				return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
+				return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
 			case 3:
-				return DungeonSegmentModelRegistry.CORRIDOR_EW_OPEN;
+//				return DungeonSegmentModelRegistry.CORRIDOR_EW_OPEN;
+				return RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
 			case 4:
-				return DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN;
+//				return DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN;
+				return RandomDungeonSegmentModel.CORRIDOR_ALL_OPEN.roll(rand);
 			default:
 				return null;
 			}
 		case 1:
 			return DungeonSegmentModelRegistry.STAIRS_BOTTOM;
-
 		case 2:
 			return DungeonSegmentModelRegistry.STAIRS;
 		case 3:

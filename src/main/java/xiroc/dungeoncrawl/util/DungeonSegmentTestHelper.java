@@ -42,7 +42,7 @@ public class DungeonSegmentTestHelper {
 					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null, new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN, event.getWorld(), event.getPos(), Theme.TEST, 0);
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.HOLE, event.getWorld(), event.getPos(), Theme.TEST, 0);
 //				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
 //				piece.setRealPosition(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
 //				piece.theme = -1;
@@ -54,11 +54,15 @@ public class DungeonSegmentTestHelper {
 					return;
 				DungeonCrawl.LOGGER.info("Reading a dungeon model...");
 				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 8, 8);
-			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ2")) {
+			} else if (event.getItemStack().getDisplayName().getString().startsWith("MODEL_READ2")) {
 				if (event.getWorld().isRemote)
 					return;
-				DungeonCrawl.LOGGER.info("Reading a custom sized dungeon model...");
-				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 7, 8);
+				String[] s = event.getItemStack().getDisplayName().getString().split("_");
+				int width = Integer.parseInt(s[2]);
+				int height = Integer.parseInt(s[3]);
+				int length = Integer.parseInt(s[4]);
+				DungeonCrawl.LOGGER.info("Reading a custom sized dungeon model: " + width + "x" + height + "x" + length);
+				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), width, height, length);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_PRINT")) {
 				if (event.getWorld().isRemote)
 					return;

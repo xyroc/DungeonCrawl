@@ -40,8 +40,9 @@ public class DungeonPieces {
 //	   1	 StairsBot 
 //	   2	 Stairs 
 //	   3 	 StairsTop 
+//	   4	 Hole
 //	   5	 Room 
-//	  11	 EntranceBuilder
+//	  11	 EntranceBuilder 
 //	  99	 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
@@ -323,7 +324,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			DungeonSegmentModel model = DungeonBuilder.getModel(this);
+			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage);
@@ -346,7 +347,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			DungeonSegmentModel model = DungeonBuilder.getModel(this);
+			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
 			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage, getRotation());
@@ -356,6 +357,26 @@ public class DungeonPieces {
 		@Override
 		public int getType() {
 			return 0;
+		}
+
+	}
+
+	public static class Hole extends DungeonPiece {
+
+		public Hole(TemplateManager p_i51343_1_, CompoundNBT p_i51343_2_) {
+			super(Dungeon.HOLE, p_i51343_2_);
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
+			build(DungeonSegmentModelRegistry.HOLE, worldIn, new BlockPos(x, y - 15, z), Theme.get(theme), stage);
+			addWalls(this, worldIn, Theme.get(theme));
+			return false;
+		}
+
+		@Override
+		public int getType() {
+			return 4;
 		}
 
 	}
@@ -400,7 +421,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			DungeonSegmentModel model = DungeonBuilder.getModel(this);
+			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage);
@@ -423,7 +444,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			DungeonSegmentModel model = DungeonBuilder.getModel(this);
+			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
 			Theme buildTheme = Theme.get(theme);
@@ -457,7 +478,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			DungeonSegmentModel model = DungeonBuilder.getModel(this);
+			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage);

@@ -69,6 +69,13 @@ public class DungeonSegmentModelBlock {
 			return theme.floor.get();
 		case FLOOR_STAIRS:
 			return theme.floorStairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
+		case RAND_FLOOR_WATER:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return theme.floor.get();
+			case 1:
+				return Blocks.WATER.getDefaultState();
+			}
 		case TORCH_DARK:
 			return theme.torchDark.get().with(HorizontalBlock.HORIZONTAL_FACING, block.facing);
 		case OTHER:
@@ -124,6 +131,13 @@ public class DungeonSegmentModelBlock {
 			return theme.floor.get();
 		case FLOOR_STAIRS:
 			return theme.floorStairs.get().with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation)).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
+		case RAND_FLOOR_WATER:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return theme.floor.get();
+			case 1:
+				return Blocks.WATER.getDefaultState();
+			}
 		case TORCH_DARK:
 			return theme.torchDark.get().with(HorizontalBlock.HORIZONTAL_FACING, RotationHelper.translateDirection(block.facing, rotation));
 		case OTHER:

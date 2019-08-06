@@ -18,7 +18,7 @@ public class Theme {
 			BlockRegistry.STAIRS_STONE_COBBLESTONE, () -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
 
 	public static final Theme NETHER = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.NETHERRACK_NETHERBRICK, BlockRegistry.NETHERRACK_NETHERBRICK_SOULSAND, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(),
-			BlockRegistry.STAIRS_NETHERBRICK_QUARTZ, () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(), () -> Blocks.QUARTZ_PILLAR.getDefaultState(), () -> Blocks.IRON_TRAPDOOR.getDefaultState(),
+			() -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(), () -> Blocks.NETHER_BRICK_STAIRS.getDefaultState(), () -> Blocks.QUARTZ_PILLAR.getDefaultState(), () -> Blocks.IRON_TRAPDOOR.getDefaultState(),
 			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState());
 
 	public final IBlockStateProvider ceiling;

@@ -337,7 +337,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ]
     ],
@@ -495,7 +495,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ]
     ],
@@ -615,19 +615,13 @@
           "upsideDown": true
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "upsideDown": true
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "upsideDown": true
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "upsideDown": true
+          "type": "WALL"
         }
       ],
       [
@@ -653,7 +647,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ]
     ],
@@ -769,23 +763,17 @@
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "EAST",
+          "facing": "SOUTH",
           "upsideDown": true
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "upsideDown": true
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "upsideDown": true
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "upsideDown": true
+          "type": "WALL"
         }
       ],
       [
@@ -811,7 +799,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ]
     ],
@@ -969,7 +957,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ]
     ],
@@ -1139,7 +1127,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ]
     ],

@@ -1,15 +1,16 @@
 package xiroc.dungeoncrawl.util;
 
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FurnaceBlock;
+
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -22,16 +23,6 @@ import xiroc.dungeoncrawl.theme.Theme;
 public class DungeonSegmentTestHelper {
 
 	@SubscribeEvent
-	public static void onBlockPlaced(BlockEvent.EntityPlaceEvent event) {
-		DungeonCrawl.LOGGER.info("block!");
-		if (event.getState().getBlock() == Blocks.CHEST) {
-			BlockPos pos = event.getPos();
-			IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(event.getWorld(), Blocks.CHEST.getDefaultState(), pos, event.getWorld().getRandom(), 0);
-			// ((ChestTileEntity) event.getWorld().getTileEntity(pos)).fillWithLoot(null);
-		}
-	}
-
-	@SubscribeEvent
 	public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
 		if (event.getEntityPlayer().isCreative() && event.getItemStack().getItem() == Items.STICK) {
 			if (event.getItemStack().getDisplayName().getString().equals("STONE_BRICKS")) {
@@ -41,8 +32,10 @@ public class DungeonSegmentTestHelper {
 				for (DungeonPiece piece : builder.build())
 					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null, new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
+			} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
+				IBlockPlacementHandler.getHandler(Blocks.FURNACE).setupBlock(event.getWorld(), Blocks.FURNACE.getDefaultState().with(FurnaceBlock.LIT, true), event.getPos(), event.getWorld().rand, 0);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN, event.getWorld(), event.getPos(), Theme.TEST, 0);
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.CORRIDOR_TRAP, event.getWorld(), event.getPos(), Theme.TEST, 0);
 //				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
 //				piece.setRealPosition(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
 //				piece.theme = -1;
@@ -54,11 +47,15 @@ public class DungeonSegmentTestHelper {
 					return;
 				DungeonCrawl.LOGGER.info("Reading a dungeon model...");
 				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 8, 8);
-			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ2")) {
+			} else if (event.getItemStack().getDisplayName().getString().startsWith("MODEL_READ2")) {
 				if (event.getWorld().isRemote)
 					return;
-				DungeonCrawl.LOGGER.info("Reading a custom sized dungeon model...");
-				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 7, 8);
+				String[] s = event.getItemStack().getDisplayName().getString().split("_");
+				int width = Integer.parseInt(s[2]);
+				int height = Integer.parseInt(s[3]);
+				int length = Integer.parseInt(s[4]);
+				DungeonCrawl.LOGGER.info("Reading a custom sized dungeon model: " + width + "x" + height + "x" + length);
+				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), width, height, length);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_PRINT")) {
 				if (event.getWorld().isRemote)
 					return;

@@ -1,9 +1,6 @@
 package xiroc.dungeoncrawl.part.block;
 
-/*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
- */
-
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Tuple;
@@ -40,6 +37,8 @@ public class BlockRegistry {
 
 	public static final BlockState STAIRS_NETHER_BRICK = Blocks.NETHER_BRICK_STAIRS.getDefaultState();
 	public static final BlockState STAIRS_QUARTZ = Blocks.QUARTZ_STAIRS.getDefaultState();
+
+	public static final BlockState IRON_BARS_WATERLOGGED = Blocks.IRON_BARS.getDefaultState().with(BlockStateProperties.WATERLOGGED, true);
 
 	public static final TupleIntBlock TIB_GRASS = new TupleIntBlock(1, GRASS);
 	public static final TupleIntBlock TIB_GRAVEL = new TupleIntBlock(2, GRAVEL);

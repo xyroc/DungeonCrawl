@@ -11,11 +11,15 @@ import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FourWayBlock;
+import net.minecraft.block.FurnaceBlock;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TrapDoorBlock;
+import net.minecraft.block.TripWireBlock;
+import net.minecraft.block.TripWireHookBlock;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
@@ -69,8 +73,30 @@ public class DungeonSegmentModelBlock {
 			return theme.floor.get();
 		case FLOOR_STAIRS:
 			return theme.floorStairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
+		case RAND_FLOOR_WATER:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return theme.floor.get();
+			case 1:
+				return Blocks.WATER.getDefaultState();
+			}
+		case RAND_FLOOR_LAVA:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return theme.floor.get();
+			case 1:
+				return Blocks.LAVA.getDefaultState();
+			}
 		case TORCH_DARK:
 			return theme.torchDark.get().with(HorizontalBlock.HORIZONTAL_FACING, block.facing);
+		case FURNACE:
+			return Blocks.FURNACE.getDefaultState().with(FurnaceBlock.LIT, true).with(FurnaceBlock.FACING, block.facing);
+		case TRIPWIRE:
+			return Blocks.TRIPWIRE.getDefaultState().with(TripWireBlock.DISARMED, false);
+		case TRIPWIRE_HOOK:
+			return Blocks.TRIPWIRE_HOOK.getDefaultState().with(TripWireHookBlock.FACING, block.facing).with(TripWireHookBlock.ATTACHED, true);
+		case DISPENSER:
+			return Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, block.facing);
 		case OTHER:
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
@@ -80,8 +106,13 @@ public class DungeonSegmentModelBlock {
 			if (i == 5)
 				return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
 			return theme.floor.get();
-		case SPAWNER:
-			return BlockRegistry.SPAWNER;
+		case RAND_WALL_SPAWNER:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return BlockRegistry.SPAWNER;
+			case 1:
+				return theme.wall.get();
+			}
 		case STAIRS:
 			return theme.stairs.get().with(StairsBlock.FACING, block.facing).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case WALL:
@@ -96,6 +127,11 @@ public class DungeonSegmentModelBlock {
 			if (block instanceof DungeonSegmentModelTrapDoorBlock)
 				return theme.trapDoorDecoration.get().with(TrapDoorBlock.OPEN, ((DungeonSegmentModelTrapDoorBlock) block).open).with(TrapDoorBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM).with(HorizontalBlock.HORIZONTAL_FACING,
 						block.facing);
+//			if (block instanceof DungeonSegmentModelTripWireBlock) {
+//				DungeonSegmentModelTripWireBlock tripwire = (DungeonSegmentModelTripWireBlock) block;
+//				return Blocks.TRIPWIRE.getDefaultState().with(TripWireBlock.NORTH, tripwire.north).with(TripWireBlock.EAST, tripwire.east).with(TripWireBlock.SOUTH, tripwire.south).with(TripWireBlock.WEST, tripwire.west)
+//						.with(TripWireBlock.DISARMED, false);
+//			}
 			return Blocks.AIR.getDefaultState();
 		}
 	}
@@ -124,8 +160,30 @@ public class DungeonSegmentModelBlock {
 			return theme.floor.get();
 		case FLOOR_STAIRS:
 			return theme.floorStairs.get().with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation)).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
+		case RAND_FLOOR_WATER:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return theme.floor.get();
+			case 1:
+				return Blocks.WATER.getDefaultState();
+			}
+		case RAND_FLOOR_LAVA:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return theme.floor.get();
+			case 1:
+				return Blocks.LAVA.getDefaultState();
+			}
 		case TORCH_DARK:
 			return theme.torchDark.get().with(HorizontalBlock.HORIZONTAL_FACING, RotationHelper.translateDirection(block.facing, rotation));
+		case FURNACE:
+			return Blocks.FURNACE.getDefaultState().with(FurnaceBlock.LIT, true).with(FurnaceBlock.FACING, RotationHelper.translateDirection(block.facing, rotation));
+		case TRIPWIRE:
+			return Blocks.TRIPWIRE.getDefaultState().with(TripWireBlock.DISARMED, false);
+		case TRIPWIRE_HOOK:
+			return Blocks.TRIPWIRE_HOOK.getDefaultState().with(TripWireHookBlock.FACING, RotationHelper.translateDirection(block.facing, rotation)).with(TripWireHookBlock.ATTACHED, true);
+		case DISPENSER:
+			return Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, RotationHelper.translateDirection(block.facing, rotation));
 		case OTHER:
 			return null;
 		case RAND_FLOOR_CHESTCOMMON_SPAWNER:
@@ -135,8 +193,13 @@ public class DungeonSegmentModelBlock {
 			if (i == 5)
 				return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, RotationHelper.translateDirection(block.facing, rotation));
 			return theme.floor.get();
-		case SPAWNER:
-			return BlockRegistry.SPAWNER;
+		case RAND_WALL_SPAWNER:
+			switch (rand.nextInt(2)) {
+			case 0:
+				return BlockRegistry.SPAWNER;
+			case 1:
+				return theme.wall.get();
+			}
 		case STAIRS:
 			return theme.stairs.get().with(StairsBlock.FACING, RotationHelper.translateDirection(block.facing, rotation)).with(StairsBlock.HALF, block.upsideDown ? Half.TOP : Half.BOTTOM);
 		case WALL:

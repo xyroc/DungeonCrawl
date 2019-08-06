@@ -49,7 +49,7 @@ public class DungeonSegmentModelRegistry {
 	public static final DungeonSegmentModelBlock FLOOR_STAIRS_SOUTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.SOUTH, true);
 	public static final DungeonSegmentModelBlock FLOOR_STAIRS_WEST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.WEST, true);
 
-	public static final DungeonSegmentModelBlock SPAWNER = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.SPAWNER, null, false);
+	public static final DungeonSegmentModelBlock RND_WALL_SPAWNER = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_WALL_SPAWNER, null, false);
 	public static final DungeonSegmentModelBlock CHEST_COMMON_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.NORTH, false);
 	public static final DungeonSegmentModelBlock CHEST_COMMON_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.EAST, false);
 	public static final DungeonSegmentModelBlock CHEST_COMMON_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.SOUTH, false);
@@ -105,7 +105,7 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel CORRIDOR_EW_TURN;
 	public static DungeonSegmentModel CORRIDOR_EW_OPEN;
 	public static DungeonSegmentModel CORRIDOR_EW_ALL_OPEN;
-	
+
 	public static DungeonSegmentModel CORRIDOR_EW_2;
 	public static DungeonSegmentModel CORRIDOR_EW_2_TURN;
 	public static DungeonSegmentModel CORRIDOR_EW_2_OPEN;
@@ -116,6 +116,11 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel CORRIDOR_EW_3_OPEN;
 	public static DungeonSegmentModel CORRIDOR_EW_3_ALL_OPEN;
 
+	public static DungeonSegmentModel CORRIDOR_ROOM;
+	public static DungeonSegmentModel CORRIDOR_TRAP;
+
+	public static DungeonSegmentModel HOLE;
+	public static DungeonSegmentModel HOLE_LAVA;
 
 	public static DungeonSegmentModel STAIRS;
 	public static DungeonSegmentModel STAIRS_TOP;
@@ -141,6 +146,12 @@ public class DungeonSegmentModelRegistry {
 		CORRIDOR_EW_3_TURN = loadFromFile("models/dungeon/corridor_ew_3_turn.json", resourceManager);
 		CORRIDOR_EW_3_OPEN = loadFromFile("models/dungeon/corridor_ew_3_open.json", resourceManager);
 		CORRIDOR_EW_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_3_all_open.json", resourceManager);
+
+		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.json", resourceManager);
+		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.json", resourceManager);
+
+		HOLE = loadFromFile("models/dungeon/hole.json", resourceManager);
+		HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.json", resourceManager);
 
 		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager);
 		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager);

@@ -50,7 +50,7 @@ public class DungeonSegmentModel {
 	/*
 	 * Test functions
 	 */
-	
+
 	public static void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, int lootLevel) {
 		int fwb = 0;
 		int td = 0;

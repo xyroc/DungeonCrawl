@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.part.block.Barrel;
 import xiroc.dungeoncrawl.part.block.Chest;
+import xiroc.dungeoncrawl.part.block.Dispenser;
 import xiroc.dungeoncrawl.part.block.Furnace;
 import xiroc.dungeoncrawl.part.block.Spawner;
 
@@ -30,6 +31,7 @@ public interface IBlockPlacementHandler {
 		handlers.put(Blocks.CHEST, new Chest());
 		handlers.put(Blocks.FURNACE, new Furnace());
 		handlers.put(Blocks.SPAWNER, new Spawner());
+		handlers.put(Blocks.DISPENSER, new Dispenser());
 	}
 
 	public abstract void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel);

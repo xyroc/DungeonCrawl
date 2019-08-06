@@ -84,20 +84,34 @@ public class DungeonBuilder {
 	}
 
 	public void postProcessDungeon(List<DungeonPiece> list, Random rand) {
+		int lyrs = layers.length;
 		for (int i = 0; i < layers.length; i++) {
 			int stage = i > 2 ? 2 : i;
 			DungeonLayer layer = layers[i];
 			for (int x = 0; x < layer.width; x++) {
 				for (int z = 0; z < layer.length; z++) {
 					if (layer.segments[x][z] != null) {
-						if (layer.segments[x][z].getType() == 0 && (i < layers.length - 1 ? layers[i + 1].segments[x][z] == null : true) && rand.nextDouble() < 0.03) {
-							Hole hole = new Hole(null, DungeonPieces.DEFAULT_NBT);
-							hole.sides = layer.segments[x][z].sides;
-							hole.connectedSides = layer.segments[x][z].connectedSides;
-							hole.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 16, startPos.getZ() + z * 8);
-							hole.stage = stage;
-							layer.segments[x][z] = hole;
+						if (layer.segments[x][z].getType() == 0) {
+							if ((i < lyrs - 1 ? layers[i + 1].segments[x][z] == null : true) && rand.nextDouble() < 0.02) {
+								Hole hole = new Hole(null, DungeonPieces.DEFAULT_NBT);
+								hole.sides = layer.segments[x][z].sides;
+								hole.connectedSides = layer.segments[x][z].connectedSides;
+								hole.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 16, startPos.getZ() + z * 8);
+								hole.stage = stage;
+								hole.lava = stage == 2;
+								layer.segments[x][z] = hole;
+							} else if (layer.segments[x][z].connectedSides == 2 && rand.nextDouble() < 0.07) {
+								DungeonPiece feature = RandomFeature.CORRIDOR_FEATURE.roll(rand);
+								feature.sides = layer.segments[x][z].sides;
+								feature.connectedSides = layer.segments[x][z].connectedSides;
+								feature.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 16, startPos.getZ() + z * 8);
+								feature.stage = stage;
+								feature.rotation = layer.segments[x][z].rotation;
+								layer.segments[x][z] = feature;
+							}
 						}
+						if (i == lyrs - 1)
+							layer.segments[x][z].theme = 1;
 						list.add(layer.segments[x][z]);
 					}
 				}

@@ -41,7 +41,9 @@ public class DungeonPieces {
 //	   2	 Stairs 
 //	   3 	 StairsTop 
 //	   4	 Hole
-//	   5	 Room 
+//	   5	 Room
+//     6	 Corridor Trap
+//     7 	 Corridor Room
 //	  11	 EntranceBuilder 
 //	  99	 RoomLargePlaceholder
 
@@ -49,7 +51,8 @@ public class DungeonPieces {
 	public static final CompoundNBT DEFAULT_LARGE_NBT = getDefaultLargeNBT();
 
 	private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE)
-			.add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).add(Blocks.STONE_BRICK_STAIRS).add(Blocks.COBBLESTONE_STAIRS).build();
+			.add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).add(Blocks.STONE_BRICK_STAIRS).add(Blocks.COBBLESTONE_STAIRS)
+			.add(Blocks.NETHER_BRICK_STAIRS).add(Blocks.TRIPWIRE).build();
 
 	public static CompoundNBT getDefaultNBT() {
 		CompoundNBT nbt = new CompoundNBT();
@@ -361,15 +364,56 @@ public class DungeonPieces {
 
 	}
 
-	public static class Hole extends DungeonPiece {
+	public static class CorridorRoom extends DungeonPiece {
 
-		public Hole(TemplateManager p_i51343_1_, CompoundNBT p_i51343_2_) {
-			super(Dungeon.HOLE, p_i51343_2_);
+		public CorridorRoom(TemplateManager manager, CompoundNBT p_i51343_2_) {
+			super(Dungeon.CORRIDOR_ROOM, p_i51343_2_);
+		}
+
+		@Override
+		public int getType() {
+			return 7;
 		}
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
-			build(DungeonSegmentModelRegistry.HOLE, worldIn, new BlockPos(x, y - 15, z), Theme.get(theme), stage);
+			buildRotated(DungeonSegmentModelRegistry.CORRIDOR_ROOM, worldIn, new BlockPos(x, y - 6, z), Theme.get(theme), stage, getRotation());
+			return true;
+		}
+
+	}
+
+	public static class CorridorTrap extends DungeonPiece {
+
+		public CorridorTrap(TemplateManager manager, CompoundNBT p_i51343_2_) {
+			super(Dungeon.CORRIDOR_TRAP, p_i51343_2_);
+		}
+
+		@Override
+		public int getType() {
+			return 6;
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
+			buildRotated(DungeonSegmentModelRegistry.CORRIDOR_TRAP, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage, getRotation());
+			return true;
+		}
+
+	}
+
+	public static class Hole extends DungeonPiece {
+
+		boolean lava;
+
+		public Hole(TemplateManager p_i51343_1_, CompoundNBT p_i51343_2_) {
+			super(Dungeon.HOLE, p_i51343_2_);
+			lava = p_i51343_2_.getBoolean("lava");
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
+			build(lava ? DungeonSegmentModelRegistry.HOLE_LAVA : DungeonSegmentModelRegistry.HOLE, worldIn, new BlockPos(x, y - 15, z), Theme.get(theme), stage);
 			addWalls(this, worldIn, Theme.get(theme));
 			return false;
 		}
@@ -377,6 +421,12 @@ public class DungeonPieces {
 		@Override
 		public int getType() {
 			return 4;
+		}
+
+		@Override
+		public void readAdditional(CompoundNBT tagCompound) {
+			super.readAdditional(tagCompound);
+			tagCompound.putBoolean("lava", lava);
 		}
 
 	}

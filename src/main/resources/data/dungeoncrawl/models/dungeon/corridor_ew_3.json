@@ -394,7 +394,9 @@
           "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "facing": "SOUTH",
+          "upsideDown": false
         },
         {
           "type": "FLOOR"
@@ -947,7 +949,9 @@
           "type": "FLOOR"
         },
         {
-          "type": "FLOOR"
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "facing": "NORTH",
+          "upsideDown": false
         },
         {
           "type": "WALL"

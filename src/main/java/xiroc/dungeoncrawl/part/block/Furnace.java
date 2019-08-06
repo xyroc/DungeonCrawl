@@ -20,7 +20,7 @@ public class Furnace implements IBlockPlacementHandler {
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel) {
 		world.setBlockState(pos, state, 2);
 		FurnaceTileEntity tile = (FurnaceTileEntity) world.getTileEntity(pos);
-		tile.setInventorySlotContents(0, new ItemStack(Items.COAL, 1 + rand.nextInt(16)));
+		tile.setInventorySlotContents(1, new ItemStack(Items.COAL, 1 + rand.nextInt(16)));
 	}
 
 }

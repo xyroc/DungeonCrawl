@@ -1,9 +1,17 @@
 modLoader="javafml" #mandatory
+<<<<<<< HEAD
 loaderVersion="[28,)" #mandatory
 #issueTrackerURL="http://my.issue.tracker/" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
 version="1.1.0" #mandatory
+=======
+loaderVersion="[26,)" #mandatory
+#issueTrackerURL="http://my.issue.tracker/" #optional
+[[mods]] #mandatory
+modId="dungeoncrawl" #mandatory
+version="1.2.0" #mandatory
+>>>>>>> origin/1.14
 displayName="Dungeon Crawl" #mandatory
 #updateJSONURL="URL" #optional
 #displayURL="URL" #optional

@@ -50,14 +50,14 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 	@Override
 	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
-		if (chunkPosX % 12 == 0 && chunkPosZ % 12 == 0) {
+		if (chunkPosX % 14 == 0 && chunkPosZ % 14 == 0) {
 			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 64, chunkPosZ * 16 + 64, 128)) {
 				if (!chunkGen.hasStructure(biome, DUNGEON_FEATURE)) {
 					return false;
 				}
 			}
 //			DungeonCrawl.LOGGER.debug("Rolling [" + chunkPosX + ", " + chunkPosZ + "]");
-			return rand.nextDouble() < 0.25;
+			return rand.nextDouble() < 0.15;
 		} else
 			return false;
 	}

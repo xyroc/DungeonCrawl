@@ -43,4 +43,8 @@ public class EventManager {
 		}
 	}
 
+//	public static void onSpawn(EntityEvent.EntityConstructing event) {
+//		if ()
+//	}
+
 }

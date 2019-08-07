@@ -1,7 +1,6 @@
 package xiroc.dungeoncrawl.util;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.block.FurnaceBlock;
 
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
@@ -33,7 +32,7 @@ public class DungeonSegmentTestHelper {
 					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null, new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
-				IBlockPlacementHandler.getHandler(Blocks.FURNACE).setupBlock(event.getWorld(), Blocks.FURNACE.getDefaultState().with(FurnaceBlock.LIT, true), event.getPos(), event.getWorld().rand, 0);
+				IBlockPlacementHandler.getHandler(Blocks.SPAWNER).setupBlock(event.getWorld(), Blocks.SPAWNER.getDefaultState(), event.getPos(), event.getWorld().rand, 0);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
 				DungeonSegmentModel.build(DungeonSegmentModelRegistry.CORRIDOR_TRAP, event.getWorld(), event.getPos(), Theme.TEST, 0);
 //				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);

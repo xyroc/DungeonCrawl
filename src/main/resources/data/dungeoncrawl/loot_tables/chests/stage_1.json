@@ -47,7 +47,7 @@
                             }
                         }
                     ],
-                    "weight": 3
+                    "weight": 2
                 },
                 {
                     "type": "item",
@@ -61,7 +61,21 @@
                             }
                         }
                     ],
-                    "weight": 3
+                    "weight": 2
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:arrow",
+                	"weight": 4,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 2,
+                				"max": 5
+                			}
+                		}
+                	]
                 },
                 {
                     "type": "item",
@@ -117,7 +131,7 @@
                             }
                         }
                     ],
-                    "weight": 16
+                    "weight": 18
                 },
                 {
                     "type": "item",
@@ -131,7 +145,7 @@
                             }
                         }
                     ],
-                    "weight": 20
+                    "weight": 22
                 },
                 {
                     "type": "item",
@@ -145,7 +159,7 @@
                             }
                         }
                     ],
-                    "weight": 16
+                    "weight": 18
                 },
                 {
                     "type": "item",
@@ -191,7 +205,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:golden_apple",
-                	"weight": 4,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -237,7 +251,7 @@
                 {
                     "type": "item",
                     "name": "minecraft:torch",
-                    "weight": 3,
+                    "weight": 4,
                     "functions": [
                         {
                             "function": "set_count",
@@ -251,7 +265,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:brown_mushroom",
-                	"weight": 3,
+                	"weight": 5,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -265,7 +279,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:red_mushroom",
-                	"weight": 3,
+                	"weight": 5,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -279,7 +293,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:bowl",
-                	"weight": 2
+                	"weight": 3
                 },
                 {
                 	"type": "item",
@@ -304,7 +318,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:spider_eye",
-                	"weight": 4,
+                	"weight": 5,
                 	"functions": [
                 		{
                 			"function": "set_count",

@@ -30,10 +30,8 @@ public class RandomEquipment {
 			new ArmorSet("minecraft:chainmail_boots", "minecraft:chainmail_leggings", "minecraft:chainmail_chestplate", "minecraft:chainmail_helmet"),
 			new ArmorSet("minecraft:iron_boots", "minecraft:iron_leggings", "minecraft:iron_chestplate", "minecraft:iron_helmet") };
 
-//	public static final ArmorSet[] ARMOR_SETS = new ArmorSet[] { new ArmorSet("minecraft:leather_helmet", "minecraft:leather_chestplate", "minecraft:leather_leggings", "minecraft:leather_boots"),
-//			new ArmorSet("minecraft:golden_helmet", "minecraft:golden_chestplate", "minecraft:golden_leggings", "minecraft:golden_boots"),
-//			new ArmorSet("minecraft:chainmail_helmet", "minecraft:chainmail_chestplate", "minecraft:chainmail_leggings", "minecraft:chainmail_boots"),
-//			new ArmorSet("minecraft:iron_helmet", "minecraft:iron_chestplate", "minecraft:iron_leggings", "minecraft:iron_boots") };
+	public static final ResourceLocation[] BOW_ENCHANTMENTS = new ResourceLocation[] { new ResourceLocation("minecraft:power"), new ResourceLocation("minecraft:unbreaking"), new ResourceLocation("minecraft:punch"),
+			new ResourceLocation("minecraft:infinity") };
 
 	public static final ResourceLocation[] SWORD_ENCHANTMENTS = new ResourceLocation[] { new ResourceLocation("minecraft:sharpness"), new ResourceLocation("minecraft:unbreaking"), new ResourceLocation("minecraft:fire_aspect"),
 			new ResourceLocation("minecraft:knockback") };
@@ -46,11 +44,14 @@ public class RandomEquipment {
 			new ResourceLocation("minecraft:projectile_protection") };
 
 	public static final IRandom<ItemStack> BOW = (rand) -> {
-		return null;
+		ItemStack item = new ItemStack(getItem(BOWS[rand.nextInt(BOWS.length)]));
+		enchantBow(item, rand);
+		applyDamage(item, rand);
+		return item;
 	};
 
 	public static final IRandom<ItemStack> RANGED_WEAPON = (rand) -> {
-		return null;
+		return BOW.roll(rand);
 	};
 
 	public static final IRandom<ItemStack> SWORD = (rand) -> {
@@ -104,27 +105,38 @@ public class RandomEquipment {
 	public static void applyDamage(ItemStack item, Random rand) {
 		item.setDamage(rand.nextInt(item.getMaxDamage()));
 	}
+	
+	public static void enchantItem(ItemStack item, Random rand, Enchantment enchantment) {
+		int minLevel = enchantment.getMinLevel();
+		int maxLevel = enchantment.getMaxLevel();
+		item.addEnchantment(enchantment, minLevel < maxLevel ? minLevel + rand.nextInt(maxLevel - minLevel) : maxLevel);
+	}
+
+	public static void enchantBow(ItemStack item, Random rand) {
+		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(BOW_ENCHANTMENTS[rand.nextInt(BOW_ENCHANTMENTS.length)]);
+		enchantItem(item, rand, enchantment);
+	}
 
 	public static void enchantArmor(ItemStack item, Random rand) {
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(ARMOR_ENCHANTMENTS[rand.nextInt(ARMOR_ENCHANTMENTS.length)]);
-		item.addEnchantment(enchantment, enchantment.getMinLevel() + rand.nextInt(enchantment.getMaxLevel() - enchantment.getMinLevel()));
+		enchantItem(item, rand, enchantment);
 	}
 
 	public static void enchantSword(ItemStack item, Random rand) {
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(SWORD_ENCHANTMENTS[rand.nextInt(SWORD_ENCHANTMENTS.length)]);
-		item.addEnchantment(enchantment, enchantment.getMinLevel() + rand.nextInt(enchantment.getMaxLevel() - enchantment.getMinLevel()));
+		enchantItem(item, rand, enchantment);
 	}
 
 	public static void enchantPickaxe(ItemStack item, Random rand) {
 		enchantSword(item, rand);
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(PICKAXE_ENCHANTMENTS[rand.nextInt(PICKAXE_ENCHANTMENTS.length)]);
-		item.addEnchantment(enchantment, enchantment.getMinLevel() + rand.nextInt(enchantment.getMaxLevel() - enchantment.getMinLevel()));
+		enchantItem(item, rand, enchantment);
 	}
 
 	public static void enchantAxe(ItemStack item, Random rand) {
 		enchantSword(item, rand);
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(AXE_ENCHANTMENTS[rand.nextInt(AXE_ENCHANTMENTS.length)]);
-		item.addEnchantment(enchantment, enchantment.getMinLevel() + rand.nextInt(enchantment.getMaxLevel() - enchantment.getMinLevel()));
+		enchantItem(item, rand, enchantment);
 	}
 
 	public static Item getItem(ResourceLocation resourceLocation) {

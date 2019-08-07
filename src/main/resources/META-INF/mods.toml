@@ -3,7 +3,7 @@ loaderVersion="[26,)" #mandatory
 #issueTrackerURL="http://my.issue.tracker/" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
-version="1.1.1" #mandatory
+version="1.2.0" #mandatory
 displayName="Dungeon Crawl" #mandatory
 #updateJSONURL="URL" #optional
 #displayURL="URL" #optional

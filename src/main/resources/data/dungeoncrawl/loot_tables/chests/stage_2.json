@@ -33,7 +33,7 @@
                             }
                         }
                     ],
-                    "weight": 14
+                    "weight": 4
                 },
                 {
                     "type": "item",
@@ -47,7 +47,7 @@
                             }
                         }
                     ],
-                    "weight": 8
+                    "weight": 4
                 },
                 {
                     "type": "item",
@@ -103,7 +103,7 @@
                             }
                         }
                     ],
-                    "weight": 16
+                    "weight": 21
                 },
                 {
                     "type": "item",
@@ -117,7 +117,7 @@
                             }
                         }
                     ],
-                    "weight": 15
+                    "weight": 17
                 },
                 {
                     "type": "item",
@@ -131,7 +131,7 @@
                             }
                         }
                     ],
-                    "weight": 10
+                    "weight": 13
                 },
                 {
                     "type": "item",
@@ -208,12 +208,12 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:saddle",
-                	"weight:": 2
+                	"weight:": 1
                 },
                 {
                 	"type": "item",
                 	"name": "minecraft:golden_apple",
-                	"weight": 6,
+                	"weight": 4,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -224,6 +224,20 @@
                 		}
                 	]
                 },
+                {
+                	"type": "item",
+                	"name": "minecraft:arrow",
+                	"weight": 7,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 9
+                			}
+                		}
+                	]
+                }
                 {
                 	"type": "item",
                 	"name": "minecraft:enchanted_golden_apple",
@@ -257,9 +271,14 @@
                     ]
                 },
                 {
+                	"type": "item",
+                	"name": "minecraft:crossbow",
+                	"weight": 1
+                },
+                {
                     "type": "item",
                     "name": "minecraft:torch",
-                    "weight": 3,
+                    "weight": 5,
                     "functions": [
                         {
                             "function": "set_count",
@@ -273,7 +292,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:brown_mushroom",
-                	"weight": 3,
+                	"weight": 5,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -287,7 +306,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:red_mushroom",
-                	"weight": 3,
+                	"weight": 5,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -301,7 +320,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:bowl",
-                	"weight": 2
+                	"weight": 3
                 },
                 {
                 	"type": "item",

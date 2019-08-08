@@ -101,6 +101,11 @@ public class DungeonSegmentModelRegistry {
 	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, true, true);
 	public static final DungeonSegmentModelFourWayBlock IRON_BARS_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, false, true, true);
 
+	public static DungeonSegmentModel BRIDGE;
+	public static DungeonSegmentModel BRIDGE_TURN;
+	public static DungeonSegmentModel BRIDGE_SIDE;
+	public static DungeonSegmentModel BRIDGE_ALL_SIDES;
+	
 	public static DungeonSegmentModel CORRIDOR_EW;
 	public static DungeonSegmentModel CORRIDOR_EW_TURN;
 	public static DungeonSegmentModel CORRIDOR_EW_OPEN;
@@ -134,6 +139,11 @@ public class DungeonSegmentModelRegistry {
 		if (LOADED)
 			return;
 		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
+		BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager);
+		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager);
+		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.json", resourceManager);
+		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.json", resourceManager);
+		
 		CORRIDOR_EW = loadFromFile("models/dungeon/corridor_ew.json", resourceManager);
 		CORRIDOR_EW_TURN = loadFromFile("models/dungeon/corridor_ew_turn.json", resourceManager);
 		CORRIDOR_EW_OPEN = loadFromFile("models/dungeon/corridor_ew_open.json", resourceManager);

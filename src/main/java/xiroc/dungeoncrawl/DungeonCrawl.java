@@ -37,6 +37,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
@@ -48,7 +49,7 @@ public class DungeonCrawl {
 
 	public static final String MODID = "dungeoncrawl";
 	public static final String NAME = "Dungeon Crawl";
-	public static final String VERSION = "1.2.0";
+	public static final String VERSION = "1.3.0";
 
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -76,6 +77,7 @@ public class DungeonCrawl {
 		MinecraftForge.EVENT_BUS.register(new EventManager());
 		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
 		Feature.STRUCTURES.put(Dungeon.NAME.toLowerCase(Locale.ROOT), Dungeon.DUNGEON_FEATURE);
+		DungeonSegmentModelBlock.load();
 		IBlockPlacementHandler.load();
 		BlockRegistry.load();
 	}

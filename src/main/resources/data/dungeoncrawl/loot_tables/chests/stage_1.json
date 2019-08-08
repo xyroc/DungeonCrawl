@@ -190,7 +190,7 @@
                 {
                     "type": "item",
                     "name": "minecraft:golden_sword",
-                    "weight": 2
+                    "weight": 1
                 },
                 {
                     "type": "item",
@@ -293,7 +293,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:bowl",
-                	"weight": 3
+                	"weight": 5
                 },
                 {
                 	"type": "item",
@@ -313,7 +313,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:fermented_spider_eye",
-                	"weight": 1
+                	"weight": 2
                 },
                 {
                 	"type": "item",
@@ -360,18 +360,6 @@
                 	"functions": [
                 		{
                 			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:strong_turtle_master\"}"
-                		}
-                	
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:potion",
-                	"weight": 1,
-                	"functions": [
-                		{
-                			"function": "set_nbt",
                 			"tag": "{Potion:\"minecraft:water\"}"
                 		}
                 	
@@ -397,18 +385,6 @@
                 		{
                 			"function": "set_nbt",
                 			"tag": "{Potion:\"minecraft:healing\"}"
-                		}
-                	
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:potion",
-                	"weight": 1,
-                	"functions": [
-                		{
-                			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:strong_healing\"}"
                 		}
                 	
                 	]

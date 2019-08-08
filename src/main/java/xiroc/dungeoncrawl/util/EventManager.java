@@ -25,7 +25,7 @@ public class EventManager {
 	@SubscribeEvent
 	public static void onFeatureRegistry(RegistryEvent.Register<Feature<?>> event) {
 		DungeonCrawl.LOGGER.info("Registering features");
-		event.getRegistry().register(Dungeon.DUNGEON);
+//		event.getRegistry().register(Dungeon.DUNGEON);
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)

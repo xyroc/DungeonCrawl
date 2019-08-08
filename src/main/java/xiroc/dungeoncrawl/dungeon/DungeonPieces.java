@@ -350,6 +350,25 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
+			if (getAirBlocks(worldIn, x, y, z, 8, 8) > 8) {
+//				DungeonCrawl.LOGGER.info("Building a bridge piece at {} {} {}", x, y, z);
+				boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
+				switch (connectedSides) {
+				case 2:
+					if (sides[0] && sides[2] || sides[1] && sides[3])
+						buildRotated(DungeonSegmentModelRegistry.BRIDGE, worldIn, new BlockPos(ew ? x : x + 1, y - 1, ew ? z + 1 : z), Theme.get(theme), stage, rotation);
+					else
+						buildRotated(DungeonSegmentModelRegistry.BRIDGE_TURN, worldIn, new BlockPos(x, y - 1, z), Theme.get(theme), stage, rotation);
+					return true;
+				case 3:
+					buildRotated(DungeonSegmentModelRegistry.BRIDGE_SIDE, worldIn, new BlockPos(x, y - 1, z), Theme.get(theme), stage, rotation);
+					return true;
+				case 4:
+					buildRotated(DungeonSegmentModelRegistry.BRIDGE_ALL_SIDES, worldIn, new BlockPos(x, y - 1, z), Theme.get(theme), stage, rotation);
+					return true;
+				}
+				return true;
+			}
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
@@ -360,6 +379,18 @@ public class DungeonPieces {
 		@Override
 		public int getType() {
 			return 0;
+		}
+
+		public int getAirBlocks(IWorld worldIn, int x, int y, int z, int width, int length) {
+			int airBlocks = 0;
+			for (int i = x; i < x + width; i++) {
+				for (int j = z; j < z + length; j++) {
+					Block block = worldIn.getBlockState(new BlockPos(i, y, j)).getBlock();
+					if (block == Blocks.AIR || block == Blocks.CAVE_AIR)
+						airBlocks++;
+				}
+			}
+			return airBlocks;
 		}
 
 	}

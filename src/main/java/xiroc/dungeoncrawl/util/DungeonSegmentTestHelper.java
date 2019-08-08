@@ -34,7 +34,7 @@ public class DungeonSegmentTestHelper {
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
 				IBlockPlacementHandler.getHandler(Blocks.SPAWNER).setupBlock(event.getWorld(), Blocks.SPAWNER.getDefaultState(), event.getPos(), event.getWorld().rand, 0);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.CORRIDOR_TRAP, event.getWorld(), event.getPos(), Theme.TEST, 0);
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.BRIDGE_ALL_SIDES, event.getWorld(), event.getPos(), Theme.TEST , 0);
 //				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
 //				piece.setRealPosition(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
 //				piece.theme = -1;

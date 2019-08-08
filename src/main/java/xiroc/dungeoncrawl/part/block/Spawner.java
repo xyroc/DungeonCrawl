@@ -25,8 +25,12 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class Spawner implements IBlockPlacementHandler {
 
+	public static final EntityType<?>[] ENTITIES = new EntityType<?>[] { EntityType.ZOMBIE, EntityType.SKELETON, EntityType.ZOMBIE_VILLAGER, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.HUSK };
+	public static final EntityType<?>[] ENTITIES_RARE = new EntityType<?>[] { EntityType.SILVERFISH, EntityType.CREEPER, EntityType.WITCH, EntityType.STRAY };
+	public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[] { EntityType.BLAZE, EntityType.RAVAGER }; // Not used yet
+
 	public static int spawnerEntities = 5;
-	public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder().add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.ZOMBIE_VILLAGER).add(EntityType.HUSK).build();
+	public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder().add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.ZOMBIE_VILLAGER).add(EntityType.HUSK).add(EntityType.STRAY).build();
 
 	@Override
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int stage) {
@@ -43,7 +47,7 @@ public class Spawner implements IBlockPlacementHandler {
 					CompoundNBT nbt = new CompoundNBT();
 					CompoundNBT spawnData = new CompoundNBT();
 					spawnData.putString("id", type.getRegistryName().toString());
-					ItemStack[] armor = RandomEquipment.ARMOR.roll(new Random());
+					ItemStack[] armor = getArmor(rand, stage);
 					ListNBT armorList = new ListNBT();
 					for (ItemStack stack : armor)
 						armorList.add(stack.write(new CompoundNBT()));
@@ -67,22 +71,21 @@ public class Spawner implements IBlockPlacementHandler {
 		}
 	}
 
-	public static EntityType<?> getRandomEntityType(Random rand) {
-		switch (rand.nextInt(6)) {
+	public static ItemStack[] getArmor(Random rand, int stage) {
+		switch (stage) {
 		case 0:
-			return EntityType.ZOMBIE;
+			return RandomEquipment.ARMOR_1.roll(rand);
 		case 1:
-			return EntityType.SKELETON;
+			return RandomEquipment.ARMOR_2.roll(rand);
 		case 2:
-			return EntityType.SPIDER;
-		case 3:
-			return EntityType.CAVE_SPIDER;
-		case 4:
-			return EntityType.ZOMBIE_VILLAGER;
-		case 5:
-			return EntityType.HUSK;
+			return RandomEquipment.ARMOR_3.roll(rand);
+		default:
+			return RandomEquipment.ARMOR_1.roll(rand);
 		}
-		return null;
+	}
+
+	public static EntityType<?> getRandomEntityType(Random rand) {
+		return rand.nextFloat() < 0.04 ? ENTITIES_RARE[rand.nextInt(ENTITIES_RARE.length)] : ENTITIES[rand.nextInt(ENTITIES.length)];
 	}
 
 }

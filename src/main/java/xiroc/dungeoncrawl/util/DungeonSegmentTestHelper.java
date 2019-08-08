@@ -23,7 +23,7 @@ public class DungeonSegmentTestHelper {
 
 	@SubscribeEvent
 	public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
-		if (event.getEntityPlayer().isCreative() && event.getItemStack().getItem() == Items.STICK) {
+		if (event.getPlayer().isCreative() && event.getItemStack().getItem() == Items.STICK) {
 			if (event.getItemStack().getDisplayName().getString().equals("STONE_BRICKS")) {
 				event.getWorld().setBlockState(event.getPos(), BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED.get());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {

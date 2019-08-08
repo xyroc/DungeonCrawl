@@ -14,6 +14,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.util.IRandom;
 
 public class RandomEquipment {
+	
+	public static final int HIGHEST_STAGE = 2;
 
 	public static final int[] ARMOR_COLORS = new int[] { 11546150, 16701501, 3949738, 6192150, 16351261, 16383998, 15961002, 1908001, 8439583, 4673362, 1481884, 8991416, 3847130 };
 
@@ -43,8 +45,7 @@ public class RandomEquipment {
 
 	public static final ArmorSet[] ARMOR_SETS_RARE = new ArmorSet[] { new ArmorSet("minecraft:diamond_boots", "minecraft:diamond_leggings", "minecraft:diamond_chestplate", "minecraft:diamond_helmet") };
 
-	public static final ResourceLocation[] BOW_ENCHANTMENTS = new ResourceLocation[] { new ResourceLocation("minecraft:power"), new ResourceLocation("minecraft:unbreaking"), new ResourceLocation("minecraft:punch"),
-			new ResourceLocation("minecraft:infinity") };
+	public static final ResourceLocation[] BOW_ENCHANTMENTS = new ResourceLocation[] { new ResourceLocation("minecraft:power"), new ResourceLocation("minecraft:unbreaking"), new ResourceLocation("minecraft:punch") };
 
 	public static final ResourceLocation[] SWORD_ENCHANTMENTS = new ResourceLocation[] { new ResourceLocation("minecraft:sharpness"), new ResourceLocation("minecraft:unbreaking"), new ResourceLocation("minecraft:fire_aspect"),
 			new ResourceLocation("minecraft:knockback") };
@@ -58,46 +59,26 @@ public class RandomEquipment {
 
 	public static final IRandom<ItemStack> BOW = (rand) -> {
 		ItemStack item = new ItemStack(getItem(BOWS[rand.nextInt(BOWS.length)]));
-		enchantBow(item, rand);
 		applyDamage(item, rand);
 		return item;
 	};
 
-	public static final IRandom<ItemStack> RANGED_WEAPON = (rand) -> {
-		return BOW.roll(rand);
-	};
-
 	public static final IRandom<ItemStack> SWORD = (rand) -> {
 		ItemStack item = new ItemStack(getItem(rand.nextFloat() < 0.05 ? SWORDS_RARE[rand.nextInt(SWORDS_RARE.length)] : SWORDS[rand.nextInt(SWORDS.length)]));
-		enchantSword(item, rand);
 		applyDamage(item, rand);
 		return item;
 	};
 
 	public static final IRandom<ItemStack> PICKAXE = (rand) -> {
 		ItemStack item = new ItemStack(getItem(PICKAXES[rand.nextInt(PICKAXES.length)]));
-		enchantPickaxe(item, rand);
 		applyDamage(item, rand);
 		return item;
 	};
 
 	public static final IRandom<ItemStack> AXE = (rand) -> {
 		ItemStack item = new ItemStack(getItem(AXES[rand.nextInt(AXES.length)]));
-		enchantAxe(item, rand);
 		applyDamage(item, rand);
 		return item;
-	};
-
-	public static final IRandom<ItemStack> MELEE_WEAPON = (rand) -> {
-		switch (rand.nextInt(3)) {
-		case 0:
-			return SWORD.roll(rand);
-		case 1:
-			return PICKAXE.roll(rand);
-		case 2:
-			return AXE.roll(rand);
-		}
-		return null;
 	};
 
 	public static final IRandom<ItemStack[]> ARMOR_1 = (rand) -> {
@@ -106,7 +87,7 @@ public class RandomEquipment {
 		for (int i = 0; i < 4; i++) {
 			if (rand.nextFloat() < 0.5) {
 				ItemStack item = new ItemStack(getItem(armor.items[i]));
-				enchantArmor(item, rand);
+				enchantArmor(item, rand, 0.25);
 				applyDamage(item, rand);
 				if (COLORED_ARMOR.contains(armor.items[i].toString()))
 					setArmorColor(item, getRandomColor(rand));
@@ -123,7 +104,7 @@ public class RandomEquipment {
 		for (int i = 0; i < 4; i++) {
 			if (rand.nextFloat() < 0.5) {
 				ItemStack item = new ItemStack(getItem(armor.items[i]));
-				enchantArmor(item, rand);
+				enchantArmor(item, rand, 0.5);
 				applyDamage(item, rand);
 				if (COLORED_ARMOR.contains(armor.items[i].toString()))
 					setArmorColor(item, getRandomColor(rand));
@@ -140,7 +121,7 @@ public class RandomEquipment {
 		for (int i = 0; i < 4; i++) {
 			if (rand.nextFloat() < 0.5) {
 				ItemStack item = new ItemStack(getItem(armor.items[i]));
-				enchantArmor(item, rand);
+				enchantArmor(item, rand, 1);
 				applyDamage(item, rand);
 				if (COLORED_ARMOR.contains(armor.items[i].toString()))
 					setArmorColor(item, getRandomColor(rand));
@@ -155,37 +136,43 @@ public class RandomEquipment {
 		item.setDamage(rand.nextInt(item.getMaxDamage()));
 	}
 
-	public static void enchantItem(ItemStack item, Random rand, Enchantment enchantment) {
+	public static ItemStack enchantItem(ItemStack item, Random rand, Enchantment enchantment, double multiplier) {
 		int minLevel = enchantment.getMinLevel();
-		int maxLevel = enchantment.getMaxLevel();
-		item.addEnchantment(enchantment, minLevel < maxLevel ? minLevel + rand.nextInt(maxLevel - minLevel) : maxLevel);
+		int maxLevel = (int) ((double) enchantment.getMaxLevel() * multiplier);
+		item.addEnchantment(enchantment, minLevel < maxLevel ? minLevel + rand.nextInt(maxLevel - minLevel) : minLevel);
+		return item;
 	}
 
-	public static void enchantBow(ItemStack item, Random rand) {
+	public static ItemStack enchantBow(ItemStack item, Random rand, double multiplier) {
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(BOW_ENCHANTMENTS[rand.nextInt(BOW_ENCHANTMENTS.length)]);
-		enchantItem(item, rand, enchantment);
+		enchantItem(item, rand, enchantment, multiplier);
+		return item;
 	}
 
-	public static void enchantArmor(ItemStack item, Random rand) {
+	public static ItemStack enchantArmor(ItemStack item, Random rand, double multiplier) {
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(ARMOR_ENCHANTMENTS[rand.nextInt(ARMOR_ENCHANTMENTS.length)]);
-		enchantItem(item, rand, enchantment);
+		enchantItem(item, rand, enchantment, multiplier);
+		return item;
 	}
 
-	public static void enchantSword(ItemStack item, Random rand) {
+	public static ItemStack enchantSword(ItemStack item, Random rand, double multiplier) {
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(SWORD_ENCHANTMENTS[rand.nextInt(SWORD_ENCHANTMENTS.length)]);
-		enchantItem(item, rand, enchantment);
+		enchantItem(item, rand, enchantment, multiplier);
+		return item;
 	}
 
-	public static void enchantPickaxe(ItemStack item, Random rand) {
-		enchantSword(item, rand);
+	public static ItemStack enchantPickaxe(ItemStack item, Random rand, double multiplier) {
+		enchantSword(item, rand, multiplier);
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(PICKAXE_ENCHANTMENTS[rand.nextInt(PICKAXE_ENCHANTMENTS.length)]);
-		enchantItem(item, rand, enchantment);
+		enchantItem(item, rand, enchantment, multiplier);
+		return item;
 	}
 
-	public static void enchantAxe(ItemStack item, Random rand) {
-		enchantSword(item, rand);
+	public static ItemStack enchantAxe(ItemStack item, Random rand, double multiplier) {
+		enchantSword(item, rand, multiplier);
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(AXE_ENCHANTMENTS[rand.nextInt(AXE_ENCHANTMENTS.length)]);
-		enchantItem(item, rand, enchantment);
+		enchantItem(item, rand, enchantment, multiplier);
+		return item;
 	}
 
 	public static void setArmorColor(ItemStack item, int color) {
@@ -196,6 +183,26 @@ public class RandomEquipment {
 		display.putInt("color", color);
 		tag.put("display", display);
 		item.setTag(tag);
+	}
+
+	public static ItemStack getMeleeWeapon(Random rand, int stage) {
+		switch (rand.nextInt(3)) {
+		case 0:
+			return enchantSword(SWORD.roll(rand), rand, getStageMultiplier(stage));
+		case 1:
+			return enchantPickaxe(PICKAXE.roll(rand), rand, getStageMultiplier(stage));
+		case 2:
+			return enchantAxe(AXE.roll(rand), rand, getStageMultiplier(stage));
+		}
+		return null;
+	}
+
+	public static ItemStack getRangedWeapon(Random rand, int stage) {
+		return enchantBow(BOW.roll(rand), rand, getStageMultiplier(stage));
+	}
+
+	public static double getStageMultiplier(int stage) {
+		return 1D * Math.pow(0.5, HIGHEST_STAGE - stage);
 	}
 
 	public static int getRandomColor(Random rand) {

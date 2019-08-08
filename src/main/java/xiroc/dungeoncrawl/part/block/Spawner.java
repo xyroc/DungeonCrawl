@@ -24,13 +24,15 @@ import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class Spawner implements IBlockPlacementHandler {
+	
+	public static int SPAWNER_ENTITIES = 5;
 
 	public static final EntityType<?>[] ENTITIES = new EntityType<?>[] { EntityType.ZOMBIE, EntityType.SKELETON, EntityType.ZOMBIE_VILLAGER, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.HUSK };
-	public static final EntityType<?>[] ENTITIES_RARE = new EntityType<?>[] { EntityType.SILVERFISH, EntityType.CREEPER, EntityType.WITCH, EntityType.STRAY };
-	public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[] { EntityType.BLAZE, EntityType.RAVAGER }; // Not used yet
+	public static final EntityType<?>[] ENTITIES_RARE = new EntityType<?>[] { EntityType.SILVERFISH, EntityType.CREEPER, EntityType.WITCH, EntityType.STRAY, EntityType.ENDERMAN };
+	public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[] { EntityType.BLAZE, EntityType.RAVAGER }; // Unused
 
-	public static int spawnerEntities = 5;
 	public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder().add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.ZOMBIE_VILLAGER).add(EntityType.HUSK).add(EntityType.STRAY).build();
+	public static final Set<EntityType<?>> RANGED_INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder().add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
 	@Override
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int stage) {
@@ -43,7 +45,7 @@ public class Spawner implements IBlockPlacementHandler {
 			if (INVENTORY_ENTITIES.contains(type)) {
 				CompoundNBT spawnerNBT = tile.getSpawnerBaseLogic().write(new CompoundNBT());
 				ListNBT potentialSpawns = new ListNBT();
-				for (int i = 0; i < spawnerEntities; i++) {
+				for (int i = 0; i < SPAWNER_ENTITIES; i++) {
 					CompoundNBT nbt = new CompoundNBT();
 					CompoundNBT spawnData = new CompoundNBT();
 					spawnData.putString("id", type.getRegistryName().toString());
@@ -53,7 +55,7 @@ public class Spawner implements IBlockPlacementHandler {
 						armorList.add(stack.write(new CompoundNBT()));
 					spawnData.put("ArmorItems", armorList);
 					ListNBT handItems = new ListNBT();
-					ItemStack mainHand = type == EntityType.SKELETON ? RandomEquipment.RANGED_WEAPON.roll(rand) : RandomEquipment.MELEE_WEAPON.roll(new Random());
+					ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type) ? RandomEquipment.getRangedWeapon(new Random(), stage) : RandomEquipment.getMeleeWeapon(new Random(), stage);
 					handItems.add(mainHand.write(new CompoundNBT()));
 					handItems.add(ItemStack.EMPTY.write(new CompoundNBT()));
 					spawnData.put("HandItems", handItems);

@@ -56,8 +56,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 					return false;
 				}
 			}
-//			DungeonCrawl.LOGGER.debug("Rolling [" + chunkPosX + ", " + chunkPosZ + "]");
-			return rand.nextDouble() < 0.21;
+			return rand.nextDouble() < 0.24;
 		} else
 			return false;
 	}

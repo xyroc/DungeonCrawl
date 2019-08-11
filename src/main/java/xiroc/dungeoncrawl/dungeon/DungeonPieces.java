@@ -45,6 +45,7 @@ public class DungeonPieces {
 //     6	 Corridor Trap
 //     7 	 Corridor Room
 //	  11	 EntranceBuilder 
+//	  12	 Part
 //	  99	 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
@@ -319,6 +320,102 @@ public class DungeonPieces {
 
 	}
 
+	public static class Part extends DungeonPiece {
+
+		private int modelID, startX, startY, startZ, width, height, length;
+
+		public Part(TemplateManager manager, CompoundNBT p_i51343_2_) {
+			super(Dungeon.PART, p_i51343_2_);
+			modelID = p_i51343_2_.getInt("model");
+			startX = p_i51343_2_.getInt("startX");
+			startY = p_i51343_2_.getInt("startY");
+			startZ = p_i51343_2_.getInt("startZ");
+			width = p_i51343_2_.getInt("width");
+			height = p_i51343_2_.getInt("height");
+			length = p_i51343_2_.getInt("length");
+		}
+
+		public void set(int modelID, int startX, int startY, int startZ, int width, int height, int length) {
+			this.modelID = modelID;
+			this.startX = startX;
+			this.startY = startY;
+			this.startZ = startZ;
+			this.width = width;
+			this.height = height;
+			this.length = length;
+			this.adjustSize();
+		}
+
+		public void adjustSize() {
+			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+			if (model == null) {
+				DungeonCrawl.LOGGER.warn("Failed to adjust the size of a dungeon part. ID: {}", modelID);
+				return;
+			}
+//			int highestX = 0, highestY = 0, highestZ = 0;
+//			for (int x = startX; x < width + startX; x++) {
+//				for (int y = startY; y < height + startY; y++) {
+//					for (int z = startZ; z < length + startZ; z++) {
+//						if (model.model[x][y][z] != null) {
+//							highestX = x > highestX ? x : highestX;
+//							highestY = y > highestY ? y : highestY;
+//							highestZ = z > highestZ ? z : highestZ;
+//						}
+//					}
+//				}
+//			}
+			width = startX + width > model.width ? width - (startX + width - model.width): width;
+			height = startY + height > model.height ? height - (startY + height - model.height): height;
+			length = startZ + length > model.length ? length - (startZ + length - model.length): length;
+		}
+
+		@Override
+		public int getType() {
+			return 12;
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
+			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+			BlockPos pos = new BlockPos(x, y, z);
+			int fwb = 0;
+			int td = 0;
+			for (int x = startX; x < startX + width; x++) {
+				for (int y = startY; y < startY + height; y++) {
+					for (int z = startZ; z < startZ + length; z++) {
+						BlockState state;
+						if (model.model[x][y][z] == null)
+							state = Blocks.AIR.getDefaultState();
+						else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.FWB_PLACEHOLDER)
+							state = DungeonSegmentModelBlock.getBlockState(model.fourWayBlocks[fwb++], Theme.get(theme), worldIn.getRandom());
+						else if (model.model[x][y][z].type == DungeonSegmentModelBlockType.TRAPDOOR)
+							state = DungeonSegmentModelBlock.getBlockState(model.trapDoors[td++], Theme.get(theme), worldIn.getRandom());
+						else
+							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], Theme.get(theme), worldIn.getRandom());
+						if (state == null)
+							continue;
+						setBlockState(state, worldIn, pos.getX() + x - startX, pos.getY() + y - startY, pos.getZ() + z - startZ, stage);
+					}
+				}
+			}
+			addWalls(this, worldIn, Theme.get(theme));
+			return true;
+		}
+
+		@Override
+		public void readAdditional(CompoundNBT tagCompound) {
+			super.readAdditional(tagCompound);
+			tagCompound.putInt("model", modelID);
+			tagCompound.putInt("startX", startX);
+			tagCompound.putInt("startY", startY);
+			tagCompound.putInt("startZ", startZ);
+			tagCompound.putInt("width", width);
+			tagCompound.putInt("height", height);
+			tagCompound.putInt("length", length);
+		}
+
+	}
+
 	public static class Room extends DungeonPiece {
 
 		public Room(TemplateManager manager, CompoundNBT p_i51343_2_) {
@@ -563,13 +660,52 @@ public class DungeonPieces {
 			if (model == null)
 				return false;
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), stage);
-			addWalls(this, worldIn, Theme.get(theme));
+			this.addWalls(this, worldIn, Theme.get(theme));
 			return true;
 		}
 
 		@Override
 		public int getType() {
 			return 1;
+		}
+
+		public void addWalls(DungeonPiece piece, IWorld world, Theme theme) {
+			if (!piece.sides[0])
+				for (int x = 2; x < 6; x++)
+					for (int y = 2; y < 6; y++)
+						piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z, 0);
+			else
+				for (int x = 2; x < 6; x++)
+					for (int y = 2; y < 6; y++)
+						if (!world.getBlockState(new BlockPos(piece.x + x, piece.y + y, piece.z)).isSolid())
+							piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, piece.x + x, piece.y + y, piece.z, 0);
+			if (!piece.sides[1])
+				for (int z = 2; z < 6; z++)
+					for (int y = 2; y < 6; y++)
+						piece.setBlockState(theme.wall.get(), world, piece.x + 7, piece.y + y, piece.z + z, 0);
+			else
+				for (int z = 2; z < 6; z++)
+					for (int y = 2; y < 6; y++)
+						if (!world.getBlockState(new BlockPos(piece.x + 7, piece.y + y, piece.z + z)).isSolid())
+							piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, piece.x + 7, piece.y + y, piece.z + z, 0);
+			if (!piece.sides[2])
+				for (int x = 2; x < 6; x++)
+					for (int y = 2; y < 6; y++)
+						piece.setBlockState(theme.wall.get(), world, piece.x + x, piece.y + y, piece.z + 7, 0);
+			else
+				for (int x = 2; x < 6; x++)
+					for (int y = 2; y < 6; y++)
+						if (!world.getBlockState(new BlockPos(piece.x + x, piece.y + y, piece.z + 7)).isSolid())
+							piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, piece.x + x, piece.y + y, piece.z + 7, 0);
+			if (!piece.sides[3])
+				for (int z = 2; z < 6; z++)
+					for (int y = 2; y < 6; y++)
+						piece.setBlockState(theme.wall.get(), world, piece.x, piece.y + y, piece.z + z, 0);
+			else
+				for (int z = 2; z < 6; z++)
+					for (int y = 2; y < 6; y++)
+						if (!world.getBlockState(new BlockPos(piece.x, piece.y + y, piece.z + z)).isSolid())
+							piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, piece.x, piece.y + y, piece.z + z, 0);
 		}
 
 	}

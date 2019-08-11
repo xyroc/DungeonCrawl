@@ -21,12 +21,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.util.Config;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class Spawner implements IBlockPlacementHandler {
 	
-	public static int SPAWNER_ENTITIES = 5;
-
 	public static final EntityType<?>[] ENTITIES = new EntityType<?>[] { EntityType.ZOMBIE, EntityType.SKELETON, EntityType.ZOMBIE_VILLAGER, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.HUSK };
 	public static final EntityType<?>[] ENTITIES_RARE = new EntityType<?>[] { EntityType.SILVERFISH, EntityType.CREEPER, EntityType.WITCH, EntityType.STRAY, EntityType.ENDERMAN };
 	public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[] { EntityType.BLAZE, EntityType.RAVAGER }; // Unused
@@ -45,7 +44,7 @@ public class Spawner implements IBlockPlacementHandler {
 			if (INVENTORY_ENTITIES.contains(type)) {
 				CompoundNBT spawnerNBT = tile.getSpawnerBaseLogic().write(new CompoundNBT());
 				ListNBT potentialSpawns = new ListNBT();
-				for (int i = 0; i < SPAWNER_ENTITIES; i++) {
+				for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
 					CompoundNBT nbt = new CompoundNBT();
 					CompoundNBT spawnData = new CompoundNBT();
 					spawnData.putString("id", type.getRegistryName().toString());

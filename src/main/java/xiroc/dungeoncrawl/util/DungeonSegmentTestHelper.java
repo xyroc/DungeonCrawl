@@ -1,6 +1,9 @@
 package xiroc.dungeoncrawl.util;
 
+import java.util.Random;
+
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.item.ItemEntity;
 
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
@@ -16,6 +19,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.loot.RandomPotion;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -33,8 +37,11 @@ public class DungeonSegmentTestHelper {
 				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
 				IBlockPlacementHandler.getHandler(Blocks.SPAWNER).setupBlock(event.getWorld(), Blocks.SPAWNER.getDefaultState(), event.getPos(), event.getWorld().rand, 0);
+			} else if (event.getItemStack().getDisplayName().getString().equals("TT_Potion")) {
+				ItemEntity item = new ItemEntity(event.getWorld(), event.getEntityPlayer().posX, event.getEntityPlayer().posY, event.getEntityPlayer().posZ, RandomPotion.POTIONS.get("laudanum").create(new Random(), 0));
+				event.getWorld().addEntity(item);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.BRIDGE_ALL_SIDES, event.getWorld(), event.getPos(), Theme.TEST , 0);
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.LARGE_ROOM, event.getWorld(), event.getPos(), Theme.DEFAULT, 0);
 //				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
 //				piece.setRealPosition(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
 //				piece.theme = -1;

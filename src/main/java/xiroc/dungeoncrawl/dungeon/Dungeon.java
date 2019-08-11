@@ -43,6 +43,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public static final IStructurePieceType HOLE = IStructurePieceType.register(DungeonPieces.Hole::new, "DUNGEON_HOLE");
 	public static final IStructurePieceType CORRIDOR_ROOM = IStructurePieceType.register(DungeonPieces.CorridorRoom::new, "DUNGEON_CRRDR_ROOM");
 	public static final IStructurePieceType CORRIDOR_TRAP = IStructurePieceType.register(DungeonPieces.CorridorTrap::new, "DUNGEON_TRAP");
+	public static final IStructurePieceType PART = IStructurePieceType.register(DungeonPieces.Part::new, "DUNGEON_PART");
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
@@ -56,7 +57,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 					return false;
 				}
 			}
-			return rand.nextDouble() < 0.24;
+			return rand.nextFloat() < 0.24;
 		} else
 			return false;
 	}

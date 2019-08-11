@@ -16,9 +16,7 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class DungeonSegmentModel {
 
-	public int width;
-	public int height;
-	public int length;
+	public int width, height, length, id;
 	public DungeonSegmentModelBlock[][][] model;
 	public DungeonSegmentModelFourWayBlock[] fourWayBlocks;
 	public DungeonSegmentModelTrapDoorBlock[] trapDoors;
@@ -46,6 +44,12 @@ public class DungeonSegmentModel {
 		this.width = model.length;
 		this.height = model[0].length;
 		this.length = model[0][0].length;
+	}
+
+	public DungeonSegmentModel setId(int id) {
+		DungeonSegmentModelRegistry.MAP.put(id, this);
+		this.id = id;
+		return this;
 	}
 	/*
 	 * Test functions

@@ -3,8 +3,8 @@
         {
         	"name": "dungeon_chest_stage_2",
         	"rolls": {
-        		"min": 12,
-        		"max": 16
+        		"min": 7,
+        		"max": 10
         	},
             "entries": [
                 {
@@ -28,12 +28,12 @@
                         {
                             "function": "set_count",
                             "count": {
-                                "min": 4,
-                                "max": 19
+                                "min": 1,
+                                "max": 9
                             }
                         }
                     ],
-                    "weight": 3
+                    "weight": 2
                 },
                 {
                     "type": "item",
@@ -43,11 +43,11 @@
                             "function": "set_count",
                             "count": {
                                 "min": 3,
-                                "max": 12
+                                "max": 6
                             }
                         }
                     ],
-                    "weight": 3
+                    "weight": 2
                 },
                 {
                     "type": "item",
@@ -207,13 +207,8 @@
                 },
                 {
                 	"type": "item",
-                	"name": "minecraft:saddle",
-                	"weight:": 1
-                },
-                {
-                	"type": "item",
                 	"name": "minecraft:golden_apple",
-                	"weight": 4,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -227,7 +222,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:arrow",
-                	"weight": 7,
+                	"weight": 9,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -278,7 +273,7 @@
                 {
                     "type": "item",
                     "name": "minecraft:torch",
-                    "weight": 5,
+                    "weight": 6,
                     "functions": [
                         {
                             "function": "set_count",
@@ -292,7 +287,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:brown_mushroom",
-                	"weight": 5,
+                	"weight": 7,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -306,7 +301,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:red_mushroom",
-                	"weight": 5,
+                	"weight": 7,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -320,7 +315,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:bowl",
-                	"weight": 5
+                	"weight": 7
                 },
                 {
                 	"type": "item",
@@ -334,18 +329,13 @@
                 },
                 {
                 	"type": "item",
-                	"name": "minecraft:lead",
-                	"weight": 1
-                },
-                {
-                	"type": "item",
                 	"name": "minecraft:fermented_spider_eye",
                 	"weight": 3
                 },
                 {
                 	"type": "item",
                 	"name": "minecraft:spider_eye",
-                	"weight": 4,
+                	"weight": 6,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -363,83 +353,83 @@
                 	"functions": [
                 		{
                 			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:strength\"}"
+                			"tag": "{CustomPotionEffects:[{Id: 9, Duration: 100}, {Id: 15, Duration: 100}, { Id: 18, Duration: 100}, { Id: 4, Duration: 100},  {Id: 10, Duration: 200}], CustomPotionColor: 7014144, HideFlags: 32}"
+                		},
+                		{
+                			"function": "set_name",
+                			"name": "Laudanum"
+                		},
+                		{
+                			"function": "set_lore",
+                			"lore": [
+                			"An medicinal tincture."
+                			]
                 		}
-                	
-                	]
-                },
-                {
-                	"type": "item",
+               		]
+              	},
+              	{
+               		"type": "item",
                 	"name": "minecraft:potion",
-                	"weight": 1,
-                	"functions": [
+               		"weight": 1,
+        			"functions": [
+              		  	{
+              		  		"function": "set_nbt",
+              		  		"tag": "{CustomPotionEffects:[{Id: 20, Duration: 40}, {Id: 15, Duration: 40}, {Id: 5, Amplifier: 2, Duration: 800}], CustomPotionColor: 13050390, HideFlags: 32}"
+               		 	},
+               		 	{
+                			"function": "set_name",
+                			"name": "Animus"
+                		},
                 		{
-                			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:strong_strength\"}"
+                			"function": "set_lore",
+                			"lore": [
+                			"An unstable mixture."
+                			]
                 		}
-                	
                 	]
-                },
-                {
+				},
+				{
                 	"type": "item",
-                	"name": "minecraft:potion",
-                	"weight": 1,
-                	"functions": [
+            		"name": "minecraft:potion",
+             		"weight": 1,
+             		"functions": [
+              		 	{
+              		  		"function": "set_nbt",
+              		  		"tag": "{CustomPotionEffects:[{Id: 22, Amplifier: 14, Duration: 400}, {Id: 15, Duration: 40}, {Id: 11, Amplifier: 2, Duration: 400}], CustomPotionColor: 15446551, HideFlags: 32}"
+               		 	},
+               		 	{
+                			"function": "set_name",
+                			"name": "Nectar"
+                		},
                 		{
-                			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:strong_turtle_master\"}"
+                			"function": "set_lore",
+                			"lore": [
+                			"A floral extract."
+                			]
                 		}
-                	
                 	]
-                },
-                {
+				},
+				{
                 	"type": "item",
-                	"name": "minecraft:potion",
-                	"weight": 1,
-                	"functions": [
+            		"name": "minecraft:potion",
+             		"weight": 1,
+             		"functions": [
+              			{
+              		  		"function": "set_nbt",
+              		  		"tag": "{CustomPotionEffects:[{Id: 1, Amplifier: 1, Duration: 400}, {Id: 15, Duration: 40}, {Id: 3, Duration: 400}], CustomPotionColor: 65327, HideFlags: 32}"
+               		 	},
+               		 	{
+                			"function": "set_name",
+                			"name": "Velocitas"
+                		},
                 		{
-                			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:water\"}"
+                			"function": "set_lore",
+                			"lore": [
+                			"An energetic beverage."
+                			]
                 		}
-                	
                 	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:splash_potion",
-                	"weight": 1,
-                	"functions": [
-                		{
-                			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:poison\"}"
-                		}
-                	
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:potion",
-                	"weight": 1,
-                	"functions": [
-                		{
-                			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:healing\"}"
-                		}
-                	
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:potion",
-                	"weight": 1,
-                	"functions": [
-                		{
-                			"function": "set_nbt",
-                			"tag": "{Potion:\"minecraft:strong_healing\"}"
-                		}
-                	
-                	]
-                }
+				}
             ]
         }
     ]

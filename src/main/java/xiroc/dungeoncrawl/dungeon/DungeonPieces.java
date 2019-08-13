@@ -343,7 +343,6 @@ public class DungeonPieces {
 			this.width = width;
 			this.height = height;
 			this.length = length;
-			this.adjustSize();
 		}
 
 		public void adjustSize() {
@@ -376,6 +375,7 @@ public class DungeonPieces {
 
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_74875_4_) {
+			this.adjustSize();
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			BlockPos pos = new BlockPos(x, y, z);
 			int fwb = 0;

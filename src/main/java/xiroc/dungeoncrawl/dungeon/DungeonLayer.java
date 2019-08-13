@@ -60,7 +60,7 @@ public class DungeonLayer {
 		Position2D[] additions = new Position2D[additionalFeatures];
 		for (int i = 0; i < additionalFeatures; i++) {
 			additions[i] = map.getRandomFreePosition(rand);
-			if (rand.nextFloat() < 0.2) {
+			if (rand.nextFloat() < 0.1) {
 				Position2D largeRoomPos = getLargeRoomPos(additions[i]);
 				if(largeRoomPos != null) {
 					int roomID = 25;	// TODO random large room ID

@@ -53,6 +53,7 @@ public class DungeonBuilder {
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL);
 			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i == layers.length - 1);
+			
 		}
 	}
 

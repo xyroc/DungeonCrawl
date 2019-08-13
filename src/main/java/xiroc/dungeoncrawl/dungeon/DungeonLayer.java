@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
+import xiroc.dungeoncrawl.util.Config;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
@@ -55,10 +56,56 @@ public class DungeonLayer {
 	}
 
 	public void extend(DungeonLayerMap map, Position2D start, Position2D end, Random rand) {
-		int additionalFeatures = 5 + rand.nextInt(6);
+		int additionalFeatures = Config.LAYER_ADDITIONS_MIN.get() + rand.nextInt(Config.LAYER_ADDITIONS_EXTRA.get());
 		Position2D[] additions = new Position2D[additionalFeatures];
 		for (int i = 0; i < additionalFeatures; i++) {
 			additions[i] = map.getRandomFreePosition(rand);
+			if (rand.nextFloat() < 0.1) {
+				Position2D largeRoomPos = getLargeRoomPos(additions[i]);
+				if(largeRoomPos != null) {
+					int roomID = 25;	// TODO random large room ID
+					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+					DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+					part1.set(roomID, 0, 0, 0, 8, 16, 8);
+					part2.set(roomID, 8, 0, 0, 8, 16, 8);
+					part3.set(roomID, 8, 0, 8, 8, 16, 8);
+					part4.set(roomID, 0, 0, 8, 8, 16, 8);
+					part1.setPosition(largeRoomPos.x, largeRoomPos.z);
+					part2.setPosition(largeRoomPos.x + 1, largeRoomPos.z);
+					part3.setPosition(largeRoomPos.x + 1, largeRoomPos.z + 1);
+					part4.setPosition(largeRoomPos.x, largeRoomPos.z + 1);
+					part1.sides[0] = false;
+					part1.sides[1] = true;
+					part1.sides[2] = true;
+					part1.sides[3] = false;
+					
+					part2.sides[0] = false;
+					part2.sides[1] = false;
+					part2.sides[2] = true;
+					part2.sides[3] = true;
+					
+					part3.sides[0] = true;
+					part3.sides[1] = false;
+					part3.sides[2] = false;
+					part3.sides[3] = true;
+					
+					part4.sides[0] = true;
+					part4.sides[1] = true;
+					part4.sides[2] = false;
+					part4.sides[3] = false;
+					this.segments[largeRoomPos.x][largeRoomPos.z] = part1;
+					this.segments[largeRoomPos.x + 1][largeRoomPos.z] = part2;
+					this.segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = part3;
+					this.segments[largeRoomPos.x][largeRoomPos.z + 1] = part4;
+					map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z));
+					map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z));
+					map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z + 1));
+					map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z + 1));
+					continue;
+				}
+			}
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);
 			if (this.segments[additions[i].x][additions[i].z] != null) {
@@ -252,6 +299,20 @@ public class DungeonLayer {
 	public void processAddition(Position2D[] additions, Position2D start, Position2D end, Position2D one, Random rand) {
 		this.buildConnection(rand.nextBoolean() ? start : end, one);
 		this.buildConnection(one, additions[rand.nextInt(additions.length)]);
+	}
+
+	public Position2D getLargeRoomPos(Position2D pos) {
+		int x = pos.x;
+		int z = pos.z;
+		if (x < 15 && z < 15 && get(x + 1, z) == null && get(x + 1, z + 1) == null && get(x, z + 1) == null)
+			return pos;
+		if (x < 15 && z > 0 && get(x + 1, z) == null && get(x + 1, z - 1) == null && get(x, z - 1) == null)
+			return new Position2D(x, z - 1);
+		if (x > 0 && z < 15 && get(x - 1, z) == null && get(x - 1, z + 1) == null && get(x, z + 1) == null)
+			return new Position2D(x - 1, z);
+		if (x > 0 && z > 0 && get(x - 1, z) == null && get(x - 1, z - 1) == null && get(x, z - 1) == null)
+			return new Position2D(x - 1, z - 1);
+		return null;
 	}
 
 	/**

@@ -53,6 +53,7 @@ public class DungeonBuilder {
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL);
 			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i == layers.length - 1);
+			
 		}
 	}
 
@@ -100,7 +101,8 @@ public class DungeonBuilder {
 								hole.stage = stage;
 								hole.lava = stage == 2;
 								layer.segments[x][z] = hole;
-							} else if (layer.segments[x][z].connectedSides == 2 && rand.nextDouble() < 0.07) {
+							} else if (layer.segments[x][z].connectedSides == 2 && rand.nextDouble() < 0.07
+									&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2] || layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])) {
 								DungeonPiece feature = RandomFeature.CORRIDOR_FEATURE.roll(rand);
 								feature.sides = layer.segments[x][z].sides;
 								feature.connectedSides = layer.segments[x][z].connectedSides;

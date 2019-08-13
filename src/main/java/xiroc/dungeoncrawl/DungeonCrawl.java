@@ -32,15 +32,18 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
+import xiroc.dungeoncrawl.util.Config;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -75,7 +78,7 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
+//		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
 		Feature.STRUCTURES.put(Dungeon.NAME.toLowerCase(Locale.ROOT), Dungeon.DUNGEON_FEATURE);
 		DungeonSegmentModelBlock.load();
 		IBlockPlacementHandler.load();
@@ -84,6 +87,8 @@ public class DungeonCrawl {
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		LOGGER.info("Common Setup");
+		ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
+		Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {

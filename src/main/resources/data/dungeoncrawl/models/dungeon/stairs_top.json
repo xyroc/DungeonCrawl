@@ -2,6 +2,7 @@
   "width": 8,
   "height": 7,
   "length": 8,
+  "id": 0,
   "model": [
     [
       [
@@ -192,16 +193,16 @@
           "type": "WALL"
         },
         {
-          "type": "FLOOR"
-        },
-        {
           "type": "WALL"
         },
         {
           "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -372,14 +373,12 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "NORTH",
+          "upsideDown": false
         },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
+        null,
+        null,
         {
           "type": "WALL"
         },
@@ -662,14 +661,16 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "RAND_WALL_AIR"
         },
-        null,
-        null,
+        {
+          "type": "RAND_WALL_AIR"
+        },
         {
           "type": "WALL"
+        },
+        {
+          "type": "RAND_WALL_AIR"
         },
         {
           "type": "WALL"
@@ -795,10 +796,10 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "RAND_WALL_AIR"
         },
         {
-          "type": "WALL"
+          "type": "RAND_WALL_AIR"
         },
         {
           "type": "WALL"
@@ -1303,9 +1304,9 @@
   "fourWayBlocks": [
     {
       "north": true,
-      "east": false,
+      "east": true,
       "south": true,
-      "west": true,
+      "west": false,
       "waterlogged": false,
       "type": "IRON_BARS",
       "facing": "NORTH",

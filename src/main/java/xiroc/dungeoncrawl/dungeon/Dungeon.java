@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.Dynamic;
 
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.Registry;
@@ -26,8 +27,12 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.util.Config;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
+
+//	WoodlandMansionStructure
+//	MineshaftStructure
 
 	public static final String NAME = "DCDungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
@@ -43,23 +48,50 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public static final IStructurePieceType HOLE = IStructurePieceType.register(DungeonPieces.Hole::new, "DUNGEON_HOLE");
 	public static final IStructurePieceType CORRIDOR_ROOM = IStructurePieceType.register(DungeonPieces.CorridorRoom::new, "DUNGEON_CRRDR_ROOM");
 	public static final IStructurePieceType CORRIDOR_TRAP = IStructurePieceType.register(DungeonPieces.CorridorTrap::new, "DUNGEON_TRAP");
+	public static final IStructurePieceType PART = IStructurePieceType.register(DungeonPieces.Part::new, "DUNGEON_PART");
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
 	}
 
+	public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
+		int i = 15;
+		int j = 10;
+		int k = x + i * spacingOffsetsX;
+		int l = z + i * spacingOffsetsZ;
+		int i1 = k < 0 ? k - i + 1 : k;
+		int j1 = l < 0 ? l - i + 1 : l;
+		int k1 = i1 / i;
+		int l1 = j1 / i;
+		((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), k1, l1, 10387319);
+		k1 = k1 * i;
+		l1 = l1 * i;
+		k1 = k1 + (random.nextInt(i - j) + random.nextInt(i - j)) / 2;
+		l1 = l1 + (random.nextInt(i - j) + random.nextInt(i - j)) / 2;
+		return new ChunkPos(k1, l1);
+	}
+
 	@Override
 	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
-		if (chunkPosX % 14 == 0 && chunkPosZ % 14 == 0) {
+//		if (chunkPosX % 15 == 0 && chunkPosZ % 15 == 0) {
+//			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 64, chunkPosZ * 16 + 64, 128)) {
+//				if (!chunkGen.hasStructure(biome, DUNGEON_FEATURE)) {
+//					return false;
+//				}
+//			}
+//			return rand.nextFloat() < 0.14;
+//		} else
+//			return false;
+		ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
+		if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
 			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 64, chunkPosZ * 16 + 64, 128)) {
-				if (!chunkGen.hasStructure(biome, DUNGEON_FEATURE)) {
+				if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !chunkGen.hasStructure(biome, DUNGEON))
 					return false;
-				}
 			}
-//			DungeonCrawl.LOGGER.debug("Rolling [" + chunkPosX + ", " + chunkPosZ + "]");
-			return rand.nextDouble() < 0.21;
-		} else
+			return rand.nextFloat() < Config.DUNGEON_PROBABLILITY.get();
+		} else {
 			return false;
+		}
 	}
 
 	@Override

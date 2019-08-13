@@ -1,6 +1,6 @@
 modLoader="javafml" #mandatory
 loaderVersion="[28,)" #mandatory
-#issueTrackerURL="http://my.issue.tracker/" #optional
+#issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
 version="1.3.0" #mandatory

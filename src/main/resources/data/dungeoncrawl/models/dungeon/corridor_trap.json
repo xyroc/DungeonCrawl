@@ -66,14 +66,16 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": false
+          "waterlogged": false,
+          "half": "BOTTOM"
         },
         null,
         null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": false
+          "waterlogged": false,
+          "half": "BOTTOM"
         },
         {
           "type": "WALL"
@@ -110,14 +112,16 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         null,
         null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -139,12 +143,14 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -157,9 +163,8 @@
         }
       ],
       [
-        null,
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -176,7 +181,12 @@
         {
           "type": "WALL"
         },
-        null
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
       ]
     ],
     [
@@ -244,9 +254,16 @@
         },
         null,
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": false,
+          "east": false,
+          "south": true,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
         },
         {
           "type": "WALL"
@@ -270,9 +287,16 @@
         },
         null,
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": false,
+          "east": false,
+          "south": true,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
         },
         {
           "type": "WALL"
@@ -295,14 +319,54 @@
           "type": "WALL"
         },
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
         },
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -316,7 +380,7 @@
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -337,30 +401,8 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
-      ],
-      [
-        null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        null
       ]
     ],
     [
@@ -421,26 +463,74 @@
           "type": "WALL"
         },
         {
-          "type": "TRIPWIRE_HOOK",
+          "type": "OTHER",
           "facing": "SOUTH",
-          "upsideDown": false
+          "attached": true,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire_hook"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE_HOOK",
+          "type": "OTHER",
           "facing": "NORTH",
-          "upsideDown": false
+          "attached": true,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire_hook"
+          }
         },
         {
           "type": "WALL"
@@ -452,8 +542,7 @@
         },
         {
           "type": "DISPENSER",
-          "facing": "SOUTH",
-          "upsideDown": false
+          "facing": "SOUTH"
         },
         null,
         null,
@@ -461,8 +550,7 @@
         null,
         {
           "type": "DISPENSER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "facing": "NORTH"
         },
         {
           "type": "WALL"
@@ -478,14 +566,16 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         null,
         null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -507,12 +597,14 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "CEILING_STAIRS",
           "facing": "WEST",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -525,9 +617,8 @@
         }
       ],
       [
-        null,
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -544,7 +635,12 @@
         {
           "type": "WALL"
         },
-        null
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
       ]
     ],
     [
@@ -679,12 +775,14 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -697,9 +795,8 @@
         }
       ],
       [
-        null,
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -716,7 +813,12 @@
         {
           "type": "WALL"
         },
-        null
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
       ]
     ],
     [
@@ -851,12 +953,14 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -869,9 +973,8 @@
         }
       ],
       [
-        null,
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -888,7 +991,12 @@
         {
           "type": "WALL"
         },
-        null
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
       ]
     ],
     [
@@ -949,26 +1057,74 @@
           "type": "WALL"
         },
         {
-          "type": "TRIPWIRE_HOOK",
+          "type": "OTHER",
           "facing": "SOUTH",
-          "upsideDown": false
+          "attached": true,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire_hook"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": false,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE"
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "disarmed": false,
+          "attached": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire"
+          }
         },
         {
-          "type": "TRIPWIRE_HOOK",
+          "type": "OTHER",
           "facing": "NORTH",
-          "upsideDown": false
+          "attached": true,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "tripwire_hook"
+          }
         },
         {
           "type": "WALL"
@@ -980,8 +1136,7 @@
         },
         {
           "type": "DISPENSER",
-          "facing": "SOUTH",
-          "upsideDown": false
+          "facing": "SOUTH"
         },
         null,
         null,
@@ -989,8 +1144,7 @@
         null,
         {
           "type": "DISPENSER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "facing": "NORTH"
         },
         {
           "type": "WALL"
@@ -1006,14 +1160,16 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         null,
         null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -1035,12 +1191,14 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "EAST",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -1053,9 +1211,8 @@
         }
       ],
       [
-        null,
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1072,7 +1229,12 @@
         {
           "type": "WALL"
         },
-        null
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
       ]
     ],
     [
@@ -1139,9 +1301,16 @@
           "type": "WALL"
         },
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": false,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
         },
         null,
         {
@@ -1165,9 +1334,16 @@
           "type": "WALL"
         },
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": false,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
         },
         null,
         {
@@ -1191,14 +1367,54 @@
           "type": "WALL"
         },
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
         },
         {
-          "type": "FWB_PLACEHOLDER",
-          "facing": "NORTH",
-          "upsideDown": false
+          "type": "OTHER",
+          "north": true,
+          "east": false,
+          "south": true,
+          "west": false,
+          "waterlogged": false,
+          "registryName": {
+            "namespace": "minecraft",
+            "path": "iron_bars"
+          }
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -1212,7 +1428,7 @@
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1233,30 +1449,8 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
-      ],
-      [
-        null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        null
       ]
     ],
     [
@@ -1322,14 +1516,16 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": false
+          "waterlogged": false,
+          "half": "BOTTOM"
         },
         null,
         null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": false
+          "waterlogged": false,
+          "half": "BOTTOM"
         },
         {
           "type": "WALL"
@@ -1366,14 +1562,16 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         null,
         null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -1395,12 +1593,14 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "NORTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
-          "upsideDown": true
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -1413,9 +1613,8 @@
         }
       ],
       [
-        null,
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1432,164 +1631,13 @@
         {
           "type": "WALL"
         },
-        null
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
       ]
     ]
-  ],
-  "fourWayBlocks": [
-    {
-      "north": false,
-      "east": false,
-      "south": true,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": false,
-      "east": false,
-      "south": true,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": true,
-      "east": false,
-      "south": true,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": true,
-      "east": false,
-      "south": true,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": true,
-      "east": false,
-      "south": false,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": true,
-      "east": false,
-      "south": false,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": true,
-      "east": false,
-      "south": true,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    {
-      "north": true,
-      "east": false,
-      "south": true,
-      "west": false,
-      "waterlogged": false,
-      "type": "IRON_BARS",
-      "facing": "NORTH",
-      "upsideDown": false
-    },
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-  ],
-  "trapDoors": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
   ]
 }

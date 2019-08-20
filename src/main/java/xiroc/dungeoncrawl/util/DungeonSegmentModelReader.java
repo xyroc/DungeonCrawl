@@ -24,16 +24,10 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelFourWayBlock;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelTrapDoorBlock;
 
 public class DungeonSegmentModelReader {
 
 	public static void readModelToFile(World world, BlockPos pos, int width, int height, int length) {
-		int fwb = 0;
-		int td = 0;
-		DungeonSegmentModelFourWayBlock[] fourWayBlocks = new DungeonSegmentModelFourWayBlock[64];
-		DungeonSegmentModelTrapDoorBlock[] trapDoors = new DungeonSegmentModelTrapDoorBlock[16];
 		DungeonSegmentModelBlock[][][] model = new DungeonSegmentModelBlock[width][height][length];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -43,28 +37,16 @@ public class DungeonSegmentModelReader {
 						model[x][y][z] = null;
 						continue;
 					}
-					if (state.getBlock() instanceof TrapDoorBlock) {
-						model[x][y][z] = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.NORTH, false);
-						trapDoors[td++] = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.get(state.getBlock()), state.get(BlockStateProperties.HORIZONTAL_FACING), state.get(BlockStateProperties.OPEN),
-								state.get(BlockStateProperties.HALF), state.get(BlockStateProperties.HALF) == Half.TOP);
-						continue;
-					}
-					if (state.getBlock() instanceof FourWayBlock) {
-						model[x][y][z] = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FWB_PLACEHOLDER, Direction.NORTH, false);
-						fourWayBlocks[fwb++] = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.get(state.getBlock()), state.get(BlockStateProperties.NORTH), state.get(BlockStateProperties.EAST),
-								state.get(BlockStateProperties.SOUTH), state.get(BlockStateProperties.WEST), state.get(BlockStateProperties.WATERLOGGED));
-						continue;
-					}
-					model[x][y][z] = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.get(state.getBlock()),
-							state.has(BlockStateProperties.FACING) ? state.get(BlockStateProperties.FACING) : state.has(BlockStateProperties.HORIZONTAL_FACING) ? state.get(BlockStateProperties.HORIZONTAL_FACING) : null,
-							state.has(BlockStateProperties.HALF) ? state.get(BlockStateProperties.HALF) == Half.TOP : false);
+					model[x][y][z] = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.get(state.getBlock())).set(state);
 				}
 			}
 		}
-		writeModelToFile(new DungeonSegmentModel(model, trapDoors, fourWayBlocks), new File(((ServerWorld) world).getSaveHandler().getWorldDirectory(), "model_" + System.currentTimeMillis() + ".json"));
+		writeModelToFile(new DungeonSegmentModel(model), new File(((ServerWorld) world).getSaveHandler().getWorldDirectory(), "model_" + System.currentTimeMillis() + ".json"));
 	}
 
-	// THIS DOES NOT WORK ANYMORE
+	/**
+	 * THIS DOES NOT WORK ANYMORE
+	 */
 	public static String readModelToArrayString(World world, BlockPos pos, int width, int length, int height) {
 		String array = "";
 		array += "new DungeonSegmentModelBlock[][][] { ";

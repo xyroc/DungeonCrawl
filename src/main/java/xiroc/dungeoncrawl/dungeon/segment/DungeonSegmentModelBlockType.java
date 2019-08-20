@@ -9,31 +9,31 @@ import net.minecraft.block.Blocks;
 
 public enum DungeonSegmentModelBlockType {
 
-	NONE, CEILING, CEILING_STAIRS, WALL, WALL_LOG, FLOOR, FLOOR_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST_COMMON, RAND_WALL_AIR, RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, LAVA, WATER, IRON_BARS, ANVIL, BARREL, FURNACE,
-	WOOD, RAND_FLOOR_WATER, RAND_FLOOR_LAVA, TRIPWIRE, TRIPWIRE_HOOK, DISPENSER, OTHER, FWB_PLACEHOLDER;
+	NONE, CEILING, CEILING_STAIRS, WALL, WALL_LOG, FLOOR, FLOOR_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST_COMMON, RAND_WALL_AIR, RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, REDSTONE_TORCH, LAVA, WATER, IRON_BARS, ANVIL,
+	BARREL, FURNACE, WOOD, RAND_FLOOR_WATER, RAND_FLOOR_LAVA, TRIPWIRE, TRIPWIRE_HOOK, DISPENSER, STICKY_PISTON, REDSTONE, OTHER, FWB_PLACEHOLDER;
 
 	public static DungeonSegmentModelBlockType get(Block block) {
 		if (block == Blocks.AIR)
 			return null;
-		if (block == Blocks.OAK_PLANKS)
-			return WOOD;
+//		if (block == Blocks.OAK_PLANKS)
+//			return WOOD;
 		if (block == Blocks.BEDROCK)
 			return NONE;
-		if (block == Blocks.WATER)
-			return WATER;
-		if (block == Blocks.LAVA)
-			return LAVA;
-		if (block == Blocks.TRIPWIRE)
-			return TRIPWIRE;
-		if (block == Blocks.TRIPWIRE_HOOK)
-			return TRIPWIRE_HOOK;
+//		if (block == Blocks.WATER)
+//			return WATER;
+//		if (block == Blocks.LAVA)
+//			return LAVA;
+//		if (block == Blocks.TRIPWIRE)
+//			return TRIPWIRE;
+//		if (block == Blocks.TRIPWIRE_HOOK)
+//			return TRIPWIRE_HOOK;
 		if (block == Blocks.DISPENSER)
 			return DISPENSER;
-		if (block == Blocks.FURNACE)
-			return FURNACE;
+//		if (block == Blocks.FURNACE)
+//			return FURNACE;
 		if (block == Blocks.SOUL_SAND)
-			return RAND_FLOOR_LAVA;	
-		if (block == Blocks.CRACKED_STONE_BRICKS) 
+			return RAND_FLOOR_LAVA;
+		if (block == Blocks.CRACKED_STONE_BRICKS)
 			return RAND_WALL_AIR;
 		if (block == Blocks.CLAY)
 			return RAND_FLOOR_WATER;
@@ -55,15 +55,19 @@ public enum DungeonSegmentModelBlockType {
 			return RAND_FLOOR_CHESTCOMMON_SPAWNER;
 		if (block == Blocks.OAK_TRAPDOOR)
 			return TRAPDOOR;
-		if (block == Blocks.REDSTONE_WALL_TORCH)
-			return TORCH_DARK;
-		if (block == Blocks.IRON_BARS)
-			return IRON_BARS;
+//		if (block == Blocks.REDSTONE_WALL_TORCH)
+//			return TORCH_DARK;
+//		if (block == Blocks.IRON_BARS)
+//			return IRON_BARS;
 		if (block == Blocks.BARREL)
 			return BARREL;
-		if (block == Blocks.ANVIL)
-			return ANVIL;
-		return NONE;
+//		if (block == Blocks.ANVIL)
+//			return ANVIL;
+//		if (block == Blocks.STICKY_PISTON)
+//			return STICKY_PISTON;
+//		if (block == Blocks.REDSTONE_WIRE)
+//			return REDSTONE;
+		return OTHER;
 	}
 
 }

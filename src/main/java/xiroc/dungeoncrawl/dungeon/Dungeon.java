@@ -16,6 +16,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
@@ -49,6 +50,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public static final IStructurePieceType CORRIDOR_ROOM = IStructurePieceType.register(DungeonPieces.CorridorRoom::new, "DUNGEON_CRRDR_ROOM");
 	public static final IStructurePieceType CORRIDOR_TRAP = IStructurePieceType.register(DungeonPieces.CorridorTrap::new, "DUNGEON_TRAP");
 	public static final IStructurePieceType PART = IStructurePieceType.register(DungeonPieces.Part::new, "DUNGEON_PART");
+	public static final IStructurePieceType HOLE_TRAP = IStructurePieceType.register(DungeonPieces.HoleTrap::new, "DUNGEON_HOLE_TRAP");
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
@@ -127,6 +129,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 		@Override
 		public void generateStructure(IWorld worldIn, Random rand, MutableBoundingBox structurebb, ChunkPos pos) {
+			if (!Config.IGNORE_DIMENSION.get() && !(worldIn.getDimension().getType() == DimensionType.OVERWORLD)) {
+				DungeonCrawl.LOGGER.warn("Refusing to generate a placed Dungeon in {} because it is not in OVERWORLD.", worldIn.getDimension().getType());
+				return;
+			}
 			DungeonSegmentModelRegistry.load(((ServerWorld) worldIn.getWorld()).getServer().getResourceManager());
 			super.generateStructure(worldIn, rand, structurebb, pos);
 		}

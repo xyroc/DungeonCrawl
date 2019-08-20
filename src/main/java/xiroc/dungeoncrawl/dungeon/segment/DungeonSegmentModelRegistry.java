@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import net.minecraft.resources.IResourceManager;
-import net.minecraft.state.properties.Half;
-import net.minecraft.util.Direction;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.DungeonSegmentModelReader;
 
@@ -19,90 +17,90 @@ public class DungeonSegmentModelRegistry {
 
 	public static final HashMap<Integer, DungeonSegmentModel> MAP = new HashMap<Integer, DungeonSegmentModel>();
 
-	public static final DungeonSegmentModelBlock NONE = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE, null, false);
+	public static final DungeonSegmentModelBlock NONE = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
 
-	public static final DungeonSegmentModelBlock WATER = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE, null, false);
-	public static final DungeonSegmentModelBlock LAVA = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE, null, false);
+	public static final DungeonSegmentModelBlock WATER = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
+	public static final DungeonSegmentModelBlock LAVA = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
 
-	public static final DungeonSegmentModelBlock TORCH_DARK_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK, Direction.NORTH, false);
-	public static final DungeonSegmentModelBlock TORCH_DARK_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK, Direction.EAST, false);
-	public static final DungeonSegmentModelBlock TORCH_DARK_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK, Direction.SOUTH, false);
-	public static final DungeonSegmentModelBlock TORCH_DARK_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK, Direction.WEST, false);
-
-	public static final DungeonSegmentModelBlock CEILING = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING, null, false);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.NORTH, false);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.EAST, false);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.SOUTH, false);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.WEST, false);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_NORTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.NORTH, true);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_EAST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.EAST, true);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_SOUTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.SOUTH, true);
-	public static final DungeonSegmentModelBlock CEILING_STAIRS_WEST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.WEST, true);
-
-	public static final DungeonSegmentModelBlock WALL = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.WALL, null, false);
-	public static final DungeonSegmentModelBlock WALL_LOG = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.WALL_LOG, Direction.UP, false);
-
-	public static final DungeonSegmentModelBlock FLOOR = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR, null, false);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.NORTH, false);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.EAST, false);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.SOUTH, false);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.WEST, false);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_NORTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.NORTH, true);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_EAST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.EAST, true);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_SOUTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.SOUTH, true);
-	public static final DungeonSegmentModelBlock FLOOR_STAIRS_WEST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.WEST, true);
-
-	public static final DungeonSegmentModelBlock RND_WALL_SPAWNER = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_WALL_SPAWNER, null, false);
-	public static final DungeonSegmentModelBlock CHEST_COMMON_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.NORTH, false);
-	public static final DungeonSegmentModelBlock CHEST_COMMON_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.EAST, false);
-	public static final DungeonSegmentModelBlock CHEST_COMMON_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.SOUTH, false);
-	public static final DungeonSegmentModelBlock CHEST_COMMON_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.WEST, false);
-	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.NORTH, false);
-	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.EAST, false);
-	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.SOUTH, false);
-	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.WEST, false);
-
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_NORTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.NORTH, true, Half.BOTTOM, false);
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_EAST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.EAST, true, Half.BOTTOM, false);
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_SOUTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.SOUTH, true, Half.BOTTOM, false);
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_WEST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.WEST, true, Half.BOTTOM, false);
-
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_NORTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.NORTH, false, Half.BOTTOM, false);
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_EAST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.EAST, false, Half.BOTTOM, false);
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_SOUTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.SOUTH, false, Half.BOTTOM, false);
-	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_WEST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.WEST, false, Half.BOTTOM, false);
-
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, false, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, false, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, false, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, true, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, true, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, false, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, true, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, true, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, false, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, false, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, true, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, true, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, false, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, true, false);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, false, true, false);
-
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, false, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, false, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, false, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, true, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, true, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, false, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, true, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, true, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, false, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, false, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, true, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, true, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, false, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, true, true);
-	public static final DungeonSegmentModelFourWayBlock IRON_BARS_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, false, true, true);
+//	public static final DungeonSegmentModelBlock TORCH_DARK_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK);
+//	public static final DungeonSegmentModelBlock TORCH_DARK_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK);
+//	public static final DungeonSegmentModelBlock TORCH_DARK_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK);
+//	public static final DungeonSegmentModelBlock TORCH_DARK_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK);
+//
+//	public static final DungeonSegmentModelBlock CEILING = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.NORTH, false);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.EAST, false);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.SOUTH, false);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.WEST, false);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_NORTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.NORTH, true);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_EAST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.EAST, true);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_SOUTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.SOUTH, true);
+//	public static final DungeonSegmentModelBlock CEILING_STAIRS_WEST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CEILING_STAIRS, Direction.WEST, true);
+//
+//	public static final DungeonSegmentModelBlock WALL = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.WALL);
+//	public static final DungeonSegmentModelBlock WALL_LOG = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.WALL_LOG, Direction.UP, false);
+//
+//	public static final DungeonSegmentModelBlock FLOOR = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.NORTH, false);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.EAST, false);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.SOUTH, false);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.WEST, false);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_NORTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.NORTH, true);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_EAST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.EAST, true);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_SOUTH_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.SOUTH, true);
+//	public static final DungeonSegmentModelBlock FLOOR_STAIRS_WEST_UD = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.FLOOR_STAIRS, Direction.WEST, true);
+//
+//	public static final DungeonSegmentModelBlock RND_WALL_SPAWNER = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_WALL_SPAWNER);
+//	public static final DungeonSegmentModelBlock CHEST_COMMON_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.NORTH, false);
+//	public static final DungeonSegmentModelBlock CHEST_COMMON_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.EAST, false);
+//	public static final DungeonSegmentModelBlock CHEST_COMMON_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.SOUTH, false);
+//	public static final DungeonSegmentModelBlock CHEST_COMMON_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.CHEST_COMMON, Direction.WEST, false);
+//	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.NORTH, false);
+//	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.EAST, false);
+//	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_SOUTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.SOUTH, false);
+//	public static final DungeonSegmentModelBlock RND_CC_FLOOR_SPWN_WEST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, Direction.WEST, false);
+//
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_NORTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.NORTH, true, Half.BOTTOM, false);
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_EAST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.EAST, true, Half.BOTTOM, false);
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_SOUTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.SOUTH, true, Half.BOTTOM, false);
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_WEST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.WEST, true, Half.BOTTOM, false);
+//
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_NORTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.NORTH, false, Half.BOTTOM, false);
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_EAST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.EAST, false, Half.BOTTOM, false);
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_SOUTH = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.SOUTH, false, Half.BOTTOM, false);
+//	public static final DungeonSegmentModelTrapDoorBlock TRAPDOOR_CLOSED_WEST = new DungeonSegmentModelTrapDoorBlock(DungeonSegmentModelBlockType.TRAPDOOR, Direction.WEST, false, Half.BOTTOM, false);
+//
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, false, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, false, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, false, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, true, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, true, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, false, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, true, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, true, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, false, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, false, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, true, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, true, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, false, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, true, false);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_WEST = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, false, true, false);
+//
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, false, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, false, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, false, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, true, true, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_EAST_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, true, false, true, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, false, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, true, true, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_NORTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, true, false, false, true, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, false, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, false, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, true, true, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_EAST_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, true, false, true, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, false, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, true, true);
+//	public static final DungeonSegmentModelFourWayBlock IRON_BARS_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, false, true, true);
 
 	public static DungeonSegmentModel BRIDGE;
 	public static DungeonSegmentModel BRIDGE_TURN;
@@ -129,13 +127,14 @@ public class DungeonSegmentModelRegistry {
 
 	public static DungeonSegmentModel HOLE;
 	public static DungeonSegmentModel HOLE_LAVA;
+	public static DungeonSegmentModel HOLE_TRAP;
 
 	public static DungeonSegmentModel STAIRS;
 	public static DungeonSegmentModel STAIRS_TOP;
 	public static DungeonSegmentModel STAIRS_BOTTOM;
 
 	public static DungeonSegmentModel ROOM;
-	
+
 	public static DungeonSegmentModel LARGE_ROOM;
 
 	public static DungeonSegmentModel ENTRANCE;
@@ -168,17 +167,21 @@ public class DungeonSegmentModelRegistry {
 		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager).setId(18);
 		ROOM = loadFromFile("models/dungeon/room.json", resourceManager).setId(19);
 		ENTRANCE = loadFromFile("models/dungeon/entrance.json", resourceManager).setId(20);
-		
+
 		BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager).setId(21);
 		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager).setId(22);
 		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.json", resourceManager).setId(23);
 		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.json", resourceManager).setId(24);
-		
+
 		LARGE_ROOM = loadFromFile("models/dungeon/large_room.json", resourceManager).setId(25);
+
+		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.json", resourceManager).setId(26);
+
 		LOADED = true;
 	}
 
 	public static DungeonSegmentModel loadFromFile(String path, IResourceManager resourceManager) {
+		DungeonCrawl.LOGGER.debug("Loading model {}", path);
 		try {
 			return DungeonSegmentModelReader.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
 		} catch (IOException e) {

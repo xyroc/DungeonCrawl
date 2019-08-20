@@ -62,8 +62,8 @@ public class DungeonLayer {
 			additions[i] = map.getRandomFreePosition(rand);
 			if (rand.nextFloat() < 0.1) {
 				Position2D largeRoomPos = getLargeRoomPos(additions[i]);
-				if(largeRoomPos != null) {
-					int roomID = 25;	// TODO random large room ID
+				if (largeRoomPos != null) {
+					int roomID = 25; // TODO random large room ID
 					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
@@ -80,17 +80,17 @@ public class DungeonLayer {
 					part1.sides[1] = true;
 					part1.sides[2] = true;
 					part1.sides[3] = false;
-					
+
 					part2.sides[0] = false;
 					part2.sides[1] = false;
 					part2.sides[2] = true;
 					part2.sides[3] = true;
-					
+
 					part3.sides[0] = true;
 					part3.sides[1] = false;
 					part3.sides[2] = false;
 					part3.sides[3] = true;
-					
+
 					part4.sides[0] = true;
 					part4.sides[1] = true;
 					part4.sides[2] = false;

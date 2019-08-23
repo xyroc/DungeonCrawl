@@ -13,14 +13,15 @@ import xiroc.dungeoncrawl.util.DungeonSegmentModelReader;
 
 public class DungeonSegmentModelRegistry {
 
-	public static boolean LOADED = false;
+    public static boolean LOADED = false;
 
-	public static final HashMap<Integer, DungeonSegmentModel> MAP = new HashMap<Integer, DungeonSegmentModel>();
+    public static final HashMap<Integer, DungeonSegmentModel> MAP = new HashMap<Integer, DungeonSegmentModel>();
 
-	public static final DungeonSegmentModelBlock NONE = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
+    public static final DungeonSegmentModelBlock NONE = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
 
-	public static final DungeonSegmentModelBlock WATER = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
-	public static final DungeonSegmentModelBlock LAVA = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
+    public static final DungeonSegmentModelBlock WATER = new DungeonSegmentModelBlock(
+	    DungeonSegmentModelBlockType.NONE);
+    public static final DungeonSegmentModelBlock LAVA = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
 
 //	public static final DungeonSegmentModelBlock TORCH_DARK_NORTH = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK);
 //	public static final DungeonSegmentModelBlock TORCH_DARK_EAST = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK);
@@ -102,92 +103,93 @@ public class DungeonSegmentModelRegistry {
 //	public static final DungeonSegmentModelFourWayBlock IRON_BARS_SOUTH_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, true, true, true);
 //	public static final DungeonSegmentModelFourWayBlock IRON_BARS_WEST_WATERLOGGED = new DungeonSegmentModelFourWayBlock(DungeonSegmentModelBlockType.IRON_BARS, false, false, false, true, true);
 
-	public static DungeonSegmentModel BRIDGE;
-	public static DungeonSegmentModel BRIDGE_TURN;
-	public static DungeonSegmentModel BRIDGE_SIDE;
-	public static DungeonSegmentModel BRIDGE_ALL_SIDES;
+    public static DungeonSegmentModel BRIDGE;
+    public static DungeonSegmentModel BRIDGE_TURN;
+    public static DungeonSegmentModel BRIDGE_SIDE;
+    public static DungeonSegmentModel BRIDGE_ALL_SIDES;
 
-	public static DungeonSegmentModel CORRIDOR_EW;
-	public static DungeonSegmentModel CORRIDOR_EW_TURN;
-	public static DungeonSegmentModel CORRIDOR_EW_OPEN;
-	public static DungeonSegmentModel CORRIDOR_EW_ALL_OPEN;
+    public static DungeonSegmentModel CORRIDOR_EW;
+    public static DungeonSegmentModel CORRIDOR_EW_TURN;
+    public static DungeonSegmentModel CORRIDOR_EW_OPEN;
+    public static DungeonSegmentModel CORRIDOR_EW_ALL_OPEN;
 
-	public static DungeonSegmentModel CORRIDOR_EW_2;
-	public static DungeonSegmentModel CORRIDOR_EW_2_TURN;
-	public static DungeonSegmentModel CORRIDOR_EW_2_OPEN;
-	public static DungeonSegmentModel CORRIDOR_EW_2_ALL_OPEN;
+    public static DungeonSegmentModel CORRIDOR_EW_2;
+    public static DungeonSegmentModel CORRIDOR_EW_2_TURN;
+    public static DungeonSegmentModel CORRIDOR_EW_2_OPEN;
+    public static DungeonSegmentModel CORRIDOR_EW_2_ALL_OPEN;
 
-	public static DungeonSegmentModel CORRIDOR_EW_3;
-	public static DungeonSegmentModel CORRIDOR_EW_3_TURN;
-	public static DungeonSegmentModel CORRIDOR_EW_3_OPEN;
-	public static DungeonSegmentModel CORRIDOR_EW_3_ALL_OPEN;
+    public static DungeonSegmentModel CORRIDOR_EW_3;
+    public static DungeonSegmentModel CORRIDOR_EW_3_TURN;
+    public static DungeonSegmentModel CORRIDOR_EW_3_OPEN;
+    public static DungeonSegmentModel CORRIDOR_EW_3_ALL_OPEN;
 
-	public static DungeonSegmentModel CORRIDOR_ROOM;
-	public static DungeonSegmentModel CORRIDOR_TRAP;
+    public static DungeonSegmentModel CORRIDOR_ROOM;
+    public static DungeonSegmentModel CORRIDOR_TRAP;
 
-	public static DungeonSegmentModel HOLE;
-	public static DungeonSegmentModel HOLE_LAVA;
-	public static DungeonSegmentModel HOLE_TRAP;
+    public static DungeonSegmentModel HOLE;
+    public static DungeonSegmentModel HOLE_LAVA;
+    public static DungeonSegmentModel HOLE_TRAP;
 
-	public static DungeonSegmentModel STAIRS;
-	public static DungeonSegmentModel STAIRS_TOP;
-	public static DungeonSegmentModel STAIRS_BOTTOM;
+    public static DungeonSegmentModel STAIRS;
+    public static DungeonSegmentModel STAIRS_TOP;
+    public static DungeonSegmentModel STAIRS_BOTTOM;
 
-	public static DungeonSegmentModel ROOM;
+    public static DungeonSegmentModel ROOM;
 
-	public static DungeonSegmentModel LARGE_ROOM;
+    public static DungeonSegmentModel LARGE_ROOM;
 
-	public static DungeonSegmentModel ENTRANCE;
+    public static DungeonSegmentModel ENTRANCE;
 
-	public static void load(IResourceManager resourceManager) {
-		if (LOADED)
-			return;
-		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
-		CORRIDOR_EW = loadFromFile("models/dungeon/corridor_ew.json", resourceManager).setId(0);
-		CORRIDOR_EW_TURN = loadFromFile("models/dungeon/corridor_ew_turn.json", resourceManager).setId(1);
-		CORRIDOR_EW_OPEN = loadFromFile("models/dungeon/corridor_ew_open.json", resourceManager).setId(2);
-		CORRIDOR_EW_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_all_open.json", resourceManager).setId(3);
-		CORRIDOR_EW_2 = loadFromFile("models/dungeon/corridor_ew_2.json", resourceManager).setId(4);
-		CORRIDOR_EW_2_TURN = loadFromFile("models/dungeon/corridor_ew_2_turn.json", resourceManager).setId(5);
-		CORRIDOR_EW_2_OPEN = loadFromFile("models/dungeon/corridor_ew_2_open.json", resourceManager).setId(6);
-		CORRIDOR_EW_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_2_all_open.json", resourceManager).setId(7);
-		CORRIDOR_EW_3 = loadFromFile("models/dungeon/corridor_ew_3.json", resourceManager).setId(8);
-		CORRIDOR_EW_3_TURN = loadFromFile("models/dungeon/corridor_ew_3_turn.json", resourceManager).setId(9);
-		CORRIDOR_EW_3_OPEN = loadFromFile("models/dungeon/corridor_ew_3_open.json", resourceManager).setId(10);
-		CORRIDOR_EW_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_3_all_open.json", resourceManager).setId(11);
+    public static void load(IResourceManager resourceManager) {
+	if (LOADED)
+	    return;
+	DungeonCrawl.LOGGER.info("Loading dungeon segment models");
+	CORRIDOR_EW = loadFromFile("models/dungeon/corridor_ew.json", resourceManager).setId(0);
+	CORRIDOR_EW_TURN = loadFromFile("models/dungeon/corridor_ew_turn.json", resourceManager).setId(1);
+	CORRIDOR_EW_OPEN = loadFromFile("models/dungeon/corridor_ew_open.json", resourceManager).setId(2);
+	CORRIDOR_EW_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_all_open.json", resourceManager).setId(3);
+	CORRIDOR_EW_2 = loadFromFile("models/dungeon/corridor_ew_2.json", resourceManager).setId(4);
+	CORRIDOR_EW_2_TURN = loadFromFile("models/dungeon/corridor_ew_2_turn.json", resourceManager).setId(5);
+	CORRIDOR_EW_2_OPEN = loadFromFile("models/dungeon/corridor_ew_2_open.json", resourceManager).setId(6);
+	CORRIDOR_EW_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_2_all_open.json", resourceManager).setId(7);
+	CORRIDOR_EW_3 = loadFromFile("models/dungeon/corridor_ew_3.json", resourceManager).setId(8);
+	CORRIDOR_EW_3_TURN = loadFromFile("models/dungeon/corridor_ew_3_turn.json", resourceManager).setId(9);
+	CORRIDOR_EW_3_OPEN = loadFromFile("models/dungeon/corridor_ew_3_open.json", resourceManager).setId(10);
+	CORRIDOR_EW_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_ew_3_all_open.json", resourceManager).setId(11);
 
-		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.json", resourceManager).setId(12);
-		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.json", resourceManager).setId(13);
+	CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.json", resourceManager).setId(12);
+	CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.json", resourceManager).setId(13);
 
-		HOLE = loadFromFile("models/dungeon/hole.json", resourceManager).setId(14);
-		HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.json", resourceManager).setId(15);
+	HOLE = loadFromFile("models/dungeon/hole.json", resourceManager).setId(14);
+	HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.json", resourceManager).setId(15);
 
-		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager).setId(16);
-		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager).setId(17);
-		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager).setId(18);
-		ROOM = loadFromFile("models/dungeon/room.json", resourceManager).setId(19);
-		ENTRANCE = loadFromFile("models/dungeon/entrance.json", resourceManager).setId(20);
+	STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager).setId(16);
+	STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager).setId(17);
+	STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager).setId(18);
+	ROOM = loadFromFile("models/dungeon/room.json", resourceManager).setId(19);
+	ENTRANCE = loadFromFile("models/dungeon/entrance.json", resourceManager).setId(20);
 
-		BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager).setId(21);
-		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager).setId(22);
-		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.json", resourceManager).setId(23);
-		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.json", resourceManager).setId(24);
+	BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager).setId(21);
+	BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager).setId(22);
+	BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.json", resourceManager).setId(23);
+	BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.json", resourceManager).setId(24);
 
-		LARGE_ROOM = loadFromFile("models/dungeon/large_room.json", resourceManager).setId(25);
+	LARGE_ROOM = loadFromFile("models/dungeon/large_room.json", resourceManager).setId(25);
 
-		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.json", resourceManager).setId(26);
+	HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.json", resourceManager).setId(26);
 
-		LOADED = true;
+	LOADED = true;
+    }
+
+    public static DungeonSegmentModel loadFromFile(String path, IResourceManager resourceManager) {
+	DungeonCrawl.LOGGER.debug("Loading model {}", path);
+	try {
+	    return DungeonSegmentModelReader
+		    .readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
-
-	public static DungeonSegmentModel loadFromFile(String path, IResourceManager resourceManager) {
-		DungeonCrawl.LOGGER.debug("Loading model {}", path);
-		try {
-			return DungeonSegmentModelReader.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+	return null;
+    }
 
 }

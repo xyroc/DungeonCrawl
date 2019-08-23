@@ -1,6 +1,6 @@
 modLoader="javafml" #mandatory
 loaderVersion="[28,)" #mandatory
-#issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
+issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
 version="1.4.0" #mandatory
@@ -28,3 +28,9 @@ description='''Dungeons...'''
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
+[[dependencies.dungeoncrawl]]
+	modId="weaponcraftery"
+	mandatory=false
+	versionRange="[1.0,)"
+	ordering="NONE"
+	side="BOTH"

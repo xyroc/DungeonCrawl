@@ -17,24 +17,27 @@ import xiroc.dungeoncrawl.util.Loot;
 
 public class Chest implements IBlockPlacementHandler {
 
-	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel) {
-		world.setBlockState(pos, state, 2);
-		LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, getLootTable(lootLevel));
-	}
+    @Override
+    public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel) {
+	world.setBlockState(pos, state, 2);
+	if (lootLevel == 3) {
+	    // TODO lo00oot
+	} else
+	    LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, getLootTable(lootLevel));
+    }
 
-	public static ResourceLocation getLootTable(int lootLevel) {
-		switch (lootLevel) {
-		case 0:
-			return Loot.STAGE_1;
-		case 1:
-			return Loot.STAGE_2;
-		case 2:
-			return Loot.STAGE_3;
-		default:
-			DungeonCrawl.LOGGER.warn("Unknown Loot Level: " + lootLevel);
-			return null;
-		}
+    public static ResourceLocation getLootTable(int lootLevel) {
+	switch (lootLevel) {
+	case 0:
+	    return Loot.STAGE_1;
+	case 1:
+	    return Loot.STAGE_2;
+	case 2:
+	    return Loot.STAGE_3;
+	default:
+	    DungeonCrawl.LOGGER.warn("Unknown Loot Level: " + lootLevel);
+	    return null;
 	}
+    }
 
 }

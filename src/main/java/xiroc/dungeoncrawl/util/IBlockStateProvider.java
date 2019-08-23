@@ -8,6 +8,6 @@ import net.minecraft.block.BlockState;
 
 public interface IBlockStateProvider {
 
-	BlockState get();
+    BlockState get();
 
 }

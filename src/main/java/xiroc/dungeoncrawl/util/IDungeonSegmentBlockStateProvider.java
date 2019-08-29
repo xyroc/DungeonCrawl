@@ -12,6 +12,6 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 public interface IDungeonSegmentBlockStateProvider {
 
-    BlockState get(DungeonSegmentModelBlock block, Theme theme, Random rand);
+	BlockState get(DungeonSegmentModelBlock block, Theme theme, Random rand);
 
 }

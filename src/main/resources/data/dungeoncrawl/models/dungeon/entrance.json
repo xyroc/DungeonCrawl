@@ -604,25 +604,13 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -717,18 +705,10 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -962,11 +942,7 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         null,
         {
@@ -982,11 +958,7 @@
           "half": "BOTTOM"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -1080,18 +1052,10 @@
         null,
         null,
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -1377,11 +1341,7 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         null,
         {
@@ -1390,11 +1350,7 @@
         },
         null,
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -1481,11 +1437,7 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         null,
         {
@@ -1493,25 +1445,13 @@
           "axis": "Y"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -1552,11 +1492,7 @@
         null,
         null,
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -1794,21 +1730,13 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         null,
         null,
         null,
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -1881,11 +1809,7 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "FLOOR_STAIRS",
@@ -1900,25 +1824,13 @@
           "half": "TOP"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -1974,11 +1886,7 @@
           "half": "BOTTOM"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -2153,25 +2061,13 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -2246,32 +2142,16 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -2322,18 +2202,10 @@
           "axis": "Y"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL_LOG",
@@ -2632,18 +2504,10 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
-          "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "oak_planks"
-          }
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"

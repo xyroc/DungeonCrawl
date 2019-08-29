@@ -8,6 +8,6 @@ import java.util.Random;
 
 public interface IRandom<T> {
 
-    T roll(Random rand);
+	T roll(Random rand);
 
 }

@@ -17,13 +17,13 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class Furnace implements IBlockPlacementHandler {
 
-    public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(1, 16);
+	public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(1, 16);
 
-    @Override
-    public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int lootLevel) {
-	world.setBlockState(pos, state, 2);
-	FurnaceTileEntity tile = (FurnaceTileEntity) world.getTileEntity(pos);
-	tile.setInventorySlotContents(1, new ItemStack(Items.COAL, COAL_AMOUNT.generateInt(rand)));
-    }
+	@Override
+	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int theme, int lootLevel) {
+		world.setBlockState(pos, state, 2);
+		FurnaceTileEntity tile = (FurnaceTileEntity) world.getTileEntity(pos);
+		tile.setInventorySlotContents(1, new ItemStack(Items.COAL, COAL_AMOUNT.generateInt(rand)));
+	}
 
 }

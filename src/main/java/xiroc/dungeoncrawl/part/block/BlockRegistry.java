@@ -1,8 +1,8 @@
 package xiroc.dungeoncrawl.part.block;
 
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
 

@@ -223,7 +223,7 @@
                 	"type": "item",
                 	"name": "minecraft:arrow",
                 	"weight": 9,
-                	"functions": [
+					"functions": [
                 		{
                 			"function": "set_count",
                 			"count": {

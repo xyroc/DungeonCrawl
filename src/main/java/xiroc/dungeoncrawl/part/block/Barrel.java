@@ -17,7 +17,11 @@ public class Barrel implements IBlockPlacementHandler {
 	@Override
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int theme, int lootLevel) {
 		world.setBlockState(pos, state, 2);
-		LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, Chest.getLootTable(lootLevel));
+		if (lootLevel < 1 || rand.nextDouble() < 0.25) {
+			LockableLootTileEntity tile = (LockableLootTileEntity) world.getTileEntity(pos);
+			Chest.getTreasureLootTable(theme, lootLevel).fillInventory(tile, rand, theme, lootLevel);
+		} else
+			LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, Chest.getLootTable(theme, lootLevel));;
 	}
 
 }

@@ -22,8 +22,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
+import xiroc.dungeoncrawl.dungeon.treasure.EnchantedBook;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
-public class JsonConfig {
+public class JsonConfig implements IJsonConfigurable {
+
+	public static final JsonConfig BASE;
 
 	public static final String KEY_BIOME_BLACKLIST = "biome_blacklist",
 			KEY_BIOME_OVERWORLD_BLACKLIST = "biome_overworld_blacklist", KEY_BOWS = "bows",
@@ -53,109 +57,63 @@ public class JsonConfig {
 	public static ArmorSet[] ARMOR_SETS_1, ARMOR_SETS_2, ARMOR_SETS_3, ARMOR_SETS_RARE;
 
 	static {
-		File file = FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/").toFile();
-		File configFile = new File(file, "config.json");
-		if (!configFile.exists()) {
-			DungeonCrawl.LOGGER.info("Creating the json config file at {}", configFile.getAbsolutePath());
-			write(file);
+		BASE = new JsonConfig();
+		load(BASE);
+		load(new EnchantedBook());
+		load(new Treasure());
+	}
+
+	public static void load(IJsonConfigurable configurable) {
+		File file = configurable.getFile();
+		if (!file.exists()) {
+			DungeonCrawl.LOGGER.info("Creating {}", file.getAbsolutePath());
+			if (file.getParentFile() != null)
+				file.getParentFile().mkdirs();
+			JsonObject object = configurable.create(new JsonObject());
+			try {
+				FileWriter writer = new FileWriter(file);
+				DungeonCrawl.GSON.toJson(object, writer);
+				writer.flush();
+				writer.close();
+			} catch (Exception e) {
+				DungeonCrawl.LOGGER.error("Failed to create {}", file.getAbsolutePath());
+				e.printStackTrace();
+			}
 		}
+		Gson gson = DungeonCrawl.GSON;
 		try {
-			Gson gson = DungeonCrawl.GSON;
-			JsonObject object = gson.fromJson(new FileReader(configFile), JsonObject.class);
-			BIOME_BLACKLIST = gson.fromJson(getOrRewrite(object, KEY_BIOME_BLACKLIST, file), ArrayList.class);
-			BIOME_OVERWORLD_BLACKLIST = gson.fromJson(getOrRewrite(object, KEY_BIOME_OVERWORLD_BLACKLIST, file),
-					ArrayList.class);
-
-			COLORED_ARMOR = gson.fromJson(getOrRewrite(object, KEY_COLORED_ARMOR, file), Set.class);
-
-			BOWS = gson.fromJson(getOrRewrite(object, KEY_BOWS, file), ResourceLocation[].class);
-			SWORDS = gson.fromJson(getOrRewrite(object, KEY_SWORDS, file), ResourceLocation[].class);
-			SWORDS_RARE = gson.fromJson(getOrRewrite(object, KEY_SWORDS_RARE, file), ResourceLocation[].class);
-			PICKAXES = gson.fromJson(getOrRewrite(object, KEY_PICKAXES, file), ResourceLocation[].class);
-			AXES = gson.fromJson(getOrRewrite(object, KEY_AXES, file), ResourceLocation[].class);
-
-			ARMOR_SETS_1 = gson.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_1, file), ArmorSet[].class);
-			ARMOR_SETS_2 = gson.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_2, file), ArmorSet[].class);
-			ARMOR_SETS_3 = gson.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_3, file), ArmorSet[].class);
-
-			ARMOR_SETS_RARE = gson.fromJson(getOrRewrite(object, KEY_ARMOR_RARE, file), ArmorSet[].class);
-
-			BOW_ENCHANTMENTS = gson.fromJson(getOrRewrite(object, KEY_BOW_ENCHANTMENTS, file),
-					ResourceLocation[].class);
-			SWORD_ENCHANTMENTS = gson.fromJson(getOrRewrite(object, KEY_SWORD_ENCHANTMENTS, file),
-					ResourceLocation[].class);
-			AXE_ENCHANTMENTS = gson.fromJson(getOrRewrite(object, KEY_AXE_ENCHANTMENTS, file),
-					ResourceLocation[].class);
-			PICKAXE_ENCHANTMENTS = gson.fromJson(getOrRewrite(object, KEY_PICKAXE_ENCHANTMENTS, file),
-					ResourceLocation[].class);
-			ARMOR_ENCHANTMENTS = gson.fromJson(getOrRewrite(object, KEY_ARMOR_ENCHANTMENTS, file),
-					ResourceLocation[].class);
-
-			ASSUMPTION_SEARCHLIST = gson.fromJson(getOrRewrite(object, KEY_ASSUMPTION_SEARCHLIST, configFile),
-					String[].class);
-
+			JsonObject object = gson.fromJson(new FileReader(file), JsonObject.class);
+			configurable.load(object, file);
 		} catch (Exception e) {
-			DungeonCrawl.LOGGER.error("Failed to load the json config.");
+			DungeonCrawl.LOGGER.error("Failed to load {}", file.getAbsolutePath());
 			e.printStackTrace();
 		}
 
 	}
 
-	public static void write(File file) {
-		file.mkdirs();
-		JsonObject object = new JsonObject();
-		object.add(KEY_BIOME_BLACKLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BIOME_BLACKLIST));
-		object.add(KEY_BIOME_OVERWORLD_BLACKLIST,
-				DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BIOME_OVERWORLD_BLACKLIST));
-		object.add(KEY_BOWS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BOWS));
-		object.add(KEY_COLORED_ARMOR, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.COLORED_ARMOR));
-		object.add(KEY_SWORDS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.SWORDS));
-		object.add(KEY_SWORDS_RARE, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.SWORDS_RARE));
-		object.add(KEY_PICKAXES, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.PICKAXES));
-		object.add(KEY_AXES, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.AXES));
-		object.add(KEY_ARMOR_STAGE_1, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_1));
-		object.add(KEY_ARMOR_STAGE_2, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_2));
-		object.add(KEY_ARMOR_STAGE_3, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_3));
-		object.add(KEY_ARMOR_RARE, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_RARE));
-		object.add(KEY_BOW_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BOW_ENCHANTMENTS));
-		object.add(KEY_SWORD_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.SWORD_ENCHANTMENTS));
-		object.add(KEY_PICKAXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.PICKAXE_ENCHANTMENTS));
-		object.add(KEY_AXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.AXE_ENCHANTMENTS));
-		object.add(KEY_ARMOR_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_ENCHANTMENTS));
-		object.add(KEY_ASSUMPTION_SEARCHLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ASSUMPTION_SEARCHLIST));
-		try {
-			FileWriter writer = new FileWriter(new File(file, "config.json"));
-			DungeonCrawl.GSON.toJson(object, writer);
-			writer.flush();
-			writer.close();
-		} catch (Exception e) {
-			DungeonCrawl.LOGGER.error("An error occured whilst trying to create the json config file.");
-			e.printStackTrace();
-		}
+	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable) {
+		return getOrRewrite(object, name, configurable, false);
 	}
 
-	public static JsonElement getOrRewrite(JsonObject object, String name, File file) {
-		return getOrRewrite(object, name, file, false);
-	}
-
-	public static JsonElement getOrRewrite(JsonObject object, String name, File file, boolean rerun) {
+	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable, boolean rerun) {
 		if (object.get(name) != null) {
 			return object.get(name);
 		} else {
+			File file = configurable.getFile();
 			if (rerun) {
 				DungeonCrawl.LOGGER.error("Cant find \"{}\" in {}, even after rewriting the file.", name,
 						file.getAbsolutePath());
-				return DungeonCrawl.GSON.toJsonTree(JsonConfigManager.DEFAULTS.get(name));
+				return DungeonCrawl.GSON.toJsonTree(configurable.getDefaults().get(name));
 			}
 			DungeonCrawl.LOGGER.info("Rewriting {} due to missing data.", file.getAbsolutePath());
-			JsonConfigManager.rewrite(new File(file, "config.json"));
+			JsonConfigManager.rewrite(configurable);
 			try {
 				return getOrRewrite(
-						DungeonCrawl.GSON.fromJson(new FileReader(new File(file, "config.json")), JsonObject.class),
-						name, file, true);
+						DungeonCrawl.GSON.fromJson(new FileReader(configurable.getFile()), JsonObject.class),
+						name, configurable, true);
 			} catch (Exception e) {
 				e.printStackTrace();
-				return DungeonCrawl.GSON.toJsonTree(JsonConfigManager.DEFAULTS.get(name));
+				return DungeonCrawl.GSON.toJsonTree(configurable.getDefaults().get(name));
 			}
 		}
 	}
@@ -260,25 +218,100 @@ public class JsonConfig {
 			DEFAULTS.put(KEY_ASSUMPTION_SEARCHLIST, ASSUMPTION_SEARCHLIST);
 		}
 
-		public static void rewrite(File file) {
+		public static void rewrite(IJsonConfigurable configurable) {
+			File file = configurable.getFile();
 			JsonObject object;
 			try {
 				object = file.exists() ? DungeonCrawl.GSON.fromJson(new FileReader(file), JsonObject.class)
 						: new JsonObject();
-				for (String key : KEYS) {
+				for (String key : configurable.getKeys()) {
 					if (!object.has(key))
-						object.add(key, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(key)));
+						object.add(key, DungeonCrawl.GSON.toJsonTree(configurable.getDefaults().get(key)));
 				}
 				FileWriter writer = new FileWriter(file);
 				DungeonCrawl.GSON.toJson(object, writer);
 				writer.flush();
 				writer.close();
 			} catch (Exception e1) {
-				DungeonCrawl.LOGGER.error("An error occured whilst trying to rewrite the json config file.");
+				DungeonCrawl.LOGGER.error("An error occured whilst trying to rewrite {}",  file.getAbsolutePath());
 				e1.printStackTrace();
 			}
 		}
 
+	}
+
+	@Override
+	public File getFile() {
+		return FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/config.json").toFile();
+	}
+
+	@Override
+	public void load(JsonObject object, File file) {
+		BIOME_BLACKLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BIOME_BLACKLIST, this), ArrayList.class);
+		BIOME_OVERWORLD_BLACKLIST = DungeonCrawl.GSON
+				.fromJson(getOrRewrite(object, KEY_BIOME_OVERWORLD_BLACKLIST, this), ArrayList.class);
+
+		COLORED_ARMOR = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_COLORED_ARMOR, this), Set.class);
+
+		BOWS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOWS, this), ResourceLocation[].class);
+		SWORDS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORDS, this), ResourceLocation[].class);
+		SWORDS_RARE = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORDS_RARE, this), ResourceLocation[].class);
+		PICKAXES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_PICKAXES, this), ResourceLocation[].class);
+		AXES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_AXES, this), ResourceLocation[].class);
+
+		ARMOR_SETS_1 = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_1, this), ArmorSet[].class);
+		ARMOR_SETS_2 = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_2, this), ArmorSet[].class);
+		ARMOR_SETS_3 = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_3, this), ArmorSet[].class);
+
+		ARMOR_SETS_RARE = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_RARE, this), ArmorSet[].class);
+
+		BOW_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOW_ENCHANTMENTS, this),
+				ResourceLocation[].class);
+		SWORD_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORD_ENCHANTMENTS, this),
+				ResourceLocation[].class);
+		AXE_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_AXE_ENCHANTMENTS, this),
+				ResourceLocation[].class);
+		PICKAXE_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_PICKAXE_ENCHANTMENTS, this),
+				ResourceLocation[].class);
+		ARMOR_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_ENCHANTMENTS, this),
+				ResourceLocation[].class);
+
+		ASSUMPTION_SEARCHLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ASSUMPTION_SEARCHLIST, this),
+				String[].class);
+	}
+
+	@Override
+	public JsonObject create(JsonObject object) {
+		object.add(KEY_BIOME_BLACKLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BIOME_BLACKLIST));
+		object.add(KEY_BIOME_OVERWORLD_BLACKLIST,
+				DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BIOME_OVERWORLD_BLACKLIST));
+		object.add(KEY_BOWS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BOWS));
+		object.add(KEY_COLORED_ARMOR, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.COLORED_ARMOR));
+		object.add(KEY_SWORDS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.SWORDS));
+		object.add(KEY_SWORDS_RARE, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.SWORDS_RARE));
+		object.add(KEY_PICKAXES, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.PICKAXES));
+		object.add(KEY_AXES, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.AXES));
+		object.add(KEY_ARMOR_STAGE_1, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_1));
+		object.add(KEY_ARMOR_STAGE_2, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_2));
+		object.add(KEY_ARMOR_STAGE_3, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_3));
+		object.add(KEY_ARMOR_RARE, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_SETS_RARE));
+		object.add(KEY_BOW_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BOW_ENCHANTMENTS));
+		object.add(KEY_SWORD_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.SWORD_ENCHANTMENTS));
+		object.add(KEY_PICKAXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.PICKAXE_ENCHANTMENTS));
+		object.add(KEY_AXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.AXE_ENCHANTMENTS));
+		object.add(KEY_ARMOR_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_ENCHANTMENTS));
+		object.add(KEY_ASSUMPTION_SEARCHLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ASSUMPTION_SEARCHLIST));
+		return object;
+	}
+
+	@Override
+	public HashMap<String, Object> getDefaults() {
+		return JsonConfigManager.DEFAULTS;
+	}
+
+	@Override
+	public String[] getKeys() {
+		return KEYS;
 	}
 
 }

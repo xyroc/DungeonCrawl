@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.config;
 
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
@@ -24,6 +24,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
 import xiroc.dungeoncrawl.dungeon.treasure.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 public class JsonConfig implements IJsonConfigurable {
 
@@ -60,6 +61,7 @@ public class JsonConfig implements IJsonConfigurable {
 		BASE = new JsonConfig();
 		load(BASE);
 		load(new EnchantedBook());
+		load(new Kitchen());
 		load(new Treasure());
 	}
 
@@ -95,7 +97,8 @@ public class JsonConfig implements IJsonConfigurable {
 		return getOrRewrite(object, name, configurable, false);
 	}
 
-	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable, boolean rerun) {
+	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable,
+			boolean rerun) {
 		if (object.get(name) != null) {
 			return object.get(name);
 		} else {
@@ -109,8 +112,8 @@ public class JsonConfig implements IJsonConfigurable {
 			JsonConfigManager.rewrite(configurable);
 			try {
 				return getOrRewrite(
-						DungeonCrawl.GSON.fromJson(new FileReader(configurable.getFile()), JsonObject.class),
-						name, configurable, true);
+						DungeonCrawl.GSON.fromJson(new FileReader(configurable.getFile()), JsonObject.class), name,
+						configurable, true);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return DungeonCrawl.GSON.toJsonTree(configurable.getDefaults().get(name));
@@ -233,7 +236,7 @@ public class JsonConfig implements IJsonConfigurable {
 				writer.flush();
 				writer.close();
 			} catch (Exception e1) {
-				DungeonCrawl.LOGGER.error("An error occured whilst trying to rewrite {}",  file.getAbsolutePath());
+				DungeonCrawl.LOGGER.error("An error occured whilst trying to rewrite {}", file.getAbsolutePath());
 				e1.printStackTrace();
 			}
 		}

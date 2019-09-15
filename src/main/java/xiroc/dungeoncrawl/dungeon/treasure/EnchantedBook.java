@@ -16,8 +16,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
-import xiroc.dungeoncrawl.util.JsonConfig;
 
 public class EnchantedBook implements IJsonConfigurable {
 
@@ -60,7 +60,7 @@ public class EnchantedBook implements IJsonConfigurable {
 
 	@Override
 	public File getFile() {
-		return FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/enchanted_book.json").toFile();
+		return FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/loot/enchanted_book.json").toFile();
 	}
 
 	@Override

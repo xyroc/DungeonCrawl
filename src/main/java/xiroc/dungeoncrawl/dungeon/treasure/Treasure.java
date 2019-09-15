@@ -12,10 +12,13 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.JsonConfig;
+import xiroc.dungeoncrawl.config.Kitchen;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
-import xiroc.dungeoncrawl.util.JsonConfig;
 
 public class Treasure implements IJsonConfigurable {
+	
+	public static final HashMap<Treasure.Type, TreasureLootTable> SPECIAL_LOOT_TABLES;
 
 	public static final HashMap<String, Object> DEFAULTS;
 	public static final String[] KEYS;
@@ -25,8 +28,7 @@ public class Treasure implements IJsonConfigurable {
 			KEY_CHEST_STAGE_3 = "chest_stage_3", KEY_CHEST_STAGE_3_OCEAN = "chest_stage_3_ocean",
 			KEY_DISPENSER_STAGE_1 = "dispenser_stage_1", KEY_DISPENSER_STAGE_2 = "dispenser_stage_2",
 			KEY_DISPENSER_STAGE_3 = "dispenser_stage_3", KEY_SPIDER_STAGE_1 = "spider_chest_stage_1",
-			KEY_SPIDER_STAGE_2 = "spider_chest_stage_2", KEY_SPIDER_STAGE_3 = "spider_chest_stage_3",
-			KEY_KITCHEN = "chest_kitchen";
+			KEY_SPIDER_STAGE_2 = "spider_chest_stage_2", KEY_SPIDER_STAGE_3 = "spider_chest_stage_3";
 
 	public static TreasureLootTable CHEST_STAGE_1, CHEST_STAGE_1_OCEAN;
 	public static TreasureLootTable CHEST_STAGE_2, CHEST_STAGE_2_OCEAN;
@@ -36,9 +38,12 @@ public class Treasure implements IJsonConfigurable {
 
 	public static TreasureLootTable DISPENSER_STAGE_1, DISPENSER_STAGE_2, DISPENSER_STAGE_3;
 
-	public static TreasureLootTable KITCHEN, SMELTERY, MINECART, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE;
+	public static TreasureLootTable SMELTERY, MINECART, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE;
 
 	static {
+		
+		SPECIAL_LOOT_TABLES = new HashMap<Type, TreasureLootTable>();
+
 		DEFAULTS = new HashMap<String, Object>();
 		DEFAULTS.put(KEY_CHEST_STAGE_1, new TreasureLootTable("dungeon_chest_stage_1", new RandomValueRange(3, 9),
 				new TreasureEntry("minecraft:coal", 1, 3, 3), new TreasureEntry("minecraft:iron_ingot", 1, 3, 2),
@@ -143,36 +148,15 @@ public class Treasure implements IJsonConfigurable {
 		DEFAULTS.put(KEY_DISPENSER_STAGE_3, new TreasureLootTable("dungeon_dispenser_stage_3",
 				new RandomValueRange(2, 4), new TreasureEntry("minecraft:arrow", 3, 9, 1)));
 
-		DEFAULTS.put(KEY_KITCHEN, new TreasureLootTable("kitchen", new RandomValueRange(6, 10),
-				new TreasureEntry("minecraft:apple", 1, 4, 3), new TreasureEntry("minecraft:mushroom_stew", 1),
-				new TreasureEntry("minecraft:bread", 1, 4, 2), new TreasureEntry("minecraft:porkchop", 1, 2, 3),
-				new TreasureEntry("minecraft:cooked_porkchop", 1, 2, 1), new TreasureEntry("minecraft:cod", 1, 3, 1),
-				new TreasureEntry("minecraft:salmon", 1, 3, 1), new TreasureEntry("minecraft:tropical_fish", 1),
-				new TreasureEntry("minecraft:pufferfish", 1, 3, 1), new TreasureEntry("minecraft:cooked_cod", 1, 3, 1),
-				new TreasureEntry("minecraft:cooked_salmon", 1, 3, 1), new TreasureEntry("minecraft:cake", 1),
-				new TreasureEntry("minecraft:cookie", 1, 6, 4), new TreasureEntry("minecraft:melon_slice", 1, 4, 2),
-				new TreasureEntry("minecraft:dried_kelp", 1), new TreasureEntry("minecraft:beef", 1, 2, 3),
-				new TreasureEntry("minecraft:cooked_beef", 1, 2, 1), new TreasureEntry("minecraft:chicken", 1, 2, 2),
-				new TreasureEntry("minecraft:cooked_chicken", 1, 2, 1),
-				new TreasureEntry("minecraft:rotten_flesh", 3, 8, 16),
-				new TreasureEntry("minecraft:spider_eye", 1, 4, 8), new TreasureEntry("minecraft:carrot", 3, 7, 3),
-				new TreasureEntry("minecraft:potato", 2, 5, 3), new TreasureEntry("minecraft:baked_potato", 1, 2, 1),
-				new TreasureEntry("minecraft:poisonous_potato", 1, 5, 9), new TreasureEntry("minecraft:pumpkin_pie", 1),
-				new TreasureEntry("minecraft:rabbit", 1, 2, 2), new TreasureEntry("minecraft:cooked_rabbit", 1),
-				new TreasureEntry("minecraft:rabbit_stew", 1), new TreasureEntry("minecraft:mutton", 1, 2, 2),
-				new TreasureEntry("minecraft:cooked_mutton", 1, 2, 1), new TreasureEntry("minecraft:beetroot", 3, 6, 5),
-				new TreasureEntry("minecraft:beetroot_soup", 3),
-				new TreasureEntry("minecraft:sweet_berries", 1, 3, 2)));
-
 		KEYS = new String[] { KEY_CHEST_STAGE_1, KEY_CHEST_STAGE_1_OCEAN, KEY_CHEST_STAGE_2, KEY_CHEST_STAGE_2_OCEAN,
 				KEY_CHEST_STAGE_3, KEY_CHEST_STAGE_3_OCEAN, KEY_DISPENSER_STAGE_1, KEY_DISPENSER_STAGE_2,
-				KEY_DISPENSER_STAGE_3, KEY_SPIDER_STAGE_1, KEY_SPIDER_STAGE_2, KEY_SPIDER_STAGE_3, KEY_KITCHEN };
+				KEY_DISPENSER_STAGE_3, KEY_SPIDER_STAGE_1, KEY_SPIDER_STAGE_2, KEY_SPIDER_STAGE_3 };
 
 	}
 
 	@Override
 	public File getFile() {
-		return FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/loot.json").toFile();
+		return FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/loot/loot.json").toFile();
 	}
 
 	@Override
@@ -183,22 +167,19 @@ public class Treasure implements IJsonConfigurable {
 				TreasureLootTable.class);
 		CHEST_STAGE_3 = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_CHEST_STAGE_3, this),
 				TreasureLootTable.class);
-		
+
 		CHEST_STAGE_1_OCEAN = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_CHEST_STAGE_1_OCEAN, this),
 				TreasureLootTable.class);
 		CHEST_STAGE_2_OCEAN = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_CHEST_STAGE_2_OCEAN, this),
 				TreasureLootTable.class);
 		CHEST_STAGE_3_OCEAN = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_CHEST_STAGE_3_OCEAN, this),
 				TreasureLootTable.class);
-		
+
 		DISPENSER_STAGE_1 = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_DISPENSER_STAGE_1, this),
 				TreasureLootTable.class);
 		DISPENSER_STAGE_2 = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_DISPENSER_STAGE_2, this),
 				TreasureLootTable.class);
 		DISPENSER_STAGE_3 = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_DISPENSER_STAGE_3, this),
-				TreasureLootTable.class);
-
-		KITCHEN = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_KITCHEN, this),
 				TreasureLootTable.class);
 
 		CHEST_STAGE_1.entries.add(TreasureItems.LAUDANUM.withWeight(5));
@@ -271,8 +252,8 @@ public class Treasure implements IJsonConfigurable {
 		DISPENSER_STAGE_1.build();
 		DISPENSER_STAGE_2.build();
 		DISPENSER_STAGE_3.build();
-
-		KITCHEN.build();
+		
+		SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Kitchen.KITCHEN);
 	}
 
 	@Override
@@ -289,7 +270,6 @@ public class Treasure implements IJsonConfigurable {
 		object.add(KEY_DISPENSER_STAGE_2, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_DISPENSER_STAGE_2)));
 		object.add(KEY_DISPENSER_STAGE_3, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_DISPENSER_STAGE_3)));
 
-		object.add(KEY_KITCHEN, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_KITCHEN)));
 		return object;
 	}
 
@@ -301,6 +281,42 @@ public class Treasure implements IJsonConfigurable {
 	@Override
 	public String[] getKeys() {
 		return KEYS;
+	}
+
+	/**
+	 * An enum to determine which LootTable should get used for chest, barrels,
+	 * etc...
+	 */
+	public enum Type {
+
+		DEFAULT, KITCHEN, SMELTERY, MINECART, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE;
+
+		public static final HashMap<Integer, Type> INT_TO_TYPE_MAP;
+		public static final HashMap<Type, Integer> TYPE_TO_INT_MAP;
+
+		static {
+			INT_TO_TYPE_MAP = new HashMap<Integer, Type>();
+			INT_TO_TYPE_MAP.put(0, DEFAULT);
+			INT_TO_TYPE_MAP.put(1, KITCHEN);
+			INT_TO_TYPE_MAP.put(2, SMELTERY);
+			INT_TO_TYPE_MAP.put(3, MINECART);
+			INT_TO_TYPE_MAP.put(4, SECRET_ROOM);
+			INT_TO_TYPE_MAP.put(5, LIBRARY);
+			INT_TO_TYPE_MAP.put(6, BUILDERS_ROOM);
+			INT_TO_TYPE_MAP.put(7, TREASURE);
+
+			TYPE_TO_INT_MAP = new HashMap<Type, Integer>();
+			INT_TO_TYPE_MAP.forEach((key, value) -> TYPE_TO_INT_MAP.put(value, key));
+		}
+
+		public static Type fromInt(int typeID) {
+			return INT_TO_TYPE_MAP.getOrDefault(typeID, DEFAULT);
+		}
+
+		public static int toInt(Type type) {
+			return TYPE_TO_INT_MAP.get(type);
+		}
+
 	}
 
 }

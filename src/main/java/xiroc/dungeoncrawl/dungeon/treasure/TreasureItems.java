@@ -43,7 +43,7 @@ public class TreasureItems {
 	public static final TreasureEntry ENCHANTED_BOOK;
 
 	public static final TreasureEntry MATERIAL_BLOCKS;
-
+	
 	// Enchantments
 
 	static {
@@ -181,16 +181,18 @@ public class TreasureItems {
 			LUMA = new TreasureEntry("minecraft:potion", 1).setNBT(nbt);
 		}
 
-//		{
-//			CompoundNBT nbt = new CompoundNBT();
-//			CompoundNBT display = createDisplayTag("Boots of Battle");
-//			display.putInt("color", 14067655);
-//			nbt.put("Display", display);
-//			BOOTS_OF_BATTLE = new TreasureEntry("minecraft:leather_boots", 1).setNBT(nbt)
-//					.withEnchantments(new ItemEnchantment[] { new ItemEnchantment(0, 0) });
-//		}
+		// {
+		// CompoundNBT nbt = new CompoundNBT();
+		// CompoundNBT display = createDisplayTag("Boots of Battle");
+		// display.putInt("color", 14067655);
+		// nbt.put("Display", display);
+		// BOOTS_OF_BATTLE = new TreasureEntry("minecraft:leather_boots",
+		// 1).setNBT(nbt)
+		// .withEnchantments(new ItemEnchantment[] { new ItemEnchantment(0, 0)
+		// });
+		// }
 
-		RANDOM_SPECIAL_ITEM = null;
+		RANDOM_SPECIAL_ITEM = new TreasureEntry("minecraft:air", 1).withProcessor(new RandomSpecialItem());
 
 		POTION_HEALING = new TreasureEntry("minecraft:potion", 1).setNBT(createPotionTag("minecraft:healing"));
 		POTION_HEALING_II = new TreasureEntry("minecraft:potion", 1)
@@ -216,8 +218,9 @@ public class TreasureItems {
 			return book;
 		});
 
-		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((rand, theme,
-				lootlevel) -> new ItemStack(ForgeRegistries.BLOCKS.getValue(MaterialBlocks.getMaterial(theme)), rand.nextInt(5 + lootlevel * 4)));
+		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((rand, theme, lootlevel) -> new ItemStack(
+				ForgeRegistries.BLOCKS.getValue(MaterialBlocks.getMaterial(theme)), rand.nextInt(5 + lootlevel * 4)));
+		
 	}
 
 	public static CompoundNBT createDisplayTag(String name, String... loreEntries) {

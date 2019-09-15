@@ -6,6 +6,9 @@ package xiroc.dungeoncrawl.util;
 
 import java.util.Random;
 
+/**
+ * Used to create random objects of various types.
+ */
 public interface IRandom<T> {
 
 	T roll(Random rand);

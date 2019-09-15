@@ -19,6 +19,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -35,21 +36,15 @@ public class DungeonSegmentTestHelper {
 				for (DungeonPiece piece : builder.build())
 					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null,
 							new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
-				// layer.testBuildToWorld(event.getWorld(), event.getPos());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
 				if (!event.getWorld().isRemote)
 					IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(event.getWorld(),
-							Blocks.CHEST.getDefaultState(), event.getPos(), event.getWorld().rand, 0, 3);
-//				event.getPlayer().addItemStackToInventory(TreasurePotions.LUMA.generate(new Random(), 0, 0));
+							Blocks.CHEST.getDefaultState(), event.getPos(), event.getWorld().rand, Treasure.Type.DEFAULT, 0, 3);
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_Banner")) {
 				event.getPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.HOLE_TRAP, event.getWorld(), event.getPos(),
-						Theme.TEST, 0);
-//				DungeonPiece piece = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
-//				piece.setRealPosition(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
-//				piece.theme = -1;
-//				piece.addComponentParts(event.getWorld(), event.getWorld().rand, new MutableBoundingBox(), new ChunkPos(event.getPos().getX() >> 4, event.getPos().getZ() >> 4));
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.ENTRANCE, event.getWorld(), event.getPos(),
+						Theme.TEST, Treasure.Type.DEFAULT, 0);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
 				DungeonCrawl.LOGGER.info("Not building a dungeon model at all...");
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ")) {
@@ -67,12 +62,6 @@ public class DungeonSegmentTestHelper {
 				DungeonCrawl.LOGGER
 						.info("Reading a custom sized dungeon model: " + width + "x" + height + "x" + length);
 				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), width, height, length);
-			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_PRINT")) {
-				if (event.getWorld().isRemote)
-					return;
-				DungeonCrawl.LOGGER.info("Printing a dungeon model...");
-				DungeonCrawl.LOGGER.info(
-						DungeonSegmentModelReader.readModelToArrayString(event.getWorld(), event.getPos(), 8, 8, 8));
 			}
 		}
 	}

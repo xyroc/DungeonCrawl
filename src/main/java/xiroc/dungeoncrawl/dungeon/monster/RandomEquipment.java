@@ -13,8 +13,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.util.IRandom;
-import xiroc.dungeoncrawl.util.JsonConfig;
 
 public class RandomEquipment {
 

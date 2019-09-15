@@ -91,7 +91,7 @@ public class TreasureEntry {
 
 	public static class ItemEnchantment {
 
-		ResourceLocation id; 
+		ResourceLocation id;
 		int level;
 
 		public ItemEnchantment(ResourceLocation id, int level) {

@@ -8,11 +8,12 @@ import java.util.Random;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
-import xiroc.dungeoncrawl.util.Config;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
@@ -64,19 +65,34 @@ public class DungeonLayer {
 			if (rand.nextFloat() < 0.1) {
 				Position2D largeRoomPos = getLargeRoomPos(additions[i]);
 				if (largeRoomPos != null) {
-					int roomID = 25; // TODO random large room ID
+					int roomID = getRandomLargeRoom(rand);
 					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+
+					part1.treasureType = 0;
+					part2.treasureType = 0;
+					part3.treasureType = 0;
+					part4.treasureType = 0;
+
+					part1.rotation = Rotation.NONE;
+					part2.rotation = Rotation.NONE;
+					part3.rotation = Rotation.NONE;
+					part4.rotation = Rotation.NONE;
+
+					part1.walls = part2.walls = part3.walls = part4.walls = true;
+
 					part1.set(roomID, 0, 0, 0, 8, 16, 8);
 					part2.set(roomID, 8, 0, 0, 8, 16, 8);
 					part3.set(roomID, 8, 0, 8, 8, 16, 8);
 					part4.set(roomID, 0, 0, 8, 8, 16, 8);
+
 					part1.setPosition(largeRoomPos.x, largeRoomPos.z);
 					part2.setPosition(largeRoomPos.x + 1, largeRoomPos.z);
 					part3.setPosition(largeRoomPos.x + 1, largeRoomPos.z + 1);
 					part4.setPosition(largeRoomPos.x, largeRoomPos.z + 1);
+
 					part1.sides[0] = false;
 					part1.sides[1] = true;
 					part1.sides[2] = true;
@@ -96,10 +112,12 @@ public class DungeonLayer {
 					part4.sides[1] = true;
 					part4.sides[2] = false;
 					part4.sides[3] = false;
+
 					this.segments[largeRoomPos.x][largeRoomPos.z] = part1;
 					this.segments[largeRoomPos.x + 1][largeRoomPos.z] = part2;
 					this.segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = part3;
 					this.segments[largeRoomPos.x][largeRoomPos.z + 1] = part4;
+
 					map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z));
 					map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z));
 					map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z + 1));
@@ -110,7 +128,7 @@ public class DungeonLayer {
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);
 			if (this.segments[additions[i].x][additions[i].z] != null) {
-				DungeonCrawl.LOGGER.info("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z
+				DungeonCrawl.LOGGER.debug("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z
 						+ "). " + " Replaced piece: " + this.segments[additions[i].x][additions[i].z]);
 				room.sides = this.segments[additions[i].x][additions[i].z].sides;
 				room.connectedSides = this.segments[additions[i].x][additions[i].z].connectedSides;
@@ -295,8 +313,9 @@ public class DungeonLayer {
 		}
 	}
 
-	// not tested specifically, but seems to be working anyway :D
 	public void rotatePiece(DungeonPiece piece) {
+		if(piece.getType() == 12)
+			return;
 		switch (piece.connectedSides) {
 		case 1:
 			piece.setRotation(RotationHelper.getRotationFromFacing(DungeonPiece.getOneWayDirection(piece)));
@@ -320,6 +339,31 @@ public class DungeonLayer {
 	public void processAddition(Position2D[] additions, Position2D start, Position2D end, Position2D one, Random rand) {
 		this.buildConnection(rand.nextBoolean() ? start : end, one);
 		this.buildConnection(one, additions[rand.nextInt(additions.length)]);
+	}
+
+	/**
+	 * Provides a random large room id.
+	 */
+	public static int getRandomLargeRoom(Random rand) {
+		return 25;
+	}
+
+	public boolean canPutDoubleRoom(Position2D pos, Direction direction) {
+//		DungeonCrawl.LOGGER.debug("[{}, {}] {}, {}", width, length, pos.x, pos.z);
+		if (!pos.isValid(width, length) || segments[pos.x][pos.z] != null)
+			return false;
+		switch (direction) {
+		case NORTH:
+			return pos.z > 0 && this.segments[pos.x][pos.z - 1] == null;
+		case EAST:
+			return pos.x < width - 1 && this.segments[pos.x + 1][pos.z] == null;
+		case SOUTH:
+			return pos.z < length - 1 && this.segments[pos.x][pos.z + 1] == null;
+		case WEST:
+			return pos.x > 0 && this.segments[pos.x - 1][pos.z] == null;
+		default:
+			return false;
+		}
 	}
 
 	public Position2D getLargeRoomPos(Position2D pos) {

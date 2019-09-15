@@ -6,7 +6,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -27,7 +27,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -57,9 +57,6 @@
         }
       ],
       [
-        {
-          "type": "WALL"
-        },
         {
           "type": "WALL"
         },
@@ -71,6 +68,8 @@
         },
         null,
         null,
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -79,33 +78,23 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "WALL"
         }
       ],
       [
         {
           "type": "WALL"
         },
-        {
-          "type": "WALL"
-        },
         null,
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
+        null,
+        null,
         {
           "type": "WALL"
         }
       ],
       [
-        {
-          "type": "WALL"
-        },
         {
           "type": "WALL"
         },
@@ -117,14 +106,13 @@
         },
         null,
         null,
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
           "waterlogged": false,
           "half": "TOP"
-        },
-        {
-          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -192,7 +180,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -247,29 +235,20 @@
           "type": "WALL"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
         },
         {
-          "type": "FLOOR_STAIRS",
-          "facing": "NORTH",
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
           "waterlogged": false,
           "half": "BOTTOM"
-        },
-        null,
-        null,
-        {
-          "type": "FLOOR_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "WALL_LOG",
-          "axis": "Y"
-        },
-        {
-          "type": "WALL"
         }
       ],
       [
@@ -277,43 +256,25 @@
           "type": "WALL"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
+          "type": "WALL"
         },
         null,
         null,
         null,
-        {
-          "type": "OTHER",
-          "facing": "NORTH",
-          "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "redstone_wall_torch"
-          }
-        },
-        {
-          "type": "WALL_LOG",
-          "axis": "Y"
-        },
+        null,
         {
           "type": "WALL"
-        }
+        },
+        null
       ],
       [
         {
           "type": "WALL"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
+          "type": "WALL"
         },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
+        null,
         null,
         null,
         {
@@ -323,11 +284,13 @@
           "half": "TOP"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
+          "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
         }
       ],
       [
@@ -364,7 +327,7 @@
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -392,7 +355,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -418,26 +381,22 @@
       ],
       [
         {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "FLOOR"
+        },
+        {
           "type": "FLOOR"
         },
         {
           "type": "FLOOR"
         },
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "EAST",
-          "waterlogged": false
-        },
-        {
           "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "EAST",
-          "waterlogged": false
         },
         {
           "type": "FLOOR"
@@ -448,48 +407,25 @@
       ],
       [
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "FLOOR_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "TRAPDOOR",
-          "facing": "EAST",
-          "waterlogged": false,
-          "open": false,
-          "half": "BOTTOM"
-        },
-        null,
-        null,
-        {
-          "type": "TRAPDOOR",
-          "facing": "EAST",
-          "waterlogged": false,
-          "open": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "FLOOR_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "BOTTOM"
+          "type": "WALL"
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "WEST",
+          "facing": "NORTH",
           "waterlogged": false,
           "half": "BOTTOM"
-        }
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       [
-        null,
+        {
+          "type": "WALL"
+        },
         null,
         null,
         null,
@@ -500,14 +436,11 @@
       ],
       [
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "WEST",
+          "facing": "NORTH",
           "waterlogged": false,
           "half": "TOP"
         },
@@ -521,12 +454,7 @@
           "waterlogged": false,
           "half": "TOP"
         },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
-        }
+        null
       ],
       [
         {
@@ -562,7 +490,7 @@
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -590,7 +518,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -616,10 +544,10 @@
       ],
       [
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
           "type": "FLOOR"
@@ -641,53 +569,56 @@
         }
       ],
       [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      [
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
         },
         {
           "type": "CEILING_STAIRS",
@@ -697,32 +628,23 @@
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "WEST",
+          "facing": "SOUTH",
           "waterlogged": false,
           "half": "TOP"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "WEST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         }
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -750,7 +672,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -776,10 +698,10 @@
       ],
       [
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
           "type": "FLOOR"
@@ -801,28 +723,12 @@
         }
       ],
       [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
-      [
-        null,
-        null,
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
         null,
         null,
         null,
@@ -832,26 +738,45 @@
       ],
       [
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
+          "facing": "NORTH",
           "waterlogged": false,
           "half": "TOP"
         },
@@ -862,27 +787,18 @@
           "half": "TOP"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         }
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -910,7 +826,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -936,26 +852,22 @@
       ],
       [
         {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "FLOOR"
+        },
+        {
           "type": "FLOOR"
         },
         {
           "type": "FLOOR"
         },
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "WEST",
-          "waterlogged": false
-        },
-        {
           "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "WEST",
-          "waterlogged": false
         },
         {
           "type": "FLOOR"
@@ -966,48 +878,25 @@
       ],
       [
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "FLOOR_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "TRAPDOOR",
-          "facing": "WEST",
-          "waterlogged": false,
-          "open": false,
-          "half": "BOTTOM"
-        },
-        null,
-        null,
-        {
-          "type": "TRAPDOOR",
-          "facing": "WEST",
-          "waterlogged": false,
-          "open": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "FLOOR_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "BOTTOM"
+          "type": "WALL"
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "EAST",
+          "facing": "NORTH",
           "waterlogged": false,
           "half": "BOTTOM"
-        }
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
       ],
       [
-        null,
+        {
+          "type": "WALL"
+        },
         null,
         null,
         null,
@@ -1018,14 +907,11 @@
       ],
       [
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "EAST",
+          "facing": "NORTH",
           "waterlogged": false,
           "half": "TOP"
         },
@@ -1039,12 +925,7 @@
           "waterlogged": false,
           "half": "TOP"
         },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
-        }
+        null
       ],
       [
         {
@@ -1080,7 +961,7 @@
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1108,7 +989,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1163,29 +1044,20 @@
           "type": "WALL"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
         },
         {
-          "type": "FLOOR_STAIRS",
-          "facing": "NORTH",
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
           "waterlogged": false,
           "half": "BOTTOM"
-        },
-        null,
-        null,
-        {
-          "type": "FLOOR_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "WALL_LOG",
-          "axis": "Y"
-        },
-        {
-          "type": "WALL"
         }
       ],
       [
@@ -1193,43 +1065,25 @@
           "type": "WALL"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
-        },
-        {
-          "type": "OTHER",
-          "facing": "SOUTH",
-          "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "redstone_wall_torch"
-          }
+          "type": "WALL"
         },
         null,
         null,
         null,
-        {
-          "type": "WALL_LOG",
-          "axis": "Y"
-        },
+        null,
         {
           "type": "WALL"
-        }
+        },
+        null
       ],
       [
         {
           "type": "WALL"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
+          "type": "WALL"
         },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
+        null,
         null,
         null,
         {
@@ -1239,11 +1093,13 @@
           "half": "TOP"
         },
         {
-          "type": "WALL_LOG",
-          "axis": "Y"
+          "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
         }
       ],
       [
@@ -1280,7 +1136,7 @@
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1308,7 +1164,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1329,7 +1185,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -1359,9 +1215,6 @@
         }
       ],
       [
-        {
-          "type": "WALL"
-        },
         {
           "type": "WALL"
         },
@@ -1373,6 +1226,8 @@
         },
         null,
         null,
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -1381,33 +1236,23 @@
         },
         {
           "type": "WALL"
-        },
-        {
-          "type": "WALL"
         }
       ],
       [
         {
           "type": "WALL"
         },
-        {
-          "type": "WALL"
-        },
         null,
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
+        null,
+        null,
         {
           "type": "WALL"
         }
       ],
       [
-        {
-          "type": "WALL"
-        },
         {
           "type": "WALL"
         },
@@ -1419,14 +1264,13 @@
         },
         null,
         null,
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
           "waterlogged": false,
           "half": "TOP"
-        },
-        {
-          "type": "WALL"
         },
         {
           "type": "WALL"

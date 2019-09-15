@@ -6,7 +6,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -27,7 +27,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -287,7 +287,8 @@
         null,
         {
           "type": "BARREL",
-          "facing": "NORTH"
+          "facing": "NORTH",
+          "open": false
         },
         {
           "type": "WALL"
@@ -488,7 +489,8 @@
         null,
         {
           "type": "BARREL",
-          "facing": "EAST"
+          "facing": "EAST",
+          "open": false
         },
         {
           "type": "CEILING_STAIRS",
@@ -1002,7 +1004,8 @@
         },
         {
           "type": "BARREL",
-          "facing": "WEST"
+          "facing": "WEST",
+          "open": false
         },
         null,
         null,
@@ -1010,7 +1013,8 @@
         null,
         {
           "type": "BARREL",
-          "facing": "WEST"
+          "facing": "WEST",
+          "open": false
         },
         {
           "type": "CEILING_STAIRS",
@@ -1204,7 +1208,8 @@
         },
         {
           "type": "BARREL",
-          "facing": "SOUTH"
+          "facing": "SOUTH",
+          "open": false
         },
         null,
         null,
@@ -1351,7 +1356,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1372,7 +1377,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [

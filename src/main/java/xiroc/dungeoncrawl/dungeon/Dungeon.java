@@ -27,11 +27,11 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
-import xiroc.dungeoncrawl.util.Config;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
-
+		
 	public static final String NAME = "DCDungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
 	public static final Structure<NoFeatureConfig> DUNGEON_FEATURE = registerFeature(
@@ -150,6 +150,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 		return (F) (Registry.<Feature<?>>register(Registry.FEATURE, key, value));
 	}
 
+	@SuppressWarnings("deprecation")
 	public static Structure<?> registerStructure(String key, Structure<?> p_215141_1_) {
 		return Registry.register(Registry.STRUCTURE_FEATURE, key.toLowerCase(Locale.ROOT), p_215141_1_);
 	}

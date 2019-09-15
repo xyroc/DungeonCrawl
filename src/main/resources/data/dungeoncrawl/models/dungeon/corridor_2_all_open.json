@@ -6,7 +6,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -27,7 +27,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -240,32 +240,10 @@
         {
           "type": "WALL"
         },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
         null,
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
+        null,
+        null,
         {
           "type": "WALL"
         },
@@ -281,32 +259,10 @@
         {
           "type": "WALL"
         },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
         null,
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
+        null,
+        null,
         {
           "type": "WALL"
         },
@@ -323,30 +279,18 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
+          "type": "CEILING_STAIRS",
+          "facing": "NORTH",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         null,
         null,
         {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
+          "type": "CEILING_STAIRS",
+          "facing": "SOUTH",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -472,97 +416,41 @@
       ],
       [
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": false,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
         null,
         null,
         null,
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": false,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null
       ],
       [
         null,
         {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": false,
-          "west": true,
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         null,
         null,
         null,
         null,
         {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": false,
-          "west": true,
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null
-      ],
-      [
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": false,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": false,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         null
       ],
@@ -1000,97 +888,41 @@
       ],
       [
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
         null,
         null,
         null,
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
+        null,
+        null,
+        null
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         null
       ],
       [
         null,
         {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": false,
-          "west": false,
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         null,
         null,
         null,
         null,
         {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": false,
-          "west": false,
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null
-      ],
-      [
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         null
       ],
@@ -1216,32 +1048,10 @@
         {
           "type": "WALL"
         },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
         null,
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
+        null,
+        null,
         {
           "type": "WALL"
         },
@@ -1257,32 +1067,10 @@
         {
           "type": "WALL"
         },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
         null,
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
+        null,
+        null,
         {
           "type": "WALL"
         },
@@ -1299,30 +1087,18 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
+          "type": "CEILING_STAIRS",
+          "facing": "NORTH",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         null,
         null,
         {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
+          "type": "CEILING_STAIRS",
+          "facing": "SOUTH",
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "half": "TOP"
         },
         {
           "type": "WALL"
@@ -1396,7 +1172,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1417,7 +1193,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [

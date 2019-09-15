@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import xiroc.dungeoncrawl.theme.Theme;
 
 public class MaterialBlocks {
-	
+
 	public static ResourceLocation getMaterial(int theme) {
 		return Theme.ID_TO_THEME_MAP.get(theme).material.get().getBlock().getRegistryName();
 	}

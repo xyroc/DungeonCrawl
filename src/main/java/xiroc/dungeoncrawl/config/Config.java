@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.config;
 
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
@@ -64,7 +64,9 @@ public class Config {
 				"If set to true, the dungeon generation will ignore the dimension and use only the biome blacklists to determine generation eligibility.")
 				.define("ignore_dimension", false);
 		BUILDER.pop();
-
+		
+		BUILDER.comment("There are a lot more other config options in config/DungeonCrawl.").push("Information");
+		
 		CONFIG = BUILDER.build();
 	}
 

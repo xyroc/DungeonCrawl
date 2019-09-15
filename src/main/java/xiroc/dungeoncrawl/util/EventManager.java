@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 
 @EventBusSubscriber(modid = DungeonCrawl.MODID, bus = Bus.MOD)

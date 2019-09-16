@@ -62,6 +62,7 @@ public class JsonConfig implements IJsonConfigurable {
 		load(BASE);
 		load(new EnchantedBook());
 		load(new Kitchen());
+		load(new TreasureRoom());
 		load(new Treasure());
 	}
 

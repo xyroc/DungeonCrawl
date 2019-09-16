@@ -261,7 +261,9 @@ public class DungeonPieces {
 								Treasure.Type.DEFAULT, stage, rotation);
 					return true;
 				case 3:
-					buildRotated(DungeonSegmentModelRegistry.BRIDGE_SIDE, worldIn, new BlockPos(x, y - 1, z),
+					buildRotated(DungeonSegmentModelRegistry.BRIDGE_SIDE, worldIn,
+							new BlockPos(sides[1] ? sides[3] ? x : x + 1 : x, y - 1,
+									sides[2] ? sides[0] ? z : z + 1 : z),
 							Theme.get(theme), Treasure.Type.DEFAULT, stage, rotation);
 					return true;
 				case 4:
@@ -768,8 +770,9 @@ public class DungeonPieces {
 							if (model.model[x + xStart][y + yStart][z + zStart] == null)
 								state = Blocks.AIR.getDefaultState();
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x + xStart][y + yStart][z + zStart], theme,
-										world.getRandom(), lootLevel, Rotation.CLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(
+										model.model[x + xStart][y + yStart][z + zStart], theme, world.getRandom(),
+										lootLevel, Rotation.CLOCKWISE_90);
 							if (state == null)
 								continue;
 							setBlockState(state, world, treasureType, pos.getX() + length - z - 1, pos.getY() + y,
@@ -786,8 +789,9 @@ public class DungeonPieces {
 							if (model.model[x + xStart][y + yStart][z + zStart] == null)
 								state = Blocks.AIR.getDefaultState();
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x + xStart][y + yStart][z + zStart], theme,
-										world.getRandom(), lootLevel, Rotation.COUNTERCLOCKWISE_90);
+								state = DungeonSegmentModelBlock.getBlockState(
+										model.model[x + xStart][y + yStart][z + zStart], theme, world.getRandom(),
+										lootLevel, Rotation.COUNTERCLOCKWISE_90);
 							if (state == null)
 								continue;
 							setBlockState(state, world, treasureType, pos.getX() + z, pos.getY() + y,
@@ -804,8 +808,9 @@ public class DungeonPieces {
 							if (model.model[x + xStart][y + yStart][z + zStart] == null)
 								state = Blocks.AIR.getDefaultState();
 							else
-								state = DungeonSegmentModelBlock.getBlockState(model.model[x + xStart][y + yStart][z + zStart], theme,
-										world.getRandom(), lootLevel, Rotation.CLOCKWISE_180);
+								state = DungeonSegmentModelBlock.getBlockState(
+										model.model[x + xStart][y + yStart][z + zStart], theme, world.getRandom(),
+										lootLevel, Rotation.CLOCKWISE_180);
 							if (state == null)
 								continue;
 							setBlockState(state, world, treasureType, pos.getX() + width - x - 1, pos.getY() + y,

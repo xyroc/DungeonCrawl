@@ -65,15 +65,16 @@ public class DungeonCrawl {
 		MinecraftForge.EVENT_BUS.register(new EventManager());
 		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
 		Feature.STRUCTURES.put(Dungeon.NAME.toLowerCase(Locale.ROOT), Dungeon.DUNGEON_FEATURE);
-		DungeonSegmentModelBlock.load();
-		IBlockPlacementHandler.load();
-		BlockRegistry.load();
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		LOGGER.info("Common Setup");
 		ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
 		Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
+		
+		DungeonSegmentModelBlock.load();
+		IBlockPlacementHandler.load();
+		BlockRegistry.load();
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {

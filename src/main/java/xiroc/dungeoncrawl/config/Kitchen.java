@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.config;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.io.File;
 import java.util.HashMap;
 

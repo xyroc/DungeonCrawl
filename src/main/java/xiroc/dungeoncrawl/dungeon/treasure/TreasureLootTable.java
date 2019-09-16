@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.ArrayList;
 
 /*

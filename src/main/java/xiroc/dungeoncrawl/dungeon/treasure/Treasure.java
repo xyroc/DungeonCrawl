@@ -14,6 +14,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.config.Kitchen;
+import xiroc.dungeoncrawl.config.TreasureRoom;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 public class Treasure implements IJsonConfigurable {
@@ -182,15 +183,17 @@ public class Treasure implements IJsonConfigurable {
 		DISPENSER_STAGE_3 = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_DISPENSER_STAGE_3, this),
 				TreasureLootTable.class);
 
-		CHEST_STAGE_1.entries.add(TreasureItems.LAUDANUM.withWeight(5));
+		CHEST_STAGE_1.entries.add(TreasureItems.LAUDANUM.withWeight(2));
 		CHEST_STAGE_1.entries.add(TreasureItems.POTION_HEALING);
 		CHEST_STAGE_1.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_1.entries.add(TreasureItems.MATERIAL_BLOCKS);
+		CHEST_STAGE_1.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
 
-		CHEST_STAGE_1_OCEAN.entries.add(TreasureItems.LAUDANUM.withWeight(5));
+		CHEST_STAGE_1_OCEAN.entries.add(TreasureItems.LAUDANUM.withWeight(2));
 		CHEST_STAGE_1_OCEAN.entries.add(TreasureItems.POTION_HEALING);
 		CHEST_STAGE_1_OCEAN.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_1_OCEAN.entries.add(TreasureItems.MATERIAL_BLOCKS);
+		CHEST_STAGE_1_OCEAN.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
 
 		CHEST_STAGE_2.entries.add(TreasureItems.LAUDANUM.withWeight(3));
 		CHEST_STAGE_2.entries.add(TreasureItems.ANIMUS);
@@ -201,6 +204,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_2.entries.add(TreasureItems.POTION_REGENERATION);
 		CHEST_STAGE_2.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_2.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(4));
+		CHEST_STAGE_2.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
 
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.LAUDANUM.withWeight(3));
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.ANIMUS);
@@ -211,6 +215,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.POTION_REGENERATION);
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(4));
+		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
 
 		CHEST_STAGE_3.entries.add(TreasureItems.LAUDANUM.withWeight(3));
 		CHEST_STAGE_3.entries.add(TreasureItems.ANIMUS);
@@ -222,6 +227,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_3.entries.add(TreasureItems.POTION_REGENERATION_LONG);
 		CHEST_STAGE_3.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_3.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(3));
+		CHEST_STAGE_3.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
 
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.LAUDANUM.withWeight(3));
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.ANIMUS);
@@ -233,6 +239,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.POTION_REGENERATION_LONG);
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(3));
+		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
 
 		DISPENSER_STAGE_1.entries.add(TreasureItems.SPLASH_POISON);
 
@@ -254,6 +261,8 @@ public class Treasure implements IJsonConfigurable {
 		DISPENSER_STAGE_3.build();
 		
 		SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Kitchen.KITCHEN);
+		
+		SPECIAL_LOOT_TABLES.put(Type.TREASURE, TreasureRoom.TREASURE);
 	}
 
 	@Override

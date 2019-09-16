@@ -39,7 +39,7 @@ public class DungeonSegmentTestHelper {
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
 				if (!event.getWorld().isRemote)
 					IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(event.getWorld(),
-							Blocks.CHEST.getDefaultState(), event.getPos(), event.getWorld().rand, Treasure.Type.DEFAULT, 0, 3);
+							Blocks.CHEST.getDefaultState(), event.getPos(), event.getWorld().rand, Treasure.Type.TREASURE, 0, 5);
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_Banner")) {
 				event.getPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {

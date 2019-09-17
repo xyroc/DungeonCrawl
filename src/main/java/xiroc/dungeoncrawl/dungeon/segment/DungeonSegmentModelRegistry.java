@@ -307,6 +307,8 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel ENTRANCE;
 	
 	public static DungeonSegmentModel KITCHEN;
+	
+	public static DungeonSegmentModel LOOT_ROOM;
 
 	public static void load(IResourceManager resourceManager) {
 		if (LOADED)
@@ -347,6 +349,8 @@ public class DungeonSegmentModelRegistry {
 		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.json", resourceManager).setId(26);
 		
 		KITCHEN = loadFromFile("models/dungeon/kitchen.json", resourceManager).setId(27);
+		
+		LOOT_ROOM = loadFromFile("models/dungeon/loot_room.json", resourceManager).setId(28);
 
 		LOADED = true;
 	}

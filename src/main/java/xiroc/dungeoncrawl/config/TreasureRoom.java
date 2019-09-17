@@ -29,12 +29,12 @@ public class TreasureRoom implements IJsonConfigurable {
 
 	static {
 		DEFAULTS = new HashMap<String, Object>();
-		DEFAULTS.put(KEY_TREASURE, new TreasureLootTable(KEY_TREASURE, new RandomValueRange(10, 12),
+		DEFAULTS.put(KEY_TREASURE, new TreasureLootTable(KEY_TREASURE, new RandomValueRange(12, 12),
 				new TreasureEntry[] { new TreasureEntry("minecraft:experience_bottle", 12, 36, 2),
 						new TreasureEntry("minecraft:gold_nugget", 8, 56, 4),
-						new TreasureEntry("minecraft:diamond", 1, 6, 3),
+						new TreasureEntry("minecraft:diamond", 1, 4, 5),
 						new TreasureEntry("minecraft:iron_ingot", 8, 24, 6),
-						new TreasureEntry("minecraft:cobweb", 2, 6, 4),
+						new TreasureEntry("minecraft:cobweb", 2, 6, 2),
 						new TreasureEntry("minecraft:enchanted_golden_apple", 1),
 						new TreasureEntry("minecraft:diamond_helmet", 1),
 						new TreasureEntry("minecraft:diamond_chestplate", 1),
@@ -58,7 +58,7 @@ public class TreasureRoom implements IJsonConfigurable {
 		TREASURE = DungeonCrawl.GSON.fromJson(object.get(KEY_TREASURE), TreasureLootTable.class);
 
 		TREASURE.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(10));
-		TREASURE.entries.add(TreasureItems.ENCHANTED_BOOK.withWeight(3));
+		TREASURE.entries.add(TreasureItems.ENCHANTED_BOOK.withWeight(5));
 		TREASURE.entries.add(TreasureItems.POTION_REGENERATION_II);
 		TREASURE.entries.add(TreasureItems.NECTAR);
 		TREASURE.entries.add(TreasureItems.MATERIAL_BLOCKS);

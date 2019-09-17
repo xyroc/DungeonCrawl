@@ -196,7 +196,7 @@ public class RandomEquipment {
 
 	public static double getStageMultiplier(int stage) {
 		if (stage > 2)
-			return 2.0D;
+			return 1.0D;
 		return 1D * Math.pow(0.5, HIGHEST_STAGE - stage);
 	}
 

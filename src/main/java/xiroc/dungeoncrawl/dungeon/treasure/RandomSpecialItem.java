@@ -23,7 +23,8 @@ public class RandomSpecialItem implements ItemProcessor<Random, Integer, Integer
 
 	public static final ItemStack[] RARE_ITEMS;
 
-	public static final ItemStack REINFORCED_BOW, BOOTS_OF_BATTLE, PANTS_OF_DEFLECTION, LUMBERJACKET, YOKEL_AXE, DOOM, THE_SLAYER, DEMON_HUNTER_CROSSBOW;
+	public static final ItemStack REINFORCED_BOW, BOOTS_OF_BATTLE, PANTS_OF_DEFLECTION, LUMBERJACKET, YOKEL_AXE, DOOM,
+			THE_SLAYER, DEMON_HUNTER_CROSSBOW;
 
 	static {
 		REINFORCED_BOW = new ItemStack(Items.BOW);
@@ -36,19 +37,19 @@ public class RandomSpecialItem implements ItemProcessor<Random, Integer, Integer
 		BOOTS_OF_BATTLE.addEnchantment(Enchantments.UNBREAKING, 1);
 		BOOTS_OF_BATTLE.addEnchantment(Enchantments.PROTECTION, 1);
 		BOOTS_OF_BATTLE.setDisplayName(new StringTextComponent("Boots of Battle"));
-		
+
 		PANTS_OF_DEFLECTION = new ItemStack(Items.LEATHER_LEGGINGS);
 		RandomEquipment.setArmorColor(PANTS_OF_DEFLECTION, COLOR);
 		PANTS_OF_DEFLECTION.addEnchantment(Enchantments.PROTECTION, 2);
 		PANTS_OF_DEFLECTION.addEnchantment(Enchantments.THORNS, 1);
 		PANTS_OF_DEFLECTION.setDisplayName(new StringTextComponent("Pants of Deflection"));
-		
+
 		LUMBERJACKET = new ItemStack(Items.LEATHER_CHESTPLATE);
 		RandomEquipment.setArmorColor(LUMBERJACKET, 11546150);
 		LUMBERJACKET.addEnchantment(Enchantments.UNBREAKING, 3);
 		LUMBERJACKET.addEnchantment(Enchantments.FIRE_PROTECTION, 1);
 		LUMBERJACKET.setDisplayName(new StringTextComponent("Lumberjacket"));
-		
+
 		YOKEL_AXE = new ItemStack(Items.IRON_AXE);
 		YOKEL_AXE.addEnchantment(Enchantments.EFFICIENCY, 2);
 		YOKEL_AXE.addEnchantment(Enchantments.SHARPNESS, 1);

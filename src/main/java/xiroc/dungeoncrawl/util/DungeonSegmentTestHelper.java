@@ -43,7 +43,7 @@ public class DungeonSegmentTestHelper {
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_Banner")) {
 				event.getPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
-				DungeonSegmentModel.build(DungeonSegmentModelRegistry.ENTRANCE, event.getWorld(), event.getPos(),
+				DungeonSegmentModel.build(DungeonSegmentModelRegistry.LARGE_ROOM, event.getWorld(), event.getPos(),
 						Theme.TEST, Treasure.Type.DEFAULT, 0);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
 				DungeonCrawl.LOGGER.info("Not building a dungeon model at all...");

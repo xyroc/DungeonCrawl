@@ -129,7 +129,7 @@ public class DungeonSegmentModelBlock {
 	 * Registers all BlockState providers.
 	 */
 	public static void load() {
-		PROVIDERS.put(DungeonSegmentModelBlockType.NONE, (block, theme, rand, stage) -> null);
+		PROVIDERS.put(DungeonSegmentModelBlockType.NONE, (block, theme, rand, stage) ->	null);
 		PROVIDERS.put(DungeonSegmentModelBlockType.BARREL, (block, theme, rand, stage) -> Blocks.BARREL
 				.getDefaultState().with(BarrelBlock.PROPERTY_FACING, block.facing));
 		PROVIDERS.put(DungeonSegmentModelBlockType.MATERIAL,

@@ -1,5 +1,8 @@
 package xiroc.dungeoncrawl.dungeon;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
@@ -11,6 +14,7 @@ import java.util.function.Function;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.util.SharedSeedRandom;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.Registry;
@@ -31,7 +35,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
-		
+
 	public static final String NAME = "DCDungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
 	public static final Structure<NoFeatureConfig> DUNGEON_FEATURE = registerFeature(
@@ -123,6 +127,42 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 		@Override
 		public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
 				Biome biomeIn) {
+			/*
+			 * Some Reflection stuff. I dont like this but it is the only way I know
+			 * currently.
+			 */
+			try {
+				Field world = ChunkGenerator.class.getDeclaredField("world");
+				world.setAccessible(true);
+
+				Field modifierField = Field.class.getDeclaredField("modifiers");
+				modifierField.setAccessible(true);
+				modifierField.setInt(world, world.getModifiers() & ~Modifier.FINAL);
+
+				DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
+
+				ServerWorld serverWorld = (ServerWorld) world.get(generator);
+				BlockPos spawn = serverWorld.getSpawnPoint();
+
+				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16;
+
+				if (serverWorld.getDimension().getType() != DimensionType.OVERWORLD
+						|| spawnChunkX - chunkX < 8 && spawnChunkX - chunkX > -8
+						|| spawnChunkZ - chunkZ < 8 && spawnChunkZ - chunkZ > -8)
+					return;
+
+				/* Undoing everything */
+
+				modifierField.setInt(world, Modifier.PRIVATE & Modifier.FINAL); // TODO Does this work as intended?
+				modifierField.setAccessible(false);
+				world.setAccessible(false);
+
+			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
+				DungeonCrawl.LOGGER.error(
+						"Failed to access the chunkGen world through reflection. This might result in dungeons getting generated near the spawn chunk.");
+				e.printStackTrace();
+			}
+
 			ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
 			long now = System.currentTimeMillis();
 			DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);

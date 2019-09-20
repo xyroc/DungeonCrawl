@@ -80,7 +80,7 @@ public class RandomSpecialItem implements ItemProcessor<Random, Integer, Integer
 
 	@Override
 	public ItemStack generate(Random rand, Integer theme, Integer lootLevel) {
-		if (rand.nextDouble() < 0.075 * lootLevel)
+		if (lootLevel > 4 || rand.nextDouble() < 0.025 * lootLevel)
 			return RARE_ITEMS[rand.nextInt(RARE_ITEMS.length)].copy();
 		return ITEMS[rand.nextInt(ITEMS.length)].copy();
 	}

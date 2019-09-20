@@ -38,6 +38,15 @@ public class DungeonSegmentModel {
 		this.id = id;
 		return this;
 	}
+
+	public DungeonSegmentModel build() {
+		for (int x = 0; x < width; x++)
+			for (int y = 0; y < height; y++)
+				for (int z = 0; z < length; z++)
+					if (model[x][y][z] != null && model[x][y][z].type == DungeonSegmentModelBlockType.OTHER)
+						model[x][y][z].readResourceLocation();
+		return this;
+	}
 	/*
 	 * Test functions
 	 */
@@ -51,7 +60,8 @@ public class DungeonSegmentModel {
 					if (model.model[x][y][z] == null)
 						state = Blocks.AIR.getDefaultState();
 					else
-						state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(), 0);
+						state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(),
+								0);
 					if (state == null)
 						continue;
 					world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), state, 2);

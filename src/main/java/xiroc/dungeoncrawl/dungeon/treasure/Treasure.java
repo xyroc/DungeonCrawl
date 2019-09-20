@@ -18,7 +18,7 @@ import xiroc.dungeoncrawl.config.TreasureRoom;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 public class Treasure implements IJsonConfigurable {
-	
+
 	public static final HashMap<Treasure.Type, TreasureLootTable> SPECIAL_LOOT_TABLES;
 
 	public static final HashMap<String, Object> DEFAULTS;
@@ -42,7 +42,7 @@ public class Treasure implements IJsonConfigurable {
 	public static TreasureLootTable SMELTERY, MINECART, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE;
 
 	static {
-		
+
 		SPECIAL_LOOT_TABLES = new HashMap<Type, TreasureLootTable>();
 
 		DEFAULTS = new HashMap<String, Object>();
@@ -259,9 +259,9 @@ public class Treasure implements IJsonConfigurable {
 		DISPENSER_STAGE_1.build();
 		DISPENSER_STAGE_2.build();
 		DISPENSER_STAGE_3.build();
-		
+
 		SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Kitchen.KITCHEN);
-		
+
 		SPECIAL_LOOT_TABLES.put(Type.TREASURE, TreasureRoom.TREASURE);
 	}
 
@@ -290,6 +290,16 @@ public class Treasure implements IJsonConfigurable {
 	@Override
 	public String[] getKeys() {
 		return KEYS;
+	}
+
+	@Override
+	public int getVersion() {
+		return 0;
+	}
+
+	@Override
+	public boolean deleteOldVersion() {
+		return false;
 	}
 
 	/**

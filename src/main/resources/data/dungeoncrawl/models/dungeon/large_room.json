@@ -1317,7 +1317,7 @@
           "type": "WALL"
         },
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "EAST",
           "waterlogged": false
         },
@@ -3777,10 +3777,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -3818,10 +3815,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -4469,7 +4463,7 @@
         null,
         null,
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "NORTH",
           "waterlogged": false
         },
@@ -4734,10 +4728,7 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "water"
-          }
+          "resourceName": "minecraft:water"
         },
         {
           "type": "FLOOR"
@@ -4769,7 +4760,7 @@
           "type": "RAND_WALL_AIR"
         },
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "WEST",
           "waterlogged": false
         },
@@ -5223,10 +5214,7 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "water"
-          }
+          "resourceName": "minecraft:water"
         },
         {
           "type": "WALL"
@@ -5263,10 +5251,7 @@
           "south": false,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -5283,10 +5268,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         }
       ],
       [
@@ -5309,10 +5291,7 @@
           "south": false,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -5329,10 +5308,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         }
       ],
       [
@@ -5457,7 +5433,7 @@
           "type": "WALL"
         },
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "SOUTH",
           "waterlogged": false
         },
@@ -5469,10 +5445,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -5514,10 +5487,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -5737,20 +5707,14 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "water"
-          }
+          "resourceName": "minecraft:water"
         },
         {
           "type": "WALL"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "water"
-          }
+          "resourceName": "minecraft:water"
         },
         {
           "type": "FLOOR"
@@ -5792,10 +5756,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         }
       ],
       [
@@ -5831,10 +5792,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         }
       ],
       [
@@ -5975,10 +5933,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -6013,10 +5968,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -6046,10 +5998,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -6238,10 +6187,7 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "water"
-          }
+          "resourceName": "minecraft:water"
         },
         {
           "type": "FLOOR"
@@ -6455,7 +6401,7 @@
         null,
         null,
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "NORTH",
           "waterlogged": false
         },
@@ -7250,10 +7196,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "OTHER",
@@ -7262,10 +7205,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -7310,10 +7250,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "OTHER",
@@ -7322,10 +7259,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"

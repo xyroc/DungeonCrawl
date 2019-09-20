@@ -47,7 +47,7 @@ public class TreasureItems {
 	public static final TreasureEntry ENCHANTED_BOOK;
 
 	public static final TreasureEntry MATERIAL_BLOCKS;
-	
+
 	// Enchantments
 
 	static {
@@ -224,7 +224,7 @@ public class TreasureItems {
 
 		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((rand, theme, lootlevel) -> new ItemStack(
 				ForgeRegistries.BLOCKS.getValue(MaterialBlocks.getMaterial(theme)), rand.nextInt(5 + lootlevel * 4)));
-		
+
 	}
 
 	public static CompoundNBT createDisplayTag(String name, String... loreEntries) {

@@ -48,7 +48,7 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 @Mod(DungeonCrawl.MODID)
 public class DungeonCrawl {
-	
+
 	public static final String MODID = "dungeoncrawl";
 	public static final String NAME = "Dungeon Crawl";
 	public static final String VERSION = "1.4.0";
@@ -71,7 +71,7 @@ public class DungeonCrawl {
 		LOGGER.info("Common Setup");
 		ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
 		Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
-		
+
 		DungeonSegmentModelBlock.load();
 		IBlockPlacementHandler.load();
 		BlockRegistry.load();

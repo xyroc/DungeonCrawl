@@ -55,7 +55,8 @@ public class TreasureRoom implements IJsonConfigurable {
 
 	@Override
 	public void load(JsonObject object, File file) {
-		TREASURE = DungeonCrawl.GSON.fromJson(object.get(KEY_TREASURE), TreasureLootTable.class);
+		TREASURE = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_TREASURE, this),
+				TreasureLootTable.class);
 
 		TREASURE.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(10));
 		TREASURE.entries.add(TreasureItems.ENCHANTED_BOOK.withWeight(5));
@@ -80,6 +81,16 @@ public class TreasureRoom implements IJsonConfigurable {
 	@Override
 	public String[] getKeys() {
 		return KEYS;
+	}
+
+	@Override
+	public int getVersion() {
+		return 0;
+	}
+
+	@Override
+	public boolean deleteOldVersion() {
+		return false;
 	}
 
 }

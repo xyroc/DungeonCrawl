@@ -287,10 +287,7 @@
           "type": "OTHER",
           "facing": "NORTH",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "redstone_wall_torch"
-          }
+          "resourceName": "minecraft:redstone_wall_torch"
         },
         {
           "type": "WALL_LOG",
@@ -1200,10 +1197,7 @@
           "type": "OTHER",
           "facing": "SOUTH",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "redstone_wall_torch"
-          }
+          "resourceName": "minecraft:redstone_wall_torch"
         },
         null,
         null,

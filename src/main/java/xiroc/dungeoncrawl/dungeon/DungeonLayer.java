@@ -194,8 +194,7 @@ public class DungeonLayer {
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);
 			if (this.segments[additions[i].x][additions[i].z] != null) {
-				DungeonCrawl.LOGGER.debug("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z
-						+ "). " + " Replaced piece: " + this.segments[additions[i].x][additions[i].z]);
+//				DungeonCrawl.LOGGER.debug("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z + "). " + " Replaced piece: " + this.segments[additions[i].x][additions[i].z]);
 				room.sides = this.segments[additions[i].x][additions[i].z].sides;
 				room.connectedSides = this.segments[additions[i].x][additions[i].z].connectedSides;
 			}

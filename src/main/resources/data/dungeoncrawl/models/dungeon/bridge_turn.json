@@ -96,10 +96,7 @@
           "south": false,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         {
@@ -129,10 +126,7 @@
           "south": false,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         {
@@ -310,10 +304,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -324,10 +315,7 @@
           "south": true,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "NONE"
@@ -347,10 +335,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -361,10 +346,7 @@
           "south": true,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "NONE"
@@ -506,10 +488,7 @@
           "south": true,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -530,10 +509,7 @@
           "south": true,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -653,10 +629,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         }
       ],
       [
@@ -675,10 +648,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         }
       ],
       [
@@ -976,10 +946,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -1008,10 +975,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"

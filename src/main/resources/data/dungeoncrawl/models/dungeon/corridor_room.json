@@ -472,10 +472,7 @@
           "type": "OTHER",
           "facing": "EAST",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "redstone_wall_torch"
-          }
+          "resourceName": "minecraft:redstone_wall_torch"
         },
         null,
         null,
@@ -558,10 +555,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -591,10 +585,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -623,10 +614,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "OTHER",
@@ -635,10 +623,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"
@@ -766,10 +751,7 @@
         {
           "type": "OTHER",
           "facing": "EAST",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "anvil"
-          }
+          "resourceName": "minecraft:anvil"
         },
         null,
         null,
@@ -1078,10 +1060,7 @@
           "type": "OTHER",
           "facing": "NORTH",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "furnace"
-          }
+          "resourceName": "minecraft:furnace"
         },
         {
           "type": "WALL"
@@ -1378,10 +1357,7 @@
           "type": "OTHER",
           "facing": "NORTH",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "furnace"
-          }
+          "resourceName": "minecraft:furnace"
         },
         {
           "type": "WALL"
@@ -1405,10 +1381,7 @@
           "type": "OTHER",
           "facing": "NORTH",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "furnace"
-          }
+          "resourceName": "minecraft:furnace"
         },
         {
           "type": "WALL"
@@ -1819,10 +1792,7 @@
           "type": "OTHER",
           "facing": "SOUTH",
           "attached": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "tripwire_hook"
-          }
+          "resourceName": "minecraft:tripwire_hook"
         },
         {
           "type": "OTHER",
@@ -1832,10 +1802,7 @@
           "west": false,
           "disarmed": false,
           "attached": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "tripwire"
-          }
+          "resourceName": "minecraft:tripwire"
         },
         {
           "type": "OTHER",
@@ -1845,10 +1812,7 @@
           "west": false,
           "disarmed": false,
           "attached": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "tripwire"
-          }
+          "resourceName": "minecraft:tripwire"
         },
         {
           "type": "OTHER",
@@ -1858,10 +1822,7 @@
           "west": false,
           "disarmed": false,
           "attached": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "tripwire"
-          }
+          "resourceName": "minecraft:tripwire"
         },
         {
           "type": "OTHER",
@@ -1871,19 +1832,13 @@
           "west": false,
           "disarmed": false,
           "attached": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "tripwire"
-          }
+          "resourceName": "minecraft:tripwire"
         },
         {
           "type": "OTHER",
           "facing": "NORTH",
           "attached": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "tripwire_hook"
-          }
+          "resourceName": "minecraft:tripwire_hook"
         },
         {
           "type": "WALL"
@@ -2225,10 +2180,7 @@
           "south": false,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         {
@@ -2258,10 +2210,7 @@
           "south": false,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         {
@@ -2291,10 +2240,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "OTHER",
@@ -2303,10 +2249,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "WALL"

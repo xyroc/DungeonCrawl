@@ -305,52 +305,53 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel LARGE_ROOM;
 
 	public static DungeonSegmentModel ENTRANCE;
-	
+
 	public static DungeonSegmentModel KITCHEN;
-	
+
 	public static DungeonSegmentModel LOOT_ROOM;
 
 	public static void load(IResourceManager resourceManager) {
 		if (LOADED)
 			return;
 		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
-		CORRIDOR = loadFromFile("models/dungeon/corridor.json", resourceManager).setId(0);
-		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.json", resourceManager).setId(1);
-		CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor_open.json", resourceManager).setId(2);
-		CORRIDOR_ALL_OPEN = loadFromFile("models/dungeon/corridor_all_open.json", resourceManager).setId(3);
-		CORRIDOR_2 = loadFromFile("models/dungeon/corridor_2.json", resourceManager).setId(4);
-		CORRIDOR_2_TURN = loadFromFile("models/dungeon/corridor_2_turn.json", resourceManager).setId(5);
-		CORRIDOR_2_OPEN = loadFromFile("models/dungeon/corridor_2_open.json", resourceManager).setId(6);
-		CORRIDOR_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_2_all_open.json", resourceManager).setId(7);
-		CORRIDOR_3 = loadFromFile("models/dungeon/corridor_3.json", resourceManager).setId(8);
-		CORRIDOR_3_TURN = loadFromFile("models/dungeon/corridor_3_turn.json", resourceManager).setId(9);
-		CORRIDOR_3_OPEN = loadFromFile("models/dungeon/corridor_3_open.json", resourceManager).setId(10);
-		CORRIDOR_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_3_all_open.json", resourceManager).setId(11);
+		CORRIDOR = loadFromFile("models/dungeon/corridor.json", resourceManager).build().setId(0);
+		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.json", resourceManager).build().setId(1);
+		CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor_open.json", resourceManager).build().setId(2);
+		CORRIDOR_ALL_OPEN = loadFromFile("models/dungeon/corridor_all_open.json", resourceManager).build().setId(3);
+		CORRIDOR_2 = loadFromFile("models/dungeon/corridor_2.json", resourceManager).build().setId(4);
+		CORRIDOR_2_TURN = loadFromFile("models/dungeon/corridor_2_turn.json", resourceManager).build().setId(5);
+		CORRIDOR_2_OPEN = loadFromFile("models/dungeon/corridor_2_open.json", resourceManager).build().setId(6);
+		CORRIDOR_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_2_all_open.json", resourceManager).build().setId(7);
+		CORRIDOR_3 = loadFromFile("models/dungeon/corridor_3.json", resourceManager).build().setId(8);
+		CORRIDOR_3_TURN = loadFromFile("models/dungeon/corridor_3_turn.json", resourceManager).build().setId(9);
+		CORRIDOR_3_OPEN = loadFromFile("models/dungeon/corridor_3_open.json", resourceManager).build().setId(10);
+		CORRIDOR_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_3_all_open.json", resourceManager).build()
+				.setId(11);
 
-		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.json", resourceManager).setId(12);
-		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.json", resourceManager).setId(13);
+		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.json", resourceManager).build().setId(12);
+		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.json", resourceManager).build().setId(13);
 
-		HOLE = loadFromFile("models/dungeon/hole.json", resourceManager).setId(14);
-		HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.json", resourceManager).setId(15);
+		HOLE = loadFromFile("models/dungeon/hole.json", resourceManager).build().setId(14);
+		HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.json", resourceManager).build().setId(15);
 
-		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager).setId(16);
-		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager).setId(17);
-		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager).setId(18);
-		ROOM = loadFromFile("models/dungeon/room.json", resourceManager).setId(19);
-		ENTRANCE = loadFromFile("models/dungeon/entrance.json", resourceManager).setId(20);
+		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager).build().setId(16);
+		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager).build().setId(17);
+		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager).build().setId(18);
+		ROOM = loadFromFile("models/dungeon/room.json", resourceManager).build().setId(19);
+		ENTRANCE = loadFromFile("models/dungeon/entrance.json", resourceManager).build().setId(20);
 
-		BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager).setId(21);
-		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager).setId(22);
-		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.json", resourceManager).setId(23);
-		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.json", resourceManager).setId(24);
+		BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager).build().setId(21);
+		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager).build().setId(22);
+		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.json", resourceManager).build().setId(23);
+		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.json", resourceManager).build().setId(24);
 
-		LARGE_ROOM = loadFromFile("models/dungeon/large_room.json", resourceManager).setId(25);
+		LARGE_ROOM = loadFromFile("models/dungeon/large_room.json", resourceManager).build().setId(25);
 
-		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.json", resourceManager).setId(26);
-		
-		KITCHEN = loadFromFile("models/dungeon/kitchen.json", resourceManager).setId(27);
-		
-		LOOT_ROOM = loadFromFile("models/dungeon/loot_room.json", resourceManager).setId(28);
+//		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.json", resourceManager).build().setId(26);
+
+		KITCHEN = loadFromFile("models/dungeon/kitchen.json", resourceManager).build().setId(27);
+
+		LOOT_ROOM = loadFromFile("models/dungeon/loot_room.json", resourceManager).build().setId(28);
 
 		LOADED = true;
 	}

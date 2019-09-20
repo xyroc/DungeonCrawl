@@ -1621,59 +1621,35 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "FLOOR"
@@ -2016,73 +1992,43 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "FLOOR"
@@ -2404,31 +2350,19 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -2438,31 +2372,19 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "FLOOR"
@@ -2808,24 +2730,15 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -2841,24 +2754,15 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -3248,17 +3152,11 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -3280,17 +3178,11 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -3694,17 +3586,11 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -3726,17 +3612,11 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -4140,24 +4020,15 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -4173,24 +4044,15 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -4580,31 +4442,19 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "WALL"
@@ -4614,31 +4464,19 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "FLOOR"
@@ -4984,73 +4822,43 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "FLOOR"
@@ -5375,59 +5183,35 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "lava"
-          }
+          "resourceName": "minecraft:lava"
         },
         {
           "type": "FLOOR"

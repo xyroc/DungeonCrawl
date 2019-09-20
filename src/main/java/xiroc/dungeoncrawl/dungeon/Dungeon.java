@@ -32,6 +32,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.config.ObfuscationValues;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
@@ -132,14 +133,16 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			 * currently.
 			 */
 			try {
-				Field world = ChunkGenerator.class.getDeclaredField("world");
+				Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD); // TODO Obfuscation: world -> field_222540_a
+//				Field world = ChunkGenerator.class.getDeclaredField("world");
+
 				world.setAccessible(true);
 
 				Field modifierField = Field.class.getDeclaredField("modifiers");
 				modifierField.setAccessible(true);
 				modifierField.setInt(world, world.getModifiers() & ~Modifier.FINAL);
 
-				DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
+				DungeonCrawl.LOGGER.info("Checking [{}, {}]", chunkX, chunkZ);
 
 				ServerWorld serverWorld = (ServerWorld) world.get(generator);
 				BlockPos spawn = serverWorld.getSpawnPoint();
@@ -153,7 +156,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 				/* Undoing everything */
 
-				modifierField.setInt(world, Modifier.PRIVATE & Modifier.FINAL); // TODO Does this work as intended?
+				modifierField.setInt(world, Modifier.PRIVATE | Modifier.FINAL); // TODO Does this work as intended?
 				modifierField.setAccessible(false);
 				world.setAccessible(false);
 

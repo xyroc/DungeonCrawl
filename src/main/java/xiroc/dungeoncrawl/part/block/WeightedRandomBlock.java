@@ -13,7 +13,7 @@ import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.IRandom;
 
 public class WeightedRandomBlock implements IRandom<BlockState>, IBlockStateProvider {
-	
+
 	public static final Random RANDOM = new Random();
 
 	private final int totalWeight;

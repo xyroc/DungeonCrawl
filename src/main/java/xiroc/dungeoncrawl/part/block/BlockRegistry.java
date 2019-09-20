@@ -72,6 +72,7 @@ public class BlockRegistry {
 	public static WeightedRandomBlock STONE_BRICKS_GRAVEL_COBBLESTONE;
 	public static WeightedRandomBlock NETHERRACK_NETHERBRICK;
 	public static WeightedRandomBlock NETHERRACK_NETHERBRICK_SOULSAND;
+	public static WeightedRandomBlock NETHER_BRICK_STAIRS;
 	public static WeightedRandomBlock STAIRS_STONE_COBBLESTONE;
 	public static WeightedRandomBlock STAIRS_NETHERBRICK_QUARTZ;
 	public static WeightedRandomBlock SANDSTONE_DEFAULT_CHSELED_SMOOTH;
@@ -96,9 +97,13 @@ public class BlockRegistry {
 		STONE_BRICKS_GRAVEL_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_GRAVEL,
 				TIB_COBBLESTONE, new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
 				new TupleIntBlock(1, MOSSY_STONE_BRICKS) });
-		NETHERRACK_NETHERBRICK = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK });
-		NETHERRACK_NETHERBRICK_SOULSAND = new WeightedRandomBlock(
-				new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK, TIB_SOUL_SAND });
+		NETHERRACK_NETHERBRICK = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK,
+				new TupleIntBlock(2, Blocks.RED_NETHER_BRICKS.getDefaultState()) });
+		NETHERRACK_NETHERBRICK_SOULSAND = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK,
+				TIB_NETHER_BRICK, TIB_SOUL_SAND, new TupleIntBlock(2, Blocks.RED_NETHER_BRICKS.getDefaultState()) });
+		NETHER_BRICK_STAIRS = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.NETHER_BRICK_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.RED_NETHER_BRICK_STAIRS.getDefaultState()) });
 		STAIRS_STONE_COBBLESTONE = new WeightedRandomBlock(
 				new TupleIntBlock[] { TIB_STAIRS_STONE_BRICKS, TIB_STAIRS_COBBLESTONE });
 		STAIRS_NETHERBRICK_QUARTZ = new WeightedRandomBlock(

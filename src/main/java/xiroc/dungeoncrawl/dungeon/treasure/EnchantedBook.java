@@ -36,26 +36,34 @@ public class EnchantedBook implements IJsonConfigurable {
 
 	static {
 		DEFAULTS = new HashMap<String, Object>();
-		DEFAULTS.put(KEY_ENCHANTMENTS_COMMON, new ResourceLocation[] { Enchantments.AQUA_AFFINITY.getRegistryName(),
-				Enchantments.BANE_OF_ARTHROPODS.getRegistryName(), Enchantments.BLAST_PROTECTION.getRegistryName(),
-				Enchantments.KNOCKBACK.getRegistryName(), Enchantments.PROJECTILE_PROTECTION.getRegistryName(),
-				Enchantments.FIRE_PROTECTION.getRegistryName(), Enchantments.PROTECTION.getRegistryName(),
-				Enchantments.UNBREAKING.getRegistryName(), Enchantments.SMITE.getRegistryName() });
-		DEFAULTS.put(KEY_ENCHANTMENTS_NORMAL,
-				new ResourceLocation[] { Enchantments.DEPTH_STRIDER.getRegistryName(),
-						Enchantments.FIRE_ASPECT.getRegistryName(), Enchantments.IMPALING.getRegistryName(),
-						Enchantments.THORNS.getRegistryName(), Enchantments.MULTISHOT.getRegistryName(),
-						Enchantments.SHARPNESS.getRegistryName(), Enchantments.EFFICIENCY.getRegistryName(),
-						Enchantments.LURE.getRegistryName(), Enchantments.POWER.getRegistryName(),
-						Enchantments.PUNCH.getRegistryName(), Enchantments.RESPIRATION.getRegistryName() });
-		DEFAULTS.put(KEY_ENCHANTMENTS_RARE,
-				new ResourceLocation[] { Enchantments.FIRE_ASPECT.getRegistryName(),
-						Enchantments.FLAME.getRegistryName(), Enchantments.FORTUNE.getRegistryName(),
-						Enchantments.CHANNELING.getRegistryName(), Enchantments.INFINITY.getRegistryName(),
-						Enchantments.LOOTING.getRegistryName(), Enchantments.LOYALTY.getRegistryName(),
-						Enchantments.RIPTIDE.getRegistryName(), Enchantments.LUCK_OF_THE_SEA.getRegistryName(),
-						Enchantments.PIERCING.getRegistryName(), Enchantments.QUICK_CHARGE.getRegistryName(),
-						Enchantments.SILK_TOUCH.getRegistryName(), Enchantments.SWEEPING.getRegistryName() });
+		DEFAULTS.put(KEY_ENCHANTMENTS_COMMON,
+				new String[] { Enchantments.AQUA_AFFINITY.getRegistryName().toString(),
+						Enchantments.BANE_OF_ARTHROPODS.getRegistryName().toString(),
+						Enchantments.BLAST_PROTECTION.getRegistryName().toString(),
+						Enchantments.KNOCKBACK.getRegistryName().toString(),
+						Enchantments.PROJECTILE_PROTECTION.getRegistryName().toString(),
+						Enchantments.FIRE_PROTECTION.getRegistryName().toString(),
+						Enchantments.PROTECTION.getRegistryName().toString(),
+						Enchantments.UNBREAKING.getRegistryName().toString(),
+						Enchantments.SMITE.getRegistryName().toString() });
+		DEFAULTS.put(KEY_ENCHANTMENTS_NORMAL, new String[] { Enchantments.DEPTH_STRIDER.getRegistryName().toString(),
+				Enchantments.FIRE_ASPECT.getRegistryName().toString(),
+				Enchantments.IMPALING.getRegistryName().toString(), Enchantments.THORNS.getRegistryName().toString(),
+				Enchantments.MULTISHOT.getRegistryName().toString(),
+				Enchantments.SHARPNESS.getRegistryName().toString(),
+				Enchantments.EFFICIENCY.getRegistryName().toString(), Enchantments.LURE.getRegistryName().toString(),
+				Enchantments.POWER.getRegistryName().toString(), Enchantments.PUNCH.getRegistryName().toString(),
+				Enchantments.RESPIRATION.getRegistryName().toString() });
+		DEFAULTS.put(KEY_ENCHANTMENTS_RARE, new String[] { Enchantments.FIRE_ASPECT.getRegistryName().toString(),
+				Enchantments.FLAME.getRegistryName().toString(), Enchantments.FORTUNE.getRegistryName().toString(),
+				Enchantments.CHANNELING.getRegistryName().toString(),
+				Enchantments.INFINITY.getRegistryName().toString(), Enchantments.LOOTING.getRegistryName().toString(),
+				Enchantments.LOYALTY.getRegistryName().toString(), Enchantments.RIPTIDE.getRegistryName().toString(),
+				Enchantments.LUCK_OF_THE_SEA.getRegistryName().toString(),
+				Enchantments.PIERCING.getRegistryName().toString(),
+				Enchantments.QUICK_CHARGE.getRegistryName().toString(),
+				Enchantments.SILK_TOUCH.getRegistryName().toString(),
+				Enchantments.SWEEPING.getRegistryName().toString() });
 	}
 
 	@Override
@@ -65,12 +73,12 @@ public class EnchantedBook implements IJsonConfigurable {
 
 	@Override
 	public void load(JsonObject object, File file) {
-		ENCHANTMENTS_COMMON = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_ENCHANTMENTS_COMMON, this),
-				ResourceLocation[].class);
-		ENCHANTMENTS_NORMAL = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_ENCHANTMENTS_NORMAL, this),
-				ResourceLocation[].class);
-		ENCHANTMENTS_RARE = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_ENCHANTMENTS_RARE, this),
-				ResourceLocation[].class);
+		ENCHANTMENTS_COMMON = JsonConfig.toResourceLocationArray(DungeonCrawl.GSON
+				.fromJson(JsonConfig.getOrRewrite(object, KEY_ENCHANTMENTS_COMMON, this), String[].class));
+		ENCHANTMENTS_NORMAL = JsonConfig.toResourceLocationArray(DungeonCrawl.GSON
+				.fromJson(JsonConfig.getOrRewrite(object, KEY_ENCHANTMENTS_NORMAL, this), String[].class));
+		ENCHANTMENTS_RARE = JsonConfig.toResourceLocationArray(DungeonCrawl.GSON
+				.fromJson(JsonConfig.getOrRewrite(object, KEY_ENCHANTMENTS_RARE, this), String[].class));
 	}
 
 	@Override
@@ -89,6 +97,16 @@ public class EnchantedBook implements IJsonConfigurable {
 	@Override
 	public String[] getKeys() {
 		return KEYS;
+	}
+
+	@Override
+	public int getVersion() {
+		return 0;
+	}
+
+	@Override
+	public boolean deleteOldVersion() {
+		return false;
 	}
 
 	public static Enchantment getRandomEnchantment(Random rand, int lootLevel) {

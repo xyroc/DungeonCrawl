@@ -25,4 +25,8 @@ public interface IJsonConfigurable {
 
 	public String[] getKeys();
 
+	public int getVersion();
+
+	public boolean deleteOldVersion();
+
 }

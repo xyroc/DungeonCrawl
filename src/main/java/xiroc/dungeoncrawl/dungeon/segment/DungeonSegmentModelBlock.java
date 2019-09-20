@@ -38,6 +38,7 @@ public class DungeonSegmentModelBlock {
 	public Boolean upsideDown, north, east, south, west, waterlogged, lit, open, disarmed, attached;
 
 	public ResourceLocation registryName;
+	public String resourceName;
 	public Half half;
 	public DoubleBlockHalf doubleBlockHalf;
 
@@ -82,7 +83,7 @@ public class DungeonSegmentModelBlock {
 		if (state.has(BlockStateProperties.DOUBLE_BLOCK_HALF))
 			doubleBlockHalf = state.get(BlockStateProperties.DOUBLE_BLOCK_HALF);
 		if (type == DungeonSegmentModelBlockType.OTHER)
-			registryName = state.getBlock().getRegistryName();
+			resourceName = state.getBlock().getRegistryName().toString();
 		return this;
 	}
 
@@ -129,7 +130,7 @@ public class DungeonSegmentModelBlock {
 	 * Registers all BlockState providers.
 	 */
 	public static void load() {
-		PROVIDERS.put(DungeonSegmentModelBlockType.NONE, (block, theme, rand, stage) ->	null);
+		PROVIDERS.put(DungeonSegmentModelBlockType.NONE, (block, theme, rand, stage) -> null);
 		PROVIDERS.put(DungeonSegmentModelBlockType.BARREL, (block, theme, rand, stage) -> Blocks.BARREL
 				.getDefaultState().with(BarrelBlock.PROPERTY_FACING, block.facing));
 		PROVIDERS.put(DungeonSegmentModelBlockType.MATERIAL,
@@ -192,6 +193,11 @@ public class DungeonSegmentModelBlock {
 		PROVIDERS.put(DungeonSegmentModelBlockType.DOOR, (block, theme, rand, stage) -> block.create(theme.door.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.OTHER, (block, theme, rand, stage) -> block
 				.create(ForgeRegistries.BLOCKS.getValue(block.registryName).getDefaultState()));
+	}
+
+	public void readResourceLocation() {
+		String[] resource = this.resourceName.split(":");
+		this.registryName = new ResourceLocation(resource[0], resource[1]);
 	}
 
 	/**

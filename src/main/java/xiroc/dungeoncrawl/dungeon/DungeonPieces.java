@@ -134,7 +134,7 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			BlockPos pos = new BlockPos(x, y, z);
 			Treasure.Type type = Treasure.Type.fromInt(treasureType);
-			DungeonCrawl.LOGGER.info("Building {} at {} {} {}. Rotation: {}", modelID, x, y, z, rotation.toString());
+//			DungeonCrawl.LOGGER.info("Building {} at {} {} {}. Rotation: {}", modelID, x, y, z, rotation.toString());
 			if (rotation == Rotation.NONE) {
 				for (int x = startX; x < startX + width; x++) {
 					for (int y = startY; y < startY + height; y++) {

@@ -275,14 +275,7 @@
         {
           "type": "WALL"
         },
-        {
-          "type": "OTHER",
-          "facing": "EAST",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "anvil"
-          }
-        },
+        null,
         null,
         null,
         {
@@ -308,10 +301,7 @@
           "type": "OTHER",
           "facing": "SOUTH",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "redstone_wall_torch"
-          }
+          "resourceName": "minecraft:redstone_wall_torch"
         },
         null,
         null,
@@ -660,9 +650,7 @@
           "type": "FLOOR"
         },
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "WEST",
-          "waterlogged": false
+          "type": "FLOOR"
         },
         {
           "type": "FLOOR"
@@ -823,9 +811,7 @@
           "type": "FLOOR"
         },
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "EAST",
-          "waterlogged": false
+          "type": "FLOOR"
         },
         {
           "type": "FLOOR"
@@ -1011,11 +997,7 @@
         null,
         null,
         null,
-        {
-          "type": "BARREL",
-          "facing": "WEST",
-          "open": false
-        },
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "EAST",
@@ -1213,14 +1195,7 @@
         },
         null,
         null,
-        {
-          "type": "OTHER",
-          "facing": "WEST",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "anvil"
-          }
-        },
+        null,
         {
           "type": "WALL"
         },
@@ -1242,10 +1217,7 @@
           "type": "OTHER",
           "facing": "NORTH",
           "lit": true,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "redstone_wall_torch"
-          }
+          "resourceName": "minecraft:redstone_wall_torch"
         },
         {
           "type": "WALL"

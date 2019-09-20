@@ -25,7 +25,8 @@ public class Position2D {
 	}
 
 	/**
-	 * Creates a new position instance that is shifted by the given amount in the given direction. Used for DungeonLayer calculations.
+	 * Creates a new position instance that is shifted by the given amount in the
+	 * given direction. Used for DungeonLayer calculations.
 	 */
 	public Position2D shift(Direction direction, int amount) {
 		switch (direction) {

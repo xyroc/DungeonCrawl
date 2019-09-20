@@ -471,24 +471,15 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "WALL"
@@ -507,17 +498,11 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "WALL"
@@ -550,17 +535,11 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "netherrack"
-          }
+          "resourceName": "minecraft:netherrack"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "netherrack"
-          }
+          "resourceName": "minecraft:netherrack"
         },
         {
           "type": "WALL"
@@ -569,19 +548,13 @@
           "type": "OTHER",
           "facing": "EAST",
           "lit": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "smoker"
-          }
+          "resourceName": "minecraft:smoker"
         },
         {
           "type": "OTHER",
           "facing": "EAST",
           "lit": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "smoker"
-          }
+          "resourceName": "minecraft:smoker"
         },
         {
           "type": "WALL"
@@ -618,10 +591,7 @@
           "east": false,
           "south": false,
           "west": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "fire"
-          }
+          "resourceName": "minecraft:fire"
         },
         {
           "type": "OTHER",
@@ -629,10 +599,7 @@
           "east": false,
           "south": false,
           "west": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "fire"
-          }
+          "resourceName": "minecraft:fire"
         },
         {
           "type": "OTHER",
@@ -641,10 +608,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -901,31 +865,19 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "WALL"
@@ -941,24 +893,15 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "WALL"
@@ -999,10 +942,7 @@
           "type": "OTHER",
           "facing": "NORTH",
           "lit": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "furnace"
-          }
+          "resourceName": "minecraft:furnace"
         },
         {
           "type": "WALL"
@@ -1035,10 +975,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "OTHER",
@@ -1047,10 +984,7 @@
           "south": true,
           "west": false,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         {
           "type": "OTHER",
@@ -1059,10 +993,7 @@
           "south": false,
           "west": true,
           "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:iron_bars"
         },
         null,
         null,
@@ -1316,87 +1247,51 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "WALL"
@@ -1426,10 +1321,7 @@
         {
           "type": "OTHER",
           "axis": "Z",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "hay_block"
-          }
+          "resourceName": "minecraft:hay_block"
         },
         {
           "type": "WALL"
@@ -1690,87 +1582,51 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "WALL"
@@ -1800,10 +1656,7 @@
         {
           "type": "OTHER",
           "axis": "Y",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "hay_block"
-          }
+          "resourceName": "minecraft:hay_block"
         },
         {
           "type": "WALL"
@@ -1833,10 +1686,7 @@
         {
           "type": "OTHER",
           "axis": "X",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "hay_block"
-          }
+          "resourceName": "minecraft:hay_block"
         },
         {
           "type": "WALL"
@@ -2064,69 +1914,42 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "WALL"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "WALL"
@@ -2162,10 +1985,7 @@
         {
           "type": "OTHER",
           "axis": "Z",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "hay_block"
-          }
+          "resourceName": "minecraft:hay_block"
         },
         {
           "type": "WALL"
@@ -2459,31 +2279,19 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_granite"
-          }
+          "resourceName": "minecraft:polished_granite"
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "polished_diorite"
-          }
+          "resourceName": "minecraft:polished_diorite"
         },
         {
           "type": "WALL"
@@ -2531,10 +2339,7 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "cauldron"
-          }
+          "resourceName": "minecraft:cauldron"
         },
         {
           "type": "FLOOR_STAIRS",
@@ -2543,7 +2348,7 @@
           "half": "TOP"
         },
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "WEST",
           "waterlogged": false
         },
@@ -2587,18 +2392,12 @@
         },
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "potted_poppy"
-          }
+          "resourceName": "minecraft:potted_poppy"
         },
         null,
         {
           "type": "OTHER",
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "potted_brown_mushroom"
-          }
+          "resourceName": "minecraft:potted_brown_mushroom"
         },
         null,
         {

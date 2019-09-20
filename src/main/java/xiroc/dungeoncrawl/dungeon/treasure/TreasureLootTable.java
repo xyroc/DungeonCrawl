@@ -27,12 +27,16 @@ public class TreasureLootTable {
 
 	public String name;
 	public RandomValueRange rolls;
+	public float minRolls, maxRolls;
 	public ArrayList<TreasureEntry> entries;
 	public Integer totalWeight;
 
 	public TreasureLootTable(String name, RandomValueRange rolls, TreasureEntry... entries) {
 		this.name = name;
-		this.rolls = rolls;
+		if (rolls != null) {
+			this.minRolls = rolls.getMin();
+			this.maxRolls = rolls.getMax();
+		}
 		this.entries = new ArrayList<TreasureEntry>();
 		for (TreasureEntry entry : entries)
 			this.entries.add(entry);
@@ -40,8 +44,11 @@ public class TreasureLootTable {
 
 	public void build() {
 		totalWeight = 0;
-		for (TreasureEntry entry : entries)
+		for (TreasureEntry entry : entries) {
+			entry.readResourceLocation();
 			totalWeight += entry.weight;
+		}
+		this.rolls = new RandomValueRange(minRolls, maxRolls);
 	}
 
 	private List<ItemStack> roll(Random rand, int theme, int lootLevel) {

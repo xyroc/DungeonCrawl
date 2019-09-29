@@ -16,6 +16,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.part.block.Chest;
 import xiroc.dungeoncrawl.part.block.Dispenser;
 import xiroc.dungeoncrawl.part.block.Furnace;
+import xiroc.dungeoncrawl.part.block.Plants;
 import xiroc.dungeoncrawl.part.block.Spawner;
 
 public interface IBlockPlacementHandler {
@@ -33,6 +34,8 @@ public interface IBlockPlacementHandler {
 		HANDLERS.put(Blocks.SMOKER, new Furnace.Smoker());
 		HANDLERS.put(Blocks.SPAWNER, new Spawner());
 		HANDLERS.put(Blocks.DISPENSER, new Dispenser());
+		HANDLERS.put(Blocks.FARMLAND, new Plants.Farmland());
+		HANDLERS.put(Blocks.FLOWER_POT, new Plants.FlowerPot());
 	}
 
 	public abstract void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand,

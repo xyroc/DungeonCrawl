@@ -295,7 +295,7 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel HOLE_LAVA;
 	public static DungeonSegmentModel HOLE_TRAP;
 
-	public static DungeonSegmentModel SIDE_ROOM_BLACK_AND_WHITE;;
+	public static DungeonSegmentModel SIDE_ROOM_SMALL_LIBRARY;
 	public static DungeonSegmentModel SIDE_ROOM_FARM;
 
 	public static DungeonSegmentModel STAIRS;
@@ -357,10 +357,10 @@ public class DungeonSegmentModelRegistry {
 
 		CORRIDOR_FIRE = loadFromFile("models/dungeon/corridor_fire.json", resourceManager).build().setId(29);
 
-		SIDE_ROOM_BLACK_AND_WHITE = loadFromFile("models/dungeon/side_room_black_and_white.json", resourceManager)
-				.build().setId(30);
+		SIDE_ROOM_SMALL_LIBRARY = loadFromFile("models/dungeon/side_room_small_library.json", resourceManager).build()
+				.setId(30);
 		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.json", resourceManager).build().setId(31);
-		
+
 		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.json", resourceManager).build().setId(32);
 
 		LOADED = true;

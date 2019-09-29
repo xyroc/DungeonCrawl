@@ -9,6 +9,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.DungeonPieces.SideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
@@ -34,16 +35,17 @@ public class DungeonFeatures {
 				Position2D pos = new Position2D(x, z);
 				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
 				if (roomPos.isValid(layer.width, layer.length) && layer.segments[roomPos.x][roomPos.z] == null
-						&& rand.nextDouble() < 0.04) {
+						&& rand.nextDouble() < 0.06) {
 					layer.segments[x][z].openSide(RotationHelper.translateDirectionLeft(facing));
-					DungeonPieces.DungeonPiece sideRoom = RandomFeature.SIDE_ROOM.roll(rand);
+					DungeonPieces.SideRoom sideRoom = (SideRoom) RandomFeature.SIDE_ROOM.roll(rand);
 					sideRoom.setPosition(roomPos.x, roomPos.z);
 					sideRoom.stage = stage;
 					sideRoom.connectedSides = 1;
-					sideRoom.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16,
-							startPos.getZ() + z * 8);
+					sideRoom.setRealPosition(startPos.getX() + roomPos.x * 8, startPos.getY() - lyr * 16,
+							startPos.getZ() + roomPos.z * 8);
 					sideRoom.rotation = layer.segments[x][z].rotation.add(Rotation.COUNTERCLOCKWISE_90);
-					layer.segments[x][z] = sideRoom;
+					layer.rotatePiece(layer.segments[x][z]);
+					layer.segments[roomPos.x][roomPos.z] = sideRoom;
 					return true;
 				}
 			}

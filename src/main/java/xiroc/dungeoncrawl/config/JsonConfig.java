@@ -46,7 +46,7 @@ public class JsonConfig implements IJsonConfigurable {
 	public static final String[] KEYS = new String[] { KEY_ARMOR_ENCHANTMENTS, KEY_ARMOR_RARE, KEY_ARMOR_STAGE_1,
 			KEY_ARMOR_STAGE_2, KEY_ARMOR_STAGE_3, KEY_AXE_ENCHANTMENTS, KEY_AXES, KEY_BIOME_BLACKLIST,
 			KEY_BIOME_OVERWORLD_BLACKLIST, KEY_BOW_ENCHANTMENTS, KEY_BOWS, KEY_COLORED_ARMOR, KEY_PICKAXE_ENCHANTMENTS,
-			KEY_PICKAXES, KEY_SWORD_ENCHANTMENTS, KEY_SWORDS, KEY_SWORDS_RARE, KEY_ASSUMPTION_SEARCHLIST };
+			KEY_PICKAXES, KEY_SWORD_ENCHANTMENTS, KEY_SWORDS, KEY_SWORDS_RARE };
 
 	public static List<?> BIOME_BLACKLIST, BIOME_OVERWORLD_BLACKLIST;
 
@@ -250,7 +250,7 @@ public class JsonConfig implements IJsonConfigurable {
 			DEFAULTS.put(KEY_PICKAXE_ENCHANTMENTS, PICKAXE_ENCHANTMENTS);
 			DEFAULTS.put(KEY_AXE_ENCHANTMENTS, AXE_ENCHANTMENTS);
 			DEFAULTS.put(KEY_ARMOR_ENCHANTMENTS, ARMOR_ENCHANTMENTS);
-			DEFAULTS.put(KEY_ASSUMPTION_SEARCHLIST, ASSUMPTION_SEARCHLIST);
+//			DEFAULTS.put(KEY_ASSUMPTION_SEARCHLIST, ASSUMPTION_SEARCHLIST);
 		}
 
 		public static void rewrite(IJsonConfigurable configurable) {
@@ -316,8 +316,7 @@ public class JsonConfig implements IJsonConfigurable {
 		ARMOR_ENCHANTMENTS = toResourceLocationArray(
 				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_ENCHANTMENTS, this), String[].class));
 
-		ASSUMPTION_SEARCHLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ASSUMPTION_SEARCHLIST, this),
-				String[].class);
+//		ASSUMPTION_SEARCHLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ASSUMPTION_SEARCHLIST, this), String[].class);
 
 		ArmorSet.buildAll(ARMOR_SETS_1);
 		ArmorSet.buildAll(ARMOR_SETS_2);
@@ -346,7 +345,7 @@ public class JsonConfig implements IJsonConfigurable {
 		object.add(KEY_PICKAXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.PICKAXE_ENCHANTMENTS));
 		object.add(KEY_AXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.AXE_ENCHANTMENTS));
 		object.add(KEY_ARMOR_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_ENCHANTMENTS));
-		object.add(KEY_ASSUMPTION_SEARCHLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ASSUMPTION_SEARCHLIST));
+//		object.add(KEY_ASSUMPTION_SEARCHLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ASSUMPTION_SEARCHLIST));
 		return object;
 	}
 

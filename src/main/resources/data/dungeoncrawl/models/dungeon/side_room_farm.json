@@ -465,16 +465,14 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         null,
         null,
         null,
         null,
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -659,22 +657,18 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         null,
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         null,
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -701,7 +695,8 @@
         {
           "type": "OTHER",
           "facing": "NORTH",
-          "resourceName": "minecraft:lever"
+          "resourceName": "minecraft:lever",
+          "attachFace": "CEILING"
         },
         null,
         null,
@@ -853,22 +848,18 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         null,
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         null,
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -900,7 +891,8 @@
         {
           "type": "OTHER",
           "facing": "SOUTH",
-          "resourceName": "minecraft:lever"
+          "resourceName": "minecraft:lever",
+          "attachFace": "CEILING"
         },
         {
           "type": "WALL"
@@ -1047,22 +1039,18 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         null,
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         null,
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1248,20 +1236,16 @@
           "type": "WALL"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
-          "type": "OTHER",
-          "resourceName": "minecraft:wheat"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1304,7 +1288,8 @@
         {
           "type": "OTHER",
           "facing": "EAST",
-          "resourceName": "minecraft:lever"
+          "resourceName": "minecraft:lever",
+          "attachFace": "CEILING"
         },
         null,
         {

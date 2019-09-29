@@ -75,6 +75,8 @@ public class SpecialItemTags implements IJsonConfigurable {
 			for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(item).entrySet())
 				EnchantmentHelper.removeIncompatible(enchantments,
 						new EnchantmentData(entry.getKey(), entry.getValue()));
+			if (enchantments.size() < 1)
+				return;
 			EnchantmentData enchantment = enchantments.get(rand.nextInt(enchantments.size()));
 			item.addEnchantment(enchantment.enchantment, enchantment.enchantmentLevel);
 		});

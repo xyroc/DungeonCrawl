@@ -2348,7 +2348,7 @@
           "half": "TOP"
         },
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "WEST",
           "waterlogged": false
         },

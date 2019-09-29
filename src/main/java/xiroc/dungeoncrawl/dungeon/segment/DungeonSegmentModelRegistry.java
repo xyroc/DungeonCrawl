@@ -289,12 +289,14 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel CORRIDOR_3_OPEN;
 	public static DungeonSegmentModel CORRIDOR_3_ALL_OPEN;
 
-	public static DungeonSegmentModel CORRIDOR_ROOM;
-	public static DungeonSegmentModel CORRIDOR_TRAP;
+	public static DungeonSegmentModel CORRIDOR_ROOM, CORRIDOR_TRAP, CORRIDOR_FIRE, CORRIDOR_GRASS;
 
 	public static DungeonSegmentModel HOLE;
 	public static DungeonSegmentModel HOLE_LAVA;
 	public static DungeonSegmentModel HOLE_TRAP;
+
+	public static DungeonSegmentModel SIDE_ROOM_BLACK_AND_WHITE;;
+	public static DungeonSegmentModel SIDE_ROOM_FARM;
 
 	public static DungeonSegmentModel STAIRS;
 	public static DungeonSegmentModel STAIRS_TOP;
@@ -352,6 +354,14 @@ public class DungeonSegmentModelRegistry {
 		KITCHEN = loadFromFile("models/dungeon/kitchen.json", resourceManager).build().setId(27);
 
 		LOOT_ROOM = loadFromFile("models/dungeon/loot_room.json", resourceManager).build().setId(28);
+
+		CORRIDOR_FIRE = loadFromFile("models/dungeon/corridor_fire.json", resourceManager).build().setId(29);
+
+		SIDE_ROOM_BLACK_AND_WHITE = loadFromFile("models/dungeon/side_room_black_and_white.json", resourceManager)
+				.build().setId(30);
+		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.json", resourceManager).build().setId(31);
+		
+		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.json", resourceManager).build().setId(32);
 
 		LOADED = true;
 	}

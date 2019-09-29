@@ -47,6 +47,7 @@ public class DungeonPieces {
 	// 8 Hole Trap
 	// 11 EntranceBuilder
 	// 12 Part
+	// 13 SideRoom
 	// 99 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
@@ -180,6 +181,45 @@ public class DungeonPieces {
 
 	}
 
+	public static class SideRoom extends DungeonPiece {
+
+		public int modelID;
+
+		public SideRoom(TemplateManager manager, CompoundNBT p_i51343_2_) {
+			super(Dungeon.SIDE_ROOM, p_i51343_2_);
+			modelID = p_i51343_2_.getInt("modelID");
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+				ChunkPos chunkPosIn) {
+			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+			if (model != null) {
+				if (theme != 1)
+					theme = Theme.BIOME_TO_THEME_MAP
+							.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+				buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
+						rotation);
+				return true;
+			} else {
+				DungeonCrawl.LOGGER.error("Side Room Model doesnt exist: {}", modelID);
+				return false;
+			}
+		}
+
+		@Override
+		public int getType() {
+			return 13;
+		}
+
+		@Override
+		public void readAdditional(CompoundNBT tagCompound) {
+			super.readAdditional(tagCompound);
+			tagCompound.putInt("modelID", modelID);
+		}
+
+	}
+
 	public static class HoleTrap extends DungeonPiece {
 
 		public HoleTrap(TemplateManager manager, CompoundNBT p_i51343_2_) {
@@ -235,8 +275,11 @@ public class DungeonPieces {
 
 	public static class Corridor extends DungeonPiece {
 
+		public int specialType;
+
 		public Corridor(TemplateManager manager, CompoundNBT p_i51343_2_) {
 			super(Dungeon.CORRIDOR, p_i51343_2_);
+			specialType = p_i51343_2_.getInt("specialType");
 		}
 
 		@Override
@@ -245,9 +288,9 @@ public class DungeonPieces {
 			if (theme != 1)
 				theme = Theme.BIOME_TO_THEME_MAP
 						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+			
 			if (theme != 3 && getAirBlocks(worldIn, x, y, z, 8, 8) > 8) {
-				// DungeonCrawl.LOGGER.info("Building a bridge piece at {} {}
-				// {}", x, y, z);
+				
 				boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
 				switch (connectedSides) {
 				case 2:
@@ -273,11 +316,13 @@ public class DungeonPieces {
 				}
 				return true;
 			}
+			
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
-			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
-					getRotation());
+			
+			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage, getRotation());
+			
 			if (theme == 3 && ((connectedSides == 2
 					&& (!(sides[0] && sides[2] || sides[1] && sides[3]) || randomIn.nextDouble() < 0.2))
 					|| connectedSides > 2) && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
@@ -288,6 +333,12 @@ public class DungeonPieces {
 		@Override
 		public int getType() {
 			return 0;
+		}
+
+		@Override
+		public void readAdditional(CompoundNBT tagCompound) {
+			super.readAdditional(tagCompound);
+			tagCompound.putInt("specialType", specialType);
 		}
 
 	}
@@ -980,6 +1031,25 @@ public class DungeonPieces {
 			}
 		}
 
+	}
+
+	public static BlockPos shiftPosition(BlockPos start, Direction direction, int amount) {
+		switch (direction) {
+		case DOWN:
+			return new BlockPos(start.getX(), start.getY() - amount, start.getZ());
+		case EAST:
+			return new BlockPos(start.getX() + amount, start.getY(), start.getZ());
+		case NORTH:
+			return new BlockPos(start.getX(), start.getY(), start.getZ() - amount);
+		case SOUTH:
+			return new BlockPos(start.getX(), start.getY(), start.getZ() + amount);
+		case WEST:
+			return new BlockPos(start.getX() - amount, start.getY(), start.getZ());
+		case UP:
+			return new BlockPos(start.getX(), start.getY() + amount, start.getZ());
+		default:
+			return start;
+		}
 	}
 
 	public static int getGroudHeight(IWorld world, int x, int z) {

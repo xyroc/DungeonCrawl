@@ -221,7 +221,7 @@ public class Theme {
 		ID_TO_THEME_MAP.put(1, NETHER);
 		ID_TO_THEME_MAP.put(2, SWAMP);
 		ID_TO_THEME_MAP.put(3, OCEAN);
-		ID_TO_THEME_MAP.put(4, FROZEN_OCEAN);
+		ID_TO_THEME_MAP.put(4, OCEAN); // Frozen Ocean?
 		ID_TO_THEME_MAP.put(5, JUNGLE);
 		ID_TO_THEME_MAP.put(6, BIRCH_FOREST);
 		ID_TO_THEME_MAP.put(7, SAVANNA);

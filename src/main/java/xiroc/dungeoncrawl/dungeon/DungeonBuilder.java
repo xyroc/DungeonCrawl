@@ -137,11 +137,19 @@ public class DungeonBuilder {
 		case 0:
 			switch (piece.connectedSides) {
 			case 2:
-				if (north && south || east && west)
-					return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
-				// return DungeonSegmentModelRegistry.CORRIDOR_EW;
-				// return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
-				return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
+				switch (((DungeonPieces.Corridor) piece).specialType) {
+				case 1:
+					return DungeonSegmentModelRegistry.CORRIDOR_FIRE;
+				case 2:
+					return DungeonSegmentModelRegistry.CORRIDOR_GRASS;
+				default:
+					if (north && south || east && west)
+						return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
+					// return DungeonSegmentModelRegistry.CORRIDOR_EW;
+					// return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
+					return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
+				}
+
 			case 3:
 				// return DungeonSegmentModelRegistry.CORRIDOR_EW_OPEN;
 				return RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);

@@ -30,11 +30,11 @@ public class EventManager {
 					&& createAssumption(biome.getRegistryName().toString())) {
 				DungeonCrawl.LOGGER.debug("Biome >> " + biome.getRegistryName());
 				biome.addFeature(Decoration.UNDERGROUND_STRUCTURES,
-						Biome.createDecoratedFeature(Dungeon.DUNGEON_FEATURE, NoFeatureConfig.NO_FEATURE_CONFIG,
+						Biome.createDecoratedFeature(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG,
 								Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
 				if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())) {
 					DungeonCrawl.LOGGER.debug("Generation Biome >> " + biome.getRegistryName());
-					biome.addStructure(Dungeon.DUNGEON_FEATURE, NoFeatureConfig.NO_FEATURE_CONFIG);
+					biome.addStructure(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG);
 				}
 			}
 		}

@@ -59,7 +59,7 @@ public class Config {
 
 		BUILDER.comment("World Generation Settings").push(CONFIG_WORLDGEN);
 		DUNGEON_PROBABLILITY = BUILDER.comment("The probability of a dungeon getting generated on each fitting chunk.")
-				.defineInRange("dungeon_probability", 0.16, 0.0001, 1.0);
+				.defineInRange("dungeon_probability", 0.26, 0.0001, 1.0);
 		IGNORE_DIMENSION = BUILDER.comment(
 				"If set to true, the dungeon generation will ignore the dimension and use only the biome blacklists to determine generation eligibility.")
 				.define("ignore_dimension", false);

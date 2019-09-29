@@ -28,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -37,6 +38,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
@@ -64,7 +66,8 @@ public class DungeonCrawl {
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
 		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
-		Feature.STRUCTURES.put(Dungeon.NAME.toLowerCase(Locale.ROOT), Dungeon.DUNGEON_FEATURE);
+		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
+		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -83,6 +86,15 @@ public class DungeonCrawl {
 
 	public static String getDate() {
 		return new SimpleDateFormat().format(new Date());
+	}
+
+	/*
+	 * Doesnt work
+	 */
+	@SubscribeEvent
+	public void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) {
+		DungeonCrawl.LOGGER.info("Feature Registry Event: {}", event);
+//		event.getRegistry().register(Dungeon.DUNGEON);
 	}
 
 	@SubscribeEvent

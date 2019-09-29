@@ -131,6 +131,14 @@ public class RandomEquipment {
 		return item;
 	}
 
+	public static ItemStack enchantItem(ItemStack item, Enchantment enchantment, double multiplier) {
+		int level = (int) ((double) enchantment.getMaxLevel() * multiplier);
+		if (level < 1)
+			level = 1;
+		item.addEnchantment(enchantment, level);
+		return item;
+	}
+
 	public static ItemStack enchantBow(ItemStack item, Random rand, double multiplier) {
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS
 				.getValue(JsonConfig.BOW_ENCHANTMENTS[rand.nextInt(JsonConfig.BOW_ENCHANTMENTS.length)]);
@@ -168,7 +176,7 @@ public class RandomEquipment {
 		return item;
 	}
 
-	public static void setArmorColor(ItemStack item, int color) {
+	public static ItemStack setArmorColor(ItemStack item, int color) {
 		CompoundNBT tag = item.getTag();
 		if (tag == null)
 			tag = new CompoundNBT();
@@ -176,6 +184,7 @@ public class RandomEquipment {
 		display.putInt("color", color);
 		tag.put("display", display);
 		item.setTag(tag);
+		return item;
 	}
 
 	public static ItemStack getMeleeWeapon(Random rand, int stage) {

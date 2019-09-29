@@ -8,7 +8,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
@@ -19,6 +18,37 @@ public class DungeonFeatures {
 
 	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
+		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+			if (layer.segments[x][z].connectedSides == 2
+					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
+							|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])
+					&& rand.nextDouble() < 0.08) {
+				((DungeonPieces.Corridor) layer.segments[x][z]).specialType = lyr > 0 ? 1 : 2;
+				return true;
+			}
+			return false;
+		});
+		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4) {
+				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].rotation);
+				Position2D pos = new Position2D(x, z);
+				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
+				if (roomPos.isValid(layer.width, layer.length) && layer.segments[roomPos.x][roomPos.z] == null
+						&& rand.nextDouble() < 0.04) {
+					layer.segments[x][z].openSide(RotationHelper.translateDirectionLeft(facing));
+					DungeonPieces.DungeonPiece sideRoom = RandomFeature.SIDE_ROOM.roll(rand);
+					sideRoom.setPosition(roomPos.x, roomPos.z);
+					sideRoom.stage = stage;
+					sideRoom.connectedSides = 1;
+					sideRoom.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16,
+							startPos.getZ() + z * 8);
+					sideRoom.rotation = layer.segments[x][z].rotation.add(Rotation.COUNTERCLOCKWISE_90);
+					layer.segments[x][z] = sideRoom;
+					return true;
+				}
+			}
+			return false;
+		});
 		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].connectedSides == 2 && rand.nextDouble() < 0.07
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
@@ -76,8 +106,7 @@ public class DungeonFeatures {
 					layer.segments[part1Pos.x][part1Pos.z] = part1;
 					layer.segments[part2Pos.x][part2Pos.z] = part2;
 
-					DungeonCrawl.LOGGER.debug("Placing a kitchen at {} {} {}. Second part: {} {} {}. Facing: {}.",
-							part1.x, part1.y, part1.z, part2.x, part2.y, part2.z, facing);
+//					DungeonCrawl.LOGGER.debug("Placing a kitchen at {} {} {}. Second part: {} {} {}. Facing: {}.", part1.x, part1.y, part1.z, part2.x, part2.y, part2.z, facing);
 					return true;
 				}
 				return false;

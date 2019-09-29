@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import java.util.Locale;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -17,13 +16,10 @@ import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -39,9 +35,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 	public static final String NAME = "DCDungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
-	public static final Structure<NoFeatureConfig> DUNGEON_FEATURE = registerFeature(
-			DungeonCrawl.MODID + ":" + NAME.toLowerCase(Locale.ROOT), DUNGEON);
-	public static final Structure<?> DUNGEON_STRUCTURE = registerStructure(NAME, DUNGEON_FEATURE);
 
 	public static final IStructurePieceType ENTRANCE_BUILDER = IStructurePieceType
 			.register(DungeonPieces.EntranceBuilder::new, "DUNGEON_ENTR_BLDR");
@@ -65,6 +58,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			"DUNGEON_PART");
 	public static final IStructurePieceType HOLE_TRAP = IStructurePieceType.register(DungeonPieces.HoleTrap::new,
 			"DUNGEON_HOLE_TRAP");
+	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonPieces.SideRoom::new,
+			"DUNGEON_SIDE_ROOM");
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
@@ -133,7 +128,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			 * currently.
 			 */
 			try {
-				Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD); // TODO Obfuscation: world -> field_222540_a
+				Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD); // TODO
+																										// Obfuscation:
+																										// world ->
+																										// field_222540_a
 //				Field world = ChunkGenerator.class.getDeclaredField("world");
 
 				world.setAccessible(true);
@@ -186,16 +184,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			super.generateStructure(worldIn, rand, structurebb, pos);
 		}
 
-	}
-
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	public static <C extends IFeatureConfig, F extends Feature<C>> F registerFeature(String key, F value) {
-		return (F) (Registry.<Feature<?>>register(Registry.FEATURE, key, value));
-	}
-
-	@SuppressWarnings("deprecation")
-	public static Structure<?> registerStructure(String key, Structure<?> p_215141_1_) {
-		return Registry.register(Registry.STRUCTURE_FEATURE, key.toLowerCase(Locale.ROOT), p_215141_1_);
 	}
 
 }

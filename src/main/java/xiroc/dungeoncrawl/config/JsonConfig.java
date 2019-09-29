@@ -67,6 +67,7 @@ public class JsonConfig implements IJsonConfigurable {
 		load(new Kitchen());
 		load(new TreasureRoom());
 		load(new Treasure());
+		load(new SpecialItemTags());
 		load(new ObfuscationValues());
 	}
 

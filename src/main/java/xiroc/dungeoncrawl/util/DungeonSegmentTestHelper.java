@@ -19,6 +19,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.treasure.RandomSpecialItem;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -41,6 +42,10 @@ public class DungeonSegmentTestHelper {
 					IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(event.getWorld(),
 							Blocks.CHEST.getDefaultState(), event.getPos(), event.getWorld().rand,
 							Treasure.Type.TREASURE, 0, 5);
+			} else if (event.getItemStack().getDisplayName().getString().equals("TT_004")) {
+				if (!event.getWorld().isRemote)
+					event.getPlayer().addItemStackToInventory(
+							RandomSpecialItem.CAP.generate(new Random(), 0, 1));
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_Banner")) {
 				event.getPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {

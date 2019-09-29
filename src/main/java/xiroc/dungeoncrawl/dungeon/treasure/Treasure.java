@@ -50,8 +50,7 @@ public class Treasure implements IJsonConfigurable {
 				new TreasureEntry("minecraft:coal", 1, 3, 3), new TreasureEntry("minecraft:iron_ingot", 1, 3, 2),
 				new TreasureEntry("minecraft:gold_ingot", 1, 3, 1), new TreasureEntry("minecraft:arrow", 1, 8, 3),
 				new TreasureEntry("minecraft:cobweb", 1, 3, 18), new TreasureEntry("minecraft:bone", 4, 6, 22),
-				new TreasureEntry("minecraft:rotten_flesh", 3, 7, 18),
-				new TreasureEntry("minecraft:golden_apple", 1, 3, 1), new TreasureEntry("minecraft:music_disc_13", 1),
+				new TreasureEntry("minecraft:rotten_flesh", 3, 7, 18), new TreasureEntry("minecraft:music_disc_13", 1),
 				new TreasureEntry("minecraft:music_disc_cat", 1), new TreasureEntry("minecraft:torch", 1, 4, 4),
 				new TreasureEntry("minecraft:brown_mushroom", 1, 4, 5),
 				new TreasureEntry("minecraft:red_mushroom", 1, 4, 5), new TreasureEntry("minecraft:compass", 1),
@@ -64,11 +63,10 @@ public class Treasure implements IJsonConfigurable {
 				new TreasureEntry("minecraft:iron_ingot", 1, 3, 1), new TreasureEntry("minecraft:gold_ingot", 1, 3, 1),
 				new TreasureEntry("minecraft:arrow", 1, 8, 4), new TreasureEntry("minecraft:cobweb", 1, 3, 18),
 				new TreasureEntry("minecraft:bone", 4, 6, 22), new TreasureEntry("minecraft:pufferfish", 3, 7, 18),
-				new TreasureEntry("minecraft:golden_apple", 1, 3, 1), new TreasureEntry("minecraft:music_disc_13", 1),
-				new TreasureEntry("minecraft:music_disc_cat", 1), new TreasureEntry("minecraft:torch", 1, 4, 2),
-				new TreasureEntry("minecraft:kelp", 1, 4, 15), new TreasureEntry("minecraft:compass", 1),
-				new TreasureEntry("minecraft:bowl", 8), new TreasureEntry("minecraft:clock", 1),
-				new TreasureEntry("minecraft:fermented_spider_eye", 3),
+				new TreasureEntry("minecraft:music_disc_13", 1), new TreasureEntry("minecraft:music_disc_cat", 1),
+				new TreasureEntry("minecraft:torch", 1, 4, 2), new TreasureEntry("minecraft:kelp", 1, 4, 15),
+				new TreasureEntry("minecraft:compass", 1), new TreasureEntry("minecraft:bowl", 8),
+				new TreasureEntry("minecraft:clock", 1), new TreasureEntry("minecraft:fermented_spider_eye", 3),
 				new TreasureEntry("minecraft:spider_eye", 1, 7, 2), new TreasureEntry("minecraft:book", 1, 3, 2),
 				new TreasureEntry("minecraft:sand", 1, 8, 6)));
 
@@ -78,8 +76,7 @@ public class Treasure implements IJsonConfigurable {
 				new TreasureEntry("minecraft:bone", 4, 6, 17), new TreasureEntry("minecraft:rotten_flesh", 3, 7, 13),
 				new TreasureEntry("minecraft:iron_sword", 1), new TreasureEntry("minecraft:iron_axe", 1),
 				new TreasureEntry("minecraft:golden_sword", 1), new TreasureEntry("minecraft:golden_axe", 2),
-				new TreasureEntry("minecraft:arrow", 3, 9, 9), new TreasureEntry("minecraft:golden_apple", 1, 3, 2),
-				new TreasureEntry("minecraft:enchanted_golden_apple", 1),
+				new TreasureEntry("minecraft:arrow", 3, 9, 9), new TreasureEntry("minecraft:golden_apple", 1, 2, 1),
 				new TreasureEntry("minecraft:music_disc_13", 1), new TreasureEntry("minecraft:music_disc_cat", 1),
 				new TreasureEntry("minecraft:name_tag", 1), new TreasureEntry("minecraft:crossbow", 1),
 				new TreasureEntry("minecraft:torch", 1, 7, 6), new TreasureEntry("minecraft:brown_mushroom", 1, 4, 7),
@@ -95,8 +92,7 @@ public class Treasure implements IJsonConfigurable {
 				new TreasureEntry("minecraft:pufferfish", 3, 7, 13), new TreasureEntry("minecraft:iron_sword", 1),
 				new TreasureEntry("minecraft:iron_axe", 1), new TreasureEntry("minecraft:golden_sword", 1),
 				new TreasureEntry("minecraft:golden_axe", 2), new TreasureEntry("minecraft:arrow", 3, 9, 9),
-				new TreasureEntry("minecraft:golden_apple", 1, 3, 2),
-				new TreasureEntry("minecraft:enchanted_golden_apple", 1),
+				new TreasureEntry("minecraft:golden_apple", 1, 2, 1),
 				new TreasureEntry("minecraft:music_disc_13", 1), new TreasureEntry("minecraft:music_disc_cat", 1),
 				new TreasureEntry("minecraft:name_tag", 1), new TreasureEntry("minecraft:crossbow", 1),
 				new TreasureEntry("minecraft:torch", 1, 7, 2), new TreasureEntry("minecraft:brown_mushroom", 1, 4, 7),
@@ -113,7 +109,7 @@ public class Treasure implements IJsonConfigurable {
 				new TreasureEntry("minecraft:bone", 4, 6, 21), new TreasureEntry("minecraft:rotten_flesh", 3, 7, 19),
 				new TreasureEntry("minecraft:iron_axe", 2), new TreasureEntry("minecraft:golden_sword", 1),
 				new TreasureEntry("minecraft:golden_axe", 2), new TreasureEntry("minecraft:saddle", 1),
-				new TreasureEntry("minecraft:golden_apple", 1, 3, 4),
+				new TreasureEntry("minecraft:golden_apple", 1, 2, 3),
 				new TreasureEntry("minecraft:enchanted_golden_apple", 1),
 				new TreasureEntry("minecraft:music_disc_13", 1), new TreasureEntry("minecraft:music_disc_cat", 1),
 				new TreasureEntry("minecraft:name_tag", 3), new TreasureEntry("minecraft:torch", 1, 7, 8),
@@ -130,7 +126,7 @@ public class Treasure implements IJsonConfigurable {
 				new TreasureEntry("minecraft:cobweb", 1, 3, 21), new TreasureEntry("minecraft:bone", 4, 6, 21),
 				new TreasureEntry("minecraft:pufferfish", 3, 7, 19), new TreasureEntry("minecraft:iron_axe", 2),
 				new TreasureEntry("minecraft:golden_sword", 1), new TreasureEntry("minecraft:golden_axe", 2),
-				new TreasureEntry("minecraft:saddle", 1), new TreasureEntry("minecraft:golden_apple", 1, 3, 4),
+				new TreasureEntry("minecraft:saddle", 1), new TreasureEntry("minecraft:golden_apple", 1, 2, 3),
 				new TreasureEntry("minecraft:enchanted_golden_apple", 1),
 				new TreasureEntry("minecraft:music_disc_13", 1), new TreasureEntry("minecraft:music_disc_cat", 1),
 				new TreasureEntry("minecraft:name_tag", 3), new TreasureEntry("minecraft:torch", 1, 7, 3),
@@ -204,7 +200,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_2.entries.add(TreasureItems.POTION_REGENERATION);
 		CHEST_STAGE_2.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_2.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(4));
-		CHEST_STAGE_2.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
+		CHEST_STAGE_2.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(9));
 
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.LAUDANUM.withWeight(3));
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.ANIMUS);
@@ -215,7 +211,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.POTION_REGENERATION);
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(4));
-		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
+		CHEST_STAGE_2_OCEAN.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(9));
 
 		CHEST_STAGE_3.entries.add(TreasureItems.LAUDANUM.withWeight(3));
 		CHEST_STAGE_3.entries.add(TreasureItems.ANIMUS);
@@ -227,7 +223,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_3.entries.add(TreasureItems.POTION_REGENERATION_LONG);
 		CHEST_STAGE_3.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_3.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(3));
-		CHEST_STAGE_3.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
+		CHEST_STAGE_3.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(13));
 
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.LAUDANUM.withWeight(3));
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.ANIMUS);
@@ -239,7 +235,7 @@ public class Treasure implements IJsonConfigurable {
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.POTION_REGENERATION_LONG);
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.ENCHANTED_BOOK);
 		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(3));
-		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(5));
+		CHEST_STAGE_3_OCEAN.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(13));
 
 		DISPENSER_STAGE_1.entries.add(TreasureItems.SPLASH_POISON);
 

@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.ArrayList;
 
 /*
@@ -23,12 +27,16 @@ public class TreasureLootTable {
 
 	public String name;
 	public RandomValueRange rolls;
+	public float minRolls, maxRolls;
 	public ArrayList<TreasureEntry> entries;
 	public Integer totalWeight;
 
 	public TreasureLootTable(String name, RandomValueRange rolls, TreasureEntry... entries) {
 		this.name = name;
-		this.rolls = rolls;
+		if (rolls != null) {
+			this.minRolls = rolls.getMin();
+			this.maxRolls = rolls.getMax();
+		}
 		this.entries = new ArrayList<TreasureEntry>();
 		for (TreasureEntry entry : entries)
 			this.entries.add(entry);
@@ -36,30 +44,49 @@ public class TreasureLootTable {
 
 	public void build() {
 		totalWeight = 0;
-		for (TreasureEntry entry : entries)
+		for (TreasureEntry entry : entries) {
+			entry.readResourceLocation();
 			totalWeight += entry.weight;
+		}
+		this.rolls = new RandomValueRange(minRolls, maxRolls);
 	}
 
 	private List<ItemStack> roll(Random rand, int theme, int lootLevel) {
 		List<ItemStack> list = Lists.newArrayList();
 
 		for (int i = 0; i < rolls.generateInt(rand); i++) {
-			int item = rand.nextInt(totalWeight);
-			int k = 0;
-
-			for (TreasureEntry entry : entries) {
-
-				if (k + entry.weight > item) {
-					list.add(entry.generate(rand, theme, lootLevel));
-					break;
-				}
-
-				k += entry.weight;
-			}
-
+//			int item = rand.nextInt(totalWeight);
+//			int k = 0;
+//
+//			for (TreasureEntry entry : entries) {
+//
+//				if (k + entry.weight > item) {
+//					list.add(entry.generate(rand, theme, lootLevel));
+//					continue;
+//				}
+//
+//				k += entry.weight;
+//			}
+			list.add(getItemStack(rand, theme, lootLevel));
 		}
 
 		return list;
+	}
+
+	public ItemStack getItemStack(Random rand, int theme, int lootLevel) {
+		int item = rand.nextInt(totalWeight);
+		int k = 0;
+
+		for (TreasureEntry entry : entries) {
+
+			if (k + entry.weight > item)
+				return entry.generate(rand, theme, lootLevel);
+
+			k += entry.weight;
+		}
+		DungeonCrawl.LOGGER.error("Could not find an item with weight {} in {}. Maximum weight is {}.", item, name,
+				totalWeight);
+		return ItemStack.EMPTY;
 	}
 
 	public void fillInventory(IInventory inventory, Random rand, int theme, int lootLevel) {
@@ -71,7 +98,6 @@ public class TreasureLootTable {
 				DungeonCrawl.LOGGER.warn("Tried to over-fill a container");
 				return;
 			}
-
 			if (itemStack.isEmpty())
 				inventory.setInventorySlotContents(slots.remove(slots.size() - 1), ItemStack.EMPTY);
 			else

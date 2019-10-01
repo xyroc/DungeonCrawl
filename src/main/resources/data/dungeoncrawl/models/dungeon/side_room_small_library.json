@@ -6,7 +6,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -19,6 +19,32 @@
         },
         {
           "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "FLOOR"
+        },
+        {
+          "type": "FLOOR"
         },
         {
           "type": "WALL"
@@ -38,16 +64,12 @@
           "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
+        null,
+        null,
         {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -61,58 +83,18 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
           "type": "WALL"
-        }
-      ],
-      [
+        },
         {
           "type": "WALL"
         },
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "WALL"
-        }
-      ],
-      [
         {
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -137,6 +119,370 @@
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        null,
+        null,
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
           "waterlogged": false,
           "half": "TOP"
         },
@@ -180,7 +526,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -199,6 +545,36 @@
         },
         {
           "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -209,22 +585,16 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
+        null,
+        null,
+        null,
+        null,
         {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "WALL"
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
         {
           "type": "WALL"
@@ -235,36 +605,16 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
-        },
-        {
           "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
+          "resourceName": "minecraft:bookshelf"
         },
+        null,
+        null,
         null,
         null,
         {
           "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
+          "resourceName": "minecraft:bookshelf"
         },
         {
           "type": "WALL"
@@ -274,86 +624,17 @@
         {
           "type": "WALL"
         },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
         null,
         null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
+        null,
+        null,
+        null,
+        null,
         {
           "type": "WALL"
         }
       ],
       [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
         {
           "type": "WALL"
         },
@@ -366,9 +647,342 @@
           "waterlogged": false,
           "half": "TOP"
         },
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "NORTH",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        null,
+        null,
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "SOUTH",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ]
+    ],
+    [
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:white_concrete"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:black_concrete"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
           "waterlogged": false,
           "half": "TOP"
         },
@@ -412,7 +1026,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -428,6 +1042,32 @@
         },
         {
           "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "NONE"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "MATERIAL"
+        },
+        {
+          "type": "MATERIAL"
         },
         {
           "type": "WALL"
@@ -443,20 +1083,16 @@
         {
           "type": "WALL"
         },
+        null,
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "SOUTH",
-          "waterlogged": false
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
         {
-          "type": "FLOOR"
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
+        null,
         {
           "type": "WALL"
         },
@@ -469,67 +1105,26 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
+          "type": "WALL"
         },
         null,
-        null,
-        null,
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
+        },
+        {
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
+        },
         null,
         {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
+          "type": "WALL"
         },
         {
           "type": "WALL"
         }
       ],
       [
-        {
-          "type": "WALL"
-        },
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
         {
           "type": "WALL"
         },
@@ -542,11 +1137,36 @@
           "waterlogged": false,
           "half": "TOP"
         },
+        null,
+        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
           "waterlogged": false,
           "half": "TOP"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -588,206 +1208,28 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": true,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": true,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": true,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": true,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -815,182 +1257,20 @@
         {
           "type": "NONE"
         }
-      ]
-    ],
-    [
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
       ],
       [
         {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
+          "type": "NONE"
         },
         {
           "type": "WALL"
         },
         {
           "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
         },
         {
           "type": "WALL"
         },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": true,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
         {
           "type": "WALL"
         },
@@ -1001,25 +1281,7 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -1047,126 +1309,20 @@
         {
           "type": "NONE"
         }
-      ]
-    ],
-    [
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
       ],
       [
         {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
-          "facing": "NORTH",
-          "waterlogged": false
+          "type": "NONE"
         },
         {
           "type": "WALL"
         },
         {
           "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
         },
         {
           "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
         },
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
         {
           "type": "WALL"
         },
@@ -1177,25 +1333,7 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -1223,408 +1361,28 @@
         {
           "type": "NONE"
         }
-      ]
-    ],
-    [
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "OTHER",
-          "north": true,
-          "east": false,
-          "south": false,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        null,
-        null,
-        {
-          "type": "OTHER",
-          "north": false,
-          "east": false,
-          "south": true,
-          "west": false,
-          "waterlogged": false,
-          "registryName": {
-            "namespace": "minecraft",
-            "path": "iron_bars"
-          }
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
       ],
       [
         {
           "type": "NONE"
         },
         {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
           "type": "NONE"
-        }
-      ]
-    ],
-    [
-      [
-        {
-          "type": "WALL"
         },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
         {
           "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "NONE"

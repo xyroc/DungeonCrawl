@@ -65,7 +65,7 @@ public class DungeonBuilder {
 		List<DungeonPiece> list = Lists.newArrayList();
 		for (int i = 0; i < layers.length; i++) {
 			buildLayer(layers[i], i, startPos);
-//			list.addAll(buildLayer(layers[i], i, startPos));
+			// list.addAll(buildLayer(layers[i], i, startPos));
 			DungeonPiece stairs = i == 0 ? new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT)
 					: new Stairs(null, DungeonPieces.DEFAULT_NBT);
 			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16,
@@ -85,7 +85,6 @@ public class DungeonBuilder {
 					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16,
 							startPos.getZ() + z * 8);
 					layer.segments[x][z].stage = stage;
-//					list.add(layer.segments[x][z]);
 				}
 			}
 		}
@@ -110,25 +109,22 @@ public class DungeonBuilder {
 								hole.stage = stage;
 								hole.lava = stage == 2;
 								layer.segments[x][z] = hole;
-							} else if (layer.segments[x][z].connectedSides == 2 && rand.nextDouble() < 0.07
-									&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
-											|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])) {
-								DungeonPiece feature = RandomFeature.CORRIDOR_FEATURE.roll(rand);
-								feature.sides = layer.segments[x][z].sides;
-								feature.connectedSides = layer.segments[x][z].connectedSides;
-								feature.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 16,
-										startPos.getZ() + z * 8);
-								feature.stage = stage;
-								feature.rotation = layer.segments[x][z].rotation;
-								layer.segments[x][z] = feature;
+							} else {
+								DungeonFeatures.processCorridor(layer, x, z, rand, i, stage, startPos);
 							}
 						}
+					}
+				}
+			}
+
+			for (int x = 0; x < layer.width; x++)
+				for (int z = 0; z < layer.length; z++) {
+					if (layer.segments[x][z] != null) {
 						if (i == lyrs - 1)
 							layer.segments[x][z].theme = 1;
 						list.add(layer.segments[x][z]);
 					}
 				}
-			}
 		}
 	}
 
@@ -141,16 +137,25 @@ public class DungeonBuilder {
 		case 0:
 			switch (piece.connectedSides) {
 			case 2:
-				if (north && south || east && west)
-					return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
-//					return DungeonSegmentModelRegistry.CORRIDOR_EW;
-//				return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
-				return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
+				switch (((DungeonPieces.Corridor) piece).specialType) {
+				case 1:
+					return DungeonSegmentModelRegistry.CORRIDOR_FIRE;
+				case 2:
+					return DungeonSegmentModelRegistry.CORRIDOR_GRASS;
+				default:
+					if (north && south || east && west)
+						return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
+					// return DungeonSegmentModelRegistry.CORRIDOR_EW;
+					// return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
+					return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
+				}
+
 			case 3:
-//				return DungeonSegmentModelRegistry.CORRIDOR_EW_OPEN;
+				// return DungeonSegmentModelRegistry.CORRIDOR_EW_OPEN;
 				return RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
 			case 4:
-//				return DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN;
+				// return
+				// DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN;
 				return RandomDungeonSegmentModel.CORRIDOR_ALL_OPEN.roll(rand);
 			default:
 				return null;

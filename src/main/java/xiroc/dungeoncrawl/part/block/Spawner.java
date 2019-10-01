@@ -20,9 +20,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
-import xiroc.dungeoncrawl.util.Config;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class Spawner implements IBlockPlacementHandler {
@@ -40,7 +41,8 @@ public class Spawner implements IBlockPlacementHandler {
 			.add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
 	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int theme, int stage) {
+	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
+			int theme, int stage) {
 		world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 2);
 		TileEntity tileentity = world.getTileEntity(pos);
 		if (tileentity instanceof MobSpawnerTileEntity) {
@@ -64,8 +66,8 @@ public class Spawner implements IBlockPlacementHandler {
 						spawnData.put("ArmorItems", armorList);
 					ListNBT handItems = new ListNBT();
 					ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
-							? RandomEquipment.getRangedWeapon(new Random(), stage)
-							: RandomEquipment.getMeleeWeapon(new Random(), stage);
+							? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
+							: RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
 					if (mainHand != ItemStack.EMPTY)
 						handItems.add(mainHand.write(new CompoundNBT()));
 					handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
@@ -74,6 +76,9 @@ public class Spawner implements IBlockPlacementHandler {
 					spawnData.put("HandItems", handItems);
 					nbt.put("Entity", spawnData);
 					nbt.putInt("Weight", 1);
+					nbt.putShort("MinSpawnDelay", (short) 200);
+					nbt.putShort("MaxSpawnDelay", (short) 800);
+					nbt.putShort("SpawnCount", (short) 1);
 					if (i == 0)
 						spawnerNBT.put("SpawnData", spawnData);
 					potentialSpawns.add(nbt);

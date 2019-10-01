@@ -20,11 +20,16 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 public class Chest implements IBlockPlacementHandler {
 
 	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, int theme, int lootLevel) {
+	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
+			int theme, int lootLevel) {
 		world.setBlockState(pos, state, 2);
-		if (lootLevel < 1 || rand.nextDouble() > 0.25) {
+		if (treasureType != Treasure.Type.DEFAULT || lootLevel < 1 || rand.nextDouble() > 0.25) {
 			LockableLootTileEntity tile = (LockableLootTileEntity) world.getTileEntity(pos);
-			getTreasureLootTable(theme, lootLevel).fillInventory(tile, rand, theme, lootLevel);
+			TreasureLootTable lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
+			if (lootTable != null)
+				lootTable.fillInventory(tile, rand, theme, lootLevel);
+			else
+				getTreasureLootTable(theme, lootLevel).fillInventory(tile, rand, theme, lootLevel);
 		} else
 			LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, getLootTable(theme, lootLevel));
 	}
@@ -53,6 +58,26 @@ public class Chest implements IBlockPlacementHandler {
 			DungeonCrawl.LOGGER.warn("Unknown Vanilla Loot Level: {}", lootLevel);
 			return null;
 		}
+	}
+
+	public static class Barrel implements IBlockPlacementHandler {
+
+		@Override
+		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
+				int theme, int lootLevel) {
+			world.setBlockState(pos, state, 2);
+			if (treasureType != Treasure.Type.DEFAULT || lootLevel < 1 || rand.nextDouble() > 0.25) {
+				LockableLootTileEntity tile = (LockableLootTileEntity) world.getTileEntity(pos);
+				TreasureLootTable lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
+				if (lootTable != null)
+					lootTable.fillInventory(tile, rand, theme, lootLevel);
+				else
+					getTreasureLootTable(theme, lootLevel).fillInventory(tile, rand, theme, lootLevel);
+			} else
+				LockableLootTileEntity.setLootTable(world, world.getRandom(), pos,
+						Chest.getLootTable(theme, lootLevel));
+		}
+
 	}
 
 }

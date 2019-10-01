@@ -1,25 +1,25 @@
 package xiroc.dungeoncrawl.dungeon;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import java.util.Locale;
 import java.util.Random;
 import java.util.function.Function;
 
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.util.SharedSeedRandom;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -27,16 +27,14 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.config.ObfuscationValues;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
-import xiroc.dungeoncrawl.util.Config;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
 	public static final String NAME = "DCDungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
-	public static final Structure<NoFeatureConfig> DUNGEON_FEATURE = registerFeature(
-			DungeonCrawl.MODID + ":" + NAME.toLowerCase(Locale.ROOT), DUNGEON);
-	public static final Structure<?> DUNGEON_STRUCTURE = registerStructure(NAME, DUNGEON_FEATURE);
 
 	public static final IStructurePieceType ENTRANCE_BUILDER = IStructurePieceType
 			.register(DungeonPieces.EntranceBuilder::new, "DUNGEON_ENTR_BLDR");
@@ -60,6 +58,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			"DUNGEON_PART");
 	public static final IStructurePieceType HOLE_TRAP = IStructurePieceType.register(DungeonPieces.HoleTrap::new,
 			"DUNGEON_HOLE_TRAP");
+	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonPieces.SideRoom::new,
+			"DUNGEON_SIDE_ROOM");
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
@@ -123,6 +123,43 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 		@Override
 		public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
 				Biome biomeIn) {
+			/*
+			 * Some Reflection stuff. I dont like this but it is the only way I know
+			 * currently.
+			 */
+			try {
+				Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD);
+
+				world.setAccessible(true);
+
+				Field modifierField = Field.class.getDeclaredField("modifiers");
+				modifierField.setAccessible(true);
+				modifierField.setInt(world, world.getModifiers() & ~Modifier.FINAL);
+
+				DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
+
+				ServerWorld serverWorld = (ServerWorld) world.get(generator);
+				BlockPos spawn = serverWorld.getSpawnPoint();
+
+				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16;
+
+				if (serverWorld.getDimension().getType() != DimensionType.OVERWORLD
+						|| spawnChunkX - chunkX < 8 && spawnChunkX - chunkX > -8
+						|| spawnChunkZ - chunkZ < 8 && spawnChunkZ - chunkZ > -8)
+					return;
+
+				/* Undoing everything */
+
+				modifierField.setInt(world, Modifier.PRIVATE | Modifier.FINAL); // TODO Does this work as intended?
+				modifierField.setAccessible(false);
+				world.setAccessible(false);
+
+			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
+				DungeonCrawl.LOGGER.error(
+						"Failed to access the chunkGen world through reflection. This might result in dungeons getting generated near the spawn chunk.");
+				e.printStackTrace();
+			}
+
 			ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
 			long now = System.currentTimeMillis();
 			DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
@@ -143,15 +180,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			super.generateStructure(worldIn, rand, structurebb, pos);
 		}
 
-	}
-
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	public static <C extends IFeatureConfig, F extends Feature<C>> F registerFeature(String key, F value) {
-		return (F) (Registry.<Feature<?>>register(Registry.FEATURE, key, value));
-	}
-
-	public static Structure<?> registerStructure(String key, Structure<?> p_215141_1_) {
-		return Registry.register(Registry.STRUCTURE_FEATURE, key.toLowerCase(Locale.ROOT), p_215141_1_);
 	}
 
 }

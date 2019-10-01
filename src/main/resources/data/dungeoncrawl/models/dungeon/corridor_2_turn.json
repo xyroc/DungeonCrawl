@@ -6,7 +6,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -27,7 +27,7 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
@@ -180,7 +180,7 @@
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -237,12 +237,7 @@
         {
           "type": "WALL"
         },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
+        null,
         null,
         null,
         {
@@ -255,40 +250,36 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "RAND_WALL_SPAWNER"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "RAND_WALL_SPAWNER"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        },
-        {
           "type": "CEILING_STAIRS",
-          "facing": "NORTH",
+          "facing": "WEST",
           "waterlogged": false,
-          "half": "TOP"
+          "half": "BOTTOM"
+        }
+      ],
+      [
+        {
+          "type": "WALL"
         },
+        {
+          "type": "WALL"
+        },
+        null,
+        null,
+        null,
+        null,
+        {
+          "type": "WALL"
+        },
+        null
+      ],
+      [
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        null,
         null,
         null,
         {
@@ -301,7 +292,10 @@
           "type": "WALL"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
         }
       ],
       [
@@ -359,14 +353,14 @@
           "type": "WALL"
         },
         {
-          "type": "NONE"
+          "type": "WALL"
         }
       ]
     ],
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -410,10 +404,10 @@
           "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         }
       ],
       [
@@ -432,13 +426,11 @@
         null,
         {
           "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
+          "facing": "WEST",
           "waterlogged": false,
           "half": "BOTTOM"
         },
-        {
-          "type": "WALL"
-        }
+        null
       ],
       [
         {
@@ -450,9 +442,7 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        }
+        null
       ],
       [
         {
@@ -470,13 +460,11 @@
         null,
         {
           "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
+          "facing": "WEST",
           "waterlogged": false,
           "half": "TOP"
         },
-        {
-          "type": "WALL"
-        }
+        null
       ],
       [
         {
@@ -533,14 +521,14 @@
           "type": "WALL"
         },
         {
-          "type": "NONE"
+          "type": "WALL"
         }
       ]
     ],
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -584,10 +572,10 @@
           "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         }
       ],
       [
@@ -601,12 +589,8 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
+        null,
+        null
       ],
       [
         {
@@ -619,12 +603,8 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
+        null,
+        null
       ],
       [
         {
@@ -637,12 +617,8 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
+        null,
+        null
       ],
       [
         {
@@ -662,18 +638,27 @@
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
+          "facing": "WEST",
           "waterlogged": false,
           "half": "TOP"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "WEST",
+          "waterlogged": false,
+          "half": "TOP"
         }
       ],
       [
@@ -699,14 +684,14 @@
           "type": "WALL"
         },
         {
-          "type": "NONE"
+          "type": "WALL"
         }
       ]
     ],
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -750,10 +735,10 @@
           "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         }
       ],
       [
@@ -767,12 +752,8 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
+        null,
+        null
       ],
       [
         {
@@ -785,12 +766,8 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
+        null,
+        null
       ],
       [
         {
@@ -803,12 +780,8 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
+        null,
+        null
       ],
       [
         {
@@ -828,18 +801,27 @@
         },
         {
           "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
+          "facing": "EAST",
           "waterlogged": false,
           "half": "TOP"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
         },
         {
-          "type": "WALL"
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
         }
       ],
       [
@@ -865,14 +847,14 @@
           "type": "WALL"
         },
         {
-          "type": "NONE"
+          "type": "WALL"
         }
       ]
     ],
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -916,10 +898,10 @@
           "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         },
         {
-          "type": "WALL"
+          "type": "FLOOR"
         }
       ],
       [
@@ -936,15 +918,8 @@
         null,
         null,
         null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "WALL"
-        }
+        null,
+        null
       ],
       [
         {
@@ -956,9 +931,7 @@
         null,
         null,
         null,
-        {
-          "type": "WALL"
-        }
+        null
       ],
       [
         {
@@ -973,16 +946,19 @@
         null,
         null,
         null,
-        null,
         {
           "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
+          "facing": "EAST",
           "waterlogged": false,
           "half": "TOP"
         },
         {
-          "type": "WALL"
-        }
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        null
       ],
       [
         {
@@ -995,16 +971,10 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -1039,14 +1009,14 @@
           "type": "WALL"
         },
         {
-          "type": "NONE"
+          "type": "WALL"
         }
       ]
     ],
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
           "type": "WALL"
@@ -1078,16 +1048,16 @@
           "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
-          "type": "FLOOR"
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -1110,7 +1080,6 @@
           "half": "BOTTOM"
         },
         null,
-        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -1122,6 +1091,12 @@
         },
         {
           "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "BOTTOM"
         }
       ],
       [
@@ -1129,18 +1104,22 @@
           "type": "WALL"
         },
         {
-          "type": "RAND_WALL_SPAWNER"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "RAND_WALL_SPAWNER"
+          "type": "WALL"
         },
         {
           "type": "WALL"
-        }
+        },
+        null,
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        null
       ],
       [
         {
@@ -1156,7 +1135,6 @@
           "half": "TOP"
         },
         null,
-        null,
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -1168,6 +1146,12 @@
         },
         {
           "type": "WALL"
+        },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
         }
       ],
       [
@@ -1181,16 +1165,10 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -1225,126 +1203,41 @@
           "type": "WALL"
         },
         {
-          "type": "NONE"
+          "type": "WALL"
         }
       ]
     ],
     [
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         },
         {
-          "type": "WALL"
+          "type": "NONE"
         }
       ],
       [
         {
-          "type": "WALL"
+          "type": "NONE"
         },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "FLOOR"
-        },
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "BOTTOM"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "WALL"
-        }
-      ],
-      [
-        {
-          "type": "WALL"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        null,
-        null,
-        null,
-        null,
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "WALL"
-        }
-      ],
-      [
         {
           "type": "WALL"
         },
@@ -1355,16 +1248,7 @@
           "type": "WALL"
         },
         {
-          "type": "CEILING_STAIRS",
-          "facing": "NORTH",
-          "waterlogged": false,
-          "half": "TOP"
-        },
-        {
-          "type": "CEILING_STAIRS",
-          "facing": "SOUTH",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "WALL"
         },
         {
           "type": "WALL"
@@ -1397,6 +1281,110 @@
         },
         {
           "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        },
+        {
+          "type": "WALL"
+        }
+      ],
+      [
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "NONE"
+        },
+        {
+          "type": "NONE"
         },
         {
           "type": "NONE"

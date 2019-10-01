@@ -10,11 +10,12 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.util.IRandom;
-import xiroc.dungeoncrawl.util.JsonConfig;
 
 public class RandomEquipment {
 
@@ -131,6 +132,14 @@ public class RandomEquipment {
 		return item;
 	}
 
+	public static ItemStack enchantItem(ItemStack item, Enchantment enchantment, double multiplier) {
+		int level = (int) ((double) enchantment.getMaxLevel() * multiplier);
+		if (level < 1)
+			level = 1;
+		item.addEnchantment(enchantment, level);
+		return item;
+	}
+
 	public static ItemStack enchantBow(ItemStack item, Random rand, double multiplier) {
 		Enchantment enchantment = ForgeRegistries.ENCHANTMENTS
 				.getValue(JsonConfig.BOW_ENCHANTMENTS[rand.nextInt(JsonConfig.BOW_ENCHANTMENTS.length)]);
@@ -168,14 +177,20 @@ public class RandomEquipment {
 		return item;
 	}
 
-	public static void setArmorColor(ItemStack item, int color) {
+	public static ItemStack setArmorColor(ItemStack item, int color) {
 		CompoundNBT tag = item.getTag();
 		if (tag == null)
 			tag = new CompoundNBT();
-		CompoundNBT display = new CompoundNBT();
+		INBT displayNBT = tag.get("display");
+		CompoundNBT display;
+		if (displayNBT == null)
+			display = new CompoundNBT();
+		else
+			display = (CompoundNBT) displayNBT;
 		display.putInt("color", color);
 		tag.put("display", display);
 		item.setTag(tag);
+		return item;
 	}
 
 	public static ItemStack getMeleeWeapon(Random rand, int stage) {
@@ -195,6 +210,8 @@ public class RandomEquipment {
 	}
 
 	public static double getStageMultiplier(int stage) {
+		if (stage > 2)
+			return 1.0D;
 		return 1D * Math.pow(0.5, HIGHEST_STAGE - stage);
 	}
 

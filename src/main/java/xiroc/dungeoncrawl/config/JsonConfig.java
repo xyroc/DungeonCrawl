@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.config;
 
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
@@ -14,6 +14,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,8 +25,11 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
 import xiroc.dungeoncrawl.dungeon.treasure.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 public class JsonConfig implements IJsonConfigurable {
+
+	public static final String KEY_CONFIG_VERSION = "config_version";
 
 	public static final JsonConfig BASE;
 
@@ -42,7 +46,7 @@ public class JsonConfig implements IJsonConfigurable {
 	public static final String[] KEYS = new String[] { KEY_ARMOR_ENCHANTMENTS, KEY_ARMOR_RARE, KEY_ARMOR_STAGE_1,
 			KEY_ARMOR_STAGE_2, KEY_ARMOR_STAGE_3, KEY_AXE_ENCHANTMENTS, KEY_AXES, KEY_BIOME_BLACKLIST,
 			KEY_BIOME_OVERWORLD_BLACKLIST, KEY_BOW_ENCHANTMENTS, KEY_BOWS, KEY_COLORED_ARMOR, KEY_PICKAXE_ENCHANTMENTS,
-			KEY_PICKAXES, KEY_SWORD_ENCHANTMENTS, KEY_SWORDS, KEY_SWORDS_RARE, KEY_ASSUMPTION_SEARCHLIST };
+			KEY_PICKAXES, KEY_SWORD_ENCHANTMENTS, KEY_SWORDS, KEY_SWORDS_RARE };
 
 	public static List<?> BIOME_BLACKLIST, BIOME_OVERWORLD_BLACKLIST;
 
@@ -60,7 +64,11 @@ public class JsonConfig implements IJsonConfigurable {
 		BASE = new JsonConfig();
 		load(BASE);
 		load(new EnchantedBook());
+		load(new Kitchen());
+		load(new TreasureRoom());
 		load(new Treasure());
+		load(new SpecialItemTags());
+		load(new ObfuscationValues());
 	}
 
 	public static void load(IJsonConfigurable configurable) {
@@ -70,6 +78,7 @@ public class JsonConfig implements IJsonConfigurable {
 			if (file.getParentFile() != null)
 				file.getParentFile().mkdirs();
 			JsonObject object = configurable.create(new JsonObject());
+			object.add(KEY_CONFIG_VERSION, DungeonCrawl.GSON.toJsonTree(configurable.getVersion()));
 			try {
 				FileWriter writer = new FileWriter(file);
 				DungeonCrawl.GSON.toJson(object, writer);
@@ -83,6 +92,30 @@ public class JsonConfig implements IJsonConfigurable {
 		Gson gson = DungeonCrawl.GSON;
 		try {
 			JsonObject object = gson.fromJson(new FileReader(file), JsonObject.class);
+			if (object.get(KEY_CONFIG_VERSION).getAsInt() < configurable.getVersion()) {
+				if (!configurable.deleteOldVersion()) {
+					DungeonCrawl.LOGGER.info("Creating a backup of {} because it is outdated and will be replaced",
+							file.getAbsolutePath());
+					File backupFile = FMLPaths.CONFIGDIR.get()
+							.resolve("DungeonCrawl/Config Backups/" + System.currentTimeMillis() + "_" + file.getName())
+							.toFile();
+					if (!backupFile.getParentFile().exists())
+						backupFile.getParentFile().mkdirs();
+					Files.write(Files.toByteArray(file), backupFile);
+				}
+				DungeonCrawl.LOGGER.info("Replacing {}", file.getAbsoluteFile());
+				JsonObject newObject = configurable.create(new JsonObject());
+				newObject.add(KEY_CONFIG_VERSION, DungeonCrawl.GSON.toJsonTree(configurable.getVersion()));
+				try {
+					FileWriter writer = new FileWriter(file);
+					DungeonCrawl.GSON.toJson(newObject, writer);
+					writer.flush();
+					writer.close();
+				} catch (Exception e) {
+					DungeonCrawl.LOGGER.error("Failed to create {}", file.getAbsolutePath());
+					e.printStackTrace();
+				}
+			}
 			configurable.load(object, file);
 		} catch (Exception e) {
 			DungeonCrawl.LOGGER.error("Failed to load {}", file.getAbsolutePath());
@@ -91,11 +124,22 @@ public class JsonConfig implements IJsonConfigurable {
 
 	}
 
+	@Override
+	public int getVersion() {
+		return 0;
+	}
+
+	@Override
+	public boolean deleteOldVersion() {
+		return false;
+	}
+
 	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable) {
 		return getOrRewrite(object, name, configurable, false);
 	}
 
-	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable, boolean rerun) {
+	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable,
+			boolean rerun) {
 		if (object.get(name) != null) {
 			return object.get(name);
 		} else {
@@ -109,8 +153,8 @@ public class JsonConfig implements IJsonConfigurable {
 			JsonConfigManager.rewrite(configurable);
 			try {
 				return getOrRewrite(
-						DungeonCrawl.GSON.fromJson(new FileReader(configurable.getFile()), JsonObject.class),
-						name, configurable, true);
+						DungeonCrawl.GSON.fromJson(new FileReader(configurable.getFile()), JsonObject.class), name,
+						configurable, true);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return DungeonCrawl.GSON.toJsonTree(configurable.getDefaults().get(name));
@@ -131,21 +175,17 @@ public class JsonConfig implements IJsonConfigurable {
 				.add("minecraft:leather_pants").add("minecraft:leather_chestplate").add("minecraft:leather_helmet")
 				.build();
 
-		public static final ResourceLocation[] BOWS = new ResourceLocation[] { new ResourceLocation("minecraft:bow") };
+		public static final String[] BOWS = new String[] { "minecraft:bow" };
 
-		public static final ResourceLocation[] SWORDS = new ResourceLocation[] {
-				new ResourceLocation("minecraft:stone_sword"), new ResourceLocation("minecraft:golden_sword"),
-				new ResourceLocation("minecraft:iron_sword") };
+		public static final String[] SWORDS = new String[] { new String("minecraft:stone_sword"),
+				"minecraft:golden_sword", new String("minecraft:iron_sword") };
 
-		public static final ResourceLocation[] SWORDS_RARE = new ResourceLocation[] {
-				new ResourceLocation("minecraft:wooden_sword"), new ResourceLocation("minecraft:diamond_sword") };
+		public static final String[] SWORDS_RARE = new String[] { "minecraft:wooden_sword", "minecraft:diamond_sword" };
 
-		public static final ResourceLocation[] PICKAXES = new ResourceLocation[] {
-				new ResourceLocation("minecraft:stone_pickaxe"), new ResourceLocation("minecraft:golden_pickaxe"),
-				new ResourceLocation("minecraft:iron_pickaxe"), };
-		public static final ResourceLocation[] AXES = new ResourceLocation[] {
-				new ResourceLocation("minecraft:stone_axe"), new ResourceLocation("minecraft:golden_axe"),
-				new ResourceLocation("minecraft:iron_axe"), new ResourceLocation("minecraft:diamond_axe") };
+		public static final String[] PICKAXES = new String[] { "minecraft:stone_pickaxe", "minecraft:golden_pickaxe",
+				"minecraft:iron_pickaxe", };
+		public static final String[] AXES = new String[] { "minecraft:stone_axe", "minecraft:golden_axe",
+				"minecraft:iron_axe", "minecraft:diamond_axe" };
 
 		public static final ArmorSet[] ARMOR_SETS_1 = new ArmorSet[] { new ArmorSet("minecraft:leather_boots",
 				"minecraft:leather_leggings", "minecraft:leather_chestplate", "minecraft:leather_helmet") };
@@ -173,23 +213,18 @@ public class JsonConfig implements IJsonConfigurable {
 		public static final ArmorSet[] ARMOR_SETS_RARE = new ArmorSet[] { new ArmorSet("minecraft:diamond_boots",
 				"minecraft:diamond_leggings", "minecraft:diamond_chestplate", "minecraft:diamond_helmet") };
 
-		public static final ResourceLocation[] BOW_ENCHANTMENTS = new ResourceLocation[] {
-				new ResourceLocation("minecraft:power"), new ResourceLocation("minecraft:unbreaking"),
-				new ResourceLocation("minecraft:punch") };
+		public static final String[] BOW_ENCHANTMENTS = new String[] { "minecraft:power", "minecraft:unbreaking",
+				"minecraft:punch" };
 
-		public static final ResourceLocation[] SWORD_ENCHANTMENTS = new ResourceLocation[] {
-				new ResourceLocation("minecraft:sharpness"), new ResourceLocation("minecraft:unbreaking"),
-				new ResourceLocation("minecraft:fire_aspect"), new ResourceLocation("minecraft:knockback") };
+		public static final String[] SWORD_ENCHANTMENTS = new String[] { "minecraft:sharpness", "minecraft:unbreaking",
+				"minecraft:fire_aspect", "minecraft:knockback" };
 
-		public static final ResourceLocation[] PICKAXE_ENCHANTMENTS = new ResourceLocation[] {
-				new ResourceLocation("minecraft:efficiency") };
+		public static final String[] PICKAXE_ENCHANTMENTS = new String[] { "minecraft:efficiency" };
 
-		public static final ResourceLocation[] AXE_ENCHANTMENTS = new ResourceLocation[] {
-				new ResourceLocation("minecraft:efficiency") };
+		public static final String[] AXE_ENCHANTMENTS = new String[] { "minecraft:efficiency" };
 
-		public static final ResourceLocation[] ARMOR_ENCHANTMENTS = new ResourceLocation[] {
-				new ResourceLocation("minecraft:protection"), new ResourceLocation("minecraft:unbreaking"),
-				new ResourceLocation("minecraft:thorns"), new ResourceLocation("minecraft:projectile_protection") };
+		public static final String[] ARMOR_ENCHANTMENTS = new String[] { "minecraft:protection", "minecraft:unbreaking",
+				"minecraft:thorns", "minecraft:projectile_protection" };
 
 		public static final String[] ASSUMPTION_SEARCHLIST = new String[] { "nether", "end", "aether", "betweenlands",
 				"twilight", "dimension", "mining", "rftools", "world" };
@@ -215,7 +250,7 @@ public class JsonConfig implements IJsonConfigurable {
 			DEFAULTS.put(KEY_PICKAXE_ENCHANTMENTS, PICKAXE_ENCHANTMENTS);
 			DEFAULTS.put(KEY_AXE_ENCHANTMENTS, AXE_ENCHANTMENTS);
 			DEFAULTS.put(KEY_ARMOR_ENCHANTMENTS, ARMOR_ENCHANTMENTS);
-			DEFAULTS.put(KEY_ASSUMPTION_SEARCHLIST, ASSUMPTION_SEARCHLIST);
+//			DEFAULTS.put(KEY_ASSUMPTION_SEARCHLIST, ASSUMPTION_SEARCHLIST);
 		}
 
 		public static void rewrite(IJsonConfigurable configurable) {
@@ -233,7 +268,7 @@ public class JsonConfig implements IJsonConfigurable {
 				writer.flush();
 				writer.close();
 			} catch (Exception e1) {
-				DungeonCrawl.LOGGER.error("An error occured whilst trying to rewrite {}",  file.getAbsolutePath());
+				DungeonCrawl.LOGGER.error("An error occured whilst trying to rewrite {}", file.getAbsolutePath());
 				e1.printStackTrace();
 			}
 		}
@@ -253,11 +288,16 @@ public class JsonConfig implements IJsonConfigurable {
 
 		COLORED_ARMOR = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_COLORED_ARMOR, this), Set.class);
 
-		BOWS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOWS, this), ResourceLocation[].class);
-		SWORDS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORDS, this), ResourceLocation[].class);
-		SWORDS_RARE = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORDS_RARE, this), ResourceLocation[].class);
-		PICKAXES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_PICKAXES, this), ResourceLocation[].class);
-		AXES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_AXES, this), ResourceLocation[].class);
+		BOWS = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOWS, this), String[].class));
+		SWORDS = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORDS, this), String[].class));
+		SWORDS_RARE = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORDS_RARE, this), String[].class));
+		PICKAXES = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_PICKAXES, this), String[].class));
+		AXES = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_AXES, this), String[].class));
 
 		ARMOR_SETS_1 = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_1, this), ArmorSet[].class);
 		ARMOR_SETS_2 = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_STAGE_2, this), ArmorSet[].class);
@@ -265,19 +305,24 @@ public class JsonConfig implements IJsonConfigurable {
 
 		ARMOR_SETS_RARE = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_RARE, this), ArmorSet[].class);
 
-		BOW_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOW_ENCHANTMENTS, this),
-				ResourceLocation[].class);
-		SWORD_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORD_ENCHANTMENTS, this),
-				ResourceLocation[].class);
-		AXE_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_AXE_ENCHANTMENTS, this),
-				ResourceLocation[].class);
-		PICKAXE_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_PICKAXE_ENCHANTMENTS, this),
-				ResourceLocation[].class);
-		ARMOR_ENCHANTMENTS = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_ENCHANTMENTS, this),
-				ResourceLocation[].class);
+		BOW_ENCHANTMENTS = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOW_ENCHANTMENTS, this), String[].class));
+		SWORD_ENCHANTMENTS = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_SWORD_ENCHANTMENTS, this), String[].class));
+		AXE_ENCHANTMENTS = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_AXE_ENCHANTMENTS, this), String[].class));
+		PICKAXE_ENCHANTMENTS = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_PICKAXE_ENCHANTMENTS, this), String[].class));
+		ARMOR_ENCHANTMENTS = toResourceLocationArray(
+				DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ARMOR_ENCHANTMENTS, this), String[].class));
 
-		ASSUMPTION_SEARCHLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ASSUMPTION_SEARCHLIST, this),
-				String[].class);
+//		ASSUMPTION_SEARCHLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_ASSUMPTION_SEARCHLIST, this), String[].class);
+
+		ArmorSet.buildAll(ARMOR_SETS_1);
+		ArmorSet.buildAll(ARMOR_SETS_2);
+		ArmorSet.buildAll(ARMOR_SETS_3);
+		ArmorSet.buildAll(ARMOR_SETS_RARE);
+
 	}
 
 	@Override
@@ -300,8 +345,17 @@ public class JsonConfig implements IJsonConfigurable {
 		object.add(KEY_PICKAXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.PICKAXE_ENCHANTMENTS));
 		object.add(KEY_AXE_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.AXE_ENCHANTMENTS));
 		object.add(KEY_ARMOR_ENCHANTMENTS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ARMOR_ENCHANTMENTS));
-		object.add(KEY_ASSUMPTION_SEARCHLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ASSUMPTION_SEARCHLIST));
+//		object.add(KEY_ASSUMPTION_SEARCHLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.ASSUMPTION_SEARCHLIST));
 		return object;
+	}
+
+	public static ResourceLocation[] toResourceLocationArray(String[] resourceNames) {
+		ResourceLocation[] resourceLocations = new ResourceLocation[resourceNames.length];
+		for (int i = 0; i < resourceNames.length; i++) {
+			String[] resource = resourceNames[i].split(":");
+			resourceLocations[i] = new ResourceLocation(resource[0], resource[1]);
+		}
+		return resourceLocations;
 	}
 
 	@Override

@@ -14,6 +14,8 @@ import xiroc.dungeoncrawl.util.IRandom;
 
 public class WeightedRandomBlock implements IRandom<BlockState>, IBlockStateProvider {
 
+	public static final Random RANDOM = new Random();
+
 	private final int totalWeight;
 	private final TupleFloatBlock[] map;
 
@@ -48,7 +50,7 @@ public class WeightedRandomBlock implements IRandom<BlockState>, IBlockStateProv
 
 	@Override
 	public BlockState get() {
-		return roll(new Random());
+		return roll(RANDOM);
 	}
 
 }

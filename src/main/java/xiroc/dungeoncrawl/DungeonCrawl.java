@@ -28,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -37,12 +38,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.util.Config;
-import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -63,17 +64,19 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
-		Feature.STRUCTURES.put(Dungeon.NAME.toLowerCase(Locale.ROOT), Dungeon.DUNGEON_FEATURE);
-		DungeonSegmentModelBlock.load();
-		IBlockPlacementHandler.load();
-		BlockRegistry.load();
+//		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
+		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
+		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
 		LOGGER.info("Common Setup");
 		ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
 		Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
+
+		DungeonSegmentModelBlock.load();
+		IBlockPlacementHandler.load();
+		BlockRegistry.load();
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {
@@ -82,6 +85,15 @@ public class DungeonCrawl {
 
 	public static String getDate() {
 		return new SimpleDateFormat().format(new Date());
+	}
+
+	/*
+	 * Doesnt work
+	 */
+	@SubscribeEvent
+	public void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) {
+		DungeonCrawl.LOGGER.info("Feature Registry Event: {}", event);
+//		event.getRegistry().register(Dungeon.DUNGEON);
 	}
 
 	@SubscribeEvent

@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -37,11 +38,21 @@ public class DungeonSegmentModel {
 		this.id = id;
 		return this;
 	}
+
+	public DungeonSegmentModel build() {
+		for (int x = 0; x < width; x++)
+			for (int y = 0; y < height; y++)
+				for (int z = 0; z < length; z++)
+					if (model[x][y][z] != null && model[x][y][z].type == DungeonSegmentModelBlockType.OTHER)
+						model[x][y][z].readResourceLocation();
+		return this;
+	}
 	/*
 	 * Test functions
 	 */
 
-	public static void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, int lootLevel) {
+	public static void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme,
+			Treasure.Type treasureType, int lootLevel) {
 		for (int x = 0; x < model.width; x++) {
 			for (int y = 0; y < model.height; y++) {
 				for (int z = 0; z < model.length; z++) {
@@ -49,7 +60,8 @@ public class DungeonSegmentModel {
 					if (model.model[x][y][z] == null)
 						state = Blocks.AIR.getDefaultState();
 					else
-						state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom());
+						state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(),
+								0);
 					if (state == null)
 						continue;
 					world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), state, 2);
@@ -58,8 +70,8 @@ public class DungeonSegmentModel {
 		}
 	}
 
-	public static void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, int lootLevel,
-			Rotation rotation) {
+	public static void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme,
+			Treasure.Type treasureType, int lootLevel, Rotation rotation) {
 		switch (rotation) {
 		case CLOCKWISE_90:
 			for (int x = 0; x < model.width; x++) {
@@ -70,7 +82,7 @@ public class DungeonSegmentModel {
 							state = Blocks.AIR.getDefaultState();
 						else
 							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-									world.getRandom(), Rotation.CLOCKWISE_90);
+									world.getRandom(), 0, Rotation.CLOCKWISE_90);
 						if (state == null)
 							continue;
 						world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), state, 2);
@@ -87,7 +99,7 @@ public class DungeonSegmentModel {
 							state = Blocks.AIR.getDefaultState();
 						else
 							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-									world.getRandom(), Rotation.COUNTERCLOCKWISE_90);
+									world.getRandom(), 0, Rotation.COUNTERCLOCKWISE_90);
 						if (state == null)
 							continue;
 						world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), state, 2);
@@ -104,7 +116,7 @@ public class DungeonSegmentModel {
 							state = Blocks.AIR.getDefaultState();
 						else
 							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-									world.getRandom(), Rotation.CLOCKWISE_180);
+									world.getRandom(), 0, Rotation.CLOCKWISE_180);
 						if (state == null)
 							continue;
 						world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), state, 2);
@@ -113,7 +125,7 @@ public class DungeonSegmentModel {
 			}
 			break;
 		case NONE:
-			build(model, world, pos, theme, lootLevel);
+			build(model, world, pos, theme, treasureType, lootLevel);
 			break;
 		default:
 			DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unknown rotation " + rotation);
@@ -121,10 +133,12 @@ public class DungeonSegmentModel {
 		}
 	}
 
-	public static void setupBlockState(BlockState state, World world, BlockPos pos, int theme) {
+	public static void setupBlockState(BlockState state, World world, BlockPos pos, Treasure.Type treasureType,
+			int theme) {
 		if (state == null)
 			return;
-		IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(), theme, 0); // lootLevel
+		IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(),
+				treasureType, theme, 0); // lootLevel
 	}
 
 	public BlockState[][][] transform() {

@@ -79,7 +79,7 @@ public class RandomSpecialItem implements ItemProcessor<Random, Integer, Integer
 		DEMON_HUNTER_CROSSBOW.addEnchantment(Enchantments.POWER, 4);
 		DEMON_HUNTER_CROSSBOW.setDisplayName(new StringTextComponent("Demon Hunter's Crossbow"));
 
-		ITEMS = new ItemStack[] { REINFORCED_BOW, BOOTS_OF_BATTLE, PANTS_OF_DEFLECTION, LUMBERJACKET, YOKEL_AXE, DOOM };
+		ITEMS = new ItemStack[] { REINFORCED_BOW, BOOTS_OF_BATTLE, LUMBERJACKET, YOKEL_AXE, DOOM };
 
 		RARE_ITEMS = new ItemStack[] { THE_SLAYER, DEMON_HUNTER_CROSSBOW };
 

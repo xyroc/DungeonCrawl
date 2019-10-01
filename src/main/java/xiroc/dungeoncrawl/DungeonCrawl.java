@@ -44,7 +44,6 @@ import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.util.DungeonSegmentTestHelper;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -65,7 +64,7 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
+//		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
 		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
 		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON);
 	}

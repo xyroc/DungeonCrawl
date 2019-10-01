@@ -78,7 +78,11 @@ public class SpecialItemTags implements IJsonConfigurable {
 			if (enchantments.size() < 1)
 				return;
 			EnchantmentData enchantment = enchantments.get(rand.nextInt(enchantments.size()));
-			item.addEnchantment(enchantment.enchantment, enchantment.enchantmentLevel);
+			double stageMultiplier = RandomEquipment.getStageMultiplier(stage);
+			int level = (int) (data.enchantmentLevelMultiplier > stageMultiplier
+					? enchantment.enchantment.getMaxLevel() * data.enchantmentLevelMultiplier
+					: enchantment.enchantment.getMaxLevel() * stageMultiplier);
+			item.addEnchantment(enchantment.enchantment, level);
 		});
 
 		DEFAULTS = new HashMap<String, Object>();
@@ -87,7 +91,7 @@ public class SpecialItemTags implements IJsonConfigurable {
 				new SpecialItemTag[] { new SpecialItemTag("Deflection", EFFECT_ENCHANT, 0, "minecraft:thorns"),
 						new SpecialItemTag("Protection", EFFECT_ENCHANT, 0, "minecraft:protection"),
 						new SpecialItemTag("the Apprentice", EFFECT_RANDOM_ENCHANT, 0),
-						new SpecialItemTag("the Master Blacksmith", EFFECT_ENCHANT, 4, 4, "minecraft:protection",
+						new SpecialItemTag("the Master Blacksmith", EFFECT_ENCHANT, 4, 3, "minecraft:protection",
 								"minecraft:unbreaking") });
 		DEFAULTS.put(KEY_TOOL, new SpecialItemTag[] {
 				new SpecialItemTag("the Harvester", EFFECT_ENCHANT, 0, "minecraft:efficiency") });

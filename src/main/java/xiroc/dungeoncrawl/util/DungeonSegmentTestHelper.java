@@ -32,7 +32,8 @@ public class DungeonSegmentTestHelper {
 			if (event.getItemStack().getDisplayName().getString().equals("STONE_BRICKS")) {
 				event.getWorld().setBlockState(event.getPos(), BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED.get());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {
-				DungeonBuilder builder = new DungeonBuilder(event.getWorld(), new ChunkPos(event.getPos()),
+				
+				DungeonBuilder builder = new DungeonBuilder(event.getWorld().getChunkProvider().getChunkGenerator(), new ChunkPos(event.getPos()),
 						event.getWorld().rand);
 				for (DungeonPiece piece : builder.build())
 					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null,

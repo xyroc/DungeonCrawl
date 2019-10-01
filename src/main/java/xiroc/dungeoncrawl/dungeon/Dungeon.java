@@ -128,11 +128,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			 * currently.
 			 */
 			try {
-				Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD); // TODO
-																										// Obfuscation:
-																										// world ->
-																										// field_222540_a
-//				Field world = ChunkGenerator.class.getDeclaredField("world");
+				Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD);
 
 				world.setAccessible(true);
 
@@ -140,7 +136,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 				modifierField.setAccessible(true);
 				modifierField.setInt(world, world.getModifiers() & ~Modifier.FINAL);
 
-				DungeonCrawl.LOGGER.info("Checking [{}, {}]", chunkX, chunkZ);
+				DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
 
 				ServerWorld serverWorld = (ServerWorld) world.get(generator);
 				BlockPos spawn = serverWorld.getSpawnPoint();

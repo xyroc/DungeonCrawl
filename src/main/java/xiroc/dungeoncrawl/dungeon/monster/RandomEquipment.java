@@ -10,6 +10,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -180,7 +181,12 @@ public class RandomEquipment {
 		CompoundNBT tag = item.getTag();
 		if (tag == null)
 			tag = new CompoundNBT();
-		CompoundNBT display = new CompoundNBT();
+		INBT displayNBT = tag.get("display");
+		CompoundNBT display;
+		if (displayNBT == null)
+			display = new CompoundNBT();
+		else
+			display = (CompoundNBT) displayNBT;
 		display.putInt("color", color);
 		tag.put("display", display);
 		item.setTag(tag);

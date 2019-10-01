@@ -83,6 +83,7 @@ public class BlockRegistry {
 	public static WeightedRandomBlock STAIRS_RED_SANDSTONE_DEFAULT_SMOOTH;
 	public static WeightedRandomBlock ICE_DEFAULT_PACKED;
 	public static WeightedRandomBlock DARK_PRISMARINE_PRISMARINE;
+	public static WeightedRandomBlock CLAY_FLOOR;
 
 	/*
 	 * Calculate the WeightedRandomBlocks
@@ -136,6 +137,9 @@ public class BlockRegistry {
 		DARK_PRISMARINE_PRISMARINE = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.DARK_PRISMARINE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.PRISMARINE.getDefaultState()) });
+		CLAY_FLOOR = new WeightedRandomBlock(new TupleIntBlock[] { new TupleIntBlock(1, Blocks.CLAY.getDefaultState()),
+				new TupleIntBlock(1, Blocks.SMOOTH_STONE.getDefaultState()),
+				new TupleIntBlock(1, Blocks.STONE.getDefaultState()) });
 		DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
 	}
 

@@ -138,6 +138,14 @@ public class Theme {
 			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.OAK_DOOR.getDefaultState(),
 			BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED);
 
+	public static final BuildTheme BUILD_STONE = new BuildTheme(
+			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE,
+			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
+			BlockRegistry.STAIRS_STONE_COBBLESTONE);
+
+	public static final BuildTheme BUILD_BRICKS = new BuildTheme(() -> Blocks.BRICK_WALL.getDefaultState(),
+			() -> Blocks.BRICK_WALL.getDefaultState(), () -> Blocks.BRICKS.getDefaultState(), () -> Blocks.BRICK_STAIRS.getDefaultState());
+
 	static {
 		BIOME_TO_THEME_MAP = new HashMap<String, Integer>();
 
@@ -276,6 +284,39 @@ public class Theme {
 
 	public static Theme get(int theme) {
 		return ID_TO_THEME_MAP.getOrDefault(theme, DEFAULT);
+	}
+
+	public static class BiomeTheme {
+
+		public IBlockStateProvider wallLog, stairs, floorStairs, trapDoorDecoration, torchDark, door, material, column;
+
+		public BiomeTheme(IBlockStateProvider wallLog, IBlockStateProvider stairs, IBlockStateProvider floorStairs,
+				IBlockStateProvider trapDoor, IBlockStateProvider torchDark, IBlockStateProvider door,
+				IBlockStateProvider material, IBlockStateProvider column) {
+			this.wallLog = wallLog;
+			this.stairs = stairs;
+			this.floorStairs = floorStairs;
+			this.trapDoorDecoration = trapDoor;
+			this.torchDark = torchDark;
+			this.door = door;
+			this.material = material;
+			this.column = column;
+		}
+
+	}
+
+	public static class BuildTheme {
+
+		public IBlockStateProvider ceiling, wall, floor, ceilingStairs;
+
+		public BuildTheme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor,
+				IBlockStateProvider ceilingStairs) {
+			this.ceiling = ceiling;
+			this.wall = wall;
+			this.floor = floor;
+			this.ceilingStairs = ceilingStairs;
+		}
+
 	}
 
 }

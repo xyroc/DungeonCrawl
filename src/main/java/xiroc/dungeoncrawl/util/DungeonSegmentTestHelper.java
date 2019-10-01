@@ -28,7 +28,7 @@ public class DungeonSegmentTestHelper {
 
 	@SubscribeEvent
 	public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
-		if (event.getPlayer().isCreative() && event.getItemStack().getItem() == Items.STICK) {
+		if (event.getEntityPlayer().isCreative() && event.getItemStack().getItem() == Items.STICK) {
 			if (event.getItemStack().getDisplayName().getString().equals("STONE_BRICKS")) {
 				event.getWorld().setBlockState(event.getPos(), BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED.get());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {
@@ -45,10 +45,10 @@ public class DungeonSegmentTestHelper {
 							Treasure.Type.TREASURE, 0, 5);
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_004")) {
 				if (!event.getWorld().isRemote)
-					event.getPlayer().addItemStackToInventory(
+					event.getEntityPlayer().addItemStackToInventory(
 							RandomSpecialItem.CAP.generate(new Random(), 0, 1));
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_Banner")) {
-				event.getPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
+				event.getEntityPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
 				DungeonSegmentModel.build(DungeonSegmentModelRegistry.LARGE_ROOM, event.getWorld(), event.getPos(),
 						Theme.TEST, Treasure.Type.DEFAULT, 0);

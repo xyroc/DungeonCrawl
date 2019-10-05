@@ -1,5 +1,7 @@
 package xiroc.dungeoncrawl.dungeon;
 
+import java.util.HashMap;
+
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
@@ -9,9 +11,9 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
@@ -21,29 +23,25 @@ import xiroc.dungeoncrawl.dungeon.DungeonPieces.Stairs;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.segment.RandomDungeonSegmentModel;
+import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.Position2D;
 
 public class DungeonBuilder {
+
+	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
 
 	public Random rand;
 	public Position2D start;
 
 	public DungeonLayer[] layers;
+	public DungeonStatTracker statTracker;
 
 	public BlockPos startPos;
 
-	public DungeonBuilder(IWorld world, ChunkPos pos, Random rand) {
-		this.rand = rand;
-		this.start = new Position2D(rand.nextInt(16), rand.nextInt(16));
-		this.startPos = new BlockPos(pos.x * 16, world.getChunkProvider().getChunkGenerator().getGroundHeight() - 16,
-				pos.z * 16);
-		this.layers = new DungeonLayer[startPos.getY() / 16];
-		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
-				+ startPos.getZ() + "), " + +this.layers.length + " layers");
-		for (int i = 0; i < layers.length; i++) {
-			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL);
-			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, false);
-		}
+	static {
+		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
+		ENTRANCE_OFFSET_DATA.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_0.id, new Tuple<Integer, Integer>(0, 0));
+		ENTRANCE_OFFSET_DATA.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_1.id, new Tuple<Integer, Integer>(-3, -3));
 	}
 
 	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
@@ -54,11 +52,12 @@ public class DungeonBuilder {
 		this.layers = new DungeonLayer[startPos.getY() / 16];
 		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
 				+ startPos.getZ() + "), " + +this.layers.length + " layers");
+		this.statTracker = new DungeonStatTracker(layers.length);
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL);
 			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i == layers.length - 1);
-
 		}
+
 	}
 
 	public List<DungeonPiece> build() {
@@ -145,17 +144,12 @@ public class DungeonBuilder {
 				default:
 					if (north && south || east && west)
 						return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
-					// return DungeonSegmentModelRegistry.CORRIDOR_EW;
-					// return DungeonSegmentModelRegistry.CORRIDOR_EW_TURN;
 					return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
 				}
 
 			case 3:
-				// return DungeonSegmentModelRegistry.CORRIDOR_EW_OPEN;
 				return RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
 			case 4:
-				// return
-				// DungeonSegmentModelRegistry.CORRIDOR_EW_ALL_OPEN;
 				return RandomDungeonSegmentModel.CORRIDOR_ALL_OPEN.roll(rand);
 			default:
 				return null;
@@ -172,5 +166,16 @@ public class DungeonBuilder {
 			return null;
 		}
 	}
+
+	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
+		switch (rand.nextInt(2)) {
+		case 0:
+			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_0;
+		case 1:
+			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
+		default:
+			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
+		}
+	};
 
 }

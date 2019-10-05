@@ -203,8 +203,7 @@ public class DungeonSegmentModelBlock {
 	}
 
 	public void readResourceLocation() {
-		String[] resource = this.resourceName.split(":");
-		this.registryName = new ResourceLocation(resource[0], resource[1]);
+		this.registryName = new ResourceLocation(resourceName);
 	}
 
 	/**

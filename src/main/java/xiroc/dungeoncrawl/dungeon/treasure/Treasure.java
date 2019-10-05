@@ -31,6 +31,7 @@ public class Treasure implements IJsonConfigurable {
 			KEY_DISPENSER_STAGE_3 = "dispenser_stage_3", KEY_SPIDER_STAGE_1 = "spider_chest_stage_1",
 			KEY_SPIDER_STAGE_2 = "spider_chest_stage_2", KEY_SPIDER_STAGE_3 = "spider_chest_stage_3";
 
+	public static TreasureLootTable SUPPLY;
 	public static TreasureLootTable CHEST_STAGE_1, CHEST_STAGE_1_OCEAN;
 	public static TreasureLootTable CHEST_STAGE_2, CHEST_STAGE_2_OCEAN;
 	public static TreasureLootTable CHEST_STAGE_3, CHEST_STAGE_3_OCEAN;
@@ -178,7 +179,14 @@ public class Treasure implements IJsonConfigurable {
 				TreasureLootTable.class);
 		DISPENSER_STAGE_3 = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_DISPENSER_STAGE_3, this),
 				TreasureLootTable.class);
-
+		
+		SUPPLY = CHEST_STAGE_1;
+		SUPPLY.entries.add(TreasureItems.LAUDANUM.withWeight(6));
+		SUPPLY.entries.add(TreasureItems.POTION_HEALING);
+		SUPPLY.entries.add(TreasureItems.MATERIAL_BLOCKS.withWeight(6));
+		SUPPLY.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(20));
+		SUPPLY.minRolls = SUPPLY.maxRolls = 10;
+		
 		CHEST_STAGE_1.entries.add(TreasureItems.LAUDANUM.withWeight(2));
 		CHEST_STAGE_1.entries.add(TreasureItems.POTION_HEALING);
 		CHEST_STAGE_1.entries.add(TreasureItems.ENCHANTED_BOOK);
@@ -245,6 +253,8 @@ public class Treasure implements IJsonConfigurable {
 		DISPENSER_STAGE_3.entries.add(TreasureItems.SPLASH_POISON_LONG);
 		DISPENSER_STAGE_3.entries.add(TreasureItems.SPLASH_HARMING_II);
 
+		SUPPLY.build();
+		
 		CHEST_STAGE_1.build();
 		CHEST_STAGE_1_OCEAN.build();
 		CHEST_STAGE_2.build();
@@ -256,9 +266,11 @@ public class Treasure implements IJsonConfigurable {
 		DISPENSER_STAGE_2.build();
 		DISPENSER_STAGE_3.build();
 
+		SPECIAL_LOOT_TABLES.put(Type.SUPPLY, SUPPLY);
 		SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Kitchen.KITCHEN);
-
 		SPECIAL_LOOT_TABLES.put(Type.TREASURE, TreasureRoom.TREASURE);
+		
+		
 	}
 
 	@Override
@@ -304,7 +316,7 @@ public class Treasure implements IJsonConfigurable {
 	 */
 	public enum Type {
 
-		DEFAULT, KITCHEN, SMELTERY, MINECART, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE;
+		DEFAULT, KITCHEN, SMELTERY, MINECART, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE, SUPPLY;
 
 		public static final HashMap<Integer, Type> INT_TO_TYPE_MAP;
 		public static final HashMap<Type, Integer> TYPE_TO_INT_MAP;
@@ -319,6 +331,7 @@ public class Treasure implements IJsonConfigurable {
 			INT_TO_TYPE_MAP.put(5, LIBRARY);
 			INT_TO_TYPE_MAP.put(6, BUILDERS_ROOM);
 			INT_TO_TYPE_MAP.put(7, TREASURE);
+			INT_TO_TYPE_MAP.put(8, SUPPLY);
 
 			TYPE_TO_INT_MAP = new HashMap<Type, Integer>();
 			INT_TO_TYPE_MAP.forEach((key, value) -> TYPE_TO_INT_MAP.put(value, key));

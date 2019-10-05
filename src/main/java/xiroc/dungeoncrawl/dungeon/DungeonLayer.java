@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
@@ -31,6 +32,7 @@ public class DungeonLayer {
 
 	public int width; // x
 	public int length; // z
+	public LayerStatTracker statTracker;
 
 	public DungeonLayer(DungeonLayerType type) {
 		this(type, 16, 16);
@@ -40,6 +42,7 @@ public class DungeonLayer {
 		this.type = type;
 		this.width = width;
 		this.length = length;
+		this.statTracker = new LayerStatTracker();
 	}
 
 	public void buildMap(Random rand, Position2D start, boolean lastLayer) {

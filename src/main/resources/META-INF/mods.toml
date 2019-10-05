@@ -3,12 +3,12 @@ loaderVersion="[28,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
-version="1.4.0" #mandatory
+version="1.5.0" #mandatory
 displayName="Dungeon Crawl" #mandatory
 #updateJSONURL="URL" #optional
 #displayURL="URL" #optional
 logoFile="logo.png" #optional
-credits="Original Mod by greymerk (Roguelike Dungeons)" #optional
+credits="Original Mod by Greymerk (Roguelike Dungeons)" #optional
 authors="XIROC" #optional
 description='''Dungeons...'''
 [[dependencies.dungeoncrawl]]

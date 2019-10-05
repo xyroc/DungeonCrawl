@@ -5,7 +5,7 @@ import xiroc.dungeoncrawl.util.IRandom;
 
 public class RandomFeature {
 
-	public static final int[] SIDE_ROOM_IDS = new int[] { 30, 31 };
+	public static final int[] SIDE_ROOM_IDS = new int[] { 30, 31, 33 };
 
 	public static final IRandom<DungeonPiece> CORRIDOR_FEATURE = (rand) -> {
 		switch (rand.nextInt(2)) {

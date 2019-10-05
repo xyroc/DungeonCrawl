@@ -28,8 +28,9 @@ public interface IBlockPlacementHandler {
 	};
 
 	public static void load() {
-		HANDLERS.put(Blocks.BARREL, new Chest.Barrel());
 		HANDLERS.put(Blocks.CHEST, new Chest());
+		HANDLERS.put(Blocks.TRAPPED_CHEST, new Chest());
+		HANDLERS.put(Blocks.BARREL, new Chest.Barrel());
 		HANDLERS.put(Blocks.FURNACE, new Furnace());
 		HANDLERS.put(Blocks.SMOKER, new Furnace.Smoker());
 		HANDLERS.put(Blocks.SPAWNER, new Spawner());

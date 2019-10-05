@@ -33,7 +33,7 @@ import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
-	public static final String NAME = "DCDungeon";
+	public static final String NAME = DungeonCrawl.MODID + ":dungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
 
 	public static final IStructurePieceType ENTRANCE_BUILDER = IStructurePieceType

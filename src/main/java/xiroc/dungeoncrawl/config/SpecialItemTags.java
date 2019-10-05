@@ -82,6 +82,8 @@ public class SpecialItemTags implements IJsonConfigurable {
 			int level = (int) (data.enchantmentLevelMultiplier > stageMultiplier
 					? enchantment.enchantment.getMaxLevel() * data.enchantmentLevelMultiplier
 					: enchantment.enchantment.getMaxLevel() * stageMultiplier);
+			if (level < 1)
+				level = 1;
 			item.addEnchantment(enchantment.enchantment, level);
 		});
 

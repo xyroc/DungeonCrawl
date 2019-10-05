@@ -169,7 +169,10 @@ public class JsonConfig implements IJsonConfigurable {
 				"minecraft:end_barrens", "minecraft:the_void", "biomesoplenty:ashen_inferno",
 				"biomesopenty:undergarden", "biomesoplenty:boneyard", "biomesoplenty:visceral_heap");
 
-		public static final List<?> BIOME_OVERWORLD_BLACKLIST = Lists.newArrayList();
+		public static final List<?> BIOME_OVERWORLD_BLACKLIST = Lists.newArrayList("minecraft:ocean",
+				"minecraft:deep_ocean", "minecraft:lukewarm_ocean", "minecraft:deep_lukewarm_ocean",
+				"minecraft:warm_ocean", "minecraft:deep_warm_ocean", "minecraft:cold_ocean",
+				"minecraft:deep_cold_ocean", "minecraft:frozen_ocean", "minecraft:deep_frozen_ocean");
 
 		public static final Set<?> COLORED_ARMOR = ImmutableSet.<String>builder().add("minecraft:leather_boots")
 				.add("minecraft:leather_pants").add("minecraft:leather_chestplate").add("minecraft:leather_helmet")

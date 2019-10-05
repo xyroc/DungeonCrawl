@@ -295,8 +295,7 @@ public class DungeonSegmentModelRegistry {
 	public static DungeonSegmentModel HOLE_LAVA;
 	public static DungeonSegmentModel HOLE_TRAP;
 
-	public static DungeonSegmentModel SIDE_ROOM_SMALL_LIBRARY;
-	public static DungeonSegmentModel SIDE_ROOM_FARM;
+	public static DungeonSegmentModel SIDE_ROOM_SMALL_LIBRARY, SIDE_ROOM_FARM, SIDE_ROOM_TNT;
 
 	public static DungeonSegmentModel STAIRS;
 	public static DungeonSegmentModel STAIRS_TOP;
@@ -306,7 +305,7 @@ public class DungeonSegmentModelRegistry {
 
 	public static DungeonSegmentModel LARGE_ROOM;
 
-	public static DungeonSegmentModel ENTRANCE;
+	public static DungeonSegmentModel ENTRANCE_TOWER_0, ENTRANCE_TOWER_1;
 
 	public static DungeonSegmentModel KITCHEN;
 
@@ -340,7 +339,7 @@ public class DungeonSegmentModelRegistry {
 		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager).build().setId(17);
 		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager).build().setId(18);
 		ROOM = loadFromFile("models/dungeon/room.json", resourceManager).build().setId(19);
-		ENTRANCE = loadFromFile("models/dungeon/entrance.json", resourceManager).build().setId(20);
+		ENTRANCE_TOWER_0 = loadFromFile("models/dungeon/entrance_tower_0.json", resourceManager).build().setId(20);
 
 		BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager).build().setId(21);
 		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager).build().setId(22);
@@ -362,6 +361,10 @@ public class DungeonSegmentModelRegistry {
 		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.json", resourceManager).build().setId(31);
 
 		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.json", resourceManager).build().setId(32);
+		
+		ENTRANCE_TOWER_1 = loadFromFile("models/dungeon/entrance_tower_1.json", resourceManager).build().setId(32);
+		
+		SIDE_ROOM_TNT = loadFromFile("models/dungeon/side_room_tnt.json", resourceManager).build().setId(33);
 
 		LOADED = true;
 	}

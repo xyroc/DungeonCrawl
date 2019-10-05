@@ -2038,7 +2038,7 @@
         null,
         null,
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "NORTH",
           "waterlogged": false
         },

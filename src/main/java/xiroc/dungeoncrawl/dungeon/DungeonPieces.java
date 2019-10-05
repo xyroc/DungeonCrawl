@@ -17,6 +17,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -32,6 +33,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Triple;
 
 public class DungeonPieces {
 
@@ -183,11 +185,14 @@ public class DungeonPieces {
 
 	public static class SideRoom extends DungeonPiece {
 
-		public int modelID;
+		public int modelID, offsetX, offsetY, offsetZ;
 
 		public SideRoom(TemplateManager manager, CompoundNBT p_i51343_2_) {
 			super(Dungeon.SIDE_ROOM, p_i51343_2_);
 			modelID = p_i51343_2_.getInt("modelID");
+			offsetX = p_i51343_2_.getInt("offsetX");
+			offsetY = p_i51343_2_.getInt("offsetY");
+			offsetZ = p_i51343_2_.getInt("offsetZ");
 		}
 
 		@Override
@@ -198,13 +203,25 @@ public class DungeonPieces {
 				if (theme != 1)
 					theme = Theme.BIOME_TO_THEME_MAP
 							.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
-				buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
-						rotation);
+				buildRotated(model, worldIn, new BlockPos(x + offsetX, y + offsetY, z + offsetZ), Theme.get(theme),
+						Treasure.Type.DEFAULT, stage, rotation);
 				return true;
 			} else {
 				DungeonCrawl.LOGGER.error("Side Room Model doesnt exist: {}", modelID);
 				return false;
 			}
+		}
+
+		public void setOffset(int x, int y, int z) {
+			this.offsetX = x;
+			this.offsetY = y;
+			this.offsetZ = z;
+		}
+
+		public void setOffset(Triple<Integer, Integer, Integer> offset) {
+			this.offsetX = offset.l;
+			this.offsetY = offset.m;
+			this.offsetZ = offset.r;
 		}
 
 		@Override
@@ -216,6 +233,10 @@ public class DungeonPieces {
 		public void readAdditional(CompoundNBT tagCompound) {
 			super.readAdditional(tagCompound);
 			tagCompound.putInt("modelID", modelID);
+			tagCompound.putInt("offsetX", offsetX);
+			tagCompound.putInt("offsetY", offsetY);
+			tagCompound.putInt("offsetZ", offsetZ);
+
 		}
 
 	}
@@ -288,9 +309,9 @@ public class DungeonPieces {
 			if (theme != 1)
 				theme = Theme.BIOME_TO_THEME_MAP
 						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
-			
+
 			if (theme != 3 && getAirBlocks(worldIn, x, y, z, 8, 8) > 8) {
-				
+
 				boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
 				switch (connectedSides) {
 				case 2:
@@ -316,13 +337,14 @@ public class DungeonPieces {
 				}
 				return true;
 			}
-			
+
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
-			
-			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage, getRotation());
-			
+
+			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
+					getRotation());
+
 			if (theme == 3 && ((connectedSides == 2
 					&& (!(sides[0] && sides[2] || sides[1] && sides[3]) || randomIn.nextDouble() < 0.2))
 					|| connectedSides > 2) && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
@@ -460,8 +482,10 @@ public class DungeonPieces {
 						setBlockState(buildTheme.wall.get(), worldIn, null, x + 7, ch + y1, z + z1, theme, 0);
 				ch += 8;
 			}
-			build(DungeonSegmentModelRegistry.ENTRANCE, worldIn, new BlockPos(x, ch, z), buildTheme,
-					Treasure.Type.DEFAULT, stage);
+			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(worldIn.getRandom());
+			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
+			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme,
+					Treasure.Type.SUPPLY, stage);
 			return false;
 		}
 

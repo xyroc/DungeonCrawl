@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -10,12 +11,22 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.SideRoom;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Triple;
 
 public class DungeonFeatures {
 
+	public static final HashMap<Integer, Triple<Integer, Integer, Integer>> OFFSET_DATA;
+	public static final Triple<Integer, Integer, Integer> DEFAULT_OFFSET = new Triple<Integer, Integer, Integer>(0, 0,
+			0);
 	public static final List<CorridorFeature> CORRIDOR_FEATURES;
+
+	static {
+		OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
+		OFFSET_DATA.put(DungeonSegmentModelRegistry.SIDE_ROOM_TNT.id, new Triple<Integer, Integer, Integer>(0, -1, 0));
+	}
 
 	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
@@ -35,9 +46,10 @@ public class DungeonFeatures {
 				Position2D pos = new Position2D(x, z);
 				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
 				if (roomPos.isValid(layer.width, layer.length) && layer.segments[roomPos.x][roomPos.z] == null
-						&& rand.nextDouble() < 0.06) {
+						&& rand.nextDouble() < 0.09) {
 					layer.segments[x][z].openSide(RotationHelper.translateDirectionLeft(facing));
 					DungeonPieces.SideRoom sideRoom = (SideRoom) RandomFeature.SIDE_ROOM.roll(rand);
+					sideRoom.setOffset(OFFSET_DATA.getOrDefault(sideRoom.modelID, DEFAULT_OFFSET));
 					sideRoom.setPosition(roomPos.x, roomPos.z);
 					sideRoom.stage = stage;
 					sideRoom.connectedSides = 1;

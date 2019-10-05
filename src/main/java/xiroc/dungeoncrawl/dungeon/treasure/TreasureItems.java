@@ -68,6 +68,7 @@ public class TreasureItems {
 			miningFatique.putInt("Duration", 100);
 			CompoundNBT regeneration = new CompoundNBT();
 			regeneration.putInt("Id", 10);
+			regeneration.putInt("Amplifier", 1);
 			regeneration.putInt("Duration", 160);
 			customPotionEffects.add(regeneration);
 			customPotionEffects.add(blindness);

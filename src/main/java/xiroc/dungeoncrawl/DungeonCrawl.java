@@ -16,7 +16,6 @@ DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +43,7 @@ import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
+import xiroc.dungeoncrawl.util.Tools;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -52,7 +52,7 @@ public class DungeonCrawl {
 
 	public static final String MODID = "dungeoncrawl";
 	public static final String NAME = "Dungeon Crawl";
-	public static final String VERSION = "1.4.0";
+	public static final String VERSION = "1.5.0";
 
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -64,9 +64,9 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-//		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
-		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
-		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON);
+		MinecraftForge.EVENT_BUS.register(new Tools());
+//		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
+		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -88,7 +88,7 @@ public class DungeonCrawl {
 	}
 
 	/*
-	 * Doesnt work
+	 * Doesnt work 0_o
 	 */
 	@SubscribeEvent
 	public void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) {

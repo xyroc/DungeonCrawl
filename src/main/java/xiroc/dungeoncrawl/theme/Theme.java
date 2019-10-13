@@ -40,35 +40,39 @@ public class Theme {
 			() -> BlockRegistry.STAIRS_STONE_BRICKS, () -> Blocks.OAK_STAIRS.getDefaultState(),
 			() -> BlockRegistry.OAK_LOG, () -> Blocks.OAK_TRAPDOOR.getDefaultState(),
 			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(), () -> Blocks.OAK_DOOR.getDefaultState(),
-			() -> Blocks.OAK_PLANKS.getDefaultState(), null);
+			() -> Blocks.OAK_PLANKS.getDefaultState(), () -> Blocks.STONE_BRICK_WALL.getDefaultState(), null);
 
 	public static final Theme DEFAULT = new Theme(() -> BlockRegistry.STONE_BRICKS,
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			() -> Blocks.OAK_STAIRS.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
 			() -> Blocks.OAK_STAIRS.getDefaultState(), () -> BlockRegistry.OAK_LOG,
 			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(), null);
+			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(),
+			BlockRegistry.STONE_WALL, null);
 
 	public static final Theme NETHER = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.NETHERRACK_NETHERBRICK,
 			BlockRegistry.NETHERRACK_NETHERBRICK_SOULSAND, BlockRegistry.NETHER_BRICK_STAIRS,
 			BlockRegistry.NETHER_BRICK_STAIRS, BlockRegistry.NETHER_BRICK_STAIRS,
 			() -> Blocks.QUARTZ_PILLAR.getDefaultState(), () -> Blocks.IRON_TRAPDOOR.getDefaultState(),
 			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(), () -> Blocks.IRON_DOOR.getDefaultState(),
-			() -> Blocks.NETHERRACK.getDefaultState(), () -> Blocks.NETHER_BRICKS.getDefaultState());
+			() -> Blocks.NETHERRACK.getDefaultState(), BlockRegistry.NETHER_WALL,
+			() -> Blocks.NETHER_BRICKS.getDefaultState());
 
 	public static final Theme SWAMP = new Theme(() -> BlockRegistry.STONE_BRICKS,
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			() -> Blocks.OAK_STAIRS.getDefaultState(), () -> Blocks.OAK_STAIRS.getDefaultState(),
 			() -> Blocks.OAK_STAIRS.getDefaultState(), () -> Blocks.OAK_LOG.getDefaultState(),
 			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
-			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(), null);
+			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(),
+			BlockRegistry.STONE_WALL, null);
 
 	public static final Theme OCEAN = new Theme(Blocks.PRISMARINE.getDefaultState(),
 			Blocks.PRISMARINE_BRICKS.getDefaultState(), Blocks.DARK_PRISMARINE.getDefaultState(),
 			Blocks.DARK_PRISMARINE_STAIRS.getDefaultState(), Blocks.PRISMARINE_BRICK_STAIRS.getDefaultState(),
 			Blocks.PRISMARINE_BRICK_STAIRS.getDefaultState(), Blocks.DARK_PRISMARINE.getDefaultState(),
 			Blocks.CAVE_AIR.getDefaultState(), Blocks.CAVE_AIR.getDefaultState(), Blocks.JUNGLE_DOOR.getDefaultState(),
-			Blocks.PRISMARINE.getDefaultState(), Blocks.DARK_PRISMARINE.getDefaultState());
+			Blocks.PRISMARINE.getDefaultState(), Blocks.PRISMARINE_WALL.getDefaultState(),
+			Blocks.DARK_PRISMARINE.getDefaultState());
 
 	public static final Theme FROZEN_OCEAN = OCEAN;
 
@@ -78,42 +82,47 @@ public class Theme {
 			() -> Blocks.JUNGLE_STAIRS.getDefaultState(), () -> Blocks.JUNGLE_LOG.getDefaultState(),
 			() -> Blocks.JUNGLE_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
 			() -> Blocks.JUNGLE_DOOR.getDefaultState(), () -> Blocks.JUNGLE_PLANKS.getDefaultState(),
-			() -> Blocks.JUNGLE_LOG.getDefaultState());
+			BlockRegistry.STONE_WALL, () -> Blocks.JUNGLE_LOG.getDefaultState());
 
 	public static final Theme BIRCH_FOREST = new Theme(() -> Blocks.STONE_BRICKS.getDefaultState(),
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			() -> Blocks.BIRCH_STAIRS.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
 			() -> Blocks.BIRCH_STAIRS.getDefaultState(), () -> Blocks.BIRCH_LOG.getDefaultState(),
 			() -> Blocks.BIRCH_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
-			() -> Blocks.BIRCH_DOOR.getDefaultState(), () -> Blocks.BIRCH_PLANKS.getDefaultState(), null);
+			() -> Blocks.BIRCH_DOOR.getDefaultState(), () -> Blocks.BIRCH_PLANKS.getDefaultState(),
+			BlockRegistry.STONE_WALL, null);
 
 	public static final Theme SAVANNA = new Theme(() -> Blocks.STONE_BRICKS.getDefaultState(),
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			() -> Blocks.ACACIA_STAIRS.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
 			() -> Blocks.ACACIA_STAIRS.getDefaultState(), () -> Blocks.ACACIA_LOG.getDefaultState(),
 			() -> Blocks.ACACIA_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
-			() -> Blocks.ACACIA_DOOR.getDefaultState(), () -> Blocks.ACACIA_PLANKS.getDefaultState(), null);
+			() -> Blocks.ACACIA_DOOR.getDefaultState(), () -> Blocks.ACACIA_PLANKS.getDefaultState(),
+			BlockRegistry.STONE_WALL, null);
 
 	public static final Theme OAK_FOREST = new Theme(() -> Blocks.STONE_BRICKS.getDefaultState(),
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			() -> Blocks.OAK_STAIRS.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
 			() -> Blocks.OAK_STAIRS.getDefaultState(), () -> Blocks.OAK_LOG.getDefaultState(),
 			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
-			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(), null);
+			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(),
+			BlockRegistry.STONE_WALL, null);
 
 	public static final Theme DARK_OAK_FOREST = new Theme(() -> Blocks.STONE_BRICKS.getDefaultState(),
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			() -> Blocks.DARK_OAK_STAIRS.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
 			() -> Blocks.DARK_OAK_STAIRS.getDefaultState(), () -> Blocks.DARK_OAK_LOG.getDefaultState(),
 			() -> Blocks.DARK_OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
-			() -> Blocks.DARK_OAK_DOOR.getDefaultState(), () -> Blocks.DARK_OAK_PLANKS.getDefaultState(), null);
+			() -> Blocks.DARK_OAK_DOOR.getDefaultState(), () -> Blocks.DARK_OAK_PLANKS.getDefaultState(),
+			BlockRegistry.STONE_WALL, null);
 
 	public static final Theme TAIGA = new Theme(() -> Blocks.STONE_BRICKS.getDefaultState(),
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			() -> Blocks.SPRUCE_STAIRS.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
 			() -> Blocks.SPRUCE_STAIRS.getDefaultState(), () -> Blocks.SPRUCE_LOG.getDefaultState(),
 			() -> Blocks.SPRUCE_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
-			() -> Blocks.SPRUCE_DOOR.getDefaultState(), () -> Blocks.SPRUCE_PLANKS.getDefaultState(), null);
+			() -> Blocks.SPRUCE_DOOR.getDefaultState(), () -> Blocks.SPRUCE_PLANKS.getDefaultState(),
+			BlockRegistry.STONE_WALL, null);
 
 	public static final Theme DESERT = new Theme(BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH,
 			BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH, BlockRegistry.SANDSTONE_DEFAULT_SMOOTH_SAND,
@@ -121,7 +130,7 @@ public class Theme {
 			BlockRegistry.STAIRS_SANDSTONE_DEFAULT_SMOOTH, () -> Blocks.CHISELED_SANDSTONE.getDefaultState(),
 			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
 			() -> Blocks.OAK_DOOR.getDefaultState(), BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH,
-			BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH);
+			() -> Blocks.SANDSTONE_WALL.getDefaultState(), BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH);
 
 	public static final Theme BADLANDS = new Theme(BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH,
 			BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH, BlockRegistry.RED_SANDSTONE_DEFAULT_SMOOTH_RED_SAND,
@@ -129,14 +138,14 @@ public class Theme {
 			BlockRegistry.STAIRS_RED_SANDSTONE_DEFAULT_SMOOTH, () -> Blocks.CHISELED_RED_SANDSTONE.getDefaultState(),
 			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.REDSTONE_TORCH.getDefaultState(),
 			() -> Blocks.OAK_DOOR.getDefaultState(), BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH,
-			BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH);
+			() -> Blocks.RED_SANDSTONE_WALL.getDefaultState(), BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH);
 
 	public static final Theme ICE = new Theme(BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED,
 			() -> Blocks.ICE.getDefaultState(), BlockRegistry.STAIRS_STONE_COBBLESTONE,
 			BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED,
 			() -> Blocks.PACKED_ICE.getDefaultState(), () -> Blocks.CAVE_AIR.getDefaultState(),
 			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.OAK_DOOR.getDefaultState(),
-			BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED);
+			BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED);
 
 	public static final BuildTheme BUILD_STONE = new BuildTheme(
 			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE,
@@ -144,7 +153,8 @@ public class Theme {
 			BlockRegistry.STAIRS_STONE_COBBLESTONE);
 
 	public static final BuildTheme BUILD_BRICKS = new BuildTheme(() -> Blocks.BRICK_WALL.getDefaultState(),
-			() -> Blocks.BRICK_WALL.getDefaultState(), () -> Blocks.BRICKS.getDefaultState(), () -> Blocks.BRICK_STAIRS.getDefaultState());
+			() -> Blocks.BRICK_WALL.getDefaultState(), () -> Blocks.BRICKS.getDefaultState(),
+			() -> Blocks.BRICK_STAIRS.getDefaultState());
 
 	static {
 		BIOME_TO_THEME_MAP = new HashMap<String, Integer>();
@@ -245,12 +255,13 @@ public class Theme {
 	}
 
 	public final IBlockStateProvider ceiling, wall, wallLog, floor, stairs, ceilingStairs, floorStairs,
-			trapDoorDecoration, torchDark, door, material, column;
+			trapDoorDecoration, torchDark, door, material, vanillaWall, column;
 
 	public Theme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor,
 			IBlockStateProvider stairs, IBlockStateProvider ceilingStairs, IBlockStateProvider floorStairs,
 			IBlockStateProvider wallLog, IBlockStateProvider trapDoorDecoration, IBlockStateProvider torchDark,
-			IBlockStateProvider door, IBlockStateProvider material, IBlockStateProvider column) {
+			IBlockStateProvider door, IBlockStateProvider material, IBlockStateProvider vanillaWall,
+			IBlockStateProvider column) {
 		this.ceiling = ceiling;
 		this.wall = wall;
 		this.wallLog = wallLog;
@@ -262,12 +273,13 @@ public class Theme {
 		this.torchDark = torchDark;
 		this.door = door;
 		this.material = material;
+		this.vanillaWall = vanillaWall;
 		this.column = column;
 	}
 
 	public Theme(BlockState ceiling, BlockState wall, BlockState floor, BlockState stairs, BlockState ceilingStairs,
 			BlockState floorStairs, BlockState wallLog, BlockState trapDoorDecoration, BlockState torchDark,
-			BlockState door, BlockState material, BlockState column) {
+			BlockState door, BlockState material, BlockState vanillaWall, BlockState column) {
 		this.ceiling = () -> ceiling;
 		this.wall = () -> wall;
 		this.wallLog = () -> wallLog;
@@ -279,6 +291,7 @@ public class Theme {
 		this.torchDark = () -> torchDark;
 		this.door = () -> door;
 		this.material = () -> material;
+		this.vanillaWall = () -> vanillaWall;
 		this.column = () -> column;
 	}
 

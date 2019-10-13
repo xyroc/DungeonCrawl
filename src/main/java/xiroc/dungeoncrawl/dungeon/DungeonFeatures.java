@@ -30,7 +30,7 @@ public class DungeonFeatures {
 
 	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].connectedSides == 2
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
 							|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])
@@ -40,8 +40,9 @@ public class DungeonFeatures {
 			}
 			return false;
 		});
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
-			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4) {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4
+					&& (lyr == 0 || builder.layers[lyr - 1].segments[x][z].getType() != 8)) {
 				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].rotation);
 				Position2D pos = new Position2D(x, z);
 				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
@@ -63,7 +64,7 @@ public class DungeonFeatures {
 			}
 			return false;
 		});
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].connectedSides == 2 && rand.nextDouble() < 0.07
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
 							|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])) {
@@ -78,7 +79,7 @@ public class DungeonFeatures {
 			}
 			return false;
 		});
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4) {
 				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].rotation);
 				Position2D pos = new Position2D(x, z);
@@ -129,17 +130,18 @@ public class DungeonFeatures {
 		});
 	}
 
-	public static void processCorridor(DungeonLayer layer, int x, int z, Random rand, int lyr, int stage,
-			BlockPos startPos) {
+	public static void processCorridor(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+			int stage, BlockPos startPos) {
 		for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
-			if (corridorFeature.process(layer, x, z, rand, lyr, stage, startPos))
+			if (corridorFeature.process(builder, layer, x, z, rand, lyr, stage, startPos))
 				return;
 	}
 
 	@FunctionalInterface
 	public static interface CorridorFeature {
 
-		public boolean process(DungeonLayer layer, int x, int z, Random rand, int lyr, int stage, BlockPos startPos);
+		public boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+				int stage, BlockPos startPos);
 
 	}
 

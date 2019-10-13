@@ -84,6 +84,7 @@ public class BlockRegistry {
 	public static WeightedRandomBlock ICE_DEFAULT_PACKED;
 	public static WeightedRandomBlock DARK_PRISMARINE_PRISMARINE;
 	public static WeightedRandomBlock CLAY_FLOOR;
+	public static WeightedRandomBlock STONE_WALL, NETHER_WALL;
 
 	/*
 	 * Calculate the WeightedRandomBlocks
@@ -140,6 +141,16 @@ public class BlockRegistry {
 		CLAY_FLOOR = new WeightedRandomBlock(new TupleIntBlock[] { new TupleIntBlock(1, Blocks.CLAY.getDefaultState()),
 				new TupleIntBlock(1, Blocks.SMOOTH_STONE.getDefaultState()),
 				new TupleIntBlock(1, Blocks.STONE.getDefaultState()) });
+		STONE_WALL = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.STONE_BRICK_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.ANDESITE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.DIORITE_WALL.getDefaultState()) });
+		NETHER_WALL = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.NETHER_BRICK_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.RED_NETHER_BRICK_WALL.getDefaultState()) });
 		DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
 	}
 

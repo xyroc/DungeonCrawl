@@ -1,14 +1,11 @@
 package xiroc.dungeoncrawl.util;
 
-import java.util.Random;
-
-
-import net.minecraft.block.Blocks;
-
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
+import java.util.Random;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -45,7 +42,7 @@ public class Tools {
 				if (!event.getWorld().isRemote)
 					IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(event.getWorld(),
 							Blocks.CHEST.getDefaultState(), event.getPos(), event.getWorld().rand,
-							Treasure.Type.TREASURE, 0, 5);
+							Treasure.Type.DEFAULT, 0, 0);
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_004")) {
 				if (!event.getWorld().isRemote) {
 					DungeonStatTracker tracker = new DungeonStatTracker(3);

@@ -1,16 +1,15 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
+import java.util.Random;
+
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-
-/*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
- */
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -23,24 +22,26 @@ import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 public class TreasureItems {
 
 	// Potions from the original Roguelike Dungeons
-	public static final TreasureEntry LAUDANUM;
-	public static final TreasureEntry ANIMUS;
-	public static final TreasureEntry NECTAR;
-	public static final TreasureEntry LUMA;
+	public static final ItemStack LAUDANUM;
+	public static final ItemStack ANIMUS;
+	public static final ItemStack NECTAR;
+	public static final ItemStack LUMA;
 
 	// New Potions
-	public static final TreasureEntry VELOCITAS;
+	public static final ItemStack VELOCITAS;
 
-	public static final TreasureEntry POTION_HEALING;
-	public static final TreasureEntry POTION_HEALING_II;
-	public static final TreasureEntry POTION_REGENERATION;
-	public static final TreasureEntry POTION_REGENERATION_LONG;
-	public static final TreasureEntry POTION_REGENERATION_II;
+	public static final ItemStack POTION_HEALING;
+	public static final ItemStack POTION_HEALING_II;
+	public static final ItemStack POTION_REGENERATION;
+	public static final ItemStack POTION_REGENERATION_LONG;
+	public static final ItemStack POTION_REGENERATION_II;
 
-	public static final TreasureEntry SPLASH_POISON;
-	public static final TreasureEntry SPLASH_POISON_LONG;
-	public static final TreasureEntry SPLASH_HARMING;
-	public static final TreasureEntry SPLASH_HARMING_II;
+	public static final ItemStack SPLASH_POISON;
+	public static final ItemStack SPLASH_POISON_LONG;
+	public static final ItemStack SPLASH_HARMING;
+	public static final ItemStack SPLASH_HARMING_II;
+
+	public static ItemStack[] SPECIAL_POTIONS;
 
 	public static final TreasureEntry RANDOM_SPECIAL_ITEM;
 
@@ -84,7 +85,8 @@ public class TreasureItems {
 			display.put("Lore", lore);
 			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Laudanum"))));
 			nbt.put("display", display);
-			LAUDANUM = new TreasureEntry("minecraft:potion", 1).setNBT(nbt);
+			LAUDANUM = new ItemStack(Items.POTION);
+			LAUDANUM.setTag(nbt);
 		}
 		{
 			CompoundNBT nbt = new CompoundNBT();
@@ -110,7 +112,8 @@ public class TreasureItems {
 			display.put("Lore", lore);
 			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Animus"))));
 			nbt.put("display", display);
-			ANIMUS = new TreasureEntry("minecraft:potion", 1).setNBT(nbt);
+			ANIMUS = new ItemStack(Items.POTION);
+			ANIMUS.setTag(nbt);
 		}
 		{
 			CompoundNBT nbt = new CompoundNBT();
@@ -137,7 +140,8 @@ public class TreasureItems {
 			display.put("Lore", lore);
 			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Nectar"))));
 			nbt.put("display", display);
-			NECTAR = new TreasureEntry("minecraft:potion", 1).setNBT(nbt);
+			NECTAR = new ItemStack(Items.POTION);
+			NECTAR.setTag(nbt);
 		}
 		{
 			CompoundNBT nbt = new CompoundNBT();
@@ -165,7 +169,8 @@ public class TreasureItems {
 			display.put("Lore", lore);
 			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Velocitas"))));
 			nbt.put("display", display);
-			VELOCITAS = new TreasureEntry("minecraft:potion", 1).setNBT(nbt);
+			VELOCITAS = new ItemStack(Items.POTION);
+			VELOCITAS.setTag(nbt);
 		}
 		{
 			CompoundNBT nbt = new CompoundNBT();
@@ -183,48 +188,37 @@ public class TreasureItems {
 			display.put("Lore", lore);
 			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Luma"))));
 			nbt.put("display", display);
-			LUMA = new TreasureEntry("minecraft:potion", 1).setNBT(nbt);
+			LUMA = new ItemStack(Items.POTION);
+			LUMA.setTag(nbt);
 		}
 
-		// {
-		// CompoundNBT nbt = new CompoundNBT();
-		// CompoundNBT display = createDisplayTag("Boots of Battle");
-		// display.putInt("color", 14067655);
-		// nbt.put("Display", display);
-		// BOOTS_OF_BATTLE = new TreasureEntry("minecraft:leather_boots",
-		// 1).setNBT(nbt)
-		// .withEnchantments(new ItemEnchantment[] { new ItemEnchantment(0, 0)
-		// });
-		// }
+		RANDOM_SPECIAL_ITEM = new TreasureEntry("minecraft:air", 1);
 
-		RANDOM_SPECIAL_ITEM = new TreasureEntry("minecraft:air", 1).withProcessor(new RandomSpecialItem());
+		POTION_HEALING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:healing"));
+		POTION_HEALING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_healing"));
 
-		POTION_HEALING = new TreasureEntry("minecraft:potion", 1).setNBT(createPotionTag("minecraft:healing"));
-		POTION_HEALING_II = new TreasureEntry("minecraft:potion", 1)
-				.setNBT(createPotionTag("minecraft:strong_healing"));
-		POTION_REGENERATION = new TreasureEntry("minecraft:potion", 1)
-				.setNBT(createPotionTag("minecraft:regeneration"));
-		POTION_REGENERATION_LONG = new TreasureEntry("minecraft:potion", 1)
-				.setNBT(createPotionTag("minecraft:long_regeneration"));
-		POTION_REGENERATION_II = new TreasureEntry("minecraft:potion", 1)
-				.setNBT(createPotionTag("minecraft:strong_regeneration"));
+		POTION_REGENERATION = createItemWithNbt(Items.POTION, createPotionTag("minecraft:regeneration"));
+		POTION_REGENERATION_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_regeneration"));
 
-		SPLASH_POISON = new TreasureEntry("minecraft:splash_potion", 1).setNBT(createPotionTag("minecraft:poison"));
-		SPLASH_POISON_LONG = new TreasureEntry("minecraft:splash_potion", 1)
-				.setNBT(createPotionTag("minecraft:long_poison"));
-		SPLASH_HARMING = new TreasureEntry("minecraft:splash_potion", 1).setNBT(createPotionTag("minecraft:harming"));
-		SPLASH_HARMING_II = new TreasureEntry("minecraft:splash_potion", 1)
-				.setNBT(createPotionTag("minecraft:strong_harming"));
+		POTION_REGENERATION_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_regeneration"));
 
-		ENCHANTED_BOOK = new TreasureEntry("minecraft:book", 1).withProcessor((rand, theme, lootLevel) -> {
+		SPLASH_POISON = createItemWithNbt(Items.POTION, createPotionTag("minecraft:poison"));
+		SPLASH_POISON_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_poison"));
+		SPLASH_HARMING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:harming"));
+		SPLASH_HARMING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_harming"));
+
+		SPECIAL_POTIONS = new ItemStack[] { LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS };
+
+		ENCHANTED_BOOK = new TreasureEntry("minecraft:book", 1).withProcessor((world, rand, theme, lootLevel) -> {
 			ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
 			Enchantment enchantment = EnchantedBook.getRandomEnchantment(rand, lootLevel);
 			RandomEquipment.enchantItem(book, rand, enchantment, RandomEquipment.getStageMultiplier(lootLevel));
 			return book;
 		});
 
-		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((rand, theme, lootlevel) -> new ItemStack(
-				ForgeRegistries.BLOCKS.getValue(MaterialBlocks.getMaterial(theme)), rand.nextInt(5 + lootlevel * 4)));
+		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((world, rand, theme,
+				lootlevel) -> new ItemStack(ForgeRegistries.BLOCKS.getValue(MaterialBlocks.getMaterial(theme)),
+						rand.nextInt(5 + lootlevel * 4)));
 
 	}
 
@@ -250,6 +244,17 @@ public class TreasureItems {
 		enchantmentTag.putString("id", enchantment);
 		enchantmentTag.putInt("lvl", level);
 		return enchantmentTag;
+	}
+
+	public static ItemStack createItemWithNbt(Item item, CompoundNBT nbt) {
+		ItemStack stack = new ItemStack(item);
+		stack.setTag(nbt);
+		return stack;
+	}
+
+	public static ItemStack getRandomSpecialPotion(Random rand, int stage) {
+		int bound = stage == 0 ? 1 : SPECIAL_POTIONS.length;
+		return SPECIAL_POTIONS[rand.nextInt(bound)].copy();
 	}
 
 }

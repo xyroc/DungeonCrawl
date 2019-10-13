@@ -1,0 +1,35 @@
+{
+	"pools": [
+		{
+			"name": "kitchen",
+			"rolls": {
+				"min": 6,
+				"max": 10
+			},
+			"entries": [
+				{
+					"type": "item",
+					"name": "minecraft:air",
+					"weight": 4,
+					"functions": [
+						{
+							"function": "dungeoncrawl:random_potion",
+							"stage": 2
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "minecraft:air",
+					"weight": 4,
+					"functions": [
+						{
+							"function": "dungeoncrawl:random_item",
+							"stage": 2
+						}
+					]
+				}
+			]
+		}
+	]
+}

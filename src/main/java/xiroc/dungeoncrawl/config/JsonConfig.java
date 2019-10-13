@@ -24,7 +24,6 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
 import xiroc.dungeoncrawl.dungeon.treasure.EnchantedBook;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 public class JsonConfig implements IJsonConfigurable {
@@ -64,9 +63,9 @@ public class JsonConfig implements IJsonConfigurable {
 		BASE = new JsonConfig();
 		load(BASE);
 		load(new EnchantedBook());
-		load(new Kitchen());
-		load(new TreasureRoom());
-		load(new Treasure());
+//		load(new Kitchen());
+//		load(new TreasureRoom());
+//		load(new Treasure());
 		load(new SpecialItemTags());
 		load(new ObfuscationValues());
 	}

@@ -8,9 +8,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Loot;
 
 public class Dispenser implements IBlockPlacementHandler {
 
@@ -20,7 +20,7 @@ public class Dispenser implements IBlockPlacementHandler {
 		world.setBlockState(pos, state, 2);
 		DispenserTileEntity dispenser = (DispenserTileEntity) world.getTileEntity(pos);
 		dispenser.setLootTable(getLootTable(lootLevel), rand.nextLong());
-		// dispenser.fillWithLoot(null);
+//		dispenser.fillWithLoot(null);
 	}
 
 	public static ResourceLocation getLootTable(int lootLevel) {

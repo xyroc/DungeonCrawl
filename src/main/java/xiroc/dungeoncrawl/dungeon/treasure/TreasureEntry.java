@@ -10,8 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootFunction;
+import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable.VanillaImport;
 import xiroc.dungeoncrawl.util.ItemProcessor;
 
 public class TreasureEntry {
@@ -25,7 +29,9 @@ public class TreasureEntry {
 
 	public CompoundNBT nbt;
 
-	private ItemProcessor<Random, Integer, Integer> itemProcessor;
+	public LootFunction[] functions;
+
+	private ItemProcessor<ServerWorld, Random, Integer, Integer> itemProcessor;
 
 	public TreasureEntry(String resourceName, int weight) {
 		this(resourceName, 1, 1, weight, null, null);
@@ -50,7 +56,7 @@ public class TreasureEntry {
 	}
 
 	public TreasureEntry(String resourceName, int min, int max, int weight, CompoundNBT nbt,
-			ItemEnchantment[] enchantments, ItemProcessor<Random, Integer, Integer> itemProcessor) {
+			ItemEnchantment[] enchantments, ItemProcessor<ServerWorld, Random, Integer, Integer> itemProcessor) {
 		this(resourceName, min, max, weight, nbt, enchantments);
 		this.itemProcessor = itemProcessor;
 	}
@@ -65,7 +71,7 @@ public class TreasureEntry {
 				this.itemProcessor);
 	}
 
-	public TreasureEntry withProcessor(ItemProcessor<Random, Integer, Integer> itemProcessor) {
+	public TreasureEntry withProcessor(ItemProcessor<ServerWorld, Random, Integer, Integer> itemProcessor) {
 		return new TreasureEntry(this.resourceName, this.min, this.max, this.weight, this.nbt, this.enchantments,
 				itemProcessor);
 	}
@@ -80,9 +86,9 @@ public class TreasureEntry {
 		return this;
 	}
 
-	public ItemStack generate(Random rand, int theme, int lootLevel) {
+	public ItemStack generate(ServerWorld world, Random rand, int theme, int lootLevel) {
 		if (itemProcessor != null)
-			return itemProcessor.generate(rand, theme, lootLevel);
+			return itemProcessor.generate(world, rand, theme, lootLevel);
 		IItemProvider itemIn = ForgeRegistries.ITEMS.getValue(item), blockIn = ForgeRegistries.BLOCKS.getValue(item);
 		ItemStack stack = new ItemStack(itemIn == null ? blockIn : itemIn);
 		stack.setTag(nbt);
@@ -92,9 +98,9 @@ public class TreasureEntry {
 	}
 
 	public void readResourceLocation() {
-		String[] resource = resourceName.split(":");
-		this.item = new ResourceLocation(resource[0], resource[1]);
-		DungeonCrawl.LOGGER.debug("Resource: {} Hash: {}", resourceName, this.item.hashCode());
+//		String[] resource = resourceName.split(":");
+		this.item = new ResourceLocation(resourceName);
+//		DungeonCrawl.LOGGER.debug("Resource: {} Hash: {}", resourceName, this.item.hashCode());
 	}
 
 	public static class ItemEnchantment {
@@ -105,6 +111,34 @@ public class TreasureEntry {
 		public ItemEnchantment(ResourceLocation id, int level) {
 			this.id = id;
 			this.level = level;
+		}
+
+	}
+
+	public static class VanillaLootTable extends TreasureEntry {
+
+		public VanillaImport table;
+
+		public VanillaLootTable(VanillaImport table) {
+			this(table, table.weight);
+		}
+
+		public VanillaLootTable(VanillaImport table, int weight) {
+			super("no_resource", weight);
+			this.table = table;
+		}
+
+		@Override
+		public ItemStack generate(ServerWorld world, Random rand, int theme, int lootLevel) {
+			return table.generate(new LootContext.Builder(world).withRandom(world.rand)
+//					.withParameter(LootParameters.POSITION,
+//							new BlockPos(rand.nextInt(1024), rand.nextInt(256), rand.nextInt(1024)))
+					.withSeed(rand.nextLong()).build(LootParameterSets.EMPTY));
+//			LockableLootTileEntity LootTable
+		}
+
+		@Override
+		public void readResourceLocation() {
 		}
 
 	}

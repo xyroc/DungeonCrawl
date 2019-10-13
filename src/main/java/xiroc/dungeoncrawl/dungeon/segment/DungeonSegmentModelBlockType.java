@@ -11,7 +11,7 @@ public enum DungeonSegmentModelBlockType {
 
 	NONE, CEILING, CEILING_STAIRS, WALL, WALL_LOG, FLOOR, FLOOR_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST, RAND_WALL_AIR,
 	RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR, RAND_FLOOR_WATER, RAND_FLOOR_LAVA,
-	DISPENSER, RAND_COBWEB_AIR, MATERIAL, OTHER;
+	DISPENSER, RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
 
 	public static DungeonSegmentModelBlockType get(Block block) {
 		if (block == Blocks.AIR)
@@ -20,9 +20,9 @@ public enum DungeonSegmentModelBlockType {
 			return MATERIAL;
 		if (block == Blocks.BEDROCK)
 			return NONE;
-		if (block == Blocks.OAK_DOOR) 
+		if (block == Blocks.OAK_DOOR)
 			return DOOR;
-		if (block == Blocks.COBWEB) 
+		if (block == Blocks.COBWEB)
 			return RAND_COBWEB_AIR;
 		if (block == Blocks.DISPENSER)
 			return DISPENSER;
@@ -52,6 +52,8 @@ public enum DungeonSegmentModelBlockType {
 			return TRAPDOOR;
 		if (block == Blocks.BARREL)
 			return BARREL;
+		if (block == Blocks.STONE_BRICK_WALL)
+			return VANILLA_WALL;
 		return OTHER;
 	}
 

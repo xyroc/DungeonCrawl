@@ -469,23 +469,26 @@ public class DungeonPieces {
 				theme = Theme.BIOME_TO_THEME_MAP
 						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			int height = theme == 3 ? worldIn.getSeaLevel() : getGroudHeight(worldIn, x + 4, z + 4);
+//			int ch = height - (height % 8) + height % 8 > 0 ? 8 : 0;
 			int ch = y;
 			Theme buildTheme = Theme.get(theme);
 			while (ch < height) {
 				build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), buildTheme,
 						Treasure.Type.DEFAULT, stage);
-				for (int x1 = 0; x1 < 8; x1++)
-					for (int y1 = 0; y1 < 8; y1++)
-						setBlockState(buildTheme.wall.get(), worldIn, null, x + x1, ch + y1, z + 7, theme, 0);
-				for (int z1 = 0; z1 < 8; z1++)
-					for (int y1 = 0; y1 < 8; y1++)
-						setBlockState(buildTheme.wall.get(), worldIn, null, x + 7, ch + y1, z + z1, theme, 0);
+//				for (int x1 = 0; x1 < 8; x1++)
+//					for (int y1 = 0; y1 < 8; y1++)
+//						setBlockState(buildTheme.wall.get(), worldIn, null, x + x1, ch + y1, z + 7, theme, 0);
+//				for (int z1 = 0; z1 < 8; z1++)
+//					for (int y1 = 0; y1 < 8; y1++)
+//						setBlockState(buildTheme.wall.get(), worldIn, null, x + 7, ch + y1, z + z1, theme, 0);
 				ch += 8;
 			}
 			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(worldIn.getRandom());
 			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
-			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme,
+			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), Theme.get(theme),
 					Treasure.Type.SUPPLY, stage);
+			DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR)
+					.process(worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), theme, this);
 			return false;
 		}
 

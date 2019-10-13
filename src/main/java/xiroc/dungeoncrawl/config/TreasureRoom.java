@@ -13,7 +13,6 @@ import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.TreasureEntry;
-import xiroc.dungeoncrawl.dungeon.treasure.TreasureItems;
 import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
@@ -25,7 +24,7 @@ public class TreasureRoom implements IJsonConfigurable {
 
 	public static final HashMap<String, Object> DEFAULTS;
 
-	public static TreasureLootTable TREASURE;
+//	public static TreasureLootTable TREASURE;
 
 	static {
 		DEFAULTS = new HashMap<String, Object>();
@@ -55,16 +54,19 @@ public class TreasureRoom implements IJsonConfigurable {
 
 	@Override
 	public void load(JsonObject object, File file) {
-		TREASURE = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_TREASURE, this),
-				TreasureLootTable.class);
+//		TREASURE = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_TREASURE, this),
+//				TreasureLootTable.class);
+//
+//		TREASURE.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(10));
+//		TREASURE.entries.add(TreasureItems.ENCHANTED_BOOK.withWeight(5));
+//		TREASURE.entries.add(TreasureItems.POTION_REGENERATION_II);
+//		TREASURE.entries.add(TreasureItems.NECTAR);
+//		TREASURE.entries.add(TreasureItems.MATERIAL_BLOCKS);
 
-		TREASURE.entries.add(TreasureItems.RANDOM_SPECIAL_ITEM.withWeight(10));
-		TREASURE.entries.add(TreasureItems.ENCHANTED_BOOK.withWeight(5));
-		TREASURE.entries.add(TreasureItems.POTION_REGENERATION_II);
-		TREASURE.entries.add(TreasureItems.NECTAR);
-		TREASURE.entries.add(TreasureItems.MATERIAL_BLOCKS);
+//		TREASURE.build();
+		
+//		TreasureLootTable.LOOT_TABLES.add(TREASURE);
 
-		TREASURE.build();
 	}
 
 	@Override

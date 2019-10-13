@@ -42,10 +42,12 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.util.Tools;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.Tools;
 
 @Mod(DungeonCrawl.MODID)
 public class DungeonCrawl {
@@ -67,6 +69,8 @@ public class DungeonCrawl {
 		MinecraftForge.EVENT_BUS.register(new Tools());
 //		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
 		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
+		
+		Treasure.init();
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -100,7 +104,9 @@ public class DungeonCrawl {
 	public void onWorldLoad(WorldEvent.Load event) {
 		if (event.getWorld().isRemote())
 			return;
-		DungeonSegmentModelRegistry.load(((ServerWorld) event.getWorld()).getServer().getResourceManager());
+		ServerWorld server = (ServerWorld) event.getWorld();
+		TreasureLootTable.buildAll(server.getServer().getLootTableManager());
+		DungeonSegmentModelRegistry.load(server.getServer().getResourceManager());
 	}
 
 	public static ResourceLocation locate(String path) {

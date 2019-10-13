@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
@@ -21,14 +22,24 @@ import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.Hole;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.Stairs;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
+import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.segment.RandomDungeonSegmentModel;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.Position2D;
 
 public class DungeonBuilder {
 
 	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
+	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
+
+	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
+		;
+	};
 
 	public Random rand;
 	public Position2D start;
@@ -42,6 +53,64 @@ public class DungeonBuilder {
 		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
 		ENTRANCE_OFFSET_DATA.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_0.id, new Tuple<Integer, Integer>(0, 0));
 		ENTRANCE_OFFSET_DATA.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_1.id, new Tuple<Integer, Integer>(-3, -3));
+
+		ENTRANCE_PROCESSORS = new HashMap<Integer, EntranceProcessor>();
+		ENTRANCE_PROCESSORS.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_0.id, (world, pos, theme, piece) -> {
+			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+			int height = theme == 3 ? world.getSeaLevel() : DungeonPieces.getGroudHeight(world, x + 4, z + 4);
+			int ch = y;
+			Theme buildTheme = Theme.get(theme);
+			while (ch < height) {
+				piece.build(DungeonSegmentModelRegistry.STAIRS, world, new BlockPos(x, ch, z), buildTheme,
+						Treasure.Type.DEFAULT, piece.stage);
+				for (int x1 = 0; x1 < 8; x1++)
+					for (int y1 = 0; y1 < 8; y1++)
+						piece.setBlockState(buildTheme.wall.get(), world, null, x + x1, ch + y1, z + 7, theme, 0);
+				for (int z1 = 0; z1 < 8; z1++)
+					for (int y1 = 0; y1 < 8; y1++)
+						piece.setBlockState(buildTheme.wall.get(), world, null, x + 7, ch + y1, z + z1, theme, 0);
+				ch += 8;
+			}
+		});
+		ENTRANCE_PROCESSORS.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_1.id, (world, pos, theme, piece) -> {
+			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+
+			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 2), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 2), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 2), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 2), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 2), piece);
+
+			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 4), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 5), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 6), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 7), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 8), piece);
+
+			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 10), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 10), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 10), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 10), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 10), piece);
+
+			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 4), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 5), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 6), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 7), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 8), piece);
+
+			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 1), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 1), piece);
+
+			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 5), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 7), piece);
+
+			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 11), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 11), piece);
+
+			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 5), piece);
+			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 7), piece);
+		});
 	}
 
 	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
@@ -109,7 +178,7 @@ public class DungeonBuilder {
 								hole.lava = stage == 2;
 								layer.segments[x][z] = hole;
 							} else {
-								DungeonFeatures.processCorridor(layer, x, z, rand, i, stage, startPos);
+								DungeonFeatures.processCorridor(this, layer, x, z, rand, i, stage, startPos);
 							}
 						}
 					}
@@ -125,6 +194,20 @@ public class DungeonBuilder {
 					}
 				}
 		}
+	}
+
+	/*
+	 * Builds a 1x?x1 pillar to the ground
+	 */
+	public static void buildWallPillar(IWorld world, int theme, BlockPos pos, DungeonPiece piece) {
+		DungeonSegmentModelBlock block = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_WALL_AIR);
+		Theme buildTheme = Theme.get(theme);
+		int x = pos.getX(), z = pos.getZ();
+		int height = DungeonPieces.getGroudHeightFrom(world, x, z, pos.getY() - 1);
+//		DungeonCrawl.LOGGER.debug("{} | {}", pos, height);
+		for (int y = pos.getY() - 1; y > height; y--)
+			piece.setBlockState(DungeonSegmentModelBlock.PROVIDERS.get(DungeonSegmentModelBlockType.RAND_WALL_AIR)
+					.get(block, buildTheme, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0);
 	}
 
 	public static DungeonSegmentModel getModel(DungeonPiece piece, Random rand) {
@@ -170,12 +253,19 @@ public class DungeonBuilder {
 	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
 		switch (rand.nextInt(2)) {
 		case 0:
-			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_0;
+			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
 		case 1:
 			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
 		default:
 			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
 		}
 	};
+
+	@FunctionalInterface
+	public static interface EntranceProcessor {
+
+		void process(IWorld world, BlockPos pos, int theme, DungeonPiece piece);
+
+	}
 
 }

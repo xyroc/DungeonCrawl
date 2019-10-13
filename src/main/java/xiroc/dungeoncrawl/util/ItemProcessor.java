@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
  */
 
 @FunctionalInterface
-public interface ItemProcessor<F, S, T> {
+public interface ItemProcessor<W, F, S, T> {
 
-	ItemStack generate(F f, S s, T t);
+	ItemStack generate(W w, F f, S s, T t);
 
 }

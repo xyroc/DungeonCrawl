@@ -31,7 +31,7 @@ public class Config {
 	public static final DoubleValue DUNGEON_PROBABLILITY;
 	public static final DoubleValue SHIELD_PROBABILITY;
 
-	public static final BooleanValue BUILD_BRIDGES, IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION;
+	public static final BooleanValue BUILD_BRIDGES, IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS;
 
 	static {
 		BUILDER.comment("General Settings").push(CONFIG_GENERAL);
@@ -54,6 +54,9 @@ public class Config {
 				.define("ignore_overworld_blacklist", false);
 		SHIELD_PROBABILITY = BUILDER.comment("The Probability of a spawner entity having a shield in the offhand.")
 				.defineInRange("shield_probability", 0.25, 0.01, 1.0);
+		VANILLA_SPAWNERS = BUILDER.comment(
+				"Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
+				.define("use_vanilla_spawners", false);
 		BUILDER.comment("More configuration options will come in future updates.");
 		BUILDER.pop();
 

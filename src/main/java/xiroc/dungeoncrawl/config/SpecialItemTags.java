@@ -161,7 +161,7 @@ public class SpecialItemTags implements IJsonConfigurable {
 			prefix = PREFIX_SWORD.length > 0 ? PREFIX_SWORD[rand.nextInt(PREFIX_SWORD.length)] : null;
 			tag = SWORD.length > 0 ? SWORD[rand.nextInt(SWORD.length)] : null;
 		} else if (item instanceof ToolItem) {
-			prefix = PREFIX_TOOL.length > 0 ? PREFIX_TOOL[PREFIX_TOOL.length] : null;
+			prefix = PREFIX_TOOL.length > 0 ? PREFIX_TOOL[rand.nextInt(PREFIX_TOOL.length)] : null;
 			tag = TOOL.length > 0 ? TOOL[rand.nextInt(TOOL.length)] : null;
 		} else if (item instanceof BowItem || item instanceof CrossbowItem) {
 			prefix = PREFIX_RANGED_WEAPON.length > 0 ? PREFIX_RANGED_WEAPON[rand.nextInt(PREFIX_RANGED_WEAPON.length)]

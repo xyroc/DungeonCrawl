@@ -42,7 +42,8 @@ public class DungeonFeatures {
 		});
 		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4
-					&& (lyr == 0 || builder.layers[lyr - 1].segments[x][z].getType() != 8)) {
+					&& (lyr == 0 || (builder.layers[lyr - 1].segments[x][z] == null
+							|| builder.layers[lyr - 1].segments[x][z].getType() != 8))) {
 				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].rotation);
 				Position2D pos = new Position2D(x, z);
 				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);

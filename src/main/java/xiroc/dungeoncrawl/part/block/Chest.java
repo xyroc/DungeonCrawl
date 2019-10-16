@@ -22,7 +22,9 @@ public class Chest implements IBlockPlacementHandler {
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
 			int theme, int lootLevel) {
 		world.setBlockState(pos, state, 2);
-		LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, getLootTable(theme, lootLevel));
+		ResourceLocation lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
+		LockableLootTileEntity.setLootTable(world, world.getRandom(), pos,
+				lootTable == null ? getLootTable(theme, lootLevel) : lootTable);
 //		if (treasureType != Treasure.Type.DEFAULT || lootLevel < 1 || rand.nextDouble() > 0.25) {
 //			LockableLootTileEntity tile = (LockableLootTileEntity) world.getTileEntity(pos);
 //			TreasureLootTable lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
@@ -67,8 +69,12 @@ public class Chest implements IBlockPlacementHandler {
 		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
 				int theme, int lootLevel) {
 			world.setBlockState(pos, state, 2);
-			LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, getLootTable(theme, lootLevel));
-//			if (treasureType != Treasure.Type.DEFAULT || lootLevel < 1 || rand.nextDouble() > 0.25) {
+			ResourceLocation lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
+			LockableLootTileEntity.setLootTable(world, world.getRandom(), pos,
+					lootTable == null ? getLootTable(theme, lootLevel) : lootTable);// if (treasureType !=
+																					// Treasure.Type.DEFAULT ||
+																					// lootLevel < 1 ||
+																					// rand.nextDouble() > 0.25) {
 //				LockableLootTileEntity tile = (LockableLootTileEntity) world.getTileEntity(pos);
 //				TreasureLootTable lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
 //				if (lootTable != null)

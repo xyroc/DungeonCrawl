@@ -18,6 +18,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.theme.ThemeItems;
 
 public class TreasureItems {
 
@@ -217,7 +218,7 @@ public class TreasureItems {
 		});
 
 		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((world, rand, theme,
-				lootlevel) -> new ItemStack(ForgeRegistries.BLOCKS.getValue(MaterialBlocks.getMaterial(theme)),
+				lootlevel) -> new ItemStack(ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(theme)),
 						rand.nextInt(5 + lootlevel * 4)));
 
 	}

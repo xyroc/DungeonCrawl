@@ -303,11 +303,11 @@ public class DungeonSegmentModelRegistry {
 
 	public static DungeonSegmentModel ROOM;
 
-	public static DungeonSegmentModel LARGE_ROOM;
+	public static DungeonSegmentModel LARGE_ROOM, LIBRARY;
 
 	public static DungeonSegmentModel ENTRANCE_TOWER_0, ENTRANCE_TOWER_1;
 
-	public static DungeonSegmentModel KITCHEN;
+	public static DungeonSegmentModel KITCHEN, STARTER_ROOM;
 
 	public static DungeonSegmentModel LOOT_ROOM;
 
@@ -361,16 +361,20 @@ public class DungeonSegmentModelRegistry {
 		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.json", resourceManager).build().setId(31);
 
 		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.json", resourceManager).build().setId(32);
-		
+
 		ENTRANCE_TOWER_1 = loadFromFile("models/dungeon/entrance_tower_1.json", resourceManager).build().setId(32);
-		
+
 		SIDE_ROOM_TNT = loadFromFile("models/dungeon/side_room_tnt.json", resourceManager).build().setId(33);
+		STARTER_ROOM = loadFromFile("models/dungeon/starter_room.json", resourceManager).build().setId(34);
+		
+		LIBRARY = loadFromFile("models/dungeon/library.json", resourceManager).build().setId(35);
+
 
 		LOADED = true;
 	}
 
 	public static DungeonSegmentModel loadFromFile(String path, IResourceManager resourceManager) {
-		DungeonCrawl.LOGGER.debug("Loading model {}", path);
+		DungeonCrawl.LOGGER.debug("Loading {}", path);
 		try {
 			return DungeonSegmentModelReader
 					.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());

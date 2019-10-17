@@ -24,6 +24,8 @@ public class DungeonLayer {
 	 * NORTH|-Z EAST|+X SOUTH|+Z WEST|-X
 	 */
 
+	public static final int[] LARGE_ROOMS = new int[] { 25, 25, 35 };
+
 	public DungeonLayerType type;
 	public DungeonPiece[][] segments;
 
@@ -131,6 +133,12 @@ public class DungeonLayer {
 		Position2D[] additions = new Position2D[additionalFeatures];
 		for (int i = 0; i < additionalFeatures; i++) {
 			additions[i] = map.getRandomFreePosition(rand);
+			if (additions[i] == null) {
+				DungeonCrawl.LOGGER.warn(
+						"Failed to place {} more rooms because all free positions are already taken. Please decrease the layer_min_additions and/or the layer_extra_additions value in the config to avoid this issue.",
+						additionalFeatures - i);
+				return;
+			}
 			if (rand.nextFloat() < 0.1) {
 				Position2D largeRoomPos = getLargeRoomPos(additions[i]);
 				if (largeRoomPos != null) {
@@ -376,8 +384,9 @@ public class DungeonLayer {
 					this.segments[endX][z + 1] = corridor;
 				}
 			} else
-				DungeonCrawl.LOGGER.warn("Tried to build a connection between two positions but they were the same. ( "
-						+ startX + " / " + startZ + " ) -> ( " + endX + "/" + endZ + " )");
+				DungeonCrawl.LOGGER.warn(
+						"Tried to build a connection between two positions but they were the same. ({}, {}) -> ({}, {})",
+						startX, startZ, endX, endZ);
 		}
 	}
 
@@ -429,7 +438,7 @@ public class DungeonLayer {
 	 * Provides a random large room id.
 	 */
 	public static int getRandomLargeRoom(Random rand) {
-		return 25;
+		return LARGE_ROOMS[rand.nextInt(LARGE_ROOMS.length)];
 	}
 
 	public boolean canPutDoubleRoom(Position2D pos, Direction direction) {
@@ -451,13 +460,13 @@ public class DungeonLayer {
 	}
 
 	public Position2D getLargeRoomPos(Position2D pos) {
-		int x = pos.x;
-		int z = pos.z;
-		if (x < 15 && z < 15 && get(x + 1, z) == null && get(x + 1, z + 1) == null && get(x, z + 1) == null)
+		int a = Dungeon.SIZE - 1, x = pos.x, z = pos.z;
+		
+		if (x < a && z < a && get(x + 1, z) == null && get(x + 1, z + 1) == null && get(x, z + 1) == null)
 			return pos;
-		if (x < 15 && z > 0 && get(x + 1, z) == null && get(x + 1, z - 1) == null && get(x, z - 1) == null)
+		if (x < a && z > 0 && get(x + 1, z) == null && get(x + 1, z - 1) == null && get(x, z - 1) == null)
 			return new Position2D(x, z - 1);
-		if (x > 0 && z < 15 && get(x - 1, z) == null && get(x - 1, z + 1) == null && get(x, z + 1) == null)
+		if (x > 0 && z < a && get(x - 1, z) == null && get(x - 1, z + 1) == null && get(x, z + 1) == null)
 			return new Position2D(x - 1, z);
 		if (x > 0 && z > 0 && get(x - 1, z) == null && get(x - 1, z - 1) == null && get(x, z - 1) == null)
 			return new Position2D(x - 1, z - 1);

@@ -33,7 +33,7 @@ import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.Position2D;
 
 public class DungeonBuilder {
-
+	
 	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
 	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
@@ -51,11 +51,11 @@ public class DungeonBuilder {
 
 	static {
 		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
-		ENTRANCE_OFFSET_DATA.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_0.id, new Tuple<Integer, Integer>(0, 0));
-		ENTRANCE_OFFSET_DATA.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_1.id, new Tuple<Integer, Integer>(-3, -3));
+		ENTRANCE_OFFSET_DATA.put(20, new Tuple<Integer, Integer>(0, 0));
+		ENTRANCE_OFFSET_DATA.put(32, new Tuple<Integer, Integer>(-3, -3));
 
 		ENTRANCE_PROCESSORS = new HashMap<Integer, EntranceProcessor>();
-		ENTRANCE_PROCESSORS.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_0.id, (world, pos, theme, piece) -> {
+		ENTRANCE_PROCESSORS.put(20, (world, pos, theme, piece) -> {
 			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 			int height = theme == 3 ? world.getSeaLevel() : DungeonPieces.getGroudHeight(world, x + 4, z + 4);
 			int ch = y;
@@ -72,7 +72,7 @@ public class DungeonBuilder {
 				ch += 8;
 			}
 		});
-		ENTRANCE_PROCESSORS.put(DungeonSegmentModelRegistry.ENTRANCE_TOWER_1.id, (world, pos, theme, piece) -> {
+		ENTRANCE_PROCESSORS.put(32, (world, pos, theme, piece) -> {
 			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
 			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 2), piece);
@@ -113,17 +113,21 @@ public class DungeonBuilder {
 		});
 	}
 
-	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
+	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {		
 		this.rand = rand;
-		this.start = new Position2D(rand.nextInt(16), rand.nextInt(16));
+		this.start = new Position2D(rand.nextInt(Dungeon.SIZE), rand.nextInt(Dungeon.SIZE));
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
 		this.layers = new DungeonLayer[startPos.getY() / 16];
+		
 		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
 				+ startPos.getZ() + "), " + +this.layers.length + " layers");
+		
 		this.statTracker = new DungeonStatTracker(layers.length);
+		
+		
 		for (int i = 0; i < layers.length; i++) {
-			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL);
+			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
 			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i == layers.length - 1);
 		}
 

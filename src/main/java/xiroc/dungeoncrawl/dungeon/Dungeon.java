@@ -61,14 +61,16 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonPieces.SideRoom::new,
 			"DUNGEON_SIDE_ROOM");
 
+	public static int SIZE = 16;
+
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
 	}
 
 	public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z,
 			int spacingOffsetsX, int spacingOffsetsZ) {
-		int i = 15;
-		int j = 10;
+		int i = SIZE - 1; // 15
+		int j = i - 5; // 10
 		int k = x + i * spacingOffsetsX;
 		int l = z + i * spacingOffsetsZ;
 		int i1 = k < 0 ? k - i + 1 : k;
@@ -87,8 +89,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
 		ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
 		if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
-			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 64, chunkPosZ * 16 + 64,
-					128)) {
+			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + SIZE / 2 * 8,
+					chunkPosZ * 16 + SIZE / 2 * 8, 8 * SIZE)) {
 				if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !chunkGen.hasStructure(biome, DUNGEON))
 					return false;
 			}
@@ -141,11 +143,11 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 				ServerWorld serverWorld = (ServerWorld) world.get(generator);
 				BlockPos spawn = serverWorld.getSpawnPoint();
 
-				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16;
-
+				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
+				
 				if (serverWorld.getDimension().getType() != DimensionType.OVERWORLD
-						|| spawnChunkX - chunkX < 8 && spawnChunkX - chunkX > -8
-						|| spawnChunkZ - chunkZ < 8 && spawnChunkZ - chunkZ > -8)
+						|| spawnChunkX - chunkX < chunkSize && spawnChunkX - chunkX > -chunkSize
+						|| spawnChunkZ - chunkZ < chunkSize / 2 && spawnChunkZ - chunkZ > -chunkSize)
 					return;
 
 				/* Undoing everything */
@@ -165,8 +167,9 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
 			this.components.addAll(builder.build());
 			this.recalculateStructureSize();
-			DungeonCrawl.LOGGER.info("Built dungeon logic for [{}, {}] ({} ms) ({} pieces)", chunkX, chunkZ,
-					(System.currentTimeMillis() - now), this.components.size());
+			DungeonCrawl.LOGGER.info("Built dungeon logic for [{}, {}] ({} ms) ({} pieces). BoundingBox: ({}, {}, {})",
+					chunkX, chunkZ, (System.currentTimeMillis() - now), this.components.size(),
+					bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ);
 		}
 
 		@Override

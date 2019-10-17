@@ -21,17 +21,15 @@ public class ObfuscationValues implements IJsonConfigurable {
 
 	public static String CHUNKGEN_WORLD, LOOT_POOL_ENTRIES;
 
-	public static final String KEY_CHUNKGEN_WORLD = "net.minecraft.world.gen.ChunkGenerator # world",
-			KEY_LOOT_POOL_ENTRIES = "net.minecraft.world.storage.loot.LootPool # lootEntries";
+	public static final String KEY_CHUNKGEN_WORLD = "net.minecraft.world.gen.ChunkGenerator # world";
 
-	public static final String[] KEYS = new String[] { KEY_CHUNKGEN_WORLD, KEY_LOOT_POOL_ENTRIES };
+	public static final String[] KEYS = new String[] { KEY_CHUNKGEN_WORLD };
 
 	public static final HashMap<String, Object> DEFAULTS;
 
 	static {
 		DEFAULTS = new HashMap<String, Object>();
 		DEFAULTS.put(KEY_CHUNKGEN_WORLD, "field_222540_a");
-		DEFAULTS.put(KEY_LOOT_POOL_ENTRIES, "field_186453_a ");
 	}
 
 	@Override
@@ -42,13 +40,11 @@ public class ObfuscationValues implements IJsonConfigurable {
 	@Override
 	public void load(JsonObject object, File file) {
 		CHUNKGEN_WORLD = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_CHUNKGEN_WORLD, this), String.class);
-		LOOT_POOL_ENTRIES = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_LOOT_POOL_ENTRIES, this), String.class);
 	}
 
 	@Override
 	public JsonObject create(JsonObject object) {
 		object.add(KEY_CHUNKGEN_WORLD, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_CHUNKGEN_WORLD)));
-		object.add(KEY_LOOT_POOL_ENTRIES, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_LOOT_POOL_ENTRIES)));
 		return object;
 	}
 

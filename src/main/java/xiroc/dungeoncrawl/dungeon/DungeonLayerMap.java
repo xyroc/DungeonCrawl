@@ -26,6 +26,8 @@ public class DungeonLayerMap {
 	}
 
 	public Position2D getRandomFreePosition(Random rand) {
+		if (freePositions.size() == 0)
+			return null;
 		Position2D pos = freePositions.get(rand.nextInt(freePositions.size()));
 		freePositions.remove(pos);
 		return pos;

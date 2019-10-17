@@ -10,7 +10,7 @@ import net.minecraft.block.Blocks;
 public enum DungeonSegmentModelBlockType {
 
 	NONE, CEILING, CEILING_STAIRS, WALL, WALL_LOG, FLOOR, FLOOR_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST, RAND_WALL_AIR,
-	RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR, RAND_FLOOR_WATER, RAND_FLOOR_LAVA,
+	RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR, RAND_FLOOR_WATER, RAND_FLOOR_LAVA, RAND_BOOKSHELF_COBWEB,
 	DISPENSER, RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
 
 	public static DungeonSegmentModelBlockType get(Block block) {
@@ -32,6 +32,8 @@ public enum DungeonSegmentModelBlockType {
 			return RAND_WALL_AIR;
 		if (block == Blocks.CLAY)
 			return RAND_FLOOR_WATER;
+		if (block == Blocks.BOOKSHELF) 
+			return RAND_BOOKSHELF_COBWEB;
 		if (block == Blocks.OAK_STAIRS)
 			return FLOOR_STAIRS;
 		if (block == Blocks.STONE_BRICK_STAIRS)

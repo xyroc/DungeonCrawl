@@ -11,7 +11,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.SideRoom;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 import xiroc.dungeoncrawl.util.Triple;
@@ -25,7 +24,7 @@ public class DungeonFeatures {
 
 	static {
 		OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
-		OFFSET_DATA.put(DungeonSegmentModelRegistry.SIDE_ROOM_TNT.id, new Triple<Integer, Integer, Integer>(0, -1, 0));
+		OFFSET_DATA.put(33, new Triple<Integer, Integer, Integer>(0, -1, 0));
 	}
 
 	static {

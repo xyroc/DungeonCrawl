@@ -552,6 +552,20 @@
                 },
                 {
                 	"type": "item",
+                	"name": "minecraft:slime_ball",
+                	"weight": 2,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 4
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
                 	"name": "minecraft:carrot_on_a_stick",
                 	"weight": 1
                 },

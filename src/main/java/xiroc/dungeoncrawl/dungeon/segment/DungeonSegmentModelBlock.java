@@ -190,6 +190,17 @@ public class DungeonSegmentModelBlock {
 				return BlockRegistry.SPAWNER;
 			return theme.wall.get();
 		});
+		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_COBWEB_AIR, (block, theme, rand, stage) -> {
+			if (rand.nextInt(5) == 0)
+				return Blocks.CAVE_AIR.getDefaultState();
+			return Blocks.COBWEB.getDefaultState();
+		});
+		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_BOOKSHELF_COBWEB, (block, theme, rand, stage) -> {
+			int roll = rand.nextInt(10);
+			if (roll > 2)
+				return Blocks.BOOKSHELF.getDefaultState();
+			return Blocks.COBWEB.getDefaultState();
+		});
 		PROVIDERS.put(DungeonSegmentModelBlockType.STAIRS,
 				(block, theme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.TRAPDOOR,

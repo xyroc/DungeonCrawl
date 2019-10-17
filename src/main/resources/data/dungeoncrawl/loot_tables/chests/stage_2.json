@@ -177,6 +177,11 @@
                 	"weight": 1
                 },
                 {
+                	"type": "item",
+                	"name": "minecraft:slime_ball",
+                	"weight": 1
+                },
+                {
                     "type": "item",
                     "name": "minecraft:torch",
                     "weight": 6,

@@ -185,6 +185,7 @@ public class DungeonPieces {
 
 	public static class SideRoom extends DungeonPiece {
 
+		public Treasure.Type treasureType;
 		public int modelID, offsetX, offsetY, offsetZ;
 
 		public SideRoom(TemplateManager manager, CompoundNBT p_i51343_2_) {
@@ -193,6 +194,7 @@ public class DungeonPieces {
 			offsetX = p_i51343_2_.getInt("offsetX");
 			offsetY = p_i51343_2_.getInt("offsetY");
 			offsetZ = p_i51343_2_.getInt("offsetZ");
+			treasureType = Treasure.Type.fromInt(p_i51343_2_.getInt("treasureType"));
 		}
 
 		@Override
@@ -236,7 +238,7 @@ public class DungeonPieces {
 			tagCompound.putInt("offsetX", offsetX);
 			tagCompound.putInt("offsetY", offsetY);
 			tagCompound.putInt("offsetZ", offsetZ);
-
+			tagCompound.putInt("treasureType", Treasure.Type.toInt(treasureType));
 		}
 
 	}

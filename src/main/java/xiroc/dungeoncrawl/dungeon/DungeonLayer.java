@@ -9,12 +9,14 @@ import java.util.Random;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
@@ -47,7 +49,7 @@ public class DungeonLayer {
 		this.statTracker = new LayerStatTracker();
 	}
 
-	public void buildMap(Random rand, Position2D start, boolean lastLayer) {
+	public void buildMap(Random rand, Position2D start, int layer, boolean lastLayer) {
 		this.segments = new DungeonPiece[this.width][this.length];
 		DungeonLayerMap map = new DungeonLayerMap(this.width, this.length);
 		if (!map.markPositionAsOccupied(start))
@@ -126,6 +128,27 @@ public class DungeonLayer {
 			this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
 		this.buildConnection(start, end);
 		this.extend(map, start, end, rand);
+		if (layer == 0) {
+			Tuple<Position2D, Rotation> sideRoomData = findStarterRoomData(start);
+			if (sideRoomData != null) {
+				DungeonPieces.SideRoom room = new DungeonPieces.SideRoom(null, DungeonPieces.DEFAULT_NBT);
+				room.modelID = 34;
+				Direction dir = RotationHelper.translateDirection(Direction.WEST, sideRoomData.getB());
+				room.openSide(dir);
+				DungeonCrawl.LOGGER.info(dir);
+				room.setPosition(sideRoomData.getA().x, sideRoomData.getA().z);
+				room.setRotation(sideRoomData.getB());
+				room.treasureType = Treasure.Type.SUPPLY;
+				map.markPositionAsOccupied(sideRoomData.getA());
+				this.segments[sideRoomData.getA().x][sideRoomData.getA().z] = room;
+				Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
+				DungeonCrawl.LOGGER.info(this.segments[connectedSegment.x][connectedSegment.z]);
+				if (this.segments[connectedSegment.x][connectedSegment.z] != null) {
+					this.segments[connectedSegment.x][connectedSegment.z].openSide(dir.getOpposite());
+					rotatePiece(this.segments[connectedSegment.x][connectedSegment.z]);
+				}
+			}
+		}
 	}
 
 	public void extend(DungeonLayerMap map, Position2D start, Position2D end, Random rand) {
@@ -135,7 +158,7 @@ public class DungeonLayer {
 			additions[i] = map.getRandomFreePosition(rand);
 			if (additions[i] == null) {
 				DungeonCrawl.LOGGER.warn(
-						"Failed to place {} more rooms because all free positions are already taken. Please decrease the layer_min_additions and/or the layer_extra_additions value in the config to avoid this issue.",
+						"Failed to place {} more rooms because all free positions are already taken. Please decrease the layer_min_additions and/or the layer_extra_additions value in the config (dungeon_crawl.toml) to avoid this issue.",
 						additionalFeatures - i);
 				return;
 			}
@@ -406,6 +429,41 @@ public class DungeonLayer {
 		}
 	}
 
+	public Tuple<Position2D, Rotation> findStarterRoomData(Position2D start) {
+		for (int x = start.x - 2; x < start.x + 2; x++) {
+			for (int z = start.z - 2; z < start.z + 2; z++) {
+				if (Position2D.isValid(x, z, width, length)) {
+					if (segments[x][z] != null && segments[x][z].getType() == 0 && segments[x][z].connectedSides < 4) {
+						Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(x, z));
+						if (data == null)
+							continue;
+						return data;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	public Tuple<Position2D, Rotation> findSideRoomData(Position2D base) {
+		Position2D north = base.shift(Direction.NORTH, 1), east = base.shift(Direction.EAST, 1),
+				south = base.shift(Direction.SOUTH, 1), west = base.shift(Direction.WEST, 1);
+
+		if (north.isValid(width, length) && segments[north.x][north.z] == null)
+			return new Tuple<Position2D, Rotation>(north, Rotation.COUNTERCLOCKWISE_90);
+
+		if (east.isValid(width, length) && segments[east.x][east.z] == null)
+			return new Tuple<Position2D, Rotation>(east, Rotation.NONE);
+
+		if (south.isValid(width, length) && segments[south.x][south.z] == null)
+			return new Tuple<Position2D, Rotation>(south, Rotation.CLOCKWISE_90);
+
+		if (west.isValid(width, length) && segments[west.x][west.z] == null)
+			return new Tuple<Position2D, Rotation>(west, Rotation.CLOCKWISE_180);
+
+		return null;
+	}
+
 	public void rotatePiece(DungeonPiece piece) {
 		if (piece.getType() == 12)
 			return;
@@ -461,7 +519,7 @@ public class DungeonLayer {
 
 	public Position2D getLargeRoomPos(Position2D pos) {
 		int a = Dungeon.SIZE - 1, x = pos.x, z = pos.z;
-		
+
 		if (x < a && z < a && get(x + 1, z) == null && get(x + 1, z + 1) == null && get(x, z + 1) == null)
 			return pos;
 		if (x < a && z > 0 && get(x + 1, z) == null && get(x + 1, z - 1) == null && get(x, z - 1) == null)

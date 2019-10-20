@@ -18,6 +18,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.state.properties.AttachFace;
+import net.minecraft.state.properties.BedPart;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.state.properties.Half;
@@ -43,6 +44,7 @@ public class DungeonSegmentModelBlock {
 	public Half half;
 	public DoubleBlockHalf doubleBlockHalf;
 	public AttachFace attachFace;
+	public BedPart bedPart;
 
 	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type) {
 		this.type = type;
@@ -87,6 +89,9 @@ public class DungeonSegmentModelBlock {
 			doubleBlockHalf = state.get(BlockStateProperties.DOUBLE_BLOCK_HALF);
 		if (state.has(BlockStateProperties.FACE))
 			attachFace = state.get(BlockStateProperties.FACE);
+		if (state.has(BlockStateProperties.BED_PART))
+			;
+		bedPart = state.get(BlockStateProperties.BED_PART);
 		if (type == DungeonSegmentModelBlockType.OTHER)
 			resourceName = state.getBlock().getRegistryName().toString();
 		return this;
@@ -130,6 +135,8 @@ public class DungeonSegmentModelBlock {
 			state = state.with(BlockStateProperties.FACE, attachFace);
 		if (doubleBlockHalf != null && state.has(BlockStateProperties.DOUBLE_BLOCK_HALF))
 			state = state.with(BlockStateProperties.DOUBLE_BLOCK_HALF, doubleBlockHalf);
+		if (bedPart != null && state.has(BlockStateProperties.BED_PART))
+			state = state.with(BlockStateProperties.BED_PART, bedPart);
 		return state;
 	}
 

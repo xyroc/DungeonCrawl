@@ -33,7 +33,7 @@ import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.Position2D;
 
 public class DungeonBuilder {
-	
+
 	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
 	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
@@ -113,22 +113,21 @@ public class DungeonBuilder {
 		});
 	}
 
-	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {		
+	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
 		this.rand = rand;
 		this.start = new Position2D(rand.nextInt(Dungeon.SIZE), rand.nextInt(Dungeon.SIZE));
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
 		this.layers = new DungeonLayer[startPos.getY() / 16];
-		
+
 		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
 				+ startPos.getZ() + "), " + +this.layers.length + " layers");
-		
+
 		this.statTracker = new DungeonStatTracker(layers.length);
-		
-		
+
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
-			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i == layers.length - 1);
+			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i, i == layers.length - 1);
 		}
 
 	}

@@ -1035,7 +1035,7 @@
         null,
         null,
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "NORTH",
           "waterlogged": false
         },
@@ -1224,12 +1224,14 @@
         {
           "type": "OTHER",
           "facing": "NORTH",
-          "resourceName": "minecraft:red_bed"
+          "resourceName": "minecraft:red_bed",
+          "bedPart": HEAD
         },
         {
           "type": "OTHER",
           "facing": "NORTH",
-          "resourceName": "minecraft:red_bed"
+          "resourceName": "minecraft:red_bed",
+          "bedPart": FOOT
         },
         null,
         {

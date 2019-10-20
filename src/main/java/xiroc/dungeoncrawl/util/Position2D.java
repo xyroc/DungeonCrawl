@@ -23,6 +23,14 @@ public class Position2D {
 	public boolean isValid(int xBound, int zBound) {
 		return x > -1 && z > -1 && x < xBound && z < zBound;
 	}
+	
+	/**
+	 * Returns true if x and z are greater than -1, x smaller than xBound and z
+	 * smaller than zBound. Used for DungeonLayer calculations.
+	 */
+	public static boolean isValid(int x, int z, int xBound, int zBound) {
+		return x > -1 && z > -1 && x < xBound && z < zBound;
+	}
 
 	/**
 	 * Creates a new position instance that is shifted by the given amount in the

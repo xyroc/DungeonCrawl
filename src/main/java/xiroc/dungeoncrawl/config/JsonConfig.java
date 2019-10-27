@@ -24,13 +24,12 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
 import xiroc.dungeoncrawl.dungeon.treasure.EnchantedBook;
+import xiroc.dungeoncrawl.util.BossEntry;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 public class JsonConfig implements IJsonConfigurable {
 
 	public static final String KEY_CONFIG_VERSION = "config_version";
-
-	public static final JsonConfig BASE;
 
 	public static final String KEY_BIOME_BLACKLIST = "biome_blacklist",
 			KEY_BIOME_OVERWORLD_BLACKLIST = "biome_overworld_blacklist", KEY_BOWS = "bows",
@@ -40,12 +39,14 @@ public class JsonConfig implements IJsonConfigurable {
 			KEY_ARMOR_RARE = "armor_rare", KEY_BOW_ENCHANTMENTS = "bow_enchantments",
 			KEY_SWORD_ENCHANTMENTS = "sword_enchantments", KEY_PICKAXE_ENCHANTMENTS = "pickaxe_enchantments",
 			KEY_AXE_ENCHANTMENTS = "axe_enchantments", KEY_ARMOR_ENCHANTMENTS = "armor_enchantments",
-			KEY_ASSUMPTION_SEARCHLIST = "assumption_searchlist";
+			KEY_BOSSES = "dungeon_bosses";
 
-	public static final String[] KEYS = new String[] { KEY_ARMOR_ENCHANTMENTS, KEY_ARMOR_RARE, KEY_ARMOR_STAGE_1,
+	public static final String[] KEYS = new String[] { KEY_BOSSES , KEY_ARMOR_ENCHANTMENTS, KEY_ARMOR_RARE, KEY_ARMOR_STAGE_1,
 			KEY_ARMOR_STAGE_2, KEY_ARMOR_STAGE_3, KEY_AXE_ENCHANTMENTS, KEY_AXES, KEY_BIOME_BLACKLIST,
 			KEY_BIOME_OVERWORLD_BLACKLIST, KEY_BOW_ENCHANTMENTS, KEY_BOWS, KEY_COLORED_ARMOR, KEY_PICKAXE_ENCHANTMENTS,
 			KEY_PICKAXES, KEY_SWORD_ENCHANTMENTS, KEY_SWORDS, KEY_SWORDS_RARE };
+	
+	public static BossEntry[] DUNGEON_BOSSES;
 
 	public static List<?> BIOME_BLACKLIST, BIOME_OVERWORLD_BLACKLIST;
 
@@ -60,18 +61,15 @@ public class JsonConfig implements IJsonConfigurable {
 	public static ArmorSet[] ARMOR_SETS_1, ARMOR_SETS_2, ARMOR_SETS_3, ARMOR_SETS_RARE;
 
 	static {
-		BASE = new JsonConfig();
-		load(BASE);
+		load(new JsonConfig());
 		load(new EnchantedBook());
-//		load(new Kitchen());
-//		load(new TreasureRoom());
-//		load(new Treasure());
 		load(new SpecialItemTags());
 		load(new ObfuscationValues());
 	}
 
 	public static void load(IJsonConfigurable configurable) {
 		File file = configurable.getFile();
+		DungeonCrawl.LOGGER.info("Loading {}", file.getAbsolutePath());
 		if (!file.exists()) {
 			DungeonCrawl.LOGGER.info("Creating {}", file.getAbsolutePath());
 			if (file.getParentFile() != null)
@@ -162,7 +160,7 @@ public class JsonConfig implements IJsonConfigurable {
 	}
 
 	public static class JsonConfigManager {
-
+		
 		public static final List<?> BIOME_BLACKLIST = Lists.newArrayList("minecraft:the_end", "minecraft:nether",
 				"minecraft:small_end_islands", "minecraft:end_midlands", "minecraft:end_highlands",
 				"minecraft:end_barrens", "minecraft:the_void", "biomesoplenty:ashen_inferno",
@@ -235,6 +233,7 @@ public class JsonConfig implements IJsonConfigurable {
 
 		static {
 			DEFAULTS = new HashMap<String, Object>();
+			DEFAULTS.put(KEY_BOSSES, new BossEntry[0]);
 			DEFAULTS.put(KEY_BIOME_BLACKLIST, BIOME_BLACKLIST);
 			DEFAULTS.put(KEY_BIOME_OVERWORLD_BLACKLIST, BIOME_OVERWORLD_BLACKLIST);
 			DEFAULTS.put(KEY_BOWS, BOWS);
@@ -284,6 +283,8 @@ public class JsonConfig implements IJsonConfigurable {
 
 	@Override
 	public void load(JsonObject object, File file) {
+		DUNGEON_BOSSES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOSSES, this), BossEntry[].class);
+		
 		BIOME_BLACKLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BIOME_BLACKLIST, this), ArrayList.class);
 		BIOME_OVERWORLD_BLACKLIST = DungeonCrawl.GSON
 				.fromJson(getOrRewrite(object, KEY_BIOME_OVERWORLD_BLACKLIST, this), ArrayList.class);
@@ -324,7 +325,6 @@ public class JsonConfig implements IJsonConfigurable {
 		ArmorSet.buildAll(ARMOR_SETS_2);
 		ArmorSet.buildAll(ARMOR_SETS_3);
 		ArmorSet.buildAll(ARMOR_SETS_RARE);
-
 	}
 
 	@Override

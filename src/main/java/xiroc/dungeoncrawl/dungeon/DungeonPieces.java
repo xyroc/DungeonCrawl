@@ -12,10 +12,17 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +32,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
@@ -50,6 +58,7 @@ public class DungeonPieces {
 	// 11 EntranceBuilder
 	// 12 Part
 	// 13 SideRoom
+	// 14 Part with Entity
 	// 99 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
@@ -62,8 +71,8 @@ public class DungeonPieces {
 			.add(Blocks.BIRCH_STAIRS).add(Blocks.JUNGLE_STAIRS).add(Blocks.DARK_OAK_STAIRS).add(Blocks.ACACIA_STAIRS)
 			.add(Blocks.SPRUCE_STAIRS).add(Blocks.PRISMARINE_STAIRS).add(Blocks.PRISMARINE_BRICK_STAIRS)
 			.add(Blocks.DARK_PRISMARINE_STAIRS).add(Blocks.SANDSTONE_STAIRS).add(Blocks.SMOOTH_SANDSTONE_STAIRS)
-			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS).add(Blocks.TRIPWIRE)
-			.add(Blocks.REDSTONE_WIRE).build();
+			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS)
+			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.TRIPWIRE).add(Blocks.REDSTONE_WIRE).build();
 
 	public static CompoundNBT getDefaultNBT() {
 		CompoundNBT nbt = new CompoundNBT();
@@ -179,6 +188,156 @@ public class DungeonPieces {
 			tagCompound.putInt("length", length);
 			tagCompound.putInt("treasureType", treasureType);
 			tagCompound.putBoolean("walls", walls);
+		}
+
+	}
+
+	public static class PartWithEntity extends DungeonPiece {
+
+		public boolean walls;
+		private int modelID, startX, startY, startZ, width, height, length, entityX, entityY, entityZ;
+		public int treasureType;
+		public ResourceLocation entityName;
+		public CompoundNBT nbt;
+
+		public PartWithEntity(TemplateManager manager, CompoundNBT p_i51343_2_) {
+			super(Dungeon.PART_WITH_ENTITY, p_i51343_2_);
+			entityName = new ResourceLocation(p_i51343_2_.getString("entityName"));
+			modelID = p_i51343_2_.getInt("model");
+			startX = p_i51343_2_.getInt("startX");
+			startY = p_i51343_2_.getInt("startY");
+			startZ = p_i51343_2_.getInt("startZ");
+			width = p_i51343_2_.getInt("width");
+			height = p_i51343_2_.getInt("height");
+			length = p_i51343_2_.getInt("length");
+			treasureType = p_i51343_2_.getInt("treasureType");
+			entityX = p_i51343_2_.getInt("entityX");
+			entityY = p_i51343_2_.getInt("entityY");
+			entityZ = p_i51343_2_.getInt("entityZ");
+			walls = p_i51343_2_.getBoolean("walls");
+			nbt = p_i51343_2_.getCompound("entityNBT");
+		}
+
+		public void set(int modelID, int startX, int startY, int startZ, int width, int height, int length, int entityX,
+				int entityY, int entityZ) {
+			this.modelID = modelID;
+			this.startX = startX;
+			this.startY = startY;
+			this.startZ = startZ;
+			this.width = width;
+			this.height = height;
+			this.length = length;
+			this.entityX = entityX;
+			this.entityY = entityY;
+			this.entityZ = entityZ;
+		}
+
+		public void adjustSize() {
+			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+			if (model == null) {
+				DungeonCrawl.LOGGER.warn("Failed to adjust the size of a dungeon part. ID: {}", modelID);
+				return;
+			}
+			width = startX + width > model.width ? width - (startX + width - model.width) : width;
+			height = startY + height > model.height ? height - (startY + height - model.height) : height;
+			length = startZ + length > model.length ? length - (startZ + length - model.length) : length;
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+				ChunkPos p_74875_4_) {
+			// --- Default Building ---
+			this.adjustSize();
+			if (theme != 1)
+				theme = Theme.BIOME_TO_THEME_MAP
+						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+			BlockPos pos = new BlockPos(x, y, z);
+			Treasure.Type type = Treasure.Type.fromInt(treasureType);
+//			DungeonCrawl.LOGGER.info("Building {} at {} {} {}. Rotation: {}", modelID, x, y, z, rotation.toString());
+			if (rotation == Rotation.NONE) {
+				for (int x = startX; x < startX + width; x++) {
+					for (int y = startY; y < startY + height; y++) {
+						for (int z = startZ; z < startZ + length; z++) {
+							BlockState state;
+							if (model.model[x][y][z] == null)
+								state = Blocks.AIR.getDefaultState();
+							else
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], Theme.get(theme),
+										worldIn.getRandom(), stage);
+							if (state == null)
+								continue;
+							setBlockState(state, worldIn, type, pos.getX() + x - startX, pos.getY() + y - startY,
+									pos.getZ() + z - startZ, theme, stage);
+						}
+					}
+				}
+			} else {
+				buildRotatedPart(model, worldIn, pos, Theme.get(theme), Treasure.Type.fromInt(treasureType), stage,
+						rotation, startX, startY, startZ, width, height, length);
+			}
+			if (walls)
+				addWalls(this, worldIn, theme);
+			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
+				addColumns(this, worldIn, 1, theme);
+
+			// -- Entity spawn ---
+			EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(entityName);
+			if (entityType == null) {
+				DungeonCrawl.LOGGER.warn("The entity type {} does not exist.", entityName.toString());
+				return true;
+			}
+			Entity get = entityType.create(worldIn.getWorld());
+			if (get != null && get instanceof LivingEntity) {
+				LivingEntity entity = (LivingEntity) get;
+				entity.heal(entity.getMaxHealth());
+				entity.setLocationAndAngles(x + entityX, y + entityY, z + entityZ, 0, 0);
+
+				if (entity instanceof MobEntity) {
+					MobEntity mob = (MobEntity) entity;
+					mob.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(entity)),
+							SpawnReason.STRUCTURE, (ILivingEntityData) null, (CompoundNBT) null);
+					if (nbt != null) {
+						CompoundNBT data = new CompoundNBT();
+						mob.writeAdditional(data);
+						mob.readAdditional(data.merge(nbt));
+					}
+				} else {
+					if (nbt != null)
+						entity.readAdditional(nbt);
+				}
+
+				worldIn.addEntity(entity);
+			} else {
+				DungeonCrawl.LOGGER.warn("Failed to spawn a living entity at {}.");
+			}
+			return true;
+		}
+
+		@Override
+		public void readAdditional(CompoundNBT tagCompound) {
+			super.readAdditional(tagCompound);
+			tagCompound.putInt("model", modelID);
+			tagCompound.putInt("startX", startX);
+			tagCompound.putInt("startY", startY);
+			tagCompound.putInt("startZ", startZ);
+			tagCompound.putInt("width", width);
+			tagCompound.putInt("height", height);
+			tagCompound.putInt("length", length);
+			tagCompound.putInt("treasureType", treasureType);
+			tagCompound.putInt("entityX", entityX);
+			tagCompound.putInt("entityY", entityY);
+			tagCompound.putInt("entityZ", entityZ);
+			tagCompound.putBoolean("walls", walls);
+			tagCompound.putString("entityName", entityName.toString());
+
+			if (nbt != null)
+				tagCompound.put("entityNBT", nbt);
+		}
+
+		@Override
+		public int getType() {
+			return 14;
 		}
 
 	}

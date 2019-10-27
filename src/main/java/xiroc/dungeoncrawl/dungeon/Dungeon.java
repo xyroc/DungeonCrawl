@@ -60,6 +60,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			"DUNGEON_HOLE_TRAP");
 	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonPieces.SideRoom::new,
 			"DUNGEON_SIDE_ROOM");
+	public static final IStructurePieceType PART_WITH_ENTITY = IStructurePieceType.register(DungeonPieces.PartWithEntity::new,
+			"DUNGEON_PART_WITH_ENTITY");
 
 	public static int SIZE = 16;
 
@@ -144,7 +146,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 				BlockPos spawn = serverWorld.getSpawnPoint();
 
 				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
-				
+
 				if (serverWorld.getDimension().getType() != DimensionType.OVERWORLD
 						|| spawnChunkX - chunkX < chunkSize && spawnChunkX - chunkX > -chunkSize
 						|| spawnChunkZ - chunkZ < chunkSize / 2 && spawnChunkZ - chunkZ > -chunkSize)

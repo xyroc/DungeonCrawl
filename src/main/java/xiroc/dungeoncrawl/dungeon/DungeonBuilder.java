@@ -17,6 +17,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.Hole;
@@ -29,6 +30,7 @@ import xiroc.dungeoncrawl.dungeon.segment.RandomDungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.BossEntry;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -48,7 +50,7 @@ public class DungeonBuilder {
 	public DungeonStatTracker statTracker;
 
 	public BlockPos startPos;
-
+	
 	static {
 		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
 		ENTRANCE_OFFSET_DATA.put(20, new Tuple<Integer, Integer>(0, 0));
@@ -124,16 +126,16 @@ public class DungeonBuilder {
 				+ startPos.getZ() + "), " + +this.layers.length + " layers");
 
 		this.statTracker = new DungeonStatTracker(layers.length);
-
-		for (int i = 0; i < layers.length; i++) {
-			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
-			this.layers[i].buildMap(rand, (i == 0) ? this.start : layers[i - 1].end, i, i == layers.length - 1);
-		}
-
 	}
 
 	public List<DungeonPiece> build() {
 		List<DungeonPiece> list = Lists.newArrayList();
+		
+		for (int i = 0; i < layers.length; i++) {
+			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
+			this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i, i == layers.length - 1);
+		}
+		
 		for (int i = 0; i < layers.length; i++) {
 			buildLayer(layers[i], i, startPos);
 			// list.addAll(buildLayer(layers[i], i, startPos));
@@ -263,6 +265,12 @@ public class DungeonBuilder {
 			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
 		}
 	};
+
+	public static BossEntry getRandomBoss(Random rand) {
+		if (JsonConfig.DUNGEON_BOSSES.length < 1)
+			return null;
+		return JsonConfig.DUNGEON_BOSSES[rand.nextInt(JsonConfig.DUNGEON_BOSSES.length)];
+	}
 
 	@FunctionalInterface
 	public static interface EntranceProcessor {

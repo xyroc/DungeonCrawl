@@ -21,8 +21,6 @@ public class RandomItem extends LootFunction {
 
 	public int stage;
 
-	// LootPool LootTable
-
 	public RandomItem(ILootCondition[] conditionsIn, int stage) {
 		super(conditionsIn);
 	}

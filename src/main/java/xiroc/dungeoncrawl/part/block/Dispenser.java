@@ -18,9 +18,11 @@ public class Dispenser implements IBlockPlacementHandler {
 	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
 			int theme, int lootLevel) {
 		world.setBlockState(pos, state, 2);
-		DispenserTileEntity dispenser = (DispenserTileEntity) world.getTileEntity(pos);
-		dispenser.setLootTable(getLootTable(lootLevel), rand.nextLong());
-//		dispenser.fillWithLoot(null);
+		if (world.getTileEntity(pos) instanceof DispenserTileEntity) {
+			DispenserTileEntity dispenser = (DispenserTileEntity) world.getTileEntity(pos);
+			dispenser.setLootTable(getLootTable(lootLevel), rand.nextLong());
+		} else
+			DungeonCrawl.LOGGER.warn("Failed to fetch a dispenser entity at {}", pos.toString());
 	}
 
 	public static ResourceLocation getLootTable(int lootLevel) {

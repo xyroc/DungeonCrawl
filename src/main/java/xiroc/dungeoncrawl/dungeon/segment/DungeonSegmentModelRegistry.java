@@ -303,13 +303,11 @@ public class DungeonSegmentModelRegistry {
 
 	public static DungeonSegmentModel ROOM;
 
-	public static DungeonSegmentModel LARGE_ROOM, LIBRARY;
+	public static DungeonSegmentModel LARGE_ROOM, LIBRARY, LOOT_ROOM, BOSS_ROOM;
 
 	public static DungeonSegmentModel ENTRANCE_TOWER_0, ENTRANCE_TOWER_1;
 
 	public static DungeonSegmentModel KITCHEN, STARTER_ROOM;
-
-	public static DungeonSegmentModel LOOT_ROOM;
 
 	public static void load(IResourceManager resourceManager) {
 		if (LOADED)
@@ -369,6 +367,7 @@ public class DungeonSegmentModelRegistry {
 		
 		LIBRARY = loadFromFile("models/dungeon/library.json", resourceManager).build().setId(35);
 
+		BOSS_ROOM = loadFromFile("models/dungeon/boss_room.json", resourceManager).build().setId(36);
 
 		LOADED = true;
 	}

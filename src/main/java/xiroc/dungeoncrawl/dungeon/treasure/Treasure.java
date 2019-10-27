@@ -13,6 +13,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
 import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
+import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 
 public class Treasure {
 
@@ -322,6 +323,7 @@ public class Treasure {
 		LootFunctionManager.registerFunction(new EnchantedBook.Serializer());
 		LootFunctionManager.registerFunction(new MaterialBlocks.Serializer());
 		LootFunctionManager.registerFunction(new Shield.Serializer());
+		LootFunctionManager.registerFunction(new SuspiciousStew.Serializer());
 	}
 
 	/**

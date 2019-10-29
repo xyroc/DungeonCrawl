@@ -71,13 +71,14 @@ public class BlockRegistry {
 	public static final TupleIntBlock TIB_STAIRS_NETHER_BRICK = new TupleIntBlock(3, STAIRS_NETHER_BRICK);
 	public static final TupleIntBlock TIB_STAIRS_QUARTZ = new TupleIntBlock(1, STAIRS_QUARTZ);
 
-	public static WeightedRandomBlock STONE_BRICKS_NORMAL_MOSSY_CRACKED;
-	public static WeightedRandomBlock STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE;
+	public static WeightedRandomBlock STONE_BRICKS_NORMAL_MOSSY_CRACKED, BRICKS_GRANITE, ANDESITE_STONE_BRICKS;
+	public static WeightedRandomBlock STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, ANDESITE_STONE_BRICKS_COBBLESTONE;
 	public static WeightedRandomBlock STONE_BRICKS_GRAVEL_COBBLESTONE;
 	public static WeightedRandomBlock NETHERRACK_NETHERBRICK;
 	public static WeightedRandomBlock NETHERRACK_NETHERBRICK_SOULSAND;
 	public static WeightedRandomBlock NETHER_BRICK_STAIRS;
-	public static WeightedRandomBlock STAIRS_STONE_COBBLESTONE;
+	public static WeightedRandomBlock STAIRS_STONE_COBBLESTONE, STAIRS_ANDESITE_STONE_COBBLESTONE,
+			STAIRS_BRICKS_GRANITE;
 	public static WeightedRandomBlock STAIRS_NETHERBRICK_QUARTZ;
 	public static WeightedRandomBlock SANDSTONE_DEFAULT_CHSELED_SMOOTH;
 	public static WeightedRandomBlock SANDSTONE_DEFAULT_SMOOTH_SAND;
@@ -87,8 +88,8 @@ public class BlockRegistry {
 	public static WeightedRandomBlock STAIRS_RED_SANDSTONE_DEFAULT_SMOOTH;
 	public static WeightedRandomBlock ICE_DEFAULT_PACKED;
 	public static WeightedRandomBlock DARK_PRISMARINE_PRISMARINE;
-	public static WeightedRandomBlock CLAY_FLOOR;
-	public static WeightedRandomBlock STONE_WALL, NETHER_WALL;
+	public static WeightedRandomBlock CLAY_FLOOR, BRICKS_GRANITE_FLOOR;
+	public static WeightedRandomBlock STONE_WALL, NETHER_WALL, BRICKS_GRANITE_WALL, ANDESITE_STONE_WALL;
 
 	/*
 	 * Calculate the WeightedRandomBlocks
@@ -96,55 +97,73 @@ public class BlockRegistry {
 	public static void load() {
 		long time = System.currentTimeMillis();
 		DungeonCrawl.LOGGER.info("Calculating WeightedRandomBlocks");
+
 		STONE_BRICKS_NORMAL_MOSSY_CRACKED = new WeightedRandomBlock(
 				new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS });
+
 		STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS,
 				TIB_MOSSY_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS, TIB_COBBLESTONE, TIB_MOSSY_COBBLESTONE });
+
 		STONE_BRICKS_GRAVEL_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_GRAVEL,
 				TIB_COBBLESTONE, new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
 				new TupleIntBlock(1, MOSSY_STONE_BRICKS) });
+
 		NETHERRACK_NETHERBRICK = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK, TIB_NETHER_BRICK,
 				new TupleIntBlock(2, Blocks.RED_NETHER_BRICKS.getDefaultState()) });
+
 		NETHERRACK_NETHERBRICK_SOULSAND = new WeightedRandomBlock(new TupleIntBlock[] { TIB_NETHERRACK,
 				TIB_NETHER_BRICK, TIB_SOUL_SAND, new TupleIntBlock(2, Blocks.RED_NETHER_BRICKS.getDefaultState()) });
+
 		NETHER_BRICK_STAIRS = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.NETHER_BRICK_STAIRS.getDefaultState()),
 						new TupleIntBlock(1, Blocks.RED_NETHER_BRICK_STAIRS.getDefaultState()) });
+
 		STAIRS_STONE_COBBLESTONE = new WeightedRandomBlock(
 				new TupleIntBlock[] { TIB_STAIRS_STONE_BRICKS, TIB_STAIRS_COBBLESTONE });
+
 		STAIRS_NETHERBRICK_QUARTZ = new WeightedRandomBlock(
 				new TupleIntBlock[] { TIB_STAIRS_NETHER_BRICK, TIB_STAIRS_QUARTZ });
+
 		SANDSTONE_DEFAULT_CHSELED_SMOOTH = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.SANDSTONE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.CHISELED_SANDSTONE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.SMOOTH_SANDSTONE.getDefaultState()) });
+
 		SANDSTONE_DEFAULT_SMOOTH_SAND = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.SAND.getDefaultState()),
 						new TupleIntBlock(1, Blocks.SANDSTONE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.SMOOTH_SANDSTONE.getDefaultState()) });
+
 		STAIRS_SANDSTONE_DEFAULT_SMOOTH = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.SANDSTONE_STAIRS.getDefaultState()),
 						new TupleIntBlock(1, Blocks.SMOOTH_SANDSTONE_STAIRS.getDefaultState()) });
+
 		RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.RED_SANDSTONE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.CHISELED_RED_SANDSTONE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.SMOOTH_RED_SANDSTONE.getDefaultState()) });
+
 		RED_SANDSTONE_DEFAULT_SMOOTH_RED_SAND = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.RED_SAND.getDefaultState()),
 						new TupleIntBlock(1, Blocks.RED_SANDSTONE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.SMOOTH_RED_SANDSTONE.getDefaultState()) });
+
 		STAIRS_RED_SANDSTONE_DEFAULT_SMOOTH = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.RED_SANDSTONE_STAIRS.getDefaultState()),
 						new TupleIntBlock(1, Blocks.SMOOTH_RED_SANDSTONE_STAIRS.getDefaultState()) });
+
 		ICE_DEFAULT_PACKED = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(5, Blocks.ICE.getDefaultState()),
 						new TupleIntBlock(3, Blocks.PACKED_ICE.getDefaultState()) });
+
 		DARK_PRISMARINE_PRISMARINE = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.DARK_PRISMARINE.getDefaultState()),
 						new TupleIntBlock(1, Blocks.PRISMARINE.getDefaultState()) });
+
 		CLAY_FLOOR = new WeightedRandomBlock(new TupleIntBlock[] { new TupleIntBlock(1, Blocks.CLAY.getDefaultState()),
 				new TupleIntBlock(1, Blocks.SMOOTH_STONE.getDefaultState()),
 				new TupleIntBlock(1, Blocks.STONE.getDefaultState()) });
+
 		STONE_WALL = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.STONE_BRICK_WALL.getDefaultState()),
 						new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
@@ -152,9 +171,59 @@ public class BlockRegistry {
 						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()),
 						new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
 						new TupleIntBlock(1, Blocks.DIORITE_WALL.getDefaultState()) });
+
 		NETHER_WALL = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.NETHER_BRICK_WALL.getDefaultState()),
 						new TupleIntBlock(1, Blocks.RED_NETHER_BRICK_WALL.getDefaultState()) });
+
+		BRICKS_GRANITE_FLOOR = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(3, Blocks.BRICKS.getDefaultState()),
+						new TupleIntBlock(2, Blocks.POLISHED_GRANITE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.GRANITE.getDefaultState()) });
+
+		BRICKS_GRANITE = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.BRICKS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.POLISHED_GRANITE.getDefaultState()) });
+
+		ANDESITE_STONE_BRICKS = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(3, Blocks.POLISHED_ANDESITE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.CRACKED_STONE_BRICKS.getDefaultState()) });
+
+		ANDESITE_STONE_BRICKS_COBBLESTONE = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(4, Blocks.POLISHED_ANDESITE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.ANDESITE.getDefaultState()),
+						new TupleIntBlock(2, Blocks.STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(2, Blocks.COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(2, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.CHISELED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.SMOOTH_STONE.getDefaultState()) });
+
+		STAIRS_ANDESITE_STONE_COBBLESTONE = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.POLISHED_ANDESITE_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.ANDESITE_STAIRS.getDefaultState()),
+						new TupleIntBlock(2, Blocks.STONE_BRICK_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.COBBLESTONE_STAIRS.getDefaultState()) });
+
+		STAIRS_BRICKS_GRANITE = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.BRICK_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.POLISHED_GRANITE_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.GRANITE_STAIRS.getDefaultState()) });
+
+		BRICKS_GRANITE_WALL = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.BRICK_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.GRANITE_WALL.getDefaultState()) });
+
+		ANDESITE_STONE_WALL = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.ANDESITE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.STONE_BRICK_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()) });
+
 		DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
 	}
 

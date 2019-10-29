@@ -19,6 +19,8 @@ public class Loot {
 	public static ResourceLocation KITCHEN_CHEST = DungeonCrawl.locate("chests/kitchen");
 	public static ResourceLocation TREASURE_ROOM = DungeonCrawl.locate("chests/treasure_room");
 	public static ResourceLocation SUPPLY_CHEST = DungeonCrawl.locate("chests/supply_chest");
+	public static ResourceLocation LIBRARY = DungeonCrawl.locate("chests/library");
+
 	
 	public static ResourceLocation DISPENSER_STAGE_1 = DungeonCrawl.locate("misc/dispenser_1");
 	public static ResourceLocation DISPENSER_STAGE_2 = DungeonCrawl.locate("misc/dispenser_2");

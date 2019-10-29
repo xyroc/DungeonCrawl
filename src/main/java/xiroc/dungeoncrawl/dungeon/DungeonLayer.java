@@ -53,8 +53,7 @@ public class DungeonLayer {
 		this.statTracker = new LayerStatTracker();
 	}
 
-	public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer,
-			boolean lastLayer) {
+	public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer, boolean lastLayer) {
 		this.segments = new DungeonPiece[this.width][this.length];
 		DungeonLayerMap map = new DungeonLayerMap(this.width, this.length);
 		if (!map.markPositionAsOccupied(start))
@@ -110,8 +109,6 @@ public class DungeonLayer {
 								builder.startPos.getY() - layer * 16 - 16,
 								builder.startPos.getZ() + lootRoom4.posZ * 8);
 
-						lootRoom1.theme = lootRoom2.theme = lootRoom3.theme = lootRoom4.theme = 1;
-
 						lootRoom1.sides[0] = false;
 						lootRoom1.sides[1] = true;
 						lootRoom1.sides[2] = true;
@@ -132,11 +129,16 @@ public class DungeonLayer {
 						lootRoom4.sides[2] = false;
 						lootRoom4.sides[3] = false;
 
+						lootRoom1.theme = 1;
+						lootRoom2.theme = 1;
+						lootRoom3.theme = 1;
+						lootRoom4.theme = 1;
+
 						pieces.add(lootRoom1);
 						pieces.add(lootRoom2);
 						pieces.add(lootRoom3);
 						pieces.add(lootRoom4);
-						
+
 						// --- Boss Room ---
 
 						DungeonPieces.PartWithEntity part1 = new DungeonPieces.PartWithEntity(null,
@@ -198,14 +200,14 @@ public class DungeonLayer {
 						Position2D part1Pos = end, part2Pos = new Position2D(end.x + 1, end.z),
 								part3Pos = new Position2D(end.x + 1, end.z + 1),
 								part4Pos = new Position2D(end.x, end.z + 1);
-						
+
 						map.markPositionAsOccupied(end);
 						map.markPositionAsOccupied(part2Pos);
 						map.markPositionAsOccupied(part3Pos);
 						map.markPositionAsOccupied(part4Pos);
 
 						DungeonPieces.Part connectedPart = lootRoom4;
-						
+
 						Tuple<Position2D, Rotation> data = findSideRoomData(part4Pos);
 
 						if (data == null) {
@@ -220,7 +222,7 @@ public class DungeonLayer {
 							data = findSideRoomData(part1Pos);
 							connectedPart = lootRoom1;
 						}
-						
+
 						if (data != null) {
 							Position2D stairPos = data.getA();
 							Direction side = RotationHelper.translateDirection(Direction.EAST, data.getB());
@@ -236,18 +238,19 @@ public class DungeonLayer {
 							stairs.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
 									builder.startPos.getY() - layer * 16 - 8, builder.startPos.getZ() + stairPos.z * 8);
 							stairs.theme = 1;
-							
+
 							DungeonPieces.StairsBot stairsBot = new DungeonPieces.StairsBot(null,
 									DungeonPieces.DEFAULT_NBT);
 							stairsBot.setPosition(stairPos.x, stairPos.z);
 							stairsBot.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
-									builder.startPos.getY() - layer * 16 - 16, builder.startPos.getZ() + stairPos.z * 8);
+									builder.startPos.getY() - layer * 16 - 16,
+									builder.startPos.getZ() + stairPos.z * 8);
 							stairsBot.openSide(side.getOpposite());
 							stairsBot.theme = 1;
-							
+
 							pieces.add(stairs);
 							pieces.add(stairsBot);
-							
+
 							connectedPart.openSide(side);
 						}
 					}

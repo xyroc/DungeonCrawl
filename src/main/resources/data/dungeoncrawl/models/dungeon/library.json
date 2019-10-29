@@ -118,13 +118,15 @@
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         },
         {
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         },
         {
           "type": "WALL"
@@ -148,13 +150,15 @@
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         },
         {
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         },
         {
           "type": "WALL"
@@ -180,13 +184,15 @@
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         },
         {
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         },
         {
           "type": "WALL"
@@ -210,13 +216,15 @@
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         },
         {
           "type": "DOOR",
           "facing": "EAST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         },
         {
           "type": "WALL"
@@ -930,7 +938,8 @@
           "type": "RAND_BOOKSHELF_COBWEB"
         },
         {
-          "type": "RAND_BOOKSHELF_COBWEB"
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
         {
           "type": "RAND_BOOKSHELF_COBWEB"
@@ -999,7 +1008,9 @@
         null,
         null,
         null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
         {
@@ -1016,9 +1027,13 @@
         },
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
-        null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         {
           "type": "WALL"
@@ -1237,7 +1252,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         },
         null,
         {
@@ -1261,7 +1277,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         }
       ],
       [
@@ -1269,7 +1286,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         },
         null,
         {
@@ -1298,7 +1316,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         }
       ],
       [
@@ -1343,7 +1362,9 @@
         null,
         null,
         null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         {
           "type": "WALL"
@@ -1548,7 +1569,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         },
         null,
         null,
@@ -1578,7 +1600,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         }
       ],
       [
@@ -1586,7 +1609,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         },
         null,
         null,
@@ -1616,7 +1640,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         }
       ],
       [
@@ -1660,11 +1685,15 @@
         null,
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
         null,
-        null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
         null,
@@ -1866,7 +1895,7 @@
         null,
         null,
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "NORTH",
           "waterlogged": false
         },
@@ -1960,10 +1989,14 @@
         null,
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
-        null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         {
           "type": "WALL"
@@ -2217,7 +2250,7 @@
         null,
         null,
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "WEST",
           "waterlogged": false
         },
@@ -2305,7 +2338,9 @@
         },
         null,
         null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
         {
@@ -2633,7 +2668,8 @@
           "resourceName": "minecraft:redstone_wall_torch"
         },
         {
-          "type": "RAND_BOOKSHELF_COBWEB"
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
         {
           "type": "RAND_BOOKSHELF_COBWEB"
@@ -2721,8 +2757,12 @@
           "half": "TOP"
         },
         null,
-        null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         {
           "type": "CEILING_STAIRS",
           "facing": "SOUTH",
@@ -2961,7 +3001,7 @@
           "type": "RAND_BOOKSHELF_COBWEB"
         },
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "WEST",
           "waterlogged": false
         },
@@ -2988,7 +3028,7 @@
           "type": "RAND_BOOKSHELF_COBWEB"
         },
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "EAST",
           "waterlogged": false
         },
@@ -3019,7 +3059,8 @@
           "resourceName": "minecraft:redstone_wall_torch"
         },
         {
-          "type": "RAND_BOOKSHELF_COBWEB"
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
         null,
         null,
@@ -3118,7 +3159,9 @@
           "half": "TOP"
         },
         null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         {
           "type": "CEILING_STAIRS",
@@ -3467,7 +3510,9 @@
         },
         null,
         null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
         {
@@ -3740,7 +3785,7 @@
         },
         null,
         {
-          "type": "CHEST",
+          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
           "facing": "EAST",
           "waterlogged": false
         },
@@ -3781,7 +3826,8 @@
           "resourceName": "minecraft:redstone_wall_torch"
         },
         {
-          "type": "RAND_BOOKSHELF_COBWEB"
+          "type": "OTHER",
+          "resourceName": "minecraft:bookshelf"
         },
         null,
         null,
@@ -3842,17 +3888,27 @@
         },
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         {
           "type": "WALL"
@@ -4077,7 +4133,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         },
         null,
         null,
@@ -4097,7 +4154,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         }
       ],
       [
@@ -4105,7 +4163,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         },
         null,
         null,
@@ -4125,7 +4184,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         }
       ],
       [
@@ -4351,7 +4411,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         },
         null,
         {
@@ -4385,7 +4446,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         }
       ],
       [
@@ -4393,7 +4455,8 @@
           "type": "DOOR",
           "facing": "SOUTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         },
         null,
         {
@@ -4427,7 +4490,8 @@
           "type": "DOOR",
           "facing": "NORTH",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         }
       ],
       [
@@ -4472,17 +4536,25 @@
         },
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
+        null,
+        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
         null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         {
           "type": "WALL"
@@ -4805,12 +4877,8 @@
         null,
         null,
         null,
-        null,
         {
-          "type": "CEILING_STAIRS",
-          "facing": "EAST",
-          "waterlogged": false,
-          "half": "TOP"
+          "type": "RAND_BOOKSHELF_COBWEB"
         },
         {
           "type": "CEILING_STAIRS",
@@ -4818,9 +4886,19 @@
           "waterlogged": false,
           "half": "TOP"
         },
+        {
+          "type": "CEILING_STAIRS",
+          "facing": "EAST",
+          "waterlogged": false,
+          "half": "TOP"
+        },
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
-        null,
-        null,
+        {
+          "type": "RAND_BOOKSHELF_COBWEB"
+        },
         null,
         null,
         null,
@@ -5386,13 +5464,15 @@
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         },
         {
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         },
         {
           "type": "WALL"
@@ -5416,13 +5496,15 @@
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "RIGHT"
         },
         {
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "LOWER"
+          "doubleBlockHalf": "LOWER",
+          "hinge": "LEFT"
         },
         {
           "type": "WALL"
@@ -5448,13 +5530,15 @@
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         },
         {
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         },
         {
           "type": "WALL"
@@ -5478,13 +5562,15 @@
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "RIGHT"
         },
         {
           "type": "DOOR",
           "facing": "WEST",
           "open": false,
-          "doubleBlockHalf": "UPPER"
+          "doubleBlockHalf": "UPPER",
+          "hinge": "LEFT"
         },
         {
           "type": "WALL"

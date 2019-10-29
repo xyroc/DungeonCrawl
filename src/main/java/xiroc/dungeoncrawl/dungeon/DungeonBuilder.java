@@ -50,7 +50,9 @@ public class DungeonBuilder {
 	public DungeonStatTracker statTracker;
 
 	public BlockPos startPos;
-	
+
+	public int theme;
+
 	static {
 		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
 		ENTRANCE_OFFSET_DATA.put(20, new Tuple<Integer, Integer>(0, 0));
@@ -123,19 +125,22 @@ public class DungeonBuilder {
 		this.layers = new DungeonLayer[startPos.getY() / 16];
 
 		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
-				+ startPos.getZ() + "), " + +this.layers.length + " layers");
+				+ startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}", theme);
 
 		this.statTracker = new DungeonStatTracker(layers.length);
+
+		theme = Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString());
 	}
 
 	public List<DungeonPiece> build() {
 		List<DungeonPiece> list = Lists.newArrayList();
-		
+
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
-			this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i, i == layers.length - 1);
+			this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i,
+					i == layers.length - 1);
 		}
-		
+
 		for (int i = 0; i < layers.length; i++) {
 			buildLayer(layers[i], i, startPos);
 			// list.addAll(buildLayer(layers[i], i, startPos));
@@ -146,7 +151,10 @@ public class DungeonBuilder {
 			stairs.stage = 0;
 			list.add(stairs);
 		}
-		postProcessDungeon(list, rand);
+		postProcessDungeon(list, rand, theme);
+		for (DungeonPiece piece : list)
+			if (piece.theme != 1)
+				piece.theme = theme;
 		return list;
 	}
 
@@ -163,7 +171,7 @@ public class DungeonBuilder {
 		}
 	}
 
-	public void postProcessDungeon(List<DungeonPiece> list, Random rand) {
+	public void postProcessDungeon(List<DungeonPiece> list, Random rand, int theme) {
 		int lyrs = layers.length;
 		for (int i = 0; i < layers.length; i++) {
 			int stage = i > 2 ? 2 : i;

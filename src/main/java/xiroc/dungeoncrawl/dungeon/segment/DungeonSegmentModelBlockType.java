@@ -32,7 +32,7 @@ public enum DungeonSegmentModelBlockType {
 			return RAND_WALL_AIR;
 		if (block == Blocks.CLAY)
 			return RAND_FLOOR_WATER;
-		if (block == Blocks.BOOKSHELF) 
+		if (block == Blocks.BRICKS)
 			return RAND_BOOKSHELF_COBWEB;
 		if (block == Blocks.OAK_STAIRS)
 			return FLOOR_STAIRS;

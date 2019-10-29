@@ -24,16 +24,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -63,11 +60,9 @@ public class DungeonCrawl {
 	public DungeonCrawl() {
 		LOGGER.info("Here we go!");
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
 		MinecraftForge.EVENT_BUS.register(new Tools());
-//		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
 		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 		
 		Treasure.init();
@@ -83,21 +78,8 @@ public class DungeonCrawl {
 		BlockRegistry.load();
 	}
 
-	private void clientSetup(final FMLClientSetupEvent event) {
-		LOGGER.info("Client Setup");
-	}
-
 	public static String getDate() {
 		return new SimpleDateFormat().format(new Date());
-	}
-
-	/*
-	 * Doesnt work 0_o
-	 */
-	@SubscribeEvent
-	public void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) {
-		DungeonCrawl.LOGGER.info("Feature Registry Event: {}", event);
-//		event.getRegistry().register(Dungeon.DUNGEON);
 	}
 
 	@SubscribeEvent

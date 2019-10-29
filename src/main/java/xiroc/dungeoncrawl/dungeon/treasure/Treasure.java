@@ -317,6 +317,8 @@ public class Treasure {
 		SPECIAL_LOOT_TABLES.put(Type.SUPPLY, Loot.SUPPLY_CHEST);
 		SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Loot.KITCHEN_CHEST);
 		SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
+		SPECIAL_LOOT_TABLES.put(Type.LIBRARY, Loot.LIBRARY);
+		SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
 
 		LootFunctionManager.registerFunction(new RandomItem.Serializer());
 		LootFunctionManager.registerFunction(new RandomPotion.Serializer());

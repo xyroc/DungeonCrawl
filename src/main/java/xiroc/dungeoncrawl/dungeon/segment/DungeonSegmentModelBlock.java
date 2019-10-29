@@ -20,6 +20,7 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.state.properties.AttachFace;
 import net.minecraft.state.properties.BedPart;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.DoorHingeSide;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
@@ -45,6 +46,7 @@ public class DungeonSegmentModelBlock {
 	public DoubleBlockHalf doubleBlockHalf;
 	public AttachFace attachFace;
 	public BedPart bedPart;
+	public DoorHingeSide hinge;
 
 	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type) {
 		this.type = type;
@@ -90,8 +92,9 @@ public class DungeonSegmentModelBlock {
 		if (state.has(BlockStateProperties.FACE))
 			attachFace = state.get(BlockStateProperties.FACE);
 		if (state.has(BlockStateProperties.BED_PART))
-			;
-		bedPart = state.get(BlockStateProperties.BED_PART);
+			bedPart = state.get(BlockStateProperties.BED_PART);
+		if (state.has(BlockStateProperties.DOOR_HINGE))
+			hinge = state.get(BlockStateProperties.DOOR_HINGE);
 		if (type == DungeonSegmentModelBlockType.OTHER)
 			resourceName = state.getBlock().getRegistryName().toString();
 		return this;
@@ -99,6 +102,7 @@ public class DungeonSegmentModelBlock {
 
 	/**
 	 * Applies all existing properties to the given BlockState.
+	 * Hardcoded :D
 	 */
 	public BlockState create(BlockState state) {
 		if (facing != null && state.has(BlockStateProperties.FACING))
@@ -137,6 +141,8 @@ public class DungeonSegmentModelBlock {
 			state = state.with(BlockStateProperties.DOUBLE_BLOCK_HALF, doubleBlockHalf);
 		if (bedPart != null && state.has(BlockStateProperties.BED_PART))
 			state = state.with(BlockStateProperties.BED_PART, bedPart);
+		if(hinge != null && state.has(BlockStateProperties.DOOR_HINGE))
+			state = state.with(BlockStateProperties.DOOR_HINGE, hinge);
 		return state;
 	}
 

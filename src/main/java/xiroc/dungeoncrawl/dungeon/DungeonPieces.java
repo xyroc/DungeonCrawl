@@ -72,7 +72,9 @@ public class DungeonPieces {
 			.add(Blocks.SPRUCE_STAIRS).add(Blocks.PRISMARINE_STAIRS).add(Blocks.PRISMARINE_BRICK_STAIRS)
 			.add(Blocks.DARK_PRISMARINE_STAIRS).add(Blocks.SANDSTONE_STAIRS).add(Blocks.SMOOTH_SANDSTONE_STAIRS)
 			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS)
-			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.TRIPWIRE).add(Blocks.REDSTONE_WIRE).build();
+			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.GRANITE_STAIRS).add(Blocks.ANDESITE_STAIRS)
+			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS).add(Blocks.TRIPWIRE)
+			.add(Blocks.REDSTONE_WIRE).build();
 
 	public static CompoundNBT getDefaultNBT() {
 		CompoundNBT nbt = new CompoundNBT();
@@ -140,9 +142,9 @@ public class DungeonPieces {
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
 			this.adjustSize();
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			BlockPos pos = new BlockPos(x, y, z);
 			Treasure.Type type = Treasure.Type.fromInt(treasureType);
@@ -248,9 +250,9 @@ public class DungeonPieces {
 				ChunkPos p_74875_4_) {
 			// --- Default Building ---
 			this.adjustSize();
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			BlockPos pos = new BlockPos(x, y, z);
 			Treasure.Type type = Treasure.Type.fromInt(treasureType);
@@ -361,9 +363,9 @@ public class DungeonPieces {
 				ChunkPos chunkPosIn) {
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			if (model != null) {
-				if (theme != 1)
-					theme = Theme.BIOME_TO_THEME_MAP
-							.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//				if (theme != 1)
+//					theme = Theme.BIOME_TO_THEME_MAP
+//							.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 				buildRotated(model, worldIn, new BlockPos(x + offsetX, y + offsetY, z + offsetZ), Theme.get(theme),
 						Treasure.Type.DEFAULT, stage, rotation);
 				return true;
@@ -411,9 +413,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			buildRotated(null, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
 					rotation); // TODO model
 			return true;
@@ -438,9 +440,9 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage);
 			addWalls(this, worldIn, theme);
 			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
@@ -467,9 +469,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 
 			if (theme != 3 && getAirBlocks(worldIn, x, y, z, 8, 8) > 8) {
 
@@ -540,9 +542,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			buildRotated(DungeonSegmentModelRegistry.CORRIDOR_ROOM, worldIn, new BlockPos(x, y - 6, z),
 					Theme.get(theme), Treasure.Type.DEFAULT, stage, getRotation());
 			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 7, z, 8, 8) > 5)
@@ -566,9 +568,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			buildRotated(DungeonSegmentModelRegistry.CORRIDOR_TRAP, worldIn, new BlockPos(x, y, z), Theme.get(theme),
 					Treasure.Type.DEFAULT, stage, getRotation());
 			return true;
@@ -588,9 +590,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			build(lava ? DungeonSegmentModelRegistry.HOLE_LAVA : DungeonSegmentModelRegistry.HOLE, worldIn,
 					new BlockPos(x, y - 15, z), Theme.get(theme), Treasure.Type.DEFAULT, stage);
 			addWalls(this, worldIn, theme);
@@ -626,9 +628,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			int height = theme == 3 ? worldIn.getSeaLevel() : getGroudHeight(worldIn, x + 4, z + 4);
 //			int ch = height - (height % 8) + height % 8 > 0 ? 8 : 0;
 			int ch = y;
@@ -664,9 +666,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
@@ -691,9 +693,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
@@ -724,9 +726,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;

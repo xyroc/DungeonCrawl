@@ -1,10 +1,11 @@
 package xiroc.dungeoncrawl.theme;
 
-import java.util.HashMap;
-
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
+
+import java.util.HashMap;
+import java.util.Random;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,9 +32,16 @@ public class Theme {
 	// badlands 17
 
 	// ice 32
+	
+	// bricks 48
+	// andesite 49
+
+	public static final Random RANDOM = new Random();
 
 	public static HashMap<String, Integer> BIOME_TO_THEME_MAP;
 	public static HashMap<Integer, Theme> ID_TO_THEME_MAP;
+
+	public static HashMap<Integer, ThemeRandomizer> RANDOMIZERS;
 
 	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS,
 			() -> BlockRegistry.GRAVEL, () -> Blocks.OAK_STAIRS.getDefaultState(),
@@ -49,6 +57,21 @@ public class Theme {
 			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(),
 			BlockRegistry.STONE_WALL, null);
+
+	public static final Theme BRICKS = new Theme(BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
+			BlockRegistry.BRICKS_GRANITE_FLOOR, BlockRegistry.STAIRS_BRICKS_GRANITE,
+			BlockRegistry.STAIRS_BRICKS_GRANITE, BlockRegistry.STAIRS_BRICKS_GRANITE,
+			() -> Blocks.BRICKS.getDefaultState(), () -> Blocks.OAK_TRAPDOOR.getDefaultState(),
+			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(), () -> Blocks.OAK_DOOR.getDefaultState(),
+			() -> Blocks.BRICKS.getDefaultState(), BlockRegistry.BRICKS_GRANITE_WALL, null);
+
+	public static final Theme ANDESITE = new Theme(BlockRegistry.ANDESITE_STONE_BRICKS,
+			BlockRegistry.ANDESITE_STONE_BRICKS, BlockRegistry.ANDESITE_STONE_BRICKS_COBBLESTONE,
+			BlockRegistry.STAIRS_ANDESITE_STONE_COBBLESTONE, BlockRegistry.STAIRS_ANDESITE_STONE_COBBLESTONE,
+			BlockRegistry.STAIRS_ANDESITE_STONE_COBBLESTONE, () -> Blocks.POLISHED_ANDESITE.getDefaultState(),
+			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
+			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.POLISHED_ANDESITE.getDefaultState(),
+			BlockRegistry.ANDESITE_STONE_WALL, null);
 
 	public static final Theme NETHER = new Theme(() -> BlockRegistry.STONE_BRICKS, BlockRegistry.NETHERRACK_NETHERBRICK,
 			BlockRegistry.NETHERRACK_NETHERBRICK_SOULSAND, BlockRegistry.NETHER_BRICK_STAIRS,
@@ -147,28 +170,10 @@ public class Theme {
 			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.OAK_DOOR.getDefaultState(),
 			BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED);
 
-	public static final BuildTheme BUILD_STONE = new BuildTheme(
-			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE,
-			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
-			BlockRegistry.STAIRS_STONE_COBBLESTONE);
-
-	public static final BuildTheme BUILD_BRICKS = new BuildTheme(() -> Blocks.BRICK_WALL.getDefaultState(),
-			() -> Blocks.BRICK_WALL.getDefaultState(), () -> Blocks.BRICKS.getDefaultState(),
-			() -> Blocks.BRICK_STAIRS.getDefaultState());
+	private static final ThemeRandomizer DEFAULT_RANDOMIZER = (rand, base) -> base;
 
 	static {
 		BIOME_TO_THEME_MAP = new HashMap<String, Integer>();
-
-		// BIOME_TO_THEME_MAP.put("minecraft:plains", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:forest", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:river", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:frozen_river", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:sunflower_plains", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:mountains", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:gravelly_mountains", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:snowy_mountains", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:beach", 0);
-		// BIOME_TO_THEME_MAP.put("minecraft:wooded_hills", 0);
 
 		BIOME_TO_THEME_MAP.put("minecraft:swamp", 2);
 		BIOME_TO_THEME_MAP.put("minecraft:swamp_hills", 2);
@@ -239,7 +244,7 @@ public class Theme {
 		ID_TO_THEME_MAP.put(1, NETHER);
 		ID_TO_THEME_MAP.put(2, SWAMP);
 		ID_TO_THEME_MAP.put(3, OCEAN);
-		ID_TO_THEME_MAP.put(4, OCEAN); // Frozen Ocean?
+		ID_TO_THEME_MAP.put(4, OCEAN);
 		ID_TO_THEME_MAP.put(5, JUNGLE);
 		ID_TO_THEME_MAP.put(6, BIRCH_FOREST);
 		ID_TO_THEME_MAP.put(7, SAVANNA);
@@ -251,6 +256,26 @@ public class Theme {
 		ID_TO_THEME_MAP.put(17, BADLANDS);
 
 		ID_TO_THEME_MAP.put(32, ICE);
+
+		ID_TO_THEME_MAP.put(48, BRICKS);
+		ID_TO_THEME_MAP.put(49, ANDESITE);
+
+		RANDOMIZERS = new HashMap<Integer, ThemeRandomizer>();
+
+		RANDOMIZERS.put(0, (rand, base) -> {
+			
+			switch(rand.nextInt(3)) {
+			case 0:
+				return 0;
+			case 1:
+				return 48;
+			case 2:
+				return 49;
+			default:
+				return 0;
+			}
+			
+		});
 
 	}
 
@@ -295,40 +320,19 @@ public class Theme {
 		this.column = () -> column;
 	}
 
+	public static int getTheme(String biome) {
+		int theme = BIOME_TO_THEME_MAP.getOrDefault(biome, 0);
+		return RANDOMIZERS.getOrDefault(theme, DEFAULT_RANDOMIZER).randomize(RANDOM, theme);
+	}
+
 	public static Theme get(int theme) {
 		return ID_TO_THEME_MAP.getOrDefault(theme, DEFAULT);
 	}
 
-	public static class BiomeTheme {
+	@FunctionalInterface
+	public static interface ThemeRandomizer {
 
-		public IBlockStateProvider wallLog, stairs, floorStairs, trapDoorDecoration, torchDark, door, material, column;
-
-		public BiomeTheme(IBlockStateProvider wallLog, IBlockStateProvider stairs, IBlockStateProvider floorStairs,
-				IBlockStateProvider trapDoor, IBlockStateProvider torchDark, IBlockStateProvider door,
-				IBlockStateProvider material, IBlockStateProvider column) {
-			this.wallLog = wallLog;
-			this.stairs = stairs;
-			this.floorStairs = floorStairs;
-			this.trapDoorDecoration = trapDoor;
-			this.torchDark = torchDark;
-			this.door = door;
-			this.material = material;
-			this.column = column;
-		}
-
-	}
-
-	public static class BuildTheme {
-
-		public IBlockStateProvider ceiling, wall, floor, ceilingStairs;
-
-		public BuildTheme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor,
-				IBlockStateProvider ceilingStairs) {
-			this.ceiling = ceiling;
-			this.wall = wall;
-			this.floor = floor;
-			this.ceilingStairs = ceilingStairs;
-		}
+		int randomize(Random rand, int base);
 
 	}
 

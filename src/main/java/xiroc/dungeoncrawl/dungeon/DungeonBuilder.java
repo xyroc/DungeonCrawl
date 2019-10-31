@@ -27,7 +27,6 @@ import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.segment.RandomDungeonSegmentModel;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.BossEntry;
@@ -40,7 +39,7 @@ public class DungeonBuilder {
 	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
 	private static final DungeonSegmentModel[] ENTRANCES = new DungeonSegmentModel[] {
-			DungeonSegmentModelRegistry.ENTRANCE_TOWER_0, DungeonSegmentModelRegistry.ENTRANCE_TOWER_1 };
+			DungeonSegmentModelRegistry.ENTRANCE_TOWER_1 };
 
 	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
 		;
@@ -64,18 +63,21 @@ public class DungeonBuilder {
 		ENTRANCE_PROCESSORS = new HashMap<Integer, EntranceProcessor>();
 		ENTRANCE_PROCESSORS.put(20, (world, pos, theme, piece) -> {
 			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
-			int height = theme == 3 ? world.getSeaLevel() : DungeonPieces.getGroudHeight(world, x + 4, z + 4);
+//			int height = theme == 3 ? world.getSeaLevel() : DungeonPieces.getGroudHeight(world, x + 4, z + 4);
 			int ch = y;
-			Theme buildTheme = Theme.get(theme);
-			while (ch < height) {
-				piece.build(DungeonSegmentModelRegistry.STAIRS, world, new BlockPos(x, ch, z), buildTheme,
-						Treasure.Type.DEFAULT, piece.stage);
+//			Theme buildTheme = Theme.get(theme);
+			while (ch < y) {
+//				piece.build(DungeonSegmentModelRegistry.STAIRS, world, new BlockPos(x, ch, z), buildTheme,
+//						Treasure.Type.DEFAULT, piece.stage);
 				for (int x1 = 0; x1 < 8; x1++)
-					for (int y1 = 0; y1 < 8; y1++)
-						piece.setBlockState(buildTheme.wall.get(), world, null, x + x1, ch + y1, z + 7, theme, 0);
+//					for (int y1 = 0; y1 < 8; y1++)
+//						piece.setBlockState(buildTheme.wall.get(), world, null, x + x1, ch + y1, z + 7, theme, 0);
+					buildWallPillar(world, theme, new BlockPos(x + x1, y - 1, z), piece);
 				for (int z1 = 0; z1 < 8; z1++)
-					for (int y1 = 0; y1 < 8; y1++)
-						piece.setBlockState(buildTheme.wall.get(), world, null, x + 7, ch + y1, z + z1, theme, 0);
+//					for (int y1 = 0; y1 < 8; y1++)
+//						piece.setBlockState(buildTheme.wall.get(), world, null, x + 7, ch + y1, z + z1, theme, 0);
+					buildWallPillar(world, theme, new BlockPos(x, y - 1, z + z1), piece);
+
 				ch += 8;
 			}
 		});

@@ -39,6 +39,9 @@ public class DungeonBuilder {
 	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
 	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
+	private static final DungeonSegmentModel[] ENTRANCES = new DungeonSegmentModel[] {
+			DungeonSegmentModelRegistry.ENTRANCE_TOWER_0, DungeonSegmentModelRegistry.ENTRANCE_TOWER_1 };
+
 	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
 		;
 	};
@@ -264,14 +267,7 @@ public class DungeonBuilder {
 	}
 
 	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
-		switch (rand.nextInt(2)) {
-		case 0:
-			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
-		case 1:
-			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
-		default:
-			return DungeonSegmentModelRegistry.ENTRANCE_TOWER_1;
-		}
+		return ENTRANCES[rand.nextInt(ENTRANCES.length)];
 	};
 
 	public static BossEntry getRandomBoss(Random rand) {

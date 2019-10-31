@@ -44,7 +44,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Tools;
 
 @Mod(DungeonCrawl.MODID)
 public class DungeonCrawl {
@@ -62,7 +61,7 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-		MinecraftForge.EVENT_BUS.register(new Tools());
+//		MinecraftForge.EVENT_BUS.register(new Tools());
 		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 		
 		Treasure.init();

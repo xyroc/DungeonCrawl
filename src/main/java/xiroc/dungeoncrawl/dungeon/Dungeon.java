@@ -71,8 +71,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 	public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z,
 			int spacingOffsetsX, int spacingOffsetsZ) {
-		int i = SIZE - 1; // 15
-		int j = i - 5; // 10
+		int i = 15; // 15
+		int j = i -5; // 10
 		int k = x + i * spacingOffsetsX;
 		int l = z + i * spacingOffsetsZ;
 		int i1 = k < 0 ? k - i + 1 : k;

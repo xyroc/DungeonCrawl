@@ -10,7 +10,6 @@ import java.util.Random;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +19,6 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.util.BossEntry;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
@@ -64,197 +62,197 @@ public class DungeonLayer {
 		this.segments[start.x][start.z] = new DungeonPieces.StairsBot(null, DungeonPieces.DEFAULT_NBT);
 		if (lastLayer) {
 			if (end != null) {
-				if (Config.ENABLE_DUNGEON_BOSS.get()) {
-					BossEntry boss = DungeonBuilder.getRandomBoss(rand);
-					if (boss != null) {
-						// --- Loot Room ---
-
-						DungeonPieces.Part lootRoom1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-						DungeonPieces.Part lootRoom2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-						DungeonPieces.Part lootRoom3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-						DungeonPieces.Part lootRoom4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-
-						lootRoom1.treasureType = 7;
-						lootRoom2.treasureType = 7;
-						lootRoom3.treasureType = 7;
-						lootRoom4.treasureType = 7;
-
-						lootRoom1.rotation = Rotation.NONE;
-						lootRoom2.rotation = Rotation.NONE;
-						lootRoom3.rotation = Rotation.NONE;
-						lootRoom4.rotation = Rotation.NONE;
-
-						lootRoom1.walls = lootRoom2.walls = lootRoom3.walls = lootRoom4.walls = true;
-
-						lootRoom1.set(28, 0, 0, 0, 8, 16, 8);
-						lootRoom2.set(28, 8, 0, 0, 8, 16, 8);
-						lootRoom3.set(28, 8, 0, 8, 8, 16, 8);
-						lootRoom4.set(28, 0, 0, 8, 8, 16, 8);
-
-						lootRoom1.setPosition(end.x, end.z);
-						lootRoom2.setPosition(end.x + 1, end.z);
-						lootRoom3.setPosition(end.x + 1, end.z + 1);
-						lootRoom4.setPosition(end.x, end.z + 1);
-
-						lootRoom1.setRealPosition(builder.startPos.getX() + lootRoom1.posX * 8,
-								builder.startPos.getY() - layer * 16 - 16,
-								builder.startPos.getZ() + lootRoom1.posZ * 8);
-						lootRoom2.setRealPosition(builder.startPos.getX() + lootRoom2.posX * 8,
-								builder.startPos.getY() - layer * 16 - 16,
-								builder.startPos.getZ() + lootRoom2.posZ * 8);
-						lootRoom3.setRealPosition(builder.startPos.getX() + lootRoom3.posX * 8,
-								builder.startPos.getY() - layer * 16 - 16,
-								builder.startPos.getZ() + lootRoom3.posZ * 8);
-						lootRoom4.setRealPosition(builder.startPos.getX() + lootRoom4.posX * 8,
-								builder.startPos.getY() - layer * 16 - 16,
-								builder.startPos.getZ() + lootRoom4.posZ * 8);
-
-						lootRoom1.sides[0] = false;
-						lootRoom1.sides[1] = true;
-						lootRoom1.sides[2] = true;
-						lootRoom1.sides[3] = false;
-
-						lootRoom2.sides[0] = false;
-						lootRoom2.sides[1] = false;
-						lootRoom2.sides[2] = true;
-						lootRoom2.sides[3] = true;
-
-						lootRoom3.sides[0] = true;
-						lootRoom3.sides[1] = false;
-						lootRoom3.sides[2] = false;
-						lootRoom3.sides[3] = true;
-
-						lootRoom4.sides[0] = true;
-						lootRoom4.sides[1] = true;
-						lootRoom4.sides[2] = false;
-						lootRoom4.sides[3] = false;
-
-						lootRoom1.theme = 1;
-						lootRoom2.theme = 1;
-						lootRoom3.theme = 1;
-						lootRoom4.theme = 1;
-
-						pieces.add(lootRoom1);
-						pieces.add(lootRoom2);
-						pieces.add(lootRoom3);
-						pieces.add(lootRoom4);
-
-						// --- Boss Room ---
-
-						DungeonPieces.PartWithEntity part1 = new DungeonPieces.PartWithEntity(null,
-								DungeonPieces.DEFAULT_NBT);
-						DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-						DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-						DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-
-						part1.treasureType = 7;
-						part2.treasureType = 7;
-						part3.treasureType = 7;
-						part4.treasureType = 7;
-
-						part1.rotation = Rotation.NONE;
-						part2.rotation = Rotation.NONE;
-						part3.rotation = Rotation.NONE;
-						part4.rotation = Rotation.NONE;
-
-						part1.walls = part2.walls = part3.walls = part4.walls = true;
-
-						part1.entityName = new ResourceLocation(boss.entityName);
-						part1.nbt = boss.createTag();
-
-						part1.set(36, 0, 0, 0, 8, 16, 8, 8, 2, 8);
-						part2.set(36, 8, 0, 0, 8, 16, 8);
-						part3.set(36, 8, 0, 8, 8, 16, 8);
-						part4.set(36, 0, 0, 8, 8, 16, 8);
-
-						part1.setPosition(end.x, end.z);
-						part2.setPosition(end.x + 1, end.z);
-						part3.setPosition(end.x + 1, end.z + 1);
-						part4.setPosition(end.x, end.z + 1);
-
-						part1.sides[0] = false;
-						part1.sides[1] = true;
-						part1.sides[2] = true;
-						part1.sides[3] = false;
-
-						part2.sides[0] = false;
-						part2.sides[1] = false;
-						part2.sides[2] = true;
-						part2.sides[3] = true;
-
-						part3.sides[0] = true;
-						part3.sides[1] = false;
-						part3.sides[2] = false;
-						part3.sides[3] = true;
-
-						part4.sides[0] = true;
-						part4.sides[1] = true;
-						part4.sides[2] = false;
-						part4.sides[3] = false;
-
-						this.segments[end.x][end.z] = part1;
-						this.segments[end.x + 1][end.z] = part2;
-						this.segments[end.x + 1][end.z + 1] = part3;
-						this.segments[end.x][end.z + 1] = part4;
-
-						Position2D part1Pos = end, part2Pos = new Position2D(end.x + 1, end.z),
-								part3Pos = new Position2D(end.x + 1, end.z + 1),
-								part4Pos = new Position2D(end.x, end.z + 1);
-
-						map.markPositionAsOccupied(end);
-						map.markPositionAsOccupied(part2Pos);
-						map.markPositionAsOccupied(part3Pos);
-						map.markPositionAsOccupied(part4Pos);
-
-						DungeonPieces.Part connectedPart = lootRoom4;
-
-						Tuple<Position2D, Rotation> data = findSideRoomData(part4Pos);
-
-						if (data == null) {
-							data = findSideRoomData(part3Pos);
-							connectedPart = lootRoom3;
-						}
-						if (data == null) {
-							data = findSideRoomData(part2Pos);
-							connectedPart = lootRoom2;
-						}
-						if (data == null) {
-							data = findSideRoomData(part1Pos);
-							connectedPart = lootRoom1;
-						}
-
-						if (data != null) {
-							Position2D stairPos = data.getA();
-							Direction side = RotationHelper.translateDirection(Direction.EAST, data.getB());
-							DungeonPieces.StairsTop stairsTop = new DungeonPieces.StairsTop(null,
-									DungeonPieces.DEFAULT_NBT);
-							stairsTop.setPosition(stairPos.x, stairPos.z);
-							stairsTop.openSide(side.getOpposite());
-							stairsTop.theme = 1;
-							map.markPositionAsOccupied(stairPos);
-							this.segments[stairPos.x][stairPos.z] = stairsTop;
-
-							DungeonPieces.Stairs stairs = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
-							stairs.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
-									builder.startPos.getY() - layer * 16 - 8, builder.startPos.getZ() + stairPos.z * 8);
-							stairs.theme = 1;
-
-							DungeonPieces.StairsBot stairsBot = new DungeonPieces.StairsBot(null,
-									DungeonPieces.DEFAULT_NBT);
-							stairsBot.setPosition(stairPos.x, stairPos.z);
-							stairsBot.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
-									builder.startPos.getY() - layer * 16 - 16,
-									builder.startPos.getZ() + stairPos.z * 8);
-							stairsBot.openSide(side.getOpposite());
-							stairsBot.theme = 1;
-
-							pieces.add(stairs);
-							pieces.add(stairsBot);
-
-							connectedPart.openSide(side);
-						}
-					}
-				} else {
+//				if (Config.ENABLE_DUNGEON_BOSS.get()) {
+//					BossEntry boss = DungeonBuilder.getRandomBoss(rand);
+//					if (boss != null) {
+//						// --- Loot Room ---
+//
+//						DungeonPieces.Part lootRoom1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+//						DungeonPieces.Part lootRoom2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+//						DungeonPieces.Part lootRoom3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+//						DungeonPieces.Part lootRoom4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+//
+//						lootRoom1.treasureType = 7;
+//						lootRoom2.treasureType = 7;
+//						lootRoom3.treasureType = 7;
+//						lootRoom4.treasureType = 7;
+//
+//						lootRoom1.rotation = Rotation.NONE;
+//						lootRoom2.rotation = Rotation.NONE;
+//						lootRoom3.rotation = Rotation.NONE;
+//						lootRoom4.rotation = Rotation.NONE;
+//
+//						lootRoom1.walls = lootRoom2.walls = lootRoom3.walls = lootRoom4.walls = true;
+//
+//						lootRoom1.set(28, 0, 0, 0, 8, 16, 8);
+//						lootRoom2.set(28, 8, 0, 0, 8, 16, 8);
+//						lootRoom3.set(28, 8, 0, 8, 8, 16, 8);
+//						lootRoom4.set(28, 0, 0, 8, 8, 16, 8);
+//
+//						lootRoom1.setPosition(end.x, end.z);
+//						lootRoom2.setPosition(end.x + 1, end.z);
+//						lootRoom3.setPosition(end.x + 1, end.z + 1);
+//						lootRoom4.setPosition(end.x, end.z + 1);
+//
+//						lootRoom1.setRealPosition(builder.startPos.getX() + lootRoom1.posX * 8,
+//								builder.startPos.getY() - layer * 16 - 16,
+//								builder.startPos.getZ() + lootRoom1.posZ * 8);
+//						lootRoom2.setRealPosition(builder.startPos.getX() + lootRoom2.posX * 8,
+//								builder.startPos.getY() - layer * 16 - 16,
+//								builder.startPos.getZ() + lootRoom2.posZ * 8);
+//						lootRoom3.setRealPosition(builder.startPos.getX() + lootRoom3.posX * 8,
+//								builder.startPos.getY() - layer * 16 - 16,
+//								builder.startPos.getZ() + lootRoom3.posZ * 8);
+//						lootRoom4.setRealPosition(builder.startPos.getX() + lootRoom4.posX * 8,
+//								builder.startPos.getY() - layer * 16 - 16,
+//								builder.startPos.getZ() + lootRoom4.posZ * 8);
+//
+//						lootRoom1.sides[0] = false;
+//						lootRoom1.sides[1] = true;
+//						lootRoom1.sides[2] = true;
+//						lootRoom1.sides[3] = false;
+//
+//						lootRoom2.sides[0] = false;
+//						lootRoom2.sides[1] = false;
+//						lootRoom2.sides[2] = true;
+//						lootRoom2.sides[3] = true;
+//
+//						lootRoom3.sides[0] = true;
+//						lootRoom3.sides[1] = false;
+//						lootRoom3.sides[2] = false;
+//						lootRoom3.sides[3] = true;
+//
+//						lootRoom4.sides[0] = true;
+//						lootRoom4.sides[1] = true;
+//						lootRoom4.sides[2] = false;
+//						lootRoom4.sides[3] = false;
+//
+//						lootRoom1.theme = 1;
+//						lootRoom2.theme = 1;
+//						lootRoom3.theme = 1;
+//						lootRoom4.theme = 1;
+//
+//						pieces.add(lootRoom1);
+//						pieces.add(lootRoom2);
+//						pieces.add(lootRoom3);
+//						pieces.add(lootRoom4);
+//
+//						// --- Boss Room ---
+//
+//						DungeonPieces.PartWithEntity part1 = new DungeonPieces.PartWithEntity(null,
+//								DungeonPieces.DEFAULT_NBT);
+//						DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+//						DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+//						DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+//
+//						part1.treasureType = 7;
+//						part2.treasureType = 7;
+//						part3.treasureType = 7;
+//						part4.treasureType = 7;
+//
+//						part1.rotation = Rotation.NONE;
+//						part2.rotation = Rotation.NONE;
+//						part3.rotation = Rotation.NONE;
+//						part4.rotation = Rotation.NONE;
+//
+//						part1.walls = part2.walls = part3.walls = part4.walls = true;
+//
+//						part1.entityName = new ResourceLocation(boss.entityName);
+//						part1.nbt = boss.createTag();
+//
+//						part1.set(36, 0, 0, 0, 8, 16, 8, 8, 2, 8);
+//						part2.set(36, 8, 0, 0, 8, 16, 8);
+//						part3.set(36, 8, 0, 8, 8, 16, 8);
+//						part4.set(36, 0, 0, 8, 8, 16, 8);
+//
+//						part1.setPosition(end.x, end.z);
+//						part2.setPosition(end.x + 1, end.z);
+//						part3.setPosition(end.x + 1, end.z + 1);
+//						part4.setPosition(end.x, end.z + 1);
+//
+//						part1.sides[0] = false;
+//						part1.sides[1] = true;
+//						part1.sides[2] = true;
+//						part1.sides[3] = false;
+//
+//						part2.sides[0] = false;
+//						part2.sides[1] = false;
+//						part2.sides[2] = true;
+//						part2.sides[3] = true;
+//
+//						part3.sides[0] = true;
+//						part3.sides[1] = false;
+//						part3.sides[2] = false;
+//						part3.sides[3] = true;
+//
+//						part4.sides[0] = true;
+//						part4.sides[1] = true;
+//						part4.sides[2] = false;
+//						part4.sides[3] = false;
+//
+//						this.segments[end.x][end.z] = part1;
+//						this.segments[end.x + 1][end.z] = part2;
+//						this.segments[end.x + 1][end.z + 1] = part3;
+//						this.segments[end.x][end.z + 1] = part4;
+//
+//						Position2D part1Pos = end, part2Pos = new Position2D(end.x + 1, end.z),
+//								part3Pos = new Position2D(end.x + 1, end.z + 1),
+//								part4Pos = new Position2D(end.x, end.z + 1);
+//
+//						map.markPositionAsOccupied(end);
+//						map.markPositionAsOccupied(part2Pos);
+//						map.markPositionAsOccupied(part3Pos);
+//						map.markPositionAsOccupied(part4Pos);
+//
+//						DungeonPieces.Part connectedPart = lootRoom4;
+//
+//						Tuple<Position2D, Rotation> data = findSideRoomData(part4Pos);
+//
+//						if (data == null) {
+//							data = findSideRoomData(part3Pos);
+//							connectedPart = lootRoom3;
+//						}
+//						if (data == null) {
+//							data = findSideRoomData(part2Pos);
+//							connectedPart = lootRoom2;
+//						}
+//						if (data == null) {
+//							data = findSideRoomData(part1Pos);
+//							connectedPart = lootRoom1;
+//						}
+//
+//						if (data != null) {
+//							Position2D stairPos = data.getA();
+//							Direction side = RotationHelper.translateDirection(Direction.EAST, data.getB());
+//							DungeonPieces.StairsTop stairsTop = new DungeonPieces.StairsTop(null,
+//									DungeonPieces.DEFAULT_NBT);
+//							stairsTop.setPosition(stairPos.x, stairPos.z);
+//							stairsTop.openSide(side.getOpposite());
+//							stairsTop.theme = 1;
+//							map.markPositionAsOccupied(stairPos);
+//							this.segments[stairPos.x][stairPos.z] = stairsTop;
+//
+//							DungeonPieces.Stairs stairs = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
+//							stairs.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
+//									builder.startPos.getY() - layer * 16 - 8, builder.startPos.getZ() + stairPos.z * 8);
+//							stairs.theme = 1;
+//
+//							DungeonPieces.StairsBot stairsBot = new DungeonPieces.StairsBot(null,
+//									DungeonPieces.DEFAULT_NBT);
+//							stairsBot.setPosition(stairPos.x, stairPos.z);
+//							stairsBot.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
+//									builder.startPos.getY() - layer * 16 - 16,
+//									builder.startPos.getZ() + stairPos.z * 8);
+//							stairsBot.openSide(side.getOpposite());
+//							stairsBot.theme = 1;
+//
+//							pieces.add(stairs);
+//							pieces.add(stairsBot);
+//
+//							connectedPart.openSide(side);
+//						}
+//					}
+//				} else {
 					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
@@ -311,7 +309,7 @@ public class DungeonLayer {
 					map.markPositionAsOccupied(new Position2D(end.x + 1, end.z));
 					map.markPositionAsOccupied(new Position2D(end.x + 1, end.z + 1));
 					map.markPositionAsOccupied(new Position2D(end.x, end.z + 1));
-				}
+//				}
 			} else {
 				DungeonCrawl.LOGGER.warn(
 						"Failed to find a final room position for the last layer of a dungeon. This should never happen by default, but might be caused by an invalid config. If you didnt change the config or are sure that the cause of this is something else, please contact the mod author (The best way to do this is to open an issue on https://github.com/XYROC/DungeonCrawl). Layer map start pos: ({}|{})",
@@ -331,14 +329,14 @@ public class DungeonLayer {
 				room.modelID = 34;
 				Direction dir = RotationHelper.translateDirection(Direction.WEST, sideRoomData.getB());
 				room.openSide(dir);
-				DungeonCrawl.LOGGER.info(dir);
+//				DungeonCrawl.LOGGER.info(dir);
 				room.setPosition(sideRoomData.getA().x, sideRoomData.getA().z);
 				room.setRotation(sideRoomData.getB());
 				room.treasureType = Treasure.Type.SUPPLY;
 				map.markPositionAsOccupied(sideRoomData.getA());
 				this.segments[sideRoomData.getA().x][sideRoomData.getA().z] = room;
 				Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
-				DungeonCrawl.LOGGER.info(this.segments[connectedSegment.x][connectedSegment.z]);
+//				DungeonCrawl.LOGGER.info(this.segments[connectedSegment.x][connectedSegment.z]);
 				if (this.segments[connectedSegment.x][connectedSegment.z] != null) {
 					this.segments[connectedSegment.x][connectedSegment.z].openSide(dir.getOpposite());
 					rotatePiece(this.segments[connectedSegment.x][connectedSegment.z]);

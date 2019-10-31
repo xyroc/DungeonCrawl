@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[27,)" #mandatory
+loaderVersion="[26,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
@@ -17,7 +17,7 @@ description='''Dungeons...'''
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[27,)" #mandatory
+    versionRange="[26,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER

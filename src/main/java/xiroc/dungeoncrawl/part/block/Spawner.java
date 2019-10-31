@@ -49,7 +49,7 @@ public class Spawner implements IBlockPlacementHandler {
 			MobSpawnerTileEntity tile = (MobSpawnerTileEntity) tileentity;
 			EntityType<?> type = getRandomEntityType(rand);
 			tile.getSpawnerBaseLogic().setEntityType(type);
-			if (INVENTORY_ENTITIES.contains(type)) {
+			if (!Config.VANILLA_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
 				CompoundNBT spawnerNBT = tile.getSpawnerBaseLogic().write(new CompoundNBT());
 				ListNBT potentialSpawns = new ListNBT();
 				for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {

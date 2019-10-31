@@ -18,7 +18,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.state.properties.AttachFace;
+import net.minecraft.state.properties.BedPart;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.DoorHingeSide;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
@@ -43,6 +45,8 @@ public class DungeonSegmentModelBlock {
 	public Half half;
 	public DoubleBlockHalf doubleBlockHalf;
 	public AttachFace attachFace;
+	public BedPart bedPart;
+	public DoorHingeSide hinge;
 
 	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type) {
 		this.type = type;
@@ -87,6 +91,10 @@ public class DungeonSegmentModelBlock {
 			doubleBlockHalf = state.get(BlockStateProperties.DOUBLE_BLOCK_HALF);
 		if (state.has(BlockStateProperties.FACE))
 			attachFace = state.get(BlockStateProperties.FACE);
+		if (state.has(BlockStateProperties.BED_PART))
+			bedPart = state.get(BlockStateProperties.BED_PART);
+		if (state.has(BlockStateProperties.DOOR_HINGE))
+			hinge = state.get(BlockStateProperties.DOOR_HINGE);
 		if (type == DungeonSegmentModelBlockType.OTHER)
 			resourceName = state.getBlock().getRegistryName().toString();
 		return this;
@@ -94,6 +102,7 @@ public class DungeonSegmentModelBlock {
 
 	/**
 	 * Applies all existing properties to the given BlockState.
+	 * Hardcoded :D
 	 */
 	public BlockState create(BlockState state) {
 		if (facing != null && state.has(BlockStateProperties.FACING))
@@ -130,6 +139,10 @@ public class DungeonSegmentModelBlock {
 			state = state.with(BlockStateProperties.FACE, attachFace);
 		if (doubleBlockHalf != null && state.has(BlockStateProperties.DOUBLE_BLOCK_HALF))
 			state = state.with(BlockStateProperties.DOUBLE_BLOCK_HALF, doubleBlockHalf);
+		if (bedPart != null && state.has(BlockStateProperties.BED_PART))
+			state = state.with(BlockStateProperties.BED_PART, bedPart);
+		if(hinge != null && state.has(BlockStateProperties.DOOR_HINGE))
+			state = state.with(BlockStateProperties.DOOR_HINGE, hinge);
 		return state;
 	}
 
@@ -190,6 +203,17 @@ public class DungeonSegmentModelBlock {
 				return BlockRegistry.SPAWNER;
 			return theme.wall.get();
 		});
+		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_COBWEB_AIR, (block, theme, rand, stage) -> {
+			if (rand.nextInt(5) == 0)
+				return Blocks.CAVE_AIR.getDefaultState();
+			return Blocks.COBWEB.getDefaultState();
+		});
+		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_BOOKSHELF_COBWEB, (block, theme, rand, stage) -> {
+			int roll = rand.nextInt(10);
+			if (roll > 2)
+				return Blocks.BOOKSHELF.getDefaultState();
+			return Blocks.COBWEB.getDefaultState();
+		});
 		PROVIDERS.put(DungeonSegmentModelBlockType.STAIRS,
 				(block, theme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.TRAPDOOR,
@@ -203,8 +227,7 @@ public class DungeonSegmentModelBlock {
 	}
 
 	public void readResourceLocation() {
-		String[] resource = this.resourceName.split(":");
-		this.registryName = new ResourceLocation(resource[0], resource[1]);
+		this.registryName = new ResourceLocation(resourceName);
 	}
 
 	/**

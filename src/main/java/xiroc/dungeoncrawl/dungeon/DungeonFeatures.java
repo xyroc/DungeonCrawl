@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -12,14 +13,23 @@ import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.SideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Triple;
 
 public class DungeonFeatures {
 
+	public static final HashMap<Integer, Triple<Integer, Integer, Integer>> OFFSET_DATA;
+	public static final Triple<Integer, Integer, Integer> DEFAULT_OFFSET = new Triple<Integer, Integer, Integer>(0, 0,
+			0);
 	public static final List<CorridorFeature> CORRIDOR_FEATURES;
 
 	static {
+		OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
+		OFFSET_DATA.put(33, new Triple<Integer, Integer, Integer>(0, -1, 0));
+	}
+
+	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].connectedSides == 2
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
 							|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])
@@ -29,15 +39,18 @@ public class DungeonFeatures {
 			}
 			return false;
 		});
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
-			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4) {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4
+					&& (lyr == 0 || (builder.layers[lyr - 1].segments[x][z] == null
+							|| builder.layers[lyr - 1].segments[x][z].getType() != 8))) {
 				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].rotation);
 				Position2D pos = new Position2D(x, z);
 				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
 				if (roomPos.isValid(layer.width, layer.length) && layer.segments[roomPos.x][roomPos.z] == null
-						&& rand.nextDouble() < 0.06) {
+						&& rand.nextDouble() < 0.09) {
 					layer.segments[x][z].openSide(RotationHelper.translateDirectionLeft(facing));
 					DungeonPieces.SideRoom sideRoom = (SideRoom) RandomFeature.SIDE_ROOM.roll(rand);
+					sideRoom.setOffset(OFFSET_DATA.getOrDefault(sideRoom.modelID, DEFAULT_OFFSET));
 					sideRoom.setPosition(roomPos.x, roomPos.z);
 					sideRoom.stage = stage;
 					sideRoom.connectedSides = 1;
@@ -51,7 +64,7 @@ public class DungeonFeatures {
 			}
 			return false;
 		});
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].connectedSides == 2 && rand.nextDouble() < 0.07
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
 							|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])) {
@@ -66,7 +79,7 @@ public class DungeonFeatures {
 			}
 			return false;
 		});
-		CORRIDOR_FEATURES.add((layer, x, z, rand, lyr, stage, startPos) -> {
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].getType() == 0 && layer.segments[x][z].connectedSides < 4) {
 				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].rotation);
 				Position2D pos = new Position2D(x, z);
@@ -117,17 +130,18 @@ public class DungeonFeatures {
 		});
 	}
 
-	public static void processCorridor(DungeonLayer layer, int x, int z, Random rand, int lyr, int stage,
-			BlockPos startPos) {
+	public static void processCorridor(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+			int stage, BlockPos startPos) {
 		for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
-			if (corridorFeature.process(layer, x, z, rand, lyr, stage, startPos))
+			if (corridorFeature.process(builder, layer, x, z, rand, lyr, stage, startPos))
 				return;
 	}
 
 	@FunctionalInterface
 	public static interface CorridorFeature {
 
-		public boolean process(DungeonLayer layer, int x, int z, Random rand, int lyr, int stage, BlockPos startPos);
+		public boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+				int stage, BlockPos startPos);
 
 	}
 

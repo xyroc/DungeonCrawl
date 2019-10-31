@@ -19,7 +19,7 @@ import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 public class ObfuscationValues implements IJsonConfigurable {
 
-	public static String CHUNKGEN_WORLD;
+	public static String CHUNKGEN_WORLD, LOOT_POOL_ENTRIES;
 
 	public static final String KEY_CHUNKGEN_WORLD = "net.minecraft.world.gen.ChunkGenerator # world";
 
@@ -39,7 +39,7 @@ public class ObfuscationValues implements IJsonConfigurable {
 
 	@Override
 	public void load(JsonObject object, File file) {
-		CHUNKGEN_WORLD = DungeonCrawl.GSON.fromJson(object.get(KEY_CHUNKGEN_WORLD), String.class);
+		CHUNKGEN_WORLD = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_CHUNKGEN_WORLD, this), String.class);
 	}
 
 	@Override

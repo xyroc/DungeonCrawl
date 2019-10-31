@@ -12,11 +12,19 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -24,6 +32,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
@@ -32,6 +41,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Triple;
 
 public class DungeonPieces {
 
@@ -48,6 +58,7 @@ public class DungeonPieces {
 	// 11 EntranceBuilder
 	// 12 Part
 	// 13 SideRoom
+	// 14 Part with Entity
 	// 99 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
@@ -60,7 +71,9 @@ public class DungeonPieces {
 			.add(Blocks.BIRCH_STAIRS).add(Blocks.JUNGLE_STAIRS).add(Blocks.DARK_OAK_STAIRS).add(Blocks.ACACIA_STAIRS)
 			.add(Blocks.SPRUCE_STAIRS).add(Blocks.PRISMARINE_STAIRS).add(Blocks.PRISMARINE_BRICK_STAIRS)
 			.add(Blocks.DARK_PRISMARINE_STAIRS).add(Blocks.SANDSTONE_STAIRS).add(Blocks.SMOOTH_SANDSTONE_STAIRS)
-			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS).add(Blocks.TRIPWIRE)
+			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS)
+			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.GRANITE_STAIRS).add(Blocks.ANDESITE_STAIRS)
+			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS).add(Blocks.TRIPWIRE)
 			.add(Blocks.REDSTONE_WIRE).build();
 
 	public static CompoundNBT getDefaultNBT() {
@@ -129,9 +142,9 @@ public class DungeonPieces {
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
 			this.adjustSize();
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			BlockPos pos = new BlockPos(x, y, z);
 			Treasure.Type type = Treasure.Type.fromInt(treasureType);
@@ -181,13 +194,168 @@ public class DungeonPieces {
 
 	}
 
+	public static class PartWithEntity extends DungeonPiece {
+
+		public boolean walls;
+		private int modelID, startX, startY, startZ, width, height, length, entityX, entityY, entityZ;
+		public int treasureType;
+		public ResourceLocation entityName;
+		public CompoundNBT nbt;
+
+		public PartWithEntity(TemplateManager manager, CompoundNBT p_i51343_2_) {
+			super(Dungeon.PART_WITH_ENTITY, p_i51343_2_);
+			entityName = new ResourceLocation(p_i51343_2_.getString("entityName"));
+			modelID = p_i51343_2_.getInt("model");
+			startX = p_i51343_2_.getInt("startX");
+			startY = p_i51343_2_.getInt("startY");
+			startZ = p_i51343_2_.getInt("startZ");
+			width = p_i51343_2_.getInt("width");
+			height = p_i51343_2_.getInt("height");
+			length = p_i51343_2_.getInt("length");
+			treasureType = p_i51343_2_.getInt("treasureType");
+			entityX = p_i51343_2_.getInt("entityX");
+			entityY = p_i51343_2_.getInt("entityY");
+			entityZ = p_i51343_2_.getInt("entityZ");
+			walls = p_i51343_2_.getBoolean("walls");
+			nbt = p_i51343_2_.getCompound("entityNBT");
+		}
+
+		public void set(int modelID, int startX, int startY, int startZ, int width, int height, int length, int entityX,
+				int entityY, int entityZ) {
+			this.modelID = modelID;
+			this.startX = startX;
+			this.startY = startY;
+			this.startZ = startZ;
+			this.width = width;
+			this.height = height;
+			this.length = length;
+			this.entityX = entityX;
+			this.entityY = entityY;
+			this.entityZ = entityZ;
+		}
+
+		public void adjustSize() {
+			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+			if (model == null) {
+				DungeonCrawl.LOGGER.warn("Failed to adjust the size of a dungeon part. ID: {}", modelID);
+				return;
+			}
+			width = startX + width > model.width ? width - (startX + width - model.width) : width;
+			height = startY + height > model.height ? height - (startY + height - model.height) : height;
+			length = startZ + length > model.length ? length - (startZ + length - model.length) : length;
+		}
+
+		@Override
+		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+				ChunkPos p_74875_4_) {
+			// --- Default Building ---
+			this.adjustSize();
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+			BlockPos pos = new BlockPos(x, y, z);
+			Treasure.Type type = Treasure.Type.fromInt(treasureType);
+//			DungeonCrawl.LOGGER.info("Building {} at {} {} {}. Rotation: {}", modelID, x, y, z, rotation.toString());
+			if (rotation == Rotation.NONE) {
+				for (int x = startX; x < startX + width; x++) {
+					for (int y = startY; y < startY + height; y++) {
+						for (int z = startZ; z < startZ + length; z++) {
+							BlockState state;
+							if (model.model[x][y][z] == null)
+								state = Blocks.AIR.getDefaultState();
+							else
+								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], Theme.get(theme),
+										worldIn.getRandom(), stage);
+							if (state == null)
+								continue;
+							setBlockState(state, worldIn, type, pos.getX() + x - startX, pos.getY() + y - startY,
+									pos.getZ() + z - startZ, theme, stage);
+						}
+					}
+				}
+			} else {
+				buildRotatedPart(model, worldIn, pos, Theme.get(theme), Treasure.Type.fromInt(treasureType), stage,
+						rotation, startX, startY, startZ, width, height, length);
+			}
+			if (walls)
+				addWalls(this, worldIn, theme);
+			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
+				addColumns(this, worldIn, 1, theme);
+
+			// -- Entity spawn ---
+			EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(entityName);
+			if (entityType == null) {
+				DungeonCrawl.LOGGER.warn("The entity type {} does not exist.", entityName.toString());
+				return true;
+			}
+			Entity get = entityType.create(worldIn.getWorld());
+			if (get != null && get instanceof LivingEntity) {
+				LivingEntity entity = (LivingEntity) get;
+				entity.heal(entity.getMaxHealth());
+				entity.setLocationAndAngles(x + entityX, y + entityY, z + entityZ, 0, 0);
+
+				if (entity instanceof MobEntity) {
+					MobEntity mob = (MobEntity) entity;
+					mob.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(new BlockPos(entity)),
+							SpawnReason.STRUCTURE, (ILivingEntityData) null, (CompoundNBT) null);
+					if (nbt != null) {
+						CompoundNBT data = new CompoundNBT();
+						mob.writeAdditional(data);
+						mob.readAdditional(data.merge(nbt));
+					}
+				} else {
+					if (nbt != null)
+						entity.readAdditional(nbt);
+				}
+
+				worldIn.addEntity(entity);
+			} else {
+				DungeonCrawl.LOGGER.warn("Failed to spawn a living entity at {}.");
+			}
+			return true;
+		}
+
+		@Override
+		public void readAdditional(CompoundNBT tagCompound) {
+			super.readAdditional(tagCompound);
+			tagCompound.putInt("model", modelID);
+			tagCompound.putInt("startX", startX);
+			tagCompound.putInt("startY", startY);
+			tagCompound.putInt("startZ", startZ);
+			tagCompound.putInt("width", width);
+			tagCompound.putInt("height", height);
+			tagCompound.putInt("length", length);
+			tagCompound.putInt("treasureType", treasureType);
+			tagCompound.putInt("entityX", entityX);
+			tagCompound.putInt("entityY", entityY);
+			tagCompound.putInt("entityZ", entityZ);
+			tagCompound.putBoolean("walls", walls);
+			tagCompound.putString("entityName", entityName.toString());
+
+			if (nbt != null)
+				tagCompound.put("entityNBT", nbt);
+		}
+
+		@Override
+		public int getType() {
+			return 14;
+		}
+
+	}
+
 	public static class SideRoom extends DungeonPiece {
 
-		public int modelID;
+		public Treasure.Type treasureType;
+		public int modelID, offsetX, offsetY, offsetZ;
 
 		public SideRoom(TemplateManager manager, CompoundNBT p_i51343_2_) {
 			super(Dungeon.SIDE_ROOM, p_i51343_2_);
 			modelID = p_i51343_2_.getInt("modelID");
+			offsetX = p_i51343_2_.getInt("offsetX");
+			offsetY = p_i51343_2_.getInt("offsetY");
+			offsetZ = p_i51343_2_.getInt("offsetZ");
+			treasureType = Treasure.Type.fromInt(p_i51343_2_.getInt("treasureType"));
 		}
 
 		@Override
@@ -195,16 +363,28 @@ public class DungeonPieces {
 				ChunkPos chunkPosIn) {
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			if (model != null) {
-				if (theme != 1)
-					theme = Theme.BIOME_TO_THEME_MAP
-							.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
-				buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
-						rotation);
+//				if (theme != 1)
+//					theme = Theme.BIOME_TO_THEME_MAP
+//							.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+				buildRotated(model, worldIn, new BlockPos(x + offsetX, y + offsetY, z + offsetZ), Theme.get(theme),
+						Treasure.Type.DEFAULT, stage, rotation);
 				return true;
 			} else {
 				DungeonCrawl.LOGGER.error("Side Room Model doesnt exist: {}", modelID);
 				return false;
 			}
+		}
+
+		public void setOffset(int x, int y, int z) {
+			this.offsetX = x;
+			this.offsetY = y;
+			this.offsetZ = z;
+		}
+
+		public void setOffset(Triple<Integer, Integer, Integer> offset) {
+			this.offsetX = offset.l;
+			this.offsetY = offset.m;
+			this.offsetZ = offset.r;
 		}
 
 		@Override
@@ -216,6 +396,10 @@ public class DungeonPieces {
 		public void readAdditional(CompoundNBT tagCompound) {
 			super.readAdditional(tagCompound);
 			tagCompound.putInt("modelID", modelID);
+			tagCompound.putInt("offsetX", offsetX);
+			tagCompound.putInt("offsetY", offsetY);
+			tagCompound.putInt("offsetZ", offsetZ);
+			tagCompound.putInt("treasureType", Treasure.Type.toInt(treasureType));
 		}
 
 	}
@@ -229,9 +413,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			buildRotated(null, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
 					rotation); // TODO model
 			return true;
@@ -256,9 +440,9 @@ public class DungeonPieces {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage);
 			addWalls(this, worldIn, theme);
 			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
@@ -285,12 +469,12 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
-			
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+
 			if (theme != 3 && getAirBlocks(worldIn, x, y, z, 8, 8) > 8) {
-				
+
 				boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
 				switch (connectedSides) {
 				case 2:
@@ -316,13 +500,14 @@ public class DungeonPieces {
 				}
 				return true;
 			}
-			
+
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
-			
-			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage, getRotation());
-			
+
+			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Treasure.Type.DEFAULT, stage,
+					getRotation());
+
 			if (theme == 3 && ((connectedSides == 2
 					&& (!(sides[0] && sides[2] || sides[1] && sides[3]) || randomIn.nextDouble() < 0.2))
 					|| connectedSides > 2) && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
@@ -357,9 +542,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			buildRotated(DungeonSegmentModelRegistry.CORRIDOR_ROOM, worldIn, new BlockPos(x, y - 6, z),
 					Theme.get(theme), Treasure.Type.DEFAULT, stage, getRotation());
 			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 7, z, 8, 8) > 5)
@@ -383,9 +568,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			buildRotated(DungeonSegmentModelRegistry.CORRIDOR_TRAP, worldIn, new BlockPos(x, y, z), Theme.get(theme),
 					Treasure.Type.DEFAULT, stage, getRotation());
 			return true;
@@ -405,9 +590,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			build(lava ? DungeonSegmentModelRegistry.HOLE_LAVA : DungeonSegmentModelRegistry.HOLE, worldIn,
 					new BlockPos(x, y - 15, z), Theme.get(theme), Treasure.Type.DEFAULT, stage);
 			addWalls(this, worldIn, theme);
@@ -443,25 +628,30 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			int height = theme == 3 ? worldIn.getSeaLevel() : getGroudHeight(worldIn, x + 4, z + 4);
+//			int ch = height - (height % 8) + height % 8 > 0 ? 8 : 0;
 			int ch = y;
 			Theme buildTheme = Theme.get(theme);
 			while (ch < height) {
 				build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), buildTheme,
 						Treasure.Type.DEFAULT, stage);
-				for (int x1 = 0; x1 < 8; x1++)
-					for (int y1 = 0; y1 < 8; y1++)
-						setBlockState(buildTheme.wall.get(), worldIn, null, x + x1, ch + y1, z + 7, theme, 0);
-				for (int z1 = 0; z1 < 8; z1++)
-					for (int y1 = 0; y1 < 8; y1++)
-						setBlockState(buildTheme.wall.get(), worldIn, null, x + 7, ch + y1, z + z1, theme, 0);
+//				for (int x1 = 0; x1 < 8; x1++)
+//					for (int y1 = 0; y1 < 8; y1++)
+//						setBlockState(buildTheme.wall.get(), worldIn, null, x + x1, ch + y1, z + 7, theme, 0);
+//				for (int z1 = 0; z1 < 8; z1++)
+//					for (int y1 = 0; y1 < 8; y1++)
+//						setBlockState(buildTheme.wall.get(), worldIn, null, x + 7, ch + y1, z + z1, theme, 0);
 				ch += 8;
 			}
-			build(DungeonSegmentModelRegistry.ENTRANCE, worldIn, new BlockPos(x, ch, z), buildTheme,
-					Treasure.Type.DEFAULT, stage);
+			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(worldIn.getRandom());
+			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
+			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), Theme.get(theme),
+					Treasure.Type.SUPPLY, stage);
+			DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR)
+					.process(worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), theme, this);
 			return false;
 		}
 
@@ -476,9 +666,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
@@ -503,9 +693,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
@@ -536,9 +726,9 @@ public class DungeonPieces {
 		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
-			if (theme != 1)
-				theme = Theme.BIOME_TO_THEME_MAP
-						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
+//			if (theme != 1)
+//				theme = Theme.BIOME_TO_THEME_MAP
+//						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;

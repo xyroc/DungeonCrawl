@@ -1,0 +1,612 @@
+{
+	"pools": [
+	{
+        	"name": "dungeon_chest_stage_1",
+        	"rolls": {
+        		"min": 8,
+        		"max": 12
+        	},
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:coal",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 3
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_ingot",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:gold_ingot",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ],
+                    "weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:arrow",
+                	"weight": 4,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 2,
+                				"max": 5
+                			}
+                		}
+                	]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:cobweb",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 3
+                            }
+                        }
+                    ],
+                    "weight": 26
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:bone",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 4,
+                                "max": 6
+                            }
+                        }
+                    ],
+                    "weight": 26
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:rotten_flesh",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 3,
+                                "max": 7
+                            }
+                        }
+                    ],
+                    "weight": 26
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:stick",
+                	"weight": 10,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:feather",
+                	"weight": 3,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:paper",
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 6
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:sugar_cane",
+                	"weight": 2,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 2,
+                				"max": 5
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:bone_meal",
+                	"weight": 4,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:gold_nugget",
+                	"weight": 6,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 2,
+                				"max": 5
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:iron_nugget",
+                	"weight": 5,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 2,
+                				"max": 5
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:clay_ball",
+                	"weight": 2,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:flint",
+                	"weight": 3,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 3
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:string",
+                	"weight": 4,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:gunpowder",
+                	"weight": 3,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 3
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:ink_sac",
+                	"weight": 2,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 3
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:tnt",
+                	"weight": 1,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 3
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:glass_bottle",
+                	"weight": 3,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 5
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:melon",
+                	"weight": 1,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 3
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:pumpkin",
+                	"weight": 1,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 3
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:dead_bush",
+                	"weight": 4,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:egg",
+                	"weight": 2,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:brick",
+                	"weight": 2,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 3,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:carrot_on_a_stick",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:minecart",
+                	"weight": 2
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:tnt_minecart",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:cauldron",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:map",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:rabbit_hide",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:phantom_membrane",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:leather_horse_armor",
+                	"weight": 2
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:ender_pearl",
+                	"weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_axe",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:golden_sword",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:golden_axe",
+                    "weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:saddle",
+                	"weight:": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:golden_apple",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:music_disc_13",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:music_disc_cat",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:name_tag",
+                	"weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:book",
+                    "weight": 1,
+                    "functions": [
+                        {
+                            "function": "enchant_with_levels",
+                            "levels": 15,
+                            "treasure": true
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:torch",
+                    "weight": 8,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                            	"min": 1,
+                            	"max": 7
+                            }
+                        }
+                    ]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:brown_mushroom",
+                	"weight": 7,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 4
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:red_mushroom",
+                	"weight": 7,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 4
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:bowl",
+                	"weight": 6
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:clock",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:compass",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:lead",
+                	"weight": 1
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:fermented_spider_eye",
+                	"weight": 4
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:spider_eye",
+                	"weight": 8,
+                	"functions": [
+                		{
+                			"function": "set_count",
+                			"count": {
+                				"min": 1,
+                				"max": 7
+                			}
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:air",
+                	"weight": 18,
+                	"functions": [
+                		{
+                			"function": "dungeoncrawl:random_potion",
+                			"stage": 1
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:air",
+                	"weight": 20,
+                	"functions": [
+                		{
+                			"function": "dungeoncrawl:random_item",
+                			"stage": 1
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:air",
+                	"weight": 8,
+                	"functions": [
+                		{
+                			"function": "dungeoncrawl:material_blocks"
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:air",
+                	"weight": 1,
+                	"functions": [
+                		{
+                			"function": "dungeoncrawl:enchanted_book",
+                			"stage": 1
+                		}
+                	]
+                },
+                {
+                	"type": "item",
+                	"name": "minecraft:shield",
+                	"weight": 2,
+                	"functions": [
+                		{
+                			"function": "dungeoncrawl:shield"
+                		}
+                	]
+                }
+            ]
+        }
+	]
+}

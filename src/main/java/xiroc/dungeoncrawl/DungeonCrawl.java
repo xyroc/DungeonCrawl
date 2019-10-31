@@ -16,7 +16,6 @@ DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,15 +25,12 @@ import com.google.gson.GsonBuilder;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ServerWorld;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -43,6 +39,8 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -52,7 +50,7 @@ public class DungeonCrawl {
 
 	public static final String MODID = "dungeoncrawl";
 	public static final String NAME = "Dungeon Crawl";
-	public static final String VERSION = "1.4.0";
+	public static final String VERSION = "1.5.0";
 
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -61,12 +59,12 @@ public class DungeonCrawl {
 	public DungeonCrawl() {
 		LOGGER.info("Here we go!");
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-//		MinecraftForge.EVENT_BUS.register(new DungeonSegmentTestHelper());
-		Dungeon.DUNGEON.setRegistryName(locate(Dungeon.NAME.toLowerCase(Locale.ROOT)));
-		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON);
+//		MinecraftForge.EVENT_BUS.register(new Tools());
+		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
+		
+		Treasure.init();
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -79,28 +77,17 @@ public class DungeonCrawl {
 		BlockRegistry.load();
 	}
 
-	private void clientSetup(final FMLClientSetupEvent event) {
-		LOGGER.info("Client Setup");
-	}
-
 	public static String getDate() {
 		return new SimpleDateFormat().format(new Date());
-	}
-
-	/*
-	 * Doesnt work
-	 */
-	@SubscribeEvent
-	public void onRegisterFeature(RegistryEvent.Register<Feature<?>> event) {
-		DungeonCrawl.LOGGER.info("Feature Registry Event: {}", event);
-//		event.getRegistry().register(Dungeon.DUNGEON);
 	}
 
 	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event) {
 		if (event.getWorld().isRemote())
 			return;
-		DungeonSegmentModelRegistry.load(((ServerWorld) event.getWorld()).getServer().getResourceManager());
+		ServerWorld server = (ServerWorld) event.getWorld();
+		TreasureLootTable.buildAll(server.getServer().getLootTableManager());
+		DungeonSegmentModelRegistry.load(server.getServer().getResourceManager());
 	}
 
 	public static ResourceLocation locate(String path) {

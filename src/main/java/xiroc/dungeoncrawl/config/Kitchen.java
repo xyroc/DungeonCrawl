@@ -74,10 +74,14 @@ public class Kitchen implements IJsonConfigurable {
 		SMOKER_OCEAN = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_SMOKER_OCEAN, this),
 				TreasureLootTable.class);
 
-		KITCHEN.build();
-		SMOKER.build();
-		SMOKER_OCEAN.build();
-	}
+//		KITCHEN.build();
+//		SMOKER.build();
+//		SMOKER_OCEAN.build();
+		
+		TreasureLootTable.LOOT_TABLES.add(KITCHEN);
+		TreasureLootTable.LOOT_TABLES.add(SMOKER);
+		TreasureLootTable.LOOT_TABLES.add(SMOKER_OCEAN);
+}
 
 	@Override
 	public JsonObject create(JsonObject object) {

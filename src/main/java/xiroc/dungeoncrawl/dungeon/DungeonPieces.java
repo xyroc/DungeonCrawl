@@ -59,7 +59,6 @@ public class DungeonPieces {
 	// 12 Part
 	// 13 SideRoom
 	// 14 Part with Entity
-	// 99 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
 
@@ -120,6 +119,9 @@ public class DungeonPieces {
 			this.width = width;
 			this.height = height;
 			this.length = length;
+			if (this.treasureType == 0)
+				this.treasureType = Treasure.Type
+						.toInt(Treasure.LARGE_ROOM_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT));
 		}
 
 		public void adjustSize() {
@@ -647,12 +649,12 @@ public class DungeonPieces {
 				ch += 8;
 			}
 			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(worldIn.getRandom());
-			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
+			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.getOrDefault(entrance.id, new Tuple<Integer, Integer>(0, 0));
 			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), Theme.get(theme),
 					Treasure.Type.SUPPLY, stage);
 			DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR)
 					.process(worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), theme, this);
-			return false;
+			return true;
 		}
 
 	}

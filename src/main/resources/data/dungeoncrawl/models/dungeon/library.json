@@ -1895,7 +1895,7 @@
         null,
         null,
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "NORTH",
           "waterlogged": false
         },
@@ -2250,7 +2250,7 @@
         null,
         null,
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "WEST",
           "waterlogged": false
         },
@@ -3001,7 +3001,7 @@
           "type": "RAND_BOOKSHELF_COBWEB"
         },
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "WEST",
           "waterlogged": false
         },
@@ -3028,7 +3028,7 @@
           "type": "RAND_BOOKSHELF_COBWEB"
         },
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "EAST",
           "waterlogged": false
         },
@@ -3785,7 +3785,7 @@
         },
         null,
         {
-          "type": "RAND_FLOOR_CHESTCOMMON_SPAWNER",
+          "type": "CHEST",
           "facing": "EAST",
           "waterlogged": false
         },

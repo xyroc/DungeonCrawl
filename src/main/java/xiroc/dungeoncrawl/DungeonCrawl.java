@@ -40,7 +40,6 @@ import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -57,7 +56,7 @@ public class DungeonCrawl {
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public DungeonCrawl() {
-		LOGGER.info("Here we go!");
+		LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
@@ -86,7 +85,6 @@ public class DungeonCrawl {
 		if (event.getWorld().isRemote())
 			return;
 		ServerWorld server = (ServerWorld) event.getWorld();
-		TreasureLootTable.buildAll(server.getServer().getLootTableManager());
 		DungeonSegmentModelRegistry.load(server.getServer().getResourceManager());
 	}
 

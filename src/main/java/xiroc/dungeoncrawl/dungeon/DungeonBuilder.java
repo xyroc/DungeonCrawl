@@ -125,6 +125,7 @@ public class DungeonBuilder {
 	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
 		this.rand = rand;
 		this.start = new Position2D(rand.nextInt(Dungeon.SIZE), rand.nextInt(Dungeon.SIZE));
+//		this.start = new Position2D(15, 15);
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
 		this.layers = new DungeonLayer[startPos.getY() / 16];
@@ -247,7 +248,6 @@ public class DungeonBuilder {
 						return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
 					return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
 				}
-
 			case 3:
 				return RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
 			case 4:

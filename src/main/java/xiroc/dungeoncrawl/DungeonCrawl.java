@@ -49,7 +49,7 @@ public class DungeonCrawl {
 
 	public static final String MODID = "dungeoncrawl";
 	public static final String NAME = "Dungeon Crawl";
-	public static final String VERSION = "1.5.1";
+	public static final String VERSION = "1.5.2";
 
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -60,9 +60,10 @@ public class DungeonCrawl {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
+//		MinecraftForge.EVENT_BUS.register(new LootTableProcessor());
 //		MinecraftForge.EVENT_BUS.register(new Tools());
-		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
-		
+		ForgeRegistries.FEATURES
+				.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 		Treasure.init();
 	}
 

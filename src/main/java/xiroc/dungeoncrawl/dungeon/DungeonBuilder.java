@@ -44,6 +44,10 @@ public class DungeonBuilder {
 	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
 		;
 	};
+	
+	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
+		return ENTRANCES[rand.nextInt(ENTRANCES.length)];
+	};
 
 	public Random rand;
 	public Position2D start;
@@ -134,7 +138,7 @@ public class DungeonBuilder {
 				+ startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}", theme);
 
 		this.statTracker = new DungeonStatTracker(layers.length);
-
+		
 		theme = Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString());
 	}
 
@@ -267,10 +271,6 @@ public class DungeonBuilder {
 			return null;
 		}
 	}
-
-	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
-		return ENTRANCES[rand.nextInt(ENTRANCES.length)];
-	};
 
 	public static BossEntry getRandomBoss(Random rand) {
 		if (JsonConfig.DUNGEON_BOSSES.length < 1)

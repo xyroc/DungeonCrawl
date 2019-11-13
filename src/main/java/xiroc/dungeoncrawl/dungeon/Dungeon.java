@@ -33,7 +33,7 @@ import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
-	public static final String NAME = DungeonCrawl.MODID + ":dungeon";
+	public static final String NAME = createRegistryName();
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
 
 	public static final IStructurePieceType ENTRANCE_BUILDER = IStructurePieceType
@@ -60,8 +60,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			"DUNGEON_HOLE_TRAP");
 	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonPieces.SideRoom::new,
 			"DUNGEON_SIDE_ROOM");
-	public static final IStructurePieceType PART_WITH_ENTITY = IStructurePieceType.register(DungeonPieces.PartWithEntity::new,
-			"DUNGEON_PART_WITH_ENTITY");
+	public static final IStructurePieceType PART_WITH_ENTITY = IStructurePieceType
+			.register(DungeonPieces.PartWithEntity::new, "DUNGEON_PART_WITH_ENTITY");
 
 	public static int SIZE = 16;
 
@@ -72,7 +72,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z,
 			int spacingOffsetsX, int spacingOffsetsZ) {
 		int i = 15; // 15
-		int j = i -5; // 10
+		int j = i - 5; // 10
 		int k = x + i * spacingOffsetsX;
 		int l = z + i * spacingOffsetsZ;
 		int i1 = k < 0 ? k - i + 1 : k;
@@ -117,6 +117,12 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 		return 8;
 	}
 
+	private static String createRegistryName() {
+		if (Config.COMPATIBILITY_MODE != null && Config.COMPATIBILITY_MODE.get())
+			return "dcdungeon";
+		return DungeonCrawl.MODID + ":dungeon";
+	}
+
 	public static class Start extends StructureStart {
 
 		public Start(Structure<?> p_i51341_1_, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn,
@@ -144,6 +150,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 				ServerWorld serverWorld = (ServerWorld) world.get(generator);
 				BlockPos spawn = serverWorld.getSpawnPoint();
+
+				DungeonSegmentModelRegistry.load(serverWorld);
 
 				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
 

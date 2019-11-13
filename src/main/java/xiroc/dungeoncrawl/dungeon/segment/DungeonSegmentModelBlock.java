@@ -50,7 +50,6 @@ public class DungeonSegmentModelBlock {
 
 	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type) {
 		this.type = type;
-		// LeverBlock
 	}
 
 	/**

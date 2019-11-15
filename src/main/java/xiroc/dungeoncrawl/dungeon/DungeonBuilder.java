@@ -17,6 +17,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
@@ -44,7 +45,7 @@ public class DungeonBuilder {
 	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
 		;
 	};
-	
+
 	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
 		return ENTRANCES[rand.nextInt(ENTRANCES.length)];
 	};
@@ -138,8 +139,13 @@ public class DungeonBuilder {
 				+ startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}", theme);
 
 		this.statTracker = new DungeonStatTracker(layers.length);
-		
-		theme = Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString());
+
+		DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length,
+				Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString()));
+
+		DungeonCrawl.EVENT_BUS.post(startEvent);
+
+		theme = startEvent.theme;
 	}
 
 	public List<DungeonPiece> build() {

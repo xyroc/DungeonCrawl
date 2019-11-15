@@ -633,17 +633,13 @@ public class DungeonPieces {
 //			int ch = height - (height % 8) + height % 8 > 0 ? 8 : 0;
 			int ch = y;
 			Theme buildTheme = Theme.get(theme);
+			
 			while (ch < height) {
 				build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), buildTheme,
 						Treasure.Type.DEFAULT, stage);
-//				for (int x1 = 0; x1 < 8; x1++)
-//					for (int y1 = 0; y1 < 8; y1++)
-//						setBlockState(buildTheme.wall.get(), worldIn, null, x + x1, ch + y1, z + 7, theme, 0);
-//				for (int z1 = 0; z1 < 8; z1++)
-//					for (int y1 = 0; y1 < 8; y1++)
-//						setBlockState(buildTheme.wall.get(), worldIn, null, x + 7, ch + y1, z + z1, theme, 0);
 				ch += 8;
 			}
+			
 			// Some safety checks since there seems to be a rare crash issue here...
 			Random rand = worldIn.getRandom();
 			if (rand == null) {
@@ -651,8 +647,13 @@ public class DungeonPieces {
 						worldIn.getClass());
 				rand = new Random();
 			}
+			
 			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(rand);
 			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
+			
+			DungeonCrawl.LOGGER.debug("Entrance data:");
+			DungeonCrawl.LOGGER.debug("Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z, entrance, entrance.id, offset, offset.getA(), offset.getB());
+			
 			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme,
 					Treasure.Type.SUPPLY, stage);
 			DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR)

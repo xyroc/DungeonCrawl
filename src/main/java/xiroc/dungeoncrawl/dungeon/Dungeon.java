@@ -27,13 +27,14 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.ObfuscationValues;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
-	public static final String NAME = createRegistryName();
+	public static final String NAME = Config.COMPATIBILITY_MODE.get() ? "dcdungeon" : DungeonCrawl.MODID + ":dungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
 
 	public static final IStructurePieceType ENTRANCE_BUILDER = IStructurePieceType
@@ -117,12 +118,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 		return 8;
 	}
 
-	private static String createRegistryName() {
-		if (Config.COMPATIBILITY_MODE != null && Config.COMPATIBILITY_MODE.get())
-			return "dcdungeon";
-		return DungeonCrawl.MODID + ":dungeon";
-	}
-
 	public static class Start extends StructureStart {
 
 		public Start(Structure<?> p_i51341_1_, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn,
@@ -156,6 +151,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
 
 				if (serverWorld.getDimension().getType() != DimensionType.OVERWORLD
+						|| DungeonCrawl.EVENT_BUS
+								.post(new DungeonPlacementCheckEvent(serverWorld, biomeIn, chunkX, chunkZ))
 						|| spawnChunkX - chunkX < chunkSize && spawnChunkX - chunkX > -chunkSize
 						|| spawnChunkZ - chunkZ < chunkSize / 2 && spawnChunkZ - chunkZ > -chunkSize)
 					return;

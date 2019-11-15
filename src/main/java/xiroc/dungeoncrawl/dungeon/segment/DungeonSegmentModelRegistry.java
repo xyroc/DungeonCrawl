@@ -10,6 +10,7 @@ import java.util.HashMap;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.api.event.DungeonSegmentModelLoadEvent;
 import xiroc.dungeoncrawl.util.DungeonSegmentModelReader;
 
 public class DungeonSegmentModelRegistry {
@@ -378,9 +379,14 @@ public class DungeonSegmentModelRegistry {
 
 	public static DungeonSegmentModel loadFromFile(String path, IResourceManager resourceManager) {
 		DungeonCrawl.LOGGER.debug("Loading {}", path);
+		DungeonSegmentModelLoadEvent loadEvent = new DungeonSegmentModelLoadEvent(path);
+		
+		if (DungeonCrawl.EVENT_BUS.post(loadEvent))
+			return null;
+		
 		try {
 			return DungeonSegmentModelReader
-					.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
+					.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

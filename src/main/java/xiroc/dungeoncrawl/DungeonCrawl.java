@@ -27,9 +27,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -54,6 +56,8 @@ public class DungeonCrawl {
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	
+	public static final IEventBus EVENT_BUS = Bus.MOD.bus().get();
 
 	public DungeonCrawl() {
 		LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);

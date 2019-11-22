@@ -11,6 +11,11 @@ import net.minecraft.util.Rotation;
 
 public class RotationHelper {
 
+	private static final Direction[] FACINGS = new Direction[] {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.DOWN, Direction.UP};
+
+	public static final IRandom<Direction> RANDOM_FACING = (rand) -> FACINGS[rand.nextInt(FACINGS.length)];
+	public static final IRandom<Direction> RANDOM_FACING_FLAT = (rand) -> FACINGS[rand.nextInt(4)];
+
 	public static final Direction[] EAST_SOUTH_WEST = new Direction[] { Direction.EAST, Direction.SOUTH,
 			Direction.WEST };
 	public static final Direction[] EAST_NORTH_WEST = new Direction[] { Direction.EAST, Direction.NORTH,

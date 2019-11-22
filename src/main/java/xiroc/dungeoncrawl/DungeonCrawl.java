@@ -57,18 +57,18 @@ public class DungeonCrawl {
 
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	
-	public static final IEventBus EVENT_BUS = Bus.MOD.bus().get();
+	public static IEventBus EVENT_BUS;
 
 	public DungeonCrawl() {
 		LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
-//		MinecraftForge.EVENT_BUS.register(new LootTableProcessor());
 //		MinecraftForge.EVENT_BUS.register(new Tools());
 		ForgeRegistries.FEATURES
 				.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 		Treasure.init();
+		EVENT_BUS = Bus.MOD.bus().get();
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {

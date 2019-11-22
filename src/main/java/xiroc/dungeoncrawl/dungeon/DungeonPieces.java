@@ -651,8 +651,8 @@ public class DungeonPieces {
 			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(rand);
 			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
 			
-			DungeonCrawl.LOGGER.debug("Entrance data:");
-			DungeonCrawl.LOGGER.debug("Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z, entrance, entrance.id, offset, offset.getA(), offset.getB());
+			DungeonCrawl.LOGGER.info("Entrance data:");
+			DungeonCrawl.LOGGER.info("Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z, entrance, entrance.id, offset, offset.getA(), offset.getB());
 			
 			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme,
 					Treasure.Type.SUPPLY, stage);

@@ -29,7 +29,7 @@ public interface IBlockPlacementHandler {
 
 	public static void load() {
 		PLACEMENT_HANDLERS.put(Blocks.CHEST, new Chest());
-		PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, new Chest());
+		PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, new Chest.TrappedChest());
 		PLACEMENT_HANDLERS.put(Blocks.BARREL, new Chest());
 		PLACEMENT_HANDLERS.put(Blocks.FURNACE, new Furnace());
 		PLACEMENT_HANDLERS.put(Blocks.SMOKER, new Furnace.Smoker());

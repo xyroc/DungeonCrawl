@@ -27,9 +27,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -40,7 +42,6 @@ import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -50,21 +51,24 @@ public class DungeonCrawl {
 
 	public static final String MODID = "dungeoncrawl";
 	public static final String NAME = "Dungeon Crawl";
-	public static final String VERSION = "1.5.1";
+	public static final String VERSION = "1.5.2";
 
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+	public static IEventBus EVENT_BUS;
+
 	public DungeonCrawl() {
-		LOGGER.info("Here we go!");
+		LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new EventManager());
 //		MinecraftForge.EVENT_BUS.register(new Tools());
-		ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
-		
+		ForgeRegistries.FEATURES
+				.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 		Treasure.init();
+		EVENT_BUS = Bus.MOD.bus().get();
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -86,7 +90,6 @@ public class DungeonCrawl {
 		if (event.getWorld().isRemote())
 			return;
 		ServerWorld server = (ServerWorld) event.getWorld();
-		TreasureLootTable.buildAll(server.getServer().getLootTableManager());
 		DungeonSegmentModelRegistry.load(server.getServer().getResourceManager());
 	}
 

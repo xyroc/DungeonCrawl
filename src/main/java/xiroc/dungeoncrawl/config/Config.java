@@ -30,10 +30,13 @@ public class Config {
 	public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY;
 
 	public static final BooleanValue BUILD_BRIDGES, IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS;
-//			ENABLE_DUNGEON_BOSS;
+	//			ENABLE_DUNGEON_BOSS;
 
 	static {
 		BUILDER.comment("General Settings").push(CONFIG_GENERAL);
+//		COMPATIBILITY_MODE = BUILDER.comment(
+//				"If set to true, dungeon crawl will use the old dungeon registry name. This will prevent errors when playing in worlds that have been used with Dungeon Crawl 1.4.0 or earlier before. If that is not the case, DO NOT activate this!")
+//				.define("compatiblity_mode", false);
 		BUILDER.pop();
 
 		BUILDER.comment("Dungeon Settings").push(CONFIG_DUNGEON);
@@ -56,7 +59,7 @@ public class Config {
 		VANILLA_SPAWNERS = BUILDER.comment(
 				"Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
 				.define("use_vanilla_spawners", false);
-		SIZE = BUILDER.comment("The size of the dungeon. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
+		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
 //		ENABLE_DUNGEON_BOSS = BUILDER.comment(
 //				"If enabled, there will be a final room with a boss at the lowers layer. Please note that Dungeon Crawl DOES NOT bring its own bosses. The boss entities can be configured in the config.json file.")
 //				.define("enable_dungeon_boss", false);

@@ -27,6 +27,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.ObfuscationValues;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
@@ -60,8 +61,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			"DUNGEON_HOLE_TRAP");
 	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonPieces.SideRoom::new,
 			"DUNGEON_SIDE_ROOM");
-	public static final IStructurePieceType PART_WITH_ENTITY = IStructurePieceType.register(DungeonPieces.PartWithEntity::new,
-			"DUNGEON_PART_WITH_ENTITY");
+	public static final IStructurePieceType PART_WITH_ENTITY = IStructurePieceType
+			.register(DungeonPieces.PartWithEntity::new, "DUNGEON_PART_WITH_ENTITY");
 
 	public static int SIZE = 16;
 
@@ -72,7 +73,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z,
 			int spacingOffsetsX, int spacingOffsetsZ) {
 		int i = 15; // 15
-		int j = i -5; // 10
+		int j = i - 5; // 10
 		int k = x + i * spacingOffsetsX;
 		int l = z + i * spacingOffsetsZ;
 		int i1 = k < 0 ? k - i + 1 : k;
@@ -145,9 +146,13 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 				ServerWorld serverWorld = (ServerWorld) world.get(generator);
 				BlockPos spawn = serverWorld.getSpawnPoint();
 
+				DungeonSegmentModelRegistry.load(serverWorld);
+
 				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
 
 				if (serverWorld.getDimension().getType() != DimensionType.OVERWORLD
+						|| DungeonCrawl.EVENT_BUS
+								.post(new DungeonPlacementCheckEvent(serverWorld, biomeIn, chunkX, chunkZ))
 						|| spawnChunkX - chunkX < chunkSize && spawnChunkX - chunkX > -chunkSize
 						|| spawnChunkZ - chunkZ < chunkSize / 2 && spawnChunkZ - chunkZ > -chunkSize)
 					return;

@@ -18,6 +18,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 public class Treasure {
 
 	public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES;
+	public static final HashMap<Integer, Treasure.Type> LARGE_ROOM_TREASURE_TYPES;
 
 //	public static final HashMap<String, Object> DEFAULTS;
 //	public static final String[] KEYS;
@@ -43,6 +44,10 @@ public class Treasure {
 	static {
 
 		SPECIAL_LOOT_TABLES = new HashMap<Type, ResourceLocation>();
+		
+		LARGE_ROOM_TREASURE_TYPES = new HashMap<Integer, Treasure.Type>();
+		
+		LARGE_ROOM_TREASURE_TYPES.put(35, Type.LIBRARY);
 
 //		DEFAULTS = new HashMap<String, Object>();
 //		DEFAULTS.put(KEY_CHEST_STAGE_1, new TreasureLootTable("dungeon_chest_stage_1", new RandomValueRange(3, 9),

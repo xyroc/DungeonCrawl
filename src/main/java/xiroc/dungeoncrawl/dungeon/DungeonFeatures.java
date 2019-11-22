@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.SideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
@@ -135,6 +136,37 @@ public class DungeonFeatures {
 		for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
 			if (corridorFeature.process(builder, layer, x, z, rand, lyr, stage, startPos))
 				return;
+	}
+
+	/**
+	 * Checks if a piece can be placed at the given position and layer. This does
+	 * also check if there are pieces on other layers (height variable) to avoid
+	 * collisions. For example, a piece that goes 9 to 16 blocks below the height of its
+	 * layer would have a height value of -1 (minus, because it goes down; 1 layer =
+	 * 16 blocks).
+	 * 
+	 * @param builder The Dungeon Builder object
+	 * @param layer   The layer of the piece
+	 * @param height  The Height of the piece
+	 * @return true if the piece can be placed, false if not
+	 */
+	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int height) {
+		int layers = builder.layers.length, lh = layer - height;
+		if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
+			return false;
+
+		boolean up = height > 0;
+		int c = up ? -1 : 1, k = lh + c;
+
+		DungeonCrawl.LOGGER.debug("Checking, if a {} high piece can be placed at layer {} of {}. The c-variable is {}. Up: {}.", height, layer, layers, c, up);
+		
+		for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
+			DungeonCrawl.LOGGER.debug("lyr: {}, k: {}", lyr, k);
+			if (builder.layers[lyr].segments[x][z] != null)
+				return false;
+		}
+		DungeonCrawl.LOGGER.debug("--");
+		return true;
 	}
 
 	@FunctionalInterface

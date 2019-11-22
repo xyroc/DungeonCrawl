@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-/*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
- */
+
 
 import java.util.Random;
 
@@ -11,12 +9,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ServerWorld;
-import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.dungeon.treasure.TreasureLootTable.VanillaImport;
 import xiroc.dungeoncrawl.util.ItemProcessor;
+
 
 public class TreasureEntry {
 
@@ -111,34 +107,6 @@ public class TreasureEntry {
 		public ItemEnchantment(ResourceLocation id, int level) {
 			this.id = id;
 			this.level = level;
-		}
-
-	}
-
-	public static class VanillaLootTable extends TreasureEntry {
-
-		public VanillaImport table;
-
-		public VanillaLootTable(VanillaImport table) {
-			this(table, table.weight);
-		}
-
-		public VanillaLootTable(VanillaImport table, int weight) {
-			super("no_resource", weight);
-			this.table = table;
-		}
-
-		@Override
-		public ItemStack generate(ServerWorld world, Random rand, int theme, int lootLevel) {
-			return table.generate(new LootContext.Builder(world).withRandom(world.rand)
-//					.withParameter(LootParameters.POSITION,
-//							new BlockPos(rand.nextInt(1024), rand.nextInt(256), rand.nextInt(1024)))
-					.withSeed(rand.nextLong()).build(LootParameterSets.EMPTY));
-//			LockableLootTileEntity LootTable
-		}
-
-		@Override
-		public void readResourceLocation() {
 		}
 
 	}

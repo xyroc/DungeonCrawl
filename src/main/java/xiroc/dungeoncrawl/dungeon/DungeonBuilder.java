@@ -17,6 +17,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
@@ -43,6 +44,10 @@ public class DungeonBuilder {
 
 	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
 		;
+	};
+
+	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
+		return ENTRANCES[rand.nextInt(ENTRANCES.length)];
 	};
 
 	public Random rand;
@@ -125,6 +130,7 @@ public class DungeonBuilder {
 	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
 		this.rand = rand;
 		this.start = new Position2D(rand.nextInt(Dungeon.SIZE), rand.nextInt(Dungeon.SIZE));
+//		this.start = new Position2D(15, 15);
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
 		this.layers = new DungeonLayer[startPos.getY() / 16];
@@ -134,7 +140,12 @@ public class DungeonBuilder {
 
 		this.statTracker = new DungeonStatTracker(layers.length);
 
-		theme = Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString());
+		DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length,
+				Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString()));
+
+		DungeonCrawl.EVENT_BUS.post(startEvent);
+
+		theme = startEvent.theme;
 	}
 
 	public List<DungeonPiece> build() {
@@ -247,7 +258,6 @@ public class DungeonBuilder {
 						return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
 					return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
 				}
-
 			case 3:
 				return RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
 			case 4:
@@ -267,10 +277,6 @@ public class DungeonBuilder {
 			return null;
 		}
 	}
-
-	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
-		return ENTRANCES[rand.nextInt(ENTRANCES.length)];
-	};
 
 	public static BossEntry getRandomBoss(Random rand) {
 		if (JsonConfig.DUNGEON_BOSSES.length < 1)

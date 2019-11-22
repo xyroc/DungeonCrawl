@@ -38,6 +38,7 @@ import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.RotationHelper;
@@ -59,7 +60,6 @@ public class DungeonPieces {
 	// 12 Part
 	// 13 SideRoom
 	// 14 Part with Entity
-	// 99 RoomLargePlaceholder
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
 
@@ -120,6 +120,9 @@ public class DungeonPieces {
 			this.width = width;
 			this.height = height;
 			this.length = length;
+			if (this.treasureType == 0)
+				this.treasureType = Treasure.Type
+						.toInt(Treasure.LARGE_ROOM_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT));
 		}
 
 		public void adjustSize() {
@@ -621,11 +624,6 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public int getType() {
-			return 11;
-		}
-
-		@Override
 		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 				ChunkPos p_74875_4_) {
 //			if (theme != 1)
@@ -635,24 +633,37 @@ public class DungeonPieces {
 //			int ch = height - (height % 8) + height % 8 > 0 ? 8 : 0;
 			int ch = y;
 			Theme buildTheme = Theme.get(theme);
+			
 			while (ch < height) {
 				build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), buildTheme,
 						Treasure.Type.DEFAULT, stage);
-//				for (int x1 = 0; x1 < 8; x1++)
-//					for (int y1 = 0; y1 < 8; y1++)
-//						setBlockState(buildTheme.wall.get(), worldIn, null, x + x1, ch + y1, z + 7, theme, 0);
-//				for (int z1 = 0; z1 < 8; z1++)
-//					for (int y1 = 0; y1 < 8; y1++)
-//						setBlockState(buildTheme.wall.get(), worldIn, null, x + 7, ch + y1, z + z1, theme, 0);
 				ch += 8;
 			}
-			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(worldIn.getRandom());
+			
+			// Some safety checks since there seems to be a rare crash issue here...
+			Random rand = worldIn.getRandom();
+			if (rand == null) {
+				DungeonCrawl.LOGGER.warn("Failed to receive a random object from worldIn: {}, {}", worldIn,
+						worldIn.getClass());
+				rand = new Random();
+			}
+			
+			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(rand);
 			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
-			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), Theme.get(theme),
+			
+			DungeonCrawl.LOGGER.info("Entrance data:");
+			DungeonCrawl.LOGGER.info("Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z, entrance, entrance.id, offset, offset.getA(), offset.getB());
+			
+			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme,
 					Treasure.Type.SUPPLY, stage);
 			DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR)
 					.process(worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), theme, this);
-			return false;
+			return true;
+		}
+
+		@Override
+		public int getType() {
+			return 11;
 		}
 
 	}
@@ -923,7 +934,7 @@ public class DungeonPieces {
 							state = Blocks.AIR.getDefaultState();
 						else
 							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-									world.getRandom(), lootLevel);
+									WeightedRandomBlock.RANDOM, lootLevel); //
 						if (state == null)
 							continue;
 						setBlockState(state, world, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
@@ -945,7 +956,7 @@ public class DungeonPieces {
 								state = Blocks.AIR.getDefaultState();
 							else
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-										world.getRandom(), lootLevel, Rotation.CLOCKWISE_90);
+										WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_90); //
 							if (state == null)
 								continue;
 							setBlockState(state, world, treasureType, pos.getX() + model.length - z - 1, pos.getY() + y,
@@ -963,7 +974,7 @@ public class DungeonPieces {
 								state = Blocks.AIR.getDefaultState();
 							else
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-										world.getRandom(), lootLevel, Rotation.COUNTERCLOCKWISE_90);
+										WeightedRandomBlock.RANDOM, lootLevel, Rotation.COUNTERCLOCKWISE_90); //
 							if (state == null)
 								continue;
 							setBlockState(state, world, treasureType, pos.getX() + z, pos.getY() + y,
@@ -981,7 +992,7 @@ public class DungeonPieces {
 								state = Blocks.AIR.getDefaultState();
 							else
 								state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
-										world.getRandom(), lootLevel, Rotation.CLOCKWISE_180);
+										WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_180); //
 							if (state == null)
 								continue;
 							setBlockState(state, world, treasureType, pos.getX() + model.width - x - 1, pos.getY() + y,

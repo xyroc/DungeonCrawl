@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import net.minecraft.resources.IResourceManager;
+import net.minecraft.world.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.api.event.DungeonSegmentModelLoadEvent;
 import xiroc.dungeoncrawl.util.DungeonSegmentModelReader;
 
 public class DungeonSegmentModelRegistry {
@@ -17,11 +19,11 @@ public class DungeonSegmentModelRegistry {
 
 	public static final HashMap<Integer, DungeonSegmentModel> MAP = new HashMap<Integer, DungeonSegmentModel>();
 
-	public static final DungeonSegmentModelBlock NONE = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
-
-	public static final DungeonSegmentModelBlock WATER = new DungeonSegmentModelBlock(
-			DungeonSegmentModelBlockType.NONE);
-	public static final DungeonSegmentModelBlock LAVA = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
+//	public static final DungeonSegmentModelBlock NONE = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
+//
+//	public static final DungeonSegmentModelBlock WATER = new DungeonSegmentModelBlock(
+//			DungeonSegmentModelBlockType.NONE);
+//	public static final DungeonSegmentModelBlock LAVA = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.NONE);
 
 	// public static final DungeonSegmentModelBlock TORCH_DARK_NORTH = new
 	// DungeonSegmentModelBlock(DungeonSegmentModelBlockType.TORCH_DARK);
@@ -309,9 +311,14 @@ public class DungeonSegmentModelRegistry {
 
 	public static DungeonSegmentModel KITCHEN, STARTER_ROOM;
 
-	public static void load(IResourceManager resourceManager) {
+	public static void load(ServerWorld world) {
+		load(world.getServer().getResourceManager());
+	}
+
+	public static synchronized void load(IResourceManager resourceManager) {
 		if (LOADED)
 			return;
+		LOADED = true;
 		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
 		CORRIDOR = loadFromFile("models/dungeon/corridor.json", resourceManager).build().setId(0);
 		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.json", resourceManager).build().setId(1);
@@ -364,19 +371,22 @@ public class DungeonSegmentModelRegistry {
 
 		SIDE_ROOM_TNT = loadFromFile("models/dungeon/side_room_tnt.json", resourceManager).build().setId(33);
 		STARTER_ROOM = loadFromFile("models/dungeon/starter_room.json", resourceManager).build().setId(34);
-		
+
 		LIBRARY = loadFromFile("models/dungeon/library.json", resourceManager).build().setId(35);
 
 		BOSS_ROOM = loadFromFile("models/dungeon/boss_room.json", resourceManager).build().setId(36);
-
-		LOADED = true;
 	}
 
 	public static DungeonSegmentModel loadFromFile(String path, IResourceManager resourceManager) {
 		DungeonCrawl.LOGGER.debug("Loading {}", path);
+		DungeonSegmentModelLoadEvent loadEvent = new DungeonSegmentModelLoadEvent(path);
+		
+		if (DungeonCrawl.EVENT_BUS.post(loadEvent))
+			return null;
+		
 		try {
 			return DungeonSegmentModelReader
-					.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
+					.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

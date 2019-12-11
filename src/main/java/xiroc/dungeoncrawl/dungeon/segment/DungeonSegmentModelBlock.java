@@ -100,8 +100,7 @@ public class DungeonSegmentModelBlock {
 	}
 
 	/**
-	 * Applies all existing properties to the given BlockState.
-	 * Hardcoded :D
+	 * Applies all existing properties to the given BlockState. Hardcoded :D
 	 */
 	public BlockState create(BlockState state) {
 		if (facing != null && state.has(BlockStateProperties.FACING))
@@ -140,7 +139,7 @@ public class DungeonSegmentModelBlock {
 			state = state.with(BlockStateProperties.DOUBLE_BLOCK_HALF, doubleBlockHalf);
 		if (bedPart != null && state.has(BlockStateProperties.BED_PART))
 			state = state.with(BlockStateProperties.BED_PART, bedPart);
-		if(hinge != null && state.has(BlockStateProperties.DOOR_HINGE))
+		if (hinge != null && state.has(BlockStateProperties.DOOR_HINGE))
 			state = state.with(BlockStateProperties.DOOR_HINGE, hinge);
 		return state;
 	}

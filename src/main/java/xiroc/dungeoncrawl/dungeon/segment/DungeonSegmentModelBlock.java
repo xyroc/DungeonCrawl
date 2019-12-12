@@ -5,18 +5,25 @@ package xiroc.dungeoncrawl.dungeon.segment;
  */
 
 import java.util.HashMap;
+import java.util.Locale;
 
 /*
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.Random;
+import java.util.function.Function;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.state.properties.AttachFace;
 import net.minecraft.state.properties.BedPart;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -34,6 +41,40 @@ public class DungeonSegmentModelBlock {
 
 	public static HashMap<DungeonSegmentModelBlockType, DungeonSegmentBlockStateProvider> PROVIDERS = new HashMap<DungeonSegmentModelBlockType, DungeonSegmentBlockStateProvider>();
 
+	private static final HashMap<String, PropertyLoader> LOADERS;
+
+	static {
+		LOADERS = new HashMap<String, PropertyLoader>();
+
+		LOADERS.put("facing", (block, nbt) -> block.facing = read(Direction.class, "facing", nbt, Direction::byName));
+		LOADERS.put("axis",
+				(block, nbt) -> block.axis = read(Direction.Axis.class, "axis", nbt, Direction.Axis::byName));
+
+		LOADERS.put("upsideDown",
+				(block, nbt) -> block.upsideDown = nbt.getBoolean("upsideDown"));
+		LOADERS.put("north", (block, nbt) -> block.north = nbt.getBoolean("north"));
+		LOADERS.put("east", (block, nbt) -> block.east = nbt.getBoolean("east"));
+		LOADERS.put("south", (block, nbt) -> block.south = nbt.getBoolean("south"));
+		LOADERS.put("west", (block, nbt) -> block.west = nbt.getBoolean("west"));
+		LOADERS.put("waterlogged",
+				(block, nbt) -> block.waterlogged = nbt.getBoolean("waterlogged"));
+		LOADERS.put("lit", (block, nbt) -> block.lit = nbt.getBoolean("lit"));
+		LOADERS.put("open", (block, nbt) -> block.open = nbt.getBoolean("open"));
+		LOADERS.put("disarmed",
+				(block, nbt) -> block.disarmed = nbt.getBoolean("disarmed"));
+		LOADERS.put("attached",
+				(block, nbt) -> block.attached = nbt.getBoolean("attached"));
+
+		LOADERS.put("half", (block, nbt) -> block.half = read(Half.class, "half", nbt, Half::valueOf));
+		LOADERS.put("doubleBlockHalf", (block, nbt) -> block.doubleBlockHalf = read(DoubleBlockHalf.class,
+				"doubleBlockHalf", nbt, DoubleBlockHalf::valueOf));
+		LOADERS.put("attachFace",
+				(block, nbt) -> block.attachFace = read(AttachFace.class, "attachFace", nbt, AttachFace::valueOf));
+		LOADERS.put("bedPart", (block, nbt) -> block.bedPart = read(BedPart.class, "bedPart", nbt, BedPart::valueOf));
+		LOADERS.put("doorHinge",
+				(block, nbt) -> block.hinge = read(DoorHingeSide.class, "doorHinge", nbt, DoorHingeSide::valueOf));
+	}
+
 	public DungeonSegmentModelBlockType type;
 
 	public Direction facing;
@@ -50,6 +91,82 @@ public class DungeonSegmentModelBlock {
 
 	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type) {
 		this.type = type;
+	}
+
+	/**
+	 * A method to transform a DungeonSegmentModelBlock into a CompoundNBT for the
+	 * new model type.
+	 * 
+	 * @return The CompoundNBT
+	 */
+	public CompoundNBT getAsNBT() {
+		CompoundNBT tag = new CompoundNBT();
+		tag.putString("type", type.toString());
+		ListNBT properties = new ListNBT();
+
+		if (resourceName != null)
+			tag.putString("resourceName", resourceName);
+
+		add(tag, properties, facing, "facing");
+		add(tag, properties, axis, "axis");
+		
+		addBoolean(tag, properties, upsideDown, "upsideDown");
+		addBoolean(tag, properties, north, "north");
+		addBoolean(tag, properties, east, "east");
+		addBoolean(tag, properties, south, "south");
+		addBoolean(tag, properties, west, "west");
+		addBoolean(tag, properties, waterlogged, "waterlogged");
+		addBoolean(tag, properties, lit, "lit");
+		addBoolean(tag, properties, open, "open");
+		addBoolean(tag, properties, disarmed, "disarmed");
+		addBoolean(tag, properties, attached, "attached");
+
+		add(tag, properties, half, "half");
+		add(tag, properties, doubleBlockHalf, "doubleBlockHalf");
+		add(tag, properties, attachFace, "attachFace");
+		add(tag, properties, bedPart, "bedPart");
+		add(tag, properties, hinge, "doorHinge");
+
+		if (properties.size() > 0)
+			tag.put("properties", properties);
+
+		return tag;
+	}
+
+	public static DungeonSegmentModelBlock fromNBT(CompoundNBT nbt) {
+		if (!nbt.contains("type"))
+			return null;
+		DungeonSegmentModelBlock block = new DungeonSegmentModelBlock(
+				DungeonSegmentModelBlockType.valueOf(nbt.getString("type")));
+
+		if (nbt.contains("resourceName"))
+			block.resourceName = nbt.getString("resourceName");
+
+		if (nbt.contains("properties")) {
+			ListNBT properties = nbt.getList("properties", 8);
+
+			for (int i = 0; i < properties.size(); i++)
+				LOADERS.get(properties.getString(i)).load(block, nbt);
+		}
+		return block;
+	}
+
+	private void add(CompoundNBT tag, ListNBT properties, @Nullable Object object, String name) {
+		if (object != null) {
+			tag.putString(name, object.toString());
+			properties.add(new StringNBT(name));
+		}
+	}
+	
+	private void addBoolean(CompoundNBT tag, ListNBT properties, @Nullable Boolean bool, String name) {
+		if (bool != null) {
+			tag.putBoolean(name, bool);
+			properties.add(new StringNBT(name));
+		}
+	}
+
+	private static <T> T read(Class<T> c, String name, CompoundNBT nbt, Function<String, T> f) {
+		return f.apply(nbt.getString(name).toUpperCase(Locale.ROOT));
 	}
 
 	/**
@@ -260,6 +377,13 @@ public class DungeonSegmentModelBlock {
 	public static interface DungeonSegmentBlockStateProvider {
 
 		BlockState get(DungeonSegmentModelBlock block, Theme theme, Random rand, int stage);
+
+	}
+
+	@FunctionalInterface
+	private interface PropertyLoader {
+
+		void load(DungeonSegmentModelBlock block, CompoundNBT nbt);
 
 	}
 

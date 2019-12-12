@@ -4,9 +4,13 @@ package xiroc.dungeoncrawl.dungeon.segment;
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
+import java.io.DataInputStream;
+
 import java.io.IOException;
 import java.util.HashMap;
 
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -320,76 +324,86 @@ public class DungeonSegmentModelRegistry {
 			return;
 		LOADED = true;
 		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
-		CORRIDOR = loadFromFile("models/dungeon/corridor.json", resourceManager).build().setId(0);
-		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.json", resourceManager).build().setId(1);
-		CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor_open.json", resourceManager).build().setId(2);
-		CORRIDOR_ALL_OPEN = loadFromFile("models/dungeon/corridor_all_open.json", resourceManager).build().setId(3);
-		CORRIDOR_2 = loadFromFile("models/dungeon/corridor_2.json", resourceManager).build().setId(4);
-		CORRIDOR_2_TURN = loadFromFile("models/dungeon/corridor_2_turn.json", resourceManager).build().setId(5);
-		CORRIDOR_2_OPEN = loadFromFile("models/dungeon/corridor_2_open.json", resourceManager).build().setId(6);
-		CORRIDOR_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_2_all_open.json", resourceManager).build().setId(7);
-		CORRIDOR_3 = loadFromFile("models/dungeon/corridor_3.json", resourceManager).build().setId(8);
-		CORRIDOR_3_TURN = loadFromFile("models/dungeon/corridor_3_turn.json", resourceManager).build().setId(9);
-		CORRIDOR_3_OPEN = loadFromFile("models/dungeon/corridor_3_open.json", resourceManager).build().setId(10);
-		CORRIDOR_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_3_all_open.json", resourceManager).build()
+		CORRIDOR = loadFromFile("models/dungeon/corridor.nbt", resourceManager).build().setId(0);
+		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.nbt", resourceManager).build().setId(1);
+		CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor_open.nbt", resourceManager).build().setId(2);
+		CORRIDOR_ALL_OPEN = loadFromFile("models/dungeon/corridor_all_open.nbt", resourceManager).build().setId(3);
+		CORRIDOR_2 = loadFromFile("models/dungeon/corridor_2.nbt", resourceManager).build().setId(4);
+		CORRIDOR_2_TURN = loadFromFile("models/dungeon/corridor_2_turn.nbt", resourceManager).build().setId(5);
+		CORRIDOR_2_OPEN = loadFromFile("models/dungeon/corridor_2_open.nbt", resourceManager).build().setId(6);
+		CORRIDOR_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_2_all_open.nbt", resourceManager).build().setId(7);
+		CORRIDOR_3 = loadFromFile("models/dungeon/corridor_3.nbt", resourceManager).build().setId(8);
+		CORRIDOR_3_TURN = loadFromFile("models/dungeon/corridor_3_turn.nbt", resourceManager).build().setId(9);
+		CORRIDOR_3_OPEN = loadFromFile("models/dungeon/corridor_3_open.nbt", resourceManager).build().setId(10);
+		CORRIDOR_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_3_all_open.nbt", resourceManager).build()
 				.setId(11);
 
-		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.json", resourceManager).build().setId(12);
-		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.json", resourceManager).build().setId(13);
+		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.nbt", resourceManager).build().setId(12);
+		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.nbt", resourceManager).build().setId(13);
 
-		HOLE = loadFromFile("models/dungeon/hole.json", resourceManager).build().setId(14);
-		HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.json", resourceManager).build().setId(15);
+		HOLE = loadFromFile("models/dungeon/hole.nbt", resourceManager).build().setId(14);
+		HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.nbt", resourceManager).build().setId(15);
 
-		STAIRS = loadFromFile("models/dungeon/stairs.json", resourceManager).build().setId(16);
-		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.json", resourceManager).build().setId(17);
-		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.json", resourceManager).build().setId(18);
-		ROOM = loadFromFile("models/dungeon/room.json", resourceManager).build().setId(19);
-		ENTRANCE_TOWER_0 = loadFromFile("models/dungeon/entrance_tower_0.json", resourceManager).build().setId(20);
+		STAIRS = loadFromFile("models/dungeon/stairs.nbt", resourceManager).build().setId(16);
+		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.nbt", resourceManager).build().setId(17);
+		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.nbt", resourceManager).build().setId(18);
+		ROOM = loadFromFile("models/dungeon/room.nbt", resourceManager).build().setId(19);
+		ENTRANCE_TOWER_0 = loadFromFile("models/dungeon/entrance_tower_0.nbt", resourceManager).build().setId(20);
 
-		BRIDGE = loadFromFile("models/dungeon/bridge.json", resourceManager).build().setId(21);
-		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.json", resourceManager).build().setId(22);
-		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.json", resourceManager).build().setId(23);
-		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.json", resourceManager).build().setId(24);
+		BRIDGE = loadFromFile("models/dungeon/bridge.nbt", resourceManager).build().setId(21);
+		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.nbt", resourceManager).build().setId(22);
+		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.nbt", resourceManager).build().setId(23);
+		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.nbt", resourceManager).build().setId(24);
 
-		LARGE_ROOM = loadFromFile("models/dungeon/large_room.json", resourceManager).build().setId(25);
+		LARGE_ROOM = loadFromFile("models/dungeon/large_room.nbt", resourceManager).build().setId(25);
 
-//		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.json", resourceManager).build().setId(26);
+//		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.nbt", resourceManager).build().setId(26);
 
-		KITCHEN = loadFromFile("models/dungeon/kitchen.json", resourceManager).build().setId(27);
+		KITCHEN = loadFromFile("models/dungeon/kitchen.nbt", resourceManager).build().setId(27);
 
-		LOOT_ROOM = loadFromFile("models/dungeon/loot_room.json", resourceManager).build().setId(28);
+		LOOT_ROOM = loadFromFile("models/dungeon/loot_room.nbt", resourceManager).build().setId(28);
 
-		CORRIDOR_FIRE = loadFromFile("models/dungeon/corridor_fire.json", resourceManager).build().setId(29);
+		CORRIDOR_FIRE = loadFromFile("models/dungeon/corridor_fire.nbt", resourceManager).build().setId(29);
 
-		SIDE_ROOM_SMALL_LIBRARY = loadFromFile("models/dungeon/side_room_small_library.json", resourceManager).build()
+		SIDE_ROOM_SMALL_LIBRARY = loadFromFile("models/dungeon/side_room_small_library.nbt", resourceManager).build()
 				.setId(30);
-		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.json", resourceManager).build().setId(31);
+		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.nbt", resourceManager).build().setId(31);
 
-		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.json", resourceManager).build().setId(32);
+		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.nbt", resourceManager).build().setId(32);
 
-		ENTRANCE_TOWER_1 = loadFromFile("models/dungeon/entrance_tower_1.json", resourceManager).build().setId(32);
+		ENTRANCE_TOWER_1 = loadFromFile("models/dungeon/entrance_tower_1.nbt", resourceManager).build().setId(32);
 
-		SIDE_ROOM_TNT = loadFromFile("models/dungeon/side_room_tnt.json", resourceManager).build().setId(33);
-		STARTER_ROOM = loadFromFile("models/dungeon/starter_room.json", resourceManager).build().setId(34);
+		SIDE_ROOM_TNT = loadFromFile("models/dungeon/side_room_tnt.nbt", resourceManager).build().setId(33);
+		STARTER_ROOM = loadFromFile("models/dungeon/starter_room.nbt", resourceManager).build().setId(34);
 
-		LIBRARY = loadFromFile("models/dungeon/library.json", resourceManager).build().setId(35);
+		LIBRARY = loadFromFile("models/dungeon/library.nbt", resourceManager).build().setId(35);
 
-		BOSS_ROOM = loadFromFile("models/dungeon/boss_room.json", resourceManager).build().setId(36);
+		BOSS_ROOM = loadFromFile("models/dungeon/boss_room.nbt", resourceManager).build().setId(36);
 	}
 
 	public static DungeonSegmentModel loadFromFile(String path, IResourceManager resourceManager) {
 		DungeonCrawl.LOGGER.debug("Loading {}", path);
 		DungeonSegmentModelLoadEvent loadEvent = new DungeonSegmentModelLoadEvent(path);
-		
+
 		if (DungeonCrawl.EVENT_BUS.post(loadEvent))
 			return null;
-		
 		try {
-			return ModelHelper
-					.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
+//			model = ModelHelper.readModelFromInputStream(
+//					resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
+//			String file = FMLPaths.GAMEDIR.get().toString()+ "/" + path.substring(path.lastIndexOf("/"), path.indexOf("."))
+//					+ ".nbt";
+//			DungeonCrawl.LOGGER.info(file);
+//			DataOutputStream output = new DataOutputStream(new FileOutputStream(file));
+//			ModelHelper.convertModelToNBT(model).write(output);
+			DataInputStream input = new DataInputStream(resourceManager
+					.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
+			CompoundNBT nbt = new CompoundNBT();
+			nbt.read(input, 16, NBTSizeTracker.INFINITE);
+			return ModelHelper.getModelFromNBT(nbt);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		return null;
 	}
 

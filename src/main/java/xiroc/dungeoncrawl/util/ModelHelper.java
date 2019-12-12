@@ -9,12 +9,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -78,18 +77,59 @@ public class ModelHelper {
 		return null;
 	}
 
-	public static byte[] transformModel(DungeonSegmentModel model) {
+	public static CompoundNBT convertModelToNBT(DungeonSegmentModel model) {
 		byte width = (byte) (model.width > 127 ? -(model.width - 127) : model.width),
 				length = (byte) (model.length > 127 ? -(model.length - 127) : model.length),
 				height = (byte) (model.height > 127 ? -(model.height - 127) : model.height);
+
+		CompoundNBT newModel = new CompoundNBT();
+		newModel.putByte("length", length);
+		newModel.putByte("height", height);
+		newModel.putByte("width", width);
+
+		ListNBT blocks = new ListNBT();
+
+		for (int x = 0; x < model.width; x++) {
+			ListNBT blocks2 = new ListNBT();
+
+			for (int y = 0; y < model.height; y++) {
+				ListNBT blocks3 = new ListNBT();
+
+				for (int z = 0; z < model.length; z++) {
+					if (model.model[x][y][z] != null)
+						blocks3.add(model.model[x][y][z].getAsNBT());
+					else
+						blocks3.add(new CompoundNBT());
+				}
+				blocks2.add(blocks3);
+
+			}
+			blocks.add(blocks2);
+
+		}
+
+		newModel.put("model", blocks);
+
+		return newModel;
+	}
+
+	public static DungeonSegmentModel getModelFromNBT(CompoundNBT nbt) {
+		int width = nbt.getInt("width"), height = nbt.getInt("height"), length = nbt.getInt("length");
+
+		ListNBT blocks = nbt.getList("model", 9);
+
+		DungeonSegmentModelBlock[][][] model = new DungeonSegmentModelBlock[width][height][length];
+
+		for (int x = 0; x < width; x++) {
+			ListNBT blocks2 = blocks.getList(x);
+			for (int y = 0; y < height; y++) {
+				ListNBT blocks3 = blocks2.getList(y);
+				for (int z = 0; z < length; z++)
+					model[x][y][z] = DungeonSegmentModelBlock.fromNBT(blocks3.getCompound(z));
+			}
+		}
 		
-		List<Byte> bytes = Lists.newArrayList();
-		bytes.add(Byte.valueOf(width));
-		bytes.add(Byte.valueOf(height));
-		bytes.add(Byte.valueOf(length));
-		
-		
-		return null;
+		return new DungeonSegmentModel(model);
 	}
 
 }

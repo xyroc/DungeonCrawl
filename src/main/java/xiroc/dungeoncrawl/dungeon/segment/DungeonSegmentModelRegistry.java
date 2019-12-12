@@ -11,7 +11,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonSegmentModelLoadEvent;
-import xiroc.dungeoncrawl.util.DungeonSegmentModelReader;
+import xiroc.dungeoncrawl.util.ModelHelper;
 
 public class DungeonSegmentModelRegistry {
 
@@ -385,7 +385,7 @@ public class DungeonSegmentModelRegistry {
 			return null;
 		
 		try {
-			return DungeonSegmentModelReader
+			return ModelHelper
 					.readModelFromInputStream(resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();

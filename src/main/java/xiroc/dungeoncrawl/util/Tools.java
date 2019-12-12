@@ -69,7 +69,7 @@ public class Tools {
 				if (event.getWorld().isRemote)
 					return;
 				DungeonCrawl.LOGGER.info("Reading a dungeon model...");
-				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), 8, 8, 8);
+				ModelHelper.readModelToFile(event.getWorld(), event.getPos(), 8, 8, 8);
 			} else if (event.getItemStack().getDisplayName().getString().startsWith("MODEL_READ2")) {
 				if (event.getWorld().isRemote)
 					return;
@@ -79,7 +79,7 @@ public class Tools {
 				int length = Integer.parseInt(s[4]);
 				DungeonCrawl.LOGGER
 						.info("Reading a custom sized dungeon model: " + width + "x" + height + "x" + length);
-				DungeonSegmentModelReader.readModelToFile(event.getWorld(), event.getPos(), width, height, length);
+				ModelHelper.readModelToFile(event.getWorld(), event.getPos(), width, height, length);
 			}
 		}
 	}

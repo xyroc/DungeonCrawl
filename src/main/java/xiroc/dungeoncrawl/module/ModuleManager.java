@@ -12,27 +12,28 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.Lists;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.ModList;
 
 public class ModuleManager {
 
-	public static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger("Dungeon Crawl/Module Manager");
 
-	private static final ArrayList<Tuple<Module, String[]>> MODULES = Lists.newArrayList();
+	private static final ArrayList<Module> MODULES = Lists.newArrayList();
 
 	public static void load() {
 		int size = MODULES.size();
-		if (size == 0)
+		if (size <= 0)
 			return;
-		LOGGER.info("Loading {} ", size + (size > 1 ? "Modules" : "Module"));
+		if (size == 1)
+			LOGGER.info("There is one module present");
+		else
+			LOGGER.info("There are {} modules present", size);
 		int successful = 0, failed = 0;
-		for (Tuple<Module, String[]> data : MODULES) {
-			for (String modId : data.getB()) {
+		moduleLoop: for (Module module : MODULES) {
+			for (String modId : module.requiredMods) {
 				if (!ModList.get().isLoaded(modId))
-					continue;
+					continue moduleLoop;
 			}
-			Module module = data.getA();
 			LOGGER.info("Loading module {}", module.name);
 			if (module.load())
 				successful++;
@@ -40,21 +41,24 @@ public class ModuleManager {
 				LOGGER.error("The module {} failed to load.", module.name);
 				failed++;
 			}
-			LOGGER.info("Successfully loaded {} , {} failed.", successful + (size > 1 ? "Modules" : "Module"), failed);
+			LOGGER.info("Successfully loaded {} , {} failed.", successful + (size > 1 ? " Modules" : " Module"),
+					failed);
 		}
 
 	}
 
-	public static void registerModule(Module module, String[] requiredMods) {
-		MODULES.add(new Tuple<ModuleManager.Module, String[]>(module, requiredMods));
+	public static boolean registerModule(Module module) {
+		return MODULES.add(module);
 	}
 
 	public static abstract class Module {
 
-		String name;
+		public String name;
+		public String[] requiredMods;
 
-		public Module(ResourceLocation name) {
+		public Module(ResourceLocation name, String... requiredMods) {
 			this.name = name.toString();
+			this.requiredMods = requiredMods;
 		}
 
 		public abstract boolean load();

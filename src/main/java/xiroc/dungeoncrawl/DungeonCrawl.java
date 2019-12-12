@@ -78,7 +78,7 @@ public class DungeonCrawl {
 		Treasure.init();
 		EVENT_BUS = Bus.MOD.bus().get();
 
-		ModuleManager.registerModule(new BOPCompatModule(), new String[] { "biomesoplenty" });
+		ModuleManager.registerModule(new BOPCompatModule());
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {

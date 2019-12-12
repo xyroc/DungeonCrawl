@@ -9,6 +9,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -20,7 +23,7 @@ import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
 
-public class DungeonSegmentModelReader {
+public class ModelHelper {
 
 	public static void readModelToFile(World world, BlockPos pos, int width, int height, int length) {
 		DungeonSegmentModelBlock[][][] model = new DungeonSegmentModelBlock[width][height][length];
@@ -72,6 +75,20 @@ public class DungeonSegmentModelReader {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public static byte[] transformModel(DungeonSegmentModel model) {
+		byte width = (byte) (model.width > 127 ? -(model.width - 127) : model.width),
+				length = (byte) (model.length > 127 ? -(model.length - 127) : model.length),
+				height = (byte) (model.height > 127 ? -(model.height - 127) : model.height);
+		
+		List<Byte> bytes = Lists.newArrayList();
+		bytes.add(Byte.valueOf(width));
+		bytes.add(Byte.valueOf(height));
+		bytes.add(Byte.valueOf(length));
+		
+		
 		return null;
 	}
 

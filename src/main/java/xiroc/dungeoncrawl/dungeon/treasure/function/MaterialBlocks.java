@@ -25,10 +25,9 @@ public class MaterialBlocks extends LootFunction {
 
 	@Override
 	public ItemStack doApply(ItemStack stack, LootContext context) {
-		return new ItemStack(
-				ForgeRegistries.BLOCKS.getValue(ThemeItems
-						.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(context.getWorld()
-								.getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(), 0))),
+		return new ItemStack(ForgeRegistries.BLOCKS
+				.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(context.getWorld()
+						.func_226691_t_(context.get(LootParameters.POSITION)).getRegistryName().toString(), 0))),
 				context.getRandom().nextInt(7));
 	}
 

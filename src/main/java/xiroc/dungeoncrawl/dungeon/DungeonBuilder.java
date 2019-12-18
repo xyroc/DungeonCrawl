@@ -141,7 +141,7 @@ public class DungeonBuilder {
 		this.statTracker = new DungeonStatTracker(layers.length);
 
 		DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length,
-				Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString()));
+				Theme.getTheme(world.getBiomeProvider().func_225526_b_(startPos.getX(), startPos.getZ(), startPos.getY()).getRegistryName().toString()));
 
 		DungeonCrawl.EVENT_BUS.post(startEvent);
 

@@ -335,8 +335,7 @@ public class DungeonSegmentModelRegistry {
 		CORRIDOR_3 = loadFromFile("models/dungeon/corridor_3.nbt", resourceManager).build().setId(8);
 		CORRIDOR_3_TURN = loadFromFile("models/dungeon/corridor_3_turn.nbt", resourceManager).build().setId(9);
 		CORRIDOR_3_OPEN = loadFromFile("models/dungeon/corridor_3_open.nbt", resourceManager).build().setId(10);
-		CORRIDOR_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_3_all_open.nbt", resourceManager).build()
-				.setId(11);
+		CORRIDOR_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_3_all_open.nbt", resourceManager).build().setId(11);
 
 		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.nbt", resourceManager).build().setId(12);
 		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.nbt", resourceManager).build().setId(13);
@@ -395,11 +394,10 @@ public class DungeonSegmentModelRegistry {
 //			DungeonCrawl.LOGGER.info(file);
 //			DataOutputStream output = new DataOutputStream(new FileOutputStream(file));
 //			ModelHelper.convertModelToNBT(model).write(output);
-			DataInputStream input = new DataInputStream(resourceManager
-					.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
-			CompoundNBT nbt = new CompoundNBT();
-			nbt.read(input, 16, NBTSizeTracker.INFINITE);
-			return ModelHelper.getModelFromNBT(nbt);
+			DataInputStream input = new DataInputStream(
+					resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
+			return ModelHelper
+					.getModelFromNBT(CompoundNBT.field_229675_a_.func_225649_b_(input, 16, NBTSizeTracker.INFINITE));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

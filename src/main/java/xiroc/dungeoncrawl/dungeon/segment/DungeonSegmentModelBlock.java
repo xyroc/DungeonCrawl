@@ -154,14 +154,14 @@ public class DungeonSegmentModelBlock {
 	private void add(CompoundNBT tag, ListNBT properties, @Nullable Object object, String name) {
 		if (object != null) {
 			tag.putString(name, object.toString());
-			properties.add(new StringNBT(name));
+			properties.add(StringNBT.func_229705_a_(name));
 		}
 	}
 	
 	private void addBoolean(CompoundNBT tag, ListNBT properties, @Nullable Boolean bool, String name) {
 		if (bool != null) {
 			tag.putBoolean(name, bool);
-			properties.add(new StringNBT(name));
+			properties.add(StringNBT.func_229705_a_(name));
 		}
 	}
 

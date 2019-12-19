@@ -321,7 +321,7 @@ public class DungeonLayer {
 		} else
 			this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
 		this.buildConnection(start, end);
-		this.extend(map, start, end, rand);
+		this.extend(builder, map, start, end, rand, layer);
 		if (layer == 0) {
 			Tuple<Position2D, Rotation> sideRoomData = findStarterRoomData(start);
 			if (sideRoomData != null) {
@@ -345,7 +345,7 @@ public class DungeonLayer {
 		}
 	}
 
-	public void extend(DungeonLayerMap map, Position2D start, Position2D end, Random rand) {
+	public void extend(DungeonBuilder builder, DungeonLayerMap map, Position2D start, Position2D end, Random rand, int layer) {
 		int additionalFeatures = Config.LAYER_ADDITIONS_MIN.get() + rand.nextInt(Config.LAYER_ADDITIONS_EXTRA.get());
 		Position2D[] additions = new Position2D[additionalFeatures];
 		for (int i = 0; i < additionalFeatures; i++) {
@@ -356,7 +356,7 @@ public class DungeonLayer {
 						additionalFeatures - i);
 				return;
 			}
-			if (rand.nextFloat() < 0.1) {
+			if (rand.nextFloat() < 0.15 && DungeonFeatures.canPlacePieceWithHeight(builder, layer, additions[i].x, additions[i].z, 2, 2, 1)) {
 				Position2D largeRoomPos = getLargeRoomPos(additions[i]);
 				if (largeRoomPos != null) {
 					int roomID = getRandomLargeRoom(rand);

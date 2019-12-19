@@ -73,7 +73,8 @@ public class DungeonPieces {
 			.add(Blocks.DARK_PRISMARINE_STAIRS).add(Blocks.SANDSTONE_STAIRS).add(Blocks.SMOOTH_SANDSTONE_STAIRS)
 			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS)
 			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.GRANITE_STAIRS).add(Blocks.ANDESITE_STAIRS)
-			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS).add(Blocks.TRIPWIRE)
+			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS)
+			.add(Blocks.MOSSY_COBBLESTONE_STAIRS).add(Blocks.MOSSY_STONE_BRICK_STAIRS).add(Blocks.TRIPWIRE)
 			.add(Blocks.REDSTONE_WIRE).build();
 
 	public static CompoundNBT getDefaultNBT() {
@@ -633,13 +634,13 @@ public class DungeonPieces {
 //			int ch = height - (height % 8) + height % 8 > 0 ? 8 : 0;
 			int ch = y;
 			Theme buildTheme = Theme.get(theme);
-			
+
 			while (ch < height) {
 				build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), buildTheme,
 						Treasure.Type.DEFAULT, stage);
 				ch += 8;
 			}
-			
+
 			// Some safety checks since there seems to be a rare crash issue here...
 			Random rand = worldIn.getRandom();
 			if (rand == null) {
@@ -647,13 +648,15 @@ public class DungeonPieces {
 						worldIn.getClass());
 				rand = new Random();
 			}
-			
+
 			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(rand);
 			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
-			
-			DungeonCrawl.LOGGER.info("Entrance data:");
-			DungeonCrawl.LOGGER.info("Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z, entrance, entrance.id, offset, offset.getA(), offset.getB());
-			
+
+//			DungeonCrawl.LOGGER.info("Entrance data:");
+			DungeonCrawl.LOGGER.info(
+					"Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z,
+					entrance, entrance.id, offset, offset.getA(), offset.getB());
+
 			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme,
 					Treasure.Type.SUPPLY, stage);
 			DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR)

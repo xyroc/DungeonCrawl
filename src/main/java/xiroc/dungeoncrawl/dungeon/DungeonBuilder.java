@@ -22,7 +22,6 @@ import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.Hole;
-import xiroc.dungeoncrawl.dungeon.DungeonPieces.Stairs;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
@@ -133,7 +132,7 @@ public class DungeonBuilder {
 //		this.start = new Position2D(15, 15);
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
-		this.layers = new DungeonLayer[startPos.getY() / 16];
+		this.layers = new DungeonLayer[(startPos.getY() - 4) / 8];
 
 		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
 				+ startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}", theme);
@@ -157,19 +156,25 @@ public class DungeonBuilder {
 					i == layers.length - 1);
 		}
 
+		DungeonPiece stairs = new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT);
+		stairs.setRealPosition(startPos.getX() + layers[0].start.x * 8, startPos.getY() + 8,
+				startPos.getZ() + layers[0].start.z * 8);
+		stairs.stage = 0;
+		list.add(stairs);
+
 		for (int i = 0; i < layers.length; i++) {
 			buildLayer(layers[i], i, startPos);
 			// list.addAll(buildLayer(layers[i], i, startPos));
-			DungeonPiece stairs = i == 0 ? new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT)
-					: new Stairs(null, DungeonPieces.DEFAULT_NBT);
-			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 16,
-					startPos.getZ() + layers[i].start.z * 8);
-			stairs.stage = 0;
-			list.add(stairs);
+//			DungeonPiece stairs = i == 0 ? new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT)
+//					: new Stairs(null, DungeonPieces.DEFAULT_NBT);
+//			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 8,
+//					startPos.getZ() + layers[i].start.z * 8);
+//			stairs.stage = 0;
+//			list.add(stairs);
 		}
 		postProcessDungeon(list, rand, theme);
 		for (DungeonPiece piece : list)
-			if (piece.theme != 1)
+			if (piece.theme != 1 && piece.theme != 80)
 				piece.theme = theme;
 		return list;
 	}
@@ -179,7 +184,7 @@ public class DungeonBuilder {
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {
 				if (layer.segments[x][z] != null) {
-					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16,
+					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 8,
 							startPos.getZ() + z * 8);
 					layer.segments[x][z].stage = stage;
 				}
@@ -188,7 +193,9 @@ public class DungeonBuilder {
 	}
 
 	public void postProcessDungeon(List<DungeonPiece> list, Random rand, int theme) {
+		boolean mossArea = layers.length > 3;
 		int lyrs = layers.length;
+
 		for (int i = 0; i < layers.length; i++) {
 			int stage = i > 2 ? 2 : i;
 			DungeonLayer layer = layers[i];
@@ -196,12 +203,13 @@ public class DungeonBuilder {
 				for (int z = 0; z < layer.length; z++) {
 					if (layer.segments[x][z] != null) {
 						if (layer.segments[x][z].getType() == 0) {
-							if ((i < lyrs - 1 ? layers[i + 1].segments[x][z] == null : true)
-									&& rand.nextDouble() < 0.02) {
+//							if ((i < lyrs - 1 ? layers[i + 1].segments[x][z] == null : true)
+							if (rand.nextDouble() < 0.02
+									&& DungeonFeatures.canPlacePieceWithHeight(this, i, x, z, 1, 1, -2)) {
 								Hole hole = new Hole(null, DungeonPieces.DEFAULT_NBT);
 								hole.sides = layer.segments[x][z].sides;
 								hole.connectedSides = layer.segments[x][z].connectedSides;
-								hole.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 16,
+								hole.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 8,
 										startPos.getZ() + z * 8);
 								hole.stage = stage;
 								hole.lava = stage == 2;
@@ -219,6 +227,8 @@ public class DungeonBuilder {
 					if (layer.segments[x][z] != null) {
 						if (i == lyrs - 1)
 							layer.segments[x][z].theme = 1;
+						else if (mossArea && lyrs - i < 4)
+							layer.segments[x][z].theme = 80;
 						list.add(layer.segments[x][z]);
 					}
 				}

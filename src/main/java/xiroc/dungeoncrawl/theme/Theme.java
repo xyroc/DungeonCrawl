@@ -13,6 +13,8 @@ import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class Theme {
+	
+	// TODO Rework this!!
 
 	// THEME ID
 	// test -1
@@ -32,7 +34,7 @@ public class Theme {
 	// badlands 17
 
 	// ice 32
-	
+
 	// bricks 48
 	// andesite 49
 	// bricks birch 50
@@ -45,6 +47,9 @@ public class Theme {
 	// andesite dark oak 57
 	// bricks spruce 58
 	// andesite spruce 59
+
+	// moss default 80
+	// moss andesite 81
 
 	public static final Random RANDOM = new Random();
 
@@ -82,7 +87,19 @@ public class Theme {
 			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.POLISHED_ANDESITE.getDefaultState(),
 			BlockRegistry.ANDESITE_STONE_WALL, null);
-	
+
+	public static final Theme DEFAULT_MOSSY = new Theme(BlockRegistry.MOSS, BlockRegistry.MOSS,
+			BlockRegistry.MOSS_FLOOR, BlockRegistry.MOSS, BlockRegistry.MOSS_STAIRS, BlockRegistry.MOSS,
+			BlockRegistry.MOSS, () -> Blocks.CAVE_AIR.getDefaultState(),
+			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(), () -> Blocks.CAVE_AIR.getDefaultState(),
+			BlockRegistry.MOSS, BlockRegistry.MOSS_WALL, null);
+
+	public static final Theme ANDESITE_MOSSY = new Theme(BlockRegistry.MOSS_ANDESITE, BlockRegistry.MOSS_ANDESITE,
+			BlockRegistry.MOSS_ANDESITE_FLOOR, BlockRegistry.MOSS_ANDESITE, BlockRegistry.MOSS_ANDESITE_STAIRS,
+			BlockRegistry.MOSS_ANDESITE, BlockRegistry.MOSS_ANDESITE, () -> Blocks.CAVE_AIR.getDefaultState(),
+			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(), () -> Blocks.CAVE_AIR.getDefaultState(),
+			BlockRegistry.MOSS_ANDESITE, BlockRegistry.MOSS_ANDESITE_WALL, null);
+
 	public static final Theme BRICKS_BIRCH = new Theme(BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
 			BlockRegistry.BRICKS_GRANITE_FLOOR, BlockRegistry.STAIRS_BRICKS_GRANITE,
 			BlockRegistry.STAIRS_BRICKS_GRANITE, BlockRegistry.STAIRS_BRICKS_GRANITE,
@@ -97,7 +114,7 @@ public class Theme {
 			() -> Blocks.BIRCH_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.BIRCH_DOOR.getDefaultState(), () -> Blocks.POLISHED_ANDESITE.getDefaultState(),
 			BlockRegistry.ANDESITE_STONE_WALL, null);
-	
+
 	public static final Theme BRICKS_JUNGLE = new Theme(BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
 			BlockRegistry.BRICKS_GRANITE_FLOOR, BlockRegistry.STAIRS_BRICKS_GRANITE,
 			BlockRegistry.STAIRS_BRICKS_GRANITE, BlockRegistry.STAIRS_BRICKS_GRANITE,
@@ -120,7 +137,7 @@ public class Theme {
 			() -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(), () -> Blocks.IRON_DOOR.getDefaultState(),
 			() -> Blocks.NETHERRACK.getDefaultState(), BlockRegistry.NETHER_WALL,
 			() -> Blocks.NETHER_BRICKS.getDefaultState());
-	
+
 	public static final Theme BRICKS_SAVANNA = new Theme(BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
 			BlockRegistry.BRICKS_GRANITE_FLOOR, BlockRegistry.STAIRS_BRICKS_GRANITE,
 			BlockRegistry.STAIRS_BRICKS_GRANITE, BlockRegistry.STAIRS_BRICKS_GRANITE,
@@ -135,7 +152,7 @@ public class Theme {
 			() -> Blocks.ACACIA_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.ACACIA_DOOR.getDefaultState(), () -> Blocks.POLISHED_ANDESITE.getDefaultState(),
 			BlockRegistry.ANDESITE_STONE_WALL, null);
-	
+
 	public static final Theme BRICKS_DARK_OAK = new Theme(BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
 			BlockRegistry.BRICKS_GRANITE_FLOOR, BlockRegistry.STAIRS_BRICKS_GRANITE,
 			BlockRegistry.STAIRS_BRICKS_GRANITE, BlockRegistry.STAIRS_BRICKS_GRANITE,
@@ -150,7 +167,7 @@ public class Theme {
 			() -> Blocks.DARK_OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.DARK_OAK_DOOR.getDefaultState(), () -> Blocks.POLISHED_ANDESITE.getDefaultState(),
 			BlockRegistry.ANDESITE_STONE_WALL, null);
-	
+
 	public static final Theme BRICKS_SPRUCE = new Theme(BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
 			BlockRegistry.BRICKS_GRANITE_FLOOR, BlockRegistry.STAIRS_BRICKS_GRANITE,
 			BlockRegistry.STAIRS_BRICKS_GRANITE, BlockRegistry.STAIRS_BRICKS_GRANITE,
@@ -355,6 +372,9 @@ public class Theme {
 		ID_TO_THEME_MAP.put(58, BRICKS_SPRUCE);
 		ID_TO_THEME_MAP.put(59, ANDESITE_SPRUCE);
 
+		ID_TO_THEME_MAP.put(80, DEFAULT_MOSSY);
+		ID_TO_THEME_MAP.put(81, ANDESITE_MOSSY);
+
 		RANDOMIZERS = new HashMap<Integer, ThemeRandomizer>();
 
 		RANDOMIZERS.put(0, createRandomizer(0, 48, 49));
@@ -416,7 +436,7 @@ public class Theme {
 	public static Theme get(int theme) {
 		return ID_TO_THEME_MAP.getOrDefault(theme, DEFAULT);
 	}
-	
+
 	public static ThemeRandomizer createRandomizer(int... themes) {
 		return (rand, base) -> themes[rand.nextInt(themes.length)];
 
@@ -424,7 +444,7 @@ public class Theme {
 
 	@FunctionalInterface
 	public static interface ThemeRandomizer {
-		 
+
 		int randomize(Random rand, int base);
 
 	}

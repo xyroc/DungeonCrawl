@@ -4,9 +4,10 @@ package xiroc.dungeoncrawl.util;
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -41,16 +42,17 @@ public class ModelHelper {
 			}
 		}
 		writeModelToFile(new DungeonSegmentModel(model),
-				new File(((ServerWorld) world).getSaveHandler().getWorldDirectory(),
-						"model_" + System.currentTimeMillis() + ".json"));
+				((ServerWorld) world).getSaveHandler().getWorldDirectory().getAbsolutePath() + "model_"
+						+ System.currentTimeMillis() + ".nbt");
 	}
 
-	public static void writeModelToFile(DungeonSegmentModel model, File file) {
+	public static void writeModelToFile(DungeonSegmentModel model, String file) {
 		try {
-			FileWriter writer = new FileWriter(file);
-			DungeonCrawl.GSON.toJson(model, writer);
-			writer.flush();
-			writer.close();
+//			FileWriter writer = new FileWriter(file);
+//			DungeonCrawl.GSON.toJson(model, writer);
+//			writer.flush();
+//			writer.close();
+			convertModelToNBT(model).write(new DataOutputStream(new FileOutputStream(file)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -128,7 +130,7 @@ public class ModelHelper {
 					model[x][y][z] = DungeonSegmentModelBlock.fromNBT(blocks3.getCompound(z));
 			}
 		}
-		
+
 		return new DungeonSegmentModel(model);
 	}
 

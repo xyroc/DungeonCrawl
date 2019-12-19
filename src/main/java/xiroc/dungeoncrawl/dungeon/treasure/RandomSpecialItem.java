@@ -25,7 +25,7 @@ public class RandomSpecialItem {
 	public static final ItemStack[] RARE_ITEMS;
 
 	public static final ItemStack REINFORCED_BOW, BOOTS_OF_BATTLE, PANTS_OF_DEFLECTION, LUMBERJACKET, YOKEL_AXE, DOOM,
-			THE_SLAYER, DEMON_HUNTER_CROSSBOW;
+			THE_SLAYER, DEMON_HUNTER_CROSSBOW, THIEF_DAGGER, THE_GREAT_CLEAVER, ARCHANGEL_SWORD, REPULSER, ELB_BOW;
 
 	public static final TreasureEntry CAP, PANTALOONS, LEATHER_JACKET, LEATHER_BOOTS, IRON_SWORD;
 //	CHAINMAIL_BOOTS, CHAINMAIL_LEGGINGS, CHAINMAIL_CHESTPLATE, CHAINMAIL_HELMET, STONE_SWORD;
@@ -79,10 +79,38 @@ public class RandomSpecialItem {
 		DEMON_HUNTER_CROSSBOW.addEnchantment(Enchantments.QUICK_CHARGE, 1);
 		DEMON_HUNTER_CROSSBOW.addEnchantment(Enchantments.POWER, 4);
 		DEMON_HUNTER_CROSSBOW.setDisplayName(new StringTextComponent("Demon Hunter's Crossbow"));
+		
+		THIEF_DAGGER = new ItemStack(Items.IRON_SWORD);
+		THIEF_DAGGER.addEnchantment(Enchantments.SHARPNESS, 1);
+		THIEF_DAGGER.addEnchantment(Enchantments.LOOTING, 3);
+		THIEF_DAGGER.setDisplayName(new StringTextComponent("Thief's Dagger"));
+		
+		THE_GREAT_CLEAVER = new ItemStack(Items.DIAMOND_SWORD);
+		THE_GREAT_CLEAVER.addEnchantment(Enchantments.SWEEPING, 3);
+		THE_GREAT_CLEAVER.addEnchantment(Enchantments.SMITE, 4);
+		THE_GREAT_CLEAVER.addEnchantment(Enchantments.UNBREAKING, 3);
+		THE_GREAT_CLEAVER.setDisplayName(new StringTextComponent("The Great Cleaver"));
+		
+		ARCHANGEL_SWORD = new ItemStack(Items.GOLDEN_SWORD);
+		ARCHANGEL_SWORD.addEnchantment(Enchantments.SHARPNESS, 4);
+		ARCHANGEL_SWORD.addEnchantment(Enchantments.UNBREAKING, 2);
+		ARCHANGEL_SWORD.addEnchantment(Enchantments.VANISHING_CURSE, 1);
+		ARCHANGEL_SWORD.setDisplayName(new StringTextComponent("Archangel's Sword"));
+		
+		REPULSER = new ItemStack(Items.IRON_SWORD);
+		REPULSER.addEnchantment(Enchantments.KNOCKBACK, 2);
+		REPULSER.addEnchantment(Enchantments.SWEEPING, 1);
+		REPULSER.setDisplayName(new StringTextComponent("Repulser"));
+		
+		ELB_BOW = new ItemStack(Items.BOW);
+		ELB_BOW.addEnchantment(Enchantments.POWER, 4);
+		ELB_BOW.addEnchantment(Enchantments.PIERCING, 3);
+		ELB_BOW.addEnchantment(Enchantments.MENDING, 1);
+		ELB_BOW.setDisplayName(new StringTextComponent("Bow of the Elbs"));
 
-		ITEMS = new ItemStack[] { REINFORCED_BOW, BOOTS_OF_BATTLE, LUMBERJACKET, YOKEL_AXE, DOOM };
+		ITEMS = new ItemStack[] { REINFORCED_BOW, BOOTS_OF_BATTLE, LUMBERJACKET, YOKEL_AXE, DOOM, ARCHANGEL_SWORD, REPULSER };
 
-		RARE_ITEMS = new ItemStack[] { THE_SLAYER, DEMON_HUNTER_CROSSBOW };
+		RARE_ITEMS = new ItemStack[] { THE_SLAYER, DEMON_HUNTER_CROSSBOW, THIEF_DAGGER, THE_GREAT_CLEAVER, ELB_BOW };
 
 		CAP = new TreasureEntry("minecraft:air", 1).withProcessor((world, rand, theme,
 				lootLevel) -> RandomEquipment.setArmorColor(SpecialItemTags.rollForTagsAndApply(

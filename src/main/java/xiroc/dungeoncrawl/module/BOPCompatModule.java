@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import biomesoplenty.api.biome.BOPBiomes;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 /*
@@ -22,7 +23,7 @@ import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.module.ModuleManager.Module;
 
 public class BOPCompatModule extends Module {
-	
+
 	public static final Logger LOGGER = LogManager.getLogger("Dungeon Crawl/BOP Compat");
 
 	public BOPCompatModule() {
@@ -95,7 +96,8 @@ public class BOPCompatModule extends Module {
 
 	private static void addStructureToBiome(Optional<Biome> biome) {
 		if (biome.isPresent()) {
-			biome.get().addStructure(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG);
+			biome.get().func_226711_a_(new ConfiguredFeature<NoFeatureConfig, Dungeon>(Dungeon.DUNGEON,
+					NoFeatureConfig.NO_FEATURE_CONFIG));
 			LOGGER.info("Added Generation to BOP Biome {}", biome.get().getRegistryName().toString());
 		} else {
 			LOGGER.error("Failed to add a BOP biome: Biome was not present. ({})", biome);

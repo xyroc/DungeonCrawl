@@ -29,13 +29,13 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 public class Spawner implements IBlockPlacementHandler {
 
 	public static final EntityType<?>[] ENTITIES = new EntityType<?>[] { EntityType.ZOMBIE, EntityType.SKELETON,
-			EntityType.ZOMBIE_VILLAGER, EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.HUSK };
+			EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.HUSK };
 	public static final EntityType<?>[] ENTITIES_RARE = new EntityType<?>[] { EntityType.SILVERFISH, EntityType.CREEPER,
-			EntityType.WITCH, EntityType.STRAY, EntityType.ENDERMAN };
-	public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[] { EntityType.BLAZE, EntityType.RAVAGER }; // Unused
+			EntityType.STRAY, EntityType.ENDERMAN };
+	public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[] { EntityType.BLAZE }; // Unused
 
 	public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
-			.add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.ZOMBIE_VILLAGER).add(EntityType.HUSK)
+			.add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.HUSK)
 			.add(EntityType.STRAY).build();
 	public static final Set<EntityType<?>> RANGED_INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
 			.add(EntityType.SKELETON).add(EntityType.STRAY).build();

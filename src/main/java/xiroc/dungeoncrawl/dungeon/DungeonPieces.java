@@ -74,7 +74,8 @@ public class DungeonPieces {
 			.add(Blocks.DARK_PRISMARINE_STAIRS).add(Blocks.SANDSTONE_STAIRS).add(Blocks.SMOOTH_SANDSTONE_STAIRS)
 			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS)
 			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.GRANITE_STAIRS).add(Blocks.ANDESITE_STAIRS)
-			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS).add(Blocks.TRIPWIRE)
+			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS)
+			.add(Blocks.MOSSY_COBBLESTONE_STAIRS).add(Blocks.MOSSY_STONE_BRICK_STAIRS).add(Blocks.TRIPWIRE)
 			.add(Blocks.REDSTONE_WIRE).build();
 
 	public static CompoundNBT getDefaultNBT() {
@@ -652,8 +653,9 @@ public class DungeonPieces {
 			DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(rand);
 			Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
 
-			DungeonCrawl.LOGGER.info("Entrance data:");
-			DungeonCrawl.LOGGER.info("Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z,
+//			DungeonCrawl.LOGGER.info("Entrance data:");
+			DungeonCrawl.LOGGER.info(
+					"Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z,
 					entrance, entrance.id, offset, offset.getA(), offset.getB());
 
 			build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme,

@@ -90,6 +90,8 @@ public class BlockRegistry {
 	public static WeightedRandomBlock DARK_PRISMARINE_PRISMARINE;
 	public static WeightedRandomBlock CLAY_FLOOR, BRICKS_GRANITE_FLOOR;
 	public static WeightedRandomBlock STONE_WALL, NETHER_WALL, BRICKS_GRANITE_WALL, ANDESITE_STONE_WALL;
+	public static WeightedRandomBlock MOSS, MOSS_FLOOR, MOSS_WALL, MOSS_STAIRS, MOSS_ANDESITE, MOSS_ANDESITE_FLOOR,
+			MOSS_ANDESITE_WALL, MOSS_ANDESITE_STAIRS;
 
 	/*
 	 * Calculate the WeightedRandomBlocks
@@ -223,6 +225,56 @@ public class BlockRegistry {
 						new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
 						new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
 						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()) });
+
+		MOSS = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(6, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(5, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.CRACKED_STONE_BRICKS.getDefaultState()) });
+
+		MOSS_FLOOR = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(6, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(5, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(4, Blocks.GRAVEL.getDefaultState()) });
+
+		MOSS_WALL = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.STONE_BRICK_WALL.getDefaultState()),
+						new TupleIntBlock(7, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(7, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()) });
+
+		MOSS_STAIRS = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICK_STAIRS.getDefaultState()) });
+
+		MOSS_ANDESITE = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.ANDESITE.getDefaultState()),
+						new TupleIntBlock(3, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(3, Blocks.COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(7, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(7, Blocks.MOSSY_COBBLESTONE.getDefaultState()) });
+
+		MOSS_ANDESITE_FLOOR = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.ANDESITE.getDefaultState()),
+						new TupleIntBlock(3, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(3, Blocks.COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(5, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(5, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(5, Blocks.GRAVEL.getDefaultState()) });
+
+		MOSS_ANDESITE_WALL = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.ANDESITE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.STONE_BRICK_WALL.getDefaultState()),
+						new TupleIntBlock(7, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
+						new TupleIntBlock(7, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()) });
+
+		MOSS_ANDESITE_STAIRS = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.ANDESITE_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.STONE_BRICK_STAIRS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.COBBLESTONE_STAIRS.getDefaultState()),
+						new TupleIntBlock(6, Blocks.MOSSY_COBBLESTONE_STAIRS.getDefaultState()),
+						new TupleIntBlock(6, Blocks.MOSSY_STONE_BRICK_STAIRS.getDefaultState()) });
 
 		DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
 	}

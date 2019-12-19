@@ -55,7 +55,7 @@ public class DungeonFeatures {
 					sideRoom.setPosition(roomPos.x, roomPos.z);
 					sideRoom.stage = stage;
 					sideRoom.connectedSides = 1;
-					sideRoom.setRealPosition(startPos.getX() + roomPos.x * 8, startPos.getY() - lyr * 16,
+					sideRoom.setRealPosition(startPos.getX() + roomPos.x * 8, startPos.getY() - lyr * 8,
 							startPos.getZ() + roomPos.z * 8);
 					sideRoom.rotation = layer.segments[x][z].rotation.add(Rotation.COUNTERCLOCKWISE_90);
 					layer.rotatePiece(layer.segments[x][z]);
@@ -72,7 +72,7 @@ public class DungeonFeatures {
 				DungeonPiece feature = RandomFeature.CORRIDOR_FEATURE.roll(rand);
 				feature.sides = layer.segments[x][z].sides;
 				feature.connectedSides = layer.segments[x][z].connectedSides;
-				feature.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 16, startPos.getZ() + z * 8);
+				feature.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 8, startPos.getZ() + z * 8);
 				feature.stage = stage;
 				feature.rotation = layer.segments[x][z].rotation;
 				layer.segments[x][z] = feature;
@@ -95,6 +95,7 @@ public class DungeonFeatures {
 					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 
 					part1.connectedSides = 1;
+					part2.connectedSides = 1;
 
 					part1.treasureType = 1;
 					part2.treasureType = 1;
@@ -114,9 +115,9 @@ public class DungeonFeatures {
 					part1.set(id, 0, 0, 0, 8, 8, 8);
 					part2.set(id, 0, 0, 8, 8, 8, 8);
 
-					part1.setRealPosition(startPos.getX() + part1Pos.x * 8, startPos.getY() - lyr * 16,
+					part1.setRealPosition(startPos.getX() + part1Pos.x * 8, startPos.getY() - lyr * 8,
 							startPos.getZ() + part1Pos.z * 8);
-					part2.setRealPosition(startPos.getX() + part2Pos.x * 8, startPos.getY() - lyr * 16,
+					part2.setRealPosition(startPos.getX() + part2Pos.x * 8, startPos.getY() - lyr * 8,
 							startPos.getZ() + part2Pos.z * 8);
 
 					layer.segments[part1Pos.x][part1Pos.z] = part1;
@@ -141,29 +142,37 @@ public class DungeonFeatures {
 	/**
 	 * Checks if a piece can be placed at the given position and layer. This does
 	 * also check if there are pieces on other layers (height variable) to avoid
-	 * collisions. For example, a piece that goes 9 to 16 blocks below the height of its
-	 * layer would have a height value of -1 (minus, because it goes down; 1 layer =
-	 * 16 blocks).
+	 * collisions. For example, a piece that goes 1 to 8 blocks below the height of
+	 * its layer would have a height value of -1 (minus, because it goes down; 1
+	 * layer = 8 blocks).
 	 * 
 	 * @param builder The Dungeon Builder object
 	 * @param layer   The layer of the piece
 	 * @param height  The Height of the piece
 	 * @return true if the piece can be placed, false if not
 	 */
-	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int height) {
-		int layers = builder.layers.length, lh = layer - height;
+	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
+			int length, int layerHeight) {
+		
+		int layers = builder.layers.length, lh = layer - layerHeight;
 		if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
 			return false;
-
-		boolean up = height > 0;
+		if (x + width > Dungeon.SIZE - 1 || z + length > Dungeon.SIZE - 1)
+			return false;
+		
+		boolean up = layerHeight > 0;
 		int c = up ? -1 : 1, k = lh + c;
 
-		DungeonCrawl.LOGGER.debug("Checking, if a {} high piece can be placed at layer {} of {}. The c-variable is {}. Up: {}.", height, layer, layers, c, up);
-		
+		DungeonCrawl.LOGGER.debug(
+				"Checking, if a piece with a height of {} and a size of ({}|{}) can be placed at layer {} of {}. The c-variable is {}. Up: {}.",
+				layerHeight, width, length, layer, layers, c, up);
+
 		for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
 			DungeonCrawl.LOGGER.debug("lyr: {}, k: {}", lyr, k);
-			if (builder.layers[lyr].segments[x][z] != null)
-				return false;
+			for (int x0 = 0; x0 < width; x0++)
+				for (int z0 = 0; z0 < length; z0++)
+					if (builder.layers[lyr].segments[x + x0][z + z0] != null)
+						return false;
 		}
 		DungeonCrawl.LOGGER.debug("--");
 		return true;

@@ -57,7 +57,7 @@ public class DungeonBuilder {
 
 	public BlockPos startPos;
 
-	public int theme;
+	public int theme, subTheme;
 
 	static {
 		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
@@ -139,12 +139,15 @@ public class DungeonBuilder {
 
 		this.statTracker = new DungeonStatTracker(layers.length);
 
+		String biome = world.getBiomeProvider().getBiome(startPos).getRegistryName().toString();
+
 		DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length,
-				Theme.getTheme(world.getBiomeProvider().getBiome(startPos).getRegistryName().toString()));
+				Theme.getTheme(biome), Theme.getSubTheme(biome));
 
 		DungeonCrawl.EVENT_BUS.post(startEvent);
 
 		theme = startEvent.theme;
+		subTheme = startEvent.subTheme;
 	}
 
 	public List<DungeonPiece> build() {
@@ -172,10 +175,13 @@ public class DungeonBuilder {
 //			stairs.stage = 0;
 //			list.add(stairs);
 		}
-		postProcessDungeon(list, rand, theme);
+		postProcessDungeon(list, rand);
 		for (DungeonPiece piece : list)
-			if (piece.theme != 1 && piece.theme != 80)
-				piece.theme = theme;
+			if (piece.theme != 1) {
+				if (piece.theme != 80)
+					piece.theme = theme;
+				piece.subTheme = subTheme;
+			}
 		return list;
 	}
 
@@ -192,7 +198,7 @@ public class DungeonBuilder {
 		}
 	}
 
-	public void postProcessDungeon(List<DungeonPiece> list, Random rand, int theme) {
+	public void postProcessDungeon(List<DungeonPiece> list, Random rand) {
 		boolean mossArea = layers.length > 3;
 		int lyrs = layers.length;
 
@@ -246,7 +252,7 @@ public class DungeonBuilder {
 //		DungeonCrawl.LOGGER.debug("{} | {}", pos, height);
 		for (int y = pos.getY() - 1; y > height; y--)
 			piece.setBlockState(DungeonSegmentModelBlock.PROVIDERS.get(DungeonSegmentModelBlockType.RAND_WALL_AIR)
-					.get(block, buildTheme, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0);
+					.get(block, buildTheme, null, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0);
 	}
 
 	public static DungeonSegmentModel getModel(DungeonPiece piece, Random rand) {

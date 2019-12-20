@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class DungeonSegmentModel {
@@ -51,7 +52,7 @@ public class DungeonSegmentModel {
 	 * Test functions
 	 */
 
-	public static void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme,
+	public static void build(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme, SubTheme subTheme,
 			Treasure.Type treasureType, int lootLevel) {
 		for (int x = 0; x < model.width; x++) {
 			for (int y = 0; y < model.height; y++) {
@@ -60,8 +61,8 @@ public class DungeonSegmentModel {
 					if (model.model[x][y][z] == null)
 						state = Blocks.AIR.getDefaultState();
 					else
-						state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, world.getRandom(),
-								0);
+						state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
+								world.getRandom(), 0);
 					if (state == null)
 						continue;
 					world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), state, 2);
@@ -71,7 +72,7 @@ public class DungeonSegmentModel {
 	}
 
 	public static void buildRotated(DungeonSegmentModel model, IWorld world, BlockPos pos, Theme theme,
-			Treasure.Type treasureType, int lootLevel, Rotation rotation) {
+			SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation) {
 		switch (rotation) {
 		case CLOCKWISE_90:
 			for (int x = 0; x < model.width; x++) {
@@ -81,7 +82,7 @@ public class DungeonSegmentModel {
 						if (model.model[x][y][z] == null)
 							state = Blocks.AIR.getDefaultState();
 						else
-							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
+							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
 									world.getRandom(), 0, Rotation.CLOCKWISE_90);
 						if (state == null)
 							continue;
@@ -98,7 +99,7 @@ public class DungeonSegmentModel {
 						if (model.model[x][y][z] == null)
 							state = Blocks.AIR.getDefaultState();
 						else
-							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
+							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
 									world.getRandom(), 0, Rotation.COUNTERCLOCKWISE_90);
 						if (state == null)
 							continue;
@@ -115,7 +116,7 @@ public class DungeonSegmentModel {
 						if (model.model[x][y][z] == null)
 							state = Blocks.AIR.getDefaultState();
 						else
-							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme,
+							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
 									world.getRandom(), 0, Rotation.CLOCKWISE_180);
 						if (state == null)
 							continue;
@@ -125,7 +126,7 @@ public class DungeonSegmentModel {
 			}
 			break;
 		case NONE:
-			build(model, world, pos, theme, treasureType, lootLevel);
+			build(model, world, pos, theme, subTheme, treasureType, lootLevel);
 			break;
 		default:
 			DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unknown rotation " + rotation);

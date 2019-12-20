@@ -14,15 +14,16 @@ public class DungeonBuilderStartEvent extends Event {
 	public final ChunkGenerator<?> chunkGen;
 	public final int layers;
 	public final BlockPos startPos;
-	public int theme;
+	public int theme, subTheme;
 	public DungeonStatTracker statTracker;
 	
-	public DungeonBuilderStartEvent(ChunkGenerator<?> chunkGen, BlockPos startPos, DungeonStatTracker statTracker, int layers, int theme) {
+	public DungeonBuilderStartEvent(ChunkGenerator<?> chunkGen, BlockPos startPos, DungeonStatTracker statTracker, int layers, int theme, int subTheme) {
 		this.chunkGen = chunkGen;
 		this.startPos = startPos;
 		this.statTracker = statTracker;
 		this.layers = layers;
 		this.theme = theme;
+		this.subTheme = subTheme;
 	}
 
 }

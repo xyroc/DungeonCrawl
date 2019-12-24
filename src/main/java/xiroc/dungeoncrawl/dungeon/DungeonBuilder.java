@@ -11,6 +11,7 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -21,7 +22,6 @@ import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
-import xiroc.dungeoncrawl.dungeon.DungeonPieces.Hole;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
@@ -134,9 +134,6 @@ public class DungeonBuilder {
 
 		this.layers = new DungeonLayer[(startPos.getY() - 4) / 8];
 
-		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
-				+ startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}", theme);
-
 		this.statTracker = new DungeonStatTracker(layers.length);
 
 		String biome = world.getBiomeProvider().getBiome(startPos).getRegistryName().toString();
@@ -148,6 +145,9 @@ public class DungeonBuilder {
 
 		theme = startEvent.theme;
 		subTheme = startEvent.subTheme;
+
+		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
+				+ startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
 	}
 
 	public List<DungeonPiece> build() {
@@ -208,20 +208,80 @@ public class DungeonBuilder {
 			for (int x = 0; x < layer.width; x++) {
 				for (int z = 0; z < layer.length; z++) {
 					if (layer.segments[x][z] != null) {
-						if (layer.segments[x][z].getType() == 0) {
+						if (layer.segments[x][z].getType() == 0)
+							DungeonFeatures.processCorridor(this, layer, x, z, rand, i, stage, startPos);
+
 //							if ((i < lyrs - 1 ? layers[i + 1].segments[x][z] == null : true)
-							if (rand.nextDouble() < 0.02
-									&& DungeonFeatures.canPlacePieceWithHeight(this, i, x, z, 1, 1, -2)) {
-								Hole hole = new Hole(null, DungeonPieces.DEFAULT_NBT);
-								hole.sides = layer.segments[x][z].sides;
-								hole.connectedSides = layer.segments[x][z].connectedSides;
-								hole.setRealPosition(startPos.getX() + x * 8, startPos.getY() - i * 8,
-										startPos.getZ() + z * 8);
-								hole.stage = stage;
-								hole.lava = stage == 2;
-								layer.segments[x][z] = hole;
-							} else {
-								DungeonFeatures.processCorridor(this, layer, x, z, rand, i, stage, startPos);
+						else if (layer.segments[x][z].getType() == 4) {
+							if (rand.nextFloat() < 0.15) {
+								Position2D largeRoomPos = DungeonLayer.getLargeRoomPos(layer, new Position2D(x, z));
+								if (largeRoomPos != null
+										&& DungeonFeatures.canPlacePieceWithHeight(this, i, x, z, 2, 2, 1)) {
+									int roomID = DungeonLayer.getRandomLargeRoom(rand);
+									DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+									DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+									DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+									DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+
+									part1.treasureType = 0;
+									part2.treasureType = 0;
+									part3.treasureType = 0;
+									part4.treasureType = 0;
+
+									part1.rotation = Rotation.NONE;
+									part2.rotation = Rotation.NONE;
+									part3.rotation = Rotation.NONE;
+									part4.rotation = Rotation.NONE;
+
+									part1.walls = part2.walls = part3.walls = part4.walls = true;
+
+									part1.set(roomID, 0, 0, 0, 8, 16, 8);
+									part2.set(roomID, 8, 0, 0, 8, 16, 8);
+									part3.set(roomID, 8, 0, 8, 8, 16, 8);
+									part4.set(roomID, 0, 0, 8, 8, 16, 8);
+
+									part1.setPosition(largeRoomPos.x, largeRoomPos.z);
+									part2.setPosition(largeRoomPos.x + 1, largeRoomPos.z);
+									part3.setPosition(largeRoomPos.x + 1, largeRoomPos.z + 1);
+									part4.setPosition(largeRoomPos.x, largeRoomPos.z + 1);
+
+									part1.sides[0] = false;
+									part1.sides[1] = true;
+									part1.sides[2] = true;
+									part1.sides[3] = false;
+
+									part2.sides[0] = false;
+									part2.sides[1] = false;
+									part2.sides[2] = true;
+									part2.sides[3] = true;
+
+									part3.sides[0] = true;
+									part3.sides[1] = false;
+									part3.sides[2] = false;
+									part3.sides[3] = true;
+
+									part4.sides[0] = true;
+									part4.sides[1] = true;
+									part4.sides[2] = false;
+									part4.sides[3] = false;
+
+									part1.openAdditionalSides(layer.segments[largeRoomPos.x][largeRoomPos.z]);
+									part2.openAdditionalSides(layer.segments[largeRoomPos.x + 1][largeRoomPos.z]);
+									part3.openAdditionalSides(layer.segments[largeRoomPos.x + 1][largeRoomPos.z + 1]);
+									part4.openAdditionalSides(layer.segments[largeRoomPos.x][largeRoomPos.z + 1]);
+
+									layer.segments[largeRoomPos.x][largeRoomPos.z] = part1;
+									layer.segments[largeRoomPos.x + 1][largeRoomPos.z] = part2;
+									layer.segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = part3;
+									layer.segments[largeRoomPos.x][largeRoomPos.z + 1] = part4;
+
+//										map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z));
+//										map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z));
+//										map.markPositionAsOccupied(
+//												new Position2D(largeRoomPos.x + 1, largeRoomPos.z + 1));
+//										map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z + 1));
+//										continue;
+								}
 							}
 						}
 					}
@@ -239,6 +299,7 @@ public class DungeonBuilder {
 					}
 				}
 		}
+
 	}
 
 	/*

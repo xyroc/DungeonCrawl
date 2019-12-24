@@ -356,69 +356,6 @@ public class DungeonLayer {
 						additionalFeatures - i);
 				return;
 			}
-			if (rand.nextFloat() < 0.15 && DungeonFeatures.canPlacePieceWithHeight(builder, layer, additions[i].x, additions[i].z, 2, 2, 1)) {
-				Position2D largeRoomPos = getLargeRoomPos(additions[i]);
-				if (largeRoomPos != null) {
-					int roomID = getRandomLargeRoom(rand);
-					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-					DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-
-					part1.treasureType = 0;
-					part2.treasureType = 0;
-					part3.treasureType = 0;
-					part4.treasureType = 0;
-
-					part1.rotation = Rotation.NONE;
-					part2.rotation = Rotation.NONE;
-					part3.rotation = Rotation.NONE;
-					part4.rotation = Rotation.NONE;
-
-					part1.walls = part2.walls = part3.walls = part4.walls = true;
-
-					part1.set(roomID, 0, 0, 0, 8, 16, 8);
-					part2.set(roomID, 8, 0, 0, 8, 16, 8);
-					part3.set(roomID, 8, 0, 8, 8, 16, 8);
-					part4.set(roomID, 0, 0, 8, 8, 16, 8);
-
-					part1.setPosition(largeRoomPos.x, largeRoomPos.z);
-					part2.setPosition(largeRoomPos.x + 1, largeRoomPos.z);
-					part3.setPosition(largeRoomPos.x + 1, largeRoomPos.z + 1);
-					part4.setPosition(largeRoomPos.x, largeRoomPos.z + 1);
-
-					part1.sides[0] = false;
-					part1.sides[1] = true;
-					part1.sides[2] = true;
-					part1.sides[3] = false;
-
-					part2.sides[0] = false;
-					part2.sides[1] = false;
-					part2.sides[2] = true;
-					part2.sides[3] = true;
-
-					part3.sides[0] = true;
-					part3.sides[1] = false;
-					part3.sides[2] = false;
-					part3.sides[3] = true;
-
-					part4.sides[0] = true;
-					part4.sides[1] = true;
-					part4.sides[2] = false;
-					part4.sides[3] = false;
-
-					this.segments[largeRoomPos.x][largeRoomPos.z] = part1;
-					this.segments[largeRoomPos.x + 1][largeRoomPos.z] = part2;
-					this.segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = part3;
-					this.segments[largeRoomPos.x][largeRoomPos.z + 1] = part4;
-
-					map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z));
-					map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z));
-					map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z + 1));
-					map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z + 1));
-					continue;
-				}
-			}
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);
 			if (this.segments[additions[i].x][additions[i].z] != null) {
@@ -721,6 +658,20 @@ public class DungeonLayer {
 		if (x > 0 && z < a && get(x - 1, z) == null && get(x - 1, z + 1) == null && get(x, z + 1) == null)
 			return new Position2D(x - 1, z);
 		if (x > 0 && z > 0 && get(x - 1, z) == null && get(x - 1, z - 1) == null && get(x, z - 1) == null)
+			return new Position2D(x - 1, z - 1);
+		return null;
+	}
+	
+	public static Position2D getLargeRoomPos(DungeonLayer layer, Position2D pos) {
+		int a = Dungeon.SIZE - 1, x = pos.x, z = pos.z;
+
+		if (x < a && z < a && layer.get(x + 1, z) == null && layer.get(x + 1, z + 1) == null && layer.get(x, z + 1) == null)
+			return pos;
+		if (x < a && z > 0 && layer.get(x + 1, z) == null && layer.get(x + 1, z - 1) == null && layer.get(x, z - 1) == null)
+			return new Position2D(x, z - 1);
+		if (x > 0 && z < a && layer.get(x - 1, z) == null && layer.get(x - 1, z + 1) == null && layer.get(x, z + 1) == null)
+			return new Position2D(x - 1, z);
+		if (x > 0 && z > 0 && layer.get(x - 1, z) == null && layer.get(x - 1, z - 1) == null && layer.get(x, z - 1) == null)
 			return new Position2D(x - 1, z - 1);
 		return null;
 	}

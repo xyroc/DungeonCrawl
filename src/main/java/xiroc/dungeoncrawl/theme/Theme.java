@@ -7,6 +7,7 @@ package xiroc.dungeoncrawl.theme;
 import java.util.HashMap;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
@@ -265,6 +266,17 @@ public class Theme {
 		this.vanillaWall = () -> vanillaWall;
 		this.column = () -> column;
 	}
+	
+	public Theme(Block ceiling, Block wall, Block floor, Block stairs, Block material,
+			Block vanillaWall, Block column) {
+		this.ceiling = () -> ceiling.getDefaultState();
+		this.wall = () -> wall.getDefaultState();
+		this.floor = () -> floor.getDefaultState();
+		this.stairs = () -> stairs.getDefaultState();
+		this.material = () -> material.getDefaultState();
+		this.vanillaWall = () -> vanillaWall.getDefaultState();
+		this.column = () -> column.getDefaultState();
+	}
 
 	public static class SubTheme {
 
@@ -277,6 +289,24 @@ public class Theme {
 			this.torchDark = torchDark;
 			this.door = door;
 			this.material = material;
+		}
+		
+		public SubTheme(BlockState wallLog, BlockState trapDoor, BlockState torchDark,
+				BlockState door, BlockState material) {
+			this.wallLog = () -> wallLog;
+			this.trapDoor = () -> trapDoor;
+			this.torchDark = () -> torchDark;
+			this.door = () -> door;
+			this.material = ()-> material;
+		}
+		
+		public SubTheme(Block wallLog, Block trapDoor, Block torchDark,
+				Block door, Block material) {
+			this.wallLog = () -> wallLog.getDefaultState();
+			this.trapDoor = () -> trapDoor.getDefaultState();
+			this.torchDark = () -> torchDark.getDefaultState();
+			this.door = () -> door.getDefaultState();
+			this.material = ()-> material.getDefaultState();
 		}
 
 	}

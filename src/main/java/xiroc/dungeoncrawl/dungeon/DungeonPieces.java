@@ -7,6 +7,8 @@ package xiroc.dungeoncrawl.dungeon;
 import java.util.Random;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
@@ -1129,6 +1131,15 @@ public class DungeonPieces {
 				}
 			}
 			return blocks;
+		}
+
+		public void openAdditionalSides(@Nullable DungeonPiece piece) {
+			if (piece != null) {
+				for (int i = 0; i < piece.sides.length; i++) {
+					if (!this.sides[i] && piece.sides[i])
+						this.sides[i] = true;
+				}
+			}
 		}
 
 		public static Direction getOpenSide(DungeonPiece piece, int n) {

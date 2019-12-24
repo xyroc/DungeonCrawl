@@ -11,6 +11,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.DungeonPieces.Hole;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.SideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
@@ -30,6 +31,19 @@ public class DungeonFeatures {
 
 	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2)) {
+				Hole hole = new Hole(null, DungeonPieces.DEFAULT_NBT);
+				hole.sides = layer.segments[x][z].sides;
+				hole.connectedSides = layer.segments[x][z].connectedSides;
+				hole.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 8, startPos.getZ() + z * 8);
+				hole.stage = stage;
+				hole.lava = stage == 2;
+				layer.segments[x][z] = hole;
+				return true;
+			} else
+				return false;
+		});
 		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].connectedSides == 2
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
@@ -70,6 +84,8 @@ public class DungeonFeatures {
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
 							|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])) {
 				DungeonPiece feature = RandomFeature.CORRIDOR_FEATURE.roll(rand);
+				if (feature.getType() == 7 && !canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -1))
+					feature = new DungeonPieces.CorridorTrap(null, DungeonPieces.DEFAULT_NBT);
 				feature.sides = layer.segments[x][z].sides;
 				feature.connectedSides = layer.segments[x][z].connectedSides;
 				feature.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 8, startPos.getZ() + z * 8);
@@ -153,13 +169,13 @@ public class DungeonFeatures {
 	 */
 	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
 			int length, int layerHeight) {
-		
+
 		int layers = builder.layers.length, lh = layer - layerHeight;
 		if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
 			return false;
 		if (x + width > Dungeon.SIZE - 1 || z + length > Dungeon.SIZE - 1)
 			return false;
-		
+
 		boolean up = layerHeight > 0;
 		int c = up ? -1 : 1, k = lh + c;
 
@@ -167,8 +183,12 @@ public class DungeonFeatures {
 				"Checking, if a piece with a height of {} and a size of ({}|{}) can be placed at layer {} of {}. The c-variable is {}. Up: {}.",
 				layerHeight, width, length, layer, layers, c, up);
 
-		for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
+		for (int lyr = up ? layer - 1 : layer + 1; up ? lyr > k : lyr < k; lyr += c) {
 			DungeonCrawl.LOGGER.debug("lyr: {}, k: {}", lyr, k);
+			if (layers - lyr == 0)
+				continue;
+			else if (layers - lyr < 0)
+				return false;
 			for (int x0 = 0; x0 < width; x0++)
 				for (int z0 = 0; z0 < length; z0++)
 					if (builder.layers[lyr].segments[x + x0][z + z0] != null)

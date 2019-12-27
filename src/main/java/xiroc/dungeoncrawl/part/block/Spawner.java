@@ -7,11 +7,15 @@ package xiroc.dungeoncrawl.part.block;
 import java.util.Random;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -35,8 +39,7 @@ public class Spawner implements IBlockPlacementHandler {
 	public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[] { EntityType.BLAZE }; // Unused
 
 	public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
-			.add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.HUSK)
-			.add(EntityType.STRAY).build();
+			.add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.HUSK).add(EntityType.STRAY).build();
 	public static final Set<EntityType<?>> RANGED_INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
 			.add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
@@ -54,26 +57,7 @@ public class Spawner implements IBlockPlacementHandler {
 				ListNBT potentialSpawns = new ListNBT();
 				for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
 					CompoundNBT nbt = new CompoundNBT();
-					CompoundNBT spawnData = new CompoundNBT();
-					spawnData.putString("id", type.getRegistryName().toString());
-					ItemStack[] armor = getArmor(rand, stage);
-					ListNBT armorList = new ListNBT();
-					for (ItemStack stack : armor) {
-						if (stack != ItemStack.EMPTY)
-							armorList.add(stack.write(new CompoundNBT()));
-					}
-					if (armorList.size() > 0)
-						spawnData.put("ArmorItems", armorList);
-					ListNBT handItems = new ListNBT();
-					ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
-							? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
-							: RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
-					if (mainHand != ItemStack.EMPTY)
-						handItems.add(mainHand.write(new CompoundNBT()));
-					handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
-							? Banner.createShield(rand).write(new CompoundNBT())
-							: ItemStack.EMPTY.write(new CompoundNBT()));
-					spawnData.put("HandItems", handItems);
+					CompoundNBT spawnData = createSpawnData(type, null, rand, stage);
 					nbt.put("Entity", spawnData);
 					nbt.putInt("Weight", 1);
 					nbt.putShort("MinSpawnDelay", (short) 200);
@@ -89,6 +73,54 @@ public class Spawner implements IBlockPlacementHandler {
 		} else {
 			DungeonCrawl.LOGGER.error("Failed to fetch mob spawner entity at ({}, {}, {})", pos.getX(), pos.getY(),
 					pos.getZ());
+		}
+	}
+
+	public static CompoundNBT createSpawnData(@Nullable EntityType<?> type, @Nullable CompoundNBT spawnData,
+			Random rand, int stage) {
+		if (type == null)
+			type = getRandomEntityType(rand);
+		if (spawnData == null)
+			spawnData = new CompoundNBT();
+		spawnData.putString("id", type.getRegistryName().toString());
+		if (INVENTORY_ENTITIES.contains(type)) {
+			ItemStack[] armor = getArmor(rand, stage);
+			ListNBT armorList = new ListNBT();
+			for (ItemStack stack : armor) {
+				if (stack != ItemStack.EMPTY)
+					armorList.add(stack.write(new CompoundNBT()));
+			}
+			if (armorList.size() > 0)
+				spawnData.put("ArmorItems", armorList);
+			ListNBT handItems = new ListNBT();
+			ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
+					? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
+					: RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
+			if (mainHand != ItemStack.EMPTY)
+				handItems.add(mainHand.write(new CompoundNBT()));
+			handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
+					? Banner.createShield(rand).write(new CompoundNBT())
+					: ItemStack.EMPTY.write(new CompoundNBT()));
+			spawnData.put("HandItems", handItems);
+		}
+		return spawnData;
+	}
+
+	public static void equipMonster(MonsterEntity entity, Random rand, int stage) {
+		if (INVENTORY_ENTITIES.contains(entity.getType())) {
+			ItemStack[] armor = getArmor(rand, stage);
+			entity.setItemStackToSlot(EquipmentSlotType.FEET, armor[0]);
+			entity.setItemStackToSlot(EquipmentSlotType.LEGS, armor[1]);
+			entity.setItemStackToSlot(EquipmentSlotType.CHEST, armor[2]);
+			entity.setItemStackToSlot(EquipmentSlotType.HEAD, armor[3]);
+
+			ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(entity.getType())
+					? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
+					: RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
+			entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, mainHand);
+
+			if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())
+				entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, Banner.createShield(rand));
 		}
 	}
 

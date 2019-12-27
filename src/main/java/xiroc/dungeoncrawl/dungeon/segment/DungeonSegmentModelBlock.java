@@ -34,6 +34,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraftforge.registries.ForgeRegistries;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
@@ -267,24 +268,30 @@ public class DungeonSegmentModelBlock {
 				.getDefaultState().with(BarrelBlock.PROPERTY_FACING, block.facing));
 		PROVIDERS.put(DungeonSegmentModelBlockType.MATERIAL,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.material.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.CEILING, (block, theme, subTheme, rand, stage) -> theme.ceiling.get());
+		PROVIDERS.put(DungeonSegmentModelBlockType.CEILING,
+				(block, theme, subTheme, rand, stage) -> theme.ceiling.get());
 		PROVIDERS.put(DungeonSegmentModelBlockType.CEILING_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.CHEST,
-				(block, theme, subTheme, rand, stage) -> Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing));
+		PROVIDERS.put(DungeonSegmentModelBlockType.CHEST, (block, theme, subTheme, rand, stage) -> Blocks.CHEST
+				.getDefaultState().with(ChestBlock.FACING, block.facing));
 		PROVIDERS.put(DungeonSegmentModelBlockType.DISPENSER, (block, theme, subTheme, rand, stage) -> Blocks.DISPENSER
 				.getDefaultState().with(DispenserBlock.FACING, block.facing));
 		PROVIDERS.put(DungeonSegmentModelBlockType.FLOOR, (block, theme, subTheme, rand, stage) -> theme.floor.get());
 		PROVIDERS.put(DungeonSegmentModelBlockType.FLOOR_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER, (block, theme, subTheme, rand, stage) -> {
-			int i = rand.nextInt(10);
-			if (i < 1 + stage)
-				return BlockRegistry.SPAWNER;
-			if (i == 5)
-				return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
-			return theme.floor.get();
-		});
+		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER,
+				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
+					if (rand.nextInt(10) == 5)
+						return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
+					return theme.floor.get();
+				} : (block, theme, subTheme, rand, stage) -> {
+					int i = rand.nextInt(10);
+					if (i < 1 + stage)
+						return BlockRegistry.SPAWNER;
+					if (i == 5)
+						return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
+					return theme.floor.get();
+				});
 		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_LAVA, (block, theme, subTheme, rand, stage) -> {
 			switch (rand.nextInt(2)) {
 			case 0:
@@ -310,11 +317,14 @@ public class DungeonSegmentModelBlock {
 				return theme.wall.get();
 			return Blocks.CAVE_AIR.getDefaultState();
 		});
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_WALL_SPAWNER, (block, theme, subTheme, rand, stage) -> {
-			if (rand.nextInt(2 + (2 - stage)) == 0)
-				return BlockRegistry.SPAWNER;
-			return theme.wall.get();
-		});
+		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_WALL_SPAWNER,
+				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
+					return theme.wall.get();
+				} : (block, theme, subTheme, rand, stage) -> {
+					if (rand.nextInt(2 + (2 - stage)) == 0)
+						return BlockRegistry.SPAWNER;
+					return theme.wall.get();
+				});
 		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_COBWEB_AIR, (block, theme, subTheme, rand, stage) -> {
 			if (rand.nextInt(5) == 0)
 				return Blocks.CAVE_AIR.getDefaultState();
@@ -333,7 +343,8 @@ public class DungeonSegmentModelBlock {
 		PROVIDERS.put(DungeonSegmentModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.wall.get());
 		PROVIDERS.put(DungeonSegmentModelBlockType.WALL_LOG,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.wallLog.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.DOOR, (block, theme, subTheme, rand, stage) -> block.create(subTheme.door.get()));
+		PROVIDERS.put(DungeonSegmentModelBlockType.DOOR,
+				(block, theme, subTheme, rand, stage) -> block.create(subTheme.door.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.OTHER, (block, theme, subTheme, rand, stage) -> block
 				.create(ForgeRegistries.BLOCKS.getValue(block.registryName).getDefaultState()));
 	}

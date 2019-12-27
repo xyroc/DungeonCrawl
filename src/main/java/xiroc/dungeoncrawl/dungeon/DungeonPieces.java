@@ -20,6 +20,7 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
@@ -36,10 +37,12 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.part.block.Spawner;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
@@ -181,6 +184,8 @@ public class DungeonPieces {
 			}
 			if (walls)
 				addWalls(this, worldIn, theme);
+			if (Config.NO_SPAWNERS.get())
+				spawnMobs(worldIn, this, width, length, new int[] { 1, 5 });
 			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
 				addColumns(this, worldIn, 1, theme);
 
@@ -379,6 +384,9 @@ public class DungeonPieces {
 //							.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
 				buildRotated(model, worldIn, new BlockPos(x + offsetX, y + offsetY, z + offsetZ), Theme.get(theme),
 						Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation);
+
+				if (Config.NO_SPAWNERS.get())
+					spawnMobs(worldIn, this, model.width, model.length, new int[] { 1 });
 				return true;
 			} else {
 				DungeonCrawl.LOGGER.error("Side Room Model doesnt exist: {}", modelID);
@@ -457,6 +465,10 @@ public class DungeonPieces {
 			build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme),
 					Treasure.Type.DEFAULT, stage);
 			addWalls(this, worldIn, theme);
+
+			if (Config.NO_SPAWNERS.get())
+				spawnMobs(worldIn, this, model.width, model.length, new int[] { 1 });
+
 			if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
 				addColumns(this, worldIn, 1, theme);
 			return false;
@@ -510,6 +522,7 @@ public class DungeonPieces {
 							Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation);
 					return true;
 				}
+
 				return true;
 			}
 
@@ -519,6 +532,9 @@ public class DungeonPieces {
 
 			buildRotated(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme),
 					Treasure.Type.DEFAULT, stage, getRotation());
+
+			if (Config.NO_SPAWNERS.get())
+				spawnMobs(worldIn, this, model.width, model.length, new int[] { 1 });
 
 			if (theme == 3 && ((connectedSides == 2
 					&& (!(sides[0] && sides[2] || sides[1] && sides[3]) || randomIn.nextDouble() < 0.2))
@@ -1140,6 +1156,38 @@ public class DungeonPieces {
 						this.sides[i] = true;
 				}
 			}
+		}
+
+		public static void spawnMobs(IWorld world, DungeonPiece piece, int width, int length, int[] floors) {
+			for (int floor : floors) {
+				for (int x = 1; x < width; x++) {
+					for (int z = 1; z < length; z++) {
+						BlockPos pos = new BlockPos(piece.x + x, piece.y + floor + 1, piece.z + z);
+						if (piece.boundingBox.isVecInside(pos) && world.getBlockState(pos).isAir(world, pos)
+								&& world.getRandom().nextDouble() < Config.MOB_SPAWN_RATE.get()) {
+							EntityType<?> mob = Spawner.getRandomEntityType(world.getRandom());
+							Entity entity = mob.create(world.getWorld());
+							if (entity instanceof MonsterEntity) {
+//								DungeonCrawl.LOGGER.debug("{} at {}, Piece is at {}|{}|{}", mob, pos, piece.x, piece.y,
+//										piece.z);
+								MonsterEntity mobEntity = (MonsterEntity) entity;
+								mobEntity.heal(mobEntity.getMaxHealth());
+								mobEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), 0, 0);
+//								DungeonCrawl.LOGGER.debug("Spawning step 2");
+								Spawner.equipMonster(mobEntity, world.getRandom(), piece.stage);
+								mobEntity.onInitialSpawn(world, world.getDifficultyForLocation(pos),
+										SpawnReason.STRUCTURE, null, null);
+								world.addEntity(mobEntity);
+//								DungeonCrawl.LOGGER.debug("Spawned. {}|{}|{}", mobEntity.posX, mobEntity.posY,
+//										mobEntity.posZ);
+
+							}
+
+						}
+					}
+				}
+			}
+//			DungeonCrawl.LOGGER.debug("Finished Spawning mobs: {}", piece);
 		}
 
 		public static Direction getOpenSide(DungeonPiece piece, int n) {

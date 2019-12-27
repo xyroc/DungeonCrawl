@@ -53,6 +53,8 @@ public class DungeonBuilder {
 	public Position2D start;
 
 	public DungeonLayer[] layers;
+	public DungeonLayerMap[] maps;
+	
 	public DungeonStatTracker statTracker;
 
 	public BlockPos startPos;
@@ -133,6 +135,7 @@ public class DungeonBuilder {
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
 		this.layers = new DungeonLayer[(startPos.getY() - 4) / 8];
+		this.maps = new DungeonLayerMap[layers.length];
 
 		this.statTracker = new DungeonStatTracker(layers.length);
 
@@ -155,6 +158,9 @@ public class DungeonBuilder {
 
 		for (int i = 0; i < layers.length; i++) {
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
+			DungeonLayerMap map = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
+			this.layers[i].map = map;
+			this.maps[i] = map;
 			this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i,
 					i == layers.length - 1);
 		}

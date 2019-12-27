@@ -15,6 +15,7 @@ public class DungeonLayerMap {
 
 	public int width, length;
 	public List<Position2D> freePositions;
+	public boolean[][] map;
 
 	public DungeonLayerMap(int width, int length) {
 		this.width = width;
@@ -23,6 +24,11 @@ public class DungeonLayerMap {
 		for (int x = 0; x < width; x++)
 			for (int z = 0; z < length; z++)
 				freePositions.add(new Position2D(x, z));
+		this.map = new boolean[width][length];
+	}
+	
+	public boolean isPositionFree(int x, int z) {
+		return !this.map[x][z];
 	}
 
 	public Position2D getRandomFreePosition(Random rand) {
@@ -30,6 +36,7 @@ public class DungeonLayerMap {
 			return null;
 		Position2D pos = freePositions.get(rand.nextInt(freePositions.size()));
 		freePositions.remove(pos);
+		this.map[pos.x][pos.z] = true;
 		return pos;
 	}
 
@@ -38,6 +45,7 @@ public class DungeonLayerMap {
 		while (iterator.hasNext()) {
 			Position2D current = iterator.next();
 			if (pos.x == current.x && pos.z == current.z) {
+				this.map[current.x][current.z] = true;
 				iterator.remove();
 				return true;
 			}

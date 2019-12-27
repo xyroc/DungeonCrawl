@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon;
 
+/*
+ * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -40,6 +44,7 @@ public class DungeonFeatures {
 				hole.stage = stage;
 				hole.lava = stage == 2;
 				layer.segments[x][z] = hole;
+				mark(builder, lyr, x, z, 1, 1, -2);
 				return true;
 			} else
 				return false;
@@ -62,7 +67,7 @@ public class DungeonFeatures {
 				Position2D pos = new Position2D(x, z);
 				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
 				if (roomPos.isValid(layer.width, layer.length) && layer.segments[roomPos.x][roomPos.z] == null
-						&& rand.nextDouble() < 0.09) {
+						&& builder.maps[lyr].isPositionFree(roomPos.x, roomPos.z) && rand.nextDouble() < 0.09) {
 					layer.segments[x][z].openSide(RotationHelper.translateDirectionLeft(facing));
 					DungeonPieces.SideRoom sideRoom = (SideRoom) RandomFeature.SIDE_ROOM.roll(rand);
 					sideRoom.setOffset(OFFSET_DATA.getOrDefault(sideRoom.modelID, DEFAULT_OFFSET));
@@ -74,6 +79,7 @@ public class DungeonFeatures {
 					sideRoom.rotation = layer.segments[x][z].rotation.add(Rotation.COUNTERCLOCKWISE_90);
 					layer.rotatePiece(layer.segments[x][z]);
 					layer.segments[roomPos.x][roomPos.z] = sideRoom;
+					builder.maps[lyr].markPositionAsOccupied(roomPos);
 					return true;
 				}
 			}
@@ -191,11 +197,31 @@ public class DungeonFeatures {
 				return false;
 			for (int x0 = 0; x0 < width; x0++)
 				for (int z0 = 0; z0 < length; z0++)
-					if (builder.layers[lyr].segments[x + x0][z + z0] != null)
+					if (builder.layers[lyr].segments[x + x0][z + z0] != null
+							|| !builder.maps[lyr].isPositionFree(x + x0, z + z0))
 						return false;
 		}
 		DungeonCrawl.LOGGER.debug("--");
 		return true;
+	}
+
+	/**
+	 * Marks the given area of the dungeon as occupied to prevent collision between
+	 * multiple dungeon features. The given coordinates and size values are assumed
+	 * to be correct. All parameters are the same as in canPlacePieceWithHeight().
+	 */
+	public static void mark(DungeonBuilder builder, int layer, int x, int z, int width, int length, int layerHeight) {
+		int layers = builder.layers.length;
+		boolean up = layerHeight > 0;
+		int c = up ? -1 : 1, k = layer - layerHeight + c;
+
+		for (int lyr = up ? layer - 1 : layer + 1; up ? lyr > k : lyr < k; lyr += c) {
+			if (layers - lyr == 0)
+				continue;
+			for (int x0 = 0; x0 < width; x0++)
+				for (int z0 = 0; z0 < length; z0++)
+					builder.maps[lyr].markPositionAsOccupied(new Position2D(x + x0, z + z0));
+		}
 	}
 
 	@FunctionalInterface

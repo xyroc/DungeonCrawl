@@ -40,6 +40,8 @@ public class DungeonLayer {
 	public int length; // z
 	public LayerStatTracker statTracker;
 
+	public DungeonLayerMap map;
+
 	public DungeonLayer(DungeonLayerType type) {
 		this(type, 16, 16);
 	}
@@ -51,9 +53,9 @@ public class DungeonLayer {
 		this.statTracker = new LayerStatTracker();
 	}
 
-	public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer, boolean lastLayer) {
+	public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer,
+			boolean lastLayer) {
 		this.segments = new DungeonPiece[this.width][this.length];
-		DungeonLayerMap map = new DungeonLayerMap(this.width, this.length);
 		if (!map.markPositionAsOccupied(start))
 			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
 		Position2D end = lastLayer ? findLargeRoomPosWithMaxDistance(start) : map.getRandomFreePosition(rand);
@@ -253,62 +255,62 @@ public class DungeonLayer {
 //						}
 //					}
 //				} else {
-					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-					DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+				DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+				DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+				DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+				DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 
-					part1.treasureType = 7;
-					part2.treasureType = 7;
-					part3.treasureType = 7;
-					part4.treasureType = 7;
+				part1.treasureType = 7;
+				part2.treasureType = 7;
+				part3.treasureType = 7;
+				part4.treasureType = 7;
 
-					part1.rotation = Rotation.NONE;
-					part2.rotation = Rotation.NONE;
-					part3.rotation = Rotation.NONE;
-					part4.rotation = Rotation.NONE;
+				part1.rotation = Rotation.NONE;
+				part2.rotation = Rotation.NONE;
+				part3.rotation = Rotation.NONE;
+				part4.rotation = Rotation.NONE;
 
-					part1.walls = part2.walls = part3.walls = part4.walls = true;
+				part1.walls = part2.walls = part3.walls = part4.walls = true;
 
-					part1.set(28, 0, 0, 0, 8, 16, 8);
-					part2.set(28, 8, 0, 0, 8, 16, 8);
-					part3.set(28, 8, 0, 8, 8, 16, 8);
-					part4.set(28, 0, 0, 8, 8, 16, 8);
+				part1.set(28, 0, 0, 0, 8, 16, 8);
+				part2.set(28, 8, 0, 0, 8, 16, 8);
+				part3.set(28, 8, 0, 8, 8, 16, 8);
+				part4.set(28, 0, 0, 8, 8, 16, 8);
 
-					part1.setPosition(end.x, end.z);
-					part2.setPosition(end.x + 1, end.z);
-					part3.setPosition(end.x + 1, end.z + 1);
-					part4.setPosition(end.x, end.z + 1);
+				part1.setPosition(end.x, end.z);
+				part2.setPosition(end.x + 1, end.z);
+				part3.setPosition(end.x + 1, end.z + 1);
+				part4.setPosition(end.x, end.z + 1);
 
-					part1.sides[0] = false;
-					part1.sides[1] = true;
-					part1.sides[2] = true;
-					part1.sides[3] = false;
+				part1.sides[0] = false;
+				part1.sides[1] = true;
+				part1.sides[2] = true;
+				part1.sides[3] = false;
 
-					part2.sides[0] = false;
-					part2.sides[1] = false;
-					part2.sides[2] = true;
-					part2.sides[3] = true;
+				part2.sides[0] = false;
+				part2.sides[1] = false;
+				part2.sides[2] = true;
+				part2.sides[3] = true;
 
-					part3.sides[0] = true;
-					part3.sides[1] = false;
-					part3.sides[2] = false;
-					part3.sides[3] = true;
+				part3.sides[0] = true;
+				part3.sides[1] = false;
+				part3.sides[2] = false;
+				part3.sides[3] = true;
 
-					part4.sides[0] = true;
-					part4.sides[1] = true;
-					part4.sides[2] = false;
-					part4.sides[3] = false;
+				part4.sides[0] = true;
+				part4.sides[1] = true;
+				part4.sides[2] = false;
+				part4.sides[3] = false;
 
-					this.segments[end.x][end.z] = part1;
-					this.segments[end.x + 1][end.z] = part2;
-					this.segments[end.x + 1][end.z + 1] = part3;
-					this.segments[end.x][end.z + 1] = part4;
+				this.segments[end.x][end.z] = part1;
+				this.segments[end.x + 1][end.z] = part2;
+				this.segments[end.x + 1][end.z + 1] = part3;
+				this.segments[end.x][end.z + 1] = part4;
 
-					map.markPositionAsOccupied(end);
-					map.markPositionAsOccupied(new Position2D(end.x + 1, end.z));
-					map.markPositionAsOccupied(new Position2D(end.x + 1, end.z + 1));
-					map.markPositionAsOccupied(new Position2D(end.x, end.z + 1));
+				map.markPositionAsOccupied(end);
+				map.markPositionAsOccupied(new Position2D(end.x + 1, end.z));
+				map.markPositionAsOccupied(new Position2D(end.x + 1, end.z + 1));
+				map.markPositionAsOccupied(new Position2D(end.x, end.z + 1));
 //				}
 			} else {
 				DungeonCrawl.LOGGER.warn(
@@ -345,7 +347,8 @@ public class DungeonLayer {
 		}
 	}
 
-	public void extend(DungeonBuilder builder, DungeonLayerMap map, Position2D start, Position2D end, Random rand, int layer) {
+	public void extend(DungeonBuilder builder, DungeonLayerMap map, Position2D start, Position2D end, Random rand,
+			int layer) {
 		int additionalFeatures = Config.LAYER_ADDITIONS_MIN.get() + rand.nextInt(Config.LAYER_ADDITIONS_EXTRA.get());
 		Position2D[] additions = new Position2D[additionalFeatures];
 		for (int i = 0; i < additionalFeatures; i++) {
@@ -632,17 +635,18 @@ public class DungeonLayer {
 
 	public boolean canPutDoubleRoom(Position2D pos, Direction direction) {
 //		DungeonCrawl.LOGGER.debug("[{}, {}] {}, {}", width, length, pos.x, pos.z);
-		if (!pos.isValid(width, length) || segments[pos.x][pos.z] != null)
+		if (!pos.isValid(width, length) || segments[pos.x][pos.z] != null && map.isPositionFree(pos.x, pos.z))
 			return false;
 		switch (direction) {
 		case NORTH:
-			return pos.z > 0 && this.segments[pos.x][pos.z - 1] == null;
+			return pos.z > 0 && this.segments[pos.x][pos.z - 1] == null && map.isPositionFree(pos.x, pos.z - 1);
 		case EAST:
-			return pos.x < width - 1 && this.segments[pos.x + 1][pos.z] == null;
+			return pos.x < width - 1 && this.segments[pos.x + 1][pos.z] == null && map.isPositionFree(pos.x + 1, pos.z);
 		case SOUTH:
-			return pos.z < length - 1 && this.segments[pos.x][pos.z + 1] == null;
+			return pos.z < length - 1 && this.segments[pos.x][pos.z + 1] == null
+					&& map.isPositionFree(pos.x, pos.z + 1);
 		case WEST:
-			return pos.x > 0 && this.segments[pos.x - 1][pos.z] == null;
+			return pos.x > 0 && this.segments[pos.x - 1][pos.z] == null && map.isPositionFree(pos.x - 1, pos.z);
 		default:
 			return false;
 		}
@@ -661,17 +665,21 @@ public class DungeonLayer {
 			return new Position2D(x - 1, z - 1);
 		return null;
 	}
-	
+
 	public static Position2D getLargeRoomPos(DungeonLayer layer, Position2D pos) {
 		int a = Dungeon.SIZE - 1, x = pos.x, z = pos.z;
 
-		if (x < a && z < a && layer.get(x + 1, z) == null && layer.get(x + 1, z + 1) == null && layer.get(x, z + 1) == null)
+		if (x < a && z < a && layer.get(x + 1, z) == null && layer.get(x + 1, z + 1) == null
+				&& layer.get(x, z + 1) == null)
 			return pos;
-		if (x < a && z > 0 && layer.get(x + 1, z) == null && layer.get(x + 1, z - 1) == null && layer.get(x, z - 1) == null)
+		if (x < a && z > 0 && layer.get(x + 1, z) == null && layer.get(x + 1, z - 1) == null
+				&& layer.get(x, z - 1) == null)
 			return new Position2D(x, z - 1);
-		if (x > 0 && z < a && layer.get(x - 1, z) == null && layer.get(x - 1, z + 1) == null && layer.get(x, z + 1) == null)
+		if (x > 0 && z < a && layer.get(x - 1, z) == null && layer.get(x - 1, z + 1) == null
+				&& layer.get(x, z + 1) == null)
 			return new Position2D(x - 1, z);
-		if (x > 0 && z > 0 && layer.get(x - 1, z) == null && layer.get(x - 1, z - 1) == null && layer.get(x, z - 1) == null)
+		if (x > 0 && z > 0 && layer.get(x - 1, z) == null && layer.get(x - 1, z - 1) == null
+				&& layer.get(x, z - 1) == null)
 			return new Position2D(x - 1, z - 1);
 		return null;
 	}

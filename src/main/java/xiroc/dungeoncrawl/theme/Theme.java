@@ -112,6 +112,10 @@ public class Theme {
 	// | - - - - Sub-Themes - - - - |
 	// | ************************** |
 
+	public static final SubTheme NETHER_SUB = new SubTheme(Blocks.OBSIDIAN.getDefaultState(),
+			Blocks.CAVE_AIR.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
+			Blocks.IRON_DOOR.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
+
 	public static final SubTheme ACACIA = new SubTheme(() -> Blocks.ACACIA_LOG.getDefaultState(),
 			() -> Blocks.ACACIA_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.ACACIA_DOOR.getDefaultState(), () -> Blocks.ACACIA_PLANKS.getDefaultState());
@@ -186,7 +190,7 @@ public class Theme {
 
 		ID_TO_THEME_MAP.put(48, BRICKS);
 		ID_TO_THEME_MAP.put(49, ANDESITE);
-		
+
 		ID_TO_THEME_MAP.put(80, MOSS);
 
 		// [Sub-Themes]
@@ -235,6 +239,8 @@ public class Theme {
 		ID_TO_SUBTHEME_MAP.put(3, ACACIA);
 		ID_TO_SUBTHEME_MAP.put(4, DARK_OAK);
 		ID_TO_SUBTHEME_MAP.put(5, SPRUCE);
+		
+		ID_TO_SUBTHEME_MAP.put(8, NETHER_SUB);
 
 		RANDOMIZERS = new HashMap<Integer, ThemeRandomizer>();
 
@@ -266,9 +272,9 @@ public class Theme {
 		this.vanillaWall = () -> vanillaWall;
 		this.column = () -> column;
 	}
-	
-	public Theme(Block ceiling, Block wall, Block floor, Block stairs, Block material,
-			Block vanillaWall, Block column) {
+
+	public Theme(Block ceiling, Block wall, Block floor, Block stairs, Block material, Block vanillaWall,
+			Block column) {
 		this.ceiling = () -> ceiling.getDefaultState();
 		this.wall = () -> wall.getDefaultState();
 		this.floor = () -> floor.getDefaultState();
@@ -290,23 +296,22 @@ public class Theme {
 			this.door = door;
 			this.material = material;
 		}
-		
-		public SubTheme(BlockState wallLog, BlockState trapDoor, BlockState torchDark,
-				BlockState door, BlockState material) {
+
+		public SubTheme(BlockState wallLog, BlockState trapDoor, BlockState torchDark, BlockState door,
+				BlockState material) {
 			this.wallLog = () -> wallLog;
 			this.trapDoor = () -> trapDoor;
 			this.torchDark = () -> torchDark;
 			this.door = () -> door;
-			this.material = ()-> material;
+			this.material = () -> material;
 		}
-		
-		public SubTheme(Block wallLog, Block trapDoor, Block torchDark,
-				Block door, Block material) {
+
+		public SubTheme(Block wallLog, Block trapDoor, Block torchDark, Block door, Block material) {
 			this.wallLog = () -> wallLog.getDefaultState();
 			this.trapDoor = () -> trapDoor.getDefaultState();
 			this.torchDark = () -> torchDark.getDefaultState();
 			this.door = () -> door.getDefaultState();
-			this.material = ()-> material.getDefaultState();
+			this.material = () -> material.getDefaultState();
 		}
 
 	}

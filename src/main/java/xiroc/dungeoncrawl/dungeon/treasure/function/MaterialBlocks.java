@@ -8,6 +8,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.LootParameters;
@@ -25,9 +26,12 @@ public class MaterialBlocks extends LootFunction {
 
 	@Override
 	public ItemStack doApply(ItemStack stack, LootContext context) {
-		return new ItemStack(ForgeRegistries.BLOCKS
-				.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(context.getWorld()
-						.func_226691_t_(context.get(LootParameters.POSITION)).getRegistryName().toString(), 0))),
+		BlockPos pos = context.get(LootParameters.POSITION);
+		String biome = context.getWorld().func_225526_b_(pos.getX(), pos.getY(), pos.getZ()).getRegistryName()
+				.toString();
+		return new ItemStack(
+				ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(biome, 0),
+						Theme.BIOME_TO_SUBTHEME_MAP.getOrDefault(biome, 0))),
 				context.getRandom().nextInt(7));
 	}
 

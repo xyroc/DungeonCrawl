@@ -58,7 +58,7 @@ public class Tools {
 				event.getPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST")) {
 				DungeonSegmentModel.build(DungeonSegmentModelRegistry.ENTRANCE_TOWER_1, event.getWorld(),
-						event.getPos(), Theme.TEST, Treasure.Type.DEFAULT, 0);
+						event.getPos(), Theme.TEST, Theme.OAK, Treasure.Type.DEFAULT, 0);
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_TEST_ROTATED")) {
 				DungeonCrawl.LOGGER.info("Not building a dungeon model at all...");
 			} else if (event.getItemStack().getDisplayName().getString().equals("MODEL_READ")) {

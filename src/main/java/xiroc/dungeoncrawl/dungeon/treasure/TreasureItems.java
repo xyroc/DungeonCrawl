@@ -6,7 +6,6 @@ import java.util.Random;
  * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -16,9 +15,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
-import xiroc.dungeoncrawl.theme.ThemeItems;
 
 public class TreasureItems {
 
@@ -46,9 +42,9 @@ public class TreasureItems {
 
 	public static final TreasureEntry RANDOM_SPECIAL_ITEM;
 
-	public static final TreasureEntry ENCHANTED_BOOK;
-
-	public static final TreasureEntry MATERIAL_BLOCKS;
+//	public static final TreasureEntry ENCHANTED_BOOK;
+//
+//	public static final TreasureEntry MATERIAL_BLOCKS;
 
 	// Enchantments
 
@@ -217,16 +213,16 @@ public class TreasureItems {
 
 		SPECIAL_POTIONS = new ItemStack[] { LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS };
 
-		ENCHANTED_BOOK = new TreasureEntry("minecraft:book", 1).withProcessor((world, rand, theme, lootLevel) -> {
-			ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
-			Enchantment enchantment = EnchantedBook.getRandomEnchantment(rand, lootLevel);
-			RandomEquipment.enchantItem(book, rand, enchantment, RandomEquipment.getStageMultiplier(lootLevel));
-			return book;
-		});
-
-		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((world, rand, theme,
-				lootlevel) -> new ItemStack(ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(theme)),
-						rand.nextInt(5 + lootlevel * 4)));
+//		ENCHANTED_BOOK = new TreasureEntry("minecraft:book", 1).withProcessor((world, rand, theme, lootLevel) -> {
+//			ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
+//			Enchantment enchantment = EnchantedBook.getRandomEnchantment(rand, lootLevel);
+//			RandomEquipment.enchantItem(book, rand, enchantment, RandomEquipment.getStageMultiplier(lootLevel));
+//			return book;
+//		});
+//
+//		MATERIAL_BLOCKS = new TreasureEntry("minecraft:air", 1).withProcessor((world, rand, theme,
+//				lootlevel) -> new ItemStack(ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(theme)),
+//						rand.nextInt(5 + lootlevel * 4)));
 
 	}
 

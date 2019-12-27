@@ -55,10 +55,12 @@ public class ModuleManager {
 
 		public String name;
 		public String[] requiredMods;
+		public int version;
 
 		public Module(ResourceLocation name, String... requiredMods) {
 			this.name = name.toString();
 			this.requiredMods = requiredMods;
+			this.version = 0;
 		}
 
 		public abstract boolean load();

@@ -27,10 +27,10 @@ public class Config {
 
 	public static final IntValue SPAWNER_ENTITIES, LAYER_ADDITIONS_MIN, LAYER_ADDITIONS_EXTRA, SIZE;
 
-	public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY;
+	public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
 	public static final BooleanValue BUILD_BRIDGES, IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS,
-			COMPATIBILITY_MODE;
+			NO_SPAWNERS, COMPATIBILITY_MODE;
 //			ENABLE_DUNGEON_BOSS;
 
 	static {
@@ -41,6 +41,12 @@ public class Config {
 		BUILDER.pop();
 
 		BUILDER.comment("Dungeon Settings").push(CONFIG_DUNGEON);
+		NO_SPAWNERS = BUILDER.comment(
+				"If you dont like the fact that the dungeons contain lots of mob spawners, set this to true! Mobs will get spawned manually during the dungeon generation then. Note that this is a lot more performance demanding than enabling spawners. (Which also depends on the mob spawn rate)")
+				.define("no_spawners", false);
+		MOB_SPAWN_RATE = BUILDER.comment(
+				"This value defines how many mobs do get spawned manually during the generation. (if no_spawners = true, there is no effect otherwise)")
+				.defineInRange("mob_spawn_rate", 0.05, 0.001, 1.0);
 		SPAWNER_ENTITIES = BUILDER.comment(
 				"The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
 				.defineInRange("spawner_entities", 8, 1, 128);

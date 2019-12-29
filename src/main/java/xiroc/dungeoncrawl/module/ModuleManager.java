@@ -28,7 +28,9 @@ public class ModuleManager {
 			LOGGER.info("There is one module present");
 		else
 			LOGGER.info("There are {} modules present", size);
+		
 		int successful = 0, failed = 0;
+		
 		moduleLoop: for (Module module : MODULES) {
 			for (String modId : module.requiredMods) {
 				if (!ModList.get().isLoaded(modId))
@@ -41,9 +43,10 @@ public class ModuleManager {
 				LOGGER.error("The module {} failed to load.", module.name);
 				failed++;
 			}
-			LOGGER.info("Successfully loaded {} , {} failed.", successful + (size > 1 ? " Modules" : " Module"),
-					failed);
 		}
+		
+		LOGGER.info("Successfully loaded {} , {} failed.", successful + (size > 1 ? " Modules" : " Module"),
+				failed);
 
 	}
 

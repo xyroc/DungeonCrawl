@@ -30,7 +30,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.ObfuscationValues;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
@@ -146,7 +145,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 				ServerWorld serverWorld = (ServerWorld) world.get(generator);
 				BlockPos spawn = serverWorld.getSpawnPoint();
 
-				DungeonSegmentModelRegistry.load(serverWorld);
+//				DungeonSegmentModelRegistry.load(serverWorld);
 
 				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
 
@@ -186,7 +185,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 						worldIn.getDimension().getType());
 				return;
 			}
-			DungeonSegmentModelRegistry.load(((ServerWorld) worldIn.getWorld()).getServer().getResourceManager());
+//			DungeonSegmentModelRegistry.load(((ServerWorld) worldIn.getWorld()).getServer().getResourceManager());
 			super.generateStructure(worldIn, rand, structurebb, pos);
 		}
 

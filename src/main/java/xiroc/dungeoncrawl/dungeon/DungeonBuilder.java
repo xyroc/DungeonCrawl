@@ -219,7 +219,7 @@ public class DungeonBuilder {
 
 //							if ((i < lyrs - 1 ? layers[i + 1].segments[x][z] == null : true)
 						else if (layer.segments[x][z].getType() == 4) {
-							if (rand.nextFloat() < 0.15) {
+							if (rand.nextFloat() < 0.35) {
 								Position2D largeRoomPos = DungeonLayer.getLargeRoomPos(layer, new Position2D(x, z));
 								if (largeRoomPos != null
 										&& DungeonFeatures.canPlacePieceWithHeight(this, i, x, z, 2, 2, 1)) {

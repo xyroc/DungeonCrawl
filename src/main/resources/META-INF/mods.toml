@@ -31,6 +31,6 @@ description='''Dungeons...'''
 [[dependencies.dungeoncrawl]]
     modId="biomesoplenty"
     mandatory=false
-    versionRange="[9.0.0,)"
+    versionRange="[10.0.0,)"
     ordering="NONE"
     side="BOTH"

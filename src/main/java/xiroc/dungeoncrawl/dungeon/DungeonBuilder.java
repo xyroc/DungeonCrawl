@@ -298,8 +298,10 @@ public class DungeonBuilder {
 			for (int x = 0; x < layer.width; x++)
 				for (int z = 0; z < layer.length; z++) {
 					if (layer.segments[x][z] != null) {
-						if (i == lyrs - 1)
+						if (i == lyrs - 1) {
 							layer.segments[x][z].theme = 1;
+							layer.segments[x][z].subTheme = 8;
+						}
 						else if (mossArea && lyrs - i < 4)
 							layer.segments[x][z].theme = 80;
 						list.add(layer.segments[x][z]);

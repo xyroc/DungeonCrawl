@@ -15,10 +15,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
-/*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
- */
-
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.module.ModuleManager.Module;
@@ -27,7 +23,7 @@ import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 
 public class BOPCompatModule extends Module {
-	
+
 	// Dungeon Crawl - Biomes O' Plenty Support v 1.0.0
 
 	public static final Logger LOGGER = LogManager.getLogger("Dungeon Crawl/BOP Compat");
@@ -103,14 +99,14 @@ public class BOPCompatModule extends Module {
 		addStructureToBiome(BOPBiomes.wetland);
 		addStructureToBiome(BOPBiomes.woodland);
 		addStructureToBiome(BOPBiomes.xeric_shrubland);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:xeric_shrubland", 3);
 
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:grove", 5);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:land_of_lakes", 5);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:maple_woods", 5);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:shield", 5);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:bayou", 32);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:wetland", 32);
 
@@ -125,12 +121,11 @@ public class BOPCompatModule extends Module {
 
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:coniferous_forest", 36);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:snowy_coniferous_forest", 36);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:omnious_woods", 37);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:overgrown_cliffs", 38);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:tropical_rainforest", 38);
-
 
 		Theme.ID_TO_SUBTHEME_MAP.put(32,
 				new Theme.SubTheme(BOPBlocks.willow_log.getDefaultState(), BOPBlocks.willow_trapdoor.getDefaultState(),
@@ -156,28 +151,28 @@ public class BOPCompatModule extends Module {
 				new Theme.SubTheme(BOPBlocks.fir_log.getDefaultState(), BOPBlocks.fir_trapdoor.getDefaultState(),
 						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.fir_door.getDefaultState(),
 						BOPBlocks.fir_planks.getDefaultState()));
-		
+
 		Theme.ID_TO_SUBTHEME_MAP.put(37,
 				new Theme.SubTheme(BOPBlocks.umbran_log.getDefaultState(), BOPBlocks.umbran_trapdoor.getDefaultState(),
 						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.umbran_door.getDefaultState(),
 						BOPBlocks.umbran_planks.getDefaultState()));
-		
+
 		Theme.ID_TO_SUBTHEME_MAP.put(38,
-				new Theme.SubTheme(BOPBlocks.mahogany_log.getDefaultState(), BOPBlocks.mahogany_trapdoor.getDefaultState(),
-						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.mahogany_door.getDefaultState(),
-						BOPBlocks.mahogany_planks.getDefaultState()));
+				new Theme.SubTheme(BOPBlocks.mahogany_log.getDefaultState(),
+						BOPBlocks.mahogany_trapdoor.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
+						BOPBlocks.mahogany_door.getDefaultState(), BOPBlocks.mahogany_planks.getDefaultState()));
 
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:xeric_shrubland", 16);
-		
+
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:brushland", 64);
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:quagmire", 64);
 
 		Theme.ID_TO_THEME_MAP.put(64,
-				new Theme(() -> BOPBlocks.mud_bricks.getDefaultState(),
-						() -> BOPBlocks.mud_bricks.getDefaultState(), mudFloor,
-						() -> BOPBlocks.mud_brick_stairs.getDefaultState(), () -> BOPBlocks.mud.getDefaultState(),
-						() -> BOPBlocks.mud_brick_wall.getDefaultState(), mudFloor));
-		
+				new Theme(() -> BOPBlocks.mud_bricks.getDefaultState(), () -> BOPBlocks.mud_bricks.getDefaultState(),
+						mudFloor, () -> BOPBlocks.mud_brick_stairs.getDefaultState(),
+						() -> BOPBlocks.mud.getDefaultState(), () -> BOPBlocks.mud_brick_wall.getDefaultState(),
+						mudFloor));
+
 		Theme.RANDOMIZERS.put(64, Theme.createRandomizer(64, 0, 49));
 
 		return true;

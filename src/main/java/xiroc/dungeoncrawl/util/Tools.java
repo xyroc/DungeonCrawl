@@ -7,14 +7,10 @@ package xiroc.dungeoncrawl.util;
 import java.util.Random;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker;
-import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
@@ -33,11 +29,11 @@ public class Tools {
 				event.getWorld().setBlockState(event.getPos(), BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED.get());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {
 
-				DungeonBuilder builder = new DungeonBuilder(event.getWorld().getChunkProvider().getChunkGenerator(),
-						new ChunkPos(event.getPos()), event.getWorld().rand);
-				for (DungeonPiece piece : builder.build())
-					piece.addComponentParts(event.getWorld(), event.getWorld().rand, null,
-							new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
+//				DungeonBuilder builder = new DungeonBuilder(event.getWorld().getChunkProvider().func_225313_a(0, 0)),
+//						new ChunkPos(event.getPos()), event.getWorld().rand);
+//				for (DungeonPiece piece : builder.build())
+//					piece.func_225577_a_(event.getWorld(), null ,event.getWorld().rand, null,
+//							new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
 				if (!event.getWorld().isRemote)
 					IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(event.getWorld(),

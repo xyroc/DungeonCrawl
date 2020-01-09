@@ -15,6 +15,7 @@ DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved
  */
 
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
@@ -76,7 +77,7 @@ public class DungeonCrawl {
 		Treasure.init();
 		EVENT_BUS = Bus.MOD.bus().get();
 
-		ModuleManager.registerModule(new BOPCompatModule());
+		ModuleManager.registerModule(BOPCompatModule.class, new String[] { "biomesoplenty" });
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -89,6 +90,7 @@ public class DungeonCrawl {
 		BlockRegistry.load();
 
 		DungeonCrawl.LOGGER.info("Adding features and structures");
+
 		for (Biome biome : ForgeRegistries.BIOMES) {
 			if (!JsonConfig.BIOME_BLACKLIST.contains(biome.getRegistryName().toString())) {
 				DungeonCrawl.LOGGER.debug("Biome >> " + biome.getRegistryName());
@@ -102,7 +104,7 @@ public class DungeonCrawl {
 		}
 
 		DungeonSegmentModelRegistry.load();
-		
+
 		ModuleManager.load();
 	}
 

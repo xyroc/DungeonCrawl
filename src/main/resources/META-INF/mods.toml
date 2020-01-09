@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[28,)" #mandatory
+loaderVersion="[29,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
@@ -17,7 +17,7 @@ description='''Dungeons...'''
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[28.0.45,)" #mandatory
+    versionRange="[29,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -25,12 +25,12 @@ description='''Dungeons...'''
 [[dependencies.dungeoncrawl]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14.4]"
+    versionRange="[1.15,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.dungeoncrawl]]
     modId="biomesoplenty"
     mandatory=false
-    versionRange="[9.0.0,)"
+    versionRange="[10.0.0,)"
     ordering="NONE"
     side="BOTH"

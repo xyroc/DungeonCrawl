@@ -323,6 +323,7 @@ public class DungeonSegmentModelRegistry {
 			return;
 		LOADED = true;
 		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
+
 		CORRIDOR = loadFromFile("models/dungeon/corridor.nbt").build().setId(0);
 		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.nbt").build().setId(1);
 		CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor_open.nbt").build().setId(2);
@@ -363,8 +364,7 @@ public class DungeonSegmentModelRegistry {
 
 		CORRIDOR_FIRE = loadFromFile("models/dungeon/corridor_fire.nbt").build().setId(29);
 
-		SIDE_ROOM_SMALL_LIBRARY = loadFromFile("models/dungeon/side_room_small_library.nbt").build()
-				.setId(30);
+		SIDE_ROOM_SMALL_LIBRARY = loadFromFile("models/dungeon/side_room_small_library.nbt").build().setId(30);
 		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.nbt").build().setId(31);
 
 		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.nbt").build().setId(32);

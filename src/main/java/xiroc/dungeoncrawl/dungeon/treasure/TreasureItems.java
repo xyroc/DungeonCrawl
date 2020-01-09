@@ -78,9 +78,11 @@ public class TreasureItems {
 			nbt.putInt("HideFlags", 32);
 			CompoundNBT display = new CompoundNBT();
 			ListNBT lore = new ListNBT();
-			lore.add(new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("A medicinal tincture."))));
+			lore.add(StringNBT.func_229705_a_(
+					ITextComponent.Serializer.toJson(new StringTextComponent("A medicinal tincture."))));
 			display.put("Lore", lore);
-			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Laudanum"))));
+			display.put("Name",
+					StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("Laudanum"))));
 			nbt.put("display", display);
 			LAUDANUM = new ItemStack(Items.POTION);
 			LAUDANUM.setTag(nbt);
@@ -105,9 +107,11 @@ public class TreasureItems {
 			nbt.putInt("HideFlags", 32);
 			CompoundNBT display = new CompoundNBT();
 			ListNBT lore = new ListNBT();
-			lore.add(new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("An unstable mixture."))));
+			lore.add(StringNBT
+					.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("An unstable mixture."))));
 			display.put("Lore", lore);
-			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Animus"))));
+			display.put("Name",
+					StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("Animus"))));
 			nbt.put("display", display);
 			ANIMUS = new ItemStack(Items.POTION);
 			ANIMUS.setTag(nbt);
@@ -133,9 +137,11 @@ public class TreasureItems {
 			nbt.putInt("HideFlags", 32);
 			CompoundNBT display = new CompoundNBT();
 			ListNBT lore = new ListNBT();
-			lore.add(new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("A floral extract."))));
+			lore.add(StringNBT
+					.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("A floral extract."))));
 			display.put("Lore", lore);
-			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Nectar"))));
+			display.put("Name",
+					StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("Nectar"))));
 			nbt.put("display", display);
 			NECTAR = new ItemStack(Items.POTION);
 			NECTAR.setTag(nbt);
@@ -161,10 +167,11 @@ public class TreasureItems {
 			nbt.putInt("HideFlags", 32);
 			CompoundNBT display = new CompoundNBT();
 			ListNBT lore = new ListNBT();
-			lore.add(
-					new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("An energetic beverage."))));
+			lore.add(StringNBT.func_229705_a_(
+					ITextComponent.Serializer.toJson(new StringTextComponent("An energetic beverage."))));
 			display.put("Lore", lore);
-			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Velocitas"))));
+			display.put("Name",
+					StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("Velocitas"))));
 			nbt.put("display", display);
 			VELOCITAS = new ItemStack(Items.POTION);
 			VELOCITAS.setTag(nbt);
@@ -181,9 +188,9 @@ public class TreasureItems {
 			nbt.putInt("HideFlags", 32);
 			CompoundNBT display = new CompoundNBT();
 			ListNBT lore = new ListNBT();
-			lore.add(new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("A glowstone extract."))));
+			lore.add(StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("A glowstone extract."))));
 			display.put("Lore", lore);
-			display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent("Luma"))));
+			display.put("Name", StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent("Luma"))));
 			nbt.put("display", display);
 			LUMA = new ItemStack(Items.POTION);
 			LUMA.setTag(nbt);
@@ -221,10 +228,10 @@ public class TreasureItems {
 
 	public static CompoundNBT createDisplayTag(String name, String... loreEntries) {
 		CompoundNBT display = new CompoundNBT();
-		display.put("Name", new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent(name))));
+		display.put("Name", StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent(name))));
 		ListNBT lore = new ListNBT();
 		for (String line : loreEntries)
-			lore.add(new StringNBT(ITextComponent.Serializer.toJson(new StringTextComponent(line))));
+			lore.add(StringNBT.func_229705_a_(ITextComponent.Serializer.toJson(new StringTextComponent(line))));
 		if (lore.size() > 0)
 			display.put("Lore", lore);
 		return display;

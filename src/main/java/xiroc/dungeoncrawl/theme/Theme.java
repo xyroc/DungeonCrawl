@@ -15,41 +15,6 @@ import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class Theme {
 
-	// OLD THEME IDS
-	// test -1
-	// default 0
-	// nether 1
-	// swamp 2
-	// ocean 3
-	// frozen ocean 4
-	// jungle 5
-	// birch forest 6
-	// savanna 7
-	// oak forest 8
-	// dark oak forest 9
-	// taiga 10
-
-	// desert 16
-	// badlands 17
-
-	// ice 32
-
-	// bricks 48
-	// andesite 49
-	// bricks birch 50
-	// andesite birch 51
-	// bricks jungle 52
-	// andesite jungle 53
-	// bricks savanna 54
-	// andesite savanna 55
-	// bricks dark oak 56
-	// andesite dark oak 57
-	// bricks spruce 58
-	// andesite spruce 59
-
-	// moss default 80
-	// moss andesite 81
-
 	public static final Random RANDOM = new Random();
 
 	public static HashMap<String, Integer> BIOME_TO_THEME_MAP;
@@ -59,9 +24,9 @@ public class Theme {
 
 	public static HashMap<Integer, ThemeRandomizer> RANDOMIZERS;
 
-	// | *************************** |
-	// | - - - - Base Themes - - - - |
-	// | *************************** |
+	/* **************************** */
+	/*          BASE THEMES         */
+	/* **************************** */
 
 	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS,
 			() -> BlockRegistry.GRAVEL, () -> Blocks.STONE_STAIRS.getDefaultState(),
@@ -108,9 +73,9 @@ public class Theme {
 	public static final Theme MOSS = new Theme(BlockRegistry.MOSS, BlockRegistry.MOSS, BlockRegistry.MOSS_FLOOR,
 			BlockRegistry.MOSS_STAIRS, BlockRegistry.MOSS, BlockRegistry.MOSS_WALL, BlockRegistry.MOSS);
 
-	// | ************************** |
-	// | - - - - Sub-Themes - - - - |
-	// | ************************** |
+	/* **************************** */
+	/*           SUB-THEMES         */
+	/* **************************** */
 
 	public static final SubTheme NETHER_SUB = new SubTheme(Blocks.OBSIDIAN.getDefaultState(),
 			Blocks.CAVE_AIR.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
@@ -144,7 +109,7 @@ public class Theme {
 
 	static {
 
-		// [Base Themes]
+		// Base Themes
 
 		BIOME_TO_THEME_MAP = new HashMap<String, Integer>();
 
@@ -193,7 +158,7 @@ public class Theme {
 
 		ID_TO_THEME_MAP.put(80, MOSS);
 
-		// [Sub-Themes]
+		// Sub-Themes
 
 		BIOME_TO_SUBTHEME_MAP = new HashMap<String, Integer>();
 
@@ -239,7 +204,7 @@ public class Theme {
 		ID_TO_SUBTHEME_MAP.put(3, ACACIA);
 		ID_TO_SUBTHEME_MAP.put(4, DARK_OAK);
 		ID_TO_SUBTHEME_MAP.put(5, SPRUCE);
-		
+
 		ID_TO_SUBTHEME_MAP.put(8, NETHER_SUB);
 
 		RANDOMIZERS = new HashMap<Integer, ThemeRandomizer>();

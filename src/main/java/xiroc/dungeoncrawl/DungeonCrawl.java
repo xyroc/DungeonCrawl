@@ -50,6 +50,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.BOPCompatModule;
 import xiroc.dungeoncrawl.module.ModuleManager;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
+import xiroc.dungeoncrawl.theme.JsonTheme;
 import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -62,7 +63,10 @@ public class DungeonCrawl {
 
 	public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+	public static final Gson GSON = new GsonBuilder()
+			.registerTypeAdapter(JsonTheme.JsonBaseTheme.class, new JsonTheme.JsonBaseTheme.Deserializer())
+			.registerTypeAdapter(JsonTheme.JsonSubTheme.class, new JsonTheme.JsonSubTheme.Deserializer())
+			.setPrettyPrinting().create();
 
 	public static IEventBus EVENT_BUS;
 

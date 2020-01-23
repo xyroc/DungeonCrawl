@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import com.google.gson.JsonDeserializationContext;

@@ -1,13 +1,13 @@
 package xiroc.dungeoncrawl.dungeon;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-
-/*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
- */
 
 public class DungeonStatTracker {
 

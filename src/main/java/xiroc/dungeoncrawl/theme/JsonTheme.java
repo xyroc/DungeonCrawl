@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.theme;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.lang.reflect.Type;
 import java.util.Iterator;
 

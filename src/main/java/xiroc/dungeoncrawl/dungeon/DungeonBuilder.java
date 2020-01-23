@@ -1,17 +1,16 @@
 package xiroc.dungeoncrawl.dungeon;
 
-import java.util.HashMap;
-
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
+
+import java.util.HashMap;
 
 import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -157,13 +156,14 @@ public class DungeonBuilder {
 		List<DungeonPiece> list = Lists.newArrayList();
 
 		for (int i = 0; i < layers.length; i++) {
+			this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
 			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
-			DungeonLayerMap map = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
-			this.layers[i].map = map;
-			this.maps[i] = map;
+			this.layers[i].map = maps[i];
+		}
+
+		for (int i = 0; i < layers.length; i++)
 			this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i,
 					i == layers.length - 1);
-		}
 
 		DungeonPiece stairs = new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT);
 		stairs.setRealPosition(startPos.getX() + layers[0].start.x * 8, startPos.getY() + 8,
@@ -171,17 +171,11 @@ public class DungeonBuilder {
 		stairs.stage = 0;
 		list.add(stairs);
 
-		for (int i = 0; i < layers.length; i++) {
+		for (int i = 0; i < layers.length; i++) 
 			buildLayer(layers[i], i, startPos);
-			// list.addAll(buildLayer(layers[i], i, startPos));
-//			DungeonPiece stairs = i == 0 ? new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT)
-//					: new Stairs(null, DungeonPieces.DEFAULT_NBT);
-//			stairs.setRealPosition(startPos.getX() + layers[i].start.x * 8, startPos.getY() + 8 - i * 8,
-//					startPos.getZ() + layers[i].start.z * 8);
-//			stairs.stage = 0;
-//			list.add(stairs);
-		}
+		
 		postProcessDungeon(list, rand);
+		
 		for (DungeonPiece piece : list)
 			if (piece.theme != 1) {
 				if (piece.theme != 80)
@@ -216,79 +210,8 @@ public class DungeonBuilder {
 					if (layer.segments[x][z] != null) {
 						if (layer.segments[x][z].getType() == 0)
 							DungeonFeatures.processCorridor(this, layer, x, z, rand, i, stage, startPos);
-
-//							if ((i < lyrs - 1 ? layers[i + 1].segments[x][z] == null : true)
-						else if (layer.segments[x][z].getType() == 4) {
-							if (rand.nextFloat() < 0.35) {
-								Position2D largeRoomPos = DungeonLayer.getLargeRoomPos(layer, new Position2D(x, z));
-								if (largeRoomPos != null
-										&& DungeonFeatures.canPlacePieceWithHeight(this, i, x, z, 2, 2, 1)) {
-									int roomID = DungeonLayer.getRandomLargeRoom(rand);
-									DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-									DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-									DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-									DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-
-									part1.treasureType = 0;
-									part2.treasureType = 0;
-									part3.treasureType = 0;
-									part4.treasureType = 0;
-
-									part1.rotation = Rotation.NONE;
-									part2.rotation = Rotation.NONE;
-									part3.rotation = Rotation.NONE;
-									part4.rotation = Rotation.NONE;
-
-									part1.walls = part2.walls = part3.walls = part4.walls = true;
-
-									part1.set(roomID, 0, 0, 0, 8, 16, 8);
-									part2.set(roomID, 8, 0, 0, 8, 16, 8);
-									part3.set(roomID, 8, 0, 8, 8, 16, 8);
-									part4.set(roomID, 0, 0, 8, 8, 16, 8);
-
-									part1.setPosition(largeRoomPos.x, largeRoomPos.z);
-									part2.setPosition(largeRoomPos.x + 1, largeRoomPos.z);
-									part3.setPosition(largeRoomPos.x + 1, largeRoomPos.z + 1);
-									part4.setPosition(largeRoomPos.x, largeRoomPos.z + 1);
-
-									part1.sides[0] = false;
-									part1.sides[1] = true;
-									part1.sides[2] = true;
-									part1.sides[3] = false;
-
-									part2.sides[0] = false;
-									part2.sides[1] = false;
-									part2.sides[2] = true;
-									part2.sides[3] = true;
-
-									part3.sides[0] = true;
-									part3.sides[1] = false;
-									part3.sides[2] = false;
-									part3.sides[3] = true;
-
-									part4.sides[0] = true;
-									part4.sides[1] = true;
-									part4.sides[2] = false;
-									part4.sides[3] = false;
-
-									part1.openAdditionalSides(layer.segments[largeRoomPos.x][largeRoomPos.z]);
-									part2.openAdditionalSides(layer.segments[largeRoomPos.x + 1][largeRoomPos.z]);
-									part3.openAdditionalSides(layer.segments[largeRoomPos.x + 1][largeRoomPos.z + 1]);
-									part4.openAdditionalSides(layer.segments[largeRoomPos.x][largeRoomPos.z + 1]);
-
-									layer.segments[largeRoomPos.x][largeRoomPos.z] = part1;
-									layer.segments[largeRoomPos.x + 1][largeRoomPos.z] = part2;
-									layer.segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = part3;
-									layer.segments[largeRoomPos.x][largeRoomPos.z + 1] = part4;
-
-//										map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z));
-//										map.markPositionAsOccupied(new Position2D(largeRoomPos.x + 1, largeRoomPos.z));
-//										map.markPositionAsOccupied(
-//												new Position2D(largeRoomPos.x + 1, largeRoomPos.z + 1));
-//										map.markPositionAsOccupied(new Position2D(largeRoomPos.x, largeRoomPos.z + 1));
-//										continue;
-								}
-							}
+						else if (layer.segments[x][z].getType() == 5) {
+							// LARGE ROOM
 						}
 					}
 				}
@@ -320,7 +243,7 @@ public class DungeonBuilder {
 //		DungeonCrawl.LOGGER.debug("{} | {}", pos, height);
 		for (int y = pos.getY() - 1; y > height; y--)
 			piece.setBlockState(DungeonSegmentModelBlock.PROVIDERS.get(DungeonSegmentModelBlockType.RAND_WALL_AIR)
-					.get(block, buildTheme, null, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0);
+					.get(block, buildTheme, null, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0, true);
 	}
 
 	public static DungeonSegmentModel getModel(DungeonPiece piece, Random rand) {

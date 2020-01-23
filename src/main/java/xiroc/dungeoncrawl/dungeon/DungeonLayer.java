@@ -1,11 +1,10 @@
 package xiroc.dungeoncrawl.dungeon;
 
-import java.util.List;
-
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Blocks;
@@ -51,11 +50,11 @@ public class DungeonLayer {
 		this.width = width;
 		this.length = length;
 		this.statTracker = new LayerStatTracker();
+		this.segments = new DungeonPiece[this.width][this.length];
 	}
 
 	public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer,
 			boolean lastLayer) {
-		this.segments = new DungeonPiece[this.width][this.length];
 		if (!map.markPositionAsOccupied(start))
 			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
 		Position2D end = lastLayer ? findLargeRoomPosWithMaxDistance(start) : map.getRandomFreePosition(rand);
@@ -329,16 +328,17 @@ public class DungeonLayer {
 			if (sideRoomData != null) {
 				DungeonPieces.SideRoom room = new DungeonPieces.SideRoom(null, DungeonPieces.DEFAULT_NBT);
 				room.modelID = 34;
+				
 				Direction dir = RotationHelper.translateDirection(Direction.WEST, sideRoomData.getB());
 				room.openSide(dir);
-//				DungeonCrawl.LOGGER.info(dir);
 				room.setPosition(sideRoomData.getA().x, sideRoomData.getA().z);
 				room.setRotation(sideRoomData.getB());
 				room.treasureType = Treasure.Type.SUPPLY;
+				
 				map.markPositionAsOccupied(sideRoomData.getA());
 				this.segments[sideRoomData.getA().x][sideRoomData.getA().z] = room;
+				
 				Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
-//				DungeonCrawl.LOGGER.info(this.segments[connectedSegment.x][connectedSegment.z]);
 				if (this.segments[connectedSegment.x][connectedSegment.z] != null) {
 					this.segments[connectedSegment.x][connectedSegment.z].openSide(dir.getOpposite());
 					rotatePiece(this.segments[connectedSegment.x][connectedSegment.z]);
@@ -358,6 +358,79 @@ public class DungeonLayer {
 						"Failed to place {} more rooms because all free positions are already taken. Please decrease the layer_min_additions and/or the layer_extra_additions value in the config (dungeon_crawl.toml) to avoid this issue.",
 						additionalFeatures - i);
 				return;
+			}
+			if (rand.nextFloat() < 0.5) {
+				Position2D largeRoomPos = DungeonLayer.getLargeRoomPos(this,
+						new Position2D(additions[i].x, additions[i].z));
+				if (largeRoomPos != null && DungeonFeatures.canPlacePieceWithHeight(builder, layer, additions[i].x,
+						additions[i].z, 2, 2, 1, true)) {
+					int roomID = DungeonLayer.getRandomLargeRoom(rand);
+					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+					DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+
+					part1.treasureType = 0;
+					part2.treasureType = 0;
+					part3.treasureType = 0;
+					part4.treasureType = 0;
+
+					part1.rotation = Rotation.NONE;
+					part2.rotation = Rotation.NONE;
+					part3.rotation = Rotation.NONE;
+					part4.rotation = Rotation.NONE;
+
+					part1.walls = part2.walls = part3.walls = part4.walls = true;
+//					part1.stage = part2.stage = part3.stage = part4.stage = 0;
+
+					part1.set(roomID, 0, 0, 0, 8, 16, 8);
+					part2.set(roomID, 8, 0, 0, 8, 16, 8);
+					part3.set(roomID, 8, 0, 8, 8, 16, 8);
+					part4.set(roomID, 0, 0, 8, 8, 16, 8);
+
+					part1.setPosition(largeRoomPos.x, largeRoomPos.z);
+					part2.setPosition(largeRoomPos.x + 1, largeRoomPos.z);
+					part3.setPosition(largeRoomPos.x + 1, largeRoomPos.z + 1);
+					part4.setPosition(largeRoomPos.x, largeRoomPos.z + 1);
+
+					part1.sides[0] = false;
+					part1.sides[1] = true;
+					part1.sides[2] = true;
+					part1.sides[3] = false;
+
+					part2.sides[0] = false;
+					part2.sides[1] = false;
+					part2.sides[2] = true;
+					part2.sides[3] = true;
+
+					part3.sides[0] = true;
+					part3.sides[1] = false;
+					part3.sides[2] = false;
+					part3.sides[3] = true;
+
+					part4.sides[0] = true;
+					part4.sides[1] = true;
+					part4.sides[2] = false;
+					part4.sides[3] = false;
+
+					part1.openAdditionalSides(segments[largeRoomPos.x][largeRoomPos.z]);
+					part2.openAdditionalSides(segments[largeRoomPos.x + 1][largeRoomPos.z]);
+					part3.openAdditionalSides(segments[largeRoomPos.x + 1][largeRoomPos.z + 1]);
+					part4.openAdditionalSides(segments[largeRoomPos.x][largeRoomPos.z + 1]);
+
+//					part1.setRealPosition(startPos.getX() + part1.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part1.posZ * 8);
+//					part2.setRealPosition(startPos.getX() + part2.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part2.posZ * 8);
+//					part3.setRealPosition(startPos.getX() + part3.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part3.posZ * 8);
+//					part4.setRealPosition(startPos.getX() + part4.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part4.posZ * 8);
+
+					segments[largeRoomPos.x][largeRoomPos.z] = part1;
+					segments[largeRoomPos.x + 1][largeRoomPos.z] = part2;
+					segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = part3;
+					segments[largeRoomPos.x][largeRoomPos.z + 1] = part4;
+					
+					DungeonFeatures.mark(builder, layer, largeRoomPos.x, largeRoomPos.z, 2, 2, 1);
+					continue;
+				}
 			}
 			DungeonPiece room = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			room.setPosition(additions[i].x, additions[i].z);

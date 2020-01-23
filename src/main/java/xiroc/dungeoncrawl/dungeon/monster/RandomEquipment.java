@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.monster;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.Random;
@@ -19,7 +19,7 @@ import xiroc.dungeoncrawl.util.IRandom;
 
 public class RandomEquipment {
 
-	public static final int HIGHEST_STAGE = 2;
+	public static final int HIGHEST_STAGE = 4;
 
 	public static final int[] ARMOR_COLORS = new int[] { 11546150, 16701501, 3949738, 6192150, 16351261, 16383998,
 			15961002, 1908001, 8439583, 4673362, 1481884, 8991416, 3847130 };

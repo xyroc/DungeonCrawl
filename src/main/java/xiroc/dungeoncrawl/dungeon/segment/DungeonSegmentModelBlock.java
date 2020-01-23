@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.segment;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.HashMap;
@@ -285,7 +285,7 @@ public class DungeonSegmentModelBlock {
 						return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
 					return theme.floor.get();
 				} : (block, theme, subTheme, rand, stage) -> {
-					int i = rand.nextInt(10);
+					int i = rand.nextInt(20);
 					if (i < 1 + stage)
 						return BlockRegistry.SPAWNER;
 					if (i == 5)
@@ -321,7 +321,7 @@ public class DungeonSegmentModelBlock {
 				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
 					return theme.wall.get();
 				} : (block, theme, subTheme, rand, stage) -> {
-					if (rand.nextInt(2 + (2 - stage)) == 0)
+					if (rand.nextInt(4 + (3 - stage)) == 0)
 						return BlockRegistry.SPAWNER;
 					return theme.wall.get();
 				});

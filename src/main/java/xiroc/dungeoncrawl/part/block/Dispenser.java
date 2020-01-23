@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.part.block;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.Random;
 
 import net.minecraft.block.BlockState;

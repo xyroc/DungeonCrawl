@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.util.IRandom;
 

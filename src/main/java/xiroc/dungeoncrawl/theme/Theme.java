@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.theme;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class Theme {
 	public static HashMap<Integer, ThemeRandomizer> RANDOMIZERS;
 
 	/* **************************** */
-	/*          BASE THEMES         */
+	/*           BASE THEMES        */
 	/* **************************** */
 
 	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS,
@@ -74,7 +74,7 @@ public class Theme {
 			BlockRegistry.MOSS_STAIRS, BlockRegistry.MOSS, BlockRegistry.MOSS_WALL, BlockRegistry.MOSS);
 
 	/* **************************** */
-	/*           SUB-THEMES         */
+	/*          SUB-THEMES          */
 	/* **************************** */
 
 	public static final SubTheme NETHER_SUB = new SubTheme(Blocks.OBSIDIAN.getDefaultState(),
@@ -104,6 +104,12 @@ public class Theme {
 	public static final SubTheme SPRUCE = new SubTheme(() -> Blocks.SPRUCE_LOG.getDefaultState(),
 			() -> Blocks.SPRUCE_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.SPRUCE_DOOR.getDefaultState(), () -> Blocks.SPRUCE_PLANKS.getDefaultState());
+
+	public static final SubTheme DESERT_SUB = new SubTheme(Blocks.CHISELED_STONE_BRICKS, Blocks.CAVE_AIR,
+			Blocks.REDSTONE_WALL_TORCH, Blocks.CAVE_AIR, Blocks.CHISELED_STONE_BRICKS);
+
+	public static final SubTheme ICE_SUB = new SubTheme(Blocks.ICE, Blocks.CAVE_AIR, Blocks.CAVE_AIR, Blocks.CAVE_AIR,
+			Blocks.CAVE_AIR);
 
 	private static final ThemeRandomizer DEFAULT_RANDOMIZER = (rand, base) -> base;
 
@@ -195,6 +201,12 @@ public class Theme {
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:snowy_taiga_mountains", 5);
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_spruce_taiga", 5);
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_spruce_taiga_hills", 5);
+		
+		BIOME_TO_SUBTHEME_MAP.put("minecraft:desert", 6);
+		BIOME_TO_SUBTHEME_MAP.put("minecraft:desert_hills", 6);
+		BIOME_TO_SUBTHEME_MAP.put("minecraft:desert_lakes", 6);
+		
+		BIOME_TO_SUBTHEME_MAP.put("minecraft:ice_spikes", 7);
 
 		ID_TO_SUBTHEME_MAP = new HashMap<Integer, SubTheme>();
 
@@ -204,6 +216,8 @@ public class Theme {
 		ID_TO_SUBTHEME_MAP.put(3, ACACIA);
 		ID_TO_SUBTHEME_MAP.put(4, DARK_OAK);
 		ID_TO_SUBTHEME_MAP.put(5, SPRUCE);
+		ID_TO_SUBTHEME_MAP.put(6, DESERT_SUB);
+		ID_TO_SUBTHEME_MAP.put(7, ICE_SUB);
 
 		ID_TO_SUBTHEME_MAP.put(8, NETHER_SUB);
 

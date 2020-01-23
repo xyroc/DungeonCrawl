@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.config;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.io.File;
@@ -23,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
-import xiroc.dungeoncrawl.dungeon.treasure.EnchantedBook;
 import xiroc.dungeoncrawl.util.BossEntry;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
@@ -62,7 +61,7 @@ public class JsonConfig implements IJsonConfigurable {
 
 	static {
 		load(new JsonConfig());
-		load(new EnchantedBook());
+//		load(new EnchantedBook());
 		load(new SpecialItemTags());
 		load(new ObfuscationValues());
 	}

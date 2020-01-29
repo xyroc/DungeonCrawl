@@ -1,19 +1,5 @@
 package xiroc.dungeoncrawl;
 
-/*
-GENRERAL LICENSE FOR DungeonCrawl v1.0
-
-(1) DungeonCrawl is the intellectual property of XYROC (otherwise known as XIROC1337). Distribution of the compiled mod on any other site than curseforge.com, minecraft.curseforge.com, xiroc.ovh or minecraftforum.net is strictly forbidden. Further, all sites included in the following list are NOT allowed to redistribute the mod or profit from it in any way:
-https://stopmodreposts.org/sites.html
-Redistributing this mod on the above mentioned illegal sites is a violation of copyright.
-
-(2) Modpack creators are only allowed to include this mod in FREE-TO-PLAY modpacks. Including this mod in modpacks that require payment to become playable or accessible for the user is forbidden.
-
-(3) You are allowed to read, use and share the Source Code of this mod, for example to create similar projects. However, completely copying the mod or copying large parts of the source (= more than 20%) without the explicit approval of the mod author is forbidden.
-
-DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -49,7 +35,6 @@ import xiroc.dungeoncrawl.module.BOPCompatModule;
 import xiroc.dungeoncrawl.module.ModuleManager;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.JsonTheme;
-import xiroc.dungeoncrawl.util.EventManager;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Tools;
 
@@ -72,8 +57,9 @@ public class DungeonCrawl {
 	public DungeonCrawl() {
 		LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+//		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerStart);
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new EventManager());
+//		MinecraftForge.EVENT_BUS.register(new EventManager());
 		MinecraftForge.EVENT_BUS.register(new Tools());
 		ForgeRegistries.FEATURES
 				.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));

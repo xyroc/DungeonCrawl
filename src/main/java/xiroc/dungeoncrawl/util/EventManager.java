@@ -8,17 +8,19 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
-@EventBusSubscriber(modid = DungeonCrawl.MODID, bus = Bus.MOD)
+@Mod.EventBusSubscriber(modid = DungeonCrawl.MODID, bus = Bus.MOD)
 public class EventManager {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
-		
+
 	}
+	
+	
 
 //	public static boolean createAssumption(String name) {
 //		for (String part : JsonConfig.ASSUMPTION_SEARCHLIST) {

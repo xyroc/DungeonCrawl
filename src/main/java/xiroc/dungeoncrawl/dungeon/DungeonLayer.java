@@ -57,7 +57,8 @@ public class DungeonLayer {
 			boolean lastLayer) {
 		if (!map.markPositionAsOccupied(start))
 			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
-		Position2D end = lastLayer ? findLargeRoomPosWithMaxDistance(start) : map.getRandomFreePosition(rand);
+		Position2D end = lastLayer ? findLargeRoomPosWithMaxDistance(builder, start, layer)
+				: map.getRandomFreePosition(rand);
 		this.start = start;
 		this.end = end;
 		this.segments[start.x][start.z] = new DungeonPieces.StairsBot(null, DungeonPieces.DEFAULT_NBT);
@@ -316,11 +317,14 @@ public class DungeonLayer {
 						"Failed to find a final room position for the last layer of a dungeon. This should never happen by default, but might be caused by an invalid config. If you didnt change the config or are sure that the cause of this is something else, please contact the mod author (The best way to do this is to open an issue on https://github.com/XYROC/DungeonCrawl). Layer map start pos: ({}|{})",
 						start.x, start.z);
 				Position2D pos = map.getRandomFreePosition(rand);
-				this.segments[pos.x][pos.z] = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
+				if (pos != null)
+					this.segments[pos.x][pos.z] = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
 			}
 
 		} else
 			this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
+		if (end == null)
+			end = map.getRandomFreePosition(rand);
 		this.buildConnection(start, end);
 		this.extend(builder, map, start, end, rand, layer);
 		if (layer == 0) {
@@ -328,16 +332,16 @@ public class DungeonLayer {
 			if (sideRoomData != null) {
 				DungeonPieces.SideRoom room = new DungeonPieces.SideRoom(null, DungeonPieces.DEFAULT_NBT);
 				room.modelID = 34;
-				
+
 				Direction dir = RotationHelper.translateDirection(Direction.WEST, sideRoomData.getB());
 				room.openSide(dir);
 				room.setPosition(sideRoomData.getA().x, sideRoomData.getA().z);
 				room.setRotation(sideRoomData.getB());
 				room.treasureType = Treasure.Type.SUPPLY;
-				
+
 				map.markPositionAsOccupied(sideRoomData.getA());
 				this.segments[sideRoomData.getA().x][sideRoomData.getA().z] = room;
-				
+
 				Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
 				if (this.segments[connectedSegment.x][connectedSegment.z] != null) {
 					this.segments[connectedSegment.x][connectedSegment.z].openSide(dir.getOpposite());
@@ -427,7 +431,7 @@ public class DungeonLayer {
 					segments[largeRoomPos.x + 1][largeRoomPos.z] = part2;
 					segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = part3;
 					segments[largeRoomPos.x][largeRoomPos.z + 1] = part4;
-					
+
 					DungeonFeatures.mark(builder, layer, largeRoomPos.x, largeRoomPos.z, 2, 2, 1);
 					continue;
 				}
@@ -620,20 +624,50 @@ public class DungeonLayer {
 		}
 	}
 
-	public Position2D findLargeRoomPosWithMaxDistance(Position2D pos) {
+	public Position2D findLargeRoomPosWithMaxDistance(DungeonBuilder builder, Position2D pos, int layer) {
 		int x = pos.x, z = pos.z;
 		int xHalf = width / 2 - 1, zHalf = length / 2 - 1;
 		if (x > xHalf) {
 			if (z > zHalf)
-				return getLargeRoomPos(new Position2D(0, 0));
+//				return getLargeRoomPos(new Position2D(0, 0));
+				return findLargeRoomPosAtArea(builder, new Position2D(0, 0), layer);
 			else
-				return getLargeRoomPos(new Position2D(0, length - 1));
+//				return getLargeRoomPos(new Position2D(0, length - 1));
+				return findLargeRoomPosAtArea(builder, new Position2D(0, length - 1), layer);
+
 		} else {
 			if (z > zHalf)
-				return getLargeRoomPos(new Position2D(width - 1, 0));
+//				return getLargeRoomPos(new Position2D(width - 1, 0));
+				return findLargeRoomPosAtArea(builder, new Position2D(width - 1, 0), layer);
 			else
-				return getLargeRoomPos(new Position2D(width - 1, length - 1));
+//				return getLargeRoomPos(new Position2D(width - 1, length - 1));
+				return findLargeRoomPosAtArea(builder, new Position2D(width - 1, length - 1), layer);
 		}
+	}
+
+	public Position2D findLargeRoomPosAtArea(DungeonBuilder builder, Position2D pos, int layer) {
+		for (int i = 0; i < 16; i++) {
+			for (int x = -i; x < i; x++)
+				if (Position2D.isValid(pos.x + x, pos.z + i, width, length) && DungeonFeatures
+						.canPlacePieceWithHeight(builder, layer, pos.x + x, pos.z + i, 2, 2, 1, false))
+					return new Position2D(pos.x + x, pos.z + i);
+
+			for (int z = -i; z < i; z++)
+				if (Position2D.isValid(pos.x + i, pos.z + z, width, length) && DungeonFeatures
+						.canPlacePieceWithHeight(builder, layer, pos.x + i, pos.z + z, 2, 2, 1, false))
+					return new Position2D(pos.x + i, pos.z + z);
+
+			for (int x = -i; x < i; x++)
+				if (Position2D.isValid(pos.x + x, pos.z - i, width, length) && DungeonFeatures
+						.canPlacePieceWithHeight(builder, layer, pos.x + x, pos.z - i, 2, 2, 1, false))
+					return new Position2D(pos.x + x, pos.z - i);
+
+			for (int z = -i; z < i; z++)
+				if (Position2D.isValid(pos.x - i, pos.z + z, width, length) && DungeonFeatures
+						.canPlacePieceWithHeight(builder, layer, pos.x - i, pos.z + z, 2, 2, 1, false))
+					return new Position2D(pos.x - i, pos.z + z);
+		}
+		return null;
 	}
 
 	public Tuple<Position2D, Rotation> findStarterRoomData(Position2D start) {

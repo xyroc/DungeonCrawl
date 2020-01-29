@@ -661,17 +661,6 @@
                 },
                 {
                 	"type": "item",
-                	"name": "minecraft:air",
-                	"weight": 3,
-                	"functions": [
-                		{
-                			"function": "dungeoncrawl:enchanted_book",
-                			"stage": 3
-                		}
-                	]
-                },
-                {
-                	"type": "item",
                 	"name": "minecraft:shield",
                 	"weight": 4,
                 	"functions": [

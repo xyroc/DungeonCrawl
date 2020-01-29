@@ -1,11 +1,11 @@
 package xiroc.dungeoncrawl.dungeon;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-
-/*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
- */
 
 import java.util.Random;
 import java.util.function.Function;
@@ -18,7 +18,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
@@ -31,7 +30,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.ObfuscationValues;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
@@ -89,12 +87,12 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 		return new ChunkPos(k1, l1);
 	}
 
-	public boolean func_225558_a_(BiomeManager p_225558_1_, ChunkGenerator<?> chunkGen, Random rand, int chunkPosX,
-			int chunkPosZ, Biome p_225558_6_) {
+	@Override
+	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
 		ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
 		if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
-			for (Biome biome : chunkGen.getBiomeProvider().func_225530_a_(chunkPosX * 16 + SIZE / 2 * 8,
-					chunkPosZ * 16 + SIZE / 2 * 8, 128, 8 * SIZE)) {
+			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + SIZE / 2 * 8,
+					chunkPosZ * 16 + SIZE / 2 * 8, 8 * SIZE)) {
 				if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !chunkGen.hasStructure(biome, DUNGEON))
 					return false;
 			}
@@ -121,9 +119,9 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 	public static class Start extends StructureStart {
 
-		public Start(Structure<?> p_i51341_1_, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn,
-				long seed) {
-			super(p_i51341_1_, chunkX, chunkZ, boundsIn, referenceIn, seed);
+		public Start(Structure<?> p_i51341_1_, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn,
+				int referenceIn, long seed) {
+			super(p_i51341_1_, chunkX, chunkZ, biomeIn, boundsIn, referenceIn, seed);
 		}
 
 		@Override
@@ -147,7 +145,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 				ServerWorld serverWorld = (ServerWorld) world.get(generator);
 				BlockPos spawn = serverWorld.getSpawnPoint();
 
-				DungeonSegmentModelRegistry.load(serverWorld);
+//				DungeonSegmentModelRegistry.load(serverWorld);
 
 				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
 
@@ -181,15 +179,14 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 		}
 
 		@Override
-		public void func_225565_a_(IWorld worldIn, ChunkGenerator<?> chunkGen, Random rand,
-				MutableBoundingBox structurebb, ChunkPos pos) {
+		public void generateStructure(IWorld worldIn, Random rand, MutableBoundingBox structurebb, ChunkPos pos) {
 			if (!Config.IGNORE_DIMENSION.get() && !(worldIn.getDimension().getType() == DimensionType.OVERWORLD)) {
 				DungeonCrawl.LOGGER.warn("Refusing to generate a placed Dungeon in {} because it is not in OVERWORLD.",
 						worldIn.getDimension().getType());
 				return;
 			}
-			DungeonSegmentModelRegistry.load(((ServerWorld) worldIn.getWorld()).getServer().getResourceManager());
-			super.func_225565_a_(worldIn, chunkGen, rand, structurebb, pos);
+//			DungeonSegmentModelRegistry.load(((ServerWorld) worldIn.getWorld()).getServer().getResourceManager());
+			super.generateStructure(worldIn, rand, structurebb, pos);
 		}
 
 	}

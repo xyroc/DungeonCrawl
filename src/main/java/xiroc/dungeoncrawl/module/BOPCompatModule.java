@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.module;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.Optional;
@@ -13,7 +13,6 @@ import biomesoplenty.api.biome.BOPBiomes;
 import biomesoplenty.api.block.BOPBlocks;
 import net.minecraft.block.Blocks;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -100,14 +99,14 @@ public class BOPCompatModule extends Module {
 		addStructureToBiome(BOPBiomes.wetland);
 		addStructureToBiome(BOPBiomes.woodland);
 		addStructureToBiome(BOPBiomes.xeric_shrubland);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:xeric_shrubland", 3);
 
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:grove", 5);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:land_of_lakes", 5);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:maple_woods", 5);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:shield", 5);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:bayou", 32);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:wetland", 32);
 
@@ -122,12 +121,11 @@ public class BOPCompatModule extends Module {
 
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:coniferous_forest", 36);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:snowy_coniferous_forest", 36);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:omnious_woods", 37);
-		
+
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:overgrown_cliffs", 38);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:tropical_rainforest", 38);
-
 
 		Theme.ID_TO_SUBTHEME_MAP.put(32,
 				new Theme.SubTheme(BOPBlocks.willow_log.getDefaultState(), BOPBlocks.willow_trapdoor.getDefaultState(),
@@ -153,28 +151,28 @@ public class BOPCompatModule extends Module {
 				new Theme.SubTheme(BOPBlocks.fir_log.getDefaultState(), BOPBlocks.fir_trapdoor.getDefaultState(),
 						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.fir_door.getDefaultState(),
 						BOPBlocks.fir_planks.getDefaultState()));
-		
+
 		Theme.ID_TO_SUBTHEME_MAP.put(37,
 				new Theme.SubTheme(BOPBlocks.umbran_log.getDefaultState(), BOPBlocks.umbran_trapdoor.getDefaultState(),
 						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.umbran_door.getDefaultState(),
 						BOPBlocks.umbran_planks.getDefaultState()));
-		
+
 		Theme.ID_TO_SUBTHEME_MAP.put(38,
-				new Theme.SubTheme(BOPBlocks.mahogany_log.getDefaultState(), BOPBlocks.mahogany_trapdoor.getDefaultState(),
-						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.mahogany_door.getDefaultState(),
-						BOPBlocks.mahogany_planks.getDefaultState()));
+				new Theme.SubTheme(BOPBlocks.mahogany_log.getDefaultState(),
+						BOPBlocks.mahogany_trapdoor.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
+						BOPBlocks.mahogany_door.getDefaultState(), BOPBlocks.mahogany_planks.getDefaultState()));
 
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:xeric_shrubland", 16);
-		
+
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:brushland", 64);
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:quagmire", 64);
 
 		Theme.ID_TO_THEME_MAP.put(64,
-				new Theme(() -> BOPBlocks.mud_bricks.getDefaultState(),
-						() -> BOPBlocks.mud_bricks.getDefaultState(), mudFloor,
-						() -> BOPBlocks.mud_brick_stairs.getDefaultState(), () -> BOPBlocks.mud.getDefaultState(),
-						() -> BOPBlocks.mud_brick_wall.getDefaultState(), mudFloor));
-		
+				new Theme(() -> BOPBlocks.mud_bricks.getDefaultState(), () -> BOPBlocks.mud_bricks.getDefaultState(),
+						mudFloor, () -> BOPBlocks.mud_brick_stairs.getDefaultState(),
+						() -> BOPBlocks.mud.getDefaultState(), () -> BOPBlocks.mud_brick_wall.getDefaultState(),
+						mudFloor));
+
 		Theme.RANDOMIZERS.put(64, Theme.createRandomizer(64, 0, 49));
 
 		return true;
@@ -182,8 +180,7 @@ public class BOPCompatModule extends Module {
 
 	private static void addStructureToBiome(Optional<Biome> biome) {
 		if (biome.isPresent()) {
-			biome.get().func_226711_a_(new ConfiguredFeature<NoFeatureConfig, Dungeon>(Dungeon.DUNGEON,
-					NoFeatureConfig.NO_FEATURE_CONFIG));
+			biome.get().addStructure(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG);
 			LOGGER.info("Added Generation to BOP Biome {}", biome.get().getRegistryName().toString());
 		} else {
 			LOGGER.error("Failed to add a BOP biome: Biome was not present. ({})", biome);

@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.dungeon;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.HashMap;
@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.Hole;
 import xiroc.dungeoncrawl.dungeon.DungeonPieces.SideRoom;
@@ -36,7 +35,7 @@ public class DungeonFeatures {
 	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
 		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2)) {
+			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2, true)) {
 				Hole hole = new Hole(null, DungeonPieces.DEFAULT_NBT);
 				hole.sides = layer.segments[x][z].sides;
 				hole.connectedSides = layer.segments[x][z].connectedSides;
@@ -90,7 +89,7 @@ public class DungeonFeatures {
 					&& (layer.segments[x][z].sides[0] && layer.segments[x][z].sides[2]
 							|| layer.segments[x][z].sides[1] && layer.segments[x][z].sides[3])) {
 				DungeonPiece feature = RandomFeature.CORRIDOR_FEATURE.roll(rand);
-				if (feature.getType() == 7 && !canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -1))
+				if (feature.getType() == 7 && !canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -1, true))
 					feature = new DungeonPieces.CorridorTrap(null, DungeonPieces.DEFAULT_NBT);
 				feature.sides = layer.segments[x][z].sides;
 				feature.connectedSides = layer.segments[x][z].connectedSides;
@@ -168,13 +167,10 @@ public class DungeonFeatures {
 	 * its layer would have a height value of -1 (minus, because it goes down; 1
 	 * layer = 8 blocks).
 	 * 
-	 * @param builder The Dungeon Builder object
-	 * @param layer   The layer of the piece
-	 * @param height  The Height of the piece
 	 * @return true if the piece can be placed, false if not
 	 */
 	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
-			int length, int layerHeight) {
+			int length, int layerHeight, boolean ignoreStartPosition) {
 
 		int layers = builder.layers.length, lh = layer - layerHeight;
 		if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
@@ -185,23 +181,23 @@ public class DungeonFeatures {
 		boolean up = layerHeight > 0;
 		int c = up ? -1 : 1, k = lh + c;
 
-		DungeonCrawl.LOGGER.debug(
-				"Checking, if a piece with a height of {} and a size of ({}|{}) can be placed at layer {} of {}. The c-variable is {}. Up: {}.",
-				layerHeight, width, length, layer, layers, c, up);
+//		DungeonCrawl.LOGGER.debug(
+//				"Checking, if a piece with a height of {} and a size of ({}|{}) can be placed at layer {} of {}. The c-variable is {}. Up: {}.",
+//				layerHeight, width, length, layer, layers, c, up);
 
-		for (int lyr = up ? layer - 1 : layer + 1; up ? lyr > k : lyr < k; lyr += c) {
-			DungeonCrawl.LOGGER.debug("lyr: {}, k: {}", lyr, k);
+		for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
+//			DungeonCrawl.LOGGER.debug("lyr: {}, k: {}", lyr, k);
 			if (layers - lyr == 0)
 				continue;
 			else if (layers - lyr < 0)
 				return false;
 			for (int x0 = 0; x0 < width; x0++)
 				for (int z0 = 0; z0 < length; z0++)
-					if (builder.layers[lyr].segments[x + x0][z + z0] != null
-							|| !builder.maps[lyr].isPositionFree(x + x0, z + z0))
+					if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0) && (builder.layers[lyr].segments[x + x0][z + z0] != null
+							|| !builder.maps[lyr].isPositionFree(x + x0, z + z0)))
 						return false;
 		}
-		DungeonCrawl.LOGGER.debug("--");
+//		DungeonCrawl.LOGGER.debug("--");
 		return true;
 	}
 
@@ -215,7 +211,7 @@ public class DungeonFeatures {
 		boolean up = layerHeight > 0;
 		int c = up ? -1 : 1, k = layer - layerHeight + c;
 
-		for (int lyr = up ? layer - 1 : layer + 1; up ? lyr > k : lyr < k; lyr += c) {
+		for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
 			if (layers - lyr == 0)
 				continue;
 			for (int x0 = 0; x0 < width; x0++)

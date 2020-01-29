@@ -1,14 +1,14 @@
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.world.storage.loot.LootContext;
@@ -28,11 +28,8 @@ public class EnchantedBook extends LootFunction {
 
 	@Override
 	public ItemStack doApply(ItemStack stack, LootContext context) {
-		ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
-		Enchantment enchantment = xiroc.dungeoncrawl.dungeon.treasure.EnchantedBook
-				.getRandomEnchantment(context.getRandom(), stage);
-		RandomEquipment.enchantItem(book, context.getRandom(), enchantment, RandomEquipment.getStageMultiplier(stage));
-		return book;
+		return EnchantmentHelper.addRandomEnchantment(context.getRandom(), new ItemStack(Items.BOOK),
+				(int) (RandomEquipment.getStageMultiplier(stage) * 30) , true);
 	}
 
 	public static class Serializer extends LootFunction.Serializer<EnchantedBook> {

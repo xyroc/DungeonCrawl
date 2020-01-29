@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.monster;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import net.minecraft.util.ResourceLocation;

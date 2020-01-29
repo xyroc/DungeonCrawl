@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
@@ -15,7 +19,7 @@ public class Book {
 		ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
 		CompoundNBT tag = new CompoundNBT();
 		ListNBT pages = new ListNBT();
-		pages.add(StringNBT.func_229705_a_("----  Statistics  ----\n  Objectives: " + statTracker.totalObjectives + "\n  Layers: "
+		pages.add(new StringNBT("----  Statistics  ----\n  Objectives: " + statTracker.totalObjectives + "\n  Layers: "
 				+ statTracker.stats.length + "\n  Chests: " + statTracker.chests + "\n  Spawners: "
 				+ statTracker.spawners));
 		ArrayList<String> lines = statTracker.getObjectives();
@@ -37,7 +41,7 @@ public class Book {
 		String text = "";
 		for (int i = start; i < Math.max(lines.size(), 14); i++)
 			text += lines.get(i) + "\n";
-		return StringNBT.func_229705_a_(text);
+		return new StringNBT(text);
 	}
 
 }

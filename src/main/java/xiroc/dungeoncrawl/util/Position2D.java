@@ -1,10 +1,10 @@
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.util.Direction;
-
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
+
+import net.minecraft.util.Direction;
 
 public class Position2D {
 

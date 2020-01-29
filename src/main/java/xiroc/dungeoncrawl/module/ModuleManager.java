@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.module;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public class ModuleManager {
 			LOGGER.info("There is one module present");
 		else
 			LOGGER.info("There are {} modules present", size);
+
 		int successful = 0, failed = 0;
 		moduleLoop: for (Class<? extends Module> moduleClass : MODULES) {
 			for (String modId : MOD_REQUIREMENTS.get(moduleClass)) {
@@ -52,6 +53,8 @@ public class ModuleManager {
 			LOGGER.info("Successfully loaded {} , {} failed.", successful + (size > 1 ? " Modules" : " Module"),
 					failed);
 		}
+
+		LOGGER.info("Successfully loaded {} , {} failed.", successful + (size > 1 ? " Modules" : " Module"), failed);
 
 	}
 

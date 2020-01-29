@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.HashMap;
@@ -323,7 +323,6 @@ public class Treasure {
 		SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Loot.KITCHEN_CHEST);
 		SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
 		SPECIAL_LOOT_TABLES.put(Type.LIBRARY, Loot.LIBRARY);
-		SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
 
 		LootFunctionManager.registerFunction(new RandomItem.Serializer());
 		LootFunctionManager.registerFunction(new RandomPotion.Serializer());

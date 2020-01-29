@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.segment;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ */
+
 import xiroc.dungeoncrawl.util.IRandom;
 
 public class RandomDungeonSegmentModel {

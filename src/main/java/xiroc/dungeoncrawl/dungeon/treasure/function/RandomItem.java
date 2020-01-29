@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import com.google.gson.JsonDeserializationContext;
@@ -29,7 +29,7 @@ public class RandomItem extends LootFunction {
 	public ItemStack doApply(ItemStack stack, LootContext context) {
 		return RandomSpecialItem.generate(context.getWorld(), context.getRandom(),
 				Theme.BIOME_TO_THEME_MAP.getOrDefault(
-						context.getWorld().func_226691_t_(context.get(LootParameters.POSITION)).getRegistryName().toString(),
+						context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(),
 						0),
 				stage - 1);
 	}

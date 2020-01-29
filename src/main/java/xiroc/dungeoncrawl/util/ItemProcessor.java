@@ -1,10 +1,10 @@
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.item.ItemStack;
-
 /*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
+
+import net.minecraft.item.ItemStack;
 
 @FunctionalInterface
 public interface ItemProcessor<W, F, S, T> {

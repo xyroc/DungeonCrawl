@@ -12,9 +12,8 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage.Decoration;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.placement.NoPlacementConfig;
-import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -79,15 +78,16 @@ public class DungeonCrawl {
 		BlockRegistry.load();
 
 		DungeonCrawl.LOGGER.info("Adding features and structures");
-
+		
 		for (Biome biome : ForgeRegistries.BIOMES) {
 			if (!JsonConfig.BIOME_BLACKLIST.contains(biome.getRegistryName().toString())) {
 				DungeonCrawl.LOGGER.debug("Biome >> " + biome.getRegistryName());
-				biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, Biome.createDecoratedFeature(Dungeon.DUNGEON,
-						NoFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
+				biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, new ConfiguredFeature<NoFeatureConfig, Dungeon>(
+						Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));
 				if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())) {
 					DungeonCrawl.LOGGER.debug("Generation Biome >> " + biome.getRegistryName());
-					biome.addStructure(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG);
+					biome.func_226711_a_(new ConfiguredFeature<NoFeatureConfig, Dungeon>(Dungeon.DUNGEON,
+							NoFeatureConfig.NO_FEATURE_CONFIG));
 				}
 			}
 		}

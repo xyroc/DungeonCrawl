@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -51,21 +52,6 @@ import xiroc.dungeoncrawl.util.RotationHelper;
 import xiroc.dungeoncrawl.util.Triple;
 
 public class DungeonPieces {
-
-	// ID PIECE
-	// 0 Corridor
-	// 1 StairsBot
-	// 2 Stairs
-	// 3 StairsTop
-	// 4 Hole
-	// 5 Room
-	// 6 Corridor Trap
-	// 7 Corridor Room
-	// 8 Hole Trap
-	// 11 EntranceBuilder
-	// 12 Part
-	// 13 SideRoom
-	// 14 Part with Entity
 
 	public static final CompoundNBT DEFAULT_NBT = getDefaultNBT();
 
@@ -149,8 +135,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 			this.adjustSize();
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
@@ -262,8 +248,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 			// --- Default Building ---
 			this.adjustSize();
 //			if (theme != 1)
@@ -377,8 +363,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos chunkPosIn) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 			DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
 			if (model != null) {
 //				if (theme != 1)
@@ -432,8 +418,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -456,8 +442,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 			DungeonSegmentModel model = DungeonBuilder.getModel(this, randomIn);
 			if (model == null)
 				return false;
@@ -493,8 +479,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -572,8 +558,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -598,8 +584,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -620,8 +606,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -653,8 +639,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -706,8 +692,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -734,8 +720,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
@@ -768,8 +754,8 @@ public class DungeonPieces {
 		}
 
 		@Override
-		public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-				ChunkPos p_74875_4_) {
+		public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn,
+				MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);

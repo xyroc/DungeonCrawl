@@ -19,7 +19,7 @@ public class Book {
 		ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
 		CompoundNBT tag = new CompoundNBT();
 		ListNBT pages = new ListNBT();
-		pages.add(new StringNBT("----  Statistics  ----\n  Objectives: " + statTracker.totalObjectives + "\n  Layers: "
+		pages.add(StringNBT.func_229705_a_("----  Statistics  ----\n  Objectives: " + statTracker.totalObjectives + "\n  Layers: "
 				+ statTracker.stats.length + "\n  Chests: " + statTracker.chests + "\n  Spawners: "
 				+ statTracker.spawners));
 		ArrayList<String> lines = statTracker.getObjectives();
@@ -41,7 +41,7 @@ public class Book {
 		String text = "";
 		for (int i = start; i < Math.max(lines.size(), 14); i++)
 			text += lines.get(i) + "\n";
-		return new StringNBT(text);
+		return StringNBT.func_229705_a_(text);
 	}
 
 }

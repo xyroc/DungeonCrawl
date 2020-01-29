@@ -25,12 +25,12 @@ description='''Dungeons...'''
 [[dependencies.dungeoncrawl]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14.4,)"
+    versionRange="[1.15,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.dungeoncrawl]]
     modId="biomesoplenty"
     mandatory=false
-    versionRange="[9.0.0,)"
+    versionRange="[10.0.0,)"
     ordering="NONE"
     side="BOTH"

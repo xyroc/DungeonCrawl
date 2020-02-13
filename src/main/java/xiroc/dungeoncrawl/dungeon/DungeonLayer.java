@@ -27,9 +27,6 @@ public class DungeonLayer {
 	 * NORTH|-Z EAST|+X SOUTH|+Z WEST|-X
 	 */
 
-	public static final int[] LARGE_ROOMS = new int[] { 25, 25, 35 };
-
-	public DungeonLayerType type;
 	public DungeonPiece[][] segments;
 
 	public Position2D start;
@@ -41,12 +38,11 @@ public class DungeonLayer {
 
 	public DungeonLayerMap map;
 
-	public DungeonLayer(DungeonLayerType type) {
-		this(type, 16, 16);
+	public DungeonLayer() {
+		this(16, 16);
 	}
 
-	public DungeonLayer(DungeonLayerType type, int width, int length) {
-		this.type = type;
+	public DungeonLayer(int width, int length) {
 		this.width = width;
 		this.length = length;
 		this.statTracker = new LayerStatTracker();
@@ -255,62 +251,7 @@ public class DungeonLayer {
 //						}
 //					}
 //				} else {
-				DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-				DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-				DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-				DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-
-				part1.treasureType = 7;
-				part2.treasureType = 7;
-				part3.treasureType = 7;
-				part4.treasureType = 7;
-
-				part1.rotation = Rotation.NONE;
-				part2.rotation = Rotation.NONE;
-				part3.rotation = Rotation.NONE;
-				part4.rotation = Rotation.NONE;
-
-				part1.walls = part2.walls = part3.walls = part4.walls = true;
-
-				part1.set(28, 0, 0, 0, 8, 16, 8);
-				part2.set(28, 8, 0, 0, 8, 16, 8);
-				part3.set(28, 8, 0, 8, 8, 16, 8);
-				part4.set(28, 0, 0, 8, 8, 16, 8);
-
-				part1.setPosition(end.x, end.z);
-				part2.setPosition(end.x + 1, end.z);
-				part3.setPosition(end.x + 1, end.z + 1);
-				part4.setPosition(end.x, end.z + 1);
-
-				part1.sides[0] = false;
-				part1.sides[1] = true;
-				part1.sides[2] = true;
-				part1.sides[3] = false;
-
-				part2.sides[0] = false;
-				part2.sides[1] = false;
-				part2.sides[2] = true;
-				part2.sides[3] = true;
-
-				part3.sides[0] = true;
-				part3.sides[1] = false;
-				part3.sides[2] = false;
-				part3.sides[3] = true;
-
-				part4.sides[0] = true;
-				part4.sides[1] = true;
-				part4.sides[2] = false;
-				part4.sides[3] = false;
-
-				this.segments[end.x][end.z] = part1;
-				this.segments[end.x + 1][end.z] = part2;
-				this.segments[end.x + 1][end.z + 1] = part3;
-				this.segments[end.x][end.z + 1] = part4;
-
-				map.markPositionAsOccupied(end);
-				map.markPositionAsOccupied(new Position2D(end.x + 1, end.z));
-				map.markPositionAsOccupied(new Position2D(end.x + 1, end.z + 1));
-				map.markPositionAsOccupied(new Position2D(end.x, end.z + 1));
+				createLootRoom();
 //				}
 			} else {
 				DungeonCrawl.LOGGER.warn(
@@ -323,8 +264,16 @@ public class DungeonLayer {
 
 		} else
 			this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
-		if (end == null)
-			end = map.getRandomFreePosition(rand);
+		if (end == null) {
+			end = findLargeRoomPosAtArea(builder, map.getRandomFreePosition(rand), layer);
+			if (end != null) {
+				createLootRoom();
+			} else {
+				DungeonCrawl.LOGGER.debug("Failed to find a position for the loot room.");
+				end = forceLargeRoomPosWithMaxDistance(start);
+				createLootRoom();
+			}
+		}
 		this.buildConnection(start, end);
 		this.extend(builder, map, start, end, rand, layer);
 		if (layer == 0) {
@@ -368,7 +317,7 @@ public class DungeonLayer {
 						new Position2D(additions[i].x, additions[i].z));
 				if (largeRoomPos != null && DungeonFeatures.canPlacePieceWithHeight(builder, layer, additions[i].x,
 						additions[i].z, 2, 2, 1, true)) {
-					int roomID = DungeonLayer.getRandomLargeRoom(rand);
+					int roomID = RandomFeature.LARGE_ROOMS.roll(rand);
 					DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 					DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
@@ -463,8 +412,10 @@ public class DungeonLayer {
 		int startZ = start.z;
 		int endX = end.x;
 		int endZ = end.z;
+		
 		if (startX == endX && startZ == endZ)
 			return;
+		
 		if (startX > endX) {
 			this.segments[startX][startZ].openSide(Direction.WEST);
 			for (int x = startX; x > (startZ == endZ ? endX + 1 : endX); x--) {
@@ -617,11 +568,67 @@ public class DungeonLayer {
 					corridor.openSide(Direction.NORTH);
 					this.segments[endX][z + 1] = corridor;
 				}
-			} else
-				DungeonCrawl.LOGGER.warn(
-						"Tried to build a connection between two positions but they were the same. ({}, {}) -> ({}, {})",
-						startX, startZ, endX, endZ);
+			}
 		}
+	}
+
+	public void createLootRoom() {
+		DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+		DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+		DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+		DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
+
+		part1.treasureType = 7;
+		part2.treasureType = 7;
+		part3.treasureType = 7;
+		part4.treasureType = 7;
+
+		part1.rotation = Rotation.NONE;
+		part2.rotation = Rotation.NONE;
+		part3.rotation = Rotation.NONE;
+		part4.rotation = Rotation.NONE;
+
+		part1.walls = part2.walls = part3.walls = part4.walls = true;
+
+		part1.set(28, 0, 0, 0, 8, 16, 8);
+		part2.set(28, 8, 0, 0, 8, 16, 8);
+		part3.set(28, 8, 0, 8, 8, 16, 8);
+		part4.set(28, 0, 0, 8, 8, 16, 8);
+
+		part1.setPosition(end.x, end.z);
+		part2.setPosition(end.x + 1, end.z);
+		part3.setPosition(end.x + 1, end.z + 1);
+		part4.setPosition(end.x, end.z + 1);
+
+		part1.sides[0] = false;
+		part1.sides[1] = true;
+		part1.sides[2] = true;
+		part1.sides[3] = false;
+
+		part2.sides[0] = false;
+		part2.sides[1] = false;
+		part2.sides[2] = true;
+		part2.sides[3] = true;
+
+		part3.sides[0] = true;
+		part3.sides[1] = false;
+		part3.sides[2] = false;
+		part3.sides[3] = true;
+
+		part4.sides[0] = true;
+		part4.sides[1] = true;
+		part4.sides[2] = false;
+		part4.sides[3] = false;
+
+		this.segments[end.x][end.z] = part1;
+		this.segments[end.x + 1][end.z] = part2;
+		this.segments[end.x + 1][end.z + 1] = part3;
+		this.segments[end.x][end.z + 1] = part4;
+
+		map.markPositionAsOccupied(end);
+		map.markPositionAsOccupied(new Position2D(end.x + 1, end.z));
+		map.markPositionAsOccupied(new Position2D(end.x + 1, end.z + 1));
+		map.markPositionAsOccupied(new Position2D(end.x, end.z + 1));
 	}
 
 	public Position2D findLargeRoomPosWithMaxDistance(DungeonBuilder builder, Position2D pos, int layer) {
@@ -629,19 +636,31 @@ public class DungeonLayer {
 		int xHalf = width / 2 - 1, zHalf = length / 2 - 1;
 		if (x > xHalf) {
 			if (z > zHalf)
-//				return getLargeRoomPos(new Position2D(0, 0));
 				return findLargeRoomPosAtArea(builder, new Position2D(0, 0), layer);
 			else
-//				return getLargeRoomPos(new Position2D(0, length - 1));
 				return findLargeRoomPosAtArea(builder, new Position2D(0, length - 1), layer);
 
 		} else {
 			if (z > zHalf)
-//				return getLargeRoomPos(new Position2D(width - 1, 0));
 				return findLargeRoomPosAtArea(builder, new Position2D(width - 1, 0), layer);
 			else
-//				return getLargeRoomPos(new Position2D(width - 1, length - 1));
 				return findLargeRoomPosAtArea(builder, new Position2D(width - 1, length - 1), layer);
+		}
+	}
+	
+	public Position2D forceLargeRoomPosWithMaxDistance(Position2D pos) {
+		int x = pos.x, z = pos.z;
+		int xHalf = width / 2 - 1, zHalf = length / 2 - 1;
+		if (x > xHalf) {
+			if (z > zHalf)
+				return getLargeRoomPos(new Position2D(0, 0));
+			else
+				return getLargeRoomPos(new Position2D(0, length - 1));
+		} else {
+			if (z > zHalf)
+				return getLargeRoomPos(new Position2D(width - 1, 0));
+			else
+				return getLargeRoomPos(new Position2D(width - 1, length - 1));
 		}
 	}
 
@@ -731,13 +750,6 @@ public class DungeonLayer {
 	public void processAddition(Position2D[] additions, Position2D start, Position2D end, Position2D one, Random rand) {
 		this.buildConnection(rand.nextBoolean() ? start : end, one);
 		this.buildConnection(one, additions[rand.nextInt(additions.length)]);
-	}
-
-	/**
-	 * Provides a random large room id.
-	 */
-	public static int getRandomLargeRoom(Random rand) {
-		return LARGE_ROOMS[rand.nextInt(LARGE_ROOMS.length)];
 	}
 
 	public boolean canPutDoubleRoom(Position2D pos, Direction direction) {

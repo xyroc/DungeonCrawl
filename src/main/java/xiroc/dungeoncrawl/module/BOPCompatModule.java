@@ -76,6 +76,7 @@ public class BOPCompatModule extends Module {
 		addStructureToBiome(BOPBiomes.outback);
 		addStructureToBiome(BOPBiomes.overgrown_cliffs);
 		addStructureToBiome(BOPBiomes.pasture);
+		addStructureToBiome(BOPBiomes.poppy_field);
 		addStructureToBiome(BOPBiomes.prairie);
 		addStructureToBiome(BOPBiomes.pumpkin_patch);
 		addStructureToBiome(BOPBiomes.rainforest);
@@ -180,7 +181,7 @@ public class BOPCompatModule extends Module {
 
 	private static void addStructureToBiome(Optional<Biome> biome) {
 		if (biome.isPresent()) {
-			biome.get().func_226711_a_(new ConfiguredFeature<NoFeatureConfig, Dungeon>(Dungeon.DUNGEON,
+			biome.get().addStructure(new ConfiguredFeature<NoFeatureConfig, Dungeon>(Dungeon.DUNGEON,
 					NoFeatureConfig.NO_FEATURE_CONFIG));
 			LOGGER.info("Added Generation to BOP Biome {}", biome.get().getRegistryName().toString());
 		} else {

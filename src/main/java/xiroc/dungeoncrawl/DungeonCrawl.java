@@ -86,7 +86,7 @@ public class DungeonCrawl {
 						Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));
 				if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())) {
 					DungeonCrawl.LOGGER.debug("Generation Biome >> " + biome.getRegistryName());
-					biome.func_226711_a_(new ConfiguredFeature<NoFeatureConfig, Dungeon>(Dungeon.DUNGEON,
+					biome.addStructure(new ConfiguredFeature<NoFeatureConfig, Dungeon>(Dungeon.DUNGEON,
 							NoFeatureConfig.NO_FEATURE_CONFIG));
 				}
 			}

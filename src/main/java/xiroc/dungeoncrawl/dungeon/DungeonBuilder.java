@@ -138,7 +138,7 @@ public class DungeonBuilder {
 
 		this.statTracker = new DungeonStatTracker(layers.length);
 
-		String biome = world.getBiomeProvider().func_225526_b_(startPos.getX(), startPos.getZ(), startPos.getY())
+		String biome = world.getBiomeProvider().getNoiseBiome(startPos.getX(), startPos.getZ(), startPos.getY())
 				.getRegistryName().toString();
 		
 		DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length,

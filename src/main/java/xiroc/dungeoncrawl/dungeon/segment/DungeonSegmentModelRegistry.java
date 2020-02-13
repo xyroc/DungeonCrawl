@@ -386,7 +386,7 @@ public class DungeonSegmentModelRegistry {
 			DataInputStream input = new DataInputStream(
 					DungeonSegmentModelRegistry.class.getResourceAsStream("/data/dungeoncrawl/" + path));
 			CompoundNBT nbt = new CompoundNBT();
-			nbt = CompoundNBT.field_229675_a_.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
+			nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
 			return ModelHelper.getModelFromNBT(nbt);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -405,7 +405,7 @@ public class DungeonSegmentModelRegistry {
 			DataInputStream input = new DataInputStream(
 					resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
 			CompoundNBT nbt = new CompoundNBT();
-			nbt = CompoundNBT.field_229675_a_.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
+			nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
 			return ModelHelper.getModelFromNBT(nbt);
 		} catch (IOException e) {
 			e.printStackTrace();

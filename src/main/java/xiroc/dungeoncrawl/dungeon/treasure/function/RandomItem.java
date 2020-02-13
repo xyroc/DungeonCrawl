@@ -29,7 +29,7 @@ public class RandomItem extends LootFunction {
 	public ItemStack doApply(ItemStack stack, LootContext context) {
 		return RandomSpecialItem.generate(context.getWorld(), context.getRandom(),
 				Theme.BIOME_TO_THEME_MAP.getOrDefault(
-						context.getWorld().func_226691_t_(context.get(LootParameters.POSITION)).getRegistryName().toString(),
+						context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(),
 						0),
 				stage - 1);
 	}

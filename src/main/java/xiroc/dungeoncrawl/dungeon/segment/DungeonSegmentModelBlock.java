@@ -268,8 +268,14 @@ public class DungeonSegmentModelBlock {
 				.getDefaultState().with(BarrelBlock.PROPERTY_FACING, block.facing));
 		PROVIDERS.put(DungeonSegmentModelBlockType.MATERIAL,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.material.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.CEILING,
-				(block, theme, subTheme, rand, stage) -> theme.ceiling.get());
+		PROVIDERS.put(DungeonSegmentModelBlockType.SOLID, (block, theme, subTheme, rand, stage) -> theme.solid.get());
+		PROVIDERS.put(DungeonSegmentModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
+		PROVIDERS.put(DungeonSegmentModelBlockType.STAIRS,
+				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
+		PROVIDERS.put(DungeonSegmentModelBlockType.SOLID_STAIRS,
+				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
+		PROVIDERS.put(DungeonSegmentModelBlockType.FLOOR_STAIRS,
+				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.CEILING_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.CHEST, (block, theme, subTheme, rand, stage) -> Blocks.CHEST
@@ -277,8 +283,6 @@ public class DungeonSegmentModelBlock {
 		PROVIDERS.put(DungeonSegmentModelBlockType.DISPENSER, (block, theme, subTheme, rand, stage) -> Blocks.DISPENSER
 				.getDefaultState().with(DispenserBlock.FACING, block.facing));
 		PROVIDERS.put(DungeonSegmentModelBlockType.FLOOR, (block, theme, subTheme, rand, stage) -> theme.floor.get());
-		PROVIDERS.put(DungeonSegmentModelBlockType.FLOOR_STAIRS,
-				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER,
 				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
 					if (rand.nextInt(10) == 5)
@@ -303,6 +307,8 @@ public class DungeonSegmentModelBlock {
 			}
 		});
 		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_WATER, (block, theme, subTheme, rand, stage) -> {
+			if (stage > 1)
+				return theme.floor.get();
 			switch (rand.nextInt(2)) {
 			case 0:
 				return theme.floor.get();
@@ -314,16 +320,16 @@ public class DungeonSegmentModelBlock {
 		});
 		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_WALL_AIR, (block, theme, subTheme, rand, stage) -> {
 			if (rand.nextFloat() < 0.75)
-				return theme.wall.get();
+				return theme.solid.get();
 			return Blocks.CAVE_AIR.getDefaultState();
 		});
 		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_WALL_SPAWNER,
 				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
-					return theme.wall.get();
+					return theme.solid.get();
 				} : (block, theme, subTheme, rand, stage) -> {
 					if (rand.nextInt(4 + (3 - stage)) == 0)
 						return BlockRegistry.SPAWNER;
-					return theme.wall.get();
+					return theme.solid.get();
 				});
 		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_COBWEB_AIR, (block, theme, subTheme, rand, stage) -> {
 			if (rand.nextInt(5) == 0)
@@ -340,7 +346,7 @@ public class DungeonSegmentModelBlock {
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.TRAPDOOR,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.trapDoor.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.wall.get());
+		PROVIDERS.put(DungeonSegmentModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
 		PROVIDERS.put(DungeonSegmentModelBlockType.WALL_LOG,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.wallLog.get()));
 		PROVIDERS.put(DungeonSegmentModelBlockType.DOOR,

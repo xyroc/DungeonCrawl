@@ -105,8 +105,8 @@ public class Theme {
 			() -> Blocks.SPRUCE_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			() -> Blocks.SPRUCE_DOOR.getDefaultState(), () -> Blocks.SPRUCE_PLANKS.getDefaultState());
 
-	public static final SubTheme DESERT_SUB = new SubTheme(Blocks.CHISELED_STONE_BRICKS, Blocks.CAVE_AIR,
-			Blocks.REDSTONE_WALL_TORCH, Blocks.CAVE_AIR, Blocks.CHISELED_STONE_BRICKS);
+	public static final SubTheme DESERT_SUB = new SubTheme(Blocks.CHISELED_SANDSTONE, Blocks.CAVE_AIR,
+			Blocks.REDSTONE_WALL_TORCH, Blocks.CAVE_AIR, Blocks.CHISELED_SANDSTONE);
 
 	public static final SubTheme ICE_SUB = new SubTheme(Blocks.ICE, Blocks.CAVE_AIR, Blocks.CAVE_AIR, Blocks.CAVE_AIR,
 			Blocks.CAVE_AIR);
@@ -227,13 +227,13 @@ public class Theme {
 
 	}
 
-	public final IBlockStateProvider ceiling, wall, floor, stairs, material, vanillaWall, column;
+	public final IBlockStateProvider ceiling, solid, floor, stairs, material, vanillaWall, column;
 
 	public Theme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor,
 			IBlockStateProvider stairs, IBlockStateProvider material, IBlockStateProvider vanillaWall,
 			IBlockStateProvider column) {
 		this.ceiling = ceiling;
-		this.wall = wall;
+		this.solid = wall;
 		this.floor = floor;
 		this.stairs = stairs;
 		this.material = material;
@@ -241,10 +241,10 @@ public class Theme {
 		this.column = column;
 	}
 
-	public Theme(BlockState ceiling, BlockState wall, BlockState floor, BlockState stairs, BlockState material,
+	public Theme(BlockState ceiling, BlockState solid, BlockState floor, BlockState stairs, BlockState material,
 			BlockState vanillaWall, BlockState column) {
 		this.ceiling = () -> ceiling;
-		this.wall = () -> wall;
+		this.solid = () -> solid;
 		this.floor = () -> floor;
 		this.stairs = () -> stairs;
 		this.material = () -> material;
@@ -252,10 +252,10 @@ public class Theme {
 		this.column = () -> column;
 	}
 
-	public Theme(Block ceiling, Block wall, Block floor, Block stairs, Block material, Block vanillaWall,
+	public Theme(Block ceiling, Block solid, Block floor, Block stairs, Block material, Block vanillaWall,
 			Block column) {
 		this.ceiling = () -> ceiling.getDefaultState();
-		this.wall = () -> wall.getDefaultState();
+		this.solid = () -> solid.getDefaultState();
 		this.floor = () -> floor.getDefaultState();
 		this.stairs = () -> stairs.getDefaultState();
 		this.material = () -> material.getDefaultState();

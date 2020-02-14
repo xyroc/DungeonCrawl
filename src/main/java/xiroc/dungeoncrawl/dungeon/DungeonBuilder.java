@@ -158,7 +158,7 @@ public class DungeonBuilder {
 
 		for (int i = 0; i < layers.length; i++) {
 			this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
-			this.layers[i] = new DungeonLayer(DungeonLayerType.NORMAL, Dungeon.SIZE, Dungeon.SIZE);
+			this.layers[i] = new DungeonLayer(Dungeon.SIZE, Dungeon.SIZE);
 			this.layers[i].map = maps[i];
 		}
 

@@ -9,16 +9,25 @@ import net.minecraft.block.Blocks;
 
 public enum DungeonSegmentModelBlockType {
 
-	NONE, CEILING, CEILING_STAIRS, WALL, WALL_LOG, FLOOR, FLOOR_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST, RAND_WALL_AIR,
-	RAND_FLOOR_CHESTCOMMON_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR, RAND_FLOOR_WATER, RAND_FLOOR_LAVA, RAND_BOOKSHELF_COBWEB,
-	DISPENSER, RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
+	NONE, SOLID_STAIRS, /* Temporarily because of old models: */ FLOOR_STAIRS, CEILING_STAIRS /* END */, SOLID, WALL,
+	WALL_LOG, FLOOR, MATERIAL_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST, RAND_WALL_AIR, RAND_FLOOR_CHESTCOMMON_SPAWNER,
+	TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR, RAND_FLOOR_WATER, RAND_FLOOR_LAVA, RAND_BOOKSHELF_COBWEB, DISPENSER,
+	RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
+
+//	private static final Set<DungeonSegmentModelBlockType> SOLID_TYPES = ImmutableSet
+//			.<DungeonSegmentModelBlockType>builder().add(SOLID).add(SOLID_STAIRS).build();
+
+	public static boolean isSolid(DungeonSegmentModelBlockType type) {
+//		return SOLID_TYPES.contains(type);
+		return true;
+	}
 
 	public static DungeonSegmentModelBlockType get(Block block) {
 		if (block == Blocks.AIR)
 			return null;
 		if (block == Blocks.OAK_PLANKS)
 			return MATERIAL;
-		if (block == Blocks.BEDROCK)
+		if (block == Blocks.BEDROCK || block == Blocks.BARRIER)
 			return NONE;
 		if (block == Blocks.OAK_DOOR)
 			return DOOR;
@@ -35,16 +44,18 @@ public enum DungeonSegmentModelBlockType {
 		if (block == Blocks.BRICKS)
 			return RAND_BOOKSHELF_COBWEB;
 		if (block == Blocks.OAK_STAIRS)
-			return FLOOR_STAIRS;
+			return MATERIAL_STAIRS;
 		if (block == Blocks.STONE_BRICK_STAIRS)
-			return CEILING_STAIRS;
-		if (block == Blocks.STONE_BRICKS)
+			return SOLID_STAIRS;
+		if (block == Blocks.COBBLESTONE)
 			return WALL;
+		if (block == Blocks.STONE_BRICKS)
+			return SOLID;
 		if (block == Blocks.OAK_LOG)
 			return WALL_LOG;
 		if (block == Blocks.GRAVEL)
 			return FLOOR;
-		if (block == Blocks.BRICK_STAIRS)
+		if (block == Blocks.COBBLESTONE_STAIRS)
 			return STAIRS;
 		if (block == Blocks.SPAWNER)
 			return RAND_WALL_SPAWNER;

@@ -179,9 +179,8 @@ public class BlockRegistry {
 						new TupleIntBlock(1, Blocks.RED_NETHER_BRICK_WALL.getDefaultState()) });
 
 		BRICKS_GRANITE_FLOOR = new WeightedRandomBlock(
-				new TupleIntBlock[] { new TupleIntBlock(3, Blocks.BRICKS.getDefaultState()),
-						new TupleIntBlock(2, Blocks.POLISHED_GRANITE.getDefaultState()),
-						new TupleIntBlock(1, Blocks.GRANITE.getDefaultState()) });
+				new TupleIntBlock[] { new TupleIntBlock(1, Blocks.BRICKS.getDefaultState()),
+						new TupleIntBlock(5, Blocks.POLISHED_GRANITE.getDefaultState()) });
 
 		BRICKS_GRANITE = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.BRICKS.getDefaultState()),
@@ -195,7 +194,6 @@ public class BlockRegistry {
 
 		ANDESITE_STONE_BRICKS_COBBLESTONE = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(4, Blocks.POLISHED_ANDESITE.getDefaultState()),
-						new TupleIntBlock(1, Blocks.ANDESITE.getDefaultState()),
 						new TupleIntBlock(2, Blocks.STONE_BRICKS.getDefaultState()),
 						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
 						new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),

@@ -25,9 +25,21 @@ public class Plants {
 		@Override
 		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
 				int lootLevel) {
+
+			BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
+			if (theme == 1) {
+				state = Blocks.SOUL_SAND.getDefaultState();
+				world.setBlockState(pos, state, 2);
+				
+				BlockState netherWart = Blocks.NETHER_WART.getDefaultState();
+				if (netherWart.has(BlockStateProperties.AGE_0_3))
+					netherWart = netherWart.with(BlockStateProperties.AGE_0_3, rand.nextInt(3));
+				world.setBlockState(cropPos, netherWart, 2);
+
+				return;
+			}
 			state = state.with(BlockStateProperties.MOISTURE_0_7, 7);
 			world.setBlockState(pos, state, 2);
-			BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
 			BlockState crop = CROPS[rand.nextInt(CROPS.length)].getDefaultState();
 			if (crop.has(BlockStateProperties.AGE_0_7))
 				crop = crop.with(BlockStateProperties.AGE_0_7, rand.nextInt(8));

@@ -55,5 +55,47 @@ public class RandomDungeonSegmentModel {
 		}
 		return null;
 	};
+	
+	public static final IRandom<DungeonSegmentModel> NETHER_CORRIDOR_STRAIGHT = (rand) -> {
+		switch (rand.nextInt(2)) {
+		case 0:
+			return DungeonSegmentModelRegistry.CORRIDOR;
+		case 1:
+			return DungeonSegmentModelRegistry.CORRIDOR_2;
+		}
+		return null;
+	};
+
+	public static final IRandom<DungeonSegmentModel> NETHER_CORRIDOR_TURN = (rand) -> {
+//		switch (rand.nextInt(2)) {
+//		case 0:
+//			return DungeonSegmentModelRegistry.CORRIDOR_TURN;
+//		case 1:
+//			return DungeonSegmentModelRegistry.CORRIDOR_2_TURN;
+//		}
+//		return null;
+		return DungeonSegmentModelRegistry.CORRIDOR_2_TURN;
+	};
+
+	public static final IRandom<DungeonSegmentModel> NETHER_CORRIDOR_OPEN = (rand) -> {
+		switch (rand.nextInt(2)) {
+		case 0:
+			return DungeonSegmentModelRegistry.CORRIDOR_OPEN;
+		case 1:
+			return DungeonSegmentModelRegistry.CORRIDOR_2_OPEN;
+		}
+		return null;
+	};
+
+	public static final IRandom<DungeonSegmentModel> NETHER_CORRIDOR_ALL_OPEN = (rand) -> {
+//		switch (rand.nextInt(2)) {
+//		case 0:
+//			return DungeonSegmentModelRegistry.CORRIDOR_ALL_OPEN;
+//		case 1:
+//			return DungeonSegmentModelRegistry.CORRIDOR_2_ALL_OPEN;
+//		}
+//		return null;
+		return DungeonSegmentModelRegistry.CORRIDOR_ALL_OPEN;
+	};
 
 }

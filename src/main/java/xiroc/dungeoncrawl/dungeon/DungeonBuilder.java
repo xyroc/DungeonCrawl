@@ -211,9 +211,6 @@ public class DungeonBuilder {
 					if (layer.segments[x][z] != null) {
 						if (layer.segments[x][z].getType() == 0)
 							DungeonFeatures.processCorridor(this, layer, x, z, rand, i, stage, startPos);
-						else if (layer.segments[x][z].getType() == 5) {
-							// LARGE ROOM
-						}
 					}
 				}
 			}
@@ -234,14 +231,14 @@ public class DungeonBuilder {
 	}
 
 	/*
-	 * Builds a 1x?x1 pillar to the ground
+	 * Builds a 1x1 pillar to the ground
 	 */
 	public static void buildWallPillar(IWorld world, int theme, BlockPos pos, DungeonPiece piece) {
 		DungeonSegmentModelBlock block = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_WALL_AIR);
 		Theme buildTheme = Theme.get(theme);
 		int x = pos.getX(), z = pos.getZ();
 		int height = DungeonPieces.getGroudHeightFrom(world, x, z, pos.getY() - 1);
-//		DungeonCrawl.LOGGER.debug("{} | {}", pos, height);
+		
 		for (int y = pos.getY() - 1; y > height; y--)
 			piece.setBlockState(DungeonSegmentModelBlock.PROVIDERS.get(DungeonSegmentModelBlockType.RAND_WALL_AIR)
 					.get(block, buildTheme, null, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0, true);

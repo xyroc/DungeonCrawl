@@ -35,7 +35,6 @@ import xiroc.dungeoncrawl.module.ModuleManager;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.JsonTheme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Tools;
 
 /* GENRERAL LICENSE FOR DungeonCrawl v1.0
  * 
@@ -73,10 +72,8 @@ public class DungeonCrawl {
 	public DungeonCrawl() {
 		LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-//		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onServerStart);
 		MinecraftForge.EVENT_BUS.register(this);
-//		MinecraftForge.EVENT_BUS.register(new EventManager());
-		MinecraftForge.EVENT_BUS.register(new Tools());
+//		MinecraftForge.EVENT_BUS.register(new Tools());
 		ForgeRegistries.FEATURES
 				.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 		Treasure.init();

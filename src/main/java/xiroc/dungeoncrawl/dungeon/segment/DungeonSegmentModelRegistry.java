@@ -322,7 +322,7 @@ public class DungeonSegmentModelRegistry {
 		if (LOADED)
 			return;
 		LOADED = true;
-		DungeonCrawl.LOGGER.info("Loading dungeon segment models");
+		DungeonCrawl.LOGGER.info("Loading models");
 
 		CORRIDOR = loadFromFile("models/dungeon/corridor.nbt").build().setId(0);
 		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.nbt").build().setId(1);

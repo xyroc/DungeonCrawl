@@ -18,6 +18,7 @@ import xiroc.dungeoncrawl.part.block.Dispenser;
 import xiroc.dungeoncrawl.part.block.Furnace;
 import xiroc.dungeoncrawl.part.block.Plants;
 import xiroc.dungeoncrawl.part.block.Spawner;
+import xiroc.dungeoncrawl.part.block.Water;
 
 public interface IBlockPlacementHandler {
 
@@ -28,6 +29,7 @@ public interface IBlockPlacementHandler {
 	};
 
 	public static void load() {
+		PLACEMENT_HANDLERS.put(Blocks.WATER, new Water());
 		PLACEMENT_HANDLERS.put(Blocks.CHEST, new Chest());
 		PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, new Chest.TrappedChest());
 		PLACEMENT_HANDLERS.put(Blocks.BARREL, new Chest());

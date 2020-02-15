@@ -172,11 +172,11 @@ public class DungeonBuilder {
 		stairs.stage = 0;
 		list.add(stairs);
 
-		for (int i = 0; i < layers.length; i++) 
+		for (int i = 0; i < layers.length; i++)
 			buildLayer(layers[i], i, startPos);
-		
+
 		postProcessDungeon(list, rand);
-		
+
 		for (DungeonPiece piece : list)
 			if (piece.theme != 1) {
 				if (piece.theme != 80)
@@ -238,7 +238,7 @@ public class DungeonBuilder {
 		Theme buildTheme = Theme.get(theme);
 		int x = pos.getX(), z = pos.getZ();
 		int height = DungeonPieces.getGroudHeightFrom(world, x, z, pos.getY() - 1);
-		
+
 		for (int y = pos.getY() - 1; y > height; y--)
 			piece.setBlockState(DungeonSegmentModelBlock.PROVIDERS.get(DungeonSegmentModelBlockType.RAND_WALL_AIR)
 					.get(block, buildTheme, null, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0, true);
@@ -260,13 +260,17 @@ public class DungeonBuilder {
 					return DungeonSegmentModelRegistry.CORRIDOR_GRASS;
 				default:
 					if (north && south || east && west)
-						return RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
-					return RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
+						return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_STRAIGHT.roll(rand)
+								: RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
+					return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_TURN.roll(rand)
+							: RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
 				}
 			case 3:
-				return RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
+				return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_TURN.roll(rand)
+						: RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
 			case 4:
-				return RandomDungeonSegmentModel.CORRIDOR_ALL_OPEN.roll(rand);
+				return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_ALL_OPEN.roll(rand)
+						: RandomDungeonSegmentModel.CORRIDOR_ALL_OPEN.roll(rand);
 			default:
 				return null;
 			}

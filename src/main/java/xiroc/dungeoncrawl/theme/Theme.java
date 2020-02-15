@@ -77,7 +77,7 @@ public class Theme {
 	/*          SUB-THEMES          */
 	/* **************************** */
 
-	public static final SubTheme NETHER_SUB = new SubTheme(Blocks.OBSIDIAN.getDefaultState(),
+	public static final SubTheme NETHER_SUB = new SubTheme(Blocks.MAGMA_BLOCK.getDefaultState(),
 			Blocks.CAVE_AIR.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			Blocks.IRON_DOOR.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
 

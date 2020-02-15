@@ -34,9 +34,9 @@ public class Theme {
 			() -> Blocks.STONE.getDefaultState());
 
 	public static final Theme DEFAULT = new Theme(() -> BlockRegistry.STONE_BRICKS,
-			BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
-			BlockRegistry.STAIRS_STONE_COBBLESTONE, BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE,
-			BlockRegistry.STONE_WALL, BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED_COBBLESTONE);
+			BlockRegistry.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICK_FLOOR,
+			BlockRegistry.STAIRS_STONE_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
+			BlockRegistry.STONE_WALL, BlockRegistry.STONE_BRICK_FLOOR);
 
 	public static final Theme OCEAN = new Theme(Blocks.PRISMARINE.getDefaultState(),
 			Blocks.PRISMARINE_BRICKS.getDefaultState(), Blocks.DARK_PRISMARINE.getDefaultState(),

@@ -26,7 +26,7 @@ public class Tools {
 	public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
 		if (event.getPlayer().isCreative() && event.getItemStack().getItem() == Items.STICK) {
 			if (event.getItemStack().getDisplayName().getString().equals("STONE_BRICKS")) {
-				event.getWorld().setBlockState(event.getPos(), BlockRegistry.STONE_BRICKS_NORMAL_MOSSY_CRACKED.get());
+				event.getWorld().setBlockState(event.getPos(), BlockRegistry.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE.get());
 			} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {
 
 //				DungeonBuilder builder = new DungeonBuilder(event.getWorld().getChunkProvider().func_225313_a(0, 0)),

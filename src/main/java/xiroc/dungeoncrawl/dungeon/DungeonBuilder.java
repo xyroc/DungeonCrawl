@@ -165,14 +165,17 @@ public class DungeonBuilder {
 			this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i,
 					i == layers.length - 1);
 
-		DungeonPiece stairs = new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT);
-		stairs.setRealPosition(startPos.getX() + layers[0].start.x * 8, startPos.getY() + 8,
-				startPos.getZ() + layers[0].start.z * 8);
-		stairs.stage = 0;
-		list.add(stairs);
-
-		for (int i = 0; i < layers.length; i++)
+		for (int i = 0; i < layers.length; i++) {
+			this.layers[i].extend(this, maps[i], rand, i);
 			buildLayer(layers[i], i, startPos);
+		}
+
+		DungeonPiece entrance = new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT);
+		entrance.setRealPosition(startPos.getX() + layers[0].start.x * 8, startPos.getY() + 8,
+				startPos.getZ() + layers[0].start.z * 8);
+		entrance.stage = 0;
+
+		list.add(entrance);
 
 		postProcessDungeon(list, rand);
 
@@ -265,7 +268,7 @@ public class DungeonBuilder {
 							: RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
 				}
 			case 3:
-				return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_TURN.roll(rand)
+				return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_OPEN.roll(rand)
 						: RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
 			case 4:
 				return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_ALL_OPEN.roll(rand)

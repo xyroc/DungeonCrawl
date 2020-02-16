@@ -108,7 +108,7 @@ public class DungeonFeatures {
 				Position2D part1Pos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
 				Position2D part2Pos = part1Pos.shift(facing, 1);
 				if (part1Pos.isValid(layer.width, layer.length) && part2Pos.isValid(layer.width, layer.length)
-						&& layer.canPutDoubleRoom(part1Pos, facing) && rand.nextDouble() < 0.019) {
+						&& layer.canPutDoubleRoom(part1Pos, facing) && rand.nextDouble() < 0.023) {
 
 					layer.segments[x][z].openSide(RotationHelper.translateDirectionLeft(facing));
 

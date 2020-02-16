@@ -101,13 +101,15 @@ public class BlockRegistry {
 		long time = System.currentTimeMillis();
 		DungeonCrawl.LOGGER.info("Calculating WeightedRandomBlocks");
 
-		STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE = new WeightedRandomBlock(
-				new TupleIntBlock[] { TIB_STONE_BRICKS, TIB_CRACKED_STONE_BRICKS, TIB_COBBLESTONE });
+		STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[] {
+				new TupleIntBlock(5, STONE_BRICKS), new TupleIntBlock(2, CRACKED_STONE_BRICKS),
+				new TupleIntBlock(2, COBBLESTONE), new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState()) });
 
 		STONE_BRICK_FLOOR = new WeightedRandomBlock(
-				new TupleIntBlock[] { new TupleIntBlock(5, Blocks.STONE_BRICKS.getDefaultState()),
-						new TupleIntBlock(1, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
-						new TupleIntBlock(1, Blocks.COBBLESTONE.getDefaultState()) });
+				new TupleIntBlock[] { new TupleIntBlock(8, Blocks.STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(2, Blocks.COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState()) });
 
 		STONE_BRICK_FLOOR_MOSSY = new WeightedRandomBlock(
 				new TupleIntBlock[] { new TupleIntBlock(5, Blocks.STONE_BRICKS.getDefaultState()),

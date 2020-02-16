@@ -38,6 +38,10 @@ public class DungeonLayer {
 
 	public DungeonLayerMap map;
 
+	public int extraRooms; // If, for some odd reason, no final loot room position can be found, the layer
+	// will have more rooms than usual to compensate the missing loot a bit. This is
+	// only relevant for the last layer.
+
 	public DungeonLayer() {
 		this(16, 16);
 	}
@@ -53,263 +57,40 @@ public class DungeonLayer {
 			boolean lastLayer) {
 		if (!map.markPositionAsOccupied(start))
 			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
-		Position2D end = lastLayer ? findLargeRoomPosWithMaxDistance(builder, start, layer)
-				: map.getRandomFreePosition(rand);
 		this.start = start;
-		this.end = end;
+		this.end = lastLayer ? findLargeRoomPosWithMaxDistance(builder, start, layer) : map.getRandomFreePosition(rand);
 		this.segments[start.x][start.z] = new DungeonPieces.StairsBot(null, DungeonPieces.DEFAULT_NBT);
 		if (lastLayer) {
-			if (end != null) {
-//				if (Config.ENABLE_DUNGEON_BOSS.get()) {
-//					BossEntry boss = DungeonBuilder.getRandomBoss(rand);
-//					if (boss != null) {
-//						// --- Loot Room ---
-//
-//						DungeonPieces.Part lootRoom1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-//						DungeonPieces.Part lootRoom2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-//						DungeonPieces.Part lootRoom3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-//						DungeonPieces.Part lootRoom4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-//
-//						lootRoom1.treasureType = 7;
-//						lootRoom2.treasureType = 7;
-//						lootRoom3.treasureType = 7;
-//						lootRoom4.treasureType = 7;
-//
-//						lootRoom1.rotation = Rotation.NONE;
-//						lootRoom2.rotation = Rotation.NONE;
-//						lootRoom3.rotation = Rotation.NONE;
-//						lootRoom4.rotation = Rotation.NONE;
-//
-//						lootRoom1.walls = lootRoom2.walls = lootRoom3.walls = lootRoom4.walls = true;
-//
-//						lootRoom1.set(28, 0, 0, 0, 8, 16, 8);
-//						lootRoom2.set(28, 8, 0, 0, 8, 16, 8);
-//						lootRoom3.set(28, 8, 0, 8, 8, 16, 8);
-//						lootRoom4.set(28, 0, 0, 8, 8, 16, 8);
-//
-//						lootRoom1.setPosition(end.x, end.z);
-//						lootRoom2.setPosition(end.x + 1, end.z);
-//						lootRoom3.setPosition(end.x + 1, end.z + 1);
-//						lootRoom4.setPosition(end.x, end.z + 1);
-//
-//						lootRoom1.setRealPosition(builder.startPos.getX() + lootRoom1.posX * 8,
-//								builder.startPos.getY() - layer * 16 - 16,
-//								builder.startPos.getZ() + lootRoom1.posZ * 8);
-//						lootRoom2.setRealPosition(builder.startPos.getX() + lootRoom2.posX * 8,
-//								builder.startPos.getY() - layer * 16 - 16,
-//								builder.startPos.getZ() + lootRoom2.posZ * 8);
-//						lootRoom3.setRealPosition(builder.startPos.getX() + lootRoom3.posX * 8,
-//								builder.startPos.getY() - layer * 16 - 16,
-//								builder.startPos.getZ() + lootRoom3.posZ * 8);
-//						lootRoom4.setRealPosition(builder.startPos.getX() + lootRoom4.posX * 8,
-//								builder.startPos.getY() - layer * 16 - 16,
-//								builder.startPos.getZ() + lootRoom4.posZ * 8);
-//
-//						lootRoom1.sides[0] = false;
-//						lootRoom1.sides[1] = true;
-//						lootRoom1.sides[2] = true;
-//						lootRoom1.sides[3] = false;
-//
-//						lootRoom2.sides[0] = false;
-//						lootRoom2.sides[1] = false;
-//						lootRoom2.sides[2] = true;
-//						lootRoom2.sides[3] = true;
-//
-//						lootRoom3.sides[0] = true;
-//						lootRoom3.sides[1] = false;
-//						lootRoom3.sides[2] = false;
-//						lootRoom3.sides[3] = true;
-//
-//						lootRoom4.sides[0] = true;
-//						lootRoom4.sides[1] = true;
-//						lootRoom4.sides[2] = false;
-//						lootRoom4.sides[3] = false;
-//
-//						lootRoom1.theme = 1;
-//						lootRoom2.theme = 1;
-//						lootRoom3.theme = 1;
-//						lootRoom4.theme = 1;
-//
-//						pieces.add(lootRoom1);
-//						pieces.add(lootRoom2);
-//						pieces.add(lootRoom3);
-//						pieces.add(lootRoom4);
-//
-//						// --- Boss Room ---
-//
-//						DungeonPieces.PartWithEntity part1 = new DungeonPieces.PartWithEntity(null,
-//								DungeonPieces.DEFAULT_NBT);
-//						DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-//						DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-//						DungeonPieces.Part part4 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
-//
-//						part1.treasureType = 7;
-//						part2.treasureType = 7;
-//						part3.treasureType = 7;
-//						part4.treasureType = 7;
-//
-//						part1.rotation = Rotation.NONE;
-//						part2.rotation = Rotation.NONE;
-//						part3.rotation = Rotation.NONE;
-//						part4.rotation = Rotation.NONE;
-//
-//						part1.walls = part2.walls = part3.walls = part4.walls = true;
-//
-//						part1.entityName = new ResourceLocation(boss.entityName);
-//						part1.nbt = boss.createTag();
-//
-//						part1.set(36, 0, 0, 0, 8, 16, 8, 8, 2, 8);
-//						part2.set(36, 8, 0, 0, 8, 16, 8);
-//						part3.set(36, 8, 0, 8, 8, 16, 8);
-//						part4.set(36, 0, 0, 8, 8, 16, 8);
-//
-//						part1.setPosition(end.x, end.z);
-//						part2.setPosition(end.x + 1, end.z);
-//						part3.setPosition(end.x + 1, end.z + 1);
-//						part4.setPosition(end.x, end.z + 1);
-//
-//						part1.sides[0] = false;
-//						part1.sides[1] = true;
-//						part1.sides[2] = true;
-//						part1.sides[3] = false;
-//
-//						part2.sides[0] = false;
-//						part2.sides[1] = false;
-//						part2.sides[2] = true;
-//						part2.sides[3] = true;
-//
-//						part3.sides[0] = true;
-//						part3.sides[1] = false;
-//						part3.sides[2] = false;
-//						part3.sides[3] = true;
-//
-//						part4.sides[0] = true;
-//						part4.sides[1] = true;
-//						part4.sides[2] = false;
-//						part4.sides[3] = false;
-//
-//						this.segments[end.x][end.z] = part1;
-//						this.segments[end.x + 1][end.z] = part2;
-//						this.segments[end.x + 1][end.z + 1] = part3;
-//						this.segments[end.x][end.z + 1] = part4;
-//
-//						Position2D part1Pos = end, part2Pos = new Position2D(end.x + 1, end.z),
-//								part3Pos = new Position2D(end.x + 1, end.z + 1),
-//								part4Pos = new Position2D(end.x, end.z + 1);
-//
-//						map.markPositionAsOccupied(end);
-//						map.markPositionAsOccupied(part2Pos);
-//						map.markPositionAsOccupied(part3Pos);
-//						map.markPositionAsOccupied(part4Pos);
-//
-//						DungeonPieces.Part connectedPart = lootRoom4;
-//
-//						Tuple<Position2D, Rotation> data = findSideRoomData(part4Pos);
-//
-//						if (data == null) {
-//							data = findSideRoomData(part3Pos);
-//							connectedPart = lootRoom3;
-//						}
-//						if (data == null) {
-//							data = findSideRoomData(part2Pos);
-//							connectedPart = lootRoom2;
-//						}
-//						if (data == null) {
-//							data = findSideRoomData(part1Pos);
-//							connectedPart = lootRoom1;
-//						}
-//
-//						if (data != null) {
-//							Position2D stairPos = data.getA();
-//							Direction side = RotationHelper.translateDirection(Direction.EAST, data.getB());
-//							DungeonPieces.StairsTop stairsTop = new DungeonPieces.StairsTop(null,
-//									DungeonPieces.DEFAULT_NBT);
-//							stairsTop.setPosition(stairPos.x, stairPos.z);
-//							stairsTop.openSide(side.getOpposite());
-//							stairsTop.theme = 1;
-//							map.markPositionAsOccupied(stairPos);
-//							this.segments[stairPos.x][stairPos.z] = stairsTop;
-//
-//							DungeonPieces.Stairs stairs = new DungeonPieces.Stairs(null, DungeonPieces.DEFAULT_NBT);
-//							stairs.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
-//									builder.startPos.getY() - layer * 16 - 8, builder.startPos.getZ() + stairPos.z * 8);
-//							stairs.theme = 1;
-//
-//							DungeonPieces.StairsBot stairsBot = new DungeonPieces.StairsBot(null,
-//									DungeonPieces.DEFAULT_NBT);
-//							stairsBot.setPosition(stairPos.x, stairPos.z);
-//							stairsBot.setRealPosition(builder.startPos.getX() + stairPos.x * 8,
-//									builder.startPos.getY() - layer * 16 - 16,
-//									builder.startPos.getZ() + stairPos.z * 8);
-//							stairsBot.openSide(side.getOpposite());
-//							stairsBot.theme = 1;
-//
-//							pieces.add(stairs);
-//							pieces.add(stairsBot);
-//
-//							connectedPart.openSide(side);
-//						}
-//					}
-//				} else {
+			if (end != null)
 				createLootRoom();
-//				}
-			} else {
-				DungeonCrawl.LOGGER.warn(
-						"Failed to find a final room position for the last layer of a dungeon. This should never happen by default, but might be caused by an invalid config. If you didnt change the config or are sure that the cause of this is something else, please contact the mod author (The best way to do this is to open an issue on https://github.com/XYROC/DungeonCrawl). Layer map start pos: ({}|{})",
-						start.x, start.z);
-				Position2D pos = map.getRandomFreePosition(rand);
-				if (pos != null)
-					this.segments[pos.x][pos.z] = new DungeonPieces.Room(null, DungeonPieces.DEFAULT_NBT);
+			else {
+				end = findLargeRoomPosAtArea(builder, map.getRandomFreePosition(rand), layer);
+				if (end != null) {
+					createLootRoom();
+				} else {
+					DungeonCrawl.LOGGER.debug("Failed to find a position for the loot room.");
+					end = forceLargeRoomPosWithMaxDistance(start);
+					createLootRoom();
+				}
 			}
 
 		} else
 			this.segments[end.x][end.z] = new DungeonPieces.StairsTop(null, DungeonPieces.DEFAULT_NBT);
-		if (end == null) {
-			end = findLargeRoomPosAtArea(builder, map.getRandomFreePosition(rand), layer);
-			if (end != null) {
-				createLootRoom();
-			} else {
-				DungeonCrawl.LOGGER.debug("Failed to find a position for the loot room.");
-				end = forceLargeRoomPosWithMaxDistance(start);
-				createLootRoom();
-			}
-		}
+
 		this.buildConnection(start, end);
-		this.extend(builder, map, start, end, rand, layer);
-		if (layer == 0) {
-			Tuple<Position2D, Rotation> sideRoomData = findStarterRoomData(start);
-			if (sideRoomData != null) {
-				DungeonPieces.SideRoom room = new DungeonPieces.SideRoom(null, DungeonPieces.DEFAULT_NBT);
-				room.modelID = 34;
-
-				Direction dir = RotationHelper.translateDirection(Direction.WEST, sideRoomData.getB());
-				room.openSide(dir);
-				room.setPosition(sideRoomData.getA().x, sideRoomData.getA().z);
-				room.setRotation(sideRoomData.getB());
-				room.treasureType = Treasure.Type.SUPPLY;
-
-				map.markPositionAsOccupied(sideRoomData.getA());
-				this.segments[sideRoomData.getA().x][sideRoomData.getA().z] = room;
-
-				Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
-				if (this.segments[connectedSegment.x][connectedSegment.z] != null) {
-					this.segments[connectedSegment.x][connectedSegment.z].openSide(dir.getOpposite());
-					rotatePiece(this.segments[connectedSegment.x][connectedSegment.z]);
-				}
-			}
-		}
+//		this.extend(builder, map, start, end, rand, layer);
 	}
 
-	public void extend(DungeonBuilder builder, DungeonLayerMap map, Position2D start, Position2D end, Random rand,
-			int layer) {
-		int additionalFeatures = Config.LAYER_ADDITIONS_MIN.get() + rand.nextInt(Config.LAYER_ADDITIONS_EXTRA.get());
+	public void extend(DungeonBuilder builder, DungeonLayerMap map, Random rand, int layer) {
+		int additionalFeatures = Config.LAYER_ADDITIONS_MIN.get() + rand.nextInt(Config.LAYER_ADDITIONS_EXTRA.get())
+				+ extraRooms;
 		Position2D[] additions = new Position2D[additionalFeatures];
 		for (int i = 0; i < additionalFeatures; i++) {
 			additions[i] = map.getRandomFreePosition(rand);
 			if (additions[i] == null) {
-				DungeonCrawl.LOGGER.warn(
-						"Failed to place {} more rooms because all free positions are already taken. Please decrease the layer_min_additions and/or the layer_extra_additions value in the config (dungeon_crawl.toml) to avoid this issue.",
-						additionalFeatures - i);
+//				DungeonCrawl.LOGGER.warn(
+//						"Failed to place {} more rooms because all free positions are already taken. Please decrease the layer_min_additions and/or the layer_extra_additions value in the config (dungeon_crawl.toml) to avoid this issue.",
+//						additionalFeatures - i);
 				return;
 			}
 			if (rand.nextFloat() < 0.5) {
@@ -405,6 +186,28 @@ public class DungeonLayer {
 				break;
 			}
 		}
+		if (layer == 0) {
+			Tuple<Position2D, Rotation> sideRoomData = findStarterRoomData(start);
+			if (sideRoomData != null) {
+				DungeonPieces.SideRoom room = new DungeonPieces.SideRoom(null, DungeonPieces.DEFAULT_NBT);
+				room.modelID = 34;
+
+				Direction dir = RotationHelper.translateDirection(Direction.WEST, sideRoomData.getB());
+				room.openSide(dir);
+				room.setPosition(sideRoomData.getA().x, sideRoomData.getA().z);
+				room.setRotation(sideRoomData.getB());
+				room.treasureType = Treasure.Type.SUPPLY;
+
+				map.markPositionAsOccupied(sideRoomData.getA());
+				this.segments[sideRoomData.getA().x][sideRoomData.getA().z] = room;
+
+				Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
+				if (this.segments[connectedSegment.x][connectedSegment.z] != null) {
+					this.segments[connectedSegment.x][connectedSegment.z].openSide(dir.getOpposite());
+					rotatePiece(this.segments[connectedSegment.x][connectedSegment.z]);
+				}
+			}
+		}
 	}
 
 	public void buildConnection(Position2D start, Position2D end) {
@@ -412,10 +215,10 @@ public class DungeonLayer {
 		int startZ = start.z;
 		int endX = end.x;
 		int endZ = end.z;
-		
+
 		if (startX == endX && startZ == endZ)
 			return;
-		
+
 		if (startX > endX) {
 			this.segments[startX][startZ].openSide(Direction.WEST);
 			for (int x = startX; x > (startZ == endZ ? endX + 1 : endX); x--) {
@@ -573,6 +376,13 @@ public class DungeonLayer {
 	}
 
 	public void createLootRoom() {
+		if (end == null) {
+			DungeonCrawl.LOGGER.warn(
+					"Failed to find a final room position for the last layer of a dungeon. Layer map start pos: ({}|{})",
+					start.x, start.z);
+			this.extraRooms = Dungeon.SIZE;
+			return;
+		}
 		DungeonPieces.Part part1 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 		DungeonPieces.Part part2 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
 		DungeonPieces.Part part3 = new DungeonPieces.Part(null, DungeonPieces.DEFAULT_NBT);
@@ -647,7 +457,7 @@ public class DungeonLayer {
 				return findLargeRoomPosAtArea(builder, new Position2D(width - 1, length - 1), layer);
 		}
 	}
-	
+
 	public Position2D forceLargeRoomPosWithMaxDistance(Position2D pos) {
 		int x = pos.x, z = pos.z;
 		int xHalf = width / 2 - 1, zHalf = length / 2 - 1;

@@ -37,7 +37,7 @@ public class ModelHelper {
 						continue;
 					}
 					model[x][y][z] = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.get(state.getBlock()))
-							.set(state);
+							.loadDataFromState(state);
 				}
 			}
 		}

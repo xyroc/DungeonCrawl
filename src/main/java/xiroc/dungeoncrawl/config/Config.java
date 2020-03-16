@@ -30,14 +30,11 @@ public class Config {
 	public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
 	public static final BooleanValue BUILD_BRIDGES, IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS,
-			NO_SPAWNERS, COMPATIBILITY_MODE;
+			NO_SPAWNERS;
 //			ENABLE_DUNGEON_BOSS;
 
 	static {
 		BUILDER.comment("General Settings").push(CONFIG_GENERAL);
-		COMPATIBILITY_MODE = BUILDER.comment(
-				"If set to true, dungeon crawl will use the old dungeon registry name. This will prevent errors when playing in worlds that have been used with Dungeon Crawl 1.4.0 or earlier before. If that is not the case, DO NOT activate this!")
-				.define("compatiblity_mode", false);
 		BUILDER.pop();
 
 		BUILDER.comment("Dungeon Settings").push(CONFIG_DUNGEON);

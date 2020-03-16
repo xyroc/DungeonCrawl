@@ -36,7 +36,7 @@ public class Banner {
 	public static final String[] BANNER_PATTERNS_FINAL_RARE = new String[] { "glb", "flo" };
 
 	/**
-	 * Creates the BlockEntityTag for banners or shields that contains a list of
+	 * Creates the BlockEntityTag for banners or shields which contains a list of
 	 * random patterns.
 	 */
 	public static CompoundNBT createPatterns(Random rand) {

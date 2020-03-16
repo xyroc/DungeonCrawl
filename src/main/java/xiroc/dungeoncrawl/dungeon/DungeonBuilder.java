@@ -5,7 +5,6 @@ package xiroc.dungeoncrawl.dungeon;
  */
 
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Random;
 
@@ -19,8 +18,10 @@ import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.JsonConfig;
-import xiroc.dungeoncrawl.dungeon.DungeonPieces.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.DungeonPieces.EntranceBuilder;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
 import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
@@ -170,7 +171,7 @@ public class DungeonBuilder {
 			buildLayer(layers[i], i, startPos);
 		}
 
-		DungeonPiece entrance = new EntranceBuilder(null, DungeonPieces.DEFAULT_NBT);
+		DungeonPiece entrance = new DungeonEntranceBuilder(null, DungeonPiece.DEFAULT_NBT);
 		entrance.setRealPosition(startPos.getX() + layers[0].start.x * 8, startPos.getY() + 8,
 				startPos.getZ() + layers[0].start.z * 8);
 		entrance.stage = 0;
@@ -192,10 +193,10 @@ public class DungeonBuilder {
 		int stage = lyr > 2 ? 2 : lyr;
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {
-				if (layer.segments[x][z] != null) {
-					layer.segments[x][z].setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 8,
+				if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
+					layer.segments[x][z].reference.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 8,
 							startPos.getZ() + z * 8);
-					layer.segments[x][z].stage = stage;
+					layer.segments[x][z].reference.stage = stage;
 				}
 			}
 		}
@@ -210,8 +211,8 @@ public class DungeonBuilder {
 			DungeonLayer layer = layers[i];
 			for (int x = 0; x < layer.width; x++) {
 				for (int z = 0; z < layer.length; z++) {
-					if (layer.segments[x][z] != null) {
-						if (layer.segments[x][z].getType() == 0)
+					if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
+						if (layer.segments[x][z].reference.getType() == 0)
 							DungeonFeatures.processCorridor(this, layer, x, z, rand, i, stage, startPos);
 					}
 				}
@@ -219,13 +220,13 @@ public class DungeonBuilder {
 
 			for (int x = 0; x < layer.width; x++)
 				for (int z = 0; z < layer.length; z++) {
-					if (layer.segments[x][z] != null) {
+					if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
 						if (i == lyrs - 1) {
-							layer.segments[x][z].theme = 1;
-							layer.segments[x][z].subTheme = 8;
+							layer.segments[x][z].reference.theme = 1;
+							layer.segments[x][z].reference.subTheme = 8;
 						} else if (mossArea && lyrs - i < 4)
-							layer.segments[x][z].theme = 80;
-						list.add(layer.segments[x][z]);
+							layer.segments[x][z].reference.theme = 80;
+						list.add(layer.segments[x][z].reference);
 					}
 				}
 		}
@@ -239,7 +240,7 @@ public class DungeonBuilder {
 		DungeonSegmentModelBlock block = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_WALL_AIR);
 		Theme buildTheme = Theme.get(theme);
 		int x = pos.getX(), z = pos.getZ();
-		int height = DungeonPieces.getGroudHeightFrom(world, x, z, pos.getY() - 1);
+		int height = DungeonPiece.getGroudHeightFrom(world, x, z, pos.getY() - 1);
 
 		for (int y = pos.getY() - 1; y > height; y--)
 			piece.setBlockState(DungeonSegmentModelBlock.PROVIDERS.get(DungeonSegmentModelBlockType.RAND_WALL_AIR)
@@ -255,7 +256,7 @@ public class DungeonBuilder {
 		case 0:
 			switch (piece.connectedSides) {
 			case 2:
-				switch (((DungeonPieces.Corridor) piece).specialType) {
+				switch (((DungeonCorridor) piece).specialType) {
 				case 1:
 					return DungeonSegmentModelRegistry.CORRIDOR_FIRE;
 				case 2:
@@ -276,14 +277,6 @@ public class DungeonBuilder {
 			default:
 				return null;
 			}
-		case 1:
-			return DungeonSegmentModelRegistry.STAIRS_BOTTOM;
-		case 2:
-			return DungeonSegmentModelRegistry.STAIRS;
-		case 3:
-			return DungeonSegmentModelRegistry.STAIRS_TOP;
-		case 5:
-			return DungeonSegmentModelRegistry.ROOM;
 		default:
 			return null;
 		}

@@ -7,6 +7,11 @@ package xiroc.dungeoncrawl.util;
 import net.minecraft.util.Direction;
 
 public class Position2D {
+	
+	/**
+	 * A facing that can be brought together with the positon.
+	 */
+	public Direction facing;
 
 	public int x, z;
 
@@ -49,6 +54,10 @@ public class Position2D {
 		default:
 			return this;
 		}
+	}
+	
+	public boolean hasFacing() {
+		return facing != null;
 	}
 
 }

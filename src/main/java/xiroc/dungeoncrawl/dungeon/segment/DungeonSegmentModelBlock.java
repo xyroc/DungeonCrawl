@@ -170,7 +170,7 @@ public class DungeonSegmentModelBlock {
 	/**
 	 * Loads all existing properties from the given BlockState.
 	 */
-	public DungeonSegmentModelBlock set(BlockState state) {
+	public DungeonSegmentModelBlock loadDataFromState(BlockState state) {
 		if (state.has(BlockStateProperties.FACING))
 			facing = state.get(BlockStateProperties.FACING);
 		else if (state.has(BlockStateProperties.HORIZONTAL_FACING))

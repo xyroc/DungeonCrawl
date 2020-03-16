@@ -21,7 +21,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -33,35 +32,8 @@ import xiroc.dungeoncrawl.config.ObfuscationValues;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
-	public static final String NAME = Config.COMPATIBILITY_MODE.get() ? "dcdungeon" : DungeonCrawl.MODID + ":dungeon";
+	public static final String NAME = DungeonCrawl.MODID + ":dungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
-
-	public static final IStructurePieceType ENTRANCE_BUILDER = IStructurePieceType
-			.register(DungeonPieces.EntranceBuilder::new, "DUNGEON_ENTR_BLDR");
-	public static final IStructurePieceType ROOM = IStructurePieceType.register(DungeonPieces.Room::new,
-			"DUNGEON_ROOM");
-	public static final IStructurePieceType CORRIDOR = IStructurePieceType.register(DungeonPieces.Corridor::new,
-			"DUNGEON_CRRDR");
-	public static final IStructurePieceType STAIRSTOP = IStructurePieceType.register(DungeonPieces.StairsTop::new,
-			"DUNGEON_STTP");
-	public static final IStructurePieceType STAIRS = IStructurePieceType.register(DungeonPieces.Stairs::new,
-			"DUNGEON_STRS");
-	public static final IStructurePieceType STAIRSBOT = IStructurePieceType.register(DungeonPieces.StairsBot::new,
-			"DUNGEON_STBT");
-	public static final IStructurePieceType HOLE = IStructurePieceType.register(DungeonPieces.Hole::new,
-			"DUNGEON_HOLE");
-	public static final IStructurePieceType CORRIDOR_ROOM = IStructurePieceType
-			.register(DungeonPieces.CorridorRoom::new, "DUNGEON_CRRDR_ROOM");
-	public static final IStructurePieceType CORRIDOR_TRAP = IStructurePieceType
-			.register(DungeonPieces.CorridorTrap::new, "DUNGEON_TRAP");
-	public static final IStructurePieceType PART = IStructurePieceType.register(DungeonPieces.Part::new,
-			"DUNGEON_PART");
-	public static final IStructurePieceType HOLE_TRAP = IStructurePieceType.register(DungeonPieces.HoleTrap::new,
-			"DUNGEON_HOLE_TRAP");
-	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonPieces.SideRoom::new,
-			"DUNGEON_SIDE_ROOM");
-	public static final IStructurePieceType PART_WITH_ENTITY = IStructurePieceType
-			.register(DungeonPieces.PartWithEntity::new, "DUNGEON_PART_WITH_ENTITY");
 
 	public static int SIZE = 16;
 
@@ -142,10 +114,13 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 				DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
 
-				ServerWorld serverWorld = (ServerWorld) world.get(generator);
-				BlockPos spawn = serverWorld.getSpawnPoint();
+				IWorld iWorld = (IWorld) world.get(generator);
 
-//				DungeonSegmentModelRegistry.load(serverWorld);
+				if (!(iWorld instanceof ServerWorld))
+					return;
+
+				ServerWorld serverWorld = (ServerWorld) iWorld;
+				BlockPos spawn = serverWorld.getSpawnPoint();
 
 				int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
 
@@ -173,7 +148,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
 			this.components.addAll(builder.build());
 			this.recalculateStructureSize();
-			DungeonCrawl.LOGGER.info("Built dungeon logic for [{}, {}] ({} ms) ({} pieces). BoundingBox: ({}, {}, {})",
+			DungeonCrawl.LOGGER.info("Created dungeon layout for [{}, {}] ({} ms) ({} pieces). BoundingBox: ({}, {}, {})",
 					chunkX, chunkZ, (System.currentTimeMillis() - now), this.components.size(),
 					bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ);
 		}

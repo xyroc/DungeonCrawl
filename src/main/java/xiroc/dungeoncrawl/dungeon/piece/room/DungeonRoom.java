@@ -15,9 +15,9 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -28,24 +28,34 @@ public class DungeonRoom extends DungeonPiece {
 	}
 
 	@Override
+	public int determineModel(Random rand) {
+		return DungeonModels.ROOM.id;
+	}
+
+	@Override
 	public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 			ChunkPos p_74875_4_) {
-		DungeonSegmentModel model = DungeonSegmentModelRegistry.ROOM;
+		DungeonModel model = DungeonModels.ROOM;
 		if (model == null)
 			return false;
 //		if (theme != 1)
 //			theme = Theme.BIOME_TO_THEME_MAP
 //					.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
-		build(model, worldIn, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT,
-				stage, true);
-		addWalls(this, worldIn, theme);
+		build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme),
+				Treasure.Type.DEFAULT, stage, true);
+		addWalls(this, worldIn, structureBoundingBoxIn, theme);
 
 		if (Config.NO_SPAWNERS.get())
 			spawnMobs(worldIn, this, model.width, model.length, new int[] { 1 });
 
 		if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
-			addColumns(this, worldIn, 1, theme);
+			addColumns(this, worldIn, structureBoundingBoxIn, +1, theme);
 		return false;
+	}
+
+	@Override
+	public void setupBoundingBox() {
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
 	}
 
 	@Override

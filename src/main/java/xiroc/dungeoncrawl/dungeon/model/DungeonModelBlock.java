@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.dungeon.segment;
+package xiroc.dungeoncrawl.dungeon.model;
 
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
@@ -39,9 +39,9 @@ import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 
-public class DungeonSegmentModelBlock {
+public class DungeonModelBlock {
 
-	public static HashMap<DungeonSegmentModelBlockType, DungeonSegmentBlockStateProvider> PROVIDERS = new HashMap<DungeonSegmentModelBlockType, DungeonSegmentBlockStateProvider>();
+	public static HashMap<DungeonModelBlockType, DungeonSegmentBlockStateProvider> PROVIDERS = new HashMap<DungeonModelBlockType, DungeonSegmentBlockStateProvider>();
 
 	private static final HashMap<String, PropertyLoader> LOADERS;
 
@@ -73,7 +73,7 @@ public class DungeonSegmentModelBlock {
 				(block, nbt) -> block.hinge = read(DoorHingeSide.class, "doorHinge", nbt, DoorHingeSide::valueOf));
 	}
 
-	public DungeonSegmentModelBlockType type;
+	public DungeonModelBlockType type;
 
 	public Direction facing;
 	public Direction.Axis axis;
@@ -87,7 +87,7 @@ public class DungeonSegmentModelBlock {
 	public BedPart bedPart;
 	public DoorHingeSide hinge;
 
-	public DungeonSegmentModelBlock(DungeonSegmentModelBlockType type) {
+	public DungeonModelBlock(DungeonModelBlockType type) {
 		this.type = type;
 	}
 
@@ -131,11 +131,11 @@ public class DungeonSegmentModelBlock {
 		return tag;
 	}
 
-	public static DungeonSegmentModelBlock fromNBT(CompoundNBT nbt) {
+	public static DungeonModelBlock fromNBT(CompoundNBT nbt) {
 		if (!nbt.contains("type"))
 			return null;
-		DungeonSegmentModelBlock block = new DungeonSegmentModelBlock(
-				DungeonSegmentModelBlockType.valueOf(nbt.getString("type")));
+		DungeonModelBlock block = new DungeonModelBlock(
+				DungeonModelBlockType.valueOf(nbt.getString("type")));
 
 		if (nbt.contains("resourceName"))
 			block.resourceName = nbt.getString("resourceName");
@@ -170,7 +170,7 @@ public class DungeonSegmentModelBlock {
 	/**
 	 * Loads all existing properties from the given BlockState.
 	 */
-	public DungeonSegmentModelBlock loadDataFromState(BlockState state) {
+	public DungeonModelBlock loadDataFromState(BlockState state) {
 		if (state.has(BlockStateProperties.FACING))
 			facing = state.get(BlockStateProperties.FACING);
 		else if (state.has(BlockStateProperties.HORIZONTAL_FACING))
@@ -209,7 +209,7 @@ public class DungeonSegmentModelBlock {
 			bedPart = state.get(BlockStateProperties.BED_PART);
 		if (state.has(BlockStateProperties.DOOR_HINGE))
 			hinge = state.get(BlockStateProperties.DOOR_HINGE);
-		if (type == DungeonSegmentModelBlockType.OTHER)
+		if (type == DungeonModelBlockType.OTHER)
 			resourceName = state.getBlock().getRegistryName().toString();
 		return this;
 	}
@@ -263,27 +263,27 @@ public class DungeonSegmentModelBlock {
 	 * Registers all BlockState providers.
 	 */
 	public static void load() {
-		PROVIDERS.put(DungeonSegmentModelBlockType.NONE, (block, theme, subTheme, rand, stage) -> null);
-		PROVIDERS.put(DungeonSegmentModelBlockType.BARREL, (block, theme, subTheme, rand, stage) -> Blocks.BARREL
+		PROVIDERS.put(DungeonModelBlockType.NONE, (block, theme, subTheme, rand, stage) -> null);
+		PROVIDERS.put(DungeonModelBlockType.BARREL, (block, theme, subTheme, rand, stage) -> Blocks.BARREL
 				.getDefaultState().with(BarrelBlock.PROPERTY_FACING, block.facing));
-		PROVIDERS.put(DungeonSegmentModelBlockType.MATERIAL,
+		PROVIDERS.put(DungeonModelBlockType.MATERIAL,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.material.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.SOLID, (block, theme, subTheme, rand, stage) -> theme.solid.get());
-		PROVIDERS.put(DungeonSegmentModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
-		PROVIDERS.put(DungeonSegmentModelBlockType.STAIRS,
+		PROVIDERS.put(DungeonModelBlockType.SOLID, (block, theme, subTheme, rand, stage) -> theme.solid.get());
+		PROVIDERS.put(DungeonModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
+		PROVIDERS.put(DungeonModelBlockType.STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.SOLID_STAIRS,
+		PROVIDERS.put(DungeonModelBlockType.SOLID_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.FLOOR_STAIRS,
+		PROVIDERS.put(DungeonModelBlockType.FLOOR_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.CEILING_STAIRS,
+		PROVIDERS.put(DungeonModelBlockType.CEILING_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.CHEST, (block, theme, subTheme, rand, stage) -> Blocks.CHEST
+		PROVIDERS.put(DungeonModelBlockType.CHEST, (block, theme, subTheme, rand, stage) -> Blocks.CHEST
 				.getDefaultState().with(ChestBlock.FACING, block.facing));
-		PROVIDERS.put(DungeonSegmentModelBlockType.DISPENSER, (block, theme, subTheme, rand, stage) -> Blocks.DISPENSER
+		PROVIDERS.put(DungeonModelBlockType.DISPENSER, (block, theme, subTheme, rand, stage) -> Blocks.DISPENSER
 				.getDefaultState().with(DispenserBlock.FACING, block.facing));
-		PROVIDERS.put(DungeonSegmentModelBlockType.FLOOR, (block, theme, subTheme, rand, stage) -> theme.floor.get());
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER,
+		PROVIDERS.put(DungeonModelBlockType.FLOOR, (block, theme, subTheme, rand, stage) -> theme.floor.get());
+		PROVIDERS.put(DungeonModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER,
 				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
 					if (rand.nextInt(10) == 5)
 						return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
@@ -296,7 +296,7 @@ public class DungeonSegmentModelBlock {
 						return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
 					return theme.floor.get();
 				});
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_LAVA, (block, theme, subTheme, rand, stage) -> {
+		PROVIDERS.put(DungeonModelBlockType.RAND_FLOOR_LAVA, (block, theme, subTheme, rand, stage) -> {
 			switch (rand.nextInt(2)) {
 			case 0:
 				return theme.floor.get();
@@ -306,7 +306,7 @@ public class DungeonSegmentModelBlock {
 				return Blocks.LAVA.getDefaultState();
 			}
 		});
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_FLOOR_WATER, (block, theme, subTheme, rand, stage) -> {
+		PROVIDERS.put(DungeonModelBlockType.RAND_FLOOR_WATER, (block, theme, subTheme, rand, stage) -> {
 			if (stage > 1)
 				return theme.floor.get();
 			switch (rand.nextInt(2)) {
@@ -318,12 +318,12 @@ public class DungeonSegmentModelBlock {
 				return Blocks.WATER.getDefaultState();
 			}
 		});
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_WALL_AIR, (block, theme, subTheme, rand, stage) -> {
+		PROVIDERS.put(DungeonModelBlockType.RAND_WALL_AIR, (block, theme, subTheme, rand, stage) -> {
 			if (rand.nextFloat() < 0.75)
 				return theme.solid.get();
 			return Blocks.CAVE_AIR.getDefaultState();
 		});
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_WALL_SPAWNER,
+		PROVIDERS.put(DungeonModelBlockType.RAND_WALL_SPAWNER,
 				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
 					return theme.solid.get();
 				} : (block, theme, subTheme, rand, stage) -> {
@@ -331,27 +331,27 @@ public class DungeonSegmentModelBlock {
 						return BlockRegistry.SPAWNER;
 					return theme.solid.get();
 				});
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_COBWEB_AIR, (block, theme, subTheme, rand, stage) -> {
+		PROVIDERS.put(DungeonModelBlockType.RAND_COBWEB_AIR, (block, theme, subTheme, rand, stage) -> {
 			if (rand.nextInt(5) == 0)
 				return Blocks.CAVE_AIR.getDefaultState();
 			return Blocks.COBWEB.getDefaultState();
 		});
-		PROVIDERS.put(DungeonSegmentModelBlockType.RAND_BOOKSHELF_COBWEB, (block, theme, subTheme, rand, stage) -> {
+		PROVIDERS.put(DungeonModelBlockType.RAND_BOOKSHELF_COBWEB, (block, theme, subTheme, rand, stage) -> {
 			int roll = rand.nextInt(10);
 			if (roll > 2)
 				return Blocks.BOOKSHELF.getDefaultState();
 			return Blocks.COBWEB.getDefaultState();
 		});
-		PROVIDERS.put(DungeonSegmentModelBlockType.STAIRS,
+		PROVIDERS.put(DungeonModelBlockType.STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.TRAPDOOR,
+		PROVIDERS.put(DungeonModelBlockType.TRAPDOOR,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.trapDoor.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
-		PROVIDERS.put(DungeonSegmentModelBlockType.WALL_LOG,
+		PROVIDERS.put(DungeonModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
+		PROVIDERS.put(DungeonModelBlockType.WALL_LOG,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.wallLog.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.DOOR,
+		PROVIDERS.put(DungeonModelBlockType.DOOR,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.door.get()));
-		PROVIDERS.put(DungeonSegmentModelBlockType.OTHER, (block, theme, subTheme, rand, stage) -> block
+		PROVIDERS.put(DungeonModelBlockType.OTHER, (block, theme, subTheme, rand, stage) -> block
 				.create(ForgeRegistries.BLOCKS.getValue(block.registryName).getDefaultState()));
 	}
 
@@ -363,7 +363,7 @@ public class DungeonSegmentModelBlock {
 	 * Creates a BlockState from a DungeonSegmentModelBlock using a
 	 * DungeonSegmentBlockStateProvider from the provider-map.
 	 */
-	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, SubTheme subTheme, Random rand,
+	public static BlockState getBlockState(DungeonModelBlock block, Theme theme, SubTheme subTheme, Random rand,
 			int stage) {
 		DungeonSegmentBlockStateProvider provider = PROVIDERS.get(block.type);
 		if (provider == null)
@@ -378,7 +378,7 @@ public class DungeonSegmentModelBlock {
 	 * Creates a rotated BlockState from a DungeonSegmentModelBlock using a
 	 * DungeonSegmentBlockStateProvider from the provider-map.
 	 */
-	public static BlockState getBlockState(DungeonSegmentModelBlock block, Theme theme, SubTheme subTheme, Random rand,
+	public static BlockState getBlockState(DungeonModelBlock block, Theme theme, SubTheme subTheme, Random rand,
 			int stage, Rotation rotation) {
 		BlockState state = getBlockState(block, theme, subTheme, rand, stage);
 		return state == null ? null : state.rotate(rotation);
@@ -391,14 +391,14 @@ public class DungeonSegmentModelBlock {
 	@FunctionalInterface
 	public static interface DungeonSegmentBlockStateProvider {
 
-		BlockState get(DungeonSegmentModelBlock block, Theme theme, SubTheme subTheme, Random rand, int stage);
+		BlockState get(DungeonModelBlock block, Theme theme, SubTheme subTheme, Random rand, int stage);
 
 	}
 
 	@FunctionalInterface
 	private interface PropertyLoader {
 
-		void load(DungeonSegmentModelBlock block, CompoundNBT nbt);
+		void load(DungeonModelBlock block, CompoundNBT nbt);
 
 	}
 

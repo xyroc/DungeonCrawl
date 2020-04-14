@@ -18,9 +18,9 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
@@ -28,21 +28,20 @@ import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 public class DungeonPart extends DungeonPiece {
 
 	public boolean walls;
-	private int modelID, startX, startY, startZ, width, height, length;
+	private int startX, startY, startZ, width, height, length;
 	public int treasureType;
 
 	public DungeonPart(TemplateManager manager, CompoundNBT p_i51343_2_) {
-			super(StructurePieceTypes.PART, p_i51343_2_);
-			modelID = p_i51343_2_.getInt("model");
-			startX = p_i51343_2_.getInt("startX");
-			startY = p_i51343_2_.getInt("startY");
-			startZ = p_i51343_2_.getInt("startZ");
-			width = p_i51343_2_.getInt("width");
-			height = p_i51343_2_.getInt("height");
-			length = p_i51343_2_.getInt("length");
-			treasureType = p_i51343_2_.getInt("treasureType");
-			walls = p_i51343_2_.getBoolean("walls");
-		}
+		super(StructurePieceTypes.PART, p_i51343_2_);
+		startX = p_i51343_2_.getInt("startX");
+		startY = p_i51343_2_.getInt("startY");
+		startZ = p_i51343_2_.getInt("startZ");
+		width = p_i51343_2_.getInt("width");
+		height = p_i51343_2_.getInt("height");
+		length = p_i51343_2_.getInt("length");
+		treasureType = p_i51343_2_.getInt("treasureType");
+		walls = p_i51343_2_.getBoolean("walls");
+	}
 
 	public void set(int modelID, int startX, int startY, int startZ, int width, int height, int length) {
 		this.modelID = modelID;
@@ -52,13 +51,14 @@ public class DungeonPart extends DungeonPiece {
 		this.width = width;
 		this.height = height;
 		this.length = length;
+		setupBoundingBox();
 		if (this.treasureType == 0)
 			this.treasureType = Treasure.Type
 					.toInt(Treasure.LARGE_ROOM_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT));
 	}
 
 	public void adjustSize() {
-		DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+		DungeonModel model = DungeonModels.MAP.get(modelID);
 		if (model == null) {
 			DungeonCrawl.LOGGER.warn("Failed to adjust the size of a dungeon part. ID: {}", modelID);
 			return;
@@ -66,6 +66,7 @@ public class DungeonPart extends DungeonPiece {
 		width = startX + width > model.width ? width - (startX + width - model.width) : width;
 		height = startY + height > model.height ? height - (startY + height - model.height) : height;
 		length = startZ + length > model.length ? length - (startZ + length - model.length) : length;
+		setupBoundingBox();
 	}
 
 	@Override
@@ -74,13 +75,22 @@ public class DungeonPart extends DungeonPiece {
 	}
 
 	@Override
+	public void setupBoundingBox() {
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
+	}
+
+	@Override
+	public int determineModel(Random rand) {
+		return 0;
+	}
+
+	@Override
 	public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 			ChunkPos p_74875_4_) {
 		this.adjustSize();
-		DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+		DungeonModel model = DungeonModels.MAP.get(modelID);
 		BlockPos pos = new BlockPos(x, y, z);
 		Treasure.Type type = Treasure.Type.fromInt(treasureType);
-
 
 		Theme buildTheme = Theme.get(theme);
 		SubTheme sub = Theme.getSub(subTheme);
@@ -92,25 +102,26 @@ public class DungeonPart extends DungeonPiece {
 						if (model.model[x][y][z] == null)
 							state = Blocks.AIR.getDefaultState();
 						else
-							state = DungeonSegmentModelBlock.getBlockState(model.model[x][y][z], buildTheme, sub,
+							state = DungeonModelBlock.getBlockState(model.model[x][y][z], buildTheme, sub,
 									worldIn.getRandom(), stage);
 						if (state == null)
 							continue;
-						setBlockState(state, worldIn, type, pos.getX() + x - startX, pos.getY() + y - startY,
-								pos.getZ() + z - startZ, theme, stage, true);
+						setBlockState(state, worldIn, structureBoundingBoxIn, type, pos.getX() + x - startX,
+								pos.getY() + y - startY, pos.getZ() + z - startZ, theme, stage, true);
 					}
 				}
 			}
 		} else {
-			buildRotatedPart(model, worldIn, pos, buildTheme, sub, Treasure.Type.fromInt(treasureType), stage, rotation,
-					startX, startY, startZ, width, height, length, true);
+			buildRotatedPart(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme,
+					Treasure.Type.fromInt(treasureType), stage, rotation, startX, startY, startZ, width, height, length,
+					true);
 		}
 		if (walls)
-			addWalls(this, worldIn, theme);
+			addWalls(this, worldIn, structureBoundingBoxIn, theme);
 		if (Config.NO_SPAWNERS.get())
 			spawnMobs(worldIn, this, width, length, new int[] { 1, 5 });
 		if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
-			addColumns(this, worldIn, 1, theme);
+			addColumns(this, worldIn, structureBoundingBoxIn, 1, theme);
 
 		return true;
 	}
@@ -118,7 +129,6 @@ public class DungeonPart extends DungeonPiece {
 	@Override
 	public void readAdditional(CompoundNBT tagCompound) {
 		super.readAdditional(tagCompound);
-		tagCompound.putInt("model", modelID);
 		tagCompound.putInt("startX", startX);
 		tagCompound.putInt("startY", startY);
 		tagCompound.putInt("startZ", startZ);

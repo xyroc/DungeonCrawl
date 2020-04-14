@@ -33,11 +33,42 @@ public class DungeonFeatures {
 
 	static {
 		OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
-		OFFSET_DATA.put(33, new Triple<Integer, Integer, Integer>(0, -1, 0));
+		OFFSET_DATA.put(34, new Triple<Integer, Integer, Integer>(0, -1, 0));
 	}
 
 	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
+//		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+//			if (stage > 1 && stage != 4) {
+//				List<Direction> list = Lists.newArrayList();
+//				Position2D center = new Position2D(x, z);
+//				for (int i = 0; i < 4; i++)
+//					if (layer.segments[x][z].reference.sides[i]) {
+//						Position2D pos = center.shift(Direction.byHorizontalIndex((i + 2) % 4), 1);
+//						PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
+//						if (placeHolder != null)
+//							if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
+//									&& ((DungeonCorridor) placeHolder.reference).isStraight())
+//								list.add(Direction.byHorizontalIndex((i + 2) % 4));
+//							else
+//								return false;
+//					}
+//				if (list.size() > 1) {
+//
+//					for (Direction direction : list) {
+//						Position2D pos = center.shift(direction, 1);
+//						DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+//								(DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
+//						corridor.rotation = RotationHelper.getRotationFromFacing(direction.getOpposite());
+//						layer.segments[pos.x][pos.z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+//					}
+//
+//					return true;
+//				} else
+//					return false;
+//			}
+//			return false;
+//		});
 		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2, true)) {
 				DungeonCorridorHole hole = new DungeonCorridorHole(null, DungeonPiece.DEFAULT_NBT);
@@ -66,7 +97,8 @@ public class DungeonFeatures {
 			if (layer.segments[x][z].reference.getType() == 0 && layer.segments[x][z].reference.connectedSides < 4
 					&& (lyr == 0 || (builder.layers[lyr - 1].segments[x][z] == null
 							|| builder.layers[lyr - 1].segments[x][z].reference.getType() != 2))) {
-				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].reference.rotation);
+				Direction facing = RotationHelper.translateDirection(Direction.EAST,
+						layer.segments[x][z].reference.rotation);
 				Position2D pos = new Position2D(x, z);
 				Position2D roomPos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
 				if (roomPos.isValid(layer.width, layer.length) && layer.segments[roomPos.x][roomPos.z] == null
@@ -107,7 +139,8 @@ public class DungeonFeatures {
 		});
 		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 			if (layer.segments[x][z].reference.getType() == 0 && layer.segments[x][z].reference.connectedSides < 4) {
-				Direction facing = RotationHelper.translateDirection(Direction.EAST, layer.segments[x][z].reference.rotation);
+				Direction facing = RotationHelper.translateDirection(Direction.EAST,
+						layer.segments[x][z].reference.rotation);
 				Position2D pos = new Position2D(x, z);
 				Position2D part1Pos = pos.shift(RotationHelper.translateDirectionLeft(facing), 1);
 				Position2D part2Pos = part1Pos.shift(facing, 1);
@@ -155,6 +188,7 @@ public class DungeonFeatures {
 			return false;
 		});
 	}
+
 	public static void processCorridor(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
 			int stage, BlockPos startPos) {
 		for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
@@ -173,11 +207,11 @@ public class DungeonFeatures {
 	 */
 	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
 			int length, int layerHeight, boolean ignoreStartPosition) {
+		if (x + width > Dungeon.SIZE - 1 || z + length > Dungeon.SIZE - 1 || x < 0 || z < 0)
+			return false;
 
 		int layers = builder.layers.length, lh = layer - layerHeight;
 		if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
-			return false;
-		if (x + width > Dungeon.SIZE - 1 || z + length > Dungeon.SIZE - 1)
 			return false;
 
 		boolean up = layerHeight > 0;
@@ -190,8 +224,9 @@ public class DungeonFeatures {
 				return false;
 			for (int x0 = 0; x0 < width; x0++)
 				for (int z0 = 0; z0 < length; z0++)
-					if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0) && (builder.layers[lyr].segments[x + x0][z + z0] != null
-							|| !builder.maps[lyr].isPositionFree(x + x0, z + z0)))
+					if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0)
+							&& (builder.layers[lyr].segments[x + x0][z + z0] != null
+									|| !builder.maps[lyr].isPositionFree(x + x0, z + z0)))
 						return false;
 		}
 		return true;

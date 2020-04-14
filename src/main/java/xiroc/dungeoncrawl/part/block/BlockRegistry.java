@@ -71,9 +71,10 @@ public class BlockRegistry {
 	public static final TupleIntBlock TIB_STAIRS_NETHER_BRICK = new TupleIntBlock(3, STAIRS_NETHER_BRICK);
 	public static final TupleIntBlock TIB_STAIRS_QUARTZ = new TupleIntBlock(1, STAIRS_QUARTZ);
 
-	public static WeightedRandomBlock STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE, BRICKS_GRANITE, ANDESITE_STONE_BRICKS;
+	public static WeightedRandomBlock STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE, BRICKS_GRANITE, ANDESITE_STONE_BRICKS,
+			OBSIDIAN_MOSSY;
 	public static WeightedRandomBlock STONE_BRICK_FLOOR, STONE_BRICK_FLOOR_MOSSY, STONE_BRICK_FLOOR_VERY_MOSSY,
-			ANDESITE_STONE_BRICKS_COBBLESTONE;
+			ANDESITE_STONE_BRICKS_COBBLESTONE, OBSIDIAN_MOSSY_FLOOR;
 	public static WeightedRandomBlock STONE_BRICKS_GRAVEL_COBBLESTONE;
 	public static WeightedRandomBlock NETHERRACK_NETHERBRICK;
 	public static WeightedRandomBlock NETHERRACK_NETHERBRICK_SOULSAND;
@@ -295,6 +296,20 @@ public class BlockRegistry {
 						new TupleIntBlock(1, Blocks.COBBLESTONE_STAIRS.getDefaultState()),
 						new TupleIntBlock(6, Blocks.MOSSY_COBBLESTONE_STAIRS.getDefaultState()),
 						new TupleIntBlock(6, Blocks.MOSSY_STONE_BRICK_STAIRS.getDefaultState()) });
+
+		OBSIDIAN_MOSSY = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(3, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(3, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(1, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(1, Blocks.CHISELED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(3, Blocks.OBSIDIAN.getDefaultState()) });
+		
+		OBSIDIAN_MOSSY_FLOOR = new WeightedRandomBlock(
+				new TupleIntBlock[] { new TupleIntBlock(2, Blocks.MOSSY_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(2, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
+						new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(5, Blocks.CHISELED_STONE_BRICKS.getDefaultState()),
+						new TupleIntBlock(3, Blocks.OBSIDIAN.getDefaultState()) });
 
 		DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
 	}

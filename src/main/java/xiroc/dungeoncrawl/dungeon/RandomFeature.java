@@ -13,9 +13,9 @@ import xiroc.dungeoncrawl.util.IRandom;
 
 public class RandomFeature {
 
-	public static final int[] SIDE_ROOM_IDS = new int[] { 30, 31, 33 };
+	public static final int[] SIDE_ROOM_IDS = new int[] { 30, 31, 34 };
 
-	public static final int[] LARGE_ROOM_IDS = new int[] { 25, 25, 35 };
+	public static final int[] LARGE_ROOM_IDS = new int[] { 25, 25, 36 };
 
 	public static final IRandom<DungeonPiece> CORRIDOR_FEATURE = (rand) -> {
 		switch (rand.nextInt(2)) {

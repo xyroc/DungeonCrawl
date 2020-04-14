@@ -73,13 +73,21 @@ public class Theme {
 	public static final Theme MOSS = new Theme(BlockRegistry.MOSS, BlockRegistry.MOSS, BlockRegistry.MOSS_FLOOR,
 			BlockRegistry.MOSS_STAIRS, BlockRegistry.MOSS, BlockRegistry.MOSS_WALL, BlockRegistry.MOSS);
 
+	public static final Theme OBSIDIAN_MOSSY = new Theme(null, BlockRegistry.OBSIDIAN_MOSSY,
+			BlockRegistry.OBSIDIAN_MOSSY_FLOOR, BlockRegistry.MOSS_STAIRS, BlockRegistry.OBSIDIAN_MOSSY,
+			BlockRegistry.MOSS_WALL, BlockRegistry.OBSIDIAN_MOSSY);
+
 	/* **************************** */
-	/*          SUB-THEMES          */
+	/*           SUB-THEMES         */
 	/* **************************** */
 
 	public static final SubTheme NETHER_SUB = new SubTheme(Blocks.MAGMA_BLOCK.getDefaultState(),
 			Blocks.CAVE_AIR.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
 			Blocks.IRON_DOOR.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
+
+	public static final SubTheme OBSIDIAN_MOSSY_SUB = new SubTheme(() -> Blocks.OBSIDIAN.getDefaultState(),
+			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.CAVE_AIR.getDefaultState(),
+			() -> Blocks.CAVE_AIR.getDefaultState(), BlockRegistry.OBSIDIAN_MOSSY);
 
 	public static final SubTheme ACACIA = new SubTheme(() -> Blocks.ACACIA_LOG.getDefaultState(),
 			() -> Blocks.ACACIA_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
@@ -119,20 +127,17 @@ public class Theme {
 
 		BIOME_TO_THEME_MAP = new HashMap<String, Integer>();
 
-		BIOME_TO_THEME_MAP.put("minecraft:swamp", 2);
-		BIOME_TO_THEME_MAP.put("minecraft:swamp_hills", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:ocean", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:deep_ocean", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:cold_ocean", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:deep_cold_ocean", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:lukewarm_ocean", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:deep_lukewarm_ocean", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:warm_ocean", 2);
+		BIOME_TO_THEME_MAP.put("minecraft:deep_warm_ocean", 2);
 
-		BIOME_TO_THEME_MAP.put("minecraft:ocean", 3);
-		BIOME_TO_THEME_MAP.put("minecraft:deep_ocean", 3);
-		BIOME_TO_THEME_MAP.put("minecraft:cold_ocean", 3);
-		BIOME_TO_THEME_MAP.put("minecraft:deep_cold_ocean", 3);
-		BIOME_TO_THEME_MAP.put("minecraft:lukewarm_ocean", 3);
-		BIOME_TO_THEME_MAP.put("minecraft:deep_lukewarm_ocean", 3);
-		BIOME_TO_THEME_MAP.put("minecraft:warm_ocean", 3);
-		BIOME_TO_THEME_MAP.put("minecraft:deep_warm_ocean", 3);
-
-		BIOME_TO_THEME_MAP.put("minecraft:frozen_ocean", 4);
-		BIOME_TO_THEME_MAP.put("mineraft:deep_frozen_ocean", 4);
+		BIOME_TO_THEME_MAP.put("minecraft:frozen_ocean", 2);
+		BIOME_TO_THEME_MAP.put("mineraft:deep_frozen_ocean", 2);
 
 		BIOME_TO_THEME_MAP.put("minecraft:desert", 16);
 		BIOME_TO_THEME_MAP.put("minecraft:desert_hills", 16);
@@ -146,6 +151,9 @@ public class Theme {
 		BIOME_TO_THEME_MAP.put("minecraft:modified_badlands_plateau", 17);
 
 		BIOME_TO_THEME_MAP.put("minecraft:ice_spikes", 32);
+		
+		BIOME_TO_THEME_MAP.put("minecraft:swamp", 80);
+		BIOME_TO_THEME_MAP.put("minecraft:swamp_hills", 80);
 
 		ID_TO_THEME_MAP = new HashMap<Integer, Theme>();
 
@@ -163,6 +171,7 @@ public class Theme {
 		ID_TO_THEME_MAP.put(49, ANDESITE);
 
 		ID_TO_THEME_MAP.put(80, MOSS);
+		ID_TO_THEME_MAP.put(81, OBSIDIAN_MOSSY);
 
 		// Sub-Themes
 
@@ -201,11 +210,11 @@ public class Theme {
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:snowy_taiga_mountains", 5);
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_spruce_taiga", 5);
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_spruce_taiga_hills", 5);
-		
+
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:desert", 6);
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:desert_hills", 6);
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:desert_lakes", 6);
-		
+
 		BIOME_TO_SUBTHEME_MAP.put("minecraft:ice_spikes", 7);
 
 		ID_TO_SUBTHEME_MAP = new HashMap<Integer, SubTheme>();
@@ -220,6 +229,7 @@ public class Theme {
 		ID_TO_SUBTHEME_MAP.put(7, ICE_SUB);
 
 		ID_TO_SUBTHEME_MAP.put(8, NETHER_SUB);
+		ID_TO_SUBTHEME_MAP.put(9, OBSIDIAN_MOSSY_SUB);
 
 		RANDOMIZERS = new HashMap<Integer, ThemeRandomizer>();
 

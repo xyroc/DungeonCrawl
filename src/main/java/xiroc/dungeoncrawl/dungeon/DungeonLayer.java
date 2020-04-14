@@ -7,17 +7,18 @@ package xiroc.dungeoncrawl.dungeon;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPart;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -25,10 +26,6 @@ import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.RotationHelper;
 
 public class DungeonLayer {
-
-	/*
-	 * NORTH|-Z EAST|+X SOUTH|+Z WEST|-X
-	 */
 
 	public PlaceHolder[][] segments;
 
@@ -41,9 +38,12 @@ public class DungeonLayer {
 
 	public DungeonLayerMap map;
 
-	public int extraRooms; // If, for some odd reason, no final loot room position can be found, the layer
-	// will have more rooms than usual to compensate the missing loot a bit. This is
-	// only relevant for the last layer.
+	/*
+	 * Contains all nodes that do not have a direct connection to the start
+	 * position. The only use case for this right now is that in the last layer, one
+	 * of these nodes will be chosen to become the loot room.
+	 */
+	public List<Position2D> distantNodes;
 
 	public DungeonLayer() {
 		this(16, 16);
@@ -54,146 +54,45 @@ public class DungeonLayer {
 		this.length = length;
 		this.statTracker = new LayerStatTracker();
 		this.segments = new PlaceHolder[this.width][this.length];
+		this.distantNodes = Lists.newArrayList();
 	}
 
 	public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer,
 			boolean lastLayer) {
-		if (!map.markPositionAsOccupied(start))
-			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
-		this.start = start;
-		this.end = lastLayer ? findLargeRoomPosWithMaxDistance(builder, start, layer) : map.getRandomFreePosition(rand);
-		this.segments[start.x][start.z] = new PlaceHolder(new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom());
-		if (lastLayer) {
-			if (end != null)
-				createLootRoom();
-			else {
-				end = findLargeRoomPosAtArea(builder, map.getRandomFreePosition(rand), layer);
-				if (end != null) {
-					createLootRoom();
-				} else {
-					DungeonCrawl.LOGGER.debug("Failed to find a position for the loot room.");
-					end = forceLargeRoomPosWithMaxDistance(start);
-					createLootRoom();
-				}
-			}
-
-		} else
-			this.segments[end.x][end.z] = new PlaceHolder(new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top());
-
-		this.buildConnection(start, end);
+//		if (!map.markPositionAsOccupied(start))
+//			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
+//		this.start = start;
+//		this.end = lastLayer ? findLargeRoomPosWithMaxDistance(builder, start, layer) : map.getRandomFreePosition(rand);
+//		this.segments[start.x][start.z] = new PlaceHolder(new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom());
+//		if (lastLayer) {
+//			if (end != null)
+//				createLootRoom();
+//			else {
+//				end = findLargeRoomPosAtArea(builder, map.getRandomFreePosition(rand), layer);
+//				if (end != null) {
+//					createLootRoom();
+//				} else {
+//					DungeonCrawl.LOGGER.debug("Failed to find a position for the loot room.");
+//					end = forceLargeRoomPosWithMaxDistance(start);
+//					createLootRoom();
+//				}
+//			}
+//
+//		} else
+//			this.segments[end.x][end.z] = new PlaceHolder(new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top());
+//
+//		this.buildConnection(start, end);
 //		this.extend(builder, map, start, end, rand, layer);
+		this.start = start;
+		this.createLayout(builder, rand, layer, lastLayer);
 	}
 
 	public void extend(DungeonBuilder builder, DungeonLayerMap map, Random rand, int layer) {
-		int additionalFeatures = Config.LAYER_ADDITIONS_MIN.get() + rand.nextInt(Config.LAYER_ADDITIONS_EXTRA.get())
-				+ extraRooms;
-		Position2D[] additions = new Position2D[additionalFeatures];
-		for (int i = 0; i < additionalFeatures; i++) {
-			additions[i] = map.getRandomFreePosition(rand);
-			if (additions[i] == null) {
-//				DungeonCrawl.LOGGER.warn(
-//						"Failed to place {} more rooms because all free positions are already taken. Please decrease the layer_min_additions and/or the layer_extra_additions value in the config (dungeon_crawl.toml) to avoid this issue.",
-//						additionalFeatures - i);
-				return;
-			}
-			if (rand.nextFloat() < 0.5) {
-				Position2D largeRoomPos = DungeonLayer.getLargeRoomPos(this,
-						new Position2D(additions[i].x, additions[i].z));
-				if (largeRoomPos != null && DungeonFeatures.canPlacePieceWithHeight(builder, layer, additions[i].x,
-						additions[i].z, 2, 2, 1, true)) {
-					int roomID = RandomFeature.LARGE_ROOMS.roll(rand);
-					DungeonPart part1 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
-					DungeonPart part2 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
-					DungeonPart part3 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
-					DungeonPart part4 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
-
-					part1.treasureType = 0;
-					part2.treasureType = 0;
-					part3.treasureType = 0;
-					part4.treasureType = 0;
-
-					part1.rotation = Rotation.NONE;
-					part2.rotation = Rotation.NONE;
-					part3.rotation = Rotation.NONE;
-					part4.rotation = Rotation.NONE;
-
-					part1.walls = part2.walls = part3.walls = part4.walls = true;
-//					part1.stage = part2.stage = part3.stage = part4.stage = 0;
-
-					part1.set(roomID, 0, 0, 0, 8, 16, 8);
-					part2.set(roomID, 8, 0, 0, 8, 16, 8);
-					part3.set(roomID, 8, 0, 8, 8, 16, 8);
-					part4.set(roomID, 0, 0, 8, 8, 16, 8);
-
-					part1.setPosition(largeRoomPos.x, largeRoomPos.z);
-					part2.setPosition(largeRoomPos.x + 1, largeRoomPos.z);
-					part3.setPosition(largeRoomPos.x + 1, largeRoomPos.z + 1);
-					part4.setPosition(largeRoomPos.x, largeRoomPos.z + 1);
-
-					part1.sides[0] = false;
-					part1.sides[1] = true;
-					part1.sides[2] = true;
-					part1.sides[3] = false;
-
-					part2.sides[0] = false;
-					part2.sides[1] = false;
-					part2.sides[2] = true;
-					part2.sides[3] = true;
-
-					part3.sides[0] = true;
-					part3.sides[1] = false;
-					part3.sides[2] = false;
-					part3.sides[3] = true;
-
-					part4.sides[0] = true;
-					part4.sides[1] = true;
-					part4.sides[2] = false;
-					part4.sides[3] = false;
-
-					part1.openAdditionalSides(get(largeRoomPos.x, largeRoomPos.z));
-					part2.openAdditionalSides(get(largeRoomPos.x + 1, largeRoomPos.z));
-					part3.openAdditionalSides(get(largeRoomPos.x + 1, largeRoomPos.z + 1));
-					part4.openAdditionalSides(get(largeRoomPos.x, largeRoomPos.z + 1));
-
-//					part1.setRealPosition(startPos.getX() + part1.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part1.posZ * 8);
-//					part2.setRealPosition(startPos.getX() + part2.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part2.posZ * 8);
-//					part3.setRealPosition(startPos.getX() + part3.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part3.posZ * 8);
-//					part4.setRealPosition(startPos.getX() + part4.posX * 8, startPos.getY() - i * 8, startPos.getZ() + part4.posZ * 8);
-
-					segments[largeRoomPos.x][largeRoomPos.z] = new PlaceHolder(part1).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
-					segments[largeRoomPos.x + 1][largeRoomPos.z] = new PlaceHolder(part2).withFlag(PlaceHolder.Flag.FIXED_ROTATION);;
-					segments[largeRoomPos.x + 1][largeRoomPos.z + 1] = new PlaceHolder(part3).withFlag(PlaceHolder.Flag.FIXED_ROTATION);;
-					segments[largeRoomPos.x][largeRoomPos.z + 1] = new PlaceHolder(part4).withFlag(PlaceHolder.Flag.FIXED_ROTATION);;
-
-					DungeonFeatures.mark(builder, layer, largeRoomPos.x, largeRoomPos.z, 2, 2, 1);
-					continue;
-				}
-			}
-			DungeonPiece room = new DungeonRoom(null, DungeonPiece.DEFAULT_NBT);
-			room.setPosition(additions[i].x, additions[i].z);
-			if (this.segments[additions[i].x][additions[i].z] != null) {
-//				DungeonCrawl.LOGGER.debug("Placing a room into a piece at (" + additions[i].x + " / " + additions[i].z + "). " + " Replaced piece: " + this.segments[additions[i].x][additions[i].z]);
-				room.sides = this.segments[additions[i].x][additions[i].z].reference.sides;
-				room.connectedSides = this.segments[additions[i].x][additions[i].z].reference.connectedSides;
-			}
-			this.segments[additions[i].x][additions[i].z] = new PlaceHolder(room);
-		}
-		for (int i = 0; i < additionalFeatures; i++) {
-			Position2D one = additions[i];
-			switch (rand.nextInt(2)) {
-			case 0:
-				this.buildConnection(rand.nextBoolean() ? start : end, one);
-				break;
-			case 1:
-				this.processAddition(additions, start, end, one, rand);
-				break;
-			}
-		}
 		if (layer == 0) {
 			Tuple<Position2D, Rotation> sideRoomData = findStarterRoomData(start);
 			if (sideRoomData != null) {
 				DungeonSideRoom room = new DungeonSideRoom(null, DungeonPiece.DEFAULT_NBT);
-				room.modelID = 34;
+				room.modelID = 35;
 
 				Direction dir = RotationHelper.translateDirection(Direction.WEST, sideRoomData.getB());
 				room.openSide(dir);
@@ -218,6 +117,9 @@ public class DungeonLayer {
 		int startZ = start.z;
 		int endX = end.x;
 		int endZ = end.z;
+
+		DungeonCrawl.LOGGER.debug("start: {}", segments[startX][startZ]);
+		DungeonCrawl.LOGGER.debug("end: {}", segments[endX][endZ]);
 
 		if (startX == endX && startZ == endZ)
 			return;
@@ -382,70 +284,158 @@ public class DungeonLayer {
 		}
 	}
 
-	public void createLootRoom() {
-		if (end == null) {
-			DungeonCrawl.LOGGER.warn(
-					"Failed to find a final room position for the last layer of a dungeon. Layer map start pos: ({}|{})",
-					start.x, start.z);
-			this.extraRooms = Dungeon.SIZE;
-			return;
+	public void createLayout(DungeonBuilder builder, Random rand, int layer, boolean lastLayer) {
+		Direction facing = RotationHelper.RANDOM_FACING_FLAT.roll(rand);
+
+		DungeonStairs s = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom();
+		s.setPosition(start.x, start.z);
+		this.segments[s.posX][s.posZ] = new PlaceHolder(s);
+
+		List<Position2D> nodeList = Lists.newArrayList();
+
+		if (!lastLayer) {
+			int cycles = 0;
+			loop: while (true) {
+				if (cycles > 3)
+					throw new RuntimeException("Unable to find a position for the exit in layer " + layer);
+				switch (facing) {
+				case EAST:
+					if (Dungeon.SIZE - start.x - 1 > 3) {
+						int length = 2 + rand.nextInt(2);
+						end = new Position2D(start.x + length + 1, start.z);
+
+						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
+						stairs.openSide(Direction.WEST);
+						stairs.setPosition(end.x, end.z);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						break loop;
+					} else {
+						facing = facing.rotateY();
+						cycles++;
+						continue;
+					}
+				case NORTH:
+					if (start.z > 3) {
+						int length = 2 + rand.nextInt(2);
+						end = new Position2D(start.x, start.z - length - 1);
+
+						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
+						stairs.openSide(Direction.SOUTH);
+						stairs.setPosition(end.x, end.z);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						break loop;
+					} else {
+						facing = facing.rotateY();
+						cycles++;
+						continue;
+					}
+				case SOUTH:
+					if (Dungeon.SIZE - start.z - 1 > 3) {
+						int length = 2 + rand.nextInt(2);
+						end = new Position2D(start.x, start.z + length + 1);
+
+						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
+						stairs.openSide(Direction.NORTH);
+						stairs.setPosition(end.x, end.z);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						break loop;
+					} else {
+						facing = facing.rotateY();
+						cycles++;
+						continue;
+					}
+				case WEST:
+					if (start.x > 3) {
+						int length = 2 + rand.nextInt(2);
+						end = new Position2D(start.x - length - 1, start.z);
+
+						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
+						stairs.openSide(Direction.EAST);
+						stairs.setPosition(end.x, end.z);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						break loop;
+					} else {
+						facing = facing.rotateY();
+						cycles++;
+						continue;
+					}
+				default:
+					continue;
+				}
+			}
+
+			nodeList.add(end);
+
+			buildConnection(start, end);
+
 		}
-		DungeonPart part1 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
-		DungeonPart part2 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
-		DungeonPart part3 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
-		DungeonPart part4 = new DungeonPart(null, DungeonPiece.DEFAULT_NBT);
 
-		part1.treasureType = 7;
-		part2.treasureType = 7;
-		part3.treasureType = 7;
-		part4.treasureType = 7;
+		nodeList.add(start);
 
-		part1.rotation = Rotation.NONE;
-		part2.rotation = Rotation.NONE;
-		part3.rotation = Rotation.NONE;
-		part4.rotation = Rotation.NONE;
+		int nodes = 3 + layer, rooms = 4 + 2 * layer;
 
-		part1.walls = part2.walls = part3.walls = part4.walls = true;
+		while (nodes > 0) {
+			if (nodeList.isEmpty()) {
+				DungeonCrawl.LOGGER.debug("Nodelist is empty; breaking out of node generation. {} nodes left.", nodes);
+				break;
+			}
 
-		part1.set(28, 0, 0, 0, 8, 16, 8);
-		part2.set(28, 8, 0, 0, 8, 16, 8);
-		part3.set(28, 8, 0, 8, 8, 16, 8);
-		part4.set(28, 0, 0, 8, 8, 16, 8);
+			Position2D nodePos = nodeList.get(rand.nextInt(nodeList.size()));
 
-		part1.setPosition(end.x, end.z);
-		part2.setPosition(end.x + 1, end.z);
-		part3.setPosition(end.x + 1, end.z + 1);
-		part4.setPosition(end.x, end.z + 1);
+			PlaceHolder node = this.segments[nodePos.x][nodePos.z];
 
-		part1.sides[0] = false;
-		part1.sides[1] = true;
-		part1.sides[2] = true;
-		part1.sides[3] = false;
+			Direction direction = findNext(node.reference, RotationHelper.RANDOM_FACING_FLAT.roll(rand));
 
-		part2.sides[0] = false;
-		part2.sides[1] = false;
-		part2.sides[2] = true;
-		part2.sides[3] = true;
+			if (direction == null) {
+				nodeList.remove(nodePos);
+				continue;
+			}
 
-		part3.sides[0] = true;
-		part3.sides[1] = false;
-		part3.sides[2] = false;
-		part3.sides[3] = true;
+			if (createNodeRoom(builder, nodePos, direction, nodeList, rand, layer, 0))
+				nodes--;
+			else
+				nodeList.remove(nodePos);
+		}
 
-		part4.sides[0] = true;
-		part4.sides[1] = true;
-		part4.sides[2] = false;
-		part4.sides[3] = false;
+		if (lastLayer) {
 
-		this.segments[end.x][end.z] = new PlaceHolder(part1);
-		this.segments[end.x + 1][end.z] = new PlaceHolder(part2);
-		this.segments[end.x + 1][end.z + 1] = new PlaceHolder(part3);
-		this.segments[end.x][end.z + 1] = new PlaceHolder(part4);
+			DungeonCrawl.LOGGER.debug("There are {} distant nodes.", distantNodes.size());
+			if (distantNodes.isEmpty()) {
+				rooms += 8;
+			} else {
+				Position2D nodePos = distantNodes.get(rand.nextInt(distantNodes.size()));
 
-		map.markPositionAsOccupied(end);
-		map.markPositionAsOccupied(new Position2D(end.x + 1, end.z));
-		map.markPositionAsOccupied(new Position2D(end.x + 1, end.z + 1));
-		map.markPositionAsOccupied(new Position2D(end.x, end.z + 1));
+				DungeonNodeRoom node = (DungeonNodeRoom) segments[nodePos.x][nodePos.z].reference;
+
+				node.large = true;
+				node.lootRoom = true;
+
+			}
+
+		}
+
+		while (rooms > 0) {
+			if (nodeList.isEmpty()) {
+				DungeonCrawl.LOGGER.debug("Nodelist is empty; breaking out of room generation. {} rooms left.", rooms);
+				break;
+			}
+			Position2D nodePos = nodeList.get(rand.nextInt(nodeList.size()));
+
+			PlaceHolder node = this.segments[nodePos.x][nodePos.z];
+
+			Direction direction = findNext(node.reference, RotationHelper.RANDOM_FACING_FLAT.roll(rand));
+
+			if (direction == null) {
+				nodeList.remove(nodePos);
+				continue;
+			}
+
+			if (createRoom(builder, nodePos, direction, nodeList, layer, 0))
+				rooms--;
+			else
+				nodeList.remove(nodePos);
+		}
+
 	}
 
 	public Position2D findLargeRoomPosWithMaxDistance(DungeonBuilder builder, Position2D pos, int layer) {
@@ -546,7 +536,7 @@ public class DungeonLayer {
 		if (placeHolder.hasFlag(PlaceHolder.Flag.FIXED_ROTATION))
 			return;
 		DungeonPiece piece = placeHolder.reference;
-		
+
 		switch (piece.connectedSides) {
 		case 1:
 			piece.setRotation(RotationHelper.getRotationFromFacing(DungeonPiece.getOneWayDirection(piece)));
@@ -567,9 +557,266 @@ public class DungeonLayer {
 		}
 	}
 
-	public void processAddition(Position2D[] additions, Position2D start, Position2D end, Position2D one, Random rand) {
-		this.buildConnection(rand.nextBoolean() ? start : end, one);
-		this.buildConnection(one, additions[rand.nextInt(additions.length)]);
+	public Direction findNext(DungeonPiece piece, Direction base) {
+		if (piece.connectedSides >= 4)
+			return null;
+		if (piece.sides[(base.getHorizontalIndex() + 2) % 4])
+			return findNext(piece, base.rotateY());
+		else
+			return base;
+	}
+
+	public boolean createNodeRoom(DungeonBuilder builder, Position2D pos, Direction direction, List<Position2D> list,
+			Random rand, int layer, int t) {
+
+		if (t > 3)
+			return false;
+
+		if (this.segments[pos.x][pos.z].reference.sides[(direction.getHorizontalIndex() + 2) % 4])
+			return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+
+		switch (direction) {
+		case EAST:
+			int east = Dungeon.SIZE - pos.x - 1;
+			if (east > 3) {
+				int length = Math.min(east, 5);
+				Position2D center = new Position2D(pos.x + length, pos.z);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
+						false))
+					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+
+				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
+				nodeRoom.setPosition(center.x, center.z);
+
+				PlaceHolder placeHolder = new PlaceHolder(nodeRoom).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+				for (int x = -1; x < 2; x++)
+					for (int z = -1; z < 2; z++)
+						if (x != 0 || z != 0)
+							segments[center.x + x][center.z + z] = placeHolder;
+
+				segments[center.x][center.z] = new PlaceHolder(nodeRoom);
+
+				Position2D p = pos.shift(Direction.EAST, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, center.shift(Direction.WEST, 1));
+				if (pos.equals(start))
+					list.add(center);
+				else {
+					distantNodes.add(center);
+					if (rand.nextFloat() < 0.25)
+						list.add(center);
+				}
+				return true;
+			} else
+				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+		case NORTH:
+			int north = pos.z;
+			if (north > 3) {
+				int length = Math.min(north, 5);
+				Position2D center = new Position2D(pos.x, pos.z - length);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
+						false))
+					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+
+				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
+				nodeRoom.setPosition(center.x, center.z);
+
+				PlaceHolder placeHolder = new PlaceHolder(nodeRoom).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+				for (int x = -1; x < 2; x++)
+					for (int z = -1; z < 2; z++)
+						if (x != 0 || z != 0)
+							segments[center.x + x][center.z + z] = placeHolder;
+
+				segments[center.x][center.z] = new PlaceHolder(nodeRoom);
+
+				Position2D p = pos.shift(Direction.NORTH, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, center.shift(Direction.SOUTH, 1));
+				if (pos.equals(start))
+					list.add(center);
+				else {
+					distantNodes.add(center);
+					if (rand.nextFloat() < 0.25)
+						list.add(center);
+				}
+				return true;
+			} else
+				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+		case SOUTH:
+			int south = Dungeon.SIZE - pos.z - 1;
+			if (south > 3) {
+				int length = Math.min(south, 5);
+				Position2D center = new Position2D(pos.x, pos.z + length);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
+						false))
+					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+
+				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
+				nodeRoom.setPosition(center.x, center.z);
+
+				PlaceHolder placeHolder = new PlaceHolder(nodeRoom).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+				for (int x = -1; x < 2; x++)
+					for (int z = -1; z < 2; z++)
+						if (x != 0 || z != 0)
+							segments[center.x + x][center.z + z] = placeHolder;
+
+				segments[center.x][center.z] = new PlaceHolder(nodeRoom);
+
+				Position2D p = pos.shift(Direction.SOUTH, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, center.shift(Direction.NORTH, 1));
+				if (pos.equals(start))
+					list.add(center);
+				else {
+					distantNodes.add(center);
+					if (rand.nextFloat() < 0.25)
+						list.add(center);
+				}
+				return true;
+			} else
+				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+		case WEST:
+			int west = pos.x;
+			if (west > 3) {
+				int length = Math.min(west, 5);
+				Position2D center = new Position2D(pos.x - length, pos.z);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
+						false))
+					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+
+				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
+				nodeRoom.setPosition(center.x, center.z);
+
+				PlaceHolder placeHolder = new PlaceHolder(nodeRoom).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+				for (int x = -1; x < 2; x++)
+					for (int z = -1; z < 2; z++)
+						if (x != 0 || z != 0)
+							segments[center.x + x][center.z + z] = placeHolder;
+
+				segments[center.x][center.z] = new PlaceHolder(nodeRoom);
+
+				Position2D p = pos.shift(Direction.WEST, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, center.shift(Direction.EAST, 1));
+				if (pos.equals(start))
+					list.add(center);
+				else {
+					distantNodes.add(center);
+					if (rand.nextFloat() < 0.25)
+						list.add(center);
+				}
+				return true;
+			} else
+				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+		default:
+			return false;
+
+		}
+
+	}
+
+	public boolean createRoom(DungeonBuilder builder, Position2D pos, Direction direction, List<Position2D> list,
+			int layer, int t) {
+
+		if (t > 3)
+			return false;
+
+		if (this.segments[pos.x][pos.z].reference.sides[(direction.getHorizontalIndex() + 2) % 4])
+			return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
+
+		switch (direction) {
+		case EAST:
+			int east = Dungeon.SIZE - pos.x - 1;
+			if (east > 2) {
+				int length = Math.min(east, 4);
+				Position2D roomPos = new Position2D(pos.x + length, pos.z);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, roomPos.x, roomPos.z, 1, 1, 0, false))
+					return createRoom(builder, pos, direction, list, layer, ++t);
+
+				DungeonRoom room = new DungeonRoom(null, DungeonPiece.DEFAULT_NBT);
+				room.setPosition(roomPos.x, roomPos.z);
+
+				this.segments[roomPos.x][roomPos.z] = new PlaceHolder(room);
+
+				Position2D p = pos.shift(Direction.EAST, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, roomPos);
+
+				if (this.segments[pos.x][pos.z].reference.getType() != 8)
+					list.add(roomPos);
+				return true;
+			} else
+				return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
+		case NORTH:
+			int north = pos.z;
+			if (north > 2) {
+				int length = Math.min(north, 4);
+				Position2D roomPos = new Position2D(pos.x, pos.z - length);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, roomPos.x, roomPos.z, 1, 1, 0, false))
+					return createRoom(builder, pos, direction, list, layer, ++t);
+
+				DungeonRoom room = new DungeonRoom(null, DungeonPiece.DEFAULT_NBT);
+				room.setPosition(roomPos.x, roomPos.z);
+
+				this.segments[roomPos.x][roomPos.z] = new PlaceHolder(room);
+
+				Position2D p = pos.shift(Direction.NORTH, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, roomPos);
+
+				if (this.segments[pos.x][pos.z].reference.getType() != 8)
+					list.add(roomPos);
+				return true;
+			} else
+				return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
+		case SOUTH:
+			int south = Dungeon.SIZE - pos.z - 1;
+			if (south > 2) {
+				int length = Math.min(south, 4);
+				Position2D roomPos = new Position2D(pos.x, pos.z + length);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, roomPos.x, roomPos.z, 1, 1, 0, false))
+					return createRoom(builder, pos, direction, list, layer, ++t);
+
+				DungeonRoom room = new DungeonRoom(null, DungeonPiece.DEFAULT_NBT);
+				room.setPosition(roomPos.x, roomPos.z);
+
+				this.segments[roomPos.x][roomPos.z] = new PlaceHolder(room);
+
+				Position2D p = pos.shift(Direction.SOUTH, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, roomPos);
+
+				if (this.segments[pos.x][pos.z].reference.getType() != 8)
+					list.add(roomPos);
+				return true;
+			} else
+				return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
+		case WEST:
+			int west = pos.x;
+			if (west > 2) {
+				int length = Math.min(west, 4);
+				Position2D roomPos = new Position2D(pos.x - length, pos.z);
+
+				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, roomPos.x, roomPos.z, 1, 1, 0, false))
+					return createRoom(builder, pos, direction, list, layer, ++t);
+
+				DungeonRoom room = new DungeonRoom(null, DungeonPiece.DEFAULT_NBT);
+				room.setPosition(roomPos.x, roomPos.z);
+
+				this.segments[roomPos.x][roomPos.z] = new PlaceHolder(room);
+
+				Position2D p = pos.shift(Direction.WEST, 1);
+				buildConnection(segments[p.x][p.z] == null ? pos : p, roomPos);
+
+				if (this.segments[pos.x][pos.z].reference.getType() != 8)
+					list.add(roomPos);
+				return true;
+			} else
+				return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
+		default:
+			return false;
+		}
+
 	}
 
 	public boolean canPutDoubleRoom(Position2D pos, Direction direction) {
@@ -621,10 +868,6 @@ public class DungeonLayer {
 				&& layer.get(x, z - 1) == null)
 			return new Position2D(x - 1, z - 1);
 		return null;
-	}
-
-	public boolean isInitialized() {
-		return this.segments != null;
 	}
 
 	public DungeonPiece get(int x, int z) {

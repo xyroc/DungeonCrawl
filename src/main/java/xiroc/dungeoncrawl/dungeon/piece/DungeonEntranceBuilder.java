@@ -16,8 +16,8 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
@@ -29,6 +29,11 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 	}
 
 	@Override
+	public int determineModel(Random rand) {
+		return DungeonBuilder.ENTRANCE.roll(rand).id;
+	}
+
+	@Override
 	public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 			ChunkPos p_74875_4_) {
 		int height = theme == 3 ? worldIn.getSeaLevel() : getGroudHeight(worldIn, x + 4, z + 4);
@@ -36,8 +41,8 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 		Theme buildTheme = Theme.get(theme);
 		SubTheme sub = Theme.getSub(subTheme);
 		while (ch < height) {
-			build(DungeonSegmentModelRegistry.STAIRS, worldIn, new BlockPos(x, ch, z), buildTheme, sub,
-					Treasure.Type.DEFAULT, stage, true);
+			build(DungeonModels.STAIRS, worldIn, structureBoundingBoxIn, new BlockPos(x, ch, z),
+					buildTheme, sub, Treasure.Type.DEFAULT, stage, true);
 			ch += 8;
 		}
 
@@ -48,18 +53,33 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 			rand = new Random();
 		}
 
-		DungeonSegmentModel entrance = DungeonBuilder.ENTRANCE.roll(rand);
+		DungeonModel entrance = DungeonModels.MAP.get(modelID);
+
+		if (entrance == null) {
+			DungeonCrawl.LOGGER.warn("Entrance Model is null");
+			return false;
+		}
+
 		Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
 
-		DungeonCrawl.LOGGER.info(
-				"Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})", x, ch, z,
-				entrance, entrance.id, offset, offset.getA(), offset.getB());
+		DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})",
+				x, ch, z, entrance, entrance.id, offset, offset.getA(), offset.getB());
 
-		build(entrance, worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), buildTheme, sub,
-				Treasure.Type.SUPPLY, stage, true);
-		DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR)
-				.process(worldIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()), theme, this);
+		DungeonCrawl.LOGGER.debug("StructureBoundingBox: [{},{},{}] -> [{},{},{}]", structureBoundingBoxIn.minX,
+				structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ, structureBoundingBoxIn.maxX,
+				structureBoundingBoxIn.maxY, structureBoundingBoxIn.maxZ);
+
+		build(entrance, worldIn, structureBoundingBoxIn, new BlockPos(x + offset.getA(), ch, z + offset.getB()),
+				buildTheme, sub, Treasure.Type.SUPPLY, stage, true);
+		DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR).process(worldIn,
+				new BlockPos(x + offset.getA(), ch, z + offset.getB()), theme, this);
+
 		return true;
+	}
+
+	@Override
+	public void setupBoundingBox() {
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + 11, y + 11, z + 11);
 	}
 
 	@Override

@@ -15,9 +15,9 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Triple;
@@ -37,15 +37,20 @@ public class DungeonSideRoom extends DungeonPiece {
 	}
 
 	@Override
+	public int determineModel(Random rand) {
+		return 0;
+	}
+
+	@Override
 	public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 			ChunkPos chunkPosIn) {
-		DungeonSegmentModel model = DungeonSegmentModelRegistry.MAP.get(modelID);
+		DungeonModel model = DungeonModels.MAP.get(modelID);
 		if (model != null) {
 //			if (theme != 1)
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
-			buildRotated(model, worldIn, new BlockPos(x + offsetX, y + offsetY, z + offsetZ), Theme.get(theme),
-					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, true);
+			buildRotated(model, worldIn, structureBoundingBoxIn, new BlockPos(x + offsetX, y + offsetY, z + offsetZ),
+					Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, true);
 
 			if (Config.NO_SPAWNERS.get())
 				spawnMobs(worldIn, this, model.width, model.length, new int[] { 1 });
@@ -54,6 +59,11 @@ public class DungeonSideRoom extends DungeonPiece {
 			DungeonCrawl.LOGGER.error("Side Room Model doesnt exist: {}", modelID);
 			return false;
 		}
+	}
+
+	@Override
+	public void setupBoundingBox() {
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
 	}
 
 	public void setOffset(int x, int y, int z) {

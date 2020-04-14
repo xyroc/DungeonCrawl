@@ -29,8 +29,8 @@ public class Config {
 
 	public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
-	public static final BooleanValue BUILD_BRIDGES, IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS,
-			NO_SPAWNERS;
+	public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
+			NO_NETHER_STUFF;
 //			ENABLE_DUNGEON_BOSS;
 
 	static {
@@ -41,6 +41,9 @@ public class Config {
 		NO_SPAWNERS = BUILDER.comment(
 				"If you dont like the fact that the dungeons contain lots of mob spawners, set this to true! Mobs will get spawned manually during the dungeon generation then. Note that this is a lot more performance demanding than enabling spawners. (Which also depends on the mob spawn rate)")
 				.define("no_spawners", false);
+		NO_NETHER_STUFF = BUILDER.comment(
+				"Set this to true if you want to prevent that the last layer of each dungeon will contain nether content.")
+				.define("no_nether_stuff", false);
 		MOB_SPAWN_RATE = BUILDER.comment(
 				"This value defines how many mobs do get spawned manually during the generation. (if no_spawners = true, there is no effect otherwise)")
 				.defineInRange("mob_spawn_rate", 0.05, 0.001, 1.0);
@@ -52,9 +55,6 @@ public class Config {
 		LAYER_ADDITIONS_EXTRA = BUILDER.comment(
 				"The amount of extra rooms per dungeon layer. A random number in the range [0 ~ layer_extra_additions-1] will be used.")
 				.defineInRange("layer_extra_additions", 6, 1, 24);
-		BUILD_BRIDGES = BUILDER.comment(
-				"Defines if bridges should be used in dungeons. (Bridges are built if there is a certain amout of air under a corridor segment.")
-				.define("build_bridges", true);
 		IGNORE_OVERWORLD_BLACKLIST = BUILDER.comment(
 				"If set to true, the dungeon generation will ignore the biome blacklist and generate dungeons in any overworld biome.")
 				.define("ignore_overworld_blacklist", false);

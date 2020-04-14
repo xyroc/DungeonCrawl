@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.dungeon.segment;
+package xiroc.dungeoncrawl.dungeon.model;
 
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
@@ -7,7 +7,7 @@ package xiroc.dungeoncrawl.dungeon.segment;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 
-public enum DungeonSegmentModelBlockType {
+public enum DungeonModelBlockType {
 
 	NONE, SOLID_STAIRS, /* Temporarily because of old models: */ FLOOR_STAIRS, CEILING_STAIRS /* END */, SOLID, WALL,
 	WALL_LOG, FLOOR, MATERIAL_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST, RAND_WALL_AIR, RAND_FLOOR_CHESTCOMMON_SPAWNER,
@@ -17,12 +17,12 @@ public enum DungeonSegmentModelBlockType {
 //	private static final Set<DungeonSegmentModelBlockType> SOLID_TYPES = ImmutableSet
 //			.<DungeonSegmentModelBlockType>builder().add(SOLID).add(SOLID_STAIRS).build();
 
-	public static boolean isSolid(DungeonSegmentModelBlockType type) {
+	public static boolean isSolid(DungeonModelBlockType type) {
 //		return SOLID_TYPES.contains(type);
 		return true;
 	}
 
-	public static DungeonSegmentModelBlockType get(Block block) {
+	public static DungeonModelBlockType get(Block block) {
 		if (block == Blocks.AIR)
 			return null;
 		if (block == Blocks.OAK_PLANKS)

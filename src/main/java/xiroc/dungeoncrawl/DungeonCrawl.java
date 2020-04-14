@@ -28,14 +28,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.BOPCompatModule;
 import xiroc.dungeoncrawl.module.ModuleManager;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.JsonTheme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.Tools;
 
 /* GENRERAL LICENSE FOR DungeonCrawl v1.0
  * 
@@ -74,13 +75,14 @@ public class DungeonCrawl {
 		LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		MinecraftForge.EVENT_BUS.register(this);
-//		MinecraftForge.EVENT_BUS.register(new Tools());
+		MinecraftForge.EVENT_BUS.register(new Tools());
 		ForgeRegistries.FEATURES
 				.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
 		Treasure.init();
 		EVENT_BUS = Bus.MOD.bus().get();
 
 		ModuleManager.registerModule(BOPCompatModule.class, new String[] { "biomesoplenty" });
+
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event) {
@@ -88,25 +90,25 @@ public class DungeonCrawl {
 		ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
 		Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
 
-		DungeonSegmentModelBlock.load();
+		DungeonModelBlock.load();
 		IBlockPlacementHandler.load();
 		BlockRegistry.load();
 
 		DungeonCrawl.LOGGER.info("Adding features and structures");
 
 		for (Biome biome : ForgeRegistries.BIOMES) {
-			if (!JsonConfig.BIOME_BLACKLIST.contains(biome.getRegistryName().toString())) {
-				DungeonCrawl.LOGGER.debug("Biome >> " + biome.getRegistryName());
+			if (!JsonConfig.BIOME_BLACKLIST.contains(biome.getRegistryName().toString())
+					&& Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
 				biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, Biome.createDecoratedFeature(Dungeon.DUNGEON,
 						NoFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
 				if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())) {
-					DungeonCrawl.LOGGER.debug("Generation Biome >> " + biome.getRegistryName());
+					DungeonCrawl.LOGGER.debug("Generation Biome " + biome.getRegistryName());
 					biome.addStructure(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG);
 				}
 			}
 		}
 
-		DungeonSegmentModelRegistry.load();
+		DungeonModels.load();
 
 		ModuleManager.load();
 	}

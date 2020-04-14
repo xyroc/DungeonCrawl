@@ -14,7 +14,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -26,16 +26,27 @@ public class DungeonCorridorHole extends DungeonPiece {
 		super(StructurePieceTypes.HOLE, p_i51343_2_);
 		lava = p_i51343_2_.getBoolean("lava");
 	}
+	
+	@Override
+	public int determineModel(Random rand) {
+		return lava ? DungeonModels.HOLE_LAVA.id : DungeonModels.HOLE.id;
+	}
 
 	@Override
 	public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 			ChunkPos p_74875_4_) {
-		build(lava ? DungeonSegmentModelRegistry.HOLE_LAVA : DungeonSegmentModelRegistry.HOLE, worldIn,
-				new BlockPos(x, y - 15, z), Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, true);
-		addWalls(this, worldIn, theme);
+		build(lava ? DungeonModels.HOLE_LAVA : DungeonModels.HOLE, worldIn,
+				structureBoundingBoxIn, new BlockPos(x, y - 15, z), Theme.get(theme), Theme.getSub(subTheme),
+				Treasure.Type.DEFAULT, stage, true);
+		addWalls(this, worldIn, structureBoundingBoxIn, theme);
 		if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 16, z, 8, 8) > 5)
-			addColumns(this, worldIn, 16, theme);
+			addColumns(this, worldIn, structureBoundingBoxIn, 16, theme);
 		return false;
+	}
+	
+	@Override
+	public void setupBoundingBox() {
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
 	}
 
 	@Override
@@ -43,7 +54,7 @@ public class DungeonCorridorHole extends DungeonPiece {
 		super.readAdditional(tagCompound);
 		tagCompound.putBoolean("lava", lava);
 	}
-	
+
 	@Override
 	public int getType() {
 		return 2;

@@ -129,7 +129,7 @@ public class JsonTheme {
 				return null;
 			}
 		} else {
-			LOGGER.error("Failed to load a BlockState Provider: Type not specified.");
+			LOGGER.error("Invalid BlockState Provider \"{}\": Type not specified.", name);
 			return null;
 		}
 	}

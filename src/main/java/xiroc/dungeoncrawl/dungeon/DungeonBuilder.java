@@ -17,16 +17,17 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.RandomDungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModel;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlock;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelBlockType;
-import xiroc.dungeoncrawl.dungeon.segment.DungeonSegmentModelRegistry;
-import xiroc.dungeoncrawl.dungeon.segment.RandomDungeonSegmentModel;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.BossEntry;
@@ -38,14 +39,13 @@ public class DungeonBuilder {
 	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
 	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
-	private static final DungeonSegmentModel[] ENTRANCES = new DungeonSegmentModel[] {
-			DungeonSegmentModelRegistry.ENTRANCE_TOWER_1 };
+	private static final DungeonModel[] ENTRANCES = new DungeonModel[] { DungeonModels.ENTRANCE_TOWER_1 };
 
 	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
 		;
 	};
 
-	public static final IRandom<DungeonSegmentModel> ENTRANCE = (rand) -> {
+	public static final IRandom<DungeonModel> ENTRANCE = (rand) -> {
 		return ENTRANCES[rand.nextInt(ENTRANCES.length)];
 	};
 
@@ -64,7 +64,7 @@ public class DungeonBuilder {
 	static {
 		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
 		ENTRANCE_OFFSET_DATA.put(20, new Tuple<Integer, Integer>(0, 0));
-		ENTRANCE_OFFSET_DATA.put(32, new Tuple<Integer, Integer>(-3, -3));
+		ENTRANCE_OFFSET_DATA.put(33, new Tuple<Integer, Integer>(-3, -3));
 
 		ENTRANCE_PROCESSORS = new HashMap<Integer, EntranceProcessor>();
 		ENTRANCE_PROCESSORS.put(20, (world, pos, theme, piece) -> {
@@ -87,7 +87,7 @@ public class DungeonBuilder {
 				ch += 8;
 			}
 		});
-		ENTRANCE_PROCESSORS.put(32, (world, pos, theme, piece) -> {
+		ENTRANCE_PROCESSORS.put(33, (world, pos, theme, piece) -> {
 			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
 			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 2), piece);
@@ -167,7 +167,7 @@ public class DungeonBuilder {
 					i == layers.length - 1);
 
 		for (int i = 0; i < layers.length; i++) {
-			this.layers[i].extend(this, maps[i], rand, i);
+//			this.layers[i].extend(this, maps[i], rand, i);
 			buildLayer(layers[i], i, startPos);
 		}
 
@@ -175,17 +175,18 @@ public class DungeonBuilder {
 		entrance.setRealPosition(startPos.getX() + layers[0].start.x * 8, startPos.getY() + 8,
 				startPos.getZ() + layers[0].start.z * 8);
 		entrance.stage = 0;
+		entrance.modelID = entrance.determineModel(rand);
 
 		list.add(entrance);
 
 		postProcessDungeon(list, rand);
 
-		for (DungeonPiece piece : list)
-			if (piece.theme != 1) {
-				if (piece.theme != 80)
-					piece.theme = theme;
-				piece.subTheme = subTheme;
-			}
+//		for (DungeonPiece piece : list)
+//			if (piece.theme != 1) {
+//				if (piece.theme != 80)
+//					piece.theme = theme;
+//				piece.subTheme = subTheme;
+//			}
 		return list;
 	}
 
@@ -193,10 +194,12 @@ public class DungeonBuilder {
 		int stage = lyr > 2 ? 2 : lyr;
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {
-				if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
-					layer.segments[x][z].reference.setRealPosition(startPos.getX() + x * 8, startPos.getY() - lyr * 8,
-							startPos.getZ() + z * 8);
-					layer.segments[x][z].reference.stage = stage;
+				if (layer.segments[x][z] != null) {
+					if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
+						layer.segments[x][z].reference.stage = stage;
+						if (layer.segments[x][z].reference.getType() == 0)
+							DungeonFeatures.processCorridor(this, layer, x, z, rand, lyr, stage, startPos);
+					}
 				}
 			}
 		}
@@ -207,26 +210,29 @@ public class DungeonBuilder {
 		int lyrs = layers.length;
 
 		for (int i = 0; i < layers.length; i++) {
-			int stage = i > 2 ? 2 : i;
 			DungeonLayer layer = layers[i];
-			for (int x = 0; x < layer.width; x++) {
-				for (int z = 0; z < layer.length; z++) {
-					if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
-						if (layer.segments[x][z].reference.getType() == 0)
-							DungeonFeatures.processCorridor(this, layer, x, z, rand, i, stage, startPos);
-					}
-				}
-			}
-
 			for (int x = 0; x < layer.width; x++)
 				for (int z = 0; z < layer.length; z++) {
 					if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
 						if (i == lyrs - 1) {
-							layer.segments[x][z].reference.theme = 1;
-							layer.segments[x][z].reference.subTheme = 8;
+							if (Config.NO_NETHER_STUFF.get()) {
+								layer.segments[x][z].reference.theme = 81;
+								layer.segments[x][z].reference.subTheme = 9;
+							} else {
+								layer.segments[x][z].reference.theme = 1;
+								layer.segments[x][z].reference.subTheme = 8;
+							}
 						} else if (mossArea && lyrs - i < 4)
 							layer.segments[x][z].reference.theme = 80;
 						list.add(layer.segments[x][z].reference);
+
+						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL))
+							layer.segments[x][z].reference.modelID = layer.segments[x][z].reference
+									.determineModel(rand);
+						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION))
+							layer.segments[x][z].reference.setRealPosition(startPos.getX() + x * 8,
+									startPos.getY() - i * 8, startPos.getZ() + z * 8);
+						layer.segments[x][z].reference.setupBoundingBox();
 					}
 				}
 		}
@@ -237,17 +243,19 @@ public class DungeonBuilder {
 	 * Builds a 1x1 pillar to the ground
 	 */
 	public static void buildWallPillar(IWorld world, int theme, BlockPos pos, DungeonPiece piece) {
-		DungeonSegmentModelBlock block = new DungeonSegmentModelBlock(DungeonSegmentModelBlockType.RAND_WALL_AIR);
+		DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.RAND_WALL_AIR);
 		Theme buildTheme = Theme.get(theme);
 		int x = pos.getX(), z = pos.getZ();
 		int height = DungeonPiece.getGroudHeightFrom(world, x, z, pos.getY() - 1);
 
 		for (int y = pos.getY() - 1; y > height; y--)
-			piece.setBlockState(DungeonSegmentModelBlock.PROVIDERS.get(DungeonSegmentModelBlockType.RAND_WALL_AIR)
-					.get(block, buildTheme, null, WeightedRandomBlock.RANDOM, 0), world, null, x, y, z, theme, 0, true);
+			piece.setBlockState(
+					DungeonModelBlock.PROVIDERS.get(DungeonModelBlockType.RAND_WALL_AIR).get(block, buildTheme, null,
+							WeightedRandomBlock.RANDOM, 0),
+					world, piece.getBoundingBox(), null, x, y, z, theme, 0, true);
 	}
 
-	public static DungeonSegmentModel getModel(DungeonPiece piece, Random rand) {
+	public static DungeonModel getModel(DungeonPiece piece, Random rand) {
 		boolean north = piece.sides[0];
 		boolean east = piece.sides[1];
 		boolean south = piece.sides[2];
@@ -258,22 +266,22 @@ public class DungeonBuilder {
 			case 2:
 				switch (((DungeonCorridor) piece).specialType) {
 				case 1:
-					return DungeonSegmentModelRegistry.CORRIDOR_FIRE;
+					return DungeonModels.CORRIDOR_FIRE;
 				case 2:
-					return DungeonSegmentModelRegistry.CORRIDOR_GRASS;
+					return DungeonModels.CORRIDOR_GRASS;
 				default:
 					if (north && south || east && west)
-						return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_STRAIGHT.roll(rand)
-								: RandomDungeonSegmentModel.CORRIDOR_STRAIGHT.roll(rand);
-					return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_TURN.roll(rand)
-							: RandomDungeonSegmentModel.CORRIDOR_TURN.roll(rand);
+						return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_STRAIGHT.roll(rand)
+								: RandomDungeonModel.CORRIDOR_STRAIGHT.roll(rand);
+					return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_TURN.roll(rand)
+							: RandomDungeonModel.CORRIDOR_TURN.roll(rand);
 				}
 			case 3:
-				return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_OPEN.roll(rand)
-						: RandomDungeonSegmentModel.CORRIDOR_OPEN.roll(rand);
+				return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_OPEN.roll(rand)
+						: RandomDungeonModel.CORRIDOR_OPEN.roll(rand);
 			case 4:
-				return piece.theme == 1 ? RandomDungeonSegmentModel.NETHER_CORRIDOR_ALL_OPEN.roll(rand)
-						: RandomDungeonSegmentModel.CORRIDOR_ALL_OPEN.roll(rand);
+				return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_ALL_OPEN.roll(rand)
+						: RandomDungeonModel.CORRIDOR_ALL_OPEN.roll(rand);
 			default:
 				return null;
 			}

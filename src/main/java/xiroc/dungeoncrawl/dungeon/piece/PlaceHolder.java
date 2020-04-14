@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.piece;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
@@ -10,31 +14,31 @@ package xiroc.dungeoncrawl.dungeon.piece;
 public class PlaceHolder {
 
 	public final DungeonPiece reference;
-	public boolean[] flags;
-
+	public List<Flag> flags;
+	
 	public PlaceHolder(DungeonPiece reference) {
 		this.reference = reference;
-		this.flags = new boolean[3]; // size is the amount of existing flags
+		this.flags = Lists.newArrayList();
 	}
 
 	public PlaceHolder withFlag(Flag flag) {
-		flags[flag.id] = true;
+		flags.add(flag);
 		return this;
 	}
-	
+
+	public PlaceHolder withFlags(Flag... flags) {
+		for (Flag flag : flags)
+			this.flags.add(flag);
+		return this;
+	}
+
 	public boolean hasFlag(Flag flag) {
-		return flags[flag.id];
+		return flags.contains(flag);
 	}
 
 	public enum Flag {
 
-		PLACEHOLDER(0), FIXED_POSITION(1), FIXED_ROTATION(2);
-
-		public int id;
-
-		private Flag(int id) {
-			this.id = id;
-		}
+		PLACEHOLDER, FIXED_POSITION, FIXED_ROTATION, FIXED_MODEL;
 
 	}
 

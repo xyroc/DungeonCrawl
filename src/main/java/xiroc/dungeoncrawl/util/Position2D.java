@@ -9,7 +9,7 @@ import net.minecraft.util.Direction;
 public class Position2D {
 	
 	/**
-	 * A facing that can be brought together with the positon.
+	 * A facing that can be brought together with the position.
 	 */
 	public Direction facing;
 

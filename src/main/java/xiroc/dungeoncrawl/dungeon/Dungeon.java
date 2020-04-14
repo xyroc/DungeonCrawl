@@ -8,8 +8,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Function;
 
+import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.util.SharedSeedRandom;
@@ -31,6 +33,12 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.ObfuscationValues;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
+
+	public static final Set<Biome.Category> ALLOWED_CATEGORIES = ImmutableSet.<Biome.Category>builder()
+			.add(Biome.Category.BEACH).add(Biome.Category.DESERT).add(Biome.Category.EXTREME_HILLS)
+			.add(Biome.Category.FOREST).add(Biome.Category.ICY).add(Biome.Category.JUNGLE).add(Biome.Category.MESA)
+			.add(Biome.Category.PLAINS).add(Biome.Category.RIVER).add(Biome.Category.SAVANNA).add(Biome.Category.SWAMP)
+			.add(Biome.Category.TAIGA).build();
 
 	public static final String NAME = DungeonCrawl.MODID + ":dungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
@@ -148,9 +156,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
 			this.components.addAll(builder.build());
 			this.recalculateStructureSize();
-			DungeonCrawl.LOGGER.info("Created dungeon layout for [{}, {}] ({} ms) ({} pieces). BoundingBox: ({}, {}, {})",
-					chunkX, chunkZ, (System.currentTimeMillis() - now), this.components.size(),
-					bounds.maxX - bounds.minX, bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ);
+			DungeonCrawl.LOGGER.info(
+					"Created dungeon layout for [{}, {}] ({} ms) ({} pieces). BoundingBox: ({}, {}, {})", chunkX,
+					chunkZ, (System.currentTimeMillis() - now), this.components.size(), bounds.maxX - bounds.minX,
+					bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ);
 		}
 
 		@Override

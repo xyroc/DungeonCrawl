@@ -206,7 +206,7 @@ public class RotationHelper {
 
 	}
 
-	public static Rotation getRotationFromInt(int rotation) {
+	public static Rotation getRotation(int rotation) {
 		switch (rotation) {
 		case 0:
 			return Rotation.NONE;
@@ -221,7 +221,7 @@ public class RotationHelper {
 		}
 	}
 
-	public static int getIntFromRotation(Rotation rotation) {
+	public static int getInt(Rotation rotation) {
 		switch (rotation) {
 		case CLOCKWISE_180:
 			return 2;

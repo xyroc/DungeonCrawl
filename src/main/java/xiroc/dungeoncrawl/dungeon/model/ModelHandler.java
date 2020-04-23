@@ -26,8 +26,8 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 
 public class ModelHandler {
 
-	public static void readModelToFile(String name, DungeonModel.EntranceType entranceType, World world, BlockPos pos,
-			int width, int height, int length) {
+	public static void readAndSaveModelToFile(String name, DungeonModel.EntranceType entranceType, World world, BlockPos pos,
+			int width, int height, int length, int spawnerType, int chestType) {
 		DungeonCrawl.LOGGER.info("Reading and writing {} to disk. Size: {}, {}, {}. Entrance Type: {}", name, width,
 				height, length, entranceType);
 		DungeonModelBlock[][][] model = new DungeonModelBlock[width][height][length];
@@ -46,7 +46,7 @@ public class ModelHandler {
 						featurePositions.add(new Vec3i(x, y, z));
 						continue;
 					}
-					model[x][y][z] = new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock()))
+					model[x][y][z] = new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock(), spawnerType, chestType))
 							.loadDataFromState(state);
 				}
 			}

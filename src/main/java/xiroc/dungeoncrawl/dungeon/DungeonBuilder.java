@@ -14,6 +14,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
@@ -28,6 +29,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.BossEntry;
@@ -39,7 +41,7 @@ public class DungeonBuilder {
 	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
 	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
-	private static final DungeonModel[] ENTRANCES = new DungeonModel[] { DungeonModels.ENTRANCE_TOWER_1 };
+	private static final DungeonModel[] ENTRANCES = new DungeonModel[] { DungeonModels.ENTRANCE };
 
 	public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
 		;
@@ -58,96 +60,75 @@ public class DungeonBuilder {
 	public DungeonStatTracker statTracker;
 
 	public BlockPos startPos;
+	
+	public ChunkGenerator<?> chunkGen;
+	public Biome startBiome;
 
 	public int theme, subTheme;
 
 	static {
 		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
-		ENTRANCE_OFFSET_DATA.put(20, new Tuple<Integer, Integer>(0, 0));
+		ENTRANCE_OFFSET_DATA.put(21, new Tuple<Integer, Integer>(-2 , -2));
 		ENTRANCE_OFFSET_DATA.put(33, new Tuple<Integer, Integer>(-3, -3));
 
 		ENTRANCE_PROCESSORS = new HashMap<Integer, EntranceProcessor>();
-		ENTRANCE_PROCESSORS.put(20, (world, pos, theme, piece) -> {
-			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
-//			int height = theme == 3 ? world.getSeaLevel() : DungeonPieces.getGroudHeight(world, x + 4, z + 4);
-			int ch = y;
-//			Theme buildTheme = Theme.get(theme);
-			while (ch < y) {
-//				piece.build(DungeonSegmentModelRegistry.STAIRS, world, new BlockPos(x, ch, z), buildTheme,
-//						Treasure.Type.DEFAULT, piece.stage);
-				for (int x1 = 0; x1 < 8; x1++)
-//					for (int y1 = 0; y1 < 8; y1++)
-//						piece.setBlockState(buildTheme.wall.get(), world, null, x + x1, ch + y1, z + 7, theme, 0);
-					buildWallPillar(world, theme, new BlockPos(x + x1, y - 1, z), piece);
-				for (int z1 = 0; z1 < 8; z1++)
-//					for (int y1 = 0; y1 < 8; y1++)
-//						piece.setBlockState(buildTheme.wall.get(), world, null, x + 7, ch + y1, z + z1, theme, 0);
-					buildWallPillar(world, theme, new BlockPos(x, y - 1, z + z1), piece);
-
-				ch += 8;
-			}
-		});
-		ENTRANCE_PROCESSORS.put(33, (world, pos, theme, piece) -> {
-			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
-
-			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 2), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 2), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 2), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 2), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 2), piece);
-
-			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 4), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 5), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 6), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 7), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 8), piece);
-
-			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 10), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 10), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 10), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 10), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 10), piece);
-
-			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 4), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 5), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 6), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 7), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 8), piece);
-
-			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 1), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 1), piece);
-
-			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 5), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 7), piece);
-
-			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 11), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 11), piece);
-
-			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 5), piece);
-			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 7), piece);
-		});
+//		ENTRANCE_PROCESSORS.put(33, (world, pos, theme, piece) -> {
+//			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 2), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 2), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 2), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 2), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 2), piece);
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 4), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 5), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 6), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 7), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 8), piece);
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 10), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 10), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 10), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 10), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 10), piece);
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 4), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 5), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 6), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 7), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 8), piece);
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 1), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 1), piece);
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 5), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 7), piece);
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 11), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 11), piece);
+//
+//			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 5), piece);
+//			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 7), piece);
+//		});
 	}
 
 	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
+		this.chunkGen = world;
+		
 		this.rand = rand;
 		this.start = new Position2D(rand.nextInt(Dungeon.SIZE), rand.nextInt(Dungeon.SIZE));
 //		this.start = new Position2D(15, 15);
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
-		this.layers = new DungeonLayer[(startPos.getY() - 4) / 8];
+		this.layers = new DungeonLayer[(startPos.getY() - 4) / 9];
 		this.maps = new DungeonLayerMap[layers.length];
 
 		this.statTracker = new DungeonStatTracker(layers.length);
 
-		String biome = world.getBiomeProvider().getBiome(startPos).getRegistryName().toString();
-
-		DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length,
-				Theme.getTheme(biome), Theme.getSubTheme(biome));
+		DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
 
 		DungeonCrawl.EVENT_BUS.post(startEvent);
-
-		theme = startEvent.theme;
-		subTheme = startEvent.subTheme;
 
 		DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
 				+ startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
@@ -172,10 +153,17 @@ public class DungeonBuilder {
 		}
 
 		DungeonPiece entrance = new DungeonEntranceBuilder(null, DungeonPiece.DEFAULT_NBT);
-		entrance.setRealPosition(startPos.getX() + layers[0].start.x * 8, startPos.getY() + 8,
-				startPos.getZ() + layers[0].start.z * 8);
+		entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
+				startPos.getZ() + layers[0].start.z * 9);
 		entrance.stage = 0;
-		entrance.modelID = entrance.determineModel(rand);
+		entrance.modelID = entrance.determineModel(this, rand);
+		entrance.setupBoundingBox();
+		
+		this.startBiome = chunkGen.getBiomeProvider().getBiome(new BlockPos(entrance.x + 4, entrance.y, entrance.z + 4));
+		String biome = startBiome.getRegistryName().toString();
+		
+		this.theme = Theme.getTheme(biome);
+		this.subTheme = Theme.getSubTheme(biome);
 
 		list.add(entrance);
 
@@ -228,15 +216,24 @@ public class DungeonBuilder {
 
 						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL))
 							layer.segments[x][z].reference.modelID = layer.segments[x][z].reference
-									.determineModel(rand);
+									.determineModel(this, rand);
 						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION))
-							layer.segments[x][z].reference.setRealPosition(startPos.getX() + x * 8,
-									startPos.getY() - i * 8, startPos.getZ() + z * 8);
+							layer.segments[x][z].reference.setRealPosition(startPos.getX() + x * 9,
+									startPos.getY() - i * 9, startPos.getZ() + z * 9);
 						layer.segments[x][z].reference.setupBoundingBox();
+						if (layer.segments[x][z].reference.getType() == 10)
+							((DungeonNodeRoom) layer.segments[x][z].reference).addConnectors(list, rand);
 					}
 				}
 		}
 
+	}
+
+	public static int getGroudHeight(IWorld world, int x, int z) {
+		for (int y = 255; y > 0; y--)
+			if (world.getBlockState(new BlockPos(x, y, z)).isSolid())
+				return y;
+		return 0;
 	}
 
 	/*
@@ -266,22 +263,20 @@ public class DungeonBuilder {
 			case 2:
 				switch (((DungeonCorridor) piece).specialType) {
 				case 1:
-					return DungeonModels.CORRIDOR_FIRE;
+//					return DungeonModels.CORRIDOR_FIRE; 
+					return DungeonModels.CORRIDOR;
 				case 2:
-					return DungeonModels.CORRIDOR_GRASS;
+//					return DungeonModels.CORRIDOR_GRASS;
+					return DungeonModels.CORRIDOR;
 				default:
 					if (north && south || east && west)
-						return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_STRAIGHT.roll(rand)
-								: RandomDungeonModel.CORRIDOR_STRAIGHT.roll(rand);
-					return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_TURN.roll(rand)
-							: RandomDungeonModel.CORRIDOR_TURN.roll(rand);
+						return RandomDungeonModel.CORRIDOR_STRAIGHT.roll(rand);
+					return RandomDungeonModel.CORRIDOR_LINKER.roll(rand);
 				}
 			case 3:
-				return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_OPEN.roll(rand)
-						: RandomDungeonModel.CORRIDOR_OPEN.roll(rand);
+				return RandomDungeonModel.CORRIDOR_LINKER.roll(rand);
 			case 4:
-				return piece.theme == 1 ? RandomDungeonModel.NETHER_CORRIDOR_ALL_OPEN.roll(rand)
-						: RandomDungeonModel.CORRIDOR_ALL_OPEN.roll(rand);
+				return RandomDungeonModel.CORRIDOR_LINKER.roll(rand);
 			default:
 				return null;
 			}

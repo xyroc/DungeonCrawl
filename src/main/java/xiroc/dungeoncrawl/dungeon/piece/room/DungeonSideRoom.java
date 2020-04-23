@@ -14,6 +14,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -37,7 +38,7 @@ public class DungeonSideRoom extends DungeonPiece {
 	}
 
 	@Override
-	public int determineModel(Random rand) {
+	public int determineModel(DungeonBuilder builder, Random rand) {
 		return 0;
 	}
 

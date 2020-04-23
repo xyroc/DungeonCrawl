@@ -121,40 +121,28 @@ public class BOPCompatModule extends Module {
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:overgrown_cliffs", 38);
 		Theme.BIOME_TO_SUBTHEME_MAP.put("biomesoplenty:tropical_rainforest", 38);
 
-		Theme.ID_TO_SUBTHEME_MAP.put(32,
-				new Theme.SubTheme(BOPBlocks.willow_log.getDefaultState(), BOPBlocks.willow_trapdoor.getDefaultState(),
-						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.willow_door.getDefaultState(),
-						BOPBlocks.willow_planks.getDefaultState()));
+		Theme.ID_TO_SUBTHEME_MAP.put(32, new Theme.SubTheme(BOPBlocks.willow_log, BOPBlocks.willow_trapdoor,
+				Blocks.REDSTONE_WALL_TORCH, BOPBlocks.willow_door, BOPBlocks.willow_planks, BOPBlocks.willow_stairs));
 
 		Theme.ID_TO_SUBTHEME_MAP.put(33,
-				new Theme.SubTheme(BOPBlocks.jacaranda_log.getDefaultState(),
-						BOPBlocks.jacaranda_trapdoor.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-						BOPBlocks.jacaranda_door.getDefaultState(), BOPBlocks.jacaranda_planks.getDefaultState()));
+				new Theme.SubTheme(BOPBlocks.jacaranda_log, BOPBlocks.jacaranda_trapdoor, Blocks.REDSTONE_WALL_TORCH,
+						BOPBlocks.jacaranda_door, BOPBlocks.jacaranda_planks, BOPBlocks.jacaranda_stairs));
 
-		Theme.ID_TO_SUBTHEME_MAP.put(34,
-				new Theme.SubTheme(BOPBlocks.dead_log.getDefaultState(), BOPBlocks.dead_trapdoor.getDefaultState(),
-						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.dead_door.getDefaultState(),
-						BOPBlocks.dead_planks.getDefaultState()));
+		Theme.ID_TO_SUBTHEME_MAP.put(34, new Theme.SubTheme(BOPBlocks.dead_log, BOPBlocks.dead_trapdoor,
+				Blocks.REDSTONE_WALL_TORCH, BOPBlocks.dead_door, BOPBlocks.dead_planks, BOPBlocks.dead_stairs));
 
-		Theme.ID_TO_SUBTHEME_MAP.put(35,
-				new Theme.SubTheme(BOPBlocks.cherry_log.getDefaultState(), BOPBlocks.cherry_trapdoor.getDefaultState(),
-						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.cherry_door.getDefaultState(),
-						BOPBlocks.cherry_planks.getDefaultState()));
+		Theme.ID_TO_SUBTHEME_MAP.put(35, new Theme.SubTheme(BOPBlocks.cherry_log, BOPBlocks.cherry_trapdoor,
+				Blocks.REDSTONE_WALL_TORCH, BOPBlocks.cherry_door, BOPBlocks.cherry_planks, BOPBlocks.cherry_stairs));
 
-		Theme.ID_TO_SUBTHEME_MAP.put(36,
-				new Theme.SubTheme(BOPBlocks.fir_log.getDefaultState(), BOPBlocks.fir_trapdoor.getDefaultState(),
-						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.fir_door.getDefaultState(),
-						BOPBlocks.fir_planks.getDefaultState()));
+		Theme.ID_TO_SUBTHEME_MAP.put(36, new Theme.SubTheme(BOPBlocks.fir_log, BOPBlocks.fir_trapdoor,
+				Blocks.REDSTONE_WALL_TORCH, BOPBlocks.fir_door, BOPBlocks.fir_planks, BOPBlocks.fir_stairs));
 
-		Theme.ID_TO_SUBTHEME_MAP.put(37,
-				new Theme.SubTheme(BOPBlocks.umbran_log.getDefaultState(), BOPBlocks.umbran_trapdoor.getDefaultState(),
-						Blocks.REDSTONE_WALL_TORCH.getDefaultState(), BOPBlocks.umbran_door.getDefaultState(),
-						BOPBlocks.umbran_planks.getDefaultState()));
+		Theme.ID_TO_SUBTHEME_MAP.put(37, new Theme.SubTheme(BOPBlocks.umbran_log, BOPBlocks.umbran_trapdoor,
+				Blocks.REDSTONE_WALL_TORCH, BOPBlocks.umbran_door, BOPBlocks.umbran_planks, BOPBlocks.umbran_stairs));
 
 		Theme.ID_TO_SUBTHEME_MAP.put(38,
-				new Theme.SubTheme(BOPBlocks.mahogany_log.getDefaultState(),
-						BOPBlocks.mahogany_trapdoor.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-						BOPBlocks.mahogany_door.getDefaultState(), BOPBlocks.mahogany_planks.getDefaultState()));
+				new Theme.SubTheme(BOPBlocks.mahogany_log, BOPBlocks.mahogany_trapdoor, Blocks.REDSTONE_WALL_TORCH,
+						BOPBlocks.mahogany_door, BOPBlocks.mahogany_planks, BOPBlocks.mahogany_stairs));
 
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:xeric_shrubland", 16);
 

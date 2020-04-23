@@ -65,7 +65,7 @@ public class Config {
 				.define("use_vanilla_spawners", false);
 		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
 //		ENABLE_DUNGEON_BOSS = BUILDER.comment(
-//				"If enabled, there will be a final room with a boss at the lowers layer. Please note that Dungeon Crawl DOES NOT bring its own bosses. The boss entities can be configured in the config.json file.")
+//				"If enabled, there will be a final room with a boss at the lowest layer. Please note that Dungeon Crawl DOES NOT bring its own bosses. The boss entities can be configured in the config.json file.")
 //				.define("enable_dungeon_boss", false);
 
 		BUILDER.comment("More configuration options will come in future updates.");

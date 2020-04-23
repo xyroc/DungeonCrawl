@@ -25,7 +25,7 @@ public class Theme {
 	public static HashMap<Integer, ThemeRandomizer> RANDOMIZERS;
 
 	/* **************************** */
-	/*           BASE THEMES        */
+	/* BASE THEMES */
 	/* **************************** */
 
 	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS,
@@ -78,46 +78,53 @@ public class Theme {
 			BlockRegistry.MOSS_WALL, BlockRegistry.OBSIDIAN_MOSSY);
 
 	/* **************************** */
-	/*           SUB-THEMES         */
+	/* SUB-THEMES */
 	/* **************************** */
 
-	public static final SubTheme NETHER_SUB = new SubTheme(Blocks.MAGMA_BLOCK.getDefaultState(),
-			Blocks.CAVE_AIR.getDefaultState(), Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			Blocks.IRON_DOOR.getDefaultState(), Blocks.NETHERRACK.getDefaultState());
+	public static final SubTheme NETHER_SUB = new SubTheme(() -> Blocks.MAGMA_BLOCK.getDefaultState(),
+			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
+			() -> Blocks.IRON_DOOR.getDefaultState(), () -> Blocks.NETHERRACK.getDefaultState(),
+			BlockRegistry.NETHER_BRICK_STAIRS);
 
 	public static final SubTheme OBSIDIAN_MOSSY_SUB = new SubTheme(() -> Blocks.OBSIDIAN.getDefaultState(),
 			() -> Blocks.CAVE_AIR.getDefaultState(), () -> Blocks.CAVE_AIR.getDefaultState(),
-			() -> Blocks.CAVE_AIR.getDefaultState(), BlockRegistry.OBSIDIAN_MOSSY);
+			() -> Blocks.CAVE_AIR.getDefaultState(), BlockRegistry.OBSIDIAN_MOSSY, BlockRegistry.MOSS_STAIRS);
 
 	public static final SubTheme ACACIA = new SubTheme(() -> Blocks.ACACIA_LOG.getDefaultState(),
 			() -> Blocks.ACACIA_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			() -> Blocks.ACACIA_DOOR.getDefaultState(), () -> Blocks.ACACIA_PLANKS.getDefaultState());
+			() -> Blocks.ACACIA_DOOR.getDefaultState(), () -> Blocks.ACACIA_PLANKS.getDefaultState(),
+			() -> Blocks.ACACIA_STAIRS.getDefaultState());
 
 	public static final SubTheme OAK = new SubTheme(() -> Blocks.OAK_LOG.getDefaultState(),
 			() -> Blocks.OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState());
+			() -> Blocks.OAK_DOOR.getDefaultState(), () -> Blocks.OAK_PLANKS.getDefaultState(),
+			() -> Blocks.OAK_STAIRS.getDefaultState());
 
 	public static final SubTheme BIRCH = new SubTheme(() -> Blocks.BIRCH_LOG.getDefaultState(),
 			() -> Blocks.BIRCH_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			() -> Blocks.BIRCH_DOOR.getDefaultState(), () -> Blocks.BIRCH_PLANKS.getDefaultState());
+			() -> Blocks.BIRCH_DOOR.getDefaultState(), () -> Blocks.BIRCH_PLANKS.getDefaultState(),
+			() -> Blocks.BIRCH_STAIRS.getDefaultState());
 
 	public static final SubTheme DARK_OAK = new SubTheme(() -> Blocks.DARK_OAK_LOG.getDefaultState(),
 			() -> Blocks.DARK_OAK_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			() -> Blocks.DARK_OAK_DOOR.getDefaultState(), () -> Blocks.DARK_OAK_PLANKS.getDefaultState());
+			() -> Blocks.DARK_OAK_DOOR.getDefaultState(), () -> Blocks.DARK_OAK_PLANKS.getDefaultState(),
+			() -> Blocks.DARK_OAK_STAIRS.getDefaultState());
 
 	public static final SubTheme JUNGLE = new SubTheme(() -> Blocks.JUNGLE_LOG.getDefaultState(),
 			() -> Blocks.JUNGLE_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			() -> Blocks.JUNGLE_DOOR.getDefaultState(), () -> Blocks.JUNGLE_PLANKS.getDefaultState());
+			() -> Blocks.JUNGLE_DOOR.getDefaultState(), () -> Blocks.JUNGLE_PLANKS.getDefaultState(),
+			() -> Blocks.JUNGLE_STAIRS.getDefaultState());
 
 	public static final SubTheme SPRUCE = new SubTheme(() -> Blocks.SPRUCE_LOG.getDefaultState(),
 			() -> Blocks.SPRUCE_TRAPDOOR.getDefaultState(), () -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
-			() -> Blocks.SPRUCE_DOOR.getDefaultState(), () -> Blocks.SPRUCE_PLANKS.getDefaultState());
+			() -> Blocks.SPRUCE_DOOR.getDefaultState(), () -> Blocks.SPRUCE_PLANKS.getDefaultState(),
+			() -> Blocks.SPRUCE_STAIRS.getDefaultState());
 
 	public static final SubTheme DESERT_SUB = new SubTheme(Blocks.CHISELED_SANDSTONE, Blocks.CAVE_AIR,
-			Blocks.REDSTONE_WALL_TORCH, Blocks.CAVE_AIR, Blocks.CHISELED_SANDSTONE);
+			Blocks.REDSTONE_WALL_TORCH, Blocks.CAVE_AIR, Blocks.CHISELED_SANDSTONE, Blocks.SANDSTONE_STAIRS);
 
 	public static final SubTheme ICE_SUB = new SubTheme(Blocks.ICE, Blocks.CAVE_AIR, Blocks.CAVE_AIR, Blocks.CAVE_AIR,
-			Blocks.CAVE_AIR);
+			Blocks.CAVE_AIR, Blocks.CAVE_AIR);
 
 	private static final ThemeRandomizer DEFAULT_RANDOMIZER = (rand, base) -> base;
 
@@ -151,7 +158,7 @@ public class Theme {
 		BIOME_TO_THEME_MAP.put("minecraft:modified_badlands_plateau", 17);
 
 		BIOME_TO_THEME_MAP.put("minecraft:ice_spikes", 32);
-		
+
 		BIOME_TO_THEME_MAP.put("minecraft:swamp", 80);
 		BIOME_TO_THEME_MAP.put("minecraft:swamp_hills", 80);
 
@@ -275,32 +282,35 @@ public class Theme {
 
 	public static class SubTheme {
 
-		public final IBlockStateProvider wallLog, trapDoor, torchDark, door, material;
+		public final IBlockStateProvider wallLog, trapDoor, torchDark, door, material, stairs;
 
 		public SubTheme(IBlockStateProvider wallLog, IBlockStateProvider trapDoor, IBlockStateProvider torchDark,
-				IBlockStateProvider door, IBlockStateProvider material) {
+				IBlockStateProvider door, IBlockStateProvider material, IBlockStateProvider stairs) {
 			this.wallLog = wallLog;
 			this.trapDoor = trapDoor;
 			this.torchDark = torchDark;
 			this.door = door;
 			this.material = material;
+			this.stairs = stairs;
 		}
 
 		public SubTheme(BlockState wallLog, BlockState trapDoor, BlockState torchDark, BlockState door,
-				BlockState material) {
+				BlockState material, BlockState stairs) {
 			this.wallLog = () -> wallLog;
 			this.trapDoor = () -> trapDoor;
 			this.torchDark = () -> torchDark;
 			this.door = () -> door;
 			this.material = () -> material;
+			this.stairs = () -> stairs;
 		}
 
-		public SubTheme(Block wallLog, Block trapDoor, Block torchDark, Block door, Block material) {
+		public SubTheme(Block wallLog, Block trapDoor, Block torchDark, Block door, Block material, Block stairs) {
 			this.wallLog = () -> wallLog.getDefaultState();
 			this.trapDoor = () -> trapDoor.getDefaultState();
 			this.torchDark = () -> torchDark.getDefaultState();
 			this.door = () -> door.getDefaultState();
 			this.material = () -> material.getDefaultState();
+			this.stairs = () -> stairs.getDefaultState();
 		}
 
 	}

@@ -38,7 +38,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			.add(Biome.Category.BEACH).add(Biome.Category.DESERT).add(Biome.Category.EXTREME_HILLS)
 			.add(Biome.Category.FOREST).add(Biome.Category.ICY).add(Biome.Category.JUNGLE).add(Biome.Category.MESA)
 			.add(Biome.Category.PLAINS).add(Biome.Category.RIVER).add(Biome.Category.SAVANNA).add(Biome.Category.SWAMP)
-			.add(Biome.Category.TAIGA).build();
+			.add(Biome.Category.TAIGA).add(Biome.Category.RIVER).build();
+
+	public static final Set<Biome.Category> OVERWORLD_CATEGORIES = ImmutableSet.<Biome.Category>builder()
+			.addAll(ALLOWED_CATEGORIES).add(Biome.Category.MUSHROOM).add(Biome.Category.OCEAN).build();
 
 	public static final String NAME = DungeonCrawl.MODID + ":dungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);

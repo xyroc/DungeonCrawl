@@ -31,10 +31,10 @@ public class DungeonModel {
 		return this;
 	}
 
-	public DungeonModel node(int id, DungeonModels.NodeCategory... categories) {
+	public DungeonModel set(int id, DungeonModels.ModelCategory... categories) {
 		DungeonModels.MAP.put(id, this);
 		this.id = id;
-		for (DungeonModels.NodeCategory category : categories)
+		for (DungeonModels.ModelCategory category : categories)
 			category.members.add(this);
 		return this;
 	}

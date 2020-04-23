@@ -12,7 +12,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorRoom;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorTrap;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPart;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
@@ -34,11 +34,12 @@ public class StructurePieceTypes {
 			create("corridor_room"));
 	public static final IStructurePieceType CORRIDOR_TRAP = IStructurePieceType.register(DungeonCorridorTrap::new,
 			create("trap"));
-	public static final IStructurePieceType PART = IStructurePieceType.register(DungeonPart::new, create("part"));
 	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonSideRoom::new,
 			create("side_room"));
 	public static final IStructurePieceType NODE_ROOM = IStructurePieceType.register(DungeonNodeRoom::new,
 			create("node_room"));
+	public static final IStructurePieceType NODE_CONNECTOR = IStructurePieceType.register(DungeonNodeConnector::new,
+			create("node_connector"));
 
 	private static String create(String path) {
 		return DungeonCrawl.locate(path).toString();

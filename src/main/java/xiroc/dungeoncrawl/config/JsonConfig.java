@@ -232,7 +232,7 @@ public class JsonConfig implements IJsonConfigurable {
 
 		static {
 			DEFAULTS = new HashMap<String, Object>();
-			DEFAULTS.put(KEY_BOSSES, new BossEntry[0]);
+//			DEFAULTS.put(KEY_BOSSES, new BossEntry[0]);
 			DEFAULTS.put(KEY_BIOME_BLACKLIST, BIOME_BLACKLIST);
 			DEFAULTS.put(KEY_BIOME_OVERWORLD_BLACKLIST, BIOME_OVERWORLD_BLACKLIST);
 			DEFAULTS.put(KEY_BOWS, BOWS);
@@ -282,7 +282,7 @@ public class JsonConfig implements IJsonConfigurable {
 
 	@Override
 	public void load(JsonObject object, File file) {
-		DUNGEON_BOSSES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOSSES, this), BossEntry[].class);
+//		DUNGEON_BOSSES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOSSES, this), BossEntry[].class);
 		
 		BIOME_BLACKLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BIOME_BLACKLIST, this), ArrayList.class);
 		BIOME_OVERWORLD_BLACKLIST = DungeonCrawl.GSON

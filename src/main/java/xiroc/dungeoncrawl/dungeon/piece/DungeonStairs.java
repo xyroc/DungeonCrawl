@@ -14,6 +14,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -22,7 +23,7 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonStairs extends DungeonPiece {
 
-	public int stairType; // 0: normal stairs, 1: bottom stairs, 2: top stairs
+	public int stairType; // 0: staircase, 1: bottom stairs, 2: top stairs
 
 	public DungeonStairs(TemplateManager manager, CompoundNBT p_i51343_2_) {
 		super(StructurePieceTypes.STAIRS, p_i51343_2_);
@@ -30,8 +31,8 @@ public class DungeonStairs extends DungeonPiece {
 	}
 	
 	@Override
-	public int determineModel(Random rand) {
-		return DungeonModels.STAIRS.id;
+	public int determineModel(DungeonBuilder builder, Random rand) {
+		return DungeonModels.STAIRCASE.id;
 	}
 
 	@Override
@@ -39,20 +40,12 @@ public class DungeonStairs extends DungeonPiece {
 			ChunkPos p_74875_4_) {
 		switch (stairType) {
 		case 0: {
-			DungeonModel model = DungeonModels.STAIRS;
+			DungeonModel model = DungeonModels.STAIRCASE;
 			if (model == null)
 				return false;
 			Theme buildTheme = Theme.get(theme);
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), buildTheme, Theme.getSub(subTheme),
 					Treasure.Type.DEFAULT, stage, true);
-			for (int x1 = 0; x1 < 8; x1++)
-				for (int y1 = 0; y1 < 8; y1++)
-					setBlockState(buildTheme.solid.get(), worldIn, structureBoundingBoxIn, null, x + x1, y + y1, z + 7,
-							theme, 0, true);
-			for (int z1 = 0; z1 < 8; z1++)
-				for (int y1 = 0; y1 < 8; y1++)
-					setBlockState(buildTheme.solid.get(), worldIn, structureBoundingBoxIn, null, x + 7, y + y1, z + z1,
-							theme, 0, true);
 			return true;
 		}
 		case 1: {

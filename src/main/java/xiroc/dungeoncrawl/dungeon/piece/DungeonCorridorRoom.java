@@ -13,6 +13,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -25,7 +26,7 @@ public class DungeonCorridorRoom extends DungeonPiece {
 	}
 
 	@Override
-	public int determineModel(Random rand) {
+	public int determineModel(DungeonBuilder builder, Random rand) {
 		return DungeonModels.CORRIDOR_ROOM.id;
 	}
 

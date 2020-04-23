@@ -14,6 +14,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -28,14 +29,14 @@ public class DungeonRoom extends DungeonPiece {
 	}
 
 	@Override
-	public int determineModel(Random rand) {
-		return DungeonModels.ROOM.id;
+	public int determineModel(DungeonBuilder builder, Random rand) {
+		return 0;
 	}
 
 	@Override
 	public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 			ChunkPos p_74875_4_) {
-		DungeonModel model = DungeonModels.ROOM;
+		DungeonModel model = DungeonModels.MAP.get(modelID);
 		if (model == null)
 			return false;
 //		if (theme != 1)

@@ -7,8 +7,10 @@ package xiroc.dungeoncrawl.dungeon.model;
 import java.io.DataInputStream;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.Lists;
 
@@ -20,115 +22,132 @@ import xiroc.dungeoncrawl.api.event.DungeonSegmentModelLoadEvent;
 
 public class DungeonModels {
 
-	public static boolean LOADED = false;
-
 	public static final HashMap<Integer, DungeonModel> MAP = new HashMap<Integer, DungeonModel>();
 
-	public static DungeonModel BRIDGE;
-	public static DungeonModel BRIDGE_TURN;
-	public static DungeonModel BRIDGE_SIDE;
-	public static DungeonModel BRIDGE_ALL_SIDES;
+	public static final HashMap<Integer, DungeonModel[]> NODE_CATEGORY_INTERSECTIONS = new HashMap<Integer, DungeonModel[]>();
 
-	public static DungeonModel CORRIDOR;
-	public static DungeonModel CORRIDOR_TURN;
-	public static DungeonModel CORRIDOR_OPEN;
-	public static DungeonModel CORRIDOR_ALL_OPEN;
+	public static DungeonModel CORRIDOR, CORRIDOR_2, CORRIDOR_ROOM;
+	public static DungeonModel CAKE_ROOM;
+	public static DungeonModel CORRIDOR_LIGHT_FEATURE;
+	public static DungeonModel CORRIDOR_LINKER, CORRIDOR_LINKER_2, CORRIDOR_LINKER_3, CORRIDOR_LINKER_4,
+			CORRIDOR_LINKER_5;
+	public static DungeonModel ENTRANCE;
+	public static DungeonModel FOOD_SIDE_ROOM;
+	public static DungeonModel LARGE_CORRIDOR_START, LARGE_CORRIDOR_STRAIGHT, LARGE_CORRIDOR_OPEN, LARGE_CORRIDOR_TURN;
+	public static DungeonModel FORGE;
+	public static DungeonModel LARGE_NODE, LARGE_NODE_LIBRARY;
+	public static DungeonModel NODE, NODE_2, NODE_3;
+	public static DungeonModel NODE_CATACOMB_DEAD_END, NODE_CATACOMB_TURN;
+	public static DungeonModel NODE_TURN, NODE_WATER, NODE_WATER_2, NODE_WATER_DEAD_END, NODE_WATER_STRAIGHT,
+			NODE_WATER_OPEN;
+	public static DungeonModel NODE_CONNECTOR, NODE_CONNECTOR_2, NODE_CONNECTOR_3, NODE_CONNECTOR_4, NODE_CONNECTOR_5;
+	public static DungeonModel PRISON_CELL;
+	public static DungeonModel SECRET_ROOM;
+	public static DungeonModel STAIRCASE, STAIRS_BOTTOM, STAIRS_BOTTOM_2, STAIRS_TOP;
+	public static DungeonModel STARTER_ROOM;
 
-	public static DungeonModel CORRIDOR_2;
-	public static DungeonModel CORRIDOR_2_TURN;
-	public static DungeonModel CORRIDOR_2_OPEN;
-	public static DungeonModel CORRIDOR_2_ALL_OPEN;
+	public static DungeonModel[] CORRIDOR_LINKERS;
 
-	public static DungeonModel CORRIDOR_3;
-	public static DungeonModel CORRIDOR_3_TURN;
-	public static DungeonModel CORRIDOR_3_OPEN;
-	public static DungeonModel CORRIDOR_3_ALL_OPEN;
-
-	public static DungeonModel CORRIDOR_ROOM, CORRIDOR_TRAP, CORRIDOR_FIRE, CORRIDOR_GRASS;
-
-	public static DungeonModel HOLE;
-	public static DungeonModel HOLE_LAVA;
-	public static DungeonModel HOLE_TRAP;
-
-	public static DungeonModel SIDE_ROOM_SMALL_LIBRARY, SIDE_ROOM_FARM, SIDE_ROOM_TNT;
-
-	public static DungeonModel STAIRS;
-	public static DungeonModel STAIRS_TOP;
-	public static DungeonModel STAIRS_BOTTOM;
-
-	public static DungeonModel ROOM;
-
-	public static DungeonModel LARGE_ROOM, LIBRARY, LOOT_ROOM, BOSS_ROOM;
-
-	public static DungeonModel ENTRANCE_TOWER_0, ENTRANCE_TOWER_1;
-
-	public static DungeonModel KITCHEN, STARTER_ROOM;
+	public static DungeonModel[] NODE_CONNECTORS;
 
 	public static synchronized void load() {
-		if (LOADED)
-			return;
-		LOADED = true;
 		DungeonCrawl.LOGGER.info("Loading models");
 
 		CORRIDOR = loadFromFile("models/dungeon/corridor.nbt").build().setId(0);
-		CORRIDOR_TURN = loadFromFile("models/dungeon/corridor_turn.nbt").build().setId(1);
-		CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor_open.nbt").build().setId(2);
-		CORRIDOR_ALL_OPEN = loadFromFile("models/dungeon/corridor_all_open.nbt").build().setId(3);
-		CORRIDOR_2 = loadFromFile("models/dungeon/corridor_2.nbt").build().setId(4);
-		CORRIDOR_2_TURN = loadFromFile("models/dungeon/corridor_2_turn.nbt").build().setId(5);
-		CORRIDOR_2_OPEN = loadFromFile("models/dungeon/corridor_2_open.nbt").build().setId(6);
-		CORRIDOR_2_ALL_OPEN = loadFromFile("models/dungeon/corridor_2_all_open.nbt").build().setId(7);
-		CORRIDOR_3 = loadFromFile("models/dungeon/corridor_3.nbt").build().setId(8);
-		CORRIDOR_3_TURN = loadFromFile("models/dungeon/corridor_3_turn.nbt").build().setId(9);
-		CORRIDOR_3_OPEN = loadFromFile("models/dungeon/corridor_3_open.nbt").build().setId(10);
-		CORRIDOR_3_ALL_OPEN = loadFromFile("models/dungeon/corridor_3_all_open.nbt").build().setId(11);
+//		CORRIDOR_2 = loadFromFile("models/dungeon/corridor_2.nbt").build().setId(1);
+		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.nbt").build().setId(3);
+		CORRIDOR_LIGHT_FEATURE = loadFromFile("models/dungeon/corridor_light.nbt").build().setId(4);
 
-		CORRIDOR_ROOM = loadFromFile("models/dungeon/corridor_room.nbt").build().setId(12);
-		CORRIDOR_TRAP = loadFromFile("models/dungeon/corridor_trap.nbt").build().setId(13);
+		CORRIDOR_LINKER = loadFromFile("models/dungeon/corridor_linker.nbt").build().setId(16);
+		CORRIDOR_LINKER_2 = loadFromFile("models/dungeon/corridor_linker_2.nbt").build().setId(17);
+		CORRIDOR_LINKER_3 = loadFromFile("models/dungeon/corridor_linker_3.nbt").build().setId(18);
+		CORRIDOR_LINKER_4 = loadFromFile("models/dungeon/corridor_linker_4.nbt").build().setId(19);
+		CORRIDOR_LINKER_5 = loadFromFile("models/dungeon/corridor_linker_5.nbt").build().setId(20);
 
-		HOLE = loadFromFile("models/dungeon/hole.nbt").build().setId(14);
-		HOLE_LAVA = loadFromFile("models/dungeon/hole_lava.nbt").build().setId(15);
+		ENTRANCE = loadFromFile("models/dungeon/entrance.nbt").build().setId(21);
 
-		STAIRS = loadFromFile("models/dungeon/stairs.nbt").build().setId(16);
-		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.nbt").build().setId(17);
-		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.nbt").build().setId(18);
-		ROOM = loadFromFile("models/dungeon/room.nbt").build().setId(19);
-		ENTRANCE_TOWER_0 = loadFromFile("models/dungeon/entrance_tower_0.nbt").build().setId(20);
+		FOOD_SIDE_ROOM = loadFromFile("models/dungeon/food_side_room.nbt").build().setId(24);
 
-		BRIDGE = loadFromFile("models/dungeon/bridge.nbt").build().setId(21);
-		BRIDGE_TURN = loadFromFile("models/dungeon/bridge_turn.nbt").build().setId(22);
-		BRIDGE_SIDE = loadFromFile("models/dungeon/bridge_side.nbt").build().setId(23);
-		BRIDGE_ALL_SIDES = loadFromFile("models/dungeon/bridge_all_sides.nbt").build().setId(24);
+		LARGE_CORRIDOR_START = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(28);
+		LARGE_CORRIDOR_STRAIGHT = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(29);
+		LARGE_CORRIDOR_TURN = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(30);
+		LARGE_CORRIDOR_OPEN = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(31);
 
-		LARGE_ROOM = loadFromFile("models/dungeon/large_room.nbt").build().setId(25);
+		FORGE = loadFromFile("models/dungeon/forge.nbt").build().set(32, ModelCategory.STAGE_1, ModelCategory.STAGE_2,
+				ModelCategory.NODE_DEAD_END);
+		LARGE_NODE = loadFromFile("models/dungeon/large_node.nbt").build().set(33, ModelCategory.STAGE_3,
+				ModelCategory.STAGE_4, ModelCategory.STAGE_5, ModelCategory.LARGE_NODE);
+		LARGE_NODE_LIBRARY = loadFromFile("models/dungeon/large_node_library.nbt").build().set(34,
+				ModelCategory.STAGE_2, ModelCategory.STAGE_3, ModelCategory.STAGE_4, ModelCategory.LARGE_NODE);
 
-//		HOLE_TRAP = loadFromFile("models/dungeon/hole_trap.nbt").build().setId(26);
+		NODE = loadFromFile("models/dungeon/node.nbt").build().set(35, ModelCategory.STAGE_1, ModelCategory.STAGE_2,
+				ModelCategory.NODE, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN, ModelCategory.NODE_TURN,
+				ModelCategory.NODE_DEAD_END);
 
-		KITCHEN = loadFromFile("models/dungeon/kitchen.nbt").build().setId(27);
+		NODE_2 = loadFromFile("models/dungeon/node_2.nbt").build().set(36, ModelCategory.STAGE_1, ModelCategory.STAGE_2,
+				ModelCategory.NODE, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN, ModelCategory.NODE_TURN,
+				ModelCategory.NODE_DEAD_END);
 
-		LOOT_ROOM = loadFromFile("models/dungeon/loot_room.nbt").build().setId(28);
+		NODE_3 = loadFromFile("models/dungeon/node_3.nbt").build().set(37, ModelCategory.STAGE_1, ModelCategory.STAGE_2,
+				ModelCategory.NODE, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN, ModelCategory.NODE_TURN,
+				ModelCategory.NODE_DEAD_END);
 
-		CORRIDOR_FIRE = loadFromFile("models/dungeon/corridor_fire.nbt").build().setId(29);
+		NODE_CATACOMB_TURN = loadFromFile("models/dungeon/node_catacomb_turn.nbt").build().set(38,
+				ModelCategory.STAGE_3, ModelCategory.STAGE_4, ModelCategory.NODE_TURN, ModelCategory.NODE_DEAD_END);
 
-		SIDE_ROOM_SMALL_LIBRARY = loadFromFile("models/dungeon/side_room_small_library.nbt").build().setId(30);
-		SIDE_ROOM_FARM = loadFromFile("models/dungeon/side_room_farm.nbt").build().setId(31);
+		NODE_CATACOMB_DEAD_END = loadFromFile("models/dungeon/node_catacomb_dead_end.nbt").build().set(39,
+				ModelCategory.STAGE_3, ModelCategory.STAGE_4, ModelCategory.NODE_DEAD_END);
 
-		CORRIDOR_GRASS = loadFromFile("models/dungeon/corridor_grass.nbt").build().setId(32);
+		NODE_TURN = loadFromFile("models/dungeon/node_turn.nbt").build().set(40, ModelCategory.STAGE_3,
+				ModelCategory.STAGE_4, ModelCategory.NODE_TURN, ModelCategory.NODE_DEAD_END);
 
-		ENTRANCE_TOWER_1 = loadFromFile("models/dungeon/entrance_tower_1.nbt").build().setId(33);
+		NODE_WATER = loadFromFile("models/dungeon/node_water.nbt").build().set(41, ModelCategory.STAGE_3,
+				ModelCategory.STAGE_4, ModelCategory.NODE, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN,
+				ModelCategory.NODE_TURN, ModelCategory.NODE_DEAD_END);
 
-		SIDE_ROOM_TNT = loadFromFile("models/dungeon/side_room_tnt.nbt").build().setId(34);
-		STARTER_ROOM = loadFromFile("models/dungeon/starter_room.nbt").build().setId(35);
+		NODE_WATER_2 = loadFromFile("models/dungeon/node_water_2.nbt").build().set(42, ModelCategory.STAGE_3,
+				ModelCategory.STAGE_4, ModelCategory.NODE, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN,
+				ModelCategory.NODE_TURN, ModelCategory.NODE_DEAD_END);
 
-		LIBRARY = loadFromFile("models/dungeon/library.nbt").build().setId(36);
+		NODE_WATER_DEAD_END = loadFromFile("models/dungeon/node_water_dead_end.nbt").build().set(43,
+				ModelCategory.STAGE_3, ModelCategory.STAGE_4, ModelCategory.NODE_DEAD_END);
 
-		BOSS_ROOM = loadFromFile("models/dungeon/boss_room.nbt").build().setId(37);
-		
-		
+		NODE_WATER_OPEN = loadFromFile("models/dungeon/node_water_open.nbt").build().set(44, ModelCategory.STAGE_3,
+				ModelCategory.STAGE_4, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN, ModelCategory.NODE_TURN,
+				ModelCategory.NODE_DEAD_END);
+
+		NODE_WATER_STRAIGHT = loadFromFile("models/dungeon/node_water_straight.nbt").build().set(45,
+				ModelCategory.STAGE_3, ModelCategory.STAGE_4, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_DEAD_END);
+
+		NODE_CONNECTOR = loadFromFile("models/dungeon/node_connector.nbt").build().setId(56);
+		NODE_CONNECTOR_2 = loadFromFile("models/dungeon/node_connector_2.nbt").build().setId(57);
+		NODE_CONNECTOR_3 = loadFromFile("models/dungeon/node_connector_3.nbt").build().setId(58);
+		NODE_CONNECTOR_4 = loadFromFile("models/dungeon/node_connector_4.nbt").build().setId(59);
+		NODE_CONNECTOR_5 = loadFromFile("models/dungeon/node_connector_5.nbt").build().setId(60);
+
+		PRISON_CELL = loadFromFile("models/dungeon/prison_cell.nbt").build().setId(64);
+
+		SECRET_ROOM = loadFromFile("models/dungeon/secret_room.nbt").build().setId(70);
+
+		STAIRCASE = loadFromFile("models/dungeon/staircase.nbt").build().setId(72);
+		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.nbt").build().setId(73);
+		STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.nbt").build().setId(74);
+		STAIRS_BOTTOM_2 = loadFromFile("models/dungeon/stairs_bottom_2.nbt").build().setId(75);
+
+		STARTER_ROOM = loadFromFile("models/dungeon/starter_room.nbt").build().setId(76);
+
+		// -End of Model loading- //
+
+		CORRIDOR_LINKERS = new DungeonModel[] { CORRIDOR_LINKER, CORRIDOR_LINKER_2, CORRIDOR_LINKER_3,
+				CORRIDOR_LINKER_4, CORRIDOR_LINKER_5 };
+
+		NODE_CONNECTORS = new DungeonModel[] { NODE_CONNECTOR, NODE_CONNECTOR_2,
+				NODE_CONNECTOR_3, NODE_CONNECTOR_4, NODE_CONNECTOR_5 };
+
 	}
 
 	public static DungeonModel loadFromFile(String path) {
-		DungeonCrawl.LOGGER.debug("Loading {}", path);
+		DungeonCrawl.LOGGER.info("Loading {}", path);
 
 		try {
 			DataInputStream input = new DataInputStream(
@@ -142,14 +161,15 @@ public class DungeonModels {
 		}
 	}
 
-	@Deprecated
 	public static DungeonModel loadFromFile(String path, IResourceManager resourceManager) {
-		DungeonCrawl.LOGGER.debug("Loading {}", path);
+		DungeonCrawl.LOGGER.info("Loading {}", path);
 		DungeonSegmentModelLoadEvent loadEvent = new DungeonSegmentModelLoadEvent(path);
 
 		if (DungeonCrawl.EVENT_BUS.post(loadEvent))
 			return null;
 		try {
+			
+			
 			DataInputStream input = new DataInputStream(
 					resourceManager.getResource(DungeonCrawl.locate(loadEvent.path)).getInputStream());
 			CompoundNBT nbt = new CompoundNBT();
@@ -162,30 +182,49 @@ public class DungeonModels {
 		return null;
 	}
 
-	public static enum NodeCategory {
+	public static enum ModelCategory {
 
-		STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, DEAD_END, TWO_OPENINGS, TWO_OPENINGS_TURN, THREE_OPENINGS,
-		FOUR_OPENINGS, LARGE;
+		STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, NODE_DEAD_END, NODE_STRAIGHT, NODE_TURN, NODE_OPEN, NODE,
+		LARGE_NODE;
 
 		public final List<DungeonModel> members;
 
-		private NodeCategory() {
+		public static final ModelCategory[] STAGES = new ModelCategory[] { STAGE_1, STAGE_2, STAGE_3, STAGE_4,
+				STAGE_5 };
+
+		private ModelCategory() {
 			members = Lists.newArrayList();
 		}
 
-		public List<DungeonModel> getIntersection(NodeCategory... categories) {
-			List<DungeonModel> intersection = Lists.newArrayList();
+		public static DungeonModel[] getIntersection(ModelCategory... categories) {
+			int hash = Objects.hash((Object[]) categories);
 
-			for (DungeonModel model : members) {
-				boolean add = true;
-				for (int i = 0; i < categories.length; i++)
-					if (!categories[i].members.contains(model))
-						add = false;
-				if (add)
-					intersection.add(model);
+			if (NODE_CATEGORY_INTERSECTIONS.containsKey(hash)) {
+				DungeonCrawl.LOGGER.debug("Looking up {}.", Arrays.toString(categories));
+				return NODE_CATEGORY_INTERSECTIONS.get(hash);
 			}
 
-			return intersection;
+			List<DungeonModel> intersection = Lists.newArrayList();
+
+			mainLoop: for (DungeonModel model : categories[0].members) {
+				for (int i = 0; i < categories.length; i++)
+					if (!categories[i].members.contains(model))
+						continue mainLoop;
+				intersection.add(model);
+			}
+
+			DungeonModel[] array = intersection.toArray(new DungeonModel[intersection.size()]);
+			NODE_CATEGORY_INTERSECTIONS.put(hash, array);
+			return array;
+		}
+
+		/**
+		 * @param stage range: 0-4
+		 */
+		public static ModelCategory getCategoryForStage(int stage) {
+			if (stage < 0 || stage > 4)
+				return STAGE_1;
+			return STAGES[stage];
 		}
 
 	}

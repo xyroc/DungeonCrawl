@@ -59,30 +59,6 @@ public class DungeonLayer {
 
 	public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer,
 			boolean lastLayer) {
-//		if (!map.markPositionAsOccupied(start))
-//			DungeonCrawl.LOGGER.error("Failed to mark start [" + start.x + ", " + start.z + "] as occupied.");
-//		this.start = start;
-//		this.end = lastLayer ? findLargeRoomPosWithMaxDistance(builder, start, layer) : map.getRandomFreePosition(rand);
-//		this.segments[start.x][start.z] = new PlaceHolder(new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom());
-//		if (lastLayer) {
-//			if (end != null)
-//				createLootRoom();
-//			else {
-//				end = findLargeRoomPosAtArea(builder, map.getRandomFreePosition(rand), layer);
-//				if (end != null) {
-//					createLootRoom();
-//				} else {
-//					DungeonCrawl.LOGGER.debug("Failed to find a position for the loot room.");
-//					end = forceLargeRoomPosWithMaxDistance(start);
-//					createLootRoom();
-//				}
-//			}
-//
-//		} else
-//			this.segments[end.x][end.z] = new PlaceHolder(new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top());
-//
-//		this.buildConnection(start, end);
-//		this.extend(builder, map, start, end, rand, layer);
 		this.start = start;
 		this.createLayout(builder, rand, layer, lastLayer);
 	}
@@ -118,8 +94,8 @@ public class DungeonLayer {
 		int endX = end.x;
 		int endZ = end.z;
 
-		DungeonCrawl.LOGGER.debug("start: {}", segments[startX][startZ]);
-		DungeonCrawl.LOGGER.debug("end: {}", segments[endX][endZ]);
+//		DungeonCrawl.LOGGER.debug("start: {}", segments[startX][startZ]);
+//		DungeonCrawl.LOGGER.debug("end: {}", segments[endX][endZ]);
 
 		if (startX == endX && startZ == endZ)
 			return;
@@ -289,7 +265,7 @@ public class DungeonLayer {
 
 		DungeonStairs s = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom();
 		s.setPosition(start.x, start.z);
-		this.segments[s.posX][s.posZ] = new PlaceHolder(s);
+		this.segments[s.posX][s.posZ] = new PlaceHolder(s).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
 		List<Position2D> nodeList = Lists.newArrayList();
 
@@ -307,7 +283,7 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.WEST);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();
@@ -322,7 +298,7 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.SOUTH);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();
@@ -337,7 +313,7 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.NORTH);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();
@@ -352,7 +328,7 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.EAST);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();

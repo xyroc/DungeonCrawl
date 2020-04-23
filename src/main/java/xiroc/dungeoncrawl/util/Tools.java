@@ -46,24 +46,29 @@ public class Tools {
 				return false;
 			}
 		}).then(Commands.argument("name", StringArgumentType.string())
-				.then(Commands.argument("entranceType", IntegerArgumentType.integer(0, 1)).executes((command) -> {
-					if (Tools.pos1 != null && Tools.pos2 != null) {
-						BlockPos pos1 = new BlockPos(Math.min(Tools.pos1.getX(), Tools.pos2.getX()),
-								Math.min(Tools.pos1.getY(), Tools.pos2.getY()),
-								Math.min(Tools.pos1.getZ(), Tools.pos2.getZ())),
-								pos2 = new BlockPos(Math.max(Tools.pos1.getX(), Tools.pos2.getX()),
-										Math.max(Tools.pos1.getY(), Tools.pos2.getY()),
-										Math.max(Tools.pos1.getZ(), Tools.pos2.getZ()));
-						ModelHandler.readModelToFile(command.getArgument("name", String.class),
-								command.getArgument("entranceType", int.class) == 0
-										? DungeonModel.EntranceType.OPEN
-										: DungeonModel.EntranceType.CLOSED,
-								command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
-								pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-						return 1;
-					} else
-						return 0;
-				}))));
+				.then(Commands.argument("entranceType", IntegerArgumentType.integer(0, 1)).then(Commands
+						.argument("spawnerType", IntegerArgumentType.integer(0, 2))
+						.then(Commands.argument("chestType", IntegerArgumentType.integer(0, 2)).executes((command) -> {
+							if (Tools.pos1 != null && Tools.pos2 != null) {
+								BlockPos pos1 = new BlockPos(Math.min(Tools.pos1.getX(), Tools.pos2.getX()),
+										Math.min(Tools.pos1.getY(), Tools.pos2.getY()),
+										Math.min(Tools.pos1.getZ(), Tools.pos2.getZ())),
+										pos2 = new BlockPos(Math.max(Tools.pos1.getX(), Tools.pos2.getX()),
+												Math.max(Tools.pos1.getY(), Tools.pos2.getY()),
+												Math.max(Tools.pos1.getZ(), Tools.pos2.getZ()));
+								ModelHandler.readAndSaveModelToFile(command.getArgument("name", String.class),
+										command.getArgument("entranceType", int.class) == 0
+												? DungeonModel.EntranceType.OPEN
+												: DungeonModel.EntranceType.CLOSED,
+										command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
+										pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1,
+										command.getArgument("spawnerType", int.class),
+										command.getArgument("chestType", int.class));
+								command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
+								return 1;
+							} else
+								return 0;
+						}))))));
 	}
 
 	@SubscribeEvent

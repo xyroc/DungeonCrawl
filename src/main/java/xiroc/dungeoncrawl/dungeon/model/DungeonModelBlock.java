@@ -134,8 +134,7 @@ public class DungeonModelBlock {
 	public static DungeonModelBlock fromNBT(CompoundNBT nbt) {
 		if (!nbt.contains("type"))
 			return null;
-		DungeonModelBlock block = new DungeonModelBlock(
-				DungeonModelBlockType.valueOf(nbt.getString("type")));
+		DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.valueOf(nbt.getString("type")));
 
 		if (nbt.contains("resourceName"))
 			block.resourceName = nbt.getString("resourceName");
@@ -274,16 +273,31 @@ public class DungeonModelBlock {
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.SOLID_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonModelBlockType.FLOOR_STAIRS,
-				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonModelBlockType.CEILING_STAIRS,
-				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-		PROVIDERS.put(DungeonModelBlockType.CHEST, (block, theme, subTheme, rand, stage) -> Blocks.CHEST
-				.getDefaultState().with(ChestBlock.FACING, block.facing));
+		PROVIDERS.put(DungeonModelBlockType.MATERIAL_STAIRS,
+				(block, theme, subTheme, rand, stage) -> block.create(subTheme.stairs.get()));
+//		PROVIDERS.put(DungeonModelBlockType.FLOOR_STAIRS,
+//				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
+//		PROVIDERS.put(DungeonModelBlockType.CEILING_STAIRS,
+//				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
+		PROVIDERS.put(DungeonModelBlockType.CHEST,
+				(block, theme, subTheme, rand, stage) -> BlockRegistry.CHEST.with(ChestBlock.FACING, block.facing));
+		PROVIDERS.put(DungeonModelBlockType.RARE_CHEST,
+				(block, theme, subTheme, rand, stage) -> rand.nextFloat() < 0.15
+						? BlockRegistry.CHEST.with(ChestBlock.FACING, block.facing)
+						: theme.solid.get());
 		PROVIDERS.put(DungeonModelBlockType.DISPENSER, (block, theme, subTheme, rand, stage) -> Blocks.DISPENSER
 				.getDefaultState().with(DispenserBlock.FACING, block.facing));
 		PROVIDERS.put(DungeonModelBlockType.FLOOR, (block, theme, subTheme, rand, stage) -> theme.floor.get());
-		PROVIDERS.put(DungeonModelBlockType.RAND_FLOOR_CHESTCOMMON_SPAWNER,
+		PROVIDERS.put(DungeonModelBlockType.SPAWNER,
+				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> BlockRegistry.CAVE_AIR
+						: (block, theme, subTheme, rand, stage) -> {
+							return BlockRegistry.SPAWNER;
+						});
+		PROVIDERS.put(DungeonModelBlockType.RARE_SPAWNER,
+				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> theme.solid.get()
+						: (block, theme, subTheme, rand, stage) -> rand.nextFloat() < 0.15 ? BlockRegistry.SPAWNER
+								: BlockRegistry.CAVE_AIR);
+		PROVIDERS.put(DungeonModelBlockType.RAND_FLOOR_CHEST_SPAWNER,
 				Config.NO_SPAWNERS.get() ? (block, theme, subTheme, rand, stage) -> {
 					if (rand.nextInt(10) == 5)
 						return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
@@ -293,7 +307,7 @@ public class DungeonModelBlock {
 					if (i < 1 + stage)
 						return BlockRegistry.SPAWNER;
 					if (i == 5)
-						return Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, block.facing);
+						return BlockRegistry.CHEST.with(ChestBlock.FACING, block.facing);
 					return theme.floor.get();
 				});
 		PROVIDERS.put(DungeonModelBlockType.RAND_FLOOR_LAVA, (block, theme, subTheme, rand, stage) -> {

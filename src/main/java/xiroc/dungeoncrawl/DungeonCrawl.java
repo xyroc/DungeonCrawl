@@ -97,12 +97,12 @@ public class DungeonCrawl {
 		DungeonCrawl.LOGGER.info("Adding features and structures");
 
 		for (Biome biome : ForgeRegistries.BIOMES) {
-			if (!JsonConfig.BIOME_BLACKLIST.contains(biome.getRegistryName().toString())
-					&& Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
+			if (Dungeon.OVERWORLD_CATEGORIES.contains(biome.getCategory())) {
 				biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, Biome.createDecoratedFeature(Dungeon.DUNGEON,
 						NoFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, NoPlacementConfig.NO_PLACEMENT_CONFIG));
-				if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())) {
-					DungeonCrawl.LOGGER.debug("Generation Biome " + biome.getRegistryName());
+				if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())
+						&& Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
+					DungeonCrawl.LOGGER.debug("Generation Biome: " + biome.getRegistryName());
 					biome.addStructure(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG);
 				}
 			}

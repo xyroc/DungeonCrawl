@@ -1,12 +1,13 @@
 package xiroc.dungeoncrawl.dungeon.piece.room;
 
+import java.util.List;
+
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
 import java.util.Random;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Tuple;
@@ -16,16 +17,23 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.Node;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Position2D;
+import xiroc.dungeoncrawl.util.RotationHelper;
 
 public class DungeonNodeRoom extends DungeonPiece {
 
 	public Node node;
 
-	public int model;
 	public boolean large, lootRoom;
 
 	public DungeonNodeRoom() {
@@ -34,55 +42,49 @@ public class DungeonNodeRoom extends DungeonPiece {
 
 	public DungeonNodeRoom(TemplateManager manager, CompoundNBT nbt) {
 		super(StructurePieceTypes.NODE_ROOM, nbt);
-		this.model = nbt.getInt("model");
 		this.large = nbt.getBoolean("large");
 		this.lootRoom = nbt.getBoolean("lootRoom");
 		setupBoundingBox();
-		DungeonCrawl.LOGGER.debug("Position: ({}|{}|{}), Bounds: {} {} {}, Large: {}", x, y, z,
-				boundingBox.maxX - boundingBox.minX, boundingBox.maxY - boundingBox.minY,
-				boundingBox.maxZ - boundingBox.minZ, large);
+//		DungeonCrawl.LOGGER.debug("Position: ({}|{}|{}), Bounds: {} {} {}, Large: {}", x, y, z,
+//				boundingBox.maxX - boundingBox.minX, boundingBox.maxY - boundingBox.minY,
+//				boundingBox.maxZ - boundingBox.minZ, large);
 	}
 
 	@Override
-	public int determineModel(Random rand) {
+	public int determineModel(DungeonBuilder builder, Random rand) {
 		if (lootRoom)
 			return 0;
-		
+
 		large = stage < 2 ? false : rand.nextFloat() < 0.15;
-//		int sides = rand.nextFloat() < 0.25 || connectedSides == 4 ? connectedSides
-//				: connectedSides + 1 + rand.nextInt(4 - connectedSides);
-//		if (large) {
-//			switch (sides) {
-//			case 1:
-//				if (DungeonModels.LARGE_NODE_1.length > 0)
-//					return DungeonModels.LARGE_NODE_1[rand.nextInt(DungeonModels.LARGE_NODE_1.length)].id;
-//			case 2:
-//				if (DungeonModels.LARGE_NODE_2.length > 0)
-//					return DungeonModels.LARGE_NODE_1[rand.nextInt(DungeonModels.LARGE_NODE_2.length)].id;
-//			case 3:
-//				if (DungeonModels.LARGE_NODE_3.length > 0)
-//					return DungeonModels.LARGE_NODE_1[rand.nextInt(DungeonModels.LARGE_NODE_3.length)].id;
-//			case 4:
-//				if (DungeonModels.LARGE_NODE_4.length > 0)
-//					return DungeonModels.LARGE_NODE_1[rand.nextInt(DungeonModels.LARGE_NODE_4.length)].id;
-//			}
-//		} else {
-//			switch (sides) {
-//			case 1:
-//				if (DungeonModels.NODE_1.length > 0)
-//					return DungeonModels.NODE_1[rand.nextInt(DungeonModels.NODE_1.length)].id;
-//			case 2:
-//				if (DungeonModels.NODE_2.length > 0)
-//					return DungeonModels.NODE_1[rand.nextInt(DungeonModels.NODE_2.length)].id;
-//			case 3:
-//				if (DungeonModels.NODE_3.length > 0)
-//					return DungeonModels.NODE_1[rand.nextInt(DungeonModels.NODE_3.length)].id;
-//			case 4:
-//				if (DungeonModels.NODE_4.length > 0)
-//					return DungeonModels.NODE_1[rand.nextInt(DungeonModels.NODE_4.length)].id;
-//			}
-//		}
-		return 0;
+
+		ModelCategory base = null;
+		switch (connectedSides) {
+		case 1:
+			base = ModelCategory.NODE_DEAD_END;
+		case 2:
+			if (sides[0] && sides[2] || sides[1] && sides[3])
+				base = ModelCategory.NODE_STRAIGHT;
+			else
+				base = ModelCategory.NODE_TURN;
+		case 3:
+			base = ModelCategory.NODE_OPEN;
+		default:
+			base = ModelCategory.NODE;
+		}
+
+		DungeonModel[] possibilities = large
+				? ModelCategory.getIntersection(base, ModelCategory.LARGE_NODE,
+						ModelCategory.getCategoryForStage(stage))
+				: ModelCategory.getIntersection(base, ModelCategory.getCategoryForStage(stage));
+
+		if (possibilities.length <= 0) {
+			DungeonCrawl.LOGGER.error("Didnt find a model for {} in stage {}. Connected Sides: {}, Base: {}", this,
+					stage, connectedSides, base);
+
+			return large ? DungeonModels.LARGE_NODE.id : DungeonModels.NODE_2.id;
+		}
+
+		return possibilities[rand.nextInt(possibilities.length)].id;
 	}
 
 	@Override
@@ -96,27 +98,13 @@ public class DungeonNodeRoom extends DungeonPiece {
 	@Override
 	public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
 			ChunkPos chunkPosIn) {
+		DungeonModel model = DungeonModels.MAP.get(modelID);
 
-		DungeonCrawl.LOGGER.debug("Building; Position: ({}|{}|{}), Bounds: {} {} {}, Large: {}", x, y, z,
-				boundingBox.maxX - boundingBox.minX, boundingBox.maxY - boundingBox.minY,
-				boundingBox.maxZ - boundingBox.minZ, large);
+		buildRotated(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
+				Theme.getSub(subTheme), Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT),
+				stage, rotation, false);
 
-		int startX = Math.max(x, structureBoundingBoxIn.minX), startZ = Math.max(z, structureBoundingBoxIn.minZ),
-				maxX = Math.min(x + (large ? 26 : 16), structureBoundingBoxIn.maxX),
-				maxZ = Math.min(z + (large ? 26 : 16), structureBoundingBoxIn.maxZ);
-
-		for (int x1 = startX; x1 <= maxX; x1++)
-			for (int z1 = startZ; z1 <= maxZ; z1++)
-				for (int y1 = 0; y1 < 9; y1++)
-					if (x1 == boundingBox.minX || z1 == boundingBox.minZ)
-						worldIn.setBlockState(new BlockPos(x1, y + y1, z1), lootRoom ? Blocks.OBSIDIAN.getDefaultState() : Blocks.OAK_PLANKS.getDefaultState(), 2);
-					else if (x1 == boundingBox.maxX || z1 == boundingBox.maxZ)
-						worldIn.setBlockState(new BlockPos(x1, y + y1, z1), lootRoom ? Blocks.OBSIDIAN.getDefaultState() : Blocks.SPRUCE_PLANKS.getDefaultState(), 2);
-					else if (y1 == 0 || y1 == 8)
-						worldIn.setBlockState(new BlockPos(x1, y + y1, z1), lootRoom ? Blocks.OBSIDIAN.getDefaultState() : Blocks.BIRCH_PLANKS.getDefaultState(), 2);
-					else
-						worldIn.setBlockState(new BlockPos(x1, y + y1, z1), CAVE_AIR, 2);
-
+		entrances(worldIn, structureBoundingBoxIn, Theme.get(theme), model);
 		return true;
 	}
 
@@ -124,10 +112,6 @@ public class DungeonNodeRoom extends DungeonPiece {
 	public void setupBoundingBox() {
 		this.boundingBox = large ? new MutableBoundingBox(x, y, z, x + 26, y + 8, z + 26)
 				: new MutableBoundingBox(x, y, z, x + 16, y + 8, z + 16);
-	}
-
-	public void buildConnector(IWorld world, Direction direction, BlockPos position, MutableBoundingBox boundsIn) {
-
 	}
 
 	@Override
@@ -138,6 +122,55 @@ public class DungeonNodeRoom extends DungeonPiece {
 	@Override
 	public boolean canConnect(Direction side) {
 		return node.canConnect(side);
+	}
+
+	public void addConnectors(List<DungeonPiece> list, Random rand) {
+		if (large)
+			return;
+		for (int i = 0; i < sides.length - 2; i++) {
+			if (sides[i]) {
+				switch (Direction.byHorizontalIndex((i + 2) % 4)) {
+				case EAST: {
+					DungeonNodeConnector connector = new DungeonNodeConnector();
+					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.EAST);
+					connector.modelID = connector.determineModel(null, rand);
+					connector.setRealPosition(x + 17, y, z + 8);
+					connector.setupBoundingBox();
+					list.add(connector);
+					continue;
+				}
+				case NORTH: {
+					DungeonNodeConnector connector = new DungeonNodeConnector();
+					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.NORTH);
+					connector.modelID = connector.determineModel(null, rand);
+					connector.setRealPosition(x + 8, y, z - 5);
+					connector.setupBoundingBox();
+					list.add(connector);
+					continue;
+				}
+				case SOUTH: {
+					DungeonNodeConnector connector = new DungeonNodeConnector();
+					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.SOUTH);
+					connector.modelID = connector.determineModel(null, rand);
+					connector.setRealPosition(x + 8, y, z + 17);
+					connector.setupBoundingBox();
+					list.add(connector);
+					continue;
+				}
+				case WEST: {
+					DungeonNodeConnector connector = new DungeonNodeConnector();
+					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.WEST);
+					connector.modelID = connector.determineModel(null, rand);
+					connector.setRealPosition(x - 5, y, z + 8);
+					connector.setupBoundingBox();
+					list.add(connector);
+					continue;
+				}
+				default:
+					continue;
+				}
+			}
+		}
 	}
 
 	@Override

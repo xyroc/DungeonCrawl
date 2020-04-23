@@ -7,6 +7,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 
 public class DungeonCorridorLarge extends DungeonPiece {
@@ -30,7 +31,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
 	}
 
 	@Override
-	public int determineModel(Random rand) {
+	public int determineModel(DungeonBuilder builder, Random rand) {
 		return type == 0 ? 0 : 0;
 	}
 

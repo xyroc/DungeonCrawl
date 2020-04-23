@@ -1,5 +1,9 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
+
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
@@ -9,20 +13,18 @@ import net.minecraft.block.Blocks;
 
 public enum DungeonModelBlockType {
 
-	NONE, SOLID_STAIRS, /* Temporarily because of old models: */ FLOOR_STAIRS, CEILING_STAIRS /* END */, SOLID, WALL,
-	WALL_LOG, FLOOR, MATERIAL_STAIRS, STAIRS, RAND_WALL_SPAWNER, CHEST, RAND_WALL_AIR, RAND_FLOOR_CHESTCOMMON_SPAWNER,
-	TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR, RAND_FLOOR_WATER, RAND_FLOOR_LAVA, RAND_BOOKSHELF_COBWEB, DISPENSER,
-	RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
+	NONE, SOLID_STAIRS, SOLID, WALL, WALL_LOG, FLOOR, MATERIAL_STAIRS, STAIRS, SPAWNER, RARE_SPAWNER, RAND_WALL_SPAWNER,
+	CHEST, RARE_CHEST, RAND_WALL_AIR, RAND_FLOOR_CHEST_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR,
+	RAND_FLOOR_WATER, RAND_FLOOR_LAVA, RAND_BOOKSHELF_COBWEB, DISPENSER, RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
 
-//	private static final Set<DungeonSegmentModelBlockType> SOLID_TYPES = ImmutableSet
-//			.<DungeonSegmentModelBlockType>builder().add(SOLID).add(SOLID_STAIRS).build();
+	public static final Set<DungeonModelBlockType> SOLID_TYPES = ImmutableSet.<DungeonModelBlockType>builder()
+			.add(SOLID).add(SOLID_STAIRS).build();
 
-	public static boolean isSolid(DungeonModelBlockType type) {
-//		return SOLID_TYPES.contains(type);
-		return true;
-	}
-
-	public static DungeonModelBlockType get(Block block) {
+	/*
+	 * spawnerType: 0: regular, 1: rare, 2: regular_wall
+	 * chestType: 0: regular, 1: rare, 2: regular_floor_spawner
+	 */
+	public static DungeonModelBlockType get(Block block, int spawnerType, int chestType) {
 		if (block == Blocks.AIR)
 			return null;
 		if (block == Blocks.OAK_PLANKS)
@@ -57,10 +59,29 @@ public enum DungeonModelBlockType {
 			return FLOOR;
 		if (block == Blocks.COBBLESTONE_STAIRS)
 			return STAIRS;
-		if (block == Blocks.SPAWNER)
-			return RAND_WALL_SPAWNER;
+		if (block == Blocks.SPAWNER) {
+			switch (spawnerType) {
+			case 0:
+				return SPAWNER;
+			case 1:
+				return RARE_SPAWNER;
+			case 2:
+				return RAND_WALL_SPAWNER;
+			default:
+				return SPAWNER;
+			}
+		}
 		if (block == Blocks.CHEST)
-			return RAND_FLOOR_CHESTCOMMON_SPAWNER;
+			switch (chestType) {
+			case 0:
+				return CHEST;
+			case 1:
+				return RARE_CHEST;
+			case 2:
+				return RAND_FLOOR_CHEST_SPAWNER;
+			default:
+				return CHEST;
+			}
 		if (block == Blocks.OAK_TRAPDOOR)
 			return TRAPDOOR;
 		if (block == Blocks.BARREL)

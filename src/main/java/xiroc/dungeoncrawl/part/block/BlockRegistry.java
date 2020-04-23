@@ -12,7 +12,9 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 
 public class BlockRegistry {
 
+	public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.getDefaultState();
 	public static final BlockState SPAWNER = Blocks.SPAWNER.getDefaultState();
+	public static final BlockState CHEST = Blocks.CHEST.getDefaultState();
 
 	public static final BlockState GRASS = Blocks.GRASS.getDefaultState();
 	public static final BlockState GRAVEL = Blocks.GRAVEL.getDefaultState();

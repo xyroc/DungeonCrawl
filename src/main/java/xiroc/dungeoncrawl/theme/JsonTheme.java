@@ -70,7 +70,7 @@ public class JsonTheme {
 
 	public static class JsonSubTheme {
 
-		public IBlockStateProvider wallLog, trapDoor, torchDark, door, material;
+		public IBlockStateProvider wallLog, trapDoor, torchDark, door, material, stairs;
 
 		public static class Deserializer implements JsonDeserializer<JsonSubTheme> {
 
@@ -87,6 +87,7 @@ public class JsonTheme {
 				theme.torchDark = JsonTheme.deserialize(object, "torch");
 				theme.door = JsonTheme.deserialize(object, "door");
 				theme.material = JsonTheme.deserialize(object, "material");
+				theme.stairs = JsonTheme.deserialize(object, "stairs");
 
 				return theme;
 			}
@@ -94,7 +95,7 @@ public class JsonTheme {
 		}
 
 		public SubTheme toSubTheme() {
-			return new SubTheme(wallLog, trapDoor, torchDark, door, material);
+			return new SubTheme(wallLog, trapDoor, torchDark, door, material, stairs);
 		}
 
 	}

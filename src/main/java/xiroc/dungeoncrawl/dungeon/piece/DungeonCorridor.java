@@ -8,6 +8,7 @@ import java.util.Random;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -20,6 +21,7 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonCorridor extends DungeonPiece {
 
@@ -31,7 +33,7 @@ public class DungeonCorridor extends DungeonPiece {
 	}
 
 	@Override
-	public int determineModel(Random rand) {
+	public int determineModel(DungeonBuilder builder, Random rand) {
 		return DungeonBuilder.getModel(this, rand).id;
 	}
 
@@ -46,30 +48,34 @@ public class DungeonCorridor extends DungeonPiece {
 			return false;
 		}
 
-		int startX = Math.max(x, structureBoundingBoxIn.minX) - x,
-				startZ = Math.max(z, structureBoundingBoxIn.minZ) - z;
+//		int startX = Math.max(x, structureBoundingBoxIn.minX) - x,
+//				startZ = Math.max(z, structureBoundingBoxIn.minZ) - z;
 
-//		DungeonCrawl.LOGGER.debug("x: {} minX: {} startX: {}, z: {} minZ: {} startZ: {}", x,
-//				structureBoundingBoxIn.minX, startX, z, structureBoundingBoxIn.minZ, startZ);
+		boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
 
-		buildRotatedPart(model, worldIn, structureBoundingBoxIn,
-				new BlockPos(Math.max(x, structureBoundingBoxIn.minX), y, Math.max(z, structureBoundingBoxIn.minZ)),
-				theme, subTheme, Treasure.Type.DEFAULT, stage, getRotation(), startX, 0, startZ, model.width - startX,
-				model.height, model.length - startZ, true);
+//		buildRotatedPart(model, worldIn, structureBoundingBoxIn,
+//				new BlockPos(Math.max(x, structureBoundingBoxIn.minX), y, Math.max(z, structureBoundingBoxIn.minZ)),
+//				theme, subTheme, Treasure.Type.DEFAULT, stage, getRotation(), startX, 0, startZ,
+//				model.width - startX, model.height, model.length - startZ);
+
+		buildRotated(model, worldIn, structureBoundingBoxIn,
+				new BlockPos(ew ? x : x + (9 - model.length) / 2, y, ew ? z + (9 - model.length) / 2 : z),
+				Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
 		if (Config.NO_SPAWNERS.get())
 			spawnMobs(worldIn, this, model.width, model.length, new int[] { 1 });
 
-		if (theme == 3 && ((connectedSides == 2
-				&& (!isStraight() || randomIn.nextDouble() < 0.2))
-				|| connectedSides > 2) && getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
+		if (theme == 3
+				&& ((connectedSides == 2 && (!isStraight() || randomIn.nextDouble() < 0.2)) || connectedSides > 2)
+				&& getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
 			addColumns(this, worldIn, structureBoundingBoxIn, 1, theme);
 		return true;
 	}
 
 	@Override
 	public void setupBoundingBox() {
-		this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
+		boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + (ew ? 8 : 6), y + 8, z + (ew ? 6 : 8));
 	}
 
 	@Override

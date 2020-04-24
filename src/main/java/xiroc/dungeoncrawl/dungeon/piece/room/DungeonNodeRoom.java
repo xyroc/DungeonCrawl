@@ -141,7 +141,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.EAST);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x + 17, y, z + 7);
-					connector.setupBoundingBox();
+					connector.firstTimeBoundingBoxSetup();
 					list.add(connector);
 					continue;
 				}
@@ -150,7 +150,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.NORTH);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x + 7, y, z - 5);
-					connector.setupBoundingBox();
+					connector.firstTimeBoundingBoxSetup();
 					list.add(connector);
 					continue;
 				}
@@ -159,7 +159,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.SOUTH);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x + 7, y, z + 17);
-					connector.setupBoundingBox();
+					connector.firstTimeBoundingBoxSetup();
 					list.add(connector);
 					continue;
 				}
@@ -168,7 +168,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.WEST);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x - 5, y, z + 7);
-					connector.setupBoundingBox();
+					connector.firstTimeBoundingBoxSetup();
 					list.add(connector);
 					continue;
 				}

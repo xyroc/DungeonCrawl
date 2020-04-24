@@ -4,19 +4,21 @@ package xiroc.dungeoncrawl.dungeon.model;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
 public class DungeonModel {
 
 	public Integer id;
 	public int width, height, length;
-	
+
 	public DungeonModelBlock[][][] model;
 	public EntranceType entranceType;
-	
-	public Vec3i[] featurePositions;
 
-	public DungeonModel(DungeonModelBlock[][][] model, EntranceType entranceType, Vec3i[] featurePositions) {
+	public FeaturePosition[] featurePositions;
+
+	public DungeonModel(DungeonModelBlock[][][] model, EntranceType entranceType, FeaturePosition[] featurePositions) {
 		this.model = model;
 		this.width = model.length;
 		this.height = model[0].length;
@@ -51,6 +53,26 @@ public class DungeonModel {
 	public enum EntranceType {
 
 		OPEN, CLOSED;
+
+	}
+
+	public static class FeaturePosition {
+
+		public Vec3i position;
+		public Direction facing;
+
+		public FeaturePosition(int x, int y, int z) {
+			this.position = new Vec3i(x, y, z);
+		}
+
+		public FeaturePosition(int x, int y, int z, Direction facing) {
+			this.position = new Vec3i(x, y, z);
+			this.facing = facing;
+		}
+
+		public BlockPos blockPos(int x, int y, int z) {
+			return new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
+		}
 
 	}
 

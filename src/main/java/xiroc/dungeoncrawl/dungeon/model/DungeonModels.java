@@ -49,6 +49,7 @@ public class DungeonModels {
 	public static DungeonModel NODE_CONNECTOR, NODE_CONNECTOR_2, NODE_CONNECTOR_3, NODE_CONNECTOR_4, NODE_CONNECTOR_5;
 	public static DungeonModel PRISON_CELL;
 	public static DungeonModel SECRET_ROOM;
+	public static DungeonModel SPAWNER_ROOM;
 	public static DungeonModel STAIRCASE, STAIRS_BOTTOM, STAIRS_BOTTOM_2, STAIRS_TOP;
 	public static DungeonModel STARTER_ROOM;
 
@@ -57,7 +58,7 @@ public class DungeonModels {
 	public static DungeonModel[] NODE_CONNECTORS;
 
 	public static synchronized void load() {
-		DungeonCrawl.LOGGER.info("Loading models");
+		DungeonCrawl.LOGGER.info("Loading all models...");
 
 		CORRIDOR = loadFromFile("models/dungeon/corridor.nbt").build().setId(0);
 //		CORRIDOR_2 = loadFromFile("models/dungeon/corridor_2.nbt").build().setId(1);
@@ -142,6 +143,8 @@ public class DungeonModels {
 		PRISON_CELL = loadFromFile("models/dungeon/prison_cell.nbt").build().setId(64);
 
 		SECRET_ROOM = loadFromFile("models/dungeon/secret_room.nbt").build().setId(70);
+		
+		SPAWNER_ROOM = loadFromFile("models/dungeon/spawner_room.nbt").build().setId(71);
 
 		STAIRCASE = loadFromFile("models/dungeon/staircase.nbt").build().setId(72);
 		STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.nbt").build().setId(73);

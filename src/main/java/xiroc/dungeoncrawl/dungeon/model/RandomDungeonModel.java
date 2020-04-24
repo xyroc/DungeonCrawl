@@ -24,6 +24,8 @@ public class RandomDungeonModel {
 
 	public static final IRandom<DungeonModel> CORRIDOR_LINKER = (
 			rand) -> DungeonModels.CORRIDOR_LINKERS[rand.nextInt(DungeonModels.CORRIDOR_LINKERS.length)];
+			
+	public static final IRandom<DungeonModel> SPAWNER_ROOM = (rand) -> DungeonModels.SPAWNER_ROOM;
 
 //	public static final IRandom<DungeonModel> CORRIDOR_TURN = (rand) -> {
 //		switch (rand.nextInt(3)) {

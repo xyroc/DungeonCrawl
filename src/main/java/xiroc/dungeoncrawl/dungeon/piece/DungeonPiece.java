@@ -104,6 +104,10 @@ public abstract class DungeonPiece extends StructurePiece {
 	}
 
 	public DungeonPiece(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
+		this(p_i51343_1_, p_i51343_2_, true);
+	}
+
+	public DungeonPiece(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_, boolean setupBoundingBox) {
 		super(p_i51343_1_, p_i51343_2_);
 		sides = new boolean[6];
 		sides[0] = p_i51343_2_.getBoolean("north");
@@ -123,7 +127,8 @@ public abstract class DungeonPiece extends StructurePiece {
 		stage = p_i51343_2_.getInt("stage");
 		modelID = p_i51343_2_.getInt("model");
 		rotation = RotationHelper.getRotation(p_i51343_2_.getInt("rotation"));
-		setupBoundingBox();
+		if (setupBoundingBox)
+			setupBoundingBox();
 	}
 
 	public abstract int getType();
@@ -296,8 +301,10 @@ public abstract class DungeonPiece extends StructurePiece {
 		int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
 				zEnd = Math.min(model.length, zStart + boundsIn.maxZ - boundsIn.minZ + 1);
 
-		DungeonCrawl.LOGGER.debug("buildRotated: model: {}, xStart: {}, zStart: {}, xEnd: {}, zEnd: {}", model.id,
-				xStart, zStart, xEnd, zEnd);
+		if (model.id > 55)
+			DungeonCrawl.LOGGER.debug(
+					"buildRotated: model: {}, x: {}, y: {}, z: {}, xStart: {}, zStart: {}, xEnd: {}, zEnd: {}",
+					pos.getX(), pos.getY(), pos.getZ(), model.id, xStart, zStart, xEnd, zEnd);
 
 		switch (rotation) {
 		case CLOCKWISE_90: {
@@ -353,7 +360,7 @@ public abstract class DungeonPiece extends StructurePiece {
 							state = CAVE_AIR;
 						else
 							state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
-									WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_180); //
+									WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_180);
 						if (state == null)
 							continue;
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + model.width - x - 1,
@@ -384,8 +391,8 @@ public abstract class DungeonPiece extends StructurePiece {
 
 		int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
 
-		DungeonCrawl.LOGGER.debug("Building entrances for model {}. pathStartX: {}, pathStartZ: {}", model.id,
-				pathStartX, pathStartZ);
+//		DungeonCrawl.LOGGER.debug("Building entrances for model {}. pathStartX: {}, pathStartZ: {}", model.id,
+//				pathStartX, pathStartZ);
 
 		for (int i = 0; i < sides.length - 2; i++) {
 			switch (Direction.byHorizontalIndex((i + 2) % 4)) {
@@ -405,8 +412,8 @@ public abstract class DungeonPiece extends StructurePiece {
 						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3, z + pathStartZ,
 								bounds);
 						stairs.facing = Direction.SOUTH;
-						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3, z + pathStartZ + 2,
-								bounds);
+						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3,
+								z + pathStartZ + 2, bounds);
 					}
 				}
 				continue;
@@ -445,8 +452,8 @@ public abstract class DungeonPiece extends StructurePiece {
 						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX, y + 3, z + model.length - 1,
 								bounds);
 						stairs.facing = Direction.EAST;
-						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3, z + model.length - 1,
-								bounds);
+						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3,
+								z + model.length - 1, bounds);
 					}
 				}
 				continue;

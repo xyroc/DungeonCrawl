@@ -1,6 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 /*
+ * 
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
@@ -11,6 +12,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.collect.Lists;
 
@@ -18,21 +20,23 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel.FeaturePosition;
 
 public class ModelHandler {
 
-	public static void readAndSaveModelToFile(String name, DungeonModel.EntranceType entranceType, World world, BlockPos pos,
-			int width, int height, int length, int spawnerType, int chestType) {
+	public static void readAndSaveModelToFile(String name, DungeonModel.EntranceType entranceType, World world,
+			BlockPos pos, int width, int height, int length, int spawnerType, int chestType) {
 		DungeonCrawl.LOGGER.info("Reading and writing {} to disk. Size: {}, {}, {}. Entrance Type: {}", name, width,
 				height, length, entranceType);
 		DungeonModelBlock[][][] model = new DungeonModelBlock[width][height][length];
 
-		List<Vec3i> featurePositions = Lists.newArrayList();
+		List<FeaturePosition> featurePositions = Lists.newArrayList();
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -43,18 +47,20 @@ public class ModelHandler {
 						model[x][y][z] = null;
 						continue;
 					} else if (state.getBlock() == Blocks.JIGSAW) {
-						featurePositions.add(new Vec3i(x, y, z));
+						DungeonCrawl.LOGGER.debug("Found a feature position at {} {} {}", x, y, z);
+						featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.FACING)));
 						continue;
 					}
-					model[x][y][z] = new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock(), spawnerType, chestType))
-							.loadDataFromState(state);
+					model[x][y][z] = new DungeonModelBlock(
+							DungeonModelBlockType.get(state.getBlock(), spawnerType, chestType))
+									.loadDataFromState(state);
 				}
 			}
 		}
 		writeModelToFile(
 				new DungeonModel(model, entranceType,
 						featurePositions.isEmpty() ? null
-								: featurePositions.toArray(new Vec3i[featurePositions.size()])),
+								: featurePositions.toArray(new FeaturePosition[featurePositions.size()])),
 				((ServerWorld) world).getSaveHandler().getWorldDirectory().getAbsolutePath() + "/" + name + ".nbt");
 	}
 
@@ -62,7 +68,7 @@ public class ModelHandler {
 		try {
 			DungeonCrawl.LOGGER.info("Writing a model to disk at {}. ", file);
 			if (model.featurePositions != null)
-				DungeonCrawl.LOGGER.info("There are {} feature positions.");
+				DungeonCrawl.LOGGER.info("There are {} feature positions.", model.featurePositions.length);
 			convertModelToNBT(model).write(new DataOutputStream(new FileOutputStream(file)));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,13 +134,16 @@ public class ModelHandler {
 			CompoundNBT amount = new CompoundNBT();
 			amount.putInt("amount", model.featurePositions.length);
 			list.add(amount);
-			for (Vec3i vec : model.featurePositions) {
+			for (FeaturePosition pos : model.featurePositions) {
 				CompoundNBT vecCompound = new CompoundNBT();
-				vecCompound.putInt("x", vec.getX());
-				vecCompound.putInt("y", vec.getY());
-				vecCompound.putInt("z", vec.getZ());
+				vecCompound.putInt("x", pos.position.getX());
+				vecCompound.putInt("y", pos.position.getY());
+				vecCompound.putInt("z", pos.position.getZ());
+				if (pos.facing != null)
+					vecCompound.putString("facing", pos.facing.toString());
 				list.add(vecCompound);
 			}
+			newModel.put("featurePositions", list);
 		}
 
 		newModel.put("model", blocks);
@@ -158,15 +167,21 @@ public class ModelHandler {
 			}
 		}
 
-		Vec3i[] featurePositions = null;
+		FeaturePosition[] featurePositions = null;
 
 		if (nbt.contains("featurePositions", 9)) {
 			ListNBT list = nbt.getList("featurePositions", 10);
 			int amount = list.getCompound(0).getInt("amount");
-			featurePositions = new Vec3i[amount];
+			featurePositions = new FeaturePosition[amount];
 			for (int i = 1; i < list.size(); i++) {
 				CompoundNBT compound = list.getCompound(i);
-				featurePositions[i - 1] = new Vec3i(compound.getInt("x"), compound.getInt("y"), compound.getInt("z"));
+				if (compound.contains("facing")) {
+					featurePositions[i - 1] = new FeaturePosition(compound.getInt("x"), compound.getInt("y"),
+							compound.getInt("z"), Direction.valueOf(compound.getString("facing").toUpperCase(Locale.ROOT)));
+				} else {
+					featurePositions[i - 1] = new FeaturePosition(compound.getInt("x"), compound.getInt("y"),
+							compound.getInt("z"));
+				}
 			}
 		}
 

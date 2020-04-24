@@ -362,11 +362,11 @@ public class DungeonLayer {
 				break;
 			}
 
-			DungeonCrawl.LOGGER.debug("-- Node Iteration of Layer {} --", layer);
-			nodeList.forEach((pos) -> {
-				DungeonCrawl.LOGGER.debug("Node: [{},{}]", pos.x, pos.z);
-			});
-			DungeonCrawl.LOGGER.debug("---");
+//			DungeonCrawl.LOGGER.debug("-- Node Iteration of Layer {} --", layer);
+//			nodeList.forEach((pos) -> {
+//				DungeonCrawl.LOGGER.debug("Node: [{},{}]", pos.x, pos.z);
+//			});
+//			DungeonCrawl.LOGGER.debug("---");
 
 			Position2D nodePos = nodeList.get(rand.nextInt(nodeList.size()));
 

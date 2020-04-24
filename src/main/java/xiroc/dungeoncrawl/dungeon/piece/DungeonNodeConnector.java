@@ -38,7 +38,7 @@ public class DungeonNodeConnector extends DungeonPiece {
 		DungeonModel model = DungeonModels.MAP.get(modelID);
 
 		DungeonCrawl.LOGGER.info("Node Model {}, Rotation is {}", modelID, rotation);
-		
+
 		buildRotated(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 				Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
@@ -55,18 +55,34 @@ public class DungeonNodeConnector extends DungeonPiece {
 		return DungeonModels.NODE_CONNECTORS[rand.nextInt(DungeonModels.NODE_CONNECTORS.length)].id;
 	}
 
+	public void firstTimeBoundingBoxSetup() {
+		DungeonModel model = DungeonModels.MAP.get(modelID);
+
+		if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
+			this.boundingBox = new MutableBoundingBox(x, y, z - (model.length - 3) / 2, x + 4, y + model.height - 1,
+					z + model.length - 1);
+		} else {
+			this.boundingBox = new MutableBoundingBox(x - (model.length - 3) / 2, y, z, x + +model.length - 1,
+					y + model.height - 1, z + 4);
+		}
+		
+		setRealPosition(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
+	}
+
 	@Override
 	public void setupBoundingBox() {
 		DungeonModel model = DungeonModels.MAP.get(modelID);
-		
-		DungeonCrawl.LOGGER.debug("Node Connector: width: {}, length: {}", model.width, model.length);
-		
-		if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180)
-			this.boundingBox = new MutableBoundingBox(x, y, z - (model.length - 3) / 2  , x + 4, y + model.height - 1, z + model.length - 1);
-		else
-			this.boundingBox = new MutableBoundingBox(x - (model.length - 3) / 2, y, z, x + + model.length - 1, y + model.height - 1, z + 4);
-		
-		setRealPosition(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
+
+		if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
+			this.boundingBox = new MutableBoundingBox(x, y, z, x + 4, y + model.height - 1,
+					z + model.length - 1);
+		} else {
+			this.boundingBox = new MutableBoundingBox(x, y, z, x + +model.length - 1,
+					y + model.height - 1, z + 4);
+		}
+
+
+		DungeonCrawl.LOGGER.debug("{}, {}", x, z);
 	}
 
 }

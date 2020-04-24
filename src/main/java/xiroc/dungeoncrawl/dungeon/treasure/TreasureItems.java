@@ -193,7 +193,7 @@ public class TreasureItems {
 			LUMA.setTag(nbt);
 		}
 
-		RANDOM_SPECIAL_ITEM = new TreasureEntry("minecraft:air", 1);
+		RANDOM_SPECIAL_ITEM = new TreasureEntry("minecraft:air");
 
 		POTION_HEALING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:healing"));
 		POTION_HEALING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_healing"));

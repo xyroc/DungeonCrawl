@@ -14,9 +14,11 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.Node;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
@@ -45,15 +47,12 @@ public class DungeonNodeRoom extends DungeonPiece {
 		this.large = nbt.getBoolean("large");
 		this.lootRoom = nbt.getBoolean("lootRoom");
 		setupBoundingBox();
-//		DungeonCrawl.LOGGER.debug("Position: ({}|{}|{}), Bounds: {} {} {}, Large: {}", x, y, z,
-//				boundingBox.maxX - boundingBox.minX, boundingBox.maxY - boundingBox.minY,
-//				boundingBox.maxZ - boundingBox.minZ, large);
 	}
 
 	@Override
 	public int determineModel(DungeonBuilder builder, Random rand) {
 		if (lootRoom)
-			return 0;
+			return DungeonModels.LOOT_ROOM.id;
 
 		large = stage < 2 ? false : rand.nextFloat() < 0.15;
 
@@ -75,7 +74,8 @@ public class DungeonNodeRoom extends DungeonPiece {
 		DungeonModel[] possibilities = large
 				? ModelCategory.getIntersection(base, ModelCategory.LARGE_NODE,
 						ModelCategory.getCategoryForStage(stage))
-				: ModelCategory.getIntersection(base, ModelCategory.getCategoryForStage(stage));
+				: ModelCategory.getIntersection(base, ModelCategory.NORMAL_NODE,
+						ModelCategory.getCategoryForStage(stage));
 
 		if (possibilities.length <= 0) {
 			DungeonCrawl.LOGGER.error("Didnt find a model for {} in stage {}. Connected Sides: {}, Base: {}", this,
@@ -100,11 +100,17 @@ public class DungeonNodeRoom extends DungeonPiece {
 			ChunkPos chunkPosIn) {
 		DungeonModel model = DungeonModels.MAP.get(modelID);
 
-		buildRotated(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
+		Vec3i offset = DungeonModels.getOffset(modelID);
+
+		buildRotated(model, worldIn, structureBoundingBoxIn,
+				new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ()), Theme.get(theme),
 				Theme.getSub(subTheme), Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT),
 				stage, rotation, false);
 
 		entrances(worldIn, structureBoundingBoxIn, Theme.get(theme), model);
+
+		if (Config.NO_SPAWNERS.get())
+			spawnMobs(worldIn, this, model.width, model.length, new int[] { 0 + offset.getY() });
 		return true;
 	}
 
@@ -134,7 +140,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.EAST);
 					connector.modelID = connector.determineModel(null, rand);
-					connector.setRealPosition(x + 17, y, z + 8);
+					connector.setRealPosition(x + 17, y, z + 7);
 					connector.setupBoundingBox();
 					list.add(connector);
 					continue;
@@ -143,7 +149,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.NORTH);
 					connector.modelID = connector.determineModel(null, rand);
-					connector.setRealPosition(x + 8, y, z - 5);
+					connector.setRealPosition(x + 7, y, z - 5);
 					connector.setupBoundingBox();
 					list.add(connector);
 					continue;
@@ -152,7 +158,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.SOUTH);
 					connector.modelID = connector.determineModel(null, rand);
-					connector.setRealPosition(x + 8, y, z + 17);
+					connector.setRealPosition(x + 7, y, z + 17);
 					connector.setupBoundingBox();
 					list.add(connector);
 					continue;
@@ -161,7 +167,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
 					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.WEST);
 					connector.modelID = connector.determineModel(null, rand);
-					connector.setRealPosition(x - 5, y, z + 8);
+					connector.setRealPosition(x - 5, y, z + 7);
 					connector.setupBoundingBox();
 					list.add(connector);
 					continue;

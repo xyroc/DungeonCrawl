@@ -267,7 +267,7 @@ public class DungeonLayer {
 		s.setPosition(start.x, start.z);
 		this.segments[s.posX][s.posZ] = new PlaceHolder(s).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
-		List<Position2D> nodeList = Lists.newArrayList();
+		List<Position2D> nodeList = Lists.newArrayList(), allNodes = Lists.newArrayList();
 
 		if (!lastLayer) {
 			int cycles = 0;
@@ -283,7 +283,8 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.WEST);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs)
+								.withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();
@@ -298,7 +299,8 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.SOUTH);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs)
+								.withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();
@@ -313,7 +315,8 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.NORTH);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs)
+								.withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();
@@ -328,7 +331,8 @@ public class DungeonLayer {
 						DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
 						stairs.openSide(Direction.EAST);
 						stairs.setPosition(end.x, end.z);
-						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+						this.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs)
+								.withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 						break loop;
 					} else {
 						facing = facing.rotateY();
@@ -341,12 +345,14 @@ public class DungeonLayer {
 			}
 
 			nodeList.add(end);
+			allNodes.add(end);
 
 			buildConnection(start, end);
 
 		}
 
 		nodeList.add(start);
+		allNodes.add(start);
 
 		int nodes = 3 + layer, rooms = 4 + 2 * layer;
 
@@ -355,6 +361,12 @@ public class DungeonLayer {
 				DungeonCrawl.LOGGER.debug("Nodelist is empty; breaking out of node generation. {} nodes left.", nodes);
 				break;
 			}
+
+			DungeonCrawl.LOGGER.debug("-- Node Iteration of Layer {} --", layer);
+			nodeList.forEach((pos) -> {
+				DungeonCrawl.LOGGER.debug("Node: [{},{}]", pos.x, pos.z);
+			});
+			DungeonCrawl.LOGGER.debug("---");
 
 			Position2D nodePos = nodeList.get(rand.nextInt(nodeList.size()));
 
@@ -367,7 +379,7 @@ public class DungeonLayer {
 				continue;
 			}
 
-			if (createNodeRoom(builder, nodePos, direction, nodeList, rand, layer, 0))
+			if (createNodeRoom(builder, nodePos, direction, nodeList, allNodes, rand, layer, 0))
 				nodes--;
 			else
 				nodeList.remove(nodePos);
@@ -391,25 +403,25 @@ public class DungeonLayer {
 		}
 
 		while (rooms > 0) {
-			if (nodeList.isEmpty()) {
-				DungeonCrawl.LOGGER.debug("Nodelist is empty; breaking out of room generation. {} rooms left.", rooms);
+			if (allNodes.isEmpty()) {
+				DungeonCrawl.LOGGER.debug("allNodes is empty; breaking out of room generation. {} rooms left.", rooms);
 				break;
 			}
-			Position2D nodePos = nodeList.get(rand.nextInt(nodeList.size()));
+			Position2D nodePos = allNodes.get(rand.nextInt(allNodes.size()));
 
 			PlaceHolder node = this.segments[nodePos.x][nodePos.z];
 
 			Direction direction = findNext(node.reference, RotationHelper.RANDOM_FACING_FLAT.roll(rand));
 
 			if (direction == null) {
-				nodeList.remove(nodePos);
+				allNodes.remove(nodePos);
 				continue;
 			}
 
-			if (createRoom(builder, nodePos, direction, nodeList, layer, 0))
+			if (createRoom(builder, nodePos, direction, allNodes, layer, 0))
 				rooms--;
 			else
-				nodeList.remove(nodePos);
+				allNodes.remove(nodePos);
 		}
 
 	}
@@ -543,13 +555,13 @@ public class DungeonLayer {
 	}
 
 	public boolean createNodeRoom(DungeonBuilder builder, Position2D pos, Direction direction, List<Position2D> list,
-			Random rand, int layer, int t) {
+			List<Position2D> allNodes, Random rand, int layer, int t) {
 
 		if (t > 3)
 			return false;
 
 		if (this.segments[pos.x][pos.z].reference.sides[(direction.getHorizontalIndex() + 2) % 4])
-			return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+			return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 
 		switch (direction) {
 		case EAST:
@@ -560,7 +572,7 @@ public class DungeonLayer {
 
 				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
 						false))
-					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+					return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 
 				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
 				nodeRoom.setPosition(center.x, center.z);
@@ -582,9 +594,10 @@ public class DungeonLayer {
 					if (rand.nextFloat() < 0.25)
 						list.add(center);
 				}
+				allNodes.add(center);
 				return true;
 			} else
-				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+				return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 		case NORTH:
 			int north = pos.z;
 			if (north > 3) {
@@ -593,7 +606,7 @@ public class DungeonLayer {
 
 				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
 						false))
-					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+					return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 
 				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
 				nodeRoom.setPosition(center.x, center.z);
@@ -615,9 +628,10 @@ public class DungeonLayer {
 					if (rand.nextFloat() < 0.25)
 						list.add(center);
 				}
+				allNodes.add(center);
 				return true;
 			} else
-				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+				return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 		case SOUTH:
 			int south = Dungeon.SIZE - pos.z - 1;
 			if (south > 3) {
@@ -626,7 +640,7 @@ public class DungeonLayer {
 
 				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
 						false))
-					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+					return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 
 				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
 				nodeRoom.setPosition(center.x, center.z);
@@ -648,9 +662,10 @@ public class DungeonLayer {
 					if (rand.nextFloat() < 0.25)
 						list.add(center);
 				}
+				allNodes.add(center);
 				return true;
 			} else
-				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+				return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 		case WEST:
 			int west = pos.x;
 			if (west > 3) {
@@ -659,7 +674,7 @@ public class DungeonLayer {
 
 				if (!DungeonFeatures.canPlacePieceWithHeight(builder, layer, center.x - 1, center.z - 1, 3, 3, 0,
 						false))
-					return createNodeRoom(builder, pos, direction, list, rand, layer, ++t);
+					return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 
 				DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
 				nodeRoom.setPosition(center.x, center.z);
@@ -681,9 +696,10 @@ public class DungeonLayer {
 					if (rand.nextFloat() < 0.25)
 						list.add(center);
 				}
+				allNodes.add(center);
 				return true;
 			} else
-				return createNodeRoom(builder, pos, direction.rotateY(), list, rand, layer, ++t);
+				return createNodeRoom(builder, pos, direction.rotateY(), list, allNodes, rand, layer, ++t);
 		default:
 			return false;
 
@@ -703,7 +719,7 @@ public class DungeonLayer {
 		switch (direction) {
 		case EAST:
 			int east = Dungeon.SIZE - pos.x - 1;
-			if (east > 2) {
+			if (east > 1) {
 				int length = Math.min(east, 4);
 				Position2D roomPos = new Position2D(pos.x + length, pos.z);
 
@@ -725,7 +741,7 @@ public class DungeonLayer {
 				return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
 		case NORTH:
 			int north = pos.z;
-			if (north > 2) {
+			if (north > 1) {
 				int length = Math.min(north, 4);
 				Position2D roomPos = new Position2D(pos.x, pos.z - length);
 
@@ -747,7 +763,7 @@ public class DungeonLayer {
 				return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
 		case SOUTH:
 			int south = Dungeon.SIZE - pos.z - 1;
-			if (south > 2) {
+			if (south > 1) {
 				int length = Math.min(south, 4);
 				Position2D roomPos = new Position2D(pos.x, pos.z + length);
 
@@ -769,7 +785,7 @@ public class DungeonLayer {
 				return createRoom(builder, pos, direction.rotateY(), list, layer, ++t);
 		case WEST:
 			int west = pos.x;
-			if (west > 2) {
+			if (west > 1) {
 				int length = Math.min(west, 4);
 				Position2D roomPos = new Position2D(pos.x - length, pos.z);
 

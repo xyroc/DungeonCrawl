@@ -7,10 +7,10 @@ package xiroc.dungeoncrawl.dungeon.piece;
 import java.util.Random;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -70,10 +70,10 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 			return false;
 		}
 
-		Tuple<Integer, Integer> offset = DungeonBuilder.ENTRANCE_OFFSET_DATA.get(entrance.id);
+		Vec3i offset = DungeonModels.getOffset(entrance.id);
 
-		DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, Offset: {}; ({}|{})",
-				x, cursorHeight, z, entrance, entrance.id, offset, offset.getA(), offset.getB());
+		DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}",
+				x, cursorHeight, z, entrance, entrance.id, offset);
 
 		DungeonCrawl.LOGGER.debug("StructureBoundingBox: [{},{},{}] -> [{},{},{}]", structureBoundingBoxIn.minX,
 				structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ, structureBoundingBoxIn.maxX,
@@ -89,7 +89,7 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 //				entrance.height, entrance.length - startZ);
 
 		build(entrance, worldIn, structureBoundingBoxIn,
-				new BlockPos(x + offset.getA(), cursorHeight, z + offset.getB()), Theme.get(theme),
+				new BlockPos(x + offset.getX(), cursorHeight + offset.getY(), z + offset.getZ()), Theme.get(theme),
 				Theme.getSub(subTheme), Treasure.Type.SUPPLY, stage, true);
 
 //		DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR).process(worldIn,

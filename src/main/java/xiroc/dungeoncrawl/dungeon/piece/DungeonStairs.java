@@ -6,6 +6,7 @@ package xiroc.dungeoncrawl.dungeon.piece;
 
 import java.util.Random;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -29,7 +30,7 @@ public class DungeonStairs extends DungeonPiece {
 		super(StructurePieceTypes.STAIRS, p_i51343_2_);
 		this.stairType = p_i51343_2_.getInt("stairType");
 	}
-	
+
 	@Override
 	public int determineModel(DungeonBuilder builder, Random rand) {
 		return DungeonModels.STAIRCASE.id;
@@ -49,12 +50,12 @@ public class DungeonStairs extends DungeonPiece {
 			return true;
 		}
 		case 1: {
-			DungeonModel model = DungeonModels.STAIRS_BOTTOM;
+			DungeonModel model = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2 : DungeonModels.STAIRS_BOTTOM;
 			if (model == null)
 				return false;
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
-			addWalls(this, worldIn, structureBoundingBoxIn, Theme.get(theme));
+			entrances(worldIn, structureBoundingBoxIn);
 			return true;
 		}
 		case 2: {
@@ -70,57 +71,42 @@ public class DungeonStairs extends DungeonPiece {
 		}
 
 	}
-	
+
+	public void entrances(IWorld world, MutableBoundingBox bounds) {
+		BlockState ironBars = Blocks.IRON_BARS.getDefaultState();
+
+		if (sides[0]) {
+			for (int x0 = 3; x0 < 6; x0++)
+				if (world.getBlockState(new BlockPos(x + x0, y, z)).isSolid())
+					for (int y0 = 1; y0 < 4; y0++)
+						setBlockState(world, ironBars, x + x0, y + y0, z, bounds);
+		}
+
+		if (sides[1]) {
+			for (int z0 = 3; z0 < 6; z0++)
+				if (world.getBlockState(new BlockPos(x + 8, y, z + z0)).isSolid())
+					for (int y0 = 1; y0 < 4; y0++)
+						setBlockState(world, ironBars, x + 8, y + y0, z + z0, bounds);
+		}
+
+		if (sides[2]) {
+			for (int x0 = 3; x0 < 6; x0++)
+				if (world.getBlockState(new BlockPos(x + x0, y, z + 8)).isSolid())
+					for (int y0 = 1; y0 < 4; y0++)
+						setBlockState(world, ironBars, x + x0, y + y0, z + 8, bounds);
+		}
+
+		if (sides[3]) {
+			for (int z0 = 3; z0 < 6; z0++)
+				if (world.getBlockState(new BlockPos(x, y, z + z0)).isSolid())
+					for (int y0 = 1; y0 < 4; y0++)
+						setBlockState(world, ironBars, x, y + y0, z + z0, bounds);
+		}
+	}
+
 	@Override
 	public void setupBoundingBox() {
 		this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
-	}
-
-	public void addWalls(DungeonPiece piece, IWorld world, MutableBoundingBox boundsIn, Theme theme) {
-		if (!piece.sides[0])
-			for (int x = 2; x < 6; x++)
-				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.solid.get(), world, boundsIn, null, piece.x + x, piece.y + y, piece.z,
-							this.theme, 0, true);
-		else
-			for (int x = 2; x < 6; x++)
-				for (int y = 2; y < 6; y++)
-					if (!world.getBlockState(new BlockPos(piece.x + x, piece.y + y, piece.z)).isSolid())
-						piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, boundsIn, null, piece.x + x,
-								piece.y + y, piece.z, this.theme, 0, true);
-		if (!piece.sides[1])
-			for (int z = 2; z < 6; z++)
-				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.solid.get(), world, boundsIn, null, piece.x + 7, piece.y + y, piece.z + z,
-							this.theme, 0, true);
-		else
-			for (int z = 2; z < 6; z++)
-				for (int y = 2; y < 6; y++)
-					if (!world.getBlockState(new BlockPos(piece.x + 7, piece.y + y, piece.z + z)).isSolid())
-						piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, boundsIn, null, piece.x + 7,
-								piece.y + y, piece.z + z, this.theme, 0, true);
-		if (!piece.sides[2])
-			for (int x = 2; x < 6; x++)
-				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.solid.get(), world, boundsIn, null, piece.x + x, piece.y + y, piece.z + 7,
-							this.theme, 0, true);
-		else
-			for (int x = 2; x < 6; x++)
-				for (int y = 2; y < 6; y++)
-					if (!world.getBlockState(new BlockPos(piece.x + x, piece.y + y, piece.z + 7)).isSolid())
-						piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, boundsIn, null, piece.x + x,
-								piece.y + y, piece.z + 7, this.theme, 0, true);
-		if (!piece.sides[3])
-			for (int z = 2; z < 6; z++)
-				for (int y = 2; y < 6; y++)
-					piece.setBlockState(theme.solid.get(), world, boundsIn, null, piece.x, piece.y + y, piece.z + z,
-							this.theme, 0, true);
-		else
-			for (int z = 2; z < 6; z++)
-				for (int y = 2; y < 6; y++)
-					if (!world.getBlockState(new BlockPos(piece.x, piece.y + y, piece.z + z)).isSolid())
-						piece.setBlockState(Blocks.IRON_BARS.getDefaultState(), world, boundsIn, null, piece.x,
-								piece.y + y, piece.z + z, this.theme, 0, true);
 	}
 
 	@Override

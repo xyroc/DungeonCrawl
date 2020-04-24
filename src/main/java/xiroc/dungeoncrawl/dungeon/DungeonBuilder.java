@@ -10,7 +10,6 @@ import java.util.Random;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
@@ -38,7 +37,6 @@ import xiroc.dungeoncrawl.util.Position2D;
 
 public class DungeonBuilder {
 
-	public static final HashMap<Integer, Tuple<Integer, Integer>> ENTRANCE_OFFSET_DATA;
 	public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
 	private static final DungeonModel[] ENTRANCES = new DungeonModel[] { DungeonModels.ENTRANCE };
@@ -67,9 +65,7 @@ public class DungeonBuilder {
 	public int theme, subTheme;
 
 	static {
-		ENTRANCE_OFFSET_DATA = new HashMap<Integer, Tuple<Integer, Integer>>();
-		ENTRANCE_OFFSET_DATA.put(21, new Tuple<Integer, Integer>(-2 , -2));
-		ENTRANCE_OFFSET_DATA.put(33, new Tuple<Integer, Integer>(-3, -3));
+//		ENTRANCE_OFFSET_DATA.put(21, new Tuple<Integer, Integer>(-2 , -2));
 
 		ENTRANCE_PROCESSORS = new HashMap<Integer, EntranceProcessor>();
 //		ENTRANCE_PROCESSORS.put(33, (world, pos, theme, piece) -> {

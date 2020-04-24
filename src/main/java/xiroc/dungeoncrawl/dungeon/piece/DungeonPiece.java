@@ -229,6 +229,12 @@ public abstract class DungeonPiece extends StructurePiece {
 //		boundsIn.expandTo(new MutableBoundingBox(pos, pos));
 		IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(),
 				treasureType, theme, lootLevel);
+
+		IFluidState ifluidstate = world.getFluidState(pos);
+		if (!ifluidstate.isEmpty()) {
+			world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
+		}
+
 		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock()))
 			world.getChunk(pos).markBlockForPostprocessing(pos);
 	}
@@ -388,18 +394,18 @@ public abstract class DungeonPiece extends StructurePiece {
 					if (!sides[i])
 						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
 							for (int y0 = 1; y0 < 4; y0++)
-								setBlockState(world, t.solid.get(), x + model.width, y + y0, z + z0, bounds);
+								setBlockState(world, t.solid.get(), x + model.width - 1, y + y0, z + z0, bounds);
 				} else {
 					if (sides[i]) {
 						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
 							for (int y0 = 1; y0 < 3; y0++)
-								setBlockState(world, CAVE_AIR, x + model.width, y + y0, z + z0, bounds);
-						setBlockState(world, CAVE_AIR, x + model.width, y + 3, z + pathStartZ + 1, bounds);
+								setBlockState(world, CAVE_AIR, x + model.width - 1, y + y0, z + z0, bounds);
+						setBlockState(world, CAVE_AIR, x + model.width - 1, y + 3, z + pathStartZ + 1, bounds);
 						stairs.facing = Direction.NORTH;
-						setBlockState(world, stairs.create(t.stairs.get()), x + model.width, y + 3, z + pathStartZ,
+						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3, z + pathStartZ,
 								bounds);
 						stairs.facing = Direction.SOUTH;
-						setBlockState(world, stairs.create(t.stairs.get()), x + model.width, y + 3, z + pathStartZ + 2,
+						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3, z + pathStartZ + 2,
 								bounds);
 					}
 				}
@@ -428,18 +434,18 @@ public abstract class DungeonPiece extends StructurePiece {
 					if (!sides[i])
 						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
 							for (int y0 = 1; y0 < 4; y0++)
-								setBlockState(world, t.solid.get(), x + x0, y + y0, z + model.length, bounds);
+								setBlockState(world, t.solid.get(), x + x0, y + y0, z + model.length - 1, bounds);
 				} else {
 					if (sides[i]) {
 						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
 							for (int y0 = 1; y0 < 3; y0++)
-								setBlockState(world, CAVE_AIR, x + x0, y + y0, z + model.length, bounds);
-						setBlockState(world, CAVE_AIR, x + pathStartX + 1, y + 3, z + model.length, bounds);
+								setBlockState(world, CAVE_AIR, x + x0, y + y0, z + model.length - 1, bounds);
+						setBlockState(world, CAVE_AIR, x + pathStartX + 1, y + 3, z + model.length - 1, bounds);
 						stairs.facing = Direction.WEST;
-						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX, y + 3, z + model.length,
+						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX, y + 3, z + model.length - 1,
 								bounds);
 						stairs.facing = Direction.EAST;
-						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3, z + model.length,
+						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3, z + model.length - 1,
 								bounds);
 					}
 				}

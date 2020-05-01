@@ -117,7 +117,7 @@ public class DungeonBuilder {
 //		this.start = new Position2D(15, 15);
 		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
 
-		this.layers = new DungeonLayer[(startPos.getY() - 4) / 9];
+		this.layers = new DungeonLayer[Math.min(5, startPos.getY() / 9)];
 		this.maps = new DungeonLayerMap[layers.length];
 
 		this.statTracker = new DungeonStatTracker(layers.length);
@@ -145,7 +145,7 @@ public class DungeonBuilder {
 
 		for (int i = 0; i < layers.length; i++) {
 //			this.layers[i].extend(this, maps[i], rand, i);
-			buildLayer(layers[i], i, startPos);
+			processLayer(layers[i], i, startPos);
 		}
 
 		DungeonPiece entrance = new DungeonEntranceBuilder(null, DungeonPiece.DEFAULT_NBT);
@@ -171,10 +171,11 @@ public class DungeonBuilder {
 //					piece.theme = theme;
 //				piece.subTheme = subTheme;
 //			}
+		
 		return list;
 	}
 
-	public void buildLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
+	public void processLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
 		int stage = lyr > 2 ? 2 : lyr;
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {

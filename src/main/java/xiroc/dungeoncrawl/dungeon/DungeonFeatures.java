@@ -14,7 +14,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorTrap;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
@@ -36,37 +36,47 @@ public class DungeonFeatures {
 
 	static {
 		CORRIDOR_FEATURES = Lists.newArrayList();
-//		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-//			if (stage > 1 && stage != 4) {
-//				List<Direction> list = Lists.newArrayList();
-//				Position2D center = new Position2D(x, z);
-//				for (int i = 0; i < 4; i++)
-//					if (layer.segments[x][z].reference.sides[i]) {
-//						Position2D pos = center.shift(Direction.byHorizontalIndex((i + 2) % 4), 1);
-//						PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
-//						if (placeHolder != null)
-//							if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
-//									&& ((DungeonCorridor) placeHolder.reference).isStraight())
-//								list.add(Direction.byHorizontalIndex((i + 2) % 4));
-//							else
-//								return false;
-//					}
-//				if (list.size() > 1) {
-//
-//					for (Direction direction : list) {
-//						Position2D pos = center.shift(direction, 1);
-//						DungeonCorridorLarge corridor = new DungeonCorridorLarge(
-//								(DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
-//						corridor.rotation = RotationHelper.getRotationFromFacing(direction.getOpposite());
-//						layer.segments[pos.x][pos.z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
-//					}
-//
-//					return true;
-//				} else
-//					return false;
-//			}
-//			return false;
-//		});
+		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+			if (stage > 1 && stage != 4 && rand.nextFloat() < 0.5) {
+				List<Direction> list = Lists.newArrayList();
+				Position2D center = new Position2D(x, z);
+
+				for (int i = 0; i < 4; i++) {
+					if (layer.segments[x][z].reference.sides[i]) {
+						Position2D pos = center.shift(Direction.byHorizontalIndex(i + 2), 1);
+						PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
+						if (placeHolder != null) {
+							if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
+									&& ((DungeonCorridor) placeHolder.reference).isStraight()) {
+								list.add(Direction.byHorizontalIndex(i + 2));
+							} else {
+								return false;
+							}
+						}
+					}
+				}
+
+				if (list.size() > 1 && list.size() < 4) {
+
+					for (Direction direction : list) {
+						Position2D pos = center.shift(direction, 1);
+						DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+								(DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
+						corridor.rotation = RotationHelper.getRotationFromFacing(direction.getOpposite());
+						layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
+								.withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+					}
+
+					DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+							(DungeonCorridor) layer.segments[x][z].reference, 1);
+					layer.segments[x][z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+					return true;
+				} else {
+					return false;
+				}
+			}
+			return false;
+		});
 //		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 //			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2, true)) {
 //				DungeonCorridorHole hole = new DungeonCorridorHole(null, DungeonPiece.DEFAULT_NBT);

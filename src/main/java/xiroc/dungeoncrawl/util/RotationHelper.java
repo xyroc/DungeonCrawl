@@ -123,11 +123,11 @@ public class RotationHelper {
 	public static Rotation getRotationFromFacing(Direction facing) {
 		switch (facing) {
 		case NORTH:
-			return Rotation.CLOCKWISE_90;
+			return Rotation.COUNTERCLOCKWISE_90;
 		case EAST:
 			return Rotation.NONE;
 		case SOUTH:
-			return Rotation.COUNTERCLOCKWISE_90;
+			return Rotation.CLOCKWISE_90;
 		case WEST:
 			return Rotation.CLOCKWISE_180;
 		default:
@@ -138,11 +138,11 @@ public class RotationHelper {
 	public static Rotation getOppositeRotationFromFacing(Direction facing) {
 		switch (facing) {
 		case NORTH:
-			return Rotation.COUNTERCLOCKWISE_90;
+			return Rotation.CLOCKWISE_90;
 		case EAST:
 			return Rotation.CLOCKWISE_180;
 		case SOUTH:
-			return Rotation.CLOCKWISE_90;
+			return Rotation.COUNTERCLOCKWISE_90;
 		case WEST:
 			return Rotation.NONE;
 		default:

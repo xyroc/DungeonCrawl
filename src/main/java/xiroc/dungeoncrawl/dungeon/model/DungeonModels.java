@@ -76,9 +76,9 @@ public class DungeonModels {
 		FOOD_SIDE_ROOM = loadFromFile("models/dungeon/food_side_room.nbt").build().setId(24);
 
 		LARGE_CORRIDOR_START = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(28);
-		LARGE_CORRIDOR_STRAIGHT = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(29);
-		LARGE_CORRIDOR_TURN = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(30);
-		LARGE_CORRIDOR_OPEN = loadFromFile("models/dungeon/large_corridor_start.nbt").build().setId(31);
+		LARGE_CORRIDOR_STRAIGHT = loadFromFile("models/dungeon/large_corridor_straight.nbt").build().setId(29);
+		LARGE_CORRIDOR_TURN = loadFromFile("models/dungeon/large_corridor_turn.nbt").build().setId(30);
+		LARGE_CORRIDOR_OPEN = loadFromFile("models/dungeon/large_corridor_open.nbt").build().setId(31);
 
 		FORGE = loadFromFile("models/dungeon/forge.nbt").build().set(32, ModelCategory.STAGE_1, ModelCategory.STAGE_2,
 				ModelCategory.NODE_DEAD_END);
@@ -98,7 +98,7 @@ public class DungeonModels {
 				ModelCategory.NODE_DEAD_END);
 
 		NODE_2 = loadFromFile("models/dungeon/node_2.nbt").build().set(37, ModelCategory.STAGE_1, ModelCategory.STAGE_2,
-				ModelCategory.NORMAL_NODE, ModelCategory.NODE, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN,
+				ModelCategory.NORMAL_NODE, ModelCategory.NODE_STRAIGHT, ModelCategory.NODE_OPEN,
 				ModelCategory.NODE_TURN, ModelCategory.NODE_DEAD_END);
 
 		NODE_3 = loadFromFile("models/dungeon/node_3.nbt").build().set(38, ModelCategory.STAGE_1, ModelCategory.STAGE_2,
@@ -109,7 +109,7 @@ public class DungeonModels {
 				ModelCategory.NORMAL_NODE, ModelCategory.STAGE_3, ModelCategory.STAGE_4, ModelCategory.NODE_TURN,
 				ModelCategory.NODE_DEAD_END);
 
-		NODE_CATACOMB_DEAD_END = loadFromFile("models/dungeon/node_catacomb_dead_end.nbt").build().set(40,
+		NODE_CATACOMB_DEAD_END = loadFromFile("models/dungeon/node_catacomb_dead_end.nbt").build().set(40, ModelCategory.NORMAL_NODE, 
 				ModelCategory.STAGE_3, ModelCategory.STAGE_4, ModelCategory.NODE_DEAD_END);
 
 		NODE_TURN = loadFromFile("models/dungeon/node_turn.nbt").build().set(41, ModelCategory.NORMAL_NODE,
@@ -163,7 +163,7 @@ public class DungeonModels {
 
 		// -Offsets- //
 
-		OFFSETS.put(21, new Vec3i(-3, 0, -3));
+		OFFSETS.put(21, new Vec3i(-2, 0, -2));
 
 		OFFSETS.put(42, new Vec3i(0, -1, 0));
 		OFFSETS.put(43, new Vec3i(0, -1, 0));

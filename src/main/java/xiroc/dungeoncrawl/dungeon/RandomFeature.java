@@ -1,7 +1,5 @@
 package xiroc.dungeoncrawl.dungeon;
 
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorRoom;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorTrap;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 
@@ -16,16 +14,6 @@ public class RandomFeature {
 	public static final int[] SIDE_ROOM_IDS = new int[] { 30, 31, 34 };
 
 	public static final int[] LARGE_ROOM_IDS = new int[] { 25, 25, 36 };
-
-	public static final IRandom<DungeonPiece> CORRIDOR_FEATURE = (rand) -> {
-		switch (rand.nextInt(2)) {
-		case 0:
-			return new DungeonCorridorTrap(null, DungeonPiece.DEFAULT_NBT);
-		case 1:
-			return new DungeonCorridorRoom(null, DungeonPiece.DEFAULT_NBT);
-		}
-		return null;
-	};
 
 	public static final IRandom<Integer> SIDE_ROOMS = (rand) -> SIDE_ROOM_IDS[rand.nextInt(SIDE_ROOM_IDS.length)];
 

@@ -9,8 +9,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorHole;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorRoom;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorTrap;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
@@ -30,10 +28,6 @@ public class StructurePieceTypes {
 	public static final IStructurePieceType STAIRS = IStructurePieceType.register(DungeonStairs::new, create("stairs"));
 	public static final IStructurePieceType HOLE = IStructurePieceType.register(DungeonCorridorHole::new,
 			create("corridor_hole"));
-	public static final IStructurePieceType CORRIDOR_ROOM = IStructurePieceType.register(DungeonCorridorRoom::new,
-			create("corridor_room"));
-	public static final IStructurePieceType CORRIDOR_TRAP = IStructurePieceType.register(DungeonCorridorTrap::new,
-			create("trap"));
 	public static final IStructurePieceType SIDE_ROOM = IStructurePieceType.register(DungeonSideRoom::new,
 			create("side_room"));
 	public static final IStructurePieceType NODE_ROOM = IStructurePieceType.register(DungeonNodeRoom::new,

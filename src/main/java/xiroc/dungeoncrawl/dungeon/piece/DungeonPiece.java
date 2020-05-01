@@ -316,7 +316,7 @@ public abstract class DungeonPiece extends StructurePiece {
 							state = CAVE_AIR;
 						else
 							state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
-									WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_90); //
+									WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_90);
 						if (state == null)
 							continue;
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + model.length - z - 1,
@@ -338,7 +338,7 @@ public abstract class DungeonPiece extends StructurePiece {
 							state = CAVE_AIR;
 						else
 							state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
-									WeightedRandomBlock.RANDOM, lootLevel, Rotation.COUNTERCLOCKWISE_90); //
+									WeightedRandomBlock.RANDOM, lootLevel, Rotation.COUNTERCLOCKWISE_90);
 						if (state == null)
 							continue;
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + z, pos.getY() + y,
@@ -398,10 +398,11 @@ public abstract class DungeonPiece extends StructurePiece {
 			switch (Direction.byHorizontalIndex((i + 2) % 4)) {
 			case EAST:
 				if (open) {
-					if (!sides[i])
+					if (!sides[i]) {
 						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
 							for (int y0 = 1; y0 < 4; y0++)
 								setBlockState(world, t.solid.get(), x + model.width - 1, y + y0, z + z0, bounds);
+					}
 				} else {
 					if (sides[i]) {
 						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
@@ -419,10 +420,11 @@ public abstract class DungeonPiece extends StructurePiece {
 				continue;
 			case NORTH:
 				if (open) {
-					if (!sides[i])
+					if (!sides[i]) {
 						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
 							for (int y0 = 1; y0 < 4; y0++)
 								setBlockState(world, t.solid.get(), x + x0, y + y0, z, bounds);
+					}
 				} else {
 					if (sides[i]) {
 						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
@@ -438,10 +440,11 @@ public abstract class DungeonPiece extends StructurePiece {
 				continue;
 			case SOUTH:
 				if (open) {
-					if (!sides[i])
+					if (!sides[i]) {
 						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
 							for (int y0 = 1; y0 < 4; y0++)
 								setBlockState(world, t.solid.get(), x + x0, y + y0, z + model.length - 1, bounds);
+					}
 				} else {
 					if (sides[i]) {
 						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
@@ -459,10 +462,11 @@ public abstract class DungeonPiece extends StructurePiece {
 				continue;
 			case WEST:
 				if (open) {
-					if (!sides[i])
+					if (!sides[i]) {
 						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
 							for (int y0 = 1; y0 < 4; y0++)
 								setBlockState(world, t.solid.get(), x, y + y0, z + z0, bounds);
+					}
 				} else {
 					if (sides[i]) {
 						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
@@ -531,7 +535,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
 	/**
 	 * Returns if it is possible to connect another room / corridor to this piece at
-	 * the given side.
+	 * the given side. (currently unused)
 	 * 
 	 * @param side The side where the connection would take place
 	 */

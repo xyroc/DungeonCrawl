@@ -42,8 +42,6 @@ public class DungeonStairs extends DungeonPiece {
 		switch (stairType) {
 		case 0: {
 			DungeonModel model = DungeonModels.STAIRCASE;
-			if (model == null)
-				return false;
 			Theme buildTheme = Theme.get(theme);
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), buildTheme, Theme.getSub(subTheme),
 					Treasure.Type.DEFAULT, stage, true);
@@ -51,19 +49,16 @@ public class DungeonStairs extends DungeonPiece {
 		}
 		case 1: {
 			DungeonModel model = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2 : DungeonModels.STAIRS_BOTTOM;
-			if (model == null)
-				return false;
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
-			entrances(worldIn, structureBoundingBoxIn);
+			ironBars(worldIn, structureBoundingBoxIn);
 			return true;
 		}
 		case 2: {
 			DungeonModel model = DungeonModels.STAIRS_TOP;
-			if (model == null)
-				return false;
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
+			entrances(worldIn, structureBoundingBoxIn, Theme.get(theme), model);
 			return true;
 		}
 		default:
@@ -72,7 +67,7 @@ public class DungeonStairs extends DungeonPiece {
 
 	}
 
-	public void entrances(IWorld world, MutableBoundingBox bounds) {
+	public void ironBars(IWorld world, MutableBoundingBox bounds) {
 		BlockState ironBars = Blocks.IRON_BARS.getDefaultState();
 
 		if (sides[0]) {

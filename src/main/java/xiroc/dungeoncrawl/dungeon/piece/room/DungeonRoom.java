@@ -1,14 +1,13 @@
 package xiroc.dungeoncrawl.dungeon.piece.room;
 
-import java.util.List;
-
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import java.util.Random;
-
 import com.google.common.collect.Lists;
+
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,6 +17,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -33,8 +33,12 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 public class DungeonRoom extends DungeonPiece {
 
+	public int chests, chestsPlaced;
+
 	public DungeonRoom(TemplateManager manager, CompoundNBT p_i51343_2_) {
 		super(StructurePieceTypes.ROOM, p_i51343_2_);
+		chests = p_i51343_2_.getInt("chests");
+		chestsPlaced = p_i51343_2_.getInt("chestsPlaced");
 	}
 
 	@Override
@@ -56,21 +60,27 @@ public class DungeonRoom extends DungeonPiece {
 		build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme),
 				Treasure.Type.DEFAULT, stage, true);
 
-		DungeonCrawl.LOGGER.debug("Room FeaturePositions: {}",
-				model.featurePositions != null ? model.featurePositions.length : 0);
+		DungeonCrawl.LOGGER.debug("Room at ({},{},{}), connectedSides: {}", x, y, z, connectedSides);
 
 		if (model.featurePositions != null && model.featurePositions.length > 0) {
-			int chests = 1 + randomIn.nextInt(Math.min(1, model.featurePositions.length));
+			if (chests == 0)
+				chests = 1 + randomIn.nextInt(Math.min(2, model.featurePositions.length));
 			List<FeaturePosition> positions = Lists.newArrayList(model.featurePositions);
-			for (int i = 0; i < chests; i++) {
+			for (int i = chestsPlaced; i < chests;) {
+				if (positions.isEmpty())
+					break;
 				FeaturePosition position = positions.get(randomIn.nextInt(positions.size()));
 				BlockPos pos = position.blockPos(x, y, z);
+				DungeonCrawl.LOGGER.debug("Chest {}", pos);
 				if (structureBoundingBoxIn.isVecInside(pos)) {
+					DungeonCrawl.LOGGER.debug("Placing the chest at {}", pos);
 					IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(worldIn,
 							Blocks.CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
 									position.facing),
 							pos, randomIn, Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT),
 							chests, stage);
+					chestsPlaced++;
+					i++;
 				}
 				positions.remove(position);
 			}
@@ -80,16 +90,24 @@ public class DungeonRoom extends DungeonPiece {
 
 		if (Config.NO_SPAWNERS.get())
 			spawnMobs(worldIn, this, model.width, model.length, new int[] { 0 });
-		return false;
+		return true;
+	}
+
+	@Override
+	public void readAdditional(CompoundNBT tagCompound) {
+		super.readAdditional(tagCompound);
+		tagCompound.putInt("chests", chests);
+		tagCompound.putInt("chestsPlaced", chestsPlaced);
 	}
 
 	@Override
 	public void setupBoundingBox() {
-		this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
 	}
 
 	@Override
 	public int getType() {
 		return 8;
 	}
+
 }

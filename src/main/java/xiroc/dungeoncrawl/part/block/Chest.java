@@ -18,12 +18,12 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure.Type;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Orientation;
 
 public class Chest implements IBlockPlacementHandler {
 
 	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
+	public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
 			int theme, int lootLevel) {
 		world.setBlockState(pos, state, 2);
 		if (world.getTileEntity(pos) instanceof LockableLootTileEntity) {
@@ -37,16 +37,17 @@ public class Chest implements IBlockPlacementHandler {
 	public static ResourceLocation getLootTable(int theme, int lootLevel, Random rand) {
 		switch (lootLevel) {
 		case 0:
-			return theme != 3 ? rand.nextFloat() < 0.1 ? LootTables.CHESTS_PILLAGER_OUTPOST : Loot.CHEST_STAGE_1
-					: Loot.CHEST_STAGE_1_OCEAN;
+			return rand.nextFloat() < 0.1 ? LootTables.CHESTS_PILLAGER_OUTPOST : Loot.CHEST_STAGE_1;
 		case 1:
-			return theme != 3 ? rand.nextFloat() < 0.1 ? LootTables.CHESTS_SIMPLE_DUNGEON : Loot.CHEST_STAGE_2
-					: Loot.CHEST_STAGE_2_OCEAN;
+			return rand.nextFloat() < 0.1 ? LootTables.CHESTS_SIMPLE_DUNGEON : Loot.CHEST_STAGE_2;
 		case 2:
-			return theme != 3 ? rand.nextFloat() < 0.1 ? LootTables.CHESTS_STRONGHOLD_CORRIDOR : Loot.CHEST_STAGE_3
-					: Loot.CHEST_STAGE_3_OCEAN;
+			return rand.nextFloat() < 0.1 ? LootTables.CHESTS_SIMPLE_DUNGEON : Loot.CHEST_STAGE_3;
+		case 3:
+			return rand.nextFloat() < 0.1 ? LootTables.CHESTS_STRONGHOLD_CROSSING : Loot.CHEST_STAGE_4;
+		case 4:
+			return rand.nextFloat() < 0.1 ? LootTables.CHESTS_STRONGHOLD_CROSSING : Loot.CHEST_STAGE_5;
 		default:
-			DungeonCrawl.LOGGER.warn("Unknown Vanilla Loot Level: {}", lootLevel);
+			DungeonCrawl.LOGGER.warn("Unknown Loot Level: {}", lootLevel);
 			return null;
 		}
 	}
@@ -54,10 +55,10 @@ public class Chest implements IBlockPlacementHandler {
 	public static class TrappedChest implements IBlockPlacementHandler {
 
 		@Override
-		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
+		public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
 				int lootLevel) {
 			if (state.has(BlockStateProperties.HORIZONTAL_FACING))
-				state = state.with(BlockStateProperties.HORIZONTAL_FACING, RotationHelper.RANDOM_FACING_FLAT.roll(rand));
+				state = state.with(BlockStateProperties.HORIZONTAL_FACING, Orientation.RANDOM_FACING_FLAT.roll(rand));
 			world.setBlockState(pos, state, 2);
 			if (world.getTileEntity(pos) instanceof LockableLootTileEntity) {
 				ResourceLocation lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
@@ -68,18 +69,5 @@ public class Chest implements IBlockPlacementHandler {
 		}
 
 	}
-
-//	public static class Barrel implements IBlockPlacementHandler {
-//
-//		@Override
-//		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
-//				int theme, int lootLevel) {
-//			world.setBlockState(pos, state, 2);
-//			ResourceLocation lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
-//			LockableLootTileEntity.setLootTable(world, world.getRandom(), pos,
-//					lootTable == null ? getLootTable(theme, lootLevel) : lootTable);
-//		}
-//
-//	}
 
 }

@@ -30,10 +30,9 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel.FeaturePosition;
 
 public class ModelHandler {
 
-	public static void readAndSaveModelToFile(String name, DungeonModel.EntranceType entranceType, World world,
-			BlockPos pos, int width, int height, int length, int spawnerType, int chestType) {
-		DungeonCrawl.LOGGER.info("Reading and writing {} to disk. Size: {}, {}, {}. Entrance Type: {}", name, width,
-				height, length, entranceType);
+	public static void readAndSaveModelToFile(String name, World world, BlockPos pos, int width, int height, int length,
+			int spawnerType, int chestType) {
+		DungeonCrawl.LOGGER.info("Reading and writing {} to disk. Size: {}, {}, {}", name, width, height, length);
 		DungeonModelBlock[][][] model = new DungeonModelBlock[width][height][length];
 
 		List<FeaturePosition> featurePositions = Lists.newArrayList();
@@ -58,7 +57,7 @@ public class ModelHandler {
 			}
 		}
 		writeModelToFile(
-				new DungeonModel(model, entranceType,
+				new DungeonModel(model,
 						featurePositions.isEmpty() ? null
 								: featurePositions.toArray(new FeaturePosition[featurePositions.size()])),
 				((ServerWorld) world).getSaveHandler().getWorldDirectory().getAbsolutePath() + "/" + name + ".nbt");
@@ -105,8 +104,6 @@ public class ModelHandler {
 		newModel.putByte("length", length);
 		newModel.putByte("height", height);
 		newModel.putByte("width", width);
-
-		newModel.putString("entranceType", model.entranceType.toString());
 
 		ListNBT blocks = new ListNBT();
 
@@ -177,7 +174,8 @@ public class ModelHandler {
 				CompoundNBT compound = list.getCompound(i);
 				if (compound.contains("facing")) {
 					featurePositions[i - 1] = new FeaturePosition(compound.getInt("x"), compound.getInt("y"),
-							compound.getInt("z"), Direction.valueOf(compound.getString("facing").toUpperCase(Locale.ROOT)));
+							compound.getInt("z"),
+							Direction.valueOf(compound.getString("facing").toUpperCase(Locale.ROOT)));
 				} else {
 					featurePositions[i - 1] = new FeaturePosition(compound.getInt("x"), compound.getInt("y"),
 							compound.getInt("z"));
@@ -185,10 +183,7 @@ public class ModelHandler {
 			}
 		}
 
-		return new DungeonModel(model,
-				nbt.contains("entranceType") ? DungeonModel.EntranceType.valueOf(nbt.getString("entranceType"))
-						: DungeonModel.EntranceType.OPEN,
-				featurePositions);
+		return new DungeonModel(model, featurePositions);
 	}
 
 }

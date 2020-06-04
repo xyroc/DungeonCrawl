@@ -24,7 +24,7 @@ public class Furnace implements IBlockPlacementHandler {
 	public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(1, 16);
 
 	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
+	public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
 			int theme, int lootLevel) {
 		world.setBlockState(pos, state, 2);
 		if (world.getTileEntity(pos) instanceof FurnaceTileEntity) {
@@ -38,7 +38,7 @@ public class Furnace implements IBlockPlacementHandler {
 	public static class Smoker implements IBlockPlacementHandler {
 
 		@Override
-		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
+		public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
 				int lootLevel) {
 			world.setBlockState(pos, state, 2);
 			if (world.getTileEntity(pos) instanceof SmokerTileEntity) {

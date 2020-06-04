@@ -12,9 +12,10 @@ public class Node {
 	/**
 	 * Generic Node types
 	 */
-	public static final Node SHAPE_I = new Node(false, true, false, true);
-	public static final Node SHAPE_L = new Node(false, false, true, true);
-	public static final Node SHAPE_T = new Node(true, false, true, true);
+	public static final Node DEAD_END = new Node(false, false, false, true);
+	public static final Node STRAIGHT = new Node(false, true, false, true);
+	public static final Node TURN = new Node(false, false, true, true);
+	public static final Node OPEN = new Node(false, true, true, true);
 	public static final Node ALL = new Node(true, true, true, true);
 
 	private final boolean[] sides; // Order is N-E-S-W
@@ -57,6 +58,26 @@ public class Node {
 		default:
 			return this;
 		}
+	}
+
+	/**
+	 * @return A rotation with which this node can fit into the given one, or null
+	 *         if there is none.
+	 */
+	public Rotation compare(Node node) {
+		return Node.compare(node, this, Rotation.NONE, 0);
+	}
+
+	private static Rotation compare(Node node, Node rotatedNode, Rotation currentRotation, int depth) {
+		if (depth > 3)
+			return null;
+		for (int i = 0; i < node.sides.length; i++) {
+			if (node.sides[i] && !rotatedNode.sides[i]) {
+				return compare(node, rotatedNode.rotate(Rotation.CLOCKWISE_90),
+						currentRotation.add(Rotation.CLOCKWISE_90), ++depth);
+			}
+		}
+		return currentRotation;
 	}
 
 }

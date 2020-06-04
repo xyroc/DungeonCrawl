@@ -19,7 +19,7 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 public class Dispenser implements IBlockPlacementHandler {
 
 	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
+	public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
 			int theme, int lootLevel) {
 		world.setBlockState(pos, state, 2);
 		if (world.getTileEntity(pos) instanceof DispenserTileEntity) {

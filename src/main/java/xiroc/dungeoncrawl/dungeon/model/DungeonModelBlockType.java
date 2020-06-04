@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
+import java.util.Random;
 
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
@@ -10,20 +8,30 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
 public enum DungeonModelBlockType {
 
-	NONE, SOLID_STAIRS, SOLID, WALL, WALL_LOG, FLOOR, MATERIAL_STAIRS, STAIRS, SPAWNER, RARE_SPAWNER, RAND_WALL_SPAWNER,
-	CHEST, RARE_CHEST, RAND_WALL_AIR, RAND_FLOOR_CHEST_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR,
+	NONE, SOLID_STAIRS(PlacementBehaviour.SOLID), SOLID(PlacementBehaviour.SOLID), WALL, WALL_LOG,
+	FLOOR(PlacementBehaviour.RANDOM_IF_SOLID_NEARBY), MATERIAL_STAIRS, STAIRS, SPAWNER, RARE_SPAWNER, RAND_WALL_SPAWNER, CHEST,
+	RARE_CHEST, CHEST_50, RAND_WALL_AIR, RAND_FLOOR_CHEST_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR,
 	RAND_FLOOR_WATER, RAND_FLOOR_LAVA, RAND_BOOKSHELF_COBWEB, DISPENSER, RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
 
-	public static final Set<DungeonModelBlockType> SOLID_TYPES = ImmutableSet.<DungeonModelBlockType>builder()
-			.add(SOLID).add(SOLID_STAIRS).build();
+	public final PlacementBehaviour placementBehavior;
 
-	/*
-	 * spawnerType: 0: regular, 1: rare, 2: regular_wall
-	 * chestType: 0: regular, 1: rare, 2: regular_floor_spawner
-	 */
+	private DungeonModelBlockType() {
+		this(PlacementBehaviour.NON_SOLID);
+	}
+
+	private DungeonModelBlockType(PlacementBehaviour placementBehavior) {
+		this.placementBehavior = placementBehavior;
+	}
+
+	public boolean isSolid(IWorld world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ) {
+		return placementBehavior.function.isSolid(world, pos, rand, relativeX, relativeY, relativeZ);
+	}
+
 	public static DungeonModelBlockType get(Block block, int spawnerType, int chestType) {
 		if (block == Blocks.AIR)
 			return null;
@@ -79,6 +87,8 @@ public enum DungeonModelBlockType {
 				return RARE_CHEST;
 			case 2:
 				return RAND_FLOOR_CHEST_SPAWNER;
+			case 3:
+				return CHEST_50;
 			default:
 				return CHEST;
 			}

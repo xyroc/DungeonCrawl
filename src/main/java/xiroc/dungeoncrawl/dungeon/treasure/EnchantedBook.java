@@ -104,11 +104,6 @@ public class EnchantedBook implements IJsonConfigurable {
 		return 0;
 	}
 
-	@Override
-	public boolean deleteOldVersion() {
-		return false;
-	}
-
 	public static Enchantment getRandomEnchantment(Random rand, int lootLevel) {
 		if (rand.nextDouble() < getChance(2, lootLevel))
 			return ForgeRegistries.ENCHANTMENTS.getValue(ENCHANTMENTS_RARE[rand.nextInt(ENCHANTMENTS_RARE.length)]);

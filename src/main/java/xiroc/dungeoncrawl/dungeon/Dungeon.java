@@ -46,7 +46,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public static final String NAME = DungeonCrawl.MODID + ":dungeon";
 	public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
 
-	public static int SIZE = 16;
+	public static final int SIZE = 15;
 
 	public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
 		super(p_i51427_1_);
@@ -74,15 +74,17 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 	public boolean hasStartAt(ChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
 		ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
 		if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
-			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + SIZE / 2 * 8,
-					chunkPosZ * 16 + SIZE / 2 * 8, 8 * SIZE)) {
-				if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !chunkGen.hasStructure(biome, DUNGEON))
+			for (Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 - SIZE / 2 * 9,
+					chunkPosZ * 16 - SIZE / 2 * 9, 9 * SIZE)) {
+				if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !chunkGen.hasStructure(biome, DUNGEON)) {
 					return false;
+				}
 			}
 			return rand.nextFloat() < Config.DUNGEON_PROBABLILITY.get();
 		} else {
 			return false;
 		}
+
 	}
 
 	@Override
@@ -97,7 +99,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
 	@Override
 	public int getSize() {
-		return 8;
+		return 0;
 	}
 
 	public static class Start extends StructureStart {
@@ -159,20 +161,18 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 			DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
 			this.components.addAll(builder.build());
 			this.recalculateStructureSize();
-			DungeonCrawl.LOGGER.info(
-					"Created dungeon layout for [{}, {}] ({} ms) ({} pieces). BoundingBox: ({}, {}, {})", chunkX,
-					chunkZ, (System.currentTimeMillis() - now), this.components.size(), bounds.maxX - bounds.minX,
-					bounds.maxY - bounds.minY, bounds.maxZ - bounds.minZ);
+			DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
+					(System.currentTimeMillis() - now), this.components.size());
 		}
 
 		@Override
 		public void generateStructure(IWorld worldIn, Random rand, MutableBoundingBox structurebb, ChunkPos pos) {
 			if (!Config.IGNORE_DIMENSION.get() && !(worldIn.getDimension().getType() == DimensionType.OVERWORLD)) {
-				DungeonCrawl.LOGGER.warn("Refusing to generate a placed Dungeon in {} because it is not in OVERWORLD.",
+				DungeonCrawl.LOGGER.info(
+						"Cancelling the generation of an existing Dungeon because it is not in the overworld. To avoid this, set \"ignore_dimension\" in the config to true. Dimension: {}",
 						worldIn.getDimension().getType());
 				return;
 			}
-//			DungeonSegmentModelRegistry.load(((ServerWorld) worldIn.getWorld()).getServer().getResourceManager());
 			super.generateStructure(worldIn, rand, structurebb, pos);
 		}
 

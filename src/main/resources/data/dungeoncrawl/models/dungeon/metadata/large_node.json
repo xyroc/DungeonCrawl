@@ -1,0 +1,10 @@
+{
+	"modelType": "NODE",
+	"id": 33,
+	"data": {
+		"size": "LARGE",
+		"type": "FULL",
+		"stages": [ 3, 4, 5 ],
+		"weights": [ 0, 0, 2, 2, 1 ]
+	}
+}

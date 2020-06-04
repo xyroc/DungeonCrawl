@@ -28,7 +28,6 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.BossEntry;
@@ -58,7 +57,7 @@ public class DungeonBuilder {
 	public DungeonStatTracker statTracker;
 
 	public BlockPos startPos;
-	
+
 	public ChunkGenerator<?> chunkGen;
 	public Biome startBiome;
 
@@ -111,11 +110,11 @@ public class DungeonBuilder {
 
 	public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
 		this.chunkGen = world;
-		
+
 		this.rand = rand;
-		this.start = new Position2D(rand.nextInt(Dungeon.SIZE), rand.nextInt(Dungeon.SIZE));
-//		this.start = new Position2D(15, 15);
-		this.startPos = new BlockPos(pos.x * 16, world.getGroundHeight() - 16, pos.z * 16);
+		this.start = new Position2D(7, 7);
+		this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
+				pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
 		this.layers = new DungeonLayer[Math.min(5, startPos.getY() / 9)];
 		this.maps = new DungeonLayerMap[layers.length];
@@ -139,12 +138,13 @@ public class DungeonBuilder {
 			this.layers[i].map = maps[i];
 		}
 
-		for (int i = 0; i < layers.length; i++)
+		for (int i = 0; i < layers.length; i++) {
 			this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i,
 					i == layers.length - 1);
+		}
 
 		for (int i = 0; i < layers.length; i++) {
-//			this.layers[i].extend(this, maps[i], rand, i);
+			this.layers[i].extend(this, maps[i], rand, i);
 			processLayer(layers[i], i, startPos);
 		}
 
@@ -154,29 +154,28 @@ public class DungeonBuilder {
 		entrance.stage = 0;
 		entrance.modelID = entrance.determineModel(this, rand);
 		entrance.setupBoundingBox();
-		
-		this.startBiome = chunkGen.getBiomeProvider().getBiome(new BlockPos(entrance.x + 4, entrance.y, entrance.z + 4));
+
+		this.startBiome = chunkGen.getBiomeProvider()
+				.getBiome(new BlockPos(entrance.x + 4, entrance.y, entrance.z + 4));
 		String biome = startBiome.getRegistryName().toString();
 		
 		this.theme = Theme.getTheme(biome);
 		this.subTheme = Theme.getSubTheme(biome);
+		
+		DungeonCrawl.LOGGER.debug("Entrance Biome: {} SubTheme: {}", biome, subTheme);
+		
+		entrance.theme = theme;
+		entrance.subTheme = subTheme;
 
 		list.add(entrance);
 
 		postProcessDungeon(list, rand);
 
-//		for (DungeonPiece piece : list)
-//			if (piece.theme != 1) {
-//				if (piece.theme != 80)
-//					piece.theme = theme;
-//				piece.subTheme = subTheme;
-//			}
-		
 		return list;
 	}
 
 	public void processLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
-		int stage = lyr > 2 ? 2 : lyr;
+		int stage = lyr > 4 ? 4 : lyr;
 		for (int x = 0; x < layer.width; x++) {
 			for (int z = 0; z < layer.length; z++) {
 				if (layer.segments[x][z] != null) {
@@ -207,19 +206,37 @@ public class DungeonBuilder {
 								layer.segments[x][z].reference.theme = 1;
 								layer.segments[x][z].reference.subTheme = 8;
 							}
-						} else if (mossArea && lyrs - i < 4)
+						} else if (mossArea && lyrs - i < 4) {
 							layer.segments[x][z].reference.theme = 80;
+							layer.segments[x][z].reference.subTheme = subTheme;
+						} else {
+							layer.segments[x][z].reference.theme = theme;
+							layer.segments[x][z].reference.subTheme = subTheme;
+						}
+
 						list.add(layer.segments[x][z].reference);
 
-						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL))
-							layer.segments[x][z].reference.modelID = layer.segments[x][z].reference
-									.determineModel(this, rand);
-						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION))
+						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
+							layer.segments[x][z].reference.modelID = layer.segments[x][z].reference.determineModel(this,
+									rand);
+						}
+
+						if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
 							layer.segments[x][z].reference.setRealPosition(startPos.getX() + x * 9,
 									startPos.getY() - i * 9, startPos.getZ() + z * 9);
+						}
+
 						layer.segments[x][z].reference.setupBoundingBox();
-						if (layer.segments[x][z].reference.getType() == 10)
-							((DungeonNodeRoom) layer.segments[x][z].reference).addConnectors(list, rand);
+
+						if (layer.segments[x][z].reference.hasChildPieces()) {
+							layer.segments[x][z].reference.addChildPieces(list, this, i, rand);
+						}
+
+						if (layer.segments[x][z].reference.getType() == 10) {
+							layer.rotateNode(layer.segments[x][z]);
+						}
+
+						layer.segments[x][z].reference.customSetup(rand);
 					}
 				}
 		}

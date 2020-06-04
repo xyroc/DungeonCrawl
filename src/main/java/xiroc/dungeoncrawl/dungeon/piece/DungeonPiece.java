@@ -1,11 +1,12 @@
 package xiroc.dungeoncrawl.dungeon.piece;
 
-import java.util.Random;
+import java.util.List;
 
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
+import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -21,6 +22,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
 import net.minecraft.util.Direction;
@@ -36,15 +38,16 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
+import xiroc.dungeoncrawl.dungeon.model.PlacementBehaviour;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.part.block.Spawner;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
+import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Position2D;
-import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Orientation;
 
 public abstract class DungeonPiece extends StructurePiece {
 
@@ -60,6 +63,7 @@ public abstract class DungeonPiece extends StructurePiece {
 	// 9 side room
 	// 10 node room
 	// 11 node connector
+	// 12 prisoner cell
 
 	public static final CompoundNBT DEFAULT_NBT;
 
@@ -126,7 +130,7 @@ public abstract class DungeonPiece extends StructurePiece {
 		subTheme = p_i51343_2_.getInt("subTheme");
 		stage = p_i51343_2_.getInt("stage");
 		modelID = p_i51343_2_.getInt("model");
-		rotation = RotationHelper.getRotation(p_i51343_2_.getInt("rotation"));
+		rotation = Orientation.getRotation(p_i51343_2_.getInt("rotation"));
 		if (setupBoundingBox)
 			setupBoundingBox();
 	}
@@ -196,6 +200,11 @@ public abstract class DungeonPiece extends StructurePiece {
 		this.posX = x;
 		this.posZ = z;
 	}
+	
+	public void setPosition(Position2D position) {
+		this.posX = position.x;
+		this.posZ = position.z;
+	}
 
 	public void setRealPosition(int x, int y, int z) {
 		this.x = x;
@@ -221,18 +230,25 @@ public abstract class DungeonPiece extends StructurePiece {
 		tagCompound.putInt("theme", theme);
 		tagCompound.putInt("subTheme", subTheme);
 		tagCompound.putInt("model", modelID);
-		tagCompound.putInt("rotation", RotationHelper.getInt(this.rotation));
+		tagCompound.putInt("rotation", Orientation.getInt(this.rotation));
+	}
+
+	public void customSetup(Random rand) {
 	}
 
 	public void setBlockState(BlockState state, IWorld world, MutableBoundingBox boundsIn, Treasure.Type treasureType,
-			int x, int y, int z, int theme, int lootLevel, boolean fillAir) {
+			int x, int y, int z, int theme, int lootLevel, PlacementBehaviour placementBehaviour) {
 		BlockPos pos = new BlockPos(x, y, z);
+
 		if (state == null)
 			return;
-		if (!fillAir && world.isAirBlock(pos))
+
+		if (world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM,
+				x - this.x, y - this.y, z - this.z)) {
 			return;
-//		boundsIn.expandTo(new MutableBoundingBox(pos, pos));
-		IBlockPlacementHandler.getHandler(state.getBlock()).setupBlock(world, state, pos, world.getRandom(),
+		}
+
+		IBlockPlacementHandler.getHandler(state.getBlock()).placeBlock(world, state, pos, world.getRandom(),
 				treasureType, theme, lootLevel);
 
 		IFluidState ifluidstate = world.getFluidState(pos);
@@ -240,25 +256,81 @@ public abstract class DungeonPiece extends StructurePiece {
 			world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
 		}
 
-		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock()))
+		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
 			world.getChunk(pos).markBlockForPostprocessing(pos);
+		}
+	}
+
+	public void setBlockState(BlockState state, IWorld world, MutableBoundingBox boundsIn, Treasure.Type treasureType,
+			int x, int y, int z, int theme, int lootLevel, boolean fillAir) {
+		BlockPos pos = new BlockPos(x, y, z);
+
+		if (state == null)
+			return;
+
+		if (world.isAirBlock(pos) && !fillAir) {
+			return;
+		}
+
+		IBlockPlacementHandler.getHandler(state.getBlock()).placeBlock(world, state, pos, world.getRandom(),
+				treasureType, theme, lootLevel);
+
+		IFluidState ifluidstate = world.getFluidState(pos);
+		if (!ifluidstate.isEmpty()) {
+			world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
+		}
+
+		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+			world.getChunk(pos).markBlockForPostprocessing(pos);
+		}
 	}
 
 	@Override
 	public void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
 			MutableBoundingBox boundingboxIn) {
-		BlockPos blockpos = new BlockPos(x, y, z);
-		if (boundingboxIn.isVecInside(blockpos)) {
+		BlockPos blockPos = new BlockPos(x, y, z);
 
-			worldIn.setBlockState(blockpos, blockstateIn, 2);
+		if (boundingboxIn.isVecInside(blockPos)) {
 
-			IFluidState ifluidstate = worldIn.getFluidState(blockpos);
-			if (!ifluidstate.isEmpty()) {
-				worldIn.getPendingFluidTicks().scheduleTick(blockpos, ifluidstate.getFluid(), 0);
-			}
+			worldIn.setBlockState(blockPos, blockstateIn, 2);
+
+//			IFluidState ifluidstate = worldIn.getFluidState(blockPos);
+//			if (!ifluidstate.isEmpty()) {
+//				worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
+//			}
 
 			if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
-				worldIn.getChunk(blockpos).markBlockForPostprocessing(blockpos);
+				worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+			}
+
+		}
+	}
+
+	public boolean hasChildPieces() {
+		return false;
+	}
+
+	public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, int layer, Random rand) {
+	}
+
+	public void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
+			MutableBoundingBox boundingboxIn, boolean fillAir) {
+		BlockPos blockPos = new BlockPos(x, y, z);
+
+		if (!fillAir && worldIn.isAirBlock(blockPos))
+			return;
+
+		if (boundingboxIn.isVecInside(blockPos)) {
+
+			worldIn.setBlockState(blockPos, blockstateIn, 2);
+
+//			IFluidState ifluidstate = worldIn.getFluidState(blockPos);
+//			if (!ifluidstate.isEmpty()) {
+//				worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
+//			}
+
+			if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
+				worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
 			}
 
 		}
@@ -286,8 +358,8 @@ public abstract class DungeonPiece extends StructurePiece {
 					setBlockState(state, world, boundsIn, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
 							this.theme, lootLevel,
 							model.model[x][y][z] != null
-									? fillAir || DungeonModelBlockType.SOLID_TYPES.contains(model.model[x][y][z].type)
-									: false);
+									? fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior
+									: PlacementBehaviour.NON_SOLID);
 				}
 			}
 		}
@@ -300,11 +372,6 @@ public abstract class DungeonPiece extends StructurePiece {
 				xEnd = Math.min(model.width, xStart + boundsIn.maxX - boundsIn.minX + 1);
 		int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
 				zEnd = Math.min(model.length, zStart + boundsIn.maxZ - boundsIn.minZ + 1);
-
-		if (model.id > 55)
-			DungeonCrawl.LOGGER.debug(
-					"buildRotated: model: {}, x: {}, y: {}, z: {}, xStart: {}, zStart: {}, xEnd: {}, zEnd: {}",
-					pos.getX(), pos.getY(), pos.getZ(), model.id, xStart, zStart, xEnd, zEnd);
 
 		switch (rotation) {
 		case CLOCKWISE_90: {
@@ -322,8 +389,9 @@ public abstract class DungeonPiece extends StructurePiece {
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + model.length - z - 1,
 								pos.getY() + y, pos.getZ() + x, this.theme, lootLevel,
 								model.model[x][y][z] != null
-										? DungeonModelBlockType.SOLID_TYPES.contains(model.model[x][y][z].type)
-										: false);
+										? fillAir ? PlacementBehaviour.SOLID
+												: model.model[x][y][z].type.placementBehavior
+										: PlacementBehaviour.NON_SOLID);
 					}
 				}
 			}
@@ -344,8 +412,9 @@ public abstract class DungeonPiece extends StructurePiece {
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + z, pos.getY() + y,
 								pos.getZ() + model.width - x - 1, this.theme, lootLevel,
 								model.model[x][y][z] != null
-										? DungeonModelBlockType.SOLID_TYPES.contains(model.model[x][y][z].type)
-										: false);
+										? fillAir ? PlacementBehaviour.SOLID
+												: model.model[x][y][z].type.placementBehavior
+										: PlacementBehaviour.NON_SOLID);
 					}
 				}
 			}
@@ -366,8 +435,9 @@ public abstract class DungeonPiece extends StructurePiece {
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + model.width - x - 1,
 								pos.getY() + y, pos.getZ() + model.length - z - 1, this.theme, lootLevel,
 								model.model[x][y][z] != null
-										? DungeonModelBlockType.SOLID_TYPES.contains(model.model[x][y][z].type)
-										: false);
+										? fillAir ? PlacementBehaviour.SOLID
+												: model.model[x][y][z].type.placementBehavior
+										: PlacementBehaviour.NON_SOLID);
 					}
 				}
 			}
@@ -384,100 +454,63 @@ public abstract class DungeonPiece extends StructurePiece {
 
 	public void entrances(IWorld world, MutableBoundingBox bounds, Theme t, DungeonModel model) {
 
-		boolean open = model.entranceType == DungeonModel.EntranceType.OPEN;
-
-		DungeonModelBlock stairs = new DungeonModelBlock(DungeonModelBlockType.STAIRS);
-		stairs.half = Half.TOP;
+//		DungeonModelBlock stairs = new DungeonModelBlock(DungeonModelBlockType.STAIRS);
+//		stairs.half = Half.TOP;
 
 		int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
 
-//		DungeonCrawl.LOGGER.debug("Building entrances for model {}. pathStartX: {}, pathStartZ: {}", model.id,
-//				pathStartX, pathStartZ);
-
 		for (int i = 0; i < sides.length - 2; i++) {
-			switch (Direction.byHorizontalIndex((i + 2) % 4)) {
+			switch (Direction.byHorizontalIndex(i + 2)) {
 			case EAST:
-				if (open) {
-					if (!sides[i]) {
-						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-							for (int y0 = 1; y0 < 4; y0++)
-								setBlockState(world, t.solid.get(), x + model.width - 1, y + y0, z + z0, bounds);
-					}
-				} else {
-					if (sides[i]) {
-						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-							for (int y0 = 1; y0 < 3; y0++)
-								setBlockState(world, CAVE_AIR, x + model.width - 1, y + y0, z + z0, bounds);
-						setBlockState(world, CAVE_AIR, x + model.width - 1, y + 3, z + pathStartZ + 1, bounds);
-						stairs.facing = Direction.NORTH;
-						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3, z + pathStartZ,
-								bounds);
-						stairs.facing = Direction.SOUTH;
-						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3,
-								z + pathStartZ + 2, bounds);
-					}
+				if (sides[i]) {
+					for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, CAVE_AIR, x + model.width - 1, y + y0, z + z0, bounds);
+					setBlockState(world, CAVE_AIR, x + model.width - 1, y + 3, z + pathStartZ + 1, bounds);
+//						stairs.facing = Direction.NORTH;
+//						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3, z + pathStartZ,
+//								bounds);
+//						stairs.facing = Direction.SOUTH;
+//						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3,
+//								z + pathStartZ + 2, bounds);
 				}
 				continue;
 			case NORTH:
-				if (open) {
-					if (!sides[i]) {
-						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-							for (int y0 = 1; y0 < 4; y0++)
-								setBlockState(world, t.solid.get(), x + x0, y + y0, z, bounds);
-					}
-				} else {
-					if (sides[i]) {
-						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-							for (int y0 = 1; y0 < 3; y0++)
-								setBlockState(world, CAVE_AIR, x + x0, y + y0, z, bounds);
-						setBlockState(world, CAVE_AIR, x + pathStartX + 1, y + 3, z, bounds);
-						stairs.facing = Direction.WEST;
-						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX, y + 3, z, bounds);
-						stairs.facing = Direction.EAST;
-						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3, z, bounds);
-					}
+				if (sides[i]) {
+					for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, CAVE_AIR, x + x0, y + y0, z, bounds);
+//						setBlockState(world, CAVE_AIR, x + pathStartX + 1, y + 3, z, bounds);
+//						stairs.facing = Direction.WEST;
+//						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX, y + 3, z, bounds);
+//						stairs.facing = Direction.EAST;
+//						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3, z, bounds);
 				}
 				continue;
 			case SOUTH:
-				if (open) {
-					if (!sides[i]) {
-						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-							for (int y0 = 1; y0 < 4; y0++)
-								setBlockState(world, t.solid.get(), x + x0, y + y0, z + model.length - 1, bounds);
-					}
-				} else {
-					if (sides[i]) {
-						for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-							for (int y0 = 1; y0 < 3; y0++)
-								setBlockState(world, CAVE_AIR, x + x0, y + y0, z + model.length - 1, bounds);
-						setBlockState(world, CAVE_AIR, x + pathStartX + 1, y + 3, z + model.length - 1, bounds);
-						stairs.facing = Direction.WEST;
-						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX, y + 3, z + model.length - 1,
-								bounds);
-						stairs.facing = Direction.EAST;
-						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3,
-								z + model.length - 1, bounds);
-					}
+				if (sides[i]) {
+					for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, CAVE_AIR, x + x0, y + y0, z + model.length - 1, bounds);
+//						setBlockState(world, CAVE_AIR, x + pathStartX + 1, y + 3, z + model.length - 1, bounds);
+//						stairs.facing = Direction.WEST;
+//						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX, y + 3, z + model.length - 1,
+//								bounds);
+//						stairs.facing = Direction.EAST;
+//						setBlockState(world, stairs.create(t.stairs.get()), x + pathStartX + 2, y + 3,
+//								z + model.length - 1, bounds);
 				}
 				continue;
 			case WEST:
-				if (open) {
-					if (!sides[i]) {
-						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-							for (int y0 = 1; y0 < 4; y0++)
-								setBlockState(world, t.solid.get(), x, y + y0, z + z0, bounds);
-					}
-				} else {
-					if (sides[i]) {
-						for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-							for (int y0 = 1; y0 < 3; y0++)
-								setBlockState(world, CAVE_AIR, x, y + y0, z + z0, bounds);
-						setBlockState(world, CAVE_AIR, x, y + 3, z + pathStartZ + 1, bounds);
-						stairs.facing = Direction.NORTH;
-						setBlockState(world, stairs.create(t.stairs.get()), x, y + 3, z + pathStartX, bounds);
-						stairs.facing = Direction.SOUTH;
-						setBlockState(world, stairs.create(t.stairs.get()), x, y + 3, z + pathStartZ + 2, bounds);
-					}
+				if (sides[i]) {
+					for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, CAVE_AIR, x, y + y0, z + z0, bounds);
+//						setBlockState(world, CAVE_AIR, x, y + 3, z + pathStartZ + 1, bounds);
+//						stairs.facing = Direction.NORTH;
+//						setBlockState(world, stairs.create(t.stairs.get()), x, y + 3, z + pathStartX, bounds);
+//						stairs.facing = Direction.SOUTH;
+//						setBlockState(world, stairs.create(t.stairs.get()), x, y + 3, z + pathStartZ + 2, bounds);
 				}
 				continue;
 			default:
@@ -764,22 +797,21 @@ public abstract class DungeonPiece extends StructurePiece {
 
 	}
 
-	public static BlockPos shiftPosition(BlockPos start, Direction direction, int amount) {
-		switch (direction) {
-		case DOWN:
-			return new BlockPos(start.getX(), start.getY() - amount, start.getZ());
-		case EAST:
-			return new BlockPos(start.getX() + amount, start.getY(), start.getZ());
-		case NORTH:
-			return new BlockPos(start.getX(), start.getY(), start.getZ() - amount);
-		case SOUTH:
-			return new BlockPos(start.getX(), start.getY(), start.getZ() + amount);
-		case WEST:
-			return new BlockPos(start.getX() - amount, start.getY(), start.getZ());
-		case UP:
-			return new BlockPos(start.getX(), start.getY() + amount, start.getZ());
-		default:
-			return start;
+	public static DirectionalBlockPos[] readAllPositions(ListNBT nbt) {
+		DirectionalBlockPos[] positions = new DirectionalBlockPos[nbt.size()];
+
+		for (int i = 0; i < positions.length; i++) {
+			positions[i] = DirectionalBlockPos.fromNBT(nbt.getCompound(i));
+		}
+
+		return positions;
+	}
+
+	public static void writeAllPositions(DirectionalBlockPos[] positions, ListNBT nbt) {
+		for (int i = 0; i < positions.length; i++) {
+			CompoundNBT position = new CompoundNBT();
+			positions[i].writeToNBT(position);
+			nbt.add(position);
 		}
 	}
 

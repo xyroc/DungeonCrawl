@@ -103,9 +103,4 @@ public class Kitchen implements IJsonConfigurable {
 		return 0;
 	}
 
-	@Override
-	public boolean deleteOldVersion() {
-		return false;
-	}
-
 }

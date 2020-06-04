@@ -10,14 +10,20 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 @Mod.EventBusSubscriber(modid = DungeonCrawl.MODID, bus = Bus.MOD)
 public class EventManager {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public static void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
+	public void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
 
+	}
+	
+	@SubscribeEvent
+	public void onServerStart(FMLServerAboutToStartEvent event) {
+		DungeonCrawl.LOGGER.debug(">>>>>>>>> SERVER ABOUT TO START <<<<<<<<<");
 	}
 	
 	

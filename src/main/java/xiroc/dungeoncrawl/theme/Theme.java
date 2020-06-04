@@ -25,7 +25,7 @@ public class Theme {
 	public static HashMap<Integer, ThemeRandomizer> RANDOMIZERS;
 
 	/* **************************** */
-	/* BASE THEMES */
+	/*          BASE THEMES         */
 	/* **************************** */
 
 	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS,
@@ -53,7 +53,7 @@ public class Theme {
 			BlockRegistry.ANDESITE_STONE_WALL, BlockRegistry.ANDESITE_STONE_BRICKS_COBBLESTONE);
 
 	public static final Theme NETHER = new Theme(null, BlockRegistry.NETHERRACK_NETHERBRICK,
-			BlockRegistry.NETHERRACK_NETHERBRICK_SOULSAND, BlockRegistry.NETHER_BRICK_STAIRS,
+			BlockRegistry.NETHERRACK_NETHERBRICK_FLOOR, BlockRegistry.NETHER_BRICK_STAIRS,
 			BlockRegistry.NETHERRACK_NETHERBRICK, BlockRegistry.NETHER_WALL, BlockRegistry.NETHERRACK_NETHERBRICK);
 
 	public static final Theme DESERT = new Theme(BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH,
@@ -78,7 +78,7 @@ public class Theme {
 			BlockRegistry.MOSS_WALL, BlockRegistry.OBSIDIAN_MOSSY);
 
 	/* **************************** */
-	/* SUB-THEMES */
+	/*           SUB-THEMES         */
 	/* **************************** */
 
 	public static final SubTheme NETHER_SUB = new SubTheme(() -> Blocks.MAGMA_BLOCK.getDefaultState(),

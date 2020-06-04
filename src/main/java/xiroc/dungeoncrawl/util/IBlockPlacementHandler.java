@@ -41,7 +41,7 @@ public interface IBlockPlacementHandler {
 		PLACEMENT_HANDLERS.put(Blocks.FLOWER_POT, new Plants.FlowerPot());
 	}
 
-	public abstract void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand,
+	public abstract void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand,
 			Treasure.Type treasureType, int theme, int lootLevel);
 
 	public static IBlockPlacementHandler getHandler(Block block) {

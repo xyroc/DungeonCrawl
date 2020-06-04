@@ -13,7 +13,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
-import xiroc.dungeoncrawl.dungeon.Dungeon;
 
 public class Config {
 
@@ -25,16 +24,19 @@ public class Config {
 
 	public static final ForgeConfigSpec CONFIG;
 
-	public static final IntValue SPAWNER_ENTITIES, LAYER_ADDITIONS_MIN, LAYER_ADDITIONS_EXTRA, SIZE;
+	public static final IntValue SPAWNER_ENTITIES, LAYER_ADDITIONS_MIN, LAYER_ADDITIONS_EXTRA;
 
 	public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
 	public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
-			NO_NETHER_STUFF;
+			NO_NETHER_STUFF, ENABLE_TOOLS;
 //			ENABLE_DUNGEON_BOSS;
 
 	static {
 		BUILDER.comment("General Settings").push(CONFIG_GENERAL);
+		
+		ENABLE_TOOLS = BUILDER.comment("Enables the dungeon crawl tools.").define("enable_tools", false);
+		
 		BUILDER.pop();
 
 		BUILDER.comment("Dungeon Settings").push(CONFIG_DUNGEON);
@@ -63,20 +65,19 @@ public class Config {
 		VANILLA_SPAWNERS = BUILDER.comment(
 				"Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
 				.define("use_vanilla_spawners", false);
-		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
+//		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
 //		ENABLE_DUNGEON_BOSS = BUILDER.comment(
 //				"If enabled, there will be a final room with a boss at the lowest layer. Please note that Dungeon Crawl DOES NOT bring its own bosses. The boss entities can be configured in the config.json file.")
 //				.define("enable_dungeon_boss", false);
 
-		BUILDER.comment("More configuration options will come in future updates.");
 		BUILDER.pop();
 
 		BUILDER.comment("World Generation Settings").push(CONFIG_WORLDGEN);
 		DUNGEON_PROBABLILITY = BUILDER.comment("The probability of a dungeon getting generated on each fitting chunk.")
 				.defineInRange("dungeon_probability", 0.26, 0.0001, 1.0);
 		IGNORE_DIMENSION = BUILDER.comment(
-				"If set to true, the dungeon generation will ignore the dimension and use only the biome blacklists to determine generation eligibility.")
-				.define("ignore_dimension", false);
+				"If this is set to false, no dungeons can be generated outside the overworld.")
+				.define("ignore_dimension", true);
 		BUILDER.pop();
 
 		BUILDER.comment("There are a lot more other config options in config/DungeonCrawl.").push("Information");
@@ -90,7 +91,7 @@ public class Config {
 		config.load();
 		CONFIG.setConfig(config);
 
-		Dungeon.SIZE = SIZE.get();
+//		Dungeon.SIZE = SIZE.get();
 	}
 
 }

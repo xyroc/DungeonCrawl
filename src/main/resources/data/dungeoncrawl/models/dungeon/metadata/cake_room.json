@@ -1,0 +1,8 @@
+{
+	"modelType": "CORRIDOR_LINKER",
+	"id": 21,
+	"data": {
+		"weights": [ 1, 1, 0, 0, 0 ],
+		"stages": [ 1, 2 ]
+	}
+}

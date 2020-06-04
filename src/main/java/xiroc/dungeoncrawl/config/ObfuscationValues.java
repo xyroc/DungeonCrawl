@@ -64,7 +64,7 @@ public class ObfuscationValues implements IJsonConfigurable {
 	}
 
 	@Override
-	public boolean deleteOldVersion() {
+	public boolean deleteOldVersions() {
 		return true;
 	}
 

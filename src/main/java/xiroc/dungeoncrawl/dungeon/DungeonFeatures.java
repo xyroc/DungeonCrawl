@@ -19,7 +19,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
-import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Triple;
 
 public class DungeonFeatures {
@@ -62,7 +62,7 @@ public class DungeonFeatures {
 						Position2D pos = center.shift(direction, 1);
 						DungeonCorridorLarge corridor = new DungeonCorridorLarge(
 								(DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
-						corridor.rotation = RotationHelper.getRotationFromFacing(direction.getOpposite());
+						corridor.rotation = Orientation.getRotationFromFacing(direction.getOpposite());
 						layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
 								.withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 					}
@@ -205,17 +205,42 @@ public class DungeonFeatures {
 	}
 
 	/**
+	 * Checks if a piece can be placed at the given position.
+	 * 
+	 * @return true if the piece can be placed, false if not
+	 */
+	public static boolean canPlacePiece(DungeonLayer layer, int x, int z, int width, int length,
+			boolean ignoreStartPosition) {
+		if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
+			return false;
+
+		for (int x0 = 0; x0 < width; x0++) {
+			for (int z0 = 0; z0 < length; z0++) {
+				if (!(ignoreStartPosition && x0 == 0 && z0 == 0)
+						&& (layer.segments[x + x0][z + z0] != null || !layer.map.isPositionFree(x + x0, z + z0))) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Checks if a piece can be placed at the given position and layer. This does
 	 * also check if there are pieces on other layers (height variable) to avoid
-	 * collisions. For example, a piece that goes 1 to 8 blocks below the height of
+	 * collisions. For example, a piece that goes 1 to 9 blocks below the height of
 	 * its layer would have a height value of -1 (minus, because it goes down; 1
-	 * layer = 8 blocks).
+	 * layer = 9 blocks).
 	 * 
 	 * @return true if the piece can be placed, false if not
 	 */
 	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
 			int length, int layerHeight, boolean ignoreStartPosition) {
-		if (x + width > Dungeon.SIZE - 1 || z + length > Dungeon.SIZE - 1 || x < 0 || z < 0)
+		/*
+		 * x + width - 1 > Dungeon.SIZE -1 <=> x + width > Dungeon.SIZE
+		 * (same for z of course)
+		 */
+		if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
 			return false;
 
 		int layers = builder.layers.length, lh = layer - layerHeight;
@@ -230,20 +255,37 @@ public class DungeonFeatures {
 				continue;
 			else if (layers - lyr < 0)
 				return false;
-			for (int x0 = 0; x0 < width; x0++)
-				for (int z0 = 0; z0 < length; z0++)
+			
+			for (int x0 = 0; x0 < width; x0++) {
+				for (int z0 = 0; z0 < length; z0++) {
 					if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0)
 							&& (builder.layers[lyr].segments[x + x0][z + z0] != null
-									|| !builder.maps[lyr].isPositionFree(x + x0, z + z0)))
+									|| !builder.maps[lyr].isPositionFree(x + x0, z + z0))) {
 						return false;
+					}
+				}
+			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Marks the given area of the dungeon as occupied to prevent collision between
+	 * multiple dungeon features. The given coordinates and size values are assumed
+	 * to be correct. All parameters are the same as in #canPlacePiece.
+	 */
+	public static void mark(DungeonLayer layer, int x, int z, int width, int length) {
+		for (int x0 = 0; x0 < width; x0++) {
+			for (int z0 = 0; z0 < length; z0++) {
+				layer.map.map[x][z] = true;
+			}
+		}
 	}
 
 	/**
 	 * Marks the given area of the dungeon as occupied to prevent collision between
 	 * multiple dungeon features. The given coordinates and size values are assumed
-	 * to be correct. All parameters are the same as in canPlacePieceWithHeight().
+	 * to be correct. All parameters are the same as in #canPlacePieceWithHeight.
 	 */
 	public static void mark(DungeonBuilder builder, int layer, int x, int z, int width, int length, int layerHeight) {
 		int layers = builder.layers.length;

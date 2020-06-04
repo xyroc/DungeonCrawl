@@ -44,7 +44,7 @@ public class Spawner implements IBlockPlacementHandler {
 			.add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
 	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
+	public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
 			int theme, int stage) {
 		world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 2);
 		TileEntity tileentity = world.getTileEntity(pos);

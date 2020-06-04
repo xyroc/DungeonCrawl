@@ -325,9 +325,4 @@ public class SpecialItemTags implements IJsonConfigurable {
 		return 0;
 	}
 
-	@Override
-	public boolean deleteOldVersion() {
-		return false;
-	}
-
 }

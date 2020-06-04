@@ -89,7 +89,7 @@ public class JsonConfig implements IJsonConfigurable {
 		try {
 			JsonObject object = gson.fromJson(new FileReader(file), JsonObject.class);
 			if (object.get(KEY_CONFIG_VERSION).getAsInt() < configurable.getVersion()) {
-				if (!configurable.deleteOldVersion()) {
+				if (!configurable.deleteOldVersions()) {
 					DungeonCrawl.LOGGER.info("Creating a backup of {} because it is outdated and will be replaced",
 							file.getAbsolutePath());
 					File backupFile = FMLPaths.CONFIGDIR.get()
@@ -123,11 +123,6 @@ public class JsonConfig implements IJsonConfigurable {
 	@Override
 	public int getVersion() {
 		return 0;
-	}
-
-	@Override
-	public boolean deleteOldVersion() {
-		return false;
 	}
 
 	public static JsonElement getOrRewrite(JsonObject object, String name, IJsonConfigurable configurable) {

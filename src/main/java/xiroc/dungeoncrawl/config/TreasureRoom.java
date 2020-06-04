@@ -87,9 +87,4 @@ public class TreasureRoom implements IJsonConfigurable {
 		return 0;
 	}
 
-	@Override
-	public boolean deleteOldVersion() {
-		return false;
-	}
-
 }

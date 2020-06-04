@@ -61,7 +61,7 @@
                             }
                         }
                     ],
-                    "weight": 21
+                    "weight": 4
                 },
                 {
                     "type": "item",
@@ -75,7 +75,7 @@
                             }
                         }
                     ],
-                    "weight": 17
+                    "weight": 4
                 },
                 {
                     "type": "item",
@@ -89,7 +89,7 @@
                             }
                         }
                     ],
-                    "weight": 13
+                    "weight": 5
                 },
                 {
                     "type": "item",
@@ -142,7 +142,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:enchanted_golden_apple",
-            		"weight": 1
+            		  "weight": 1
                 },
                 {
                 	"type": "item",
@@ -357,7 +357,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:clay_ball",
-                	"weight": 2,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -371,7 +371,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:flint",
-                	"weight": 3,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -385,7 +385,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:string",
-                	"weight": 4,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -399,7 +399,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:gunpowder",
-                	"weight": 3,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -483,13 +483,13 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:dead_bush",
-                	"weight": 4,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
                 			"count": {
-                				"min": 3,
-                				"max": 7
+                				"min": 1,
+                				"max": 4
                 			}
                 		}
                 	]
@@ -511,7 +511,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:brick",
-                	"weight": 2,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -597,7 +597,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:air",
-                	"weight": 1,
+                	"weight": 4,
                 	"functions": [
                 		{
                 			"function": "dungeoncrawl:material_blocks"

@@ -4,17 +4,20 @@ package xiroc.dungeoncrawl.util;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FourWayBlock;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
+import xiroc.dungeoncrawl.DungeonCrawl;
 
-public class RotationHelper {
+public class Orientation {
 
-	private static final Direction[] FACINGS = new Direction[] {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.DOWN, Direction.UP};
+	private static final Direction[] FACINGS = new Direction[] { Direction.NORTH, Direction.EAST, Direction.SOUTH,
+			Direction.WEST, Direction.DOWN, Direction.UP };
 
 	public static final IRandom<Direction> RANDOM_FACING = (rand) -> FACINGS[rand.nextInt(FACINGS.length)];
 	public static final IRandom<Direction> RANDOM_FACING_FLAT = (rand) -> FACINGS[rand.nextInt(4)];
+
+	public static final Direction[] FLAT_FACINGS = new Direction[] { Direction.NORTH, Direction.EAST, Direction.SOUTH,
+			Direction.WEST };
 
 	public static final Direction[] EAST_SOUTH_WEST = new Direction[] { Direction.EAST, Direction.SOUTH,
 			Direction.WEST };
@@ -25,97 +28,18 @@ public class RotationHelper {
 	public static final Direction[] NORTH_SOUTH_WEST = new Direction[] { Direction.NORTH, Direction.SOUTH,
 			Direction.WEST };
 
-	public static BlockState tanslateFourWayBlock(BlockState state, Rotation rotation) {
-		boolean north = state.get(FourWayBlock.NORTH);
-		boolean east = state.get(FourWayBlock.EAST);
-		boolean south = state.get(FourWayBlock.SOUTH);
-		boolean west = state.get(FourWayBlock.WEST);
-		boolean waterlogged = state.get(FourWayBlock.WATERLOGGED);
-		switch (rotation) {
-		case NONE:
-			return state;
-		case CLOCKWISE_180:
-			return state.with(FourWayBlock.NORTH, south).with(FourWayBlock.EAST, west).with(FourWayBlock.SOUTH, north)
-					.with(FourWayBlock.WEST, east).with(FourWayBlock.WATERLOGGED, waterlogged);
-		case CLOCKWISE_90:
-			return state.with(FourWayBlock.NORTH, west).with(FourWayBlock.EAST, north).with(FourWayBlock.SOUTH, east)
-					.with(FourWayBlock.WEST, south).with(FourWayBlock.WATERLOGGED, waterlogged);
-		case COUNTERCLOCKWISE_90:
-			return state.with(FourWayBlock.NORTH, east).with(FourWayBlock.EAST, south).with(FourWayBlock.SOUTH, west)
-					.with(FourWayBlock.WEST, north).with(FourWayBlock.WATERLOGGED, waterlogged);
-		default:
-			return state;
-		}
-	}
-
-	public static Direction translateDirection(Direction direction, Rotation rotation) {
-		switch (rotation) {
-		case CLOCKWISE_180:
-			return translateDirectionInverse(direction);
-		case CLOCKWISE_90:
-			return translateDirectionRight(direction);
-		case COUNTERCLOCKWISE_90:
-			return translateDirectionLeft(direction);
-		case NONE:
-			return direction;
-		default:
-			return direction;
-		}
-	}
-
-	public static Direction translateDirectionRight(Direction direction) {
-		switch (direction) {
-		case DOWN:
-			return Direction.DOWN;
-		case UP:
-			return Direction.UP;
-		case EAST:
-			return Direction.SOUTH;
+	public static Direction[] getFlatFacingsWithout(Direction excludedDirection) {
+		switch (excludedDirection) {
 		case NORTH:
-			return Direction.EAST;
-		case SOUTH:
-			return Direction.WEST;
-		case WEST:
-			return Direction.NORTH;
-		default:
-			return null;
-		}
-	}
-
-	public static Direction translateDirectionLeft(Direction direction) {
-		switch (direction) {
-		case DOWN:
-			return Direction.DOWN;
-		case UP:
-			return Direction.UP;
+			return EAST_SOUTH_WEST;
 		case EAST:
-			return Direction.NORTH;
-		case NORTH:
-			return Direction.WEST;
+			return NORTH_SOUTH_WEST;
 		case SOUTH:
-			return Direction.EAST;
+			return EAST_NORTH_WEST;
 		case WEST:
-			return Direction.SOUTH;
+			return NORTH_SOUTH_EAST;
 		default:
-			return null;
-		}
-	}
-
-	public static Direction translateDirectionInverse(Direction direction) {
-		switch (direction) {
-		case DOWN:
-			return Direction.DOWN;
-		case UP:
-			return Direction.UP;
-		case EAST:
-			return Direction.WEST;
-		case NORTH:
-			return Direction.SOUTH;
-		case SOUTH:
-			return Direction.NORTH;
-		case WEST:
-			return Direction.EAST;
-		default:
+			DungeonCrawl.LOGGER.error("{} is not a flat direction", excludedDirection);
 			return null;
 		}
 	}

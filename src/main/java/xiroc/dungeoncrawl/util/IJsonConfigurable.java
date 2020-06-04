@@ -27,6 +27,8 @@ public interface IJsonConfigurable {
 
 	public int getVersion();
 
-	public boolean deleteOldVersion();
+	public default boolean deleteOldVersions() {
+		return false;
+	}
 
 }

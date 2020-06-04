@@ -15,7 +15,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModList;
 
-public class ModuleManager {
+public class Modules {
 
 	public static final Logger LOGGER = LogManager.getLogger("Dungeon Crawl/Module Manager");
 

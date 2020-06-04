@@ -30,7 +30,8 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Position2D;
-import xiroc.dungeoncrawl.util.RotationHelper;
+import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
 public class DungeonNodeRoom extends DungeonPiece {
 
@@ -51,40 +52,59 @@ public class DungeonNodeRoom extends DungeonPiece {
 
 	@Override
 	public int determineModel(DungeonBuilder builder, Random rand) {
-		if (lootRoom)
+		if (lootRoom) {
+			node = Node.ALL;
 			return DungeonModels.LOOT_ROOM.id;
+		}
 
 		large = stage < 2 ? false : rand.nextFloat() < 0.15;
 
 		ModelCategory base = null;
+
 		switch (connectedSides) {
 		case 1:
 			base = ModelCategory.NODE_DEAD_END;
+			node = Node.DEAD_END;
+			break;
 		case 2:
-			if (sides[0] && sides[2] || sides[1] && sides[3])
+			if (sides[0] && sides[2] || sides[1] && sides[3]) {
 				base = ModelCategory.NODE_STRAIGHT;
-			else
+				node = Node.STRAIGHT;
+			} else {
 				base = ModelCategory.NODE_TURN;
+				node = Node.TURN;
+			}
+			break;
 		case 3:
 			base = ModelCategory.NODE_OPEN;
+			node = Node.OPEN;
+			break;
 		default:
-			base = ModelCategory.NODE;
+			base = ModelCategory.NODE_FULL;
+			node = Node.ALL;
+			break;
 		}
 
-		DungeonModel[] possibilities = large
-				? ModelCategory.getIntersection(base, ModelCategory.LARGE_NODE,
-						ModelCategory.getCategoryForStage(stage))
-				: ModelCategory.getIntersection(base, ModelCategory.NORMAL_NODE,
-						ModelCategory.getCategoryForStage(stage));
+		WeightedRandomInteger provider = large
+				? ModelCategory.get(ModelCategory.LARGE_NODE, ModelCategory.getCategoryForStage(stage), base)
+				: ModelCategory.get(ModelCategory.NORMAL_NODE, ModelCategory.getCategoryForStage(stage), base);
 
-		if (possibilities.length <= 0) {
-			DungeonCrawl.LOGGER.error("Didnt find a model for {} in stage {}. Connected Sides: {}, Base: {}", this,
-					stage, connectedSides, base);
+		if (provider == null) {
+			DungeonCrawl.LOGGER.error("Didnt find a model provider for {} in stage {}. Connected Sides: {}, Base: {}",
+					this, stage, connectedSides, base);
 
-			return large ? DungeonModels.LARGE_NODE.id : DungeonModels.NODE_2.id;
+			return large ? DungeonModels.LARGE_NODE.id : DungeonModels.NODE_3.id;
 		}
 
-		return possibilities[rand.nextInt(possibilities.length)].id;
+		Integer id = provider.roll(rand);
+
+		if (id == null) {
+			DungeonCrawl.LOGGER.error("Empty model provider for {} in stage {}. Connected Sides: {}, Base: {}",
+					this, stage, connectedSides, base);
+			return large ? DungeonModels.LARGE_NODE.id : DungeonModels.NODE_3.id;
+		}
+
+		return id;
 	}
 
 	@Override
@@ -130,45 +150,59 @@ public class DungeonNodeRoom extends DungeonPiece {
 		return node.canConnect(side);
 	}
 
-	public void addConnectors(List<DungeonPiece> list, Random rand) {
+	@Override
+	public boolean hasChildPieces() {
+		return true;
+	}
+
+	@Override
+	public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, int layer, Random rand) {
 		if (large)
 			return;
 		for (int i = 0; i < sides.length - 2; i++) {
 			if (sides[i]) {
-				switch (Direction.byHorizontalIndex((i + 2) % 4)) {
+				switch (Direction.byHorizontalIndex(i + 2)) {
 				case EAST: {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
-					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.EAST);
+					connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.EAST);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x + 17, y, z + 7);
-					connector.firstTimeBoundingBoxSetup();
+					connector.theme = theme;
+					connector.subTheme = subTheme;
+					connector.adjustPositionAndBounds();
 					list.add(connector);
 					continue;
 				}
 				case NORTH: {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
-					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.NORTH);
+					connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.NORTH);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x + 7, y, z - 5);
-					connector.firstTimeBoundingBoxSetup();
+					connector.theme = theme;
+					connector.subTheme = subTheme;
+					connector.adjustPositionAndBounds();
 					list.add(connector);
 					continue;
 				}
 				case SOUTH: {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
-					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.SOUTH);
+					connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.SOUTH);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x + 7, y, z + 17);
-					connector.firstTimeBoundingBoxSetup();
+					connector.theme = theme;
+					connector.subTheme = subTheme;
+					connector.adjustPositionAndBounds();
 					list.add(connector);
 					continue;
 				}
 				case WEST: {
 					DungeonNodeConnector connector = new DungeonNodeConnector();
-					connector.rotation = RotationHelper.getOppositeRotationFromFacing(Direction.WEST);
+					connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.WEST);
 					connector.modelID = connector.determineModel(null, rand);
 					connector.setRealPosition(x - 5, y, z + 7);
-					connector.firstTimeBoundingBoxSetup();
+					connector.theme = theme;
+					connector.subTheme = subTheme;
+					connector.adjustPositionAndBounds();
 					list.add(connector);
 					continue;
 				}

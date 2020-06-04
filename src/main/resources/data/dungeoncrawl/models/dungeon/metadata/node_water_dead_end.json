@@ -1,0 +1,10 @@
+{
+	"modelType": "NODE",
+	"id": 44,
+	"data": {
+		"size": "NORMAL",
+		"type": "DEAD_END",
+		"stages": [ 3, 4, 5 ],
+		"weights": [ 0, 0, 1, 1, 1 ]
+	}
+}

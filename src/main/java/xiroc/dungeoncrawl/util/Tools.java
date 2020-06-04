@@ -4,36 +4,32 @@ package xiroc.dungeoncrawl.util;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import java.util.Random;
+import java.util.UUID;
+import java.util.HashMap;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.realmsclient.gui.ChatFormatting;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.command.Commands;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Items;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.IWorld;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.DungeonStatTracker;
-import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
-import xiroc.dungeoncrawl.dungeon.misc.Banner;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.ModelHandler;
-import xiroc.dungeoncrawl.dungeon.treasure.Book;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.part.block.BlockRegistry;
 
 public class Tools {
 
-	private static BlockPos pos1, pos2;
+	private static final HashMap<UUID, Tuple<BlockPos, BlockPos>> POSITIONS = new HashMap<UUID, Tuple<BlockPos, BlockPos>>();
 
 	@SubscribeEvent
 	public void onServerStart(FMLServerStartingEvent event) {
@@ -46,29 +42,40 @@ public class Tools {
 				return false;
 			}
 		}).then(Commands.argument("name", StringArgumentType.string())
-				.then(Commands.argument("entranceType", IntegerArgumentType.integer(0, 1)).then(Commands
-						.argument("spawnerType", IntegerArgumentType.integer(0, 2))
-						.then(Commands.argument("chestType", IntegerArgumentType.integer(0, 2)).executes((command) -> {
-							if (Tools.pos1 != null && Tools.pos2 != null) {
-								BlockPos pos1 = new BlockPos(Math.min(Tools.pos1.getX(), Tools.pos2.getX()),
-										Math.min(Tools.pos1.getY(), Tools.pos2.getY()),
-										Math.min(Tools.pos1.getZ(), Tools.pos2.getZ())),
-										pos2 = new BlockPos(Math.max(Tools.pos1.getX(), Tools.pos2.getX()),
-												Math.max(Tools.pos1.getY(), Tools.pos2.getY()),
-												Math.max(Tools.pos1.getZ(), Tools.pos2.getZ()));
+				.then(Commands.argument("spawnerType", IntegerArgumentType.integer(0, 2))
+						.then(Commands.argument("chestType", IntegerArgumentType.integer(0, 3)).executes((command) -> {
+							UUID uuid = command.getSource().asPlayer().getUniqueID();
+
+							if (!POSITIONS.containsKey(uuid)) {
+								command.getSource().sendFeedback(
+										new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+										true);
+								return 0;
+							}
+
+							Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
+
+							BlockPos p1 = positions.getA(), p2 = positions.getB();
+
+							if (p1 != null && p2 != null) {
+								BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
+										Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
+										pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
+												Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
 								ModelHandler.readAndSaveModelToFile(command.getArgument("name", String.class),
-										command.getArgument("entranceType", int.class) == 0
-												? DungeonModel.EntranceType.OPEN
-												: DungeonModel.EntranceType.CLOSED,
 										command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
 										pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1,
 										command.getArgument("spawnerType", int.class),
 										command.getArgument("chestType", int.class));
 								command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
 								return 1;
-							} else
+							} else {
+								command.getSource().sendFeedback(
+										new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+										true);
 								return 0;
-						}))))));
+							}
+						})))));
 	}
 
 	@SubscribeEvent
@@ -76,54 +83,40 @@ public class Tools {
 		if (!event.getWorld().isRemote() && event.getPlayer().isCreative()
 				&& event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == Items.DIAMOND_AXE) {
 			event.setCanceled(true);
-			pos1 = event.getPos();
+			BlockPos pos = event.getPos();
+
+			UUID uuid = event.getPlayer().getGameProfile().getId();
+			if (POSITIONS.containsKey(uuid)) {
+				BlockPos position2 = POSITIONS.get(uuid).getB();
+				POSITIONS.put(uuid, new Tuple<BlockPos, BlockPos>(pos, position2));
+			} else {
+				POSITIONS.put(uuid, new Tuple<BlockPos, BlockPos>(pos, null));
+			}
+
 			event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE + "Position 1 set to ("
-					+ pos1.getX() + " | " + pos1.getY() + " | " + pos1.getZ() + ") "));
+					+ pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
 		}
 	}
 
 	@SubscribeEvent
 	public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
-		if (!event.getWorld().isRemote && event.getPlayer().isCreative()) {
+		IWorld world = event.getPlayer().world;
+		if (!world.isRemote() && event.getPlayer().isCreative()) {
 			if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
 				event.setCanceled(true);
-				pos2 = event.getPos();
-				event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
-						+ "Position 2 set to (" + pos2.getX() + " | " + pos2.getY() + " | " + pos2.getZ() + ") "));
-			} else if (event.getItemStack().getItem() == Items.STICK) {
-				if (event.getItemStack().getDisplayName().getString().equals("STONE_BRICKS")) {
-					event.getWorld().setBlockState(event.getPos(),
-							BlockRegistry.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE.get());
-				} else if (event.getItemStack().getDisplayName().getString().equals("TT_002")) {
 
-//				DungeonBuilder builder = new DungeonBuilder(event.getWorld().getChunkProvider().func_225313_a(0, 0)),
-//						new ChunkPos(event.getPos()), event.getWorld().rand);
-//				for (DungeonPiece piece : builder.build())
-//					piece.func_225577_a_(event.getWorld(), null ,event.getWorld().rand, null,
-//							new ChunkPos(new BlockPos(piece.x, piece.y, piece.z)));
-				} else if (event.getItemStack().getDisplayName().getString().equals("TT_003")) {
-					if (!event.getWorld().isRemote)
-						IBlockPlacementHandler.getHandler(Blocks.CHEST).setupBlock(event.getWorld(),
-								Blocks.CHEST.getDefaultState(), event.getPos(), event.getWorld().rand,
-								Treasure.Type.DEFAULT, 0, 0);
-				} else if (event.getItemStack().getDisplayName().getString().equals("TT_004")) {
-					if (!event.getWorld().isRemote) {
-						DungeonStatTracker tracker = new DungeonStatTracker(3);
-						LayerStatTracker layer = new LayerStatTracker();
-						layer.totalObjectives = 42;
-						layer.chests = 28;
-						layer.rooms = 4;
-						layer.spawners = 22;
-						layer.traps = 7;
-						tracker.stats[0] = layer;
-						tracker.stats[1] = new LayerStatTracker();
-						tracker.stats[2] = new LayerStatTracker();
-						tracker.build();
-						event.getPlayer().addItemStackToInventory(Book.createStatBook("Statistics", tracker));
-					}
-				} else if (event.getItemStack().getDisplayName().getString().equals("TT_Banner")) {
-					event.getPlayer().inventory.addItemStackToInventory(Banner.createBanner(new Random()));
+				BlockPos pos = event.getPos();
+
+				UUID uuid = event.getPlayer().getGameProfile().getId();
+				if (POSITIONS.containsKey(uuid)) {
+					BlockPos position1 = POSITIONS.get(uuid).getA();
+					POSITIONS.put(uuid, new Tuple<BlockPos, BlockPos>(position1, pos));
+				} else {
+					POSITIONS.put(uuid, new Tuple<BlockPos, BlockPos>(null, pos));
 				}
+
+				event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
+						+ "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
 			}
 		}
 	}

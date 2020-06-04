@@ -62,13 +62,17 @@ public class DungeonCorridor extends DungeonPiece {
 				new BlockPos(ew ? x : x + (9 - model.length) / 2, y, ew ? z + (9 - model.length) / 2 : z),
 				Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
+		if (connectedSides > 2) {
+			entrances(worldIn, structureBoundingBoxIn, Theme.get(theme), model);
+		}
+
 		if (Config.NO_SPAWNERS.get())
 			spawnMobs(worldIn, this, model.width, model.length, new int[] { 1 });
 
-		if (theme == 3
-				&& ((connectedSides == 2 && (!isStraight() || randomIn.nextDouble() < 0.2)) || connectedSides > 2)
-				&& getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
-			addColumns(this, worldIn, structureBoundingBoxIn, 1, theme);
+//		if (theme == 3
+//				&& ((connectedSides == 2 && (!isStraight() || randomIn.nextDouble() < 0.2)) || connectedSides > 2)
+//				&& getBlocks(worldIn, Blocks.WATER, x, y - 1, z, 8, 8) > 5)
+//			addColumns(this, worldIn, structureBoundingBoxIn, 1, theme);
 		return true;
 	}
 

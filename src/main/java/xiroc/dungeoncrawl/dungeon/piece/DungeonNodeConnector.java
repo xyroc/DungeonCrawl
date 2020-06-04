@@ -13,7 +13,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -37,8 +36,6 @@ public class DungeonNodeConnector extends DungeonPiece {
 
 		DungeonModel model = DungeonModels.MAP.get(modelID);
 
-		DungeonCrawl.LOGGER.info("Node Model {}, Rotation is {}", modelID, rotation);
-
 		buildRotated(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 				Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
@@ -55,7 +52,7 @@ public class DungeonNodeConnector extends DungeonPiece {
 		return DungeonModels.NODE_CONNECTORS[rand.nextInt(DungeonModels.NODE_CONNECTORS.length)].id;
 	}
 
-	public void firstTimeBoundingBoxSetup() {
+	public void adjustPositionAndBounds() {
 		DungeonModel model = DungeonModels.MAP.get(modelID);
 
 		if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
@@ -80,9 +77,7 @@ public class DungeonNodeConnector extends DungeonPiece {
 			this.boundingBox = new MutableBoundingBox(x, y, z, x + +model.length - 1,
 					y + model.height - 1, z + 4);
 		}
-
-
-		DungeonCrawl.LOGGER.debug("{}, {}", x, z);
+		
 	}
 
 }

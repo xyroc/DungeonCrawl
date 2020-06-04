@@ -18,7 +18,7 @@ public class Water implements IBlockPlacementHandler {
 	private static final BlockState LAVA = Blocks.LAVA.getDefaultState();
 
 	@Override
-	public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
+	public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
 			int lootLevel) {
 		if (theme == 1)
 			world.setBlockState(pos, LAVA, 2);

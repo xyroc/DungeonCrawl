@@ -55,7 +55,7 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 				cursorHeight += 8;
 			}
 		}
-		
+
 //		Random rand = worldIn.getRandom();
 //		if (rand == null) {
 //			DungeonCrawl.LOGGER.warn("Failed to receive a random object from worldIn: {}, {}", worldIn,
@@ -72,12 +72,15 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 
 		Vec3i offset = DungeonModels.getOffset(entrance.id);
 
-		DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}",
-				x, cursorHeight, z, entrance, entrance.id, offset);
+		DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}", x, cursorHeight, z,
+				entrance, entrance.id, offset);
 
 		DungeonCrawl.LOGGER.debug("StructureBoundingBox: [{},{},{}] -> [{},{},{}]", structureBoundingBoxIn.minX,
 				structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ, structureBoundingBoxIn.maxX,
 				structureBoundingBoxIn.maxY, structureBoundingBoxIn.maxZ);
+
+		DungeonCrawl.LOGGER.debug("BoundingBox: [{},{},{}] -> [{},{},{}]", boundingBox.minX, boundingBox.minY,
+				boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
 
 //		int startX = Math.max(x, structureBoundingBoxIn.minX) - x,
 //				startZ = Math.max(z, structureBoundingBoxIn.minZ) - z;
@@ -100,7 +103,10 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 
 	@Override
 	public void setupBoundingBox() {
-		this.boundingBox = new MutableBoundingBox(x, y, z, x + 11, y + 11, z + 11);
+		DungeonModel model = DungeonModels.MAP.get(modelID);
+		Vec3i offset = DungeonModels.getOffset(modelID);
+		this.boundingBox = new MutableBoundingBox(x + offset.getX(), y + offset.getY(), z + offset.getZ(),
+				x + model.width - 1, y + model.height - 1, z + model.length - 1);
 	}
 
 	@Override

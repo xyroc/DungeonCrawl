@@ -266,7 +266,7 @@ public class DungeonModelBlock {
 		PROVIDERS.put(DungeonModelBlockType.BARREL, (block, theme, subTheme, rand, stage) -> Blocks.BARREL
 				.getDefaultState().with(BarrelBlock.PROPERTY_FACING, block.facing));
 		PROVIDERS.put(DungeonModelBlockType.MATERIAL,
-				(block, theme, subTheme, rand, stage) -> block.create(theme.material.get()));
+				(block, theme, subTheme, rand, stage) -> block.create(subTheme.material.get()));
 		PROVIDERS.put(DungeonModelBlockType.SOLID, (block, theme, subTheme, rand, stage) -> theme.solid.get());
 		PROVIDERS.put(DungeonModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
 		PROVIDERS.put(DungeonModelBlockType.STAIRS,
@@ -275,16 +275,16 @@ public class DungeonModelBlock {
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.MATERIAL_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.stairs.get()));
-//		PROVIDERS.put(DungeonModelBlockType.FLOOR_STAIRS,
-//				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
-//		PROVIDERS.put(DungeonModelBlockType.CEILING_STAIRS,
-//				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.CHEST,
 				(block, theme, subTheme, rand, stage) -> BlockRegistry.CHEST.with(ChestBlock.FACING, block.facing));
 		PROVIDERS.put(DungeonModelBlockType.RARE_CHEST,
 				(block, theme, subTheme, rand, stage) -> rand.nextFloat() < 0.15
 						? BlockRegistry.CHEST.with(ChestBlock.FACING, block.facing)
-						: theme.solid.get());
+						: BlockRegistry.CAVE_AIR);
+		PROVIDERS.put(DungeonModelBlockType.CHEST_50,
+				(block, theme, subTheme, rand, stage) -> rand.nextFloat() < 0.5
+						? BlockRegistry.CHEST.with(ChestBlock.FACING, block.facing)
+						: BlockRegistry.CAVE_AIR);
 		PROVIDERS.put(DungeonModelBlockType.DISPENSER, (block, theme, subTheme, rand, stage) -> Blocks.DISPENSER
 				.getDefaultState().with(DispenserBlock.FACING, block.facing));
 		PROVIDERS.put(DungeonModelBlockType.FLOOR, (block, theme, subTheme, rand, stage) -> theme.floor.get());

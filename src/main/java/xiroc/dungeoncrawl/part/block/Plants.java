@@ -23,7 +23,7 @@ public class Plants {
 				Blocks.BEETROOTS, Blocks.MELON_STEM, Blocks.PUMPKIN_STEM, Blocks.CAVE_AIR };
 
 		@Override
-		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
+		public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
 				int lootLevel) {
 
 			BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
@@ -58,7 +58,7 @@ public class Plants {
 				Blocks.POTTED_WHITE_TULIP };
 
 		@Override
-		public void setupBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
+		public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
 				int lootLevel) {
 			world.setBlockState(pos, POTTED_FLOWERS[rand.nextInt(POTTED_FLOWERS.length)].getDefaultState(), 2);
 		}

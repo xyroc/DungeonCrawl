@@ -15,6 +15,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -27,8 +28,9 @@ public class DungeonStairs extends DungeonPiece {
 	public int stairType; // 0: staircase, 1: bottom stairs, 2: top stairs
 
 	public DungeonStairs(TemplateManager manager, CompoundNBT p_i51343_2_) {
-		super(StructurePieceTypes.STAIRS, p_i51343_2_);
+		super(StructurePieceTypes.STAIRS, p_i51343_2_, false);
 		this.stairType = p_i51343_2_.getInt("stairType");
+		setupBoundingBox();
 	}
 
 	@Override
@@ -51,6 +53,8 @@ public class DungeonStairs extends DungeonPiece {
 			DungeonModel model = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2 : DungeonModels.STAIRS_BOTTOM;
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
+			DungeonCrawl.LOGGER.debug("Stairs bottom Boundingbox: {}, {}, {} -> {}, {}, {}", boundingBox.minX, boundingBox.minY,
+					boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
 			ironBars(worldIn, structureBoundingBoxIn);
 			return true;
 		}
@@ -58,6 +62,8 @@ public class DungeonStairs extends DungeonPiece {
 			DungeonModel model = DungeonModels.STAIRS_TOP;
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
+			DungeonCrawl.LOGGER.debug("Stairs top Boundingbox: {}, {}, {} -> {}, {}, {}", boundingBox.minX, boundingBox.minY,
+					boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
 			entrances(worldIn, structureBoundingBoxIn, Theme.get(theme), model);
 			return true;
 		}
@@ -101,7 +107,11 @@ public class DungeonStairs extends DungeonPiece {
 
 	@Override
 	public void setupBoundingBox() {
-		this.boundingBox = new MutableBoundingBox(x, y, z, x + 7, y + 7, z + 7);
+		if (stairType == 0) {
+			this.boundingBox = new MutableBoundingBox(x, y, z, x + 4, y + 8, z + 4);
+		} else {
+			this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+		}
 	}
 
 	@Override

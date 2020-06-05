@@ -81,6 +81,9 @@ public abstract class DungeonPiece extends StructurePiece {
 			.add(Blocks.MOSSY_COBBLESTONE_STAIRS).add(Blocks.MOSSY_STONE_BRICK_STAIRS).add(Blocks.TRIPWIRE)
 			.add(Blocks.REDSTONE_WIRE).build();
 
+	private static final Set<Block> PROTECTED_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.END_PORTAL)
+			.add(Blocks.END_PORTAL_FRAME).build();
+
 	static {
 		DEFAULT_NBT = new CompoundNBT();
 		DEFAULT_NBT.putBoolean("north", false);
@@ -200,7 +203,7 @@ public abstract class DungeonPiece extends StructurePiece {
 		this.posX = x;
 		this.posZ = z;
 	}
-	
+
 	public void setPosition(Position2D position) {
 		this.posX = position.x;
 		this.posZ = position.z;
@@ -243,8 +246,9 @@ public abstract class DungeonPiece extends StructurePiece {
 		if (state == null)
 			return;
 
-		if (world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM,
-				x - this.x, y - this.y, z - this.z)) {
+		if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
+				|| world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM,
+						x - this.x, y - this.y, z - this.z)) {
 			return;
 		}
 
@@ -268,7 +272,7 @@ public abstract class DungeonPiece extends StructurePiece {
 		if (state == null)
 			return;
 
-		if (world.isAirBlock(pos) && !fillAir) {
+		if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock()) || world.isAirBlock(pos) && !fillAir) {
 			return;
 		}
 
@@ -289,6 +293,9 @@ public abstract class DungeonPiece extends StructurePiece {
 	public void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
 			MutableBoundingBox boundingboxIn) {
 		BlockPos blockPos = new BlockPos(x, y, z);
+
+		if (PROTECTED_BLOCKS.contains(worldIn.getBlockState(blockPos).getBlock()))
+			return;
 
 		if (boundingboxIn.isVecInside(blockPos)) {
 

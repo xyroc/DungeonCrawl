@@ -15,6 +15,7 @@ import xiroc.dungeoncrawl.module.Modules.Module;
 import xiroc.dungeoncrawl.part.block.BlockRegistry.TupleIntBlock;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class BOPCompatModule extends Module {
 
@@ -149,9 +150,10 @@ public class BOPCompatModule extends Module {
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:brushland", 64);
 		Theme.BIOME_TO_THEME_MAP.put("biomesoplenty:quagmire", 64);
 
+		IBlockStateProvider mudBricks = () -> BOPBlocks.mud_bricks.getDefaultState();
+
 		Theme.ID_TO_THEME_MAP.put(64,
-				new Theme(() -> BOPBlocks.mud_bricks.getDefaultState(), () -> BOPBlocks.mud_bricks.getDefaultState(),
-						mudFloor, () -> BOPBlocks.mud_brick_stairs.getDefaultState(),
+				new Theme(mudBricks, mudBricks, mudBricks, mudFloor, () -> BOPBlocks.mud_brick_stairs.getDefaultState(),
 						() -> BOPBlocks.mud.getDefaultState(), () -> BOPBlocks.mud_brick_wall.getDefaultState(),
 						mudFloor));
 

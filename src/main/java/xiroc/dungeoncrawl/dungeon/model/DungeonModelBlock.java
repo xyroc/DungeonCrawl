@@ -268,7 +268,7 @@ public class DungeonModelBlock {
 		PROVIDERS.put(DungeonModelBlockType.MATERIAL,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.material.get()));
 		PROVIDERS.put(DungeonModelBlockType.SOLID, (block, theme, subTheme, rand, stage) -> theme.solid.get());
-		PROVIDERS.put(DungeonModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
+		PROVIDERS.put(DungeonModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.normal.get());
 		PROVIDERS.put(DungeonModelBlockType.STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.SOLID_STAIRS,

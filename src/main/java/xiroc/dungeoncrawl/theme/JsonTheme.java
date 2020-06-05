@@ -38,7 +38,7 @@ public class JsonTheme {
 
 	public static class JsonBaseTheme {
 
-		public IBlockStateProvider wall, floor, stairs, material, vanillaWall, column;
+		public IBlockStateProvider solid, normal, floor, stairs, material, vanillaWall, column;
 
 		public static class Deserializer implements JsonDeserializer<JsonBaseTheme> {
 
@@ -50,7 +50,8 @@ public class JsonTheme {
 
 				JsonBaseTheme theme = new JsonBaseTheme();
 
-				theme.wall = JsonTheme.deserialize(object, "wall");
+				theme.solid = JsonTheme.deserialize(object, "solid");
+				theme.normal = JsonTheme.deserialize(object, "normal");
 				theme.floor = JsonTheme.deserialize(object, "floor");
 				theme.stairs = JsonTheme.deserialize(object, "stairs");
 				theme.material = JsonTheme.deserialize(object, "material");
@@ -63,7 +64,7 @@ public class JsonTheme {
 		}
 
 		public Theme toTheme() {
-			return new Theme(null, wall, floor, stairs, material, vanillaWall, column);
+			return new Theme(null, solid, normal, floor, stairs, material, vanillaWall, column);
 		}
 
 	}

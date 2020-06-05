@@ -167,9 +167,10 @@ public class DungeonCorridorLarge extends DungeonPiece {
 			ChildPieceSpot spot = spots[i];
 			Position2D pos = Position2D.shift(posX, posZ,
 					spot.rotation.rotate(Direction.EAST), 1);
-			if (pos.isValid(builder.layers[i].width, builder.layers[i].length)
-					&& builder.layers[i].get(pos.x, pos.z) == null && builder.maps[i].isPositionFree(pos.x, pos.z)
+			if (pos.isValid(builder.layers[layer].width, builder.layers[layer].length)
+					&& builder.layers[layer].get(pos.x, pos.z) == null && builder.maps[layer].isPositionFree(pos.x, pos.z)
 					&& rand.nextFloat() < 0.5) {
+				
 				cells[i] = 1;
 				DungeonPrisonCell cell = new DungeonPrisonCell();
 				cell.modelID = cell.determineModel(builder, rand);

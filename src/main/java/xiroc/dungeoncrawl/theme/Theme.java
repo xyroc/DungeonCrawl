@@ -25,60 +25,69 @@ public class Theme {
 	public static HashMap<Integer, ThemeRandomizer> RANDOMIZERS;
 
 	/* **************************** */
-	/*          BASE THEMES         */
+	/* BASE THEMES */
 	/* **************************** */
 
 	public static final Theme TEST = new Theme(() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.STONE_BRICKS,
-			() -> BlockRegistry.GRAVEL, () -> Blocks.STONE_STAIRS.getDefaultState(),
+			() -> BlockRegistry.STONE_BRICKS, () -> BlockRegistry.GRAVEL, () -> Blocks.STONE_STAIRS.getDefaultState(),
 			() -> Blocks.STONE_BRICKS.getDefaultState(), () -> Blocks.STONE_BRICK_WALL.getDefaultState(),
 			() -> Blocks.STONE.getDefaultState());
 
 	public static final Theme DEFAULT = new Theme(() -> BlockRegistry.STONE_BRICKS,
+			BlockRegistry.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE,
 			BlockRegistry.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE, BlockRegistry.STONE_BRICK_FLOOR,
 			BlockRegistry.STAIRS_STONE_COBBLESTONE, BlockRegistry.STONE_BRICKS_GRAVEL_COBBLESTONE,
 			BlockRegistry.STONE_WALL, BlockRegistry.STONE_BRICK_FLOOR);
 
 	public static final Theme OCEAN = new Theme(Blocks.PRISMARINE.getDefaultState(),
-			Blocks.PRISMARINE_BRICKS.getDefaultState(), Blocks.DARK_PRISMARINE.getDefaultState(),
-			Blocks.PRISMARINE_BRICK_STAIRS.getDefaultState(), Blocks.PRISMARINE.getDefaultState(),
-			Blocks.PRISMARINE_WALL.getDefaultState(), Blocks.DARK_PRISMARINE.getDefaultState());
+			Blocks.PRISMARINE_BRICKS.getDefaultState(), Blocks.PRISMARINE_BRICKS.getDefaultState(),
+			Blocks.DARK_PRISMARINE.getDefaultState(), Blocks.PRISMARINE_BRICK_STAIRS.getDefaultState(),
+			Blocks.PRISMARINE.getDefaultState(), Blocks.PRISMARINE_WALL.getDefaultState(),
+			Blocks.DARK_PRISMARINE.getDefaultState());
 
-	public static final Theme BRICKS = new Theme(BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
-			BlockRegistry.BRICKS_GRANITE_FLOOR, BlockRegistry.STAIRS_BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE,
-			BlockRegistry.BRICKS_GRANITE_WALL, BlockRegistry.BRICKS_GRANITE);
+	public static final Theme BRICKS = new Theme(null, BlockRegistry.BRICKS_GRANITE,
+			BlockRegistry.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE,
+			BlockRegistry.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE, BlockRegistry.STAIRS_BRICKS_GRANITE,
+			BlockRegistry.BRICKS_GRANITE, BlockRegistry.BRICKS_GRANITE_WALL, BlockRegistry.BRICKS_GRANITE);
 
 	public static final Theme ANDESITE = new Theme(BlockRegistry.ANDESITE_STONE_BRICKS,
-			BlockRegistry.ANDESITE_STONE_BRICKS, BlockRegistry.ANDESITE_STONE_BRICKS_COBBLESTONE,
-			BlockRegistry.STAIRS_ANDESITE_STONE_COBBLESTONE, BlockRegistry.ANDESITE_STONE_BRICKS,
-			BlockRegistry.ANDESITE_STONE_WALL, BlockRegistry.ANDESITE_STONE_BRICKS_COBBLESTONE);
+			BlockRegistry.ANDESITE_STONE_BRICKS, BlockRegistry.ANDESITE_STONE_BRICKS,
+			BlockRegistry.ANDESITE_STONE_BRICKS_COBBLESTONE, BlockRegistry.STAIRS_ANDESITE_STONE_COBBLESTONE,
+			BlockRegistry.ANDESITE_STONE_BRICKS, BlockRegistry.ANDESITE_STONE_WALL,
+			BlockRegistry.ANDESITE_STONE_BRICKS_COBBLESTONE);
 
 	public static final Theme NETHER = new Theme(null, BlockRegistry.NETHERRACK_NETHERBRICK,
-			BlockRegistry.NETHERRACK_NETHERBRICK_FLOOR, BlockRegistry.NETHER_BRICK_STAIRS,
-			BlockRegistry.NETHERRACK_NETHERBRICK, BlockRegistry.NETHER_WALL, BlockRegistry.NETHERRACK_NETHERBRICK);
+			BlockRegistry.NETHERRACK_NETHERBRICK_FLOOR, BlockRegistry.NETHERRACK_NETHERBRICK_FLOOR,
+			BlockRegistry.NETHER_BRICK_STAIRS, BlockRegistry.NETHERRACK_NETHERBRICK, BlockRegistry.NETHER_WALL,
+			BlockRegistry.NETHERRACK_NETHERBRICK);
 
 	public static final Theme DESERT = new Theme(BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH,
-			BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH, BlockRegistry.SANDSTONE_DEFAULT_SMOOTH_SAND,
-			BlockRegistry.STAIRS_SANDSTONE_DEFAULT_SMOOTH, BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH,
-			() -> Blocks.SANDSTONE_WALL.getDefaultState(), BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH);
+			BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH, BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH,
+			BlockRegistry.SANDSTONE_DEFAULT_SMOOTH_SAND, BlockRegistry.STAIRS_SANDSTONE_DEFAULT_SMOOTH,
+			BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH, () -> Blocks.SANDSTONE_WALL.getDefaultState(),
+			BlockRegistry.SANDSTONE_DEFAULT_CHSELED_SMOOTH);
 
 	public static final Theme BADLANDS = new Theme(BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH,
-			BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH, BlockRegistry.RED_SANDSTONE_DEFAULT_SMOOTH_RED_SAND,
-			BlockRegistry.STAIRS_RED_SANDSTONE_DEFAULT_SMOOTH, BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH,
-			() -> Blocks.RED_SANDSTONE_WALL.getDefaultState(), BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH);
+			BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH, BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH,
+			BlockRegistry.RED_SANDSTONE_DEFAULT_SMOOTH_RED_SAND, BlockRegistry.STAIRS_RED_SANDSTONE_DEFAULT_SMOOTH,
+			BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH, () -> Blocks.RED_SANDSTONE_WALL.getDefaultState(),
+			BlockRegistry.RED_SANDSTONE_DEFAULT_CHSELED_SMOOTH);
 
 	public static final Theme ICE = new Theme(BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED,
-			() -> Blocks.ICE.getDefaultState(), BlockRegistry.ICE_DEFAULT_PACKED, BlockRegistry.ICE_DEFAULT_PACKED,
-			() -> Blocks.CAVE_AIR.getDefaultState(), BlockRegistry.ICE_DEFAULT_PACKED);
+			BlockRegistry.ICE_DEFAULT_PACKED, () -> Blocks.ICE.getDefaultState(), BlockRegistry.ICE_DEFAULT_PACKED,
+			BlockRegistry.ICE_DEFAULT_PACKED, () -> Blocks.CAVE_AIR.getDefaultState(),
+			BlockRegistry.ICE_DEFAULT_PACKED);
 
-	public static final Theme MOSS = new Theme(BlockRegistry.MOSS, BlockRegistry.MOSS, BlockRegistry.MOSS_FLOOR,
-			BlockRegistry.MOSS_STAIRS, BlockRegistry.MOSS, BlockRegistry.MOSS_WALL, BlockRegistry.MOSS);
+	public static final Theme MOSS = new Theme(BlockRegistry.MOSS, BlockRegistry.MOSS, BlockRegistry.MOSS,
+			BlockRegistry.MOSS_FLOOR, BlockRegistry.MOSS_STAIRS, BlockRegistry.MOSS, BlockRegistry.MOSS_WALL,
+			BlockRegistry.MOSS);
 
 	public static final Theme OBSIDIAN_MOSSY = new Theme(null, BlockRegistry.OBSIDIAN_MOSSY,
-			BlockRegistry.OBSIDIAN_MOSSY_FLOOR, BlockRegistry.MOSS_STAIRS, BlockRegistry.OBSIDIAN_MOSSY,
-			BlockRegistry.MOSS_WALL, BlockRegistry.OBSIDIAN_MOSSY);
+			BlockRegistry.OBSIDIAN_MOSSY, BlockRegistry.OBSIDIAN_MOSSY_FLOOR, BlockRegistry.MOSS_STAIRS,
+			BlockRegistry.OBSIDIAN_MOSSY, BlockRegistry.MOSS_WALL, BlockRegistry.OBSIDIAN_MOSSY);
 
 	/* **************************** */
-	/*           SUB-THEMES         */
+	/* SUB-THEMES */
 	/* **************************** */
 
 	public static final SubTheme NETHER_SUB = new SubTheme(() -> Blocks.MAGMA_BLOCK.getDefaultState(),
@@ -240,17 +249,25 @@ public class Theme {
 
 		RANDOMIZERS = new HashMap<Integer, ThemeRandomizer>();
 
-		RANDOMIZERS.put(0, createRandomizer(0, 48, 49));
+		ThemeRandomizer randomizer = createRandomizer(0, 48, 49);
+
+		RANDOMIZERS.put(0, randomizer);
+		RANDOMIZERS.put(1, randomizer);
+		RANDOMIZERS.put(2, randomizer);
+		RANDOMIZERS.put(3, randomizer);
+		RANDOMIZERS.put(4, randomizer);
+		RANDOMIZERS.put(5, randomizer);
 
 	}
 
-	public final IBlockStateProvider ceiling, solid, floor, stairs, material, vanillaWall, column;
+	public final IBlockStateProvider ceiling, solid, normal, floor, stairs, material, vanillaWall, column;
 
-	public Theme(IBlockStateProvider ceiling, IBlockStateProvider wall, IBlockStateProvider floor,
-			IBlockStateProvider stairs, IBlockStateProvider material, IBlockStateProvider vanillaWall,
-			IBlockStateProvider column) {
+	public Theme(IBlockStateProvider ceiling, IBlockStateProvider solid, IBlockStateProvider normal,
+			IBlockStateProvider floor, IBlockStateProvider stairs, IBlockStateProvider material,
+			IBlockStateProvider vanillaWall, IBlockStateProvider column) {
 		this.ceiling = ceiling;
-		this.solid = wall;
+		this.solid = solid;
+		this.normal = normal;
 		this.floor = floor;
 		this.stairs = stairs;
 		this.material = material;
@@ -258,10 +275,11 @@ public class Theme {
 		this.column = column;
 	}
 
-	public Theme(BlockState ceiling, BlockState solid, BlockState floor, BlockState stairs, BlockState material,
-			BlockState vanillaWall, BlockState column) {
+	public Theme(BlockState ceiling, BlockState solid, BlockState normal, BlockState floor, BlockState stairs,
+			BlockState material, BlockState vanillaWall, BlockState column) {
 		this.ceiling = () -> ceiling;
 		this.solid = () -> solid;
+		this.normal = () -> normal;
 		this.floor = () -> floor;
 		this.stairs = () -> stairs;
 		this.material = () -> material;
@@ -269,10 +287,11 @@ public class Theme {
 		this.column = () -> column;
 	}
 
-	public Theme(Block ceiling, Block solid, Block floor, Block stairs, Block material, Block vanillaWall,
+	public Theme(Block ceiling, Block solid, Block normal, Block floor, Block stairs, Block material, Block vanillaWall,
 			Block column) {
 		this.ceiling = () -> ceiling.getDefaultState();
 		this.solid = () -> solid.getDefaultState();
+		this.normal = () -> normal.getDefaultState();
 		this.floor = () -> floor.getDefaultState();
 		this.stairs = () -> stairs.getDefaultState();
 		this.material = () -> material.getDefaultState();

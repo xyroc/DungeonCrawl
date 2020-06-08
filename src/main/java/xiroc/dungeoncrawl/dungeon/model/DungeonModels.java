@@ -14,6 +14,7 @@ import java.util.Objects;
 import org.jline.utils.InputStreamReader;
 
 import com.google.common.collect.Lists;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.resources.IResourceManager;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonSegmentModelLoadEvent;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.Metadata;
+import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
 public class DungeonModels {
@@ -147,14 +149,14 @@ public class DungeonModels {
 							nodeType)) {
 						DungeonCrawl.LOGGER.info("adding primary node entry ({} {})", stage, nodeType);
 						builder.entries.add(
-								new WeightedRandomInteger.Builder.IntegerEntry(model.metadata.weights[i], model.id));
+								new WeightedIntegerEntry(model.metadata.weights[i], model.id));
 					}
 
 					for (ModelCategory secondaryType : ModelCategory.getSecondaryNodeCategories(nodeType)) {
 						for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.NORMAL_NODE,
 								stage, secondaryType)) {
 							DungeonCrawl.LOGGER.info("adding secondary node entry: {}, {}", stage, model.id);
-							builder.entries.add(new WeightedRandomInteger.Builder.IntegerEntry(1, model.id));
+							builder.entries.add(new WeightedIntegerEntry(1, model.id));
 						}
 					}
 
@@ -168,14 +170,14 @@ public class DungeonModels {
 							nodeType)) {
 						DungeonCrawl.LOGGER.info("adding primary node entry ({} {})", stage, nodeType);
 						builder.entries.add(
-								new WeightedRandomInteger.Builder.IntegerEntry(model.metadata.weights[i], model.id));
+								new WeightedIntegerEntry(model.metadata.weights[i], model.id));
 					}
 
 					for (ModelCategory secondaryType : ModelCategory.getSecondaryNodeCategories(nodeType)) {
 						for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.LARGE_NODE,
 								stage, secondaryType)) {
 							DungeonCrawl.LOGGER.info("adding secondary node entry: {}, {}", stage, model.id);
-							builder.entries.add(new WeightedRandomInteger.Builder.IntegerEntry(1, model.id));
+							builder.entries.add(new WeightedIntegerEntry(1, model.id));
 						}
 					}
 

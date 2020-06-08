@@ -6,6 +6,7 @@ package xiroc.dungeoncrawl.dungeon.piece;
 
 import java.util.Random;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -17,8 +18,12 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.PlacementBehaviour;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 
@@ -118,6 +123,42 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 	public void readAdditional(CompoundNBT tagCompound) {
 		super.readAdditional(tagCompound);
 		tagCompound.putInt("cursorHeight", cursorHeight);
+	}
+
+	@Override
+	public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
+			SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
+
+		int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
+				width = Math.min(model.width, xStart + boundsIn.maxX - boundsIn.minX + 1);
+		int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
+				length = Math.min(model.length, zStart + boundsIn.maxZ - boundsIn.minZ + 1);
+
+		for (int x = xStart; x < width; x++) {
+			for (int y = 0; y < model.height; y++) {
+				for (int z = zStart; z < length; z++) {
+					BlockState state;
+					if (model.model[x][y][z] == null)
+						state = CAVE_AIR;
+					else
+						state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
+								WeightedRandomBlock.RANDOM, lootLevel); //
+					if (state == null)
+						continue;
+					setBlockState(state, world, boundsIn, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
+							this.theme, lootLevel,
+							model.model[x][y][z] != null
+									? fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior
+									: PlacementBehaviour.NON_SOLID);
+
+					if (y == 0 && world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() - 1, pos.getZ() + z))
+							&& model.model[x][0][z] != null
+							&& model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
+						DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+					}
+				}
+			}
+		}
 	}
 
 }

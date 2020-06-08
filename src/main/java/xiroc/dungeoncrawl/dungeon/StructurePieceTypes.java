@@ -12,6 +12,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPrisonCell;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonStaircase;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
@@ -24,6 +25,7 @@ public class StructurePieceTypes {
 	public static IStructurePieceType CORRIDOR;
 	public static IStructurePieceType LARGE_CORRIDOR;
 	public static IStructurePieceType STAIRS;
+	public static IStructurePieceType STAIRCASE;
 	public static IStructurePieceType HOLE;
 	public static IStructurePieceType SIDE_ROOM;
 	public static IStructurePieceType NODE_ROOM;
@@ -38,6 +40,7 @@ public class StructurePieceTypes {
 		CORRIDOR = IStructurePieceType.register(DungeonCorridor::new, createKey("corridor"));
 		LARGE_CORRIDOR = IStructurePieceType.register(DungeonCorridorLarge::new, createKey("large_corridor"));
 		STAIRS = IStructurePieceType.register(DungeonStairs::new, createKey("stairs"));
+		STAIRCASE = IStructurePieceType.register(DungeonStaircase::new, createKey("staircase"));
 		HOLE = IStructurePieceType.register(DungeonCorridorHole::new, createKey("corridor_hole"));
 		SIDE_ROOM = IStructurePieceType.register(DungeonSideRoom::new, createKey("side_room"));
 		NODE_ROOM = IStructurePieceType.register(DungeonNodeRoom::new, createKey("node_room"));

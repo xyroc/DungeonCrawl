@@ -38,6 +38,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.PlacementBehaviour;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.part.block.Spawner;
@@ -64,6 +65,7 @@ public abstract class DungeonPiece extends StructurePiece {
 	// 10 node room
 	// 11 node connector
 	// 12 prisoner cell
+	// 13 staircase
 
 	public static final CompoundNBT DEFAULT_NBT;
 
@@ -320,7 +322,7 @@ public abstract class DungeonPiece extends StructurePiece {
 	public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, int layer, Random rand) {
 	}
 
-	public void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
+	public static void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
 			MutableBoundingBox boundingboxIn, boolean fillAir) {
 		BlockPos blockPos = new BlockPos(x, y, z);
 
@@ -367,6 +369,14 @@ public abstract class DungeonPiece extends StructurePiece {
 							model.model[x][y][z] != null
 									? fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior
 									: PlacementBehaviour.NON_SOLID);
+
+					if (y == 0 && model.height > 1
+							&& world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() - 1, pos.getZ() + z))
+							&& model.model[x][0][z] != null && model.model[x][1][z] != null
+							&& model.model[x][0][z].type == DungeonModelBlockType.SOLID
+							&& model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+						DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+					}
 				}
 			}
 		}
@@ -399,6 +409,15 @@ public abstract class DungeonPiece extends StructurePiece {
 										? fillAir ? PlacementBehaviour.SOLID
 												: model.model[x][y][z].type.placementBehavior
 										: PlacementBehaviour.NON_SOLID);
+
+						if (y == 0 && model.height > 1
+								&& world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() - 1, pos.getZ() + z))
+								&& model.model[x][0][z] != null && model.model[x][1][z] != null
+								&& model.model[x][0][z].type == DungeonModelBlockType.SOLID
+								&& model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+						}
+
 					}
 				}
 			}
@@ -422,6 +441,14 @@ public abstract class DungeonPiece extends StructurePiece {
 										? fillAir ? PlacementBehaviour.SOLID
 												: model.model[x][y][z].type.placementBehavior
 										: PlacementBehaviour.NON_SOLID);
+
+						if (y == 0 && model.height > 1
+								&& world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() - 1, pos.getZ() + z))
+								&& model.model[x][0][z] != null && model.model[x][1][z] != null
+								&& model.model[x][0][z].type == DungeonModelBlockType.SOLID
+								&& model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+						}
 					}
 				}
 			}
@@ -445,6 +472,14 @@ public abstract class DungeonPiece extends StructurePiece {
 										? fillAir ? PlacementBehaviour.SOLID
 												: model.model[x][y][z].type.placementBehavior
 										: PlacementBehaviour.NON_SOLID);
+
+						if (y == 0 && model.height > 1
+								&& world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() - 1, pos.getZ() + z))
+								&& model.model[x][0][z] != null && model.model[x][1][z] != null
+								&& model.model[x][0][z].type == DungeonModelBlockType.SOLID
+								&& model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+						}
 					}
 				}
 			}
@@ -473,7 +508,7 @@ public abstract class DungeonPiece extends StructurePiece {
 					for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
 						for (int y0 = 1; y0 < 4; y0++)
 							setBlockState(world, CAVE_AIR, x + model.width - 1, y + y0, z + z0, bounds);
-					setBlockState(world, CAVE_AIR, x + model.width - 1, y + 3, z + pathStartZ + 1, bounds);
+//					setBlockState(world, CAVE_AIR, x + model.width - 1, y + 3, z + pathStartZ + 1, bounds);
 //						stairs.facing = Direction.NORTH;
 //						setBlockState(world, stairs.create(t.stairs.get()), x + model.width - 1, y + 3, z + pathStartZ,
 //								bounds);
@@ -742,54 +777,54 @@ public abstract class DungeonPiece extends StructurePiece {
 	public static void addColumns(DungeonPiece piece, IWorld world, MutableBoundingBox boundsIn, int ySub, int theme) {
 		Theme buildTheme = Theme.get(theme);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 2, piece.y - ySub, piece.z + 2, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 3, piece.y - ySub, piece.z + 2, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 4, piece.y - ySub, piece.z + 2, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 5, piece.y - ySub, piece.z + 2, theme, 0, true);
 
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 2, piece.y - ySub, piece.z + 5, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 3, piece.y - ySub, piece.z + 5, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 4, piece.y - ySub, piece.z + 5, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 5, piece.y - ySub, piece.z + 5, theme, 0, true);
 
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 2, piece.y - ySub, piece.z + 3, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 2, piece.y - ySub, piece.z + 4, theme, 0, true);
 
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 5, piece.y - ySub, piece.z + 3, theme, 0, true);
 		piece.setBlockState(
-				buildTheme.stairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)
+				buildTheme.solidStairs.get().with(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST)
 						.with(BlockStateProperties.HALF, Half.TOP).with(BlockStateProperties.WATERLOGGED, true),
 				world, boundsIn, null, piece.x + 5, piece.y - ySub, piece.z + 4, theme, 0, true);
 

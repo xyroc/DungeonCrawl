@@ -30,17 +30,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
+import xiroc.dungeoncrawl.dungeon.DataReloadListener;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
-import xiroc.dungeoncrawl.dungeon.model.ModelReloadListener;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.BOPCompatModule;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.part.block.BlockRegistry;
-import xiroc.dungeoncrawl.theme.JsonTheme;
+import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Tools;
+import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 
 /* GENRERAL LICENSE FOR DungeonCrawl v1.0
  * 
@@ -70,8 +71,8 @@ public class DungeonCrawl {
 
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(DungeonModel.Metadata.class, new DungeonModel.Metadata.Deserializer())
-			.registerTypeAdapter(JsonTheme.JsonBaseTheme.class, new JsonTheme.JsonBaseTheme.Deserializer())
-			.registerTypeAdapter(JsonTheme.JsonSubTheme.class, new JsonTheme.JsonSubTheme.Deserializer())
+			.registerTypeAdapter(WeightedThemeRandomizer.class, new WeightedThemeRandomizer.Deserializer())
+			.registerTypeAdapter(WeightedIntegerEntry.class, new WeightedIntegerEntry.Deserializer())
 			.setPrettyPrinting().create();
 
 	public static IEventBus EVENT_BUS;
@@ -123,7 +124,7 @@ public class DungeonCrawl {
 
 	@SubscribeEvent
 	public void onServerStart(FMLServerAboutToStartEvent event) {
-		event.getServer().getResourceManager().addReloadListener(new ModelReloadListener());
+		event.getServer().getResourceManager().addReloadListener(new DataReloadListener());
 	}
 
 	public static String getDate() {

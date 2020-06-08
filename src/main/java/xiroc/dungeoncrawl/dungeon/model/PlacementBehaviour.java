@@ -12,9 +12,8 @@ import net.minecraft.world.IWorld;
 public enum PlacementBehaviour {
 
 	NON_SOLID((world, pos, rand, rx, ry, rz) -> false), RANDOM_IF_SOLID_NEARBY((world, pos, rand, rx, ry, rz) -> {
-		if (world.getBlockState(pos).isSolid() || world.getBlockState(pos.north()).isSolid()
-				|| world.getBlockState(pos.east()).isSolid() || world.getBlockState(pos.south()).isSolid()
-				|| world.getBlockState(pos.west()).isSolid()) {
+		if (world.getBlockState(pos.north()).isSolid() || world.getBlockState(pos.east()).isSolid()
+				|| world.getBlockState(pos.south()).isSolid() || world.getBlockState(pos.west()).isSolid()) {
 			return rand.nextFloat() < 0.5;
 		} else {
 			return false;

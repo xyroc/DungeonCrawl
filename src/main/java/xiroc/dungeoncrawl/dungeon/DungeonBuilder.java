@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -20,15 +21,12 @@ import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.RandomDungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntranceBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
-import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.BossEntry;
 import xiroc.dungeoncrawl.util.IRandom;
@@ -158,12 +156,12 @@ public class DungeonBuilder {
 		this.startBiome = chunkGen.getBiomeProvider()
 				.getBiome(new BlockPos(entrance.x + 4, entrance.y, entrance.z + 4));
 		String biome = startBiome.getRegistryName().toString();
-		
+
 		this.theme = Theme.getTheme(biome);
 		this.subTheme = Theme.getSubTheme(biome);
-		
+
 		DungeonCrawl.LOGGER.debug("Entrance Biome: {} SubTheme: {}", biome, subTheme);
-		
+
 		entrance.theme = theme;
 		entrance.subTheme = subTheme;
 
@@ -250,20 +248,14 @@ public class DungeonBuilder {
 		return 0;
 	}
 
-	/*
+	/**
 	 * Builds a 1x1 pillar to the ground
 	 */
-	public static void buildWallPillar(IWorld world, int theme, BlockPos pos, DungeonPiece piece) {
-		DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.RAND_WALL_AIR);
-		Theme buildTheme = Theme.get(theme);
-		int x = pos.getX(), z = pos.getZ();
-		int height = DungeonPiece.getGroudHeightFrom(world, x, z, pos.getY() - 1);
-
-		for (int y = pos.getY() - 1; y > height; y--)
-			piece.setBlockState(
-					DungeonModelBlock.PROVIDERS.get(DungeonModelBlockType.RAND_WALL_AIR).get(block, buildTheme, null,
-							WeightedRandomBlock.RANDOM, 0),
-					world, piece.getBoundingBox(), null, x, y, z, theme, 0, true);
+	public static void buildPillar(IWorld world, Theme theme, int x, int y, int z, MutableBoundingBox bounds) {
+		int height = DungeonPiece.getGroudHeightFrom(world, x, z, y - 1);
+		for (int y0 = y - 1; y0 > height; y0--) {
+			DungeonPiece.setBlockState(world, theme.solid.get(), x, y0, z, bounds, true);
+		}
 	}
 
 	public static DungeonModel getModel(DungeonPiece piece, Random rand) {

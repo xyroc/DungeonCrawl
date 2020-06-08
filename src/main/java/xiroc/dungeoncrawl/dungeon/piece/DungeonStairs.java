@@ -25,12 +25,11 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 public class DungeonStairs extends DungeonPiece {
 
-	public int stairType; // 0: staircase, 1: bottom stairs, 2: top stairs
+	public int stairType; // 0: bottom stairs, 1: top stairs
 
 	public DungeonStairs(TemplateManager manager, CompoundNBT p_i51343_2_) {
-		super(StructurePieceTypes.STAIRS, p_i51343_2_, false);
+		super(StructurePieceTypes.STAIRS, p_i51343_2_);
 		this.stairType = p_i51343_2_.getInt("stairType");
-		setupBoundingBox();
 	}
 
 	@Override
@@ -43,22 +42,15 @@ public class DungeonStairs extends DungeonPiece {
 			ChunkPos p_74875_4_) {
 		switch (stairType) {
 		case 0: {
-			DungeonModel model = DungeonModels.STAIRCASE;
-			Theme buildTheme = Theme.get(theme);
-			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), buildTheme, Theme.getSub(subTheme),
-					Treasure.Type.DEFAULT, stage, true);
-			return true;
-		}
-		case 1: {
 			DungeonModel model = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2 : DungeonModels.STAIRS_BOTTOM;
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
 			DungeonCrawl.LOGGER.debug("Stairs bottom Boundingbox: {}, {}, {} -> {}, {}, {}", boundingBox.minX, boundingBox.minY,
 					boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-			ironBars(worldIn, structureBoundingBoxIn);
+			ironBars(worldIn, structureBoundingBoxIn, model);
 			return true;
 		}
-		case 2: {
+		case 1: {
 			DungeonModel model = DungeonModels.STAIRS_TOP;
 			build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
 					Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
@@ -69,6 +61,52 @@ public class DungeonStairs extends DungeonPiece {
 		}
 		default:
 			return true;
+		}
+
+	}
+	
+	public void ironBars(IWorld world, MutableBoundingBox bounds, DungeonModel model) {
+		BlockState ironBars = Blocks.IRON_BARS.getDefaultState();
+
+//		DungeonModelBlock stairs = new DungeonModelBlock(DungeonModelBlockType.STAIRS);
+//		stairs.half = Half.TOP;
+
+		int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
+
+		for (int i = 0; i < sides.length - 2; i++) {
+			switch (Direction.byHorizontalIndex(i + 2)) {
+			case EAST:
+				if (sides[i]) {
+					for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, ironBars, x + model.width - 1, y + y0, z + z0, bounds);
+				}
+				continue;
+			case NORTH:
+				if (sides[i]) {
+					for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, ironBars, x + x0, y + y0, z, bounds);
+				}
+				continue;
+			case SOUTH:
+				if (sides[i]) {
+					for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, ironBars, x + x0, y + y0, z + model.length - 1, bounds);
+				}
+				continue;
+			case WEST:
+				if (sides[i]) {
+					for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
+						for (int y0 = 1; y0 < 4; y0++)
+							setBlockState(world, ironBars, x, y + y0, z + z0, bounds);
+				}
+				continue;
+			default:
+				continue;
+
+			}
 		}
 
 	}
@@ -107,11 +145,7 @@ public class DungeonStairs extends DungeonPiece {
 
 	@Override
 	public void setupBoundingBox() {
-		if (stairType == 0) {
-			this.boundingBox = new MutableBoundingBox(x, y, z, x + 4, y + 8, z + 4);
-		} else {
-			this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
-		}
+		this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
 	}
 
 	@Override
@@ -120,12 +154,12 @@ public class DungeonStairs extends DungeonPiece {
 	}
 
 	public DungeonStairs bottom() {
-		this.stairType = 1;
+		this.stairType = 0;
 		return this;
 	}
 
 	public DungeonStairs top() {
-		this.stairType = 2;
+		this.stairType = 1;
 		return this;
 	}
 

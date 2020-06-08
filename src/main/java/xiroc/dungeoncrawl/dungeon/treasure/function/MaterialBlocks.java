@@ -29,7 +29,7 @@ public class MaterialBlocks extends LootFunction {
 		return new ItemStack(
 				ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(biome, 0),
 						Theme.BIOME_TO_SUBTHEME_MAP.getOrDefault(biome, 0))),
-				context.getRandom().nextInt(7));
+				 16 + context.getRandom().nextInt(49));
 	}
 
 	public static class Serializer extends LootFunction.Serializer<MaterialBlocks> {

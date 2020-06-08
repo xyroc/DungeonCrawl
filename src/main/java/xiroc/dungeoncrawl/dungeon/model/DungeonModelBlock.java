@@ -30,6 +30,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoorHingeSide;
 import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.state.properties.Half;
+import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -272,7 +273,7 @@ public class DungeonModelBlock {
 		PROVIDERS.put(DungeonModelBlockType.STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.SOLID_STAIRS,
-				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
+				(block, theme, subTheme, rand, stage) -> block.create(theme.solidStairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.MATERIAL_STAIRS,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.stairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.CHEST,
@@ -356,13 +357,15 @@ public class DungeonModelBlock {
 				return Blocks.BOOKSHELF.getDefaultState();
 			return Blocks.COBWEB.getDefaultState();
 		});
-		PROVIDERS.put(DungeonModelBlockType.STAIRS,
-				(block, theme, subTheme, rand, stage) -> block.create(theme.stairs.get()));
 		PROVIDERS.put(DungeonModelBlockType.TRAPDOOR,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.trapDoor.get()));
-		PROVIDERS.put(DungeonModelBlockType.WALL, (block, theme, subTheme, rand, stage) -> theme.solid.get());
-		PROVIDERS.put(DungeonModelBlockType.WALL_LOG,
-				(block, theme, subTheme, rand, stage) -> block.create(subTheme.wallLog.get()));
+		PROVIDERS.put(DungeonModelBlockType.WALL_LOG, (block, theme, subTheme, rand, stage) -> {
+			BlockState state = block.create(subTheme.wallLog.get());
+			if (state.has(BlockStateProperties.SLAB_TYPE)) {
+				state = state.with(BlockStateProperties.SLAB_TYPE, SlabType.DOUBLE);
+			}
+			return state;
+		});
 		PROVIDERS.put(DungeonModelBlockType.DOOR,
 				(block, theme, subTheme, rand, stage) -> block.create(subTheme.door.get()));
 		PROVIDERS.put(DungeonModelBlockType.OTHER, (block, theme, subTheme, rand, stage) -> block

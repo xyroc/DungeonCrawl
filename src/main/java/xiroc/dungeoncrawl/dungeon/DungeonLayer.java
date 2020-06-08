@@ -547,7 +547,7 @@ public class DungeonLayer {
 		}
 
 		if (depth == 1 && !stairsPlaced) {
-			DungeonCrawl.LOGGER.debug("Playing exit stairs in layer {}", layer);
+			DungeonCrawl.LOGGER.debug("Placing exit stairs in layer {}", layer);
 			Direction toLast = currentPosition.directionTo(lastPosition);
 
 			this.end = currentPosition;
@@ -579,7 +579,7 @@ public class DungeonLayer {
 			return;
 		}
 
-		if (depth < 3 && nodesLeft > 0) {
+		if (depth <= 4 && nodesLeft > 0) {
 			Position2D center = currentPosition.shift(lastPosition.directionTo(currentPosition), 1);
 
 			if (DungeonFeatures.canPlacePiece(this, center.x - 1, center.z - 1, 3, 3, false)) {

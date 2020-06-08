@@ -154,8 +154,8 @@ public class BOPCompatModule extends Module {
 
 		Theme.ID_TO_THEME_MAP.put(64,
 				new Theme(mudBricks, mudBricks, mudBricks, mudFloor, () -> BOPBlocks.mud_brick_stairs.getDefaultState(),
-						() -> BOPBlocks.mud.getDefaultState(), () -> BOPBlocks.mud_brick_wall.getDefaultState(),
-						mudFloor));
+						() -> BOPBlocks.mud_brick_stairs.getDefaultState(), () -> BOPBlocks.mud.getDefaultState(),
+						() -> BOPBlocks.mud_brick_wall.getDefaultState(), mudFloor));
 
 		Theme.RANDOMIZERS.put(64, Theme.createRandomizer(64, 0, 49));
 

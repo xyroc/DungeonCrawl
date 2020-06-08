@@ -6,7 +6,6 @@ package xiroc.dungeoncrawl.dungeon.piece;
 
 import java.util.Random;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;

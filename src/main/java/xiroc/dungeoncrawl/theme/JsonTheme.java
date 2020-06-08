@@ -4,67 +4,83 @@ package xiroc.dungeoncrawl.theme;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
  */
 
-import java.lang.reflect.Type;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.registries.ForgeRegistries;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
-/*
- * A class used to load and store custom themes from/as json.
- */
 public class JsonTheme {
-	
+
 	public JsonBaseTheme theme;
 	public JsonSubTheme subTheme;
 
 	private static final Logger LOGGER = LogManager.getLogger("DungeonCrawl/JsonThemeDeserializer");
 
+	public static void deserialize(JsonObject object) {
+		if (object.has("type")) {
+			String type = object.get("type").getAsString();
+			if (type.equalsIgnoreCase("theme")) {
+				JsonBaseTheme.deserialize(object);
+			} else if (type.equalsIgnoreCase("sub_theme")) {
+				JsonSubTheme.deserialize(object);
+			} else {
+				LOGGER.error("Invalid json theme type: {}", type);
+			}
+		} else {
+			LOGGER.error("Invalid json theme: missing type specification.");
+		}
+	}
+
 	public static class JsonBaseTheme {
 
-		public IBlockStateProvider solid, normal, floor, stairs, material, vanillaWall, column;
+		public IBlockStateProvider solid, normal, floor, solidStairs, stairs, material, vanillaWall, column;
 
-		public static class Deserializer implements JsonDeserializer<JsonBaseTheme> {
+		public static void deserialize(JsonObject object) {
+			JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-			@Override
-			public JsonBaseTheme deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-					throws JsonParseException {
+			JsonBaseTheme theme = new JsonBaseTheme();
 
-				JsonObject object = json.getAsJsonObject();
+			theme.normal = JsonTheme.deserialize(themeObject, "normal");
+			theme.solid = JsonTheme.deserialize(themeObject, "solid");
 
-				JsonBaseTheme theme = new JsonBaseTheme();
+			theme.floor = JsonTheme.deserialize(themeObject, "floor");
 
-				theme.solid = JsonTheme.deserialize(object, "solid");
-				theme.normal = JsonTheme.deserialize(object, "normal");
-				theme.floor = JsonTheme.deserialize(object, "floor");
-				theme.stairs = JsonTheme.deserialize(object, "stairs");
-				theme.material = JsonTheme.deserialize(object, "material");
-				theme.vanillaWall = JsonTheme.deserialize(object, "vanillaWall");
-				theme.column = JsonTheme.deserialize(object, "column");
+			theme.stairs = JsonTheme.deserialize(themeObject, "stairs");
+			theme.solidStairs = JsonTheme.deserialize(themeObject, "solid_stairs");
 
-				return theme;
+			theme.material = JsonTheme.deserialize(themeObject, "material");
+			theme.vanillaWall = JsonTheme.deserialize(themeObject, "wall");
+//			theme.column = JsonTheme.deserialize(themeObject, "column");
+
+			int id = object.get("id").getAsInt();
+
+			Theme.ID_TO_THEME_MAP.put(id, theme.toTheme());
+
+			if (object.has("biomes")) {
+				String[] biomes = DungeonCrawl.GSON.fromJson(object.get("biomes"), String[].class);
+
+				for (String biome : biomes) {
+					Theme.BIOME_TO_THEME_MAP.put(biome, id);
+				}
 			}
-
 		}
 
 		public Theme toTheme() {
-			return new Theme(null, solid, normal, floor, stairs, material, vanillaWall, column);
+			return new Theme(null, solid, normal, floor, solidStairs, stairs, material, vanillaWall, null);
 		}
 
 	}
@@ -73,43 +89,48 @@ public class JsonTheme {
 
 		public IBlockStateProvider wallLog, trapDoor, torchDark, door, material, stairs;
 
-		public static class Deserializer implements JsonDeserializer<JsonSubTheme> {
+		public static void deserialize(JsonObject object) {
 
-			@Override
-			public JsonSubTheme deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-					throws JsonParseException {
+			JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-				JsonObject object = json.getAsJsonObject();
+			JsonSubTheme theme = new JsonSubTheme();
 
-				JsonSubTheme theme = new JsonSubTheme();
+			theme.wallLog = JsonTheme.deserialize(themeObject, "pillar");
+			theme.trapDoor = JsonTheme.deserialize(themeObject, "trapdoor");
+//			theme.torchDark = JsonTheme.deserialize(themeObject, "torch");
+			theme.door = JsonTheme.deserialize(themeObject, "door");
+			theme.material = JsonTheme.deserialize(themeObject, "material");
+			theme.stairs = JsonTheme.deserialize(themeObject, "stairs");
 
-				theme.wallLog = JsonTheme.deserialize(object, "wallLog");
-				theme.trapDoor = JsonTheme.deserialize(object, "trapDoor");
-				theme.torchDark = JsonTheme.deserialize(object, "torch");
-				theme.door = JsonTheme.deserialize(object, "door");
-				theme.material = JsonTheme.deserialize(object, "material");
-				theme.stairs = JsonTheme.deserialize(object, "stairs");
+			int id = object.get("id").getAsInt();
 
-				return theme;
+			Theme.ID_TO_SUBTHEME_MAP.put(id, theme.toSubTheme());
+
+			if (object.has("biomes")) {
+				String[] biomes = DungeonCrawl.GSON.fromJson(object.get("biomes"), String[].class);
+
+				for (String biome : biomes) {
+					Theme.BIOME_TO_SUBTHEME_MAP.put(biome, id);
+				}
 			}
 
 		}
 
 		public SubTheme toSubTheme() {
-			return new SubTheme(wallLog, trapDoor, torchDark, door, material, stairs);
+			return new SubTheme(wallLog, trapDoor, null, door, material, stairs);
 		}
 
 	}
 
 	public static IBlockStateProvider deserialize(JsonObject base, String name) {
 		if (!base.has(name)) {
-			LOGGER.error("Missing BlockState Provider \"{}\"", name);
+			LOGGER.warn("Missing BlockState Provider \"{}\"", name);
 			return null;
 		}
 		JsonObject object = (JsonObject) base.get(name);
 		if (object.has("type")) {
 			String type = object.get("type").getAsString();
-			if (type.equalsIgnoreCase("WeightedRandomBlock")) {
+			if (type.equalsIgnoreCase("RandomBlock")) {
 				JsonArray blockObjects = object.get("blocks").getAsJsonArray();
 				TupleIntBlock[] blocks = new TupleIntBlock[blockObjects.size()];
 

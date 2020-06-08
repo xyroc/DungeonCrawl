@@ -36,13 +36,13 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.block.Spawner;
+import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.PlacementBehaviour;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.part.block.Spawner;
-import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
@@ -69,19 +69,19 @@ public abstract class DungeonPiece extends StructurePiece {
 
 	public static final CompoundNBT DEFAULT_NBT;
 
-	private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder()
-			.add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE)
-			.add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE)
-			.add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).add(Blocks.STONE_BRICK_STAIRS)
-			.add(Blocks.COBBLESTONE_STAIRS).add(Blocks.NETHER_BRICK_STAIRS).add(Blocks.OAK_STAIRS)
-			.add(Blocks.BIRCH_STAIRS).add(Blocks.JUNGLE_STAIRS).add(Blocks.DARK_OAK_STAIRS).add(Blocks.ACACIA_STAIRS)
-			.add(Blocks.SPRUCE_STAIRS).add(Blocks.PRISMARINE_STAIRS).add(Blocks.PRISMARINE_BRICK_STAIRS)
-			.add(Blocks.DARK_PRISMARINE_STAIRS).add(Blocks.SANDSTONE_STAIRS).add(Blocks.SMOOTH_SANDSTONE_STAIRS)
-			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS)
-			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.GRANITE_STAIRS).add(Blocks.ANDESITE_STAIRS)
-			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS)
-			.add(Blocks.MOSSY_COBBLESTONE_STAIRS).add(Blocks.MOSSY_STONE_BRICK_STAIRS).add(Blocks.TRIPWIRE)
-			.add(Blocks.REDSTONE_WIRE).build();
+//	private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder()
+//			.add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE)
+//			.add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE)
+//			.add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).add(Blocks.STONE_BRICK_STAIRS)
+//			.add(Blocks.COBBLESTONE_STAIRS).add(Blocks.NETHER_BRICK_STAIRS).add(Blocks.OAK_STAIRS)
+//			.add(Blocks.BIRCH_STAIRS).add(Blocks.JUNGLE_STAIRS).add(Blocks.DARK_OAK_STAIRS).add(Blocks.ACACIA_STAIRS)
+//			.add(Blocks.SPRUCE_STAIRS).add(Blocks.PRISMARINE_STAIRS).add(Blocks.PRISMARINE_BRICK_STAIRS)
+//			.add(Blocks.DARK_PRISMARINE_STAIRS).add(Blocks.SANDSTONE_STAIRS).add(Blocks.SMOOTH_SANDSTONE_STAIRS)
+//			.add(Blocks.RED_SANDSTONE_STAIRS).add(Blocks.SMOOTH_RED_SANDSTONE_STAIRS)
+//			.add(Blocks.RED_NETHER_BRICK_STAIRS).add(Blocks.GRANITE_STAIRS).add(Blocks.ANDESITE_STAIRS)
+//			.add(Blocks.POLISHED_ANDESITE_STAIRS).add(Blocks.POLISHED_GRANITE_STAIRS)
+//			.add(Blocks.MOSSY_COBBLESTONE_STAIRS).add(Blocks.MOSSY_STONE_BRICK_STAIRS).add(Blocks.TRIPWIRE)
+//			.add(Blocks.REDSTONE_WIRE).build();
 
 	private static final Set<Block> PROTECTED_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.END_PORTAL)
 			.add(Blocks.END_PORTAL_FRAME).build();
@@ -262,9 +262,9 @@ public abstract class DungeonPiece extends StructurePiece {
 			world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
 		}
 
-		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
-			world.getChunk(pos).markBlockForPostprocessing(pos);
-		}
+//		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+//			world.getChunk(pos).markBlockForPostprocessing(pos);
+//		}
 	}
 
 	public void setBlockState(BlockState state, IWorld world, MutableBoundingBox boundsIn, Treasure.Type treasureType,
@@ -286,9 +286,9 @@ public abstract class DungeonPiece extends StructurePiece {
 			world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
 		}
 
-		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
-			world.getChunk(pos).markBlockForPostprocessing(pos);
-		}
+//		if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+//			world.getChunk(pos).markBlockForPostprocessing(pos);
+//		}
 	}
 
 	@Override
@@ -308,9 +308,9 @@ public abstract class DungeonPiece extends StructurePiece {
 //				worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
 //			}
 
-			if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
-				worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
-			}
+//			if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
+//				worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+//			}
 
 		}
 	}
@@ -338,9 +338,9 @@ public abstract class DungeonPiece extends StructurePiece {
 //				worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
 //			}
 
-			if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
-				worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
-			}
+//			if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
+//				worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+//			}
 
 		}
 	}
@@ -360,7 +360,8 @@ public abstract class DungeonPiece extends StructurePiece {
 					if (model.model[x][y][z] == null)
 						state = CAVE_AIR;
 					else
-						state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
+						state = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
+								new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), theme, subTheme,
 								WeightedRandomBlock.RANDOM, lootLevel); //
 					if (state == null)
 						continue;
@@ -399,8 +400,9 @@ public abstract class DungeonPiece extends StructurePiece {
 						if (model.model[x][y][z] == null)
 							state = CAVE_AIR;
 						else
-							state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
-									WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_90);
+							state = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_90, world,
+									new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), theme, subTheme,
+									WeightedRandomBlock.RANDOM, lootLevel);
 						if (state == null)
 							continue;
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + model.length - z - 1,
@@ -415,7 +417,8 @@ public abstract class DungeonPiece extends StructurePiece {
 								&& model.model[x][0][z] != null && model.model[x][1][z] != null
 								&& model.model[x][0][z].type == DungeonModelBlockType.SOLID
 								&& model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z,
+									boundsIn);
 						}
 
 					}
@@ -431,8 +434,9 @@ public abstract class DungeonPiece extends StructurePiece {
 						if (model.model[x][y][z] == null)
 							state = CAVE_AIR;
 						else
-							state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
-									WeightedRandomBlock.RANDOM, lootLevel, Rotation.COUNTERCLOCKWISE_90);
+							state = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.COUNTERCLOCKWISE_90,
+									world, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), theme,
+									subTheme, WeightedRandomBlock.RANDOM, lootLevel);
 						if (state == null)
 							continue;
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + z, pos.getY() + y,
@@ -447,7 +451,8 @@ public abstract class DungeonPiece extends StructurePiece {
 								&& model.model[x][0][z] != null && model.model[x][1][z] != null
 								&& model.model[x][0][z].type == DungeonModelBlockType.SOLID
 								&& model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z,
+									boundsIn);
 						}
 					}
 				}
@@ -462,8 +467,9 @@ public abstract class DungeonPiece extends StructurePiece {
 						if (model.model[x][y][z] == null)
 							state = CAVE_AIR;
 						else
-							state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
-									WeightedRandomBlock.RANDOM, lootLevel, Rotation.CLOCKWISE_180);
+							state = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
+									new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), theme, subTheme,
+									WeightedRandomBlock.RANDOM, lootLevel);
 						if (state == null)
 							continue;
 						setBlockState(state, world, boundsIn, treasureType, pos.getX() + model.width - x - 1,
@@ -478,7 +484,8 @@ public abstract class DungeonPiece extends StructurePiece {
 								&& model.model[x][0][z] != null && model.model[x][1][z] != null
 								&& model.model[x][0][z].type == DungeonModelBlockType.SOLID
 								&& model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+							DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z,
+									boundsIn);
 						}
 					}
 				}

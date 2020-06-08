@@ -12,13 +12,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.dungeon.block.Chest;
+import xiroc.dungeoncrawl.dungeon.block.Dispenser;
+import xiroc.dungeoncrawl.dungeon.block.Furnace;
+import xiroc.dungeoncrawl.dungeon.block.Plants;
+import xiroc.dungeoncrawl.dungeon.block.Spawner;
+import xiroc.dungeoncrawl.dungeon.block.Water;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.part.block.Chest;
-import xiroc.dungeoncrawl.part.block.Dispenser;
-import xiroc.dungeoncrawl.part.block.Furnace;
-import xiroc.dungeoncrawl.part.block.Plants;
-import xiroc.dungeoncrawl.part.block.Spawner;
-import xiroc.dungeoncrawl.part.block.Water;
 
 public interface IBlockPlacementHandler {
 

@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.part.block;
+package xiroc.dungeoncrawl.dungeon.block;
 
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
@@ -9,7 +9,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Tuple;
-import xiroc.dungeoncrawl.part.block.BlockRegistry.TupleFloatBlock;
+import xiroc.dungeoncrawl.dungeon.block.BlockRegistry.TupleFloatBlock;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.IRandom;
 

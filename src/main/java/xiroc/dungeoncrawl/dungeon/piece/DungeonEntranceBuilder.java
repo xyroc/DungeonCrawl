@@ -17,13 +17,13 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.PlacementBehaviour;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 
@@ -141,7 +141,8 @@ public class DungeonEntranceBuilder extends DungeonPiece {
 					if (model.model[x][y][z] == null)
 						state = CAVE_AIR;
 					else
-						state = DungeonModelBlock.getBlockState(model.model[x][y][z], theme, subTheme,
+						state = DungeonModelBlock.getBlockState(model.model[x][y][z], rotation, world,
+								new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), theme, subTheme,
 								WeightedRandomBlock.RANDOM, lootLevel); //
 					if (state == null)
 						continue;

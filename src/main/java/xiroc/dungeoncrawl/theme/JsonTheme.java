@@ -5,6 +5,7 @@ package xiroc.dungeoncrawl.theme;
  */
 
 import java.util.Iterator;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,11 +16,12 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
@@ -130,7 +132,7 @@ public class JsonTheme {
 		JsonObject object = (JsonObject) base.get(name);
 		if (object.has("type")) {
 			String type = object.get("type").getAsString();
-			if (type.equalsIgnoreCase("RandomBlock")) {
+			if (type.equalsIgnoreCase("random_block")) {
 				JsonArray blockObjects = object.get("blocks").getAsJsonArray();
 				TupleIntBlock[] blocks = new TupleIntBlock[blockObjects.size()];
 
@@ -138,15 +140,36 @@ public class JsonTheme {
 				Iterator<JsonElement> iterator = blockObjects.iterator();
 				while (iterator.hasNext()) {
 					JsonObject element = (JsonObject) iterator.next();
-					blocks[i++] = new TupleIntBlock(element.get("weight").getAsInt(),
-							ForgeRegistries.BLOCKS.getValue(new ResourceLocation(element.get("block").getAsString())));
+					Block block = ForgeRegistries.BLOCKS
+							.getValue(new ResourceLocation(element.get("block").getAsString()));
+					if (block != null) {
+						BlockState state = block.getDefaultState();
+						if (element.has("data")) {
+							JsonObject data = element.get("data").getAsJsonObject();
+							for (IProperty<?> property : state.getProperties()) {
+								if (data.has(property.getName())) {
+									state = parseProperty(state, property, data.get(property.getName()).getAsString());
+								}
+							}
+						}
+						blocks[i++] = new TupleIntBlock(element.get("weight").getAsInt(), state);
+					} else {
+						LOGGER.error("Unknown block: {}", element.get("block").getAsString());
+					}
 				}
-
-				return WeightedRandomBlock.of(blocks);
-			} else if (type.equalsIgnoreCase("Block")) {
+				return new WeightedRandomBlock(blocks);
+			} else if (type.equalsIgnoreCase("block")) {
 				BlockState state = ForgeRegistries.BLOCKS
 						.getValue(new ResourceLocation(object.get("block").getAsString())).getDefaultState();
-				return () -> state;
+				if (object.has("data")) {
+					JsonObject data = object.get("data").getAsJsonObject();
+					for (IProperty<?> property : state.getProperties()) {
+						if (data.has(property.getName())) {
+							state = parseProperty(state, property, data.get(property.getName()).getAsString());
+						}
+					}
+				}
+				return new BlockStateHolder(state);
 			} else {
 				LOGGER.error("Failed to load BlockState Provider {}: Unknown type {}.", object, type);
 				return null;
@@ -157,12 +180,47 @@ public class JsonTheme {
 		}
 	}
 
-	private static final class TupleIntBlock extends Tuple<Integer, Block> {
+	/**
+	 * Applies the property value to the state.
+	 * @return
+	 */
+	@SuppressWarnings("unchecked") // no way around this afaik
+	private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, IProperty<?> property,
+			String value) {
+		if (state.has(property)) {
+			IProperty<T> p = (IProperty<T>) property;
+			Optional<T> optional = p.parseValue(value);
+			if (optional.isPresent()) {
+				T t = optional.get();
+				return state.with(p, t);
+			} else {
+				LOGGER.warn("Couldn't apply {} : {} for {}", property.getName(), value, state.getBlock());
+			}
+		}
+		return state;
+	}
 
-		public TupleIntBlock(Integer aIn, Block bIn) {
+	private static final class TupleIntBlock extends Tuple<Integer, BlockState> {
+
+		public TupleIntBlock(Integer aIn, BlockState bIn) {
 			super(aIn, bIn);
 		}
 
+	}
+	
+	private static final class BlockStateHolder implements IBlockStateProvider {
+		
+		private final BlockState state;
+		
+		public BlockStateHolder(BlockState state) {
+			this.state = state;
+		}
+
+		@Override
+		public BlockState get() {
+			return state;
+		}
+		
 	}
 
 }

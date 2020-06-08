@@ -28,7 +28,7 @@ public class WeightedRandomInteger implements IRandom<Integer> {
 		this.totalWeight = weight;
 		this.integers = new WeightedInteger[entries.length];
 		this.assign(entries);
-		DungeonCrawl.LOGGER.info("WeightedRandomIntger: {} entries", entries.length);
+		DungeonCrawl.LOGGER.debug("WeightedRandomIntger: {} entries", entries.length);
 	}
 
 	private void assign(WeightedIntegerEntry[] values) {
@@ -48,7 +48,6 @@ public class WeightedRandomInteger implements IRandom<Integer> {
 		for (WeightedInteger entry : integers)
 			if (entry.getA() >= f)
 				return entry.getB();
-		DungeonCrawl.LOGGER.debug("weightedrandominteger returning null");
 		return null;
 	}
 

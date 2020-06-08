@@ -32,12 +32,12 @@ import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.DataReloadListener;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.dungeon.block.BlockRegistry;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.BOPCompatModule;
 import xiroc.dungeoncrawl.module.Modules;
-import xiroc.dungeoncrawl.part.block.BlockRegistry;
 import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Tools;
@@ -101,7 +101,7 @@ public class DungeonCrawl {
 			MinecraftForge.EVENT_BUS.register(new Tools());
 		}
 
-		DungeonModelBlock.load();
+		DungeonModelBlock.createProviders();
 		IBlockPlacementHandler.load();
 		BlockRegistry.load();
 

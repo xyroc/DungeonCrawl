@@ -226,6 +226,10 @@ public class DungeonModels {
 			}
 
 		}
+		
+//		DungeonCrawl.LOGGER.info("> Converting {}" + file);
+//		
+//		ModelHandler.writeModelToFile(model, "D:/models/" + file + ".nbt");
 
 		return model;
 	}
@@ -238,7 +242,13 @@ public class DungeonModels {
 					DungeonModels.class.getResourceAsStream("/data/dungeoncrawl/" + path));
 			CompoundNBT nbt = new CompoundNBT();
 			nbt.read(input, 16, NBTSizeTracker.INFINITE);
-			return ModelHandler.getModelFromNBT(nbt);
+			DungeonModel model = ModelHandler.getModelFromNBT(nbt);
+			
+//			DungeonCrawl.LOGGER.info("> Converting {}" + path);
+//			
+//			ModelHandler.writeModelToFile(model, "D:/models/" + path.substring(path.lastIndexOf("/")));
+			
+			return model;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

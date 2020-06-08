@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.part.block;
+package xiroc.dungeoncrawl.dungeon.block;
 
 /*
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 

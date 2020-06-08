@@ -19,7 +19,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.part.block.BlockRegistry;
+import xiroc.dungeoncrawl.dungeon.block.BlockRegistry;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class Theme {

@@ -13,7 +13,7 @@ import net.minecraft.world.IWorld;
 
 public enum DungeonModelBlockType {
 
-	NONE, SOLID_STAIRS(PlacementBehaviour.SOLID), SOLID(PlacementBehaviour.SOLID), WALL, WALL_LOG,
+	NONE, SOLID_STAIRS(PlacementBehaviour.SOLID), SOLID(PlacementBehaviour.SOLID), WALL, PILLAR,
 	FLOOR(PlacementBehaviour.RANDOM_IF_SOLID_NEARBY), MATERIAL_STAIRS, STAIRS, SPAWNER, RARE_SPAWNER, RAND_WALL_SPAWNER, CHEST,
 	RARE_CHEST, CHEST_50, RAND_WALL_AIR, RAND_FLOOR_CHEST_SPAWNER, TRAPDOOR, TORCH, TORCH_DARK, BARREL, DOOR,
 	RAND_FLOOR_WATER, RAND_FLOOR_LAVA, RAND_BOOKSHELF_COBWEB, DISPENSER, RAND_COBWEB_AIR, VANILLA_WALL, MATERIAL, OTHER;
@@ -62,7 +62,7 @@ public enum DungeonModelBlockType {
 		if (block == Blocks.STONE_BRICKS)
 			return SOLID;
 		if (block == Blocks.OAK_LOG)
-			return WALL_LOG;
+			return PILLAR;
 		if (block == Blocks.GRAVEL)
 			return FLOOR;
 		if (block == Blocks.COBBLESTONE_STAIRS)

@@ -74,7 +74,7 @@ public class DungeonModel {
 			for (int y = 0; y < height; y++)
 				for (int z = 0; z < length; z++)
 					if (model[x][y][z] != null && model[x][y][z].type == DungeonModelBlockType.OTHER)
-						model[x][y][z].readResourceLocation();
+						model[x][y][z].loadResource();
 		return this;
 	}
 

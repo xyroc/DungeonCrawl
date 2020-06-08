@@ -11,9 +11,9 @@ import biomesoplenty.api.block.BOPBlocks;
 import net.minecraft.block.Blocks;
 
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.BlockRegistry.TupleIntBlock;
 import xiroc.dungeoncrawl.module.Modules.Module;
-import xiroc.dungeoncrawl.part.block.BlockRegistry.TupleIntBlock;
-import xiroc.dungeoncrawl.part.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 

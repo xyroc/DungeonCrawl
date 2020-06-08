@@ -4,7 +4,10 @@
 	"theme": {
 		"pillar": {
 			"type": "block",
-			"block": "minecraft:smooth_stone_slab"
+			"block": "minecraft:smooth_stone_slab",
+			"data": {
+				"type": "double"
+			}
 		},
 		"trapdoor": {
 			"type": "block",
@@ -16,7 +19,10 @@
 		},
 		"material": {
 			"type": "block",
-			"block": "minecraft:jungle_planks"
+			"block": "minecraft:stripped_oak_log",
+			"data": {
+				"axis": "z"
+			}
 		},
 		"stairs": {
 			"type": "block",

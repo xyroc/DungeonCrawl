@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.util;
 
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
 import net.minecraft.world.biome.Biome;
@@ -16,17 +16,16 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 @Mod.EventBusSubscriber(modid = DungeonCrawl.MODID, bus = Bus.MOD)
 public class EventManager {
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
 
-	}
-	
-	@SubscribeEvent
-	public void onServerStart(FMLServerAboutToStartEvent event) {
-		DungeonCrawl.LOGGER.debug(">>>>>>>>> SERVER ABOUT TO START <<<<<<<<<");
-	}
-	
-	
+    }
+
+    @SubscribeEvent
+    public void onServerStart(FMLServerAboutToStartEvent event) {
+        DungeonCrawl.LOGGER.debug(">>>>>>>>> SERVER ABOUT TO START <<<<<<<<<");
+    }
+
 
 //	public static boolean createAssumption(String name) {
 //		for (String part : JsonConfig.ASSUMPTION_SEARCHLIST) {

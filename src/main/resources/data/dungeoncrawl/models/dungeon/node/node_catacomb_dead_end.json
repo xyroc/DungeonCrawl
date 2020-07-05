@@ -1,0 +1,15 @@
+{
+	"type": "node",
+	"id": 40,
+	"data": {
+		"size": "normal",
+		"type": "dead_end",
+		"feature": {
+			"name": "catacomb",
+			"min": 8,
+			"max": 16
+		},
+		"stages": [ 3, 4 ],
+		"weights": [ 0, 0, 5, 5, 0 ]
+	}
+}

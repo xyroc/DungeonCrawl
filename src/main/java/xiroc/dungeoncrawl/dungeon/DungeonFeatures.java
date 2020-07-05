@@ -1,82 +1,78 @@
 package xiroc.dungeoncrawl.dungeon;
 
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
+
+import com.google.common.collect.Lists;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
+import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
+import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.util.Position2D;
+import xiroc.dungeoncrawl.util.Triple;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import com.google.common.collect.Lists;
-
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
-import xiroc.dungeoncrawl.util.Position2D;
-import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.Triple;
-
 public class DungeonFeatures {
 
-	public static final HashMap<Integer, Triple<Integer, Integer, Integer>> OFFSET_DATA;
-	public static final Triple<Integer, Integer, Integer> DEFAULT_OFFSET = new Triple<Integer, Integer, Integer>(0, 0,
-			0);
-	public static final List<CorridorFeature> CORRIDOR_FEATURES;
+    public static final HashMap<Integer, Triple<Integer, Integer, Integer>> OFFSET_DATA;
+    public static final Triple<Integer, Integer, Integer> DEFAULT_OFFSET = new Triple<Integer, Integer, Integer>(0, 0,
+            0);
+    public static final List<CorridorFeature> CORRIDOR_FEATURES;
 
-	static {
-		OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
-		OFFSET_DATA.put(34, new Triple<Integer, Integer, Integer>(0, -1, 0));
-	}
+    static {
+        OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
+        OFFSET_DATA.put(34, new Triple<Integer, Integer, Integer>(0, -1, 0));
+    }
 
-	static {
-		CORRIDOR_FEATURES = Lists.newArrayList();
-		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-			if (stage > 1 && stage != 4 && rand.nextFloat() < 0.5) {
-				List<Direction> list = Lists.newArrayList();
-				Position2D center = new Position2D(x, z);
+    static {
+        CORRIDOR_FEATURES = Lists.newArrayList();
+        CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+            if (stage > 1 && stage != 4 && rand.nextFloat() < 0.5) {
+                List<Direction> list = Lists.newArrayList();
+                Position2D center = new Position2D(x, z);
 
-				for (int i = 0; i < 4; i++) {
-					if (layer.segments[x][z].reference.sides[i]) {
-						Position2D pos = center.shift(Direction.byHorizontalIndex(i + 2), 1);
-						PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
-						if (placeHolder != null) {
-							if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
-									&& ((DungeonCorridor) placeHolder.reference).isStraight()) {
-								list.add(Direction.byHorizontalIndex(i + 2));
-							} else {
-								return false;
-							}
-						}
-					}
-				}
+                for (int i = 0; i < 4; i++) {
+                    if (layer.segments[x][z].reference.sides[i]) {
+                        Position2D pos = center.shift(Direction.byHorizontalIndex(i + 2), 1);
+                        PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
+                        if (placeHolder != null) {
+                            if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
+                                    && ((DungeonCorridor) placeHolder.reference).isStraight()) {
+                                list.add(Direction.byHorizontalIndex(i + 2));
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                }
 
-				if (list.size() > 1 && list.size() < 4) {
+                if (list.size() > 1 && list.size() < 4) {
 
-					for (Direction direction : list) {
-						Position2D pos = center.shift(direction, 1);
-						DungeonCorridorLarge corridor = new DungeonCorridorLarge(
-								(DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
-						corridor.rotation = Orientation.getRotationFromFacing(direction.getOpposite());
-						layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
-								.withFlag(PlaceHolder.Flag.FIXED_ROTATION);
-					}
+                    for (Direction direction : list) {
+                        Position2D pos = center.shift(direction, 1);
+                        DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+                                (DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
+                        corridor.rotation = Orientation.getRotationFromFacing(direction.getOpposite());
+                        layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
+                                .withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+                    }
 
-					DungeonCorridorLarge corridor = new DungeonCorridorLarge(
-							(DungeonCorridor) layer.segments[x][z].reference, 1);
-					layer.segments[x][z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
-					return true;
-				} else {
-					return false;
-				}
-			}
-			return false;
-		});
+                    DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+                            (DungeonCorridor) layer.segments[x][z].reference, 1);
+                    layer.segments[x][z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
+        });
 //		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 //			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2, true)) {
 //				DungeonCorridorHole hole = new DungeonCorridorHole(null, DungeonPiece.DEFAULT_NBT);
@@ -195,118 +191,118 @@ public class DungeonFeatures {
 //			}
 //			return false;
 //		});
-	}
+    }
 
-	public static void processCorridor(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
-			int stage, BlockPos startPos) {
-		for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
-			if (corridorFeature.process(builder, layer, x, z, rand, lyr, stage, startPos))
-				return;
-	}
+    public static void processCorridor(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+                                       int stage, BlockPos startPos) {
+        for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
+            if (corridorFeature.process(builder, layer, x, z, rand, lyr, stage, startPos))
+                return;
+    }
 
-	/**
-	 * Checks if a piece can be placed at the given position.
-	 * 
-	 * @return true if the piece can be placed, false if not
-	 */
-	public static boolean canPlacePiece(DungeonLayer layer, int x, int z, int width, int length,
-			boolean ignoreStartPosition) {
-		if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
-			return false;
+    /**
+     * Checks if a piece can be placed at the given position.
+     *
+     * @return true if the piece can be placed, false if not
+     */
+    public static boolean canPlacePiece(DungeonLayer layer, int x, int z, int width, int length,
+                                        boolean ignoreStartPosition) {
+        if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
+            return false;
 
-		for (int x0 = 0; x0 < width; x0++) {
-			for (int z0 = 0; z0 < length; z0++) {
-				if (!(ignoreStartPosition && x0 == 0 && z0 == 0)
-						&& (layer.segments[x + x0][z + z0] != null || !layer.map.isPositionFree(x + x0, z + z0))) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+        for (int x0 = 0; x0 < width; x0++) {
+            for (int z0 = 0; z0 < length; z0++) {
+                if (!(ignoreStartPosition && x0 == 0 && z0 == 0)
+                        && (layer.segments[x + x0][z + z0] != null || !layer.map.isPositionFree(x + x0, z + z0))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Checks if a piece can be placed at the given position and layer. This does
-	 * also check if there are pieces on other layers (height variable) to avoid
-	 * collisions. For example, a piece that goes 1 to 9 blocks below the height of
-	 * its layer would have a height value of -1 (minus, because it goes down; 1
-	 * layer = 9 blocks).
-	 * 
-	 * @return true if the piece can be placed, false if not
-	 */
-	public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
-			int length, int layerHeight, boolean ignoreStartPosition) {
-		/*
-		 * x + width - 1 > Dungeon.SIZE -1 <=> x + width > Dungeon.SIZE
-		 * (same for z of course)
-		 */
-		if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
-			return false;
+    /**
+     * Checks if a piece can be placed at the given position and layer. This does
+     * also check if there are pieces on other layers (height variable) to avoid
+     * collisions. For example, a piece that goes 1 to 9 blocks below the height of
+     * its layer would have a height value of -1 (minus, because it goes down; 1
+     * layer = 9 blocks).
+     *
+     * @return true if the piece can be placed, false if not
+     */
+    public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
+                                                  int length, int layerHeight, boolean ignoreStartPosition) {
+        /*
+         * x + width - 1 > Dungeon.SIZE -1 <=> x + width > Dungeon.SIZE
+         * (same for z of course)
+         */
+        if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
+            return false;
 
-		int layers = builder.layers.length, lh = layer - layerHeight;
-		if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
-			return false;
+        int layers = builder.layers.length, lh = layer - layerHeight;
+        if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
+            return false;
 
-		boolean up = layerHeight > 0;
-		int c = up ? -1 : 1, k = lh + c;
+        boolean up = layerHeight > 0;
+        int c = up ? -1 : 1, k = lh + c;
 
-		for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
-			if (layers - lyr == 0)
-				continue;
-			else if (layers - lyr < 0)
-				return false;
-			
-			for (int x0 = 0; x0 < width; x0++) {
-				for (int z0 = 0; z0 < length; z0++) {
-					if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0)
-							&& (builder.layers[lyr].segments[x + x0][z + z0] != null
-									|| !builder.maps[lyr].isPositionFree(x + x0, z + z0))) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Marks the given area of the dungeon as occupied to prevent collision between
-	 * multiple dungeon features. The given coordinates and size values are assumed
-	 * to be correct. All parameters are the same as in #canPlacePiece.
-	 */
-	public static void mark(DungeonLayer layer, int x, int z, int width, int length) {
-		for (int x0 = 0; x0 < width; x0++) {
-			for (int z0 = 0; z0 < length; z0++) {
-				layer.map.map[x][z] = true;
-			}
-		}
-	}
+        for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
+            if (layers - lyr == 0)
+                continue;
+            else if (layers - lyr < 0)
+                return false;
 
-	/**
-	 * Marks the given area of the dungeon as occupied to prevent collision between
-	 * multiple dungeon features. The given coordinates and size values are assumed
-	 * to be correct. All parameters are the same as in #canPlacePieceWithHeight.
-	 */
-	public static void mark(DungeonBuilder builder, int layer, int x, int z, int width, int length, int layerHeight) {
-		int layers = builder.layers.length;
-		boolean up = layerHeight > 0;
-		int c = up ? -1 : 1, k = layer - layerHeight + c;
+            for (int x0 = 0; x0 < width; x0++) {
+                for (int z0 = 0; z0 < length; z0++) {
+                    if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0)
+                            && (builder.layers[lyr].segments[x + x0][z + z0] != null
+                            || !builder.maps[lyr].isPositionFree(x + x0, z + z0))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
-		for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
-			if (layers - lyr == 0)
-				continue;
-			for (int x0 = 0; x0 < width; x0++)
-				for (int z0 = 0; z0 < length; z0++)
-					builder.maps[lyr].markPositionAsOccupied(new Position2D(x + x0, z + z0));
-		}
-	}
+    /**
+     * Marks the given area of the dungeon as occupied to prevent collision between
+     * multiple dungeon features. The given coordinates and size values are assumed
+     * to be correct. All parameters are the same as in #canPlacePiece.
+     */
+    public static void mark(DungeonLayer layer, int x, int z, int width, int length) {
+        for (int x0 = 0; x0 < width; x0++) {
+            for (int z0 = 0; z0 < length; z0++) {
+                layer.map.map[x][z] = true;
+            }
+        }
+    }
 
-	@FunctionalInterface
-	public static interface CorridorFeature {
+    /**
+     * Marks the given area of the dungeon as occupied to prevent collision between
+     * multiple dungeon features. The given coordinates and size values are assumed
+     * to be correct. All parameters are the same as in #canPlacePieceWithHeight.
+     */
+    public static void mark(DungeonBuilder builder, int layer, int x, int z, int width, int length, int layerHeight) {
+        int layers = builder.layers.length;
+        boolean up = layerHeight > 0;
+        int c = up ? -1 : 1, k = layer - layerHeight + c;
 
-		public boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
-				int stage, BlockPos startPos);
+        for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
+            if (layers - lyr == 0)
+                continue;
+            for (int x0 = 0; x0 < width; x0++)
+                for (int z0 = 0; z0 < length; z0++)
+                    builder.maps[lyr].markPositionAsOccupied(new Position2D(x + x0, z + z0));
+        }
+    }
 
-	}
+    @FunctionalInterface
+    public static interface CorridorFeature {
+
+        public boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+                               int stage, BlockPos startPos);
+
+    }
 
 }

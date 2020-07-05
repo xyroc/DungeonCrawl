@@ -1,0 +1,41 @@
+{
+  "type": "sub_theme_mapping",
+  "mapping": {
+    "minecraft:jungle": 1,
+    "minecraft:jungle_edge": 1,
+    "minecraft:jungle_hills": 1,
+    "minecraft:modified_jungle": 1,
+    "minecraft:modified_jungle_edge": 1,
+    "minecraft:bamboo_jungle": 1,
+    "minecraft:bamboo_jungle_hills": 1,
+
+    "minecraft:birch_forest": 2,
+    "minecraft:birch_forest_hills": 2,
+    "minecraft:tall_birch_forest": 2,
+    "minecraft:flower_forest": 2,
+
+    "minecraft:savanna": 3,
+    "minecraft:savanna_plateau": 3,
+    "minecraft:shattered_savanna": 3,
+    "minecraft:shattered_savanna_plateau": 3,
+
+    "minecraft:dark_forest": 4,
+    "minecraft:dark_forest_hills": 4,
+
+    "minecraft:taiga": 5,
+    "minecraft:taiga_hills":  5,
+    "minecraft:snowy_tundra": 5,
+    "minecraft:snowy_taiga": 5,
+    "minecraft:snowy_taiga_hills": 5,
+    "minecraft:giant_tree_taiga": 5,
+    "minecraft:giant_tree_taiga_hills": 5,
+    "minecraft:taiga_mountains": 5,
+    "minecraft:snowy_taiga_mountains": 5,
+    "minecraft:giant_spruce_taiga": 5,
+    "minecraft:giant_spruce_taiga_hills": 5,
+
+    "minecraft:desert": 6,
+    "minecraft:desert_hills": 6,
+    "minecraft:desert_lakes": 6
+  }
+}

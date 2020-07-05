@@ -1,0 +1,32 @@
+{
+	"type": "sub_theme",
+	"id": 128,
+	"theme": {
+		"pillar": {
+			"type": "block",
+			"block": "minecraft:smooth_stone_slab",
+			"data": {
+				"type": "double"
+			}
+		},
+		"trapdoor": {
+			"type": "block",
+			"block": "minecraft:jungle_trapdoor"
+		},
+		"door": {
+			"type": "block",
+			"block": "minecraft:jungle_door"
+		},
+		"material": {
+			"type": "block",
+			"block": "minecraft:stripped_jungle_log",
+			"data": {
+				"axis": "z"
+			}
+		},
+		"stairs": {
+			"type": "block",
+			"block": "minecraft:jungle_stairs"
+		}
+	}	
+}

@@ -1,0 +1,10 @@
+{
+	"type": "node",
+	"id": 41,
+	"data": {
+		"size": "normal",
+		"type": "turn",
+		"stages": [ 1, 2, 3, 4 ],
+		"weights": [ 1, 1, 1, 1, 0 ]
+	}
+}

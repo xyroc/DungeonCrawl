@@ -1,0 +1,8 @@
+{
+  "type": "corridor_linker",
+  "id": 18,
+  "data": {
+    "stages": [ 1, 2 ],
+    "weights": [ 1, 1, 0, 0, 0 ]
+  }
+}

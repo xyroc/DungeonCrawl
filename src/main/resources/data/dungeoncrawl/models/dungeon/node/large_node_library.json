@@ -1,0 +1,10 @@
+{
+	"type": "node",
+	"id": 34,
+	"data": {
+		"size": "large",
+		"type": "full",
+		"stages": [ 2, 3, 4 ],
+		"weights": [ 0, 1, 1, 1, 0 ]
+	}
+}

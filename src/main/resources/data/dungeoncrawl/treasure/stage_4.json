@@ -1,0 +1,98 @@
+[
+  {
+    "item": "minecraft:chainmail_boots",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:chainmail_leggings",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:chainmail_chestplate",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:chainmail_helmet",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:golden_boots",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:golden_leggings",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:golden_chestplate",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:golden_helmet",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_boots",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_leggings",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_chestplate",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_helmet",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:iron_boots",
+    "weight": 3
+  },
+  {
+    "item": "minecraft:iron_leggings",
+    "weight": 3
+  },
+  {
+    "item": "minecraft:iron_chestplate",
+    "weight": 3
+  },
+  {
+    "item": "minecraft:iron_helmet",
+    "weight": 3
+  },
+  {
+    "item": "minecraft:iron_pickaxe",
+    "weight": 6
+  },
+  {
+    "item": "minecraft:iron_shovel",
+    "weight": 5
+  },
+  {
+    "item": "minecraft:iron_sword",
+    "weight": 6
+  },
+  {
+    "item": "minecraft:golden_pickaxe",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:golden_shovel",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_pickaxe",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_sword",
+    "weight": 1
+  },
+  {
+    "item": "diamond_shovel",
+    "weight": 1
+  }
+]

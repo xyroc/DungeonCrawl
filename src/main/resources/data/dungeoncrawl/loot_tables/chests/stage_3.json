@@ -548,7 +548,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:air",
-                	"weight": 8,
+                	"weight": 9,
                 	"functions": [
                 		{
                 			"function": "dungeoncrawl:random_item",

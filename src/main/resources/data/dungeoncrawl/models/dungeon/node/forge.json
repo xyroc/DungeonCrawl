@@ -1,0 +1,10 @@
+{
+	"type": "node",
+	"id": 32,
+	"data": {
+		"size": "normal",
+		"type": "dead_end",
+		"stages": [ 1, 2 ],
+		"weights": [ 1, 2, 0, 0, 0 ]
+	}
+}

@@ -1,31 +1,30 @@
 package xiroc.dungeoncrawl.config;
 
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
-import java.io.File;
-import java.util.HashMap;
-
 import com.google.gson.JsonObject;
-
 import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
+import java.io.File;
+import java.util.HashMap;
+
 public class Kitchen implements IJsonConfigurable {
 
-	public static final String KEY_KITCHEN = "kitchen_chest", KEY_SMOKER = "kitchen_smoker",
-			KEY_SMOKER_OCEAN = "kitchen_smoker_ocean";
+    public static final String KEY_KITCHEN = "kitchen_chest", KEY_SMOKER = "kitchen_smoker",
+            KEY_SMOKER_OCEAN = "kitchen_smoker_ocean";
 
-	public static final String[] KEYS = new String[] { KEY_KITCHEN, KEY_SMOKER, KEY_SMOKER_OCEAN };
+    public static final String[] KEYS = new String[]{KEY_KITCHEN, KEY_SMOKER, KEY_SMOKER_OCEAN};
 
-	public static final HashMap<String, Object> DEFAULTS;
+    public static final HashMap<String, Object> DEFAULTS;
 
 //	public static TreasureLootTable KITCHEN, SMOKER, SMOKER_OCEAN;
 
-	static {
-		DEFAULTS = new HashMap<String, Object>();
+    static {
+        DEFAULTS = new HashMap<String, Object>();
 //		DEFAULTS.put(KEY_KITCHEN, new TreasureLootTable("kitchen_chest", new RandomValueRange(6, 10),
 //				new TreasureEntry("minecraft:apple", 1, 4, 3), new TreasureEntry("minecraft:mushroom_stew", 1),
 //				new TreasureEntry("minecraft:bread", 1, 4, 2), new TreasureEntry("minecraft:porkchop", 1, 2, 3),
@@ -56,15 +55,15 @@ public class Kitchen implements IJsonConfigurable {
 //		DEFAULTS.put(KEY_SMOKER_OCEAN,
 //				new TreasureLootTable("kitchen_smoker_ocean", null, new TreasureEntry("minecraft:cooked_cod", 2, 5, 1),
 //						new TreasureEntry("minecraft:cooked_salmon", 2, 5, 1)));
-	}
+    }
 
-	@Override
-	public File getFile() {
-		return FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/loot/kitchen.json").toFile();
-	}
+    @Override
+    public File getFile() {
+        return FMLPaths.CONFIGDIR.get().resolve("DungeonCrawl/loot/kitchen.json").toFile();
+    }
 
-	@Override
-	public void load(JsonObject object, File file) {
+    @Override
+    public void load(JsonObject object, File file) {
 //		KITCHEN = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_KITCHEN, this),
 //				TreasureLootTable.class);
 //		SMOKER = DungeonCrawl.GSON.fromJson(JsonConfig.getOrRewrite(object, KEY_SMOKER, this), TreasureLootTable.class);
@@ -78,29 +77,29 @@ public class Kitchen implements IJsonConfigurable {
 //		TreasureLootTable.LOOT_TABLES.add(KITCHEN);
 //		TreasureLootTable.LOOT_TABLES.add(SMOKER);
 //		TreasureLootTable.LOOT_TABLES.add(SMOKER_OCEAN);
-}
+    }
 
-	@Override
-	public JsonObject create(JsonObject object) {
-		object.add(KEY_KITCHEN, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_KITCHEN)));
-		object.add(KEY_SMOKER, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_SMOKER)));
-		object.add(KEY_SMOKER_OCEAN, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_SMOKER_OCEAN)));
-		return object;
-	}
+    @Override
+    public JsonObject create(JsonObject object) {
+        object.add(KEY_KITCHEN, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_KITCHEN)));
+        object.add(KEY_SMOKER, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_SMOKER)));
+        object.add(KEY_SMOKER_OCEAN, DungeonCrawl.GSON.toJsonTree(DEFAULTS.get(KEY_SMOKER_OCEAN)));
+        return object;
+    }
 
-	@Override
-	public HashMap<String, Object> getDefaults() {
-		return DEFAULTS;
-	}
+    @Override
+    public HashMap<String, Object> getDefaults() {
+        return DEFAULTS;
+    }
 
-	@Override
-	public String[] getKeys() {
-		return KEYS;
-	}
+    @Override
+    public String[] getKeys() {
+        return KEYS;
+    }
 
-	@Override
-	public int getVersion() {
-		return 0;
-	}
+    @Override
+    public int getVersion() {
+        return 0;
+    }
 
 }

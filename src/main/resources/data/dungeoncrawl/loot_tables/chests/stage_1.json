@@ -7,6 +7,62 @@
         		"max": 10
         	},
             "entries": [
+				{
+					"type": "item",
+					"name": "minecraft:apple",
+					"weight": 2,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 1,
+								"max": 4
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "minecraft:potato",
+					"weight": 2,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 1,
+								"max": 4
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "minecraft:baked_potato",
+					"weight": 2,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 1,
+								"max": 4
+							}
+						}
+					]
+				},
+				{
+					"type": "item",
+					"name": "minecraft:carrot",
+					"weight": 2,
+					"functions": [
+						{
+							"function": "set_count",
+							"count": {
+								"min": 1,
+								"max": 4
+							}
+						}
+					]
+				},
                 {
                     "type": "item",
                     "name": "minecraft:coal",
@@ -540,7 +596,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:air",
-                	"weight": 4,
+                	"weight": 6,
                 	"functions": [
                 		{
                 			"function": "dungeoncrawl:random_item",

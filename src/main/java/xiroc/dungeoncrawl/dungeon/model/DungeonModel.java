@@ -1,168 +1,223 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
-/*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
- */
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
+import com.google.gson.*;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
+import xiroc.dungeoncrawl.util.DirectionalBlockPos;
+
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Locale;
+
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
+ */
 
 public class DungeonModel {
 
-	public Integer id;
-	public int width, height, length;
+    public Integer id;
+    public int width, height, length;
 
-	public DungeonModelBlock[][][] model;
+    public DungeonModelBlock[][][] model;
 
-	public FeaturePosition[] featurePositions;
+    public FeaturePosition[] featurePositions;
 
-	public Metadata metadata;
+    public Metadata metadata;
 
-	public DungeonModel(DungeonModelBlock[][][] model, FeaturePosition[] featurePositions) {
-		this(model, featurePositions, null);
-	}
+    public DungeonModel(DungeonModelBlock[][][] model, FeaturePosition[] featurePositions) {
+        this.model = model;
+        this.width = model.length;
+        this.height = model[0].length;
+        this.length = model[0][0].length;
+        this.featurePositions = featurePositions;
+    }
 
-	public DungeonModel(DungeonModelBlock[][][] model, FeaturePosition[] featurePositions, Metadata metadata) {
-		this.model = model;
-		this.width = model.length;
-		this.height = model[0].length;
-		this.length = model[0][0].length;
-		this.featurePositions = featurePositions;
-		this.metadata = metadata;
-	}
+    public DungeonModel setId(int id) {
+        if (DungeonModels.MODELS.containsKey(id)) {
+            DungeonCrawl.LOGGER.warn("A model with the id {} has already been registered.", id);
+        }
+        DungeonModels.MODELS.put(id, this);
+        this.id = id;
+        return this;
+    }
 
-	public DungeonModel setId(int id) {
-		DungeonModels.MAP.put(id, this);
-		this.id = id;
-		return this;
-	}
+    public void loadMetadata(Metadata metadata) {
+        this.metadata = metadata;
 
-	public DungeonModel loadMetadata(Metadata metadata) {
-		this.metadata = metadata;
+        this.id = metadata.id;
 
-		this.id = metadata.id;
+        if (DungeonModels.MODELS.containsKey(id)) {
+            DungeonCrawl.LOGGER.warn("A model with the id {} has already been registered.", id);
+        }
+        DungeonModels.MODELS.put(id, this);
 
-		DungeonModels.MAP.put(id, this);
+        if (metadata.type != null) {
+            metadata.type.members.add(this);
+        }
 
-		metadata.type.members.add(this);
+        if (metadata.offset != null) {
+            DungeonModels.OFFSETS.put(id, metadata.offset);
+        }
 
-		if (metadata.size != null) {
-			metadata.size.members.add(this);
-		}
+        if (metadata.size != null) {
+            metadata.size.members.add(this);
+        }
 
-		for (int stage : metadata.stages) {
-			ModelCategory.getCategoryForStage(stage - 1).members.add(this);
-		}
+        if (metadata.stages != null) {
+            for (int stage : metadata.stages) {
+                ModelCategory.getCategoryForStage(stage - 1).members.add(this);
+            }
+        }
+    }
 
-		return this;
-	}
+    public DungeonModel build() {
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
+                for (int z = 0; z < length; z++)
+                    if (model[x][y][z] != null && model[x][y][z].type == DungeonModelBlockType.OTHER)
+                        model[x][y][z].loadResource();
+        return this;
+    }
 
-	public DungeonModel build() {
-		for (int x = 0; x < width; x++)
-			for (int y = 0; y < height; y++)
-				for (int z = 0; z < length; z++)
-					if (model[x][y][z] != null && model[x][y][z].type == DungeonModelBlockType.OTHER)
-						model[x][y][z].loadResource();
-		return this;
-	}
+    @Override
+    public String toString() {
+        return "{" + id + (metadata != null ? ", " + (metadata.type.toString() + ", " + Arrays.toString(metadata.stages)) + "}" : "}");
+    }
 
-	@Override
-	public String toString() {
-		return "{" + id + (metadata != null ? ", " + (metadata.type.toString() + ", " + Arrays.toString(metadata.stages)) + "}" : "}");
-	}
+    public static class FeaturePosition {
 
-	public static class FeaturePosition {
+        public Vec3i position;
+        public Direction facing;
 
-		public Vec3i position;
-		public Direction facing;
+        public FeaturePosition(int x, int y, int z) {
+            this.position = new Vec3i(x, y, z);
+        }
 
-		public FeaturePosition(int x, int y, int z) {
-			this.position = new Vec3i(x, y, z);
-		}
+        public FeaturePosition(int x, int y, int z, Direction facing) {
+            this.position = new Vec3i(x, y, z);
+            this.facing = facing;
+        }
 
-		public FeaturePosition(int x, int y, int z, Direction facing) {
-			this.position = new Vec3i(x, y, z);
-			this.facing = facing;
-		}
+        public DirectionalBlockPos directionalBlockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
+            switch (rotation) {
+                case CLOCKWISE_90:
+                    return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(), facing.rotateY());
+                case CLOCKWISE_180:
+                    return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + model.width - position.getX() - 1, facing.getOpposite());
+                case COUNTERCLOCKWISE_90:
+                    return new DirectionalBlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1, facing.rotateYCCW());
+                default:
+                    return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
+            }
+        }
 
-		public BlockPos blockPos(int x, int y, int z) {
-			return new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
-		}
+        public DirectionalBlockPos directionalBlockPos(int x, int y, int z) {
+            return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
+        }
 
-	}
+    }
 
-	public static class Metadata {
+    public static class Metadata {
 
-		public ModelCategory type, size;
+        public ModelCategory type, size;
 
-		public int id;
+        public int id;
 
-		public int[] stages, weights;
+        public DungeonModelFeature feature;
+        public DungeonModelFeature.Metadata featureMetadata;
 
-		private Metadata(ModelCategory type, ModelCategory size, int id, int[] stages, int[] weights) {
-			this.type = type;
-			this.size = size;
-			this.id = id;
-			this.stages = stages;
-			this.weights = weights;
-		}
+        public Vec3i offset;
 
-		public static class Deserializer implements JsonDeserializer<Metadata> {
+        public int[] stages, weights;
 
-			@Override
-			public Metadata deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-					throws JsonParseException {
+        private Metadata(ModelCategory type, ModelCategory size, int id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata, Vec3i offset, int[] stages, int[] weights) {
+            this.type = type;
+            this.size = size;
+            this.id = id;
+            this.feature = feature;
+            this.featureMetadata = featureMetadata;
+            this.offset = offset;
+            this.stages = stages;
+            this.weights = weights;
+        }
 
-				JsonObject object = json.getAsJsonObject();
-				String modelType = object.get("modelType").getAsString();
+        public static class Deserializer implements JsonDeserializer<Metadata> {
 
-				int id = object.get("id").getAsInt();
+            @Override
+            public Metadata deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                    throws JsonParseException {
 
-				JsonObject data = object.getAsJsonObject("data");
+                JsonObject object = json.getAsJsonObject();
+                String modelType = object.get("type").getAsString();
 
-				int[] stages = DungeonCrawl.GSON.fromJson(data.get("stages"), int[].class);
-				int[] weights = DungeonCrawl.GSON.fromJson(data.get("weights"), int[].class);
+                int id = object.get("id").getAsInt();
 
-				switch (modelType) {
-				case "NODE":
-					ModelCategory size;
-					String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
-					if (sizeString.equals("LARGE")) {
-						size = ModelCategory.LARGE_NODE;
-					} else if (sizeString.equals("NORMAL")) {
-						size = ModelCategory.NORMAL_NODE;
-					} else {
-						throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
-					}
-					return new Metadata(ModelCategory.valueOf("NODE_" + typeString), size, id, stages, weights);
-				case "CORRIDOR":
-					return new Metadata(ModelCategory.CORRIDOR, null, id, stages, weights);
-				case "CORRIDOR_LINKER":
-					return new Metadata(ModelCategory.CORRIDOR_LINKER, null, id, stages, weights);
-				case "NODE_CONNECTOR":
-					return new Metadata(ModelCategory.NODE_CONNECTOR, null, id, stages, weights);
-				case "SIDE_ROOM":
-					return new Metadata(ModelCategory.SIDE_ROOM, null, id, stages, weights);
-				default:
-					throw new JsonParseException("Unknown model type \"" + modelType + "\"");
-				}
+                JsonObject data = object.getAsJsonObject("data");
 
-			}
+                int[] stages = data.has("stages") ? DungeonCrawl.GSON.fromJson(data.get("stages"), int[].class) : null;
+                int[] weights = data.has("weights") ? DungeonCrawl.GSON.fromJson(data.get("weights"), int[].class) : null;
 
-		}
+                DungeonModelFeature feature = null;
+                DungeonModelFeature.Metadata featureMetadata = null;
 
-	}
+                if (data.has("feature")) {
+                    JsonObject featureData = data.getAsJsonObject("feature");
+                    feature = DungeonModelFeature.getFromName(featureData.get("name").getAsString());
+                    featureMetadata = new DungeonModelFeature.Metadata(featureData);
+                }
+
+                Vec3i offset = data.has("offset") ? getOffset(data.getAsJsonObject("offset")) : null;
+
+                switch (modelType) {
+                    case "normal":
+                        return new Metadata(null, null, id, feature, featureMetadata, offset, stages, weights);
+                    case "node":
+                        ModelCategory size;
+                        String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
+                        if (sizeString.equals("large")) {
+                            size = ModelCategory.LARGE_NODE;
+                        } else if (sizeString.equals("normal")) {
+                            size = ModelCategory.NORMAL_NODE;
+                        } else {
+                            throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
+                        }
+                        return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, stages, weights);
+                    case "corridor":
+                        return new Metadata(ModelCategory.CORRIDOR, null, id, feature, featureMetadata, offset, stages, weights);
+                    case "corridor_linker":
+                        return new Metadata(ModelCategory.CORRIDOR_LINKER, null, id, feature, featureMetadata, offset, stages, weights);
+                    case "node_connector":
+                        return new Metadata(ModelCategory.NODE_CONNECTOR, null, id, feature, featureMetadata, offset, stages, weights);
+                    case "side_room":
+                        return new Metadata(ModelCategory.SIDE_ROOM, null, id, feature, featureMetadata, offset, stages, weights);
+                    default:
+                        throw new IllegalArgumentException("Unknown model type \"" + modelType + "\"");
+                }
+
+            }
+
+            public Vec3i getOffset(JsonObject jsonObject) {
+                int x = 0, y = 0, z = 0;
+                if (jsonObject.has("x")) {
+                    x = jsonObject.get("x").getAsInt();
+                }
+                if (jsonObject.has("y")) {
+                    y = jsonObject.get("y").getAsInt();
+                }
+                if (jsonObject.has("z")) {
+                    z = jsonObject.get("z").getAsInt();
+                }
+                if (x == 0 && y == 0 && z == 0) {
+                    return null;
+                }
+                return new Vec3i(x, y, z);
+            }
+
+        }
+
+    }
 
 }

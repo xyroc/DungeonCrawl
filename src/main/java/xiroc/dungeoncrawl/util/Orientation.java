@@ -28,6 +28,51 @@ public class Orientation {
     public static final Direction[] NORTH_SOUTH_WEST = new Direction[]{Direction.NORTH, Direction.SOUTH,
             Direction.WEST};
 
+    public static Direction horizontalOpposite(Direction direction) {
+        switch(direction) {
+            case NORTH:
+                return Direction.SOUTH;
+            case EAST:
+                return Direction.WEST;
+            case SOUTH:
+                return Direction.NORTH;
+            case WEST:
+                return Direction.EAST;
+            default:
+                return direction;
+        }
+    }
+
+    public static Direction rotateY(Direction direction) {
+        switch(direction) {
+            case NORTH:
+                return Direction.EAST;
+            case EAST:
+                return Direction.SOUTH;
+            case SOUTH:
+                return Direction.WEST;
+            case WEST:
+                return Direction.NORTH;
+            default:
+                return direction;
+        }
+    }
+
+    public static Direction rotateYCCW(Direction direction) {
+        switch (direction) {
+            case NORTH:
+                return Direction.WEST;
+            case EAST:
+                return Direction.NORTH;
+            case SOUTH:
+                return Direction.EAST;
+            case WEST:
+                return Direction.SOUTH;
+            default:
+                return direction;
+        }
+    }
+
     public static Direction[] getFlatFacingsWithout(Direction excludedDirection) {
         switch (excludedDirection) {
             case NORTH:

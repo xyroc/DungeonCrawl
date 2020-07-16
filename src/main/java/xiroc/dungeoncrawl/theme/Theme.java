@@ -357,7 +357,7 @@ public class Theme {
         try {
             for (ResourceLocation resource : resourceManager
                     .getAllResourceLocations(DungeonCrawl.locate("theming/").getPath(), (s) -> s.endsWith(".json"))) {
-                DungeonCrawl.LOGGER.info("Loading {}", resource.toString());
+                DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
                 JsonReader reader = new JsonReader(
                         new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 JsonThemeHandler.deserialize(parser.parse(reader).getAsJsonObject());

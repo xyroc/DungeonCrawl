@@ -12,7 +12,6 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.RandomDungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -32,7 +31,7 @@ public class DungeonRoom extends DungeonPiece {
     @Override
     public int determineModel(DungeonBuilder builder, Random rand) {
         if (rand.nextFloat() < 0.4 || connectedSides < 2) {
-            return RandomDungeonModel.SPAWNER_ROOM.roll(rand).id;
+            return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
         }
         return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER,
                 DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
@@ -61,7 +60,6 @@ public class DungeonRoom extends DungeonPiece {
                 Treasure.Type.DEFAULT, stage, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
-
 
         if (model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);

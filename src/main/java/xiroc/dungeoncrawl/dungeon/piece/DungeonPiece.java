@@ -62,6 +62,7 @@ public abstract class DungeonPiece extends StructurePiece {
     // 11 node connector
     // 12 prisoner cell
     // 13 staircase
+    // 14 secret room
 
     public static final CompoundNBT DEFAULT_NBT;
 
@@ -88,6 +89,7 @@ public abstract class DungeonPiece extends StructurePiece {
     public int connectedSides, posX, posZ, theme, subTheme, x, y, z, stage, modelID;
     public boolean[] sides; // N-E-S-W-U-D
     public DirectionalBlockPos[] featurePositions;
+    public byte[] variation;
 
     public DungeonPiece(IStructurePieceType p_i51343_1_) {
         super(p_i51343_1_, DEFAULT_NBT);
@@ -115,6 +117,9 @@ public abstract class DungeonPiece extends StructurePiece {
         rotation = Orientation.getRotation(p_i51343_2_.getInt("rotation"));
         if (p_i51343_2_.contains("featurePositions", 9)) {
             featurePositions = readAllPositions(p_i51343_2_.getList("featurePositions", 10));
+        }
+        if (p_i51343_2_.contains("variation")) {
+            variation = p_i51343_2_.getByteArray("variation");
         }
         setupBoundingBox();
     }
@@ -218,9 +223,36 @@ public abstract class DungeonPiece extends StructurePiece {
             writeAllPositions(featurePositions, list);
             tagCompound.put("featurePositions", list);
         }
+        if (variation != null) {
+            tagCompound.putByteArray("variation", variation);
+        }
     }
 
     public void customSetup(Random rand) {
+    }
+
+    public void setBlockState(BlockState state, IWorld world, MutableBoundingBox boundsIn, Treasure.Type treasureType,
+                              BlockPos pos, int theme, int lootLevel, PlacementBehaviour placementBehaviour) {
+        if (state == null)
+            return;
+
+        if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
+                || world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM,
+                x - this.x, y - this.y, z - this.z)) {
+            return;
+        }
+
+        IBlockPlacementHandler.getHandler(state.getBlock()).placeBlock(world, state, pos, world.getRandom(),
+                treasureType, theme, lootLevel);
+//
+//        IFluidState ifluidstate = world.getFluidState(pos);
+//        if (!ifluidstate.isEmpty()) {
+//            world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
+//        }
+
+        if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+            world.getChunk(pos).markBlockForPostprocessing(pos);
+        }
     }
 
     public void setBlockState(BlockState state, IWorld world, MutableBoundingBox boundsIn, Treasure.Type treasureType,
@@ -282,20 +314,20 @@ public abstract class DungeonPiece extends StructurePiece {
         if (PROTECTED_BLOCKS.contains(worldIn.getBlockState(blockPos).getBlock()))
             return;
 
-        if (boundingboxIn.isVecInside(blockPos)) {
+        //if (boundingboxIn.isVecInside(blockPos)) {
 
-            worldIn.setBlockState(blockPos, blockstateIn, 3);
+        worldIn.setBlockState(blockPos, blockstateIn, 3);
 
 //			IFluidState ifluidstate = worldIn.getFluidState(blockPos);
 //			if (!ifluidstate.isEmpty()) {
 //				worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
 //			}
 
-            if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
-                worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
-            }
-
+        if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
+            worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
         }
+
+        //}
     }
 
     public void replaceBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
@@ -354,171 +386,561 @@ public abstract class DungeonPiece extends StructurePiece {
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
                       SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
 
-        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
-                width = Math.min(model.width, boundsIn.maxX - pos.getX() + 1);
-        int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
-                length = Math.min(model.length, boundsIn.maxZ - pos.getZ() + 1);
+        buildFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, fillAir);
 
-        for (int x = xStart; x < width; x++) {
+//        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
+//                width = Math.min(model.width, boundsIn.maxX - pos.getX() + 1);
+//        int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
+//                length = Math.min(model.length, boundsIn.maxZ - pos.getZ() + 1);
+//
+//        for (int x = xStart; x < width; x++) {
+//            for (int y = 0; y < model.height; y++) {
+//                for (int z = zStart; z < length; z++) {
+//                    if (model.model[x][y][z] == null) {
+//                        setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
+//                                this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+//                    } else {
+//                        BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+//                        Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
+//                                position, theme, subTheme,
+//                                WeightedRandomBlock.RANDOM, variation, lootLevel);
+//                        if (result == null)
+//                            continue;
+//                        setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+//                                this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+//
+//                        if (result.getB()) {
+//                            world.getChunk(position).markBlockForPostprocessing(position);
+//                        }
+//
+//                        if (y == 0 && model.height > 1
+//                                && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+//                                && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+//                                && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+//                            DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
+//
+//        if (theme == Theme.MOSS) {
+//            for (int x = xStart + 1; x < width - 1; x++) {
+//                for (int y = 0; y < model.height; y++) {
+//                    for (int z = zStart + 1; z < length - 1; z++) {
+//                        if (model.model[x][y][z] == null) {
+//                            BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
+//                            BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+//                            BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+//                            BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+//                            BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+//
+//                            boolean _north = boundsIn.isVecInside(north) && north.getZ() >= zStart && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+//                            boolean _east = boundsIn.isVecInside(east) && east.getX() < width && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+//                            boolean _south = boundsIn.isVecInside(south) && south.getZ() < length && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+//                            boolean _west = boundsIn.isVecInside(west) && west.getX() >= xStart && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+//                            boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+//
+//                            if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.35) {
+//                                BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+//                                world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+//                                        .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+//                                        .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+//                                world.getChunk(p).markBlockForPostprocessing(p);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+    }
+
+    public void buildFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
+                          SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
+
+        for (int x = 0; x < model.width; x++) {
             for (int y = 0; y < model.height; y++) {
-                for (int z = zStart; z < length; z++) {
-                    if (model.model[x][y][z] == null) {
-                        setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
-                                this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
-                    } else {
-                        BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                        Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
-                                position, theme, subTheme,
-                                WeightedRandomBlock.RANDOM, lootLevel);
-                        if (result == null)
-                            continue;
-                        setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
-                                this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                for (int z = 0; z < model.length; z++) {
+                    BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+                    if (boundsIn.isVecInside(position)) {
+                        if (model.model[x][y][z] == null) {
+                            setBlockState(CAVE_AIR, world, boundsIn, treasureType, position,
+                                    this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                        } else {
+                            Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
+                                    Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+                            if (result == null)
+                                continue;
+                            setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
+                                    fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
 
-                        if (result.getB()) {
-                            world.getChunk(position).markBlockForPostprocessing(position);
-                        }
+                            if (result.getB()) {
+                                world.getChunk(position).markBlockForPostprocessing(position);
+                            }
 
-                        if (y == 0 && model.height > 1
-                                && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                            DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+                            if (y == 0 && model.height > 1
+                                    && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+                                    && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+                                    && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+                                DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+                            }
                         }
                     }
-
                 }
             }
         }
 
-        //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
-        //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.BIRCH_FENCE);
+        if (theme == Theme.MOSS) {
+            for (int x = 1; x < model.width - 1; x++) {
+                for (int y = 0; y < model.height; y++) {
+                    for (int z = 1; z < model.length - 1; z++) {
+                        if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z))) {
+                            BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
+                            BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+                            BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+                            BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+                            BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+
+                            boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+                            boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+                            boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+                            boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+                            boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                            if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.35) {
+                                BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+                                world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+                                        .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+                                        .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+                                world.getChunk(p).markBlockForPostprocessing(p);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void buildRotated(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                             SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
-
-        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
-                width = Math.min(model.width, boundsIn.maxX - pos.getX() + 1);
-        int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
-                length = Math.min(model.length, boundsIn.maxZ - pos.getZ() + 1);
-
+                                 SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
         //DungeonCrawl.LOGGER.debug("BuildRotated: {} {} {}, {} {}, {} {}, {} {}", pos.getX(), pos.getY(), pos.getZ(), xStart, zStart, width, length, model.width, model.length);
+        buildRotatedFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, rotation, fillAir);
+//        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
+//                width = Math.min(model.width, boundsIn.maxX - pos.getX() + 1);
+//        int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
+//                length = Math.min(model.length, boundsIn.maxZ - pos.getZ() + 1);
+//        switch (rotation) {
+//            case CLOCKWISE_90: {
+//                for (int x = xStart; x < width; x++) {
+//                    for (int y = 0; y < model.height; y++) {
+//                        for (int z = zStart; z < length; z++) {
+//                            if (model.model[x][y][z] == null) {
+//                                setBlockState(CAVE_AIR, world, boundsIn, treasureType, new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x),
+//                                        this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+//                            } else {
+//                                BlockPos position = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
+//                                Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
+//                                        Rotation.CLOCKWISE_90, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+//                                if (result == null)
+//                                    continue;
+//                                setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
+//                                        fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+//
+//                                if (result.getB()) {
+//                                    world.getChunk(position).markBlockForPostprocessing(position);
+//                                }
+//
+//                                if (y == 0 && model.height > 1
+//                                        && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+//                                        && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+//                                        && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+//                                    DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
+//                                            boundsIn);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (theme == Theme.MOSS) {
+//                    for (int x = xStart + 1; x < width - 1; x++) {
+//                        for (int y = 0; y < model.height; y++) {
+//                            for (int z = zStart + 1; z < length - 1; z++) {
+//                                if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x))) {
+//                                    BlockPos north = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x - 1);
+//                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+//                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+//                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+//                                    BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+//
+//                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+//                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+//                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+//                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+//                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+//
+//                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
+//                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+//                                        world.setBlockState(p,
+//                                                Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+//                                                        .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+//                                                        .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+//                                        world.getChunk(p).markBlockForPostprocessing(p);
+//                                    }
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                break;
+//            }
+//            case COUNTERCLOCKWISE_90: {
+//                for (int x = 0; x < model.width; x++) {
+//                    for (int y = 0; y < model.height; y++) {
+//                        for (int z = 0; z < model.length; z++) {
+//                            if (model.model[x][y][z] == null) {
+//                                setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1,
+//                                        this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+//                            } else {
+//                                BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
+//                                Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
+//                                        Rotation.COUNTERCLOCKWISE_90, world, position, theme, subTheme,
+//                                        WeightedRandomBlock.RANDOM, variation, lootLevel);
+//                                if (result == null)
+//                                    continue;
+//                                setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+//                                        this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+//
+//                                if (result.getB()) {
+//                                    world.getChunk(position).markBlockForPostprocessing(position);
+//                                }
+//
+//                                if (y == 0 && model.height > 1
+//                                        && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+//                                        && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+//                                        && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+//                                    DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
+//                                            boundsIn);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (theme == Theme.MOSS) {
+//                    for (int x = xStart + 1; x < width - 1; x++) {
+//                        for (int y = 0; y < model.height; y++) {
+//                            for (int z = zStart + 1; z < length - 1; z++) {
+//                                if (model.model[x][y][z] == null) {
+//                                    BlockPos north = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 2);
+//                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+//                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+//                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+//                                    BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+//
+//                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= zStart && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+//                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < width && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+//                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < length && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+//                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= xStart && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+//                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+//
+//                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
+//                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+//                                        world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+//                                                .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+//                                                .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+//                                        world.getChunk(p).markBlockForPostprocessing(p);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
+//                //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.ACACIA_FENCE);
+//                break;
+//            }
+//            case CLOCKWISE_180: {
+//                for (int x = xStart; x < width; x++) {
+//                    for (int y = 0; y < model.height; y++) {
+//                        for (int z = zStart; z < length; z++) {
+//                            if (model.model[x][y][z] == null) {
+//                                setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1,
+//                                        this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+//                            } else {
+//                                BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
+//                                Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
+//                                        position, theme, subTheme,
+//                                        WeightedRandomBlock.RANDOM, variation, lootLevel);
+//                                if (result == null)
+//                                    continue;
+//                                setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+//                                        this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+//
+//                                if (result.getB()) {
+//                                    world.getChunk(position).markBlockForPostprocessing(position);
+//                                }
+//
+//                                if (y == 0 && model.height > 1
+//                                        && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+//                                        && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+//                                        && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+//                                    DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
+//                                            boundsIn);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (theme == Theme.MOSS) {
+//                    for (int x = xStart + 1; x < width - 1; x++) {
+//                        for (int y = 0; y < model.height; y++) {
+//                            for (int z = zStart + 1; z < length - 1; z++) {
+//                                if (model.model[x][y][z] == null) {
+//                                    BlockPos north = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 2);
+//                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+//                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+//                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+//                                    BlockPos up = new BlockPos(north.getX(), pos.getY() + y + 1, east.getZ());
+//
+//                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= zStart && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+//                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < width && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+//                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < length && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+//                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= xStart && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+//                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+//
+//                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
+//                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+//                                        world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+//                                                .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+//                                                .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+//                                        world.getChunk(p).markBlockForPostprocessing(p);
+//                                    }
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
+//                //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.ACACIA_FENCE);
+//                break;
+//            }
+//            case NONE:
+//                build(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, fillAir);
+//                break;
+//            default:
+//                DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unsupported rotation " + rotation);
+//                break;
+//        }
 
+    }
+
+    public void buildRotatedFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
+                                 SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
         switch (rotation) {
             case CLOCKWISE_90: {
-                for (int x = xStart; x < width; x++) {
+                for (int x = 0; x < model.width; x++) {
                     for (int y = 0; y < model.height; y++) {
-                        for (int z = zStart; z < length; z++) {
-                            if (model.model[x][y][z] == null) {
-                                setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x,
-                                        this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
-                            } else {
-                                BlockPos position = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
-                                Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_90, world,
-                                        position, theme, subTheme,
-                                        WeightedRandomBlock.RANDOM, lootLevel);
-                                if (result == null)
-                                    continue;
-                                setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
-                                        this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                        for (int z = 0; z < model.length; z++) {
+                            BlockPos position = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
+                            if (boundsIn.isVecInside(position)) {
+                                if (model.model[x][y][z] == null) {
+                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position,
+                                            this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                } else {
+                                    Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
+                                            Rotation.CLOCKWISE_90, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+                                    if (result == null)
+                                        continue;
+                                    setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
+                                            fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
 
-                                if (result.getB()) {
-                                    world.getChunk(position).markBlockForPostprocessing(position);
-                                }
+                                    if (result.getB()) {
+                                        world.getChunk(position).markBlockForPostprocessing(position);
+                                    }
 
-                                if (y == 0 && model.height > 1
-                                        && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                        && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                        && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                    DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                            boundsIn);
+                                    if (y == 0 && model.height > 1
+                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
+                                                boundsIn);
+                                    }
                                 }
                             }
-
                         }
                     }
                 }
-                //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
-                //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.ACACIA_FENCE);
+
+                if (theme == Theme.MOSS) {
+                    for (int x = 1; x < model.width - 1; x++) {
+                        for (int y = 0; y < model.height; y++) {
+                            for (int z = 1; z < model.length - 1; z++) {
+                                if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x))) {
+                                    BlockPos north = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x - 1);
+                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+                                    BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+
+                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
+                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+                                        world.setBlockState(p,
+                                                Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+                                                        .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+                                                        .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+                                        world.getChunk(p).markBlockForPostprocessing(p);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             }
             case COUNTERCLOCKWISE_90: {
-                for (int x = xStart; x < width; x++) {
+                for (int x = 0; x < model.width; x++) {
                     for (int y = 0; y < model.height; y++) {
-                        for (int z = zStart; z < length; z++) {
-                            if (model.model[x][y][z] == null) {
-                                setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1,
-                                        this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
-                            } else {
-                                BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
-                                Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
-                                        Rotation.COUNTERCLOCKWISE_90, world, position, theme, subTheme,
-                                        WeightedRandomBlock.RANDOM, lootLevel);
-                                if (result == null)
-                                    continue;
-                                setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
-                                        this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                        for (int z = 0; z < model.length; z++) {
+                            BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
+                            if (boundsIn.isVecInside(position)) {
+                                if (model.model[x][y][z] == null) {
+                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                } else {
+                                    Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
+                                            Rotation.COUNTERCLOCKWISE_90, world, position, theme, subTheme,
+                                            WeightedRandomBlock.RANDOM, variation, lootLevel);
+                                    if (result == null)
+                                        continue;
+                                    setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
+                                            fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
 
-                                if (result.getB()) {
-                                    world.getChunk(position).markBlockForPostprocessing(position);
-                                }
+                                    if (result.getB()) {
+                                        world.getChunk(position).markBlockForPostprocessing(position);
+                                    }
 
-                                if (y == 0 && model.height > 1
-                                        && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                        && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                        && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                    DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                            boundsIn);
+                                    if (y == 0 && model.height > 1
+                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
+                                                boundsIn);
+                                    }
                                 }
                             }
-
-
                         }
                     }
                 }
-                //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
-                //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.ACACIA_FENCE);
+
+                if (theme == Theme.MOSS) {
+                    for (int x = 1; x < model.width - 1; x++) {
+                        for (int y = 0; y < model.height; y++) {
+                            for (int z = 1; z < model.length - 1; z++) {
+                                if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1))) {
+                                    BlockPos north = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 2);
+                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+                                    BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+
+                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
+                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+                                        world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+                                                .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+                                                .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+                                        world.getChunk(p).markBlockForPostprocessing(p);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             }
             case CLOCKWISE_180: {
-                for (int x = xStart; x < width; x++) {
+                for (int x = 0; x < model.width; x++) {
                     for (int y = 0; y < model.height; y++) {
-                        for (int z = zStart; z < length; z++) {
-                            if (model.model[x][y][z] == null) {
-                                setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1,
-                                        this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
-                            } else {
-                                BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
-                                Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
-                                        position, theme, subTheme,
-                                        WeightedRandomBlock.RANDOM, lootLevel);
-                                if (result == null)
-                                    continue;
-                                setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
-                                        this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                        for (int z = 0; z < model.length; z++) {
+                            BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
+                            if (boundsIn.isVecInside(position)) {
+                                if (model.model[x][y][z] == null) {
+                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                } else {
+                                    Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
+                                            position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+                                    if (result == null)
+                                        continue;
+                                    setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
+                                            fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
 
-                                if (result.getB()) {
-                                    world.getChunk(position).markBlockForPostprocessing(position);
-                                }
+                                    if (result.getB()) {
+                                        world.getChunk(position).markBlockForPostprocessing(position);
+                                    }
 
-                                if (y == 0 && model.height > 1
-                                        && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                        && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                        && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                    DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                            boundsIn);
+                                    if (y == 0 && model.height > 1
+                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
+                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
+                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
+                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
+                                                boundsIn);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
-                //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.ACACIA_FENCE);
+
+                if (theme == Theme.MOSS) {
+                    for (int x = 1; x < model.width - 1; x++) {
+                        for (int y = 0; y < model.height; y++) {
+                            for (int z = 1; z < model.length - 1; z++) {
+                                if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1))) {
+                                    BlockPos north = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 2);
+                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
+                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
+                                    BlockPos up = new BlockPos(north.getX(), pos.getY() + y + 1, east.getZ());
+
+                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
+                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
+                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
+                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
+                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
+                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
+                                        world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
+                                                .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
+                                                .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+                                        world.getChunk(p).markBlockForPostprocessing(p);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             }
             case NONE:
-                build(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, fillAir);
+                buildFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, fillAir);
                 break;
             default:
                 DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unsupported rotation " + rotation);

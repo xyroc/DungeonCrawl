@@ -27,6 +27,4 @@ public class RandomDungeonModel {
         return null;
     };
 
-    public static final IRandom<DungeonModel> SPAWNER_ROOM = (rand) -> DungeonModels.SPAWNER_ROOM;
-
 }

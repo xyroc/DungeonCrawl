@@ -22,6 +22,7 @@ public class RandomItem extends LootFunction {
 
     public RandomItem(ILootCondition[] conditionsIn, int stage) {
         super(conditionsIn);
+        this.stage = stage;
     }
 
     @Override

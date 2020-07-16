@@ -28,6 +28,7 @@ import xiroc.dungeoncrawl.dungeon.DataReloadListener;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
+import xiroc.dungeoncrawl.dungeon.misc.DungeonCorridorFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -88,6 +89,8 @@ public class DungeonCrawl {
         EVENT_BUS = Bus.MOD.bus().get();
 
         Modules.registerModule(BOPCompatModule.class, new String[]{"biomesoplenty"});
+
+        DungeonCorridorFeature.load();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

@@ -33,7 +33,7 @@ public class DungeonFeatures {
     static {
         CORRIDOR_FEATURES = Lists.newArrayList();
         CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-            if (stage > 1 && stage != 4 && rand.nextFloat() < 0.5) {
+            if (stage > 1 && stage != 4 && rand.nextFloat() < 0.35) {
                 List<Direction> list = Lists.newArrayList();
                 Position2D center = new Position2D(x, z);
 
@@ -73,6 +73,7 @@ public class DungeonFeatures {
             }
             return false;
         });
+
 //		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 //			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2, true)) {
 //				DungeonCorridorHole hole = new DungeonCorridorHole(null, DungeonPiece.DEFAULT_NBT);

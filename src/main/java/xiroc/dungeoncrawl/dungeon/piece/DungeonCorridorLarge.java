@@ -153,7 +153,8 @@ public class DungeonCorridorLarge extends DungeonPiece {
 
     @Override
     public boolean hasChildPieces() {
-        return true;
+        // temporarily disabled
+        return false;
     }
 
     @Override

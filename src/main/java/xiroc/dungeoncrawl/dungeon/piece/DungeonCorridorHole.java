@@ -13,6 +13,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -32,7 +33,7 @@ public class DungeonCorridorHole extends DungeonPiece {
     @Override
     public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                      ChunkPos p_74875_4_) {
-        build(null, worldIn,
+        build(DungeonModels.CORRIDOR, worldIn,
                 structureBoundingBoxIn, new BlockPos(x, y - 15, z), Theme.get(theme), Theme.getSub(subTheme),
                 Treasure.Type.DEFAULT, stage, true);
         addWalls(this, worldIn, structureBoundingBoxIn, theme);

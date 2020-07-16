@@ -18,7 +18,9 @@ import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.FeaturePosition;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,7 +28,7 @@ public class ModelHandler {
 
     public static void readAndSaveModelToFile(String name, World world, BlockPos pos, int width, int height, int length,
                                               int spawnerType, int chestType) {
-        DungeonCrawl.LOGGER.info("Reading and writing {} to disk. Size: {}, {}, {}", name, width, height, length);
+        DungeonCrawl.LOGGER.info("Reading and saving {} to disk. Size: {}, {}, {}", name, width, height, length);
         DungeonModelBlock[][][] model = new DungeonModelBlock[width][height][length];
 
         List<FeaturePosition> featurePositions = Lists.newArrayList();
@@ -40,8 +42,9 @@ public class ModelHandler {
                         model[x][y][z] = null;
                         continue;
                     } else if (state.getBlock() == Blocks.JIGSAW) {
-                        DungeonCrawl.LOGGER.debug("Found a feature position at {} {} {}", x, y, z);
+                        //DungeonCrawl.LOGGER.debug("Found a feature position at {} {} {}", x, y, z);
                         featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.FACING)));
+                        //model[x][y][z] = new DungeonModelBlock(DungeonModelBlockType.NONE);
                         continue;
                     }
                     model[x][y][z] = new DungeonModelBlock(
@@ -53,8 +56,8 @@ public class ModelHandler {
         writeModelToFile(
                 new DungeonModel(model,
                         featurePositions.isEmpty() ? null
-                                : featurePositions.toArray(new FeaturePosition[featurePositions.size()])),
-                ((ServerWorld) world).getSaveHandler().getWorldDirectory().getAbsolutePath() + "/" + name + ".nbt");
+                                : featurePositions.toArray(new FeaturePosition[0])),
+                ((ServerWorld) world).getSaveHandler().getWorldDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
     }
 
     public static void writeModelToFile(DungeonModel model, String file) {
@@ -62,31 +65,14 @@ public class ModelHandler {
             DungeonCrawl.LOGGER.info("Writing a model to disk at {}. ", file);
             if (model.featurePositions != null)
                 DungeonCrawl.LOGGER.info("There are {} feature positions.", model.featurePositions.length);
+            File f = new File(file);
+            if (!f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
             convertModelToNBT(model).write(new DataOutputStream(new FileOutputStream(file)));
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static DungeonModel readModelFromFile(File file) {
-        DungeonCrawl.LOGGER.info("Loading model from file " + file.getAbsolutePath());
-        try {
-            FileReader reader = new FileReader(file);
-            return DungeonCrawl.GSON.fromJson(reader, DungeonModel.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static DungeonModel readModelFromInputStream(InputStream input) {
-        try {
-            InputStreamReader reader = new InputStreamReader(input);
-            return DungeonCrawl.GSON.fromJson(reader, DungeonModel.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static CompoundNBT convertModelToNBT(DungeonModel model) {

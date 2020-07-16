@@ -36,6 +36,7 @@ public interface IBlockPlacementHandler {
         PLACEMENT_HANDLERS.put(Blocks.DISPENSER, new Dispenser());
         PLACEMENT_HANDLERS.put(Blocks.FARMLAND, new Plants.Farmland());
         PLACEMENT_HANDLERS.put(Blocks.FLOWER_POT, new Plants.FlowerPot());
+        PLACEMENT_HANDLERS.put(Blocks.PODZOL, new Plants.Podzol());
     }
 
     void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand,

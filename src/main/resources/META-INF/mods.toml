@@ -10,7 +10,10 @@ displayName="Dungeon Crawl" #mandatory
 #logoFile="logo.png" #optional
 credits="Original Mod by Greymerk (Roguelike Dungeons)" #optional
 authors="XIROC" #optional
-description='''Dungeons...'''
+description='''Dungeon Crawl is a dungeon generator for Minecraft, built from the ground up to become a spiritual successor to Roguelike Dungeons.
+It contains new content, new takes on a few rooms and a bunch of original builds that have been taken over from Roguelike Dungeons like the iconic entrance.
+New content will be added in coming updates. For more information, please visit the wiki on GitHub:
+www.github.com/XYROC/DungeonCrawl/wiki/'''
 [[dependencies.dungeoncrawl]]
     # the modid of the dependency
     modId="forge" #mandatory

@@ -1,17 +1,19 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
+ */
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 
 import java.util.Random;
-
-/*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
 
 public enum DungeonModelBlockType {
 
@@ -22,10 +24,14 @@ public enum DungeonModelBlockType {
     RAND_FLOOR_CHEST_SPAWNER(Blocks.CHEST), TRAPDOOR(Blocks.OAK_TRAPDOOR), TORCH(Blocks.WALL_TORCH), TORCH_DARK(Blocks.REDSTONE_WALL_TORCH),
     BARREL(Blocks.BARREL), DOOR(Blocks.OAK_DOOR), RAND_FLOOR_WATER(Blocks.CLAY), RAND_FLOOR_LAVA(Blocks.SOUL_SAND),
     RAND_BOOKSHELF_COBWEB(Blocks.BOOKSHELF), DISPENSER(Blocks.DISPENSER), RAND_COBWEB_AIR(Blocks.COBWEB),
-    VANILLA_WALL(Blocks.STONE_BRICK_WALL), MATERIAL(Blocks.OAK_PLANKS), OTHER(null);
+    VANILLA_WALL(Blocks.STONE_BRICK_WALL), MATERIAL(Blocks.OAK_PLANKS), CARPET, OTHER;
 
     public final PlacementBehaviour placementBehavior;
     private final Block baseBlock;
+
+    DungeonModelBlockType() {
+        this(null, PlacementBehaviour.NON_SOLID);
+    }
 
     DungeonModelBlockType(Block baseBlock) {
         this(baseBlock, PlacementBehaviour.NON_SOLID);
@@ -39,8 +45,10 @@ public enum DungeonModelBlockType {
     public Block getBaseBlock(DungeonModelBlock block) {
         if (baseBlock != null) {
             return baseBlock;
-        } else if (block.resourceName != null) {
-            return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(block.resourceName));
+        } else if (this == OTHER) {
+            return ForgeRegistries.BLOCKS.getValue(block.resource);
+        } else if (this == CARPET) {
+            return DungeonBlocks.CARPET[block.variation];
         } else {
             return null;
         }
@@ -112,6 +120,9 @@ public enum DungeonModelBlockType {
             return BARREL;
         if (block == Blocks.STONE_BRICK_WALL)
             return VANILLA_WALL;
+        if (BlockTags.CARPETS.contains(block)) {
+            return CARPET;
+        }
         return OTHER;
     }
 

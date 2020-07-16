@@ -4,13 +4,20 @@ package xiroc.dungeoncrawl.dungeon.block;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.state.IProperty;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 public class DungeonBlocks {
+
+    public static final Block[] CARPET = new Block[]{Blocks.WHITE_CARPET, Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
+            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET, Blocks.GRAY_CARPET,
+            Blocks.LIGHT_GRAY_CARPET, Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
+            Blocks.BROWN_CARPET, Blocks.RED_CARPET, Blocks.BLACK_CARPET};
 
     public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.getDefaultState();
     public static final BlockState SPAWNER = Blocks.SPAWNER.getDefaultState();
@@ -309,6 +316,13 @@ public class DungeonBlocks {
                         new TupleIntBlock(3, Blocks.OBSIDIAN.getDefaultState())});
 
         DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
+    }
+
+    public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, IProperty<T> property, V value) {
+        if (state.has(property)) {
+            return state.with(property, value);
+        }
+        return state;
     }
 
     public static final class TupleIntBlock extends Tuple<Integer, BlockState> {

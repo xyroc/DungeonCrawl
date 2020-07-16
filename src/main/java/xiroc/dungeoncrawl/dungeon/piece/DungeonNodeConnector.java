@@ -4,7 +4,6 @@ package xiroc.dungeoncrawl.dungeon.piece;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -12,7 +11,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -35,18 +33,12 @@ public class DungeonNodeConnector extends DungeonPiece {
     @Override
     public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                      ChunkPos chunkPosIn) {
-
-        DungeonCrawl.LOGGER.debug("Node connector: {} {} {}", x, y, z);
-
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
         BlockPos pos = new BlockPos(x, y, z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
-
-        buildBoundingBox(worldIn, boundingBox, Blocks.LAVA);
-
         return true;
     }
 

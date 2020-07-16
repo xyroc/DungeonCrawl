@@ -5,7 +5,7 @@ package xiroc.dungeoncrawl.api.event;
  */
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -16,12 +16,12 @@ import net.minecraftforge.eventbus.api.Event;
 @Cancelable
 public class DungeonPlacementCheckEvent extends Event {
 
-    public final ServerWorld world;
+    public final ChunkGenerator<?> chunkGenerator;
     public final Biome biome;
     public final int chunkX, chunkZ;
 
-    public DungeonPlacementCheckEvent(ServerWorld world, Biome biome, int chunkX, int chunkZ) {
-        this.world = world;
+    public DungeonPlacementCheckEvent(ChunkGenerator<?> chunkGenerator, Biome biome, int chunkX, int chunkZ) {
+        this.chunkGenerator = chunkGenerator;
         this.biome = biome;
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;

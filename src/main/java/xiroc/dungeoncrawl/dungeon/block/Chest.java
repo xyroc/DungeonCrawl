@@ -25,7 +25,7 @@ public class Chest implements IBlockPlacementHandler {
     @Override
     public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
                            int theme, int lootLevel) {
-        DungeonCrawl.LOGGER.debug("{} : {}", pos, world.setBlockState(pos, state, 3));
+        world.setBlockState(pos, state, 3);
         if (world.getTileEntity(pos) instanceof LockableLootTileEntity) {
             ResourceLocation lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
             LockableLootTileEntity.setLootTable(world, world.getRandom(), pos,
@@ -37,7 +37,7 @@ public class Chest implements IBlockPlacementHandler {
     public static ResourceLocation getLootTable(int theme, int lootLevel, Random rand) {
         switch (lootLevel) {
             case 0:
-                return rand.nextFloat() < 0.1 ? LootTables.CHESTS_BURIED_TREASURE : Loot.CHEST_STAGE_1;
+                return rand.nextFloat() < 0.1 ? LootTables.CHESTS_JUNGLE_TEMPLE : Loot.CHEST_STAGE_1;
             case 1:
                 return rand.nextFloat() < 0.1 ? LootTables.CHESTS_SIMPLE_DUNGEON : Loot.CHEST_STAGE_2;
             case 2:

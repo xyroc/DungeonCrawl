@@ -22,7 +22,6 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.BossEntry;
-import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.Position2D;
 
 import java.util.HashMap;
@@ -37,10 +36,6 @@ public class DungeonBuilder {
 
     public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
         ;
-    };
-
-    public static final IRandom<DungeonModel> ENTRANCE = (rand) -> {
-        return ENTRANCES[rand.nextInt(ENTRANCES.length)];
     };
 
     public Random rand;
@@ -127,6 +122,8 @@ public class DungeonBuilder {
     public List<DungeonPiece> build() {
         List<DungeonPiece> list = Lists.newArrayList();
 
+        int secretRoomLayer = rand.nextInt(2);
+
         for (int i = 0; i < layers.length; i++) {
             this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
             this.layers[i] = new DungeonLayer(Dungeon.SIZE, Dungeon.SIZE);
@@ -134,8 +131,8 @@ public class DungeonBuilder {
         }
 
         for (int i = 0; i < layers.length; i++) {
-            this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end, i,
-                    i == layers.length - 1);
+            this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end,
+                    i == secretRoomLayer, i, i == layers.length - 1);
         }
 
         for (int i = 0; i < layers.length; i++) {
@@ -143,7 +140,7 @@ public class DungeonBuilder {
             processLayer(layers[i], i, startPos);
         }
 
-        DungeonPiece entrance = new DungeonEntrance(null, DungeonPiece.DEFAULT_NBT);
+        DungeonPiece entrance = new DungeonEntrance();
         entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
@@ -170,7 +167,7 @@ public class DungeonBuilder {
     }
 
     public void processLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
-        int stage = lyr > 4 ? 4 : lyr;
+        int stage = Math.min(lyr, 4);
         for (int x = 0; x < layer.width; x++) {
             for (int z = 0; z < layer.length; z++) {
                 if (layer.segments[x][z] != null) {
@@ -186,14 +183,13 @@ public class DungeonBuilder {
 
     public void postProcessDungeon(List<DungeonPiece> list, Random rand) {
         boolean mossArea = layers.length > 3;
-        int lyrs = layers.length;
 
         for (int i = 0; i < layers.length; i++) {
             DungeonLayer layer = layers[i];
             for (int x = 0; x < layer.width; x++)
                 for (int z = 0; z < layer.length; z++) {
                     if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
-                        if (i == lyrs - 1) {
+                        if (i == layers.length - 1) {
                             if (Config.NO_NETHER_STUFF.get()) {
                                 layer.segments[x][z].reference.theme = 81;
                                 layer.segments[x][z].reference.subTheme = 9;
@@ -201,12 +197,16 @@ public class DungeonBuilder {
                                 layer.segments[x][z].reference.theme = 1;
                                 layer.segments[x][z].reference.subTheme = 8;
                             }
-                        } else if (mossArea && lyrs - i < 4) {
+                        } else if (mossArea && layers.length - i < 4) {
                             layer.segments[x][z].reference.theme = 80;
                             layer.segments[x][z].reference.subTheme = subTheme;
                         } else {
                             layer.segments[x][z].reference.theme = theme;
                             layer.segments[x][z].reference.subTheme = subTheme;
+                        }
+
+                        if (layer.segments[x][z].reference.getType() == 0) {
+                            DungeonFeatures.processCorridor(this, layer, x, z, rand, i, i, startPos);
                         }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
@@ -255,7 +255,7 @@ public class DungeonBuilder {
     }
 
     @FunctionalInterface
-    public static interface EntranceProcessor {
+    public interface EntranceProcessor {
 
         void process(IWorld world, BlockPos pos, int theme, DungeonPiece piece);
 

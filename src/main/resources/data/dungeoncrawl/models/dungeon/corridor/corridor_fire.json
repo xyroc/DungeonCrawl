@@ -1,0 +1,8 @@
+{
+  "type": "corridor",
+  "id": 4,
+  "data": {
+    "stages": [ 2, 3, 4, 5 ],
+    "weights": [ 0, 1, 1, 1, 1 ]
+  }
+}

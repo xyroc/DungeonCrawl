@@ -17,13 +17,14 @@ public class Treasure {
     public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES;
 
     static {
-        SPECIAL_LOOT_TABLES = new HashMap<Type, ResourceLocation>();
+        SPECIAL_LOOT_TABLES = new HashMap<>();
 
-        MODEL_TREASURE_TYPES = new HashMap<Integer, Treasure.Type>();
+        MODEL_TREASURE_TYPES = new HashMap<>();
 
         MODEL_TREASURE_TYPES.put(34, Type.LIBRARY);
         MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
 
+        MODEL_TREASURE_TYPES.put(70, Type.SECRET_ROOM);
     }
 
     public static void init() {
@@ -31,6 +32,7 @@ public class Treasure {
         SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Loot.KITCHEN_CHEST);
         SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
         SPECIAL_LOOT_TABLES.put(Type.LIBRARY, Loot.LIBRARY);
+        SPECIAL_LOOT_TABLES.put(Type.SECRET_ROOM, Loot.SECRET_ROOM);
 
         LootFunctionManager.registerFunction(new RandomItem.Serializer());
         LootFunctionManager.registerFunction(new RandomPotion.Serializer());
@@ -52,7 +54,7 @@ public class Treasure {
         public static final HashMap<Type, Integer> TYPE_TO_INT_MAP;
 
         static {
-            INT_TO_TYPE_MAP = new HashMap<Integer, Type>();
+            INT_TO_TYPE_MAP = new HashMap<>();
             INT_TO_TYPE_MAP.put(0, DEFAULT);
             INT_TO_TYPE_MAP.put(1, KITCHEN);
             INT_TO_TYPE_MAP.put(2, FORGE);
@@ -63,7 +65,7 @@ public class Treasure {
             INT_TO_TYPE_MAP.put(7, TREASURE);
             INT_TO_TYPE_MAP.put(8, SUPPLY);
 
-            TYPE_TO_INT_MAP = new HashMap<Type, Integer>();
+            TYPE_TO_INT_MAP = new HashMap<>();
             INT_TO_TYPE_MAP.forEach((key, value) -> TYPE_TO_INT_MAP.put(value, key));
         }
 

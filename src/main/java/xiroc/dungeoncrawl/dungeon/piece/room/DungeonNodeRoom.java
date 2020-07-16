@@ -1,5 +1,10 @@
 package xiroc.dungeoncrawl.dungeon.piece.room;
 
+/*
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
+ */
+
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Tuple;
@@ -28,10 +33,6 @@ import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
 import java.util.List;
 import java.util.Random;
-
-/*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
 
 public class DungeonNodeRoom extends DungeonPiece {
 
@@ -118,8 +119,16 @@ public class DungeonNodeRoom extends DungeonPiece {
     @Override
     public void customSetup(Random rand) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
-        if (model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
-            DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata, x, y, z);
+        if (model.metadata != null) {
+            if (model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
+                DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata, x, y, z);
+            }
+            if (model.metadata.variation) {
+                variation = new byte[16];
+                for (int i = 0; i < variation.length; i++) {
+                    variation[i] = (byte) rand.nextInt(32);
+                }
+            }
         }
     }
 
@@ -131,18 +140,19 @@ public class DungeonNodeRoom extends DungeonPiece {
         Vec3i offset = DungeonModels.getOffset(modelID);
         BlockPos pos = new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ());
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos
-                , Theme.get(theme),
-                Theme.getSub(subTheme), Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT),
-                stage, rotation, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
+                Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT), stage, rotation, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
-        if (model.metadata.feature != null && featurePositions != null) {
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        //buildBoundingBox(worldIn, boundingBox, Blocks.NETHER_BRICK_FENCE);
+//        if (large) {
+//            buildBoundingBox(worldIn, new MutableBoundingBox(structureBoundingBoxIn.minX, y, structureBoundingBoxIn.minZ,
+//                    structureBoundingBoxIn.maxX, y + 8, structureBoundingBoxIn.maxZ), Blocks.COBWEB);
+//        }
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
@@ -167,7 +177,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public boolean hasChildPieces() {
-        return true;
+        return !large;
     }
 
     @Override

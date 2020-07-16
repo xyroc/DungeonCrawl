@@ -18,14 +18,10 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.config.ObfuscationValues;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
@@ -78,6 +74,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
                     return false;
                 }
             }
+            if (DungeonCrawl.EVENT_BUS
+                    .post(new DungeonPlacementCheckEvent(chunkGen, chunkGen.getBiomeProvider().getBiome(new BlockPos(chunkPosX * 16, chunkGen.getGroundHeight(), chunkPosZ * 16)), chunkPosX, chunkPosZ))) {
+                return false;
+            }
             return rand.nextFloat() < Config.DUNGEON_PROBABLILITY.get();
         } else {
             return false;
@@ -110,49 +110,48 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         @Override
         public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
                          Biome biomeIn) {
+
             /*
              * Some Reflection stuff. I dont like this but it is the only way I know
              * currently.
              */
-            try {
-                Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD);
+//            try {
+//                Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD);
+//
+//                world.setAccessible(true);
+//
+//                Field modifierField = Field.class.getDeclaredField("modifiers");
+//                modifierField.setAccessible(true);
+//                modifierField.setInt(world, world.getModifiers() & ~Modifier.FINAL);
+//
+//                DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
+//
+//                IWorld iWorld = (IWorld) world.get(generator);
+//
+//                if (!(iWorld instanceof ServerWorld))
+//                    return;
+//
+//                ServerWorld serverWorld = (ServerWorld) iWorld;
+//                BlockPos spawn = serverWorld.getSpawnPoint();
+//
+//                int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16;
 
-                world.setAccessible(true);
-
-                Field modifierField = Field.class.getDeclaredField("modifiers");
-                modifierField.setAccessible(true);
-                modifierField.setInt(world, world.getModifiers() & ~Modifier.FINAL);
-
-                DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
-
-                IWorld iWorld = (IWorld) world.get(generator);
-
-                if (!(iWorld instanceof ServerWorld))
-                    return;
-
-                ServerWorld serverWorld = (ServerWorld) iWorld;
-                BlockPos spawn = serverWorld.getSpawnPoint();
-
-                int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16, chunkSize = SIZE / 2;
-
-                if (serverWorld.getDimension().getType() != DimensionType.OVERWORLD
-                        || DungeonCrawl.EVENT_BUS
-                        .post(new DungeonPlacementCheckEvent(serverWorld, biomeIn, chunkX, chunkZ))
-                        || spawnChunkX - chunkX < chunkSize && spawnChunkX - chunkX > -chunkSize
-                        || spawnChunkZ - chunkZ < chunkSize / 2 && spawnChunkZ - chunkZ > -chunkSize)
-                    return;
-
-                /* Undoing everything */
-
-                modifierField.setInt(world, Modifier.PRIVATE | Modifier.FINAL); // TODO Does this work as intended?
-                modifierField.setAccessible(false);
-                world.setAccessible(false);
-
-            } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
-                DungeonCrawl.LOGGER.error(
-                        "Failed to access the chunkGen world through reflection. This might result in dungeons getting generated near the spawn chunk.");
-                e.printStackTrace();
-            }
+//                if ((serverWorld.getDimension().getType() != DimensionType.OVERWORLD && !Config.IGNORE_DIMENSION.get())
+//                        || DungeonCrawl.EVENT_BUS
+//                        .post(new DungeonPlacementCheckEvent(serverWorld, biomeIn, chunkX, chunkZ)) || (Math.abs(spawnChunkX - chunkX) < 5 && Math.abs(spawnChunkZ - chunkZ) < 5))
+//                    return;
+//
+//                /* Undoing everything */
+//
+//                modifierField.setInt(world, Modifier.PRIVATE | Modifier.FINAL); // TODO Does this work as intended?
+//                modifierField.setAccessible(false);
+//                world.setAccessible(false);
+//
+//            } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
+//                DungeonCrawl.LOGGER.error(
+//                        "Failed to access the chunkGen world through reflection. This might result in dungeons getting generated near the spawn chunk.");
+//                e.printStackTrace();
+//            }
 
             ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
             long now = System.currentTimeMillis();

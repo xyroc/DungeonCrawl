@@ -10,12 +10,14 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.Orientation;
@@ -63,11 +65,11 @@ public class DungeonLayer {
         this.distantNodes = Lists.newArrayList();
     }
 
-    public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, int layer,
+    public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, boolean secretRoom, int layer,
                          boolean lastLayer) {
         this.start = start;
         this.stairsPlaced = false;
-        this.createLayout(builder, rand, layer, lastLayer);
+        this.createLayout(builder, rand, layer, secretRoom, lastLayer);
     }
 
     public void extend(DungeonBuilder builder, DungeonLayerMap map, Random rand, int layer) {
@@ -268,7 +270,7 @@ public class DungeonLayer {
         }
     }
 
-    public void createLayout(DungeonBuilder builder, Random rand, int layer, boolean lastLayer) {
+    public void createLayout(DungeonBuilder builder, Random rand, int layer, boolean secretRoom, boolean lastLayer) {
 //		Direction facing = Orientation.RANDOM_FACING_FLAT.roll(rand);
 
         DungeonStairs s = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom();
@@ -276,12 +278,12 @@ public class DungeonLayer {
         this.segments[s.posX][s.posZ] = new PlaceHolder(s).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
         this.nodesLeft = 3 + layer;
-        this.roomsLeft = 4 + 2 * layer;
+        this.roomsLeft = 4 + (int) (1.5 * layer);
         this.nodes = this.rooms = 0;
 
         Direction[] directions = Orientation.FLAT_FACINGS;
 
-        int maxDirections = 2 + rand.nextInt(3);
+        int maxDirections = 3 + rand.nextInt(2);
         int counter = 0;
         int start = rand.nextInt(4);
 
@@ -296,6 +298,36 @@ public class DungeonLayer {
 
         DungeonCrawl.LOGGER.debug("Finished Layer {}: Generated {}/{} nodes and {}/{} rooms.", layer, nodes,
                 nodes + nodesLeft, rooms, rooms + roomsLeft);
+
+        DungeonCrawl.LOGGER.debug("There are {} distant nodes", distantNodes.size());
+
+        if (secretRoom) {
+            List<Tuple<DungeonCorridor, Position2D>> corridors = Lists.newArrayList();
+            for (int x = 0; x < width; x++) {
+                for (int z = 0; z < length; z++) {
+                    if (segments[x][z] != null && segments[x][z].reference.getType() == 0) {
+                        corridors.add(new Tuple<>((DungeonCorridor) segments[x][z].reference, new Position2D(x, z)));
+                    }
+                }
+            }
+            if (!corridors.isEmpty()) {
+                for (int i = 0; i < 5; i++) {
+                    Tuple<DungeonCorridor, Position2D> corridor = corridors.get(rand.nextInt(corridors.size()));
+                    if (placeSecretRoom(corridor.getA(), corridor.getB(), rand)) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (lastLayer && !distantNodes.isEmpty()) {
+            Position2D pos = distantNodes.get(rand.nextInt(distantNodes.size()));
+            if (segments[pos.x][pos.z] != null && segments[pos.x][pos.z].reference instanceof DungeonNodeRoom) {
+                DungeonNodeRoom room = (DungeonNodeRoom) segments[pos.x][pos.z].reference;
+                room.lootRoom = true;
+                room.large = true;
+            }
+        }
 
 //		List<Position2D> nodeList = Lists.newArrayList(), allNodes = Lists.newArrayList();
 //
@@ -464,7 +496,6 @@ public class DungeonLayer {
             case 3:
                 piece.setRotation(Orientation.getRotationFromTripleFacing(DungeonPiece.getOpenSide(piece, 0),
                         DungeonPiece.getOpenSide(piece, 1), DungeonPiece.getOpenSide(piece, 2)));
-                return;
         }
     }
 
@@ -570,7 +601,7 @@ public class DungeonLayer {
             return;
         }
 
-        if (depth == 1 && !stairsPlaced) {
+        if (depth == 1 && !stairsPlaced && layer != 4) {
             DungeonCrawl.LOGGER.debug("Placing exit stairs in layer {}", layer);
             Direction toLast = currentPosition.directionTo(lastPosition);
 
@@ -985,6 +1016,60 @@ public class DungeonLayer {
                 return false;
         }
 
+    }
+
+    public boolean placeSecretRoom(DungeonCorridor corridor, Position2D position, Random rand) {
+        Direction direction = (corridor.rotation == Rotation.NONE || corridor.rotation == Rotation.CLOCKWISE_180) ?
+                (rand.nextBoolean() ? Direction.NORTH : Direction.SOUTH) : (rand.nextBoolean() ? Direction.EAST : Direction.WEST);
+        Position2D pos = position.shift(direction, 2);
+        if (pos.isValid(width, length)) {
+            Position2D pos2 = position.shift(direction, 1);
+            if (segments[pos.x][pos.z] == null && segments[pos2.x][pos2.z] == null) {
+                DungeonSecretRoom room = new DungeonSecretRoom(null, DungeonPiece.DEFAULT_NBT);
+                int x = Math.min(pos.x, pos2.x), z = Math.min(pos.z, pos2.z);
+                room.setPosition(x, z);
+                room.setRotation(Orientation.getRotationFromFacing(direction));
+                segments[x][z] = new PlaceHolder(room);
+                Position2D other = getOther(x, z, direction);
+                segments[other.x][other.z] = new PlaceHolder(room).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+                corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
+                corridor.modelID = DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id;
+                segments[position.x][position.z].withFlag(PlaceHolder.Flag.FIXED_MODEL);
+                return true;
+            }
+        }
+        direction = direction.getOpposite();
+        pos = position.shift(direction, 2);
+        if (pos.isValid(width, length)) {
+            Position2D pos2 = position.shift(direction, 1);
+            if (segments[pos.x][pos.z] == null && segments[pos2.x][pos2.z] == null) {
+                DungeonSecretRoom room = new DungeonSecretRoom(null, DungeonPiece.DEFAULT_NBT);
+                int x = Math.min(pos.x, pos2.x), z = Math.min(pos.z, pos2.z);
+                room.setPosition(x, z);
+                room.setRotation(Orientation.getRotationFromFacing(direction));
+                segments[x][z] = new PlaceHolder(room);
+                Position2D other = getOther(x, z, direction);
+                segments[other.x][other.z] = new PlaceHolder(room).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+                corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
+                corridor.modelID = DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id;
+                segments[position.x][position.z].withFlag(PlaceHolder.Flag.FIXED_MODEL);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Position2D getOther(int x, int z, Direction direction) {
+        switch (direction) {
+            case EAST:
+            case WEST:
+                return new Position2D(x + 1, z);
+            case SOUTH:
+            case NORTH:
+                return new Position2D(x, z + 1);
+            default:
+                throw new UnsupportedOperationException("Can't get other position from direction " + direction.toString());
+        }
     }
 
     public boolean canPutDoubleRoom(Position2D pos, Direction direction) {

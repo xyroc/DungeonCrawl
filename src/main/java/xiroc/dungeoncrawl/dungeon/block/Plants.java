@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure.Type;
@@ -63,6 +64,19 @@ public class Plants {
             world.setBlockState(pos, POTTED_FLOWERS[rand.nextInt(POTTED_FLOWERS.length)].getDefaultState(), 3);
         }
 
+    }
+
+    public static class Podzol implements IBlockPlacementHandler {
+
+        public static final Block[] LARGE_FLOWERS = new Block[]{Blocks.LILAC, Blocks.ROSE_BUSH, Blocks.LARGE_FERN, Blocks.PEONY};
+
+        @Override
+        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme, int lootLevel) {
+            world.setBlockState(pos, state, 2);
+            BlockState flower = LARGE_FLOWERS[rand.nextInt(LARGE_FLOWERS.length)].getDefaultState();
+            world.setBlockState(pos.up(), DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);
+            world.setBlockState(pos.up(), DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 2);
+        }
     }
 
 }

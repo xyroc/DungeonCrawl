@@ -22,11 +22,11 @@ public enum PlacementBehaviour {
 
     public final PlacementFunction function;
 
-    private PlacementBehaviour(PlacementFunction function) {
+    PlacementBehaviour(PlacementFunction function) {
         this.function = function;
     }
 
-    public static interface PlacementFunction {
+    public interface PlacementFunction {
 
         boolean isSolid(IWorld world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ);
 

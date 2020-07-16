@@ -1,7 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.util.IRandom;

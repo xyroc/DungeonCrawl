@@ -128,7 +128,11 @@ public class DungeonCorridor extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+        if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id) {
+            this.boundingBox = new MutableBoundingBox(x - 1, y, z - 1, x + 10, y, z + 10);
+        } else {
+            this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+        }
 
 //        if (corridorFeatures != null) {
 //            DungeonModel model = DungeonModels.MODELS.get(modelID);

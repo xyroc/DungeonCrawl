@@ -29,7 +29,7 @@ public class Orientation {
             Direction.WEST};
 
     public static Direction horizontalOpposite(Direction direction) {
-        switch(direction) {
+        switch (direction) {
             case NORTH:
                 return Direction.SOUTH;
             case EAST:
@@ -44,7 +44,7 @@ public class Orientation {
     }
 
     public static Direction rotateY(Direction direction) {
-        switch(direction) {
+        switch (direction) {
             case NORTH:
                 return Direction.EAST;
             case EAST:

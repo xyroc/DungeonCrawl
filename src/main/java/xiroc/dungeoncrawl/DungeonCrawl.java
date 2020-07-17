@@ -31,7 +31,6 @@ import xiroc.dungeoncrawl.dungeon.misc.DungeonCorridorFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.module.BOPCompatModule;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -86,8 +85,6 @@ public class DungeonCrawl {
         Treasure.init();
 
         EVENT_BUS = Bus.MOD.bus().get();
-
-        Modules.registerModule(BOPCompatModule.class, new String[]{"biomesoplenty"});
 
         DungeonCorridorFeature.load();
     }

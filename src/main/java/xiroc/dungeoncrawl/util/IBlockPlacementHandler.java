@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public interface IBlockPlacementHandler {
-    
+
     IBlockPlacementHandler CHEST = new Chest(), TRAPPED_CHEST = new Chest.TrappedChest(), SPAWNER = new Spawner();
 
     HashMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new HashMap<Block, IBlockPlacementHandler>();

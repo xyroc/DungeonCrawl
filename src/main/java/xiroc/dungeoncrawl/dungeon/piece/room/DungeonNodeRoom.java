@@ -4,7 +4,6 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Tuple;
@@ -13,6 +12,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
@@ -133,8 +133,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                     ChunkPos chunkPosIn) {
+    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+                                  ChunkPos chunkPosIn) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
         Vec3i offset = DungeonModels.getOffset(modelID);

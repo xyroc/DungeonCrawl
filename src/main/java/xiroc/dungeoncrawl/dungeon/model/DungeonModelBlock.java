@@ -162,7 +162,7 @@ public class DungeonModelBlock {
         PROVIDERS.put(DungeonModelBlockType.CARPET, (block, rotation, world, pos, theme, subTheme, rand, variation, stage)
                 -> {
             //DungeonCrawl.LOGGER.info("Variation: {}" , Arrays.toString(variation));
-            Block b = block.variation != null  && variation != null ? DungeonBlocks.CARPET[(block.variation + variation[block.variation]) % DungeonBlocks.CARPET.length]
+            Block b = block.variation != null && variation != null ? DungeonBlocks.CARPET[(block.variation + variation[block.variation]) % DungeonBlocks.CARPET.length]
                     : ForgeRegistries.BLOCKS.getValue(block.resource);
             if (b == null) {
                 b = DungeonBlocks.CARPET[rand.nextInt(DungeonBlocks.CARPET.length)];
@@ -282,7 +282,7 @@ public class DungeonModelBlock {
         PROVIDERS.put(DungeonModelBlockType.OTHER, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
             Block b = ForgeRegistries.BLOCKS.getValue(block.resource);
             if (b != null) {
-                return block.create(b.getDefaultState(),world, pos, rotation);
+                return block.create(b.getDefaultState(), world, pos, rotation);
             } else {
                 DungeonCrawl.LOGGER.warn("Unknown block {}", block.resource.toString());
                 return CAVE_AIR;

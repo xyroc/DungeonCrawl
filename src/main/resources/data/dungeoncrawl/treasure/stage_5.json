@@ -1,0 +1,58 @@
+[
+  {
+    "item": "minecraft:diamond_boots",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_leggings",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_chestplate",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:diamond_helmet",
+    "weight": 1
+  },
+  {
+    "item": "minecraft:iron_boots",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_leggings",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_chestplate",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_helmet",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_pickaxe",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_shovel",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_sword",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:diamond_pickaxe",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:diamond_sword",
+    "weight": 2
+  },
+  {
+    "item": "diamond_shovel",
+    "weight": 2
+  }
+]

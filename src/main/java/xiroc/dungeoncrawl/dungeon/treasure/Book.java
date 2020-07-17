@@ -1,10 +1,8 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved 
+ * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
-
-import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -12,6 +10,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker;
+
+import java.util.ArrayList;
 
 public class Book {
 

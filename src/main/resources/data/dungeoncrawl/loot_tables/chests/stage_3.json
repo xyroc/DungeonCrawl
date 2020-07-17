@@ -19,7 +19,7 @@
                             }
                         }
                     ],
-                    "weight": 8
+                    "weight": 4
                 },
                 {
                     "type": "item",
@@ -33,7 +33,7 @@
                             }
                         }
                     ],
-                    "weight": 8
+                    "weight": 4
                 },
                 {
                     "type": "item",
@@ -47,12 +47,12 @@
                             }
                         }
                     ],
-                    "weight": 6
+                    "weight": 3
                 },
                 {
                 	"type": "item",
                 	"name": "minecraft:arrow",
-                	"weight": 7,
+                	"weight": 4,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -80,7 +80,7 @@
                             }
                         }
                     ],
-                    "weight": 19
+                    "weight": 6
                 },
                 {
                     "type": "item",
@@ -89,12 +89,12 @@
                         {
                             "function": "set_count",
                             "count": {
-                                "min": 4,
-                                "max": 6
+                                "min": 1,
+                                "max": 4
                             }
                         }
                     ],
-                    "weight": 19
+                    "weight": 10
                 },
                 {
                     "type": "item",
@@ -103,26 +103,16 @@
                         {
                             "function": "set_count",
                             "count": {
-                                "min": 3,
-                                "max": 7
+                                "min": 1,
+                                "max": 4
                             }
                         }
                     ],
-                    "weight": 18
+                    "weight": 10
                 },
                 {
                     "type": "item",
                     "name": "minecraft:iron_axe",
-                    "weight": 2
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:golden_sword",
-                    "weight": 1
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:golden_axe",
                     "weight": 2
                 },
                 {
@@ -133,7 +123,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:golden_apple",
-                	"weight": 3,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -147,7 +137,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:enchanted_golden_apple",
-            		"weight": 1
+            		  "weight": 1
                 },
                 {
                 	"type": "item",
@@ -171,7 +161,7 @@
                     "functions": [
                         {
                             "function": "enchant_with_levels",
-                            "levels": 30,
+                            "levels": 20,
                             "treasure": true
                         }
                     ]
@@ -193,7 +183,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:brown_mushroom",
-                	"weight": 3,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -207,7 +197,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:red_mushroom",
-                	"weight": 3,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -235,7 +225,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:lapis_block",
-                	"weight": 2,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -249,7 +239,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:bowl",
-                	"weight": 5
+                	"weight": 2
                 },
                 {
                 	"type": "item",
@@ -274,7 +264,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:spider_eye",
-                	"weight": 6,
+                	"weight": 3,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -288,7 +278,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:stick",
-                	"weight": 10,
+                	"weight": 6,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -302,48 +292,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:feather",
-                	"weight": 3,
-                	"functions": [
-                		{
-                			"function": "set_count",
-                			"count": {
-                				"min": 3,
-                				"max": 7
-                			}
-                		}
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:paper",
-                	"functions": [
-                		{
-                			"function": "set_count",
-                			"count": {
-                				"min": 3,
-                				"max": 6
-                			}
-                		}
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:sugar_cane",
-                	"weight": 2,
-                	"functions": [
-                		{
-                			"function": "set_count",
-                			"count": {
-                				"min": 2,
-                				"max": 5
-                			}
-                		}
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:bone_meal",
-                	"weight": 4,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -357,7 +306,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:gold_nugget",
-                	"weight": 6,
+                	"weight": 4,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -371,7 +320,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:iron_nugget",
-                	"weight": 5,
+                	"weight": 4,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -384,22 +333,8 @@
                 },
                 {
                 	"type": "item",
-                	"name": "minecraft:clay_ball",
-                	"weight": 2,
-                	"functions": [
-                		{
-                			"function": "set_count",
-                			"count": {
-                				"min": 3,
-                				"max": 7
-                			}
-                		}
-                	]
-                },
-                {
-                	"type": "item",
                 	"name": "minecraft:flint",
-                	"weight": 3,
+                	"weight": 1,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -413,13 +348,13 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:string",
-                	"weight": 4,
+                	"weight": 3,
                 	"functions": [
                 		{
                 			"function": "set_count",
                 			"count": {
-                				"min": 3,
-                				"max": 7
+                				"min": 2,
+                				"max": 6
                 			}
                 		}
                 	]
@@ -427,27 +362,13 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:gunpowder",
-                	"weight": 3,
-                	"functions": [
-                		{
-                			"function": "set_count",
-                			"count": {
-                				"min": 1,
-                				"max": 3
-                			}
-                		}
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:ink_sac",
                 	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
                 			"count": {
-                				"min": 1,
-                				"max": 3
+                				"min": 2,
+                				"max": 5
                 			}
                 		}
                 	]
@@ -469,7 +390,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:glass_bottle",
-                	"weight": 3,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
@@ -511,13 +432,13 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:dead_bush",
-                	"weight": 4,
+                	"weight": 2,
                 	"functions": [
                 		{
                 			"function": "set_count",
                 			"count": {
-                				"min": 3,
-                				"max": 7
+                				"min": 2,
+                				"max": 4
                 			}
                 		}
                 	]
@@ -525,20 +446,6 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:egg",
-                	"weight": 2,
-                	"functions": [
-                		{
-                			"function": "set_count",
-                			"count": {
-                				"min": 3,
-                				"max": 7
-                			}
-                		}
-                	]
-                },
-                {
-                	"type": "item",
-                	"name": "minecraft:brick",
                 	"weight": 2,
                 	"functions": [
                 		{
@@ -582,7 +489,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:cauldron",
-                	"weight": 1
+                	"weight": 2
                 },
                 {
                 	"type": "item",
@@ -641,7 +548,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:air",
-                	"weight": 8,
+                	"weight": 9,
                 	"functions": [
                 		{
                 			"function": "dungeoncrawl:random_item",
@@ -652,7 +559,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:air",
-                	"weight": 2,
+                	"weight": 4,
                 	"functions": [
                 		{
                 			"function": "dungeoncrawl:material_blocks"

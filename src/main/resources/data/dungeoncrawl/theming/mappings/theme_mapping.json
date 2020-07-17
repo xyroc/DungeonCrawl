@@ -1,0 +1,18 @@
+{
+  "type": "theme_mapping",
+  "mapping": {
+    "minecraft:desert": 16,
+    "minecraft:desert_hills": 16,
+    "minecraft:desert_lakes": 16,
+
+    "minecraft:badlands": 17,
+    "minecraft:badlands_plateau": 17,
+    "minecraft:wooded_badlands_plateau": 17,
+    "minecraft:eroded_badlands": 17,
+    "minecraft:modified_badlands_plateau": 17,
+    "minecraft:modified_wooded_badlands_plateau": 17,
+
+    "minecraft:swamp": 80,
+    "minecraft:swamp_hills": 80
+  }
+}

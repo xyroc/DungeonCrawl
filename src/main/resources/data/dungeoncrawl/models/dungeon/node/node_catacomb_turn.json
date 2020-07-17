@@ -1,0 +1,15 @@
+{
+	"type": "node",
+	"id": 39,
+	"data": {
+		"size": "normal",
+		"type": "turn",
+		"feature": {
+			"name": "catacomb",
+			"min": 6,
+			"max": 12
+		},
+		"stages": [ 3, 4 ],
+		"weights": [ 0, 0, 5, 5, 0 ]
+	}
+}

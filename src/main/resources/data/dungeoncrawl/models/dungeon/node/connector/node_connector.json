@@ -1,0 +1,8 @@
+{
+  "type": "node_connector",
+  "id": 56,
+  "data": {
+    "stages": [ 1, 2, 3 ],
+    "weights": [ 1, 1, 1, 0, 0 ]
+  }
+}

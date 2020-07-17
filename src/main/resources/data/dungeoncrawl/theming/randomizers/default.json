@@ -1,0 +1,22 @@
+{
+	"type": "theme_randomizer",
+	"base": 0,
+	"entries": [
+		{
+			"value": 0,
+			"weight": 2
+		},
+		{
+			"value": 48,
+			"weight": 1
+		},
+		{
+			"value": 49,
+			"weight": 1
+		},
+		{
+			"value": 50,
+			"weight": 1
+		}
+	]
+}

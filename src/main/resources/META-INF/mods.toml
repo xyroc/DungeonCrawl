@@ -18,11 +18,7 @@ www.github.com/XYROC/DungeonCrawl/wiki/'''
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-<<<<<<< HEAD
     versionRange="[28,)" #mandatory
-=======
-    versionRange="[26,)" #mandatory
->>>>>>> origin/1.14
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -30,7 +26,6 @@ www.github.com/XYROC/DungeonCrawl/wiki/'''
 [[dependencies.dungeoncrawl]]
     modId="minecraft"
     mandatory=true
-<<<<<<< HEAD
     versionRange="[1.15,)"
     ordering="NONE"
     side="BOTH"
@@ -38,8 +33,5 @@ www.github.com/XYROC/DungeonCrawl/wiki/'''
     modId="biomesoplenty"
     mandatory=false
     versionRange="[10.0.0,)"
-=======
-    versionRange="[1.14.2, 1.14.3]"
->>>>>>> origin/1.14
     ordering="NONE"
     side="BOTH"

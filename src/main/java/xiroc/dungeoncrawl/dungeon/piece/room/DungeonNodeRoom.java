@@ -4,7 +4,6 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Tuple;

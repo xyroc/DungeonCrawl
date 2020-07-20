@@ -50,6 +50,21 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
+    public void setRealPosition(int x, int y, int z) {
+        switch (rotation) {
+            case NONE:
+                super.setRealPosition(x + 1, y, z);
+                break;
+            case CLOCKWISE_90:
+                super.setRealPosition(x, y, z + 1);
+                break;
+            default:
+                super.setRealPosition(x, y, z);
+                break;
+        }
+    }
+
+    @Override
     public void setupBoundingBox() {
         if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
             this.boundingBox = new MutableBoundingBox(x, y, z, x + 16, y + 8, z + 8);

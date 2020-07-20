@@ -585,7 +585,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:air",
-                	"weight": 2,
+                	"weight": 3,
                 	"functions": [
                 		{
                 			"function": "dungeoncrawl:random_potion",

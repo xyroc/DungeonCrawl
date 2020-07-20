@@ -252,7 +252,7 @@ public class DungeonModelBlock {
                 Config.NO_SPAWNERS.get() ? (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
                     return block.create(theme.solid.get(), world, pos, rotation);
                 } : (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-                    if (rand.nextInt(4 + (3 - stage)) == 0)
+                    if (rand.nextInt(2 + (4 - stage)) == 0)
                         return SPAWNER;
                     return block.create(theme.solid.get(), world, pos, rotation);
                 });
@@ -264,8 +264,7 @@ public class DungeonModelBlock {
                 });
         PROVIDERS.put(DungeonModelBlockType.RAND_BOOKSHELF_COBWEB,
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-                    int roll = rand.nextInt(10);
-                    if (roll > 2)
+                    if (rand.nextInt(10) > 2)
                         return tuple(Blocks.BOOKSHELF.getDefaultState(), false);
                     return tuple(Blocks.COBWEB.getDefaultState(), false);
                 });
@@ -273,9 +272,6 @@ public class DungeonModelBlock {
                                                        stage) -> block.create(subTheme.trapDoor.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.PILLAR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
             return block.create(subTheme.wallLog.get(), world, pos, rotation);
-//			if (state.has(BlockStateProperties.SLAB_TYPE)) {
-//				state = state.with(BlockStateProperties.SLAB_TYPE, SlabType.DOUBLE);
-//			}
         });
         PROVIDERS.put(DungeonModelBlockType.DOOR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
                 .create(subTheme.door.get(), world, pos, rotation));

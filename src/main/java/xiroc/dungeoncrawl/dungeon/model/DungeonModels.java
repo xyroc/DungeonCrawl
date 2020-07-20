@@ -92,6 +92,7 @@ public class DungeonModels {
         load("models/dungeon/corridor/", "stone_corridor", resourceManager);
         load("models/dungeon/corridor/", "corridor_room", resourceManager);
         load("models/dungeon/corridor/", "corridor_fire", resourceManager);
+        load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
 
         ENTRANCE = load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
 

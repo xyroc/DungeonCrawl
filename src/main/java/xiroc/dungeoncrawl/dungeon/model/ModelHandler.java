@@ -36,9 +36,8 @@ public class ModelHandler {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < length; z++) {
-                    BlockState state = world
-                            .getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z));
-                    if (state.getBlock() == Blocks.AIR) {
+                    BlockState state = world.getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z));
+                    if (state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.BEDROCK) {
                         model[x][y][z] = null;
                         continue;
                     } else if (state.getBlock() == Blocks.JIGSAW) {
@@ -57,7 +56,7 @@ public class ModelHandler {
                 new DungeonModel(model,
                         featurePositions.isEmpty() ? null
                                 : featurePositions.toArray(new FeaturePosition[0])),
-                ((ServerWorld) world).getSaveHandler().getWorldDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
+                ((ServerWorld) world).getServer().getDataDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
     }
 
     public static void writeModelToFile(DungeonModel model, String file) {

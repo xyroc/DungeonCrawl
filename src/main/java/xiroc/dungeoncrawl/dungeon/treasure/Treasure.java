@@ -5,6 +5,7 @@ package xiroc.dungeoncrawl.dungeon.treasure;
  */
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.*;
@@ -21,6 +22,7 @@ public class Treasure {
 
         MODEL_TREASURE_TYPES = new HashMap<>();
 
+        MODEL_TREASURE_TYPES.put(32, Type.FORGE);
         MODEL_TREASURE_TYPES.put(34, Type.LIBRARY);
         MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
 
@@ -33,6 +35,7 @@ public class Treasure {
         SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
         SPECIAL_LOOT_TABLES.put(Type.LIBRARY, Loot.LIBRARY);
         SPECIAL_LOOT_TABLES.put(Type.SECRET_ROOM, Loot.SECRET_ROOM);
+        SPECIAL_LOOT_TABLES.put(Type.FORGE, LootTables.CHESTS_VILLAGE_VILLAGE_WEAPONSMITH);
 
         LootFunctionManager.registerFunction(new RandomItem.Serializer());
         LootFunctionManager.registerFunction(new RandomPotion.Serializer());

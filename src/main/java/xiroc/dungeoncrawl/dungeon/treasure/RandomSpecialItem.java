@@ -40,7 +40,7 @@ public class RandomSpecialItem {
 //	CHAINMAIL_BOOTS, CHAINMAIL_LEGGINGS, CHAINMAIL_CHESTPLATE, CHAINMAIL_HELMET, STONE_SWORD;
 
     public static WeightedRandomTreasureItem STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5;
-    //public static final TreasureItem[] RARE_SPECIAL_ITEMS;
+    public static final TreasureItem[] SPECIAL_ITEMS, RARE_SPECIAL_ITEMS;
 
     static {
         REINFORCED_BOW = new ItemStack(Items.BOW);
@@ -163,23 +163,23 @@ public class RandomSpecialItem {
                 .rollForTagsAndApply(ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:iron_sword")),
                         lootLevel, rand, "Blade"));
 
-//        SPECIAL_ITEMS = new TreasureItem[]{CAP, PANTALOONS, LEATHER_JACKET, LEATHER_BOOTS,
-//                createDefaultSpecialItem("minecraft:chainmail_boots"),
-//                createDefaultSpecialItem("minecraft:chainmail_leggings"),
-//                createDefaultSpecialItem("minecraft:chainmail_chestplate"),
-//                createDefaultSpecialItem("minecraft:chainmail_helmet"), createDefaultSpecialItem("minecraft:stone_sword"),
-//                createDefaultSpecialItem("minecraft:golden_sword"), createDefaultSpecialItem("minecraft:golden_axe"),
-//                createDefaultSpecialItem("minecraft:golden_boots"), createDefaultSpecialItem("minecraft:golden_leggings"),
-//                createDefaultSpecialItem("minecraft:golden_chestplate"), createDefaultSpecialItem("minecraft:golden_helmet"),
-//                createDefaultSpecialItem("minecraft:iron_axe"), createDefaultSpecialItem("minecraft:iron_boots"),
-//                createDefaultSpecialItem("minecraft:iron_leggings"), createDefaultSpecialItem("minecraft:iron_chestplate"),
-//                createDefaultSpecialItem("minecraft:iron_helmet"), IRON_SWORD};
+        SPECIAL_ITEMS = new TreasureItem[]{CAP, PANTALOONS, LEATHER_JACKET, LEATHER_BOOTS,
+                createSpecialItem("minecraft:chainmail_boots"),
+                createSpecialItem("minecraft:chainmail_leggings"),
+                createSpecialItem("minecraft:chainmail_chestplate"),
+                createSpecialItem("minecraft:chainmail_helmet"), createSpecialItem("minecraft:stone_sword"),
+                createSpecialItem("minecraft:golden_sword"), createSpecialItem("minecraft:golden_axe"),
+                createSpecialItem("minecraft:golden_boots"), createSpecialItem("minecraft:golden_leggings"),
+                createSpecialItem("minecraft:golden_chestplate"), createSpecialItem("minecraft:golden_helmet"),
+                createSpecialItem("minecraft:iron_axe"), createSpecialItem("minecraft:iron_boots"),
+                createSpecialItem("minecraft:iron_leggings"), createSpecialItem("minecraft:iron_chestplate"),
+                createSpecialItem("minecraft:iron_helmet"), IRON_SWORD};
 
-//        RARE_SPECIAL_ITEMS = new TreasureItem[]{createDefaultSpecialItem("minecraft:diamond_sword"),
-//                createDefaultSpecialItem("minecraft:diamond_boots"), createDefaultSpecialItem("minecraft:diamond_leggings"),
-//                createDefaultSpecialItem("minecraft:diamond_chestplate"),
-//                createDefaultSpecialItem("minecraft:diamond_helmet"), createDefaultSpecialItem("minecraft:diamond_axe"),
-//                createDefaultSpecialItem("minecraft:diamond_shovel"), createDefaultSpecialItem("minecraft:diamond_pickaxe")};
+        RARE_SPECIAL_ITEMS = new TreasureItem[]{createSpecialItem("minecraft:diamond_sword"),
+                createSpecialItem("minecraft:diamond_boots"), createSpecialItem("minecraft:diamond_leggings"),
+                createSpecialItem("minecraft:diamond_chestplate"),
+                createSpecialItem("minecraft:diamond_helmet"), createSpecialItem("minecraft:diamond_axe"),
+                createSpecialItem("minecraft:diamond_shovel"), createSpecialItem("minecraft:diamond_pickaxe")};
     }
 
     public static void loadJson(IResourceManager resourceManager) {
@@ -235,13 +235,14 @@ public class RandomSpecialItem {
     }
 
     public static ItemStack generate(ServerWorld world, Random rand, int theme, Integer lootLevel) {
-//        if (lootLevel > 4 || rand.nextDouble() < 0.025 * lootLevel)
-//            return rand.nextBoolean() ? RARE_SPECIAL_ITEMS[rand.nextInt(RARE_SPECIAL_ITEMS.length)].generate(world,
-//                    rand, theme, lootLevel) : RARE_ITEMS[rand.nextInt(RARE_ITEMS.length)].copy();
-//        return rand.nextDouble() < 0.8
-//                ? SPECIAL_ITEMS[rand.nextInt(SPECIAL_ITEMS.length)].generate(world, rand, theme, lootLevel)
-//                : ITEMS[rand.nextInt(ITEMS.length)].copy();
-        DungeonCrawl.LOGGER.debug("LootLevel: {}", lootLevel);
+        if (rand.nextFloat() < 0.4) {
+            if (lootLevel > 4 || rand.nextDouble() < 0.025 * lootLevel)
+                return rand.nextBoolean() ? RARE_SPECIAL_ITEMS[rand.nextInt(RARE_SPECIAL_ITEMS.length)].generate(world,
+                        rand, theme, lootLevel) : RARE_ITEMS[rand.nextInt(RARE_ITEMS.length)].copy();
+            return rand.nextDouble() < 0.8
+                    ? SPECIAL_ITEMS[rand.nextInt(SPECIAL_ITEMS.length)].generate(world, rand, theme, lootLevel)
+                    : ITEMS[rand.nextInt(ITEMS.length)].copy();
+        }
         switch (lootLevel) {
             case 0:
                 return STAGE_1.roll(rand).generate(world, rand, theme, lootLevel);

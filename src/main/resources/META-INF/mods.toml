@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[26,)" #mandatory
+loaderVersion="[32,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
@@ -11,14 +11,14 @@ displayName="Dungeon Crawl" #mandatory
 credits="Original Mod by Greymerk (Roguelike Dungeons)" #optional
 authors="XIROC" #optional
 description='''Dungeon Crawl is a dungeon generator for Minecraft, built from the ground up to become a spiritual successor to Roguelike Dungeons. It contains new content, new takes on a few rooms and a bunch of original builds that have been taken over from Roguelike Dungeons like the iconic entrance. New content will be added in coming updates. For more information, please visit the wiki on GitHub:
-www.github.com/XYROC/DungeonCrawl/wiki/'''
+https://github.com/XYROC/DungeonCrawl/wiki/'''
 [[dependencies.dungeoncrawl]]
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[28,)" #mandatory
+    versionRange="[32.0.61,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -26,12 +26,6 @@ www.github.com/XYROC/DungeonCrawl/wiki/'''
 [[dependencies.dungeoncrawl]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.dungeoncrawl]]
-    modId="biomesoplenty"
-    mandatory=false
-    versionRange="[10.0.0,)"
+    versionRange="[1.16.1,)"
     ordering="NONE"
     side="BOTH"

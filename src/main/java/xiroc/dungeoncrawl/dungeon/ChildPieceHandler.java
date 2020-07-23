@@ -5,7 +5,7 @@ package xiroc.dungeoncrawl.dungeon;
  */
 
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -77,14 +77,14 @@ public class ChildPieceHandler {
         return array;
     }
 
-    public static Vec3i rotateOffset(Vec3i offset, Rotation rotation, DungeonModel model) {
+    public static Vector3i rotateOffset(Vector3i offset, Rotation rotation, DungeonModel model) {
         switch (rotation) {
             case CLOCKWISE_90:
-                return new Vec3i(offset.getZ(), offset.getY(), offset.getX());
+                return new Vector3i(offset.getZ(), offset.getY(), offset.getX());
             case CLOCKWISE_180:
-                return new Vec3i(model.width - offset.getX() - 1, offset.getY(), model.length - offset.getZ() - 1);
+                return new Vector3i(model.width - offset.getX() - 1, offset.getY(), model.length - offset.getZ() - 1);
             case COUNTERCLOCKWISE_90:
-                return new Vec3i(model.width - offset.getZ() - 1, offset.getY(), model.length - offset.getX() - 1);
+                return new Vector3i(model.width - offset.getZ() - 1, offset.getY(), model.length - offset.getX() - 1);
             default:
                 return offset;
         }
@@ -92,11 +92,11 @@ public class ChildPieceHandler {
 
     public static class ChildPieceSpot {
 
-        public Vec3i offset;
+        public Vector3i offset;
         public Rotation rotation;
 
         public ChildPieceSpot(int xOffset, int yOffset, int zOffset, Rotation rotation) {
-            this.offset = new Vec3i(xOffset, yOffset, zOffset);
+            this.offset = new Vector3i(xOffset, yOffset, zOffset);
             this.rotation = rotation;
         }
 

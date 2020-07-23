@@ -7,11 +7,12 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
 public class Shield extends LootFunction {
 
@@ -24,10 +25,15 @@ public class Shield extends LootFunction {
         return Banner.createShield(context.getRandom());
     }
 
+    @Override
+    public LootFunctionType func_230425_b_() {
+        return Treasure.SHIELD;
+    }
+
     public static class Serializer extends LootFunction.Serializer<Shield> {
 
         public Serializer() {
-            super(DungeonCrawl.locate("shield"), Shield.class);
+            super();
         }
 
         @Override

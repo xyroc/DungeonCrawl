@@ -5,12 +5,12 @@ package xiroc.dungeoncrawl.dungeon.block;
  */
 
 import net.minecraft.block.BlockState;
+import net.minecraft.loot.LootTables;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.storage.loot.LootTables;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -57,7 +57,7 @@ public class Chest implements IBlockPlacementHandler {
         @Override
         public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
                                int lootLevel) {
-            if (state.has(BlockStateProperties.HORIZONTAL_FACING))
+            if (state.func_235901_b_(BlockStateProperties.HORIZONTAL_FACING))
                 state = state.with(BlockStateProperties.HORIZONTAL_FACING, Orientation.RANDOM_FACING_FLAT.roll(rand));
             world.setBlockState(pos, state, 3);
             if (world.getTileEntity(pos) instanceof LockableLootTileEntity) {

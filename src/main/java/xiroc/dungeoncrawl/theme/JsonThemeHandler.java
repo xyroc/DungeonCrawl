@@ -9,7 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -178,7 +178,7 @@ public class JsonThemeHandler {
                         BlockState state = block.getDefaultState();
                         if (element.has("data")) {
                             JsonObject data = element.get("data").getAsJsonObject();
-                            for (IProperty<?> property : state.getProperties()) {
+                            for (Property<?> property : state.func_235904_r_()) {
                                 if (data.has(property.getName())) {
                                     state = parseProperty(state, property, data.get(property.getName()).getAsString());
                                 }
@@ -195,7 +195,7 @@ public class JsonThemeHandler {
                         .getValue(new ResourceLocation(object.get("block").getAsString())).getDefaultState();
                 if (object.has("data")) {
                     JsonObject data = object.get("data").getAsJsonObject();
-                    for (IProperty<?> property : state.getProperties()) {
+                    for (Property<?> property : state.func_235904_r_()) {
                         if (data.has(property.getName())) {
                             state = parseProperty(state, property, data.get(property.getName()).getAsString());
                         }
@@ -214,16 +214,14 @@ public class JsonThemeHandler {
 
     /**
      * Applies the property value to the state.
-     *
-     * @return
      */
-    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, IProperty<T> property,
+    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property,
                                                                       String value) {
-        if (state.has(property)) {
+        if (state.func_235901_b_(property)) {
             Optional<T> optional = property.parseValue(value);
             if (optional.isPresent()) {
                 T t = optional.get();
-                return state.<T, T>with(property, t);
+                return state.with(property, t);
             } else {
                 LOGGER.warn("Couldn't apply {} : {} for {}", property.getName(), value, state.getBlock());
             }

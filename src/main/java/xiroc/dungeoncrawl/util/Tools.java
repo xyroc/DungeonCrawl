@@ -7,7 +7,6 @@ package xiroc.dungeoncrawl.util;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,12 +15,14 @@ import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Items;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.feature.jigsaw.JigsawOrientation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,7 +59,7 @@ public class Tools {
 
                             if (!POSITIONS.containsKey(uuid)) {
                                 command.getSource().sendFeedback(
-                                        new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                        new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                         true);
                                 return 0;
                             }
@@ -81,7 +82,7 @@ public class Tools {
                                 return 1;
                             } else {
                                 command.getSource().sendFeedback(
-                                        new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                        new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                         true);
                                 return 0;
                             }
@@ -137,7 +138,7 @@ public class Tools {
             }
 
             event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE + "Position 1 set to ("
-                    + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
+                    + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUniqueID());
         }
     }
 
@@ -159,7 +160,8 @@ public class Tools {
                 }
 
                 event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
-                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
+                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUniqueID());
+
             }
         }
     }
@@ -170,13 +172,13 @@ public class Tools {
                 for (int z = 0; z < model.length; z++) {
                     BlockPos placePos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (model.model[x][y][z] == null) {
-                        world.setBlockState(placePos, AIR, 2);
+                        world.setBlockState(placePos, AIR, 3);
                     } else {
                         Block block = model.model[x][y][z].type.getBaseBlock(model.model[x][y][z]);
                         if (block == null)
                             continue;
                         world.setBlockState(placePos, model.model[x][y][z].create(block.getDefaultState(), world, placePos, Rotation.NONE).getA(), 3);
-                        world.notifyNeighbors(placePos, world.getBlockState(placePos).getBlock());
+                        world.func_230547_a_(placePos, world.getBlockState(placePos).getBlock());
                     }
                 }
             }
@@ -185,7 +187,7 @@ public class Tools {
         if (model.featurePositions != null) {
             for (DungeonModel.FeaturePosition featurePosition : model.featurePositions) {
                 DirectionalBlockPos blockPos = featurePosition.directionalBlockPos(pos.getX(), pos.getY(), pos.getZ());
-                world.setBlockState(blockPos.position, Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, blockPos.direction), 3);
+                world.setBlockState(blockPos.position, Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(blockPos.direction)), 3);
             }
         }
     }
@@ -206,7 +208,7 @@ public class Tools {
             if (model.featurePositions != null) {
                 for (DungeonModel.FeaturePosition f : model.featurePositions) {
                     world.setBlockState(new BlockPos(pos.getX() + f.position.getX(), pos.getY() + f.position.getY(), pos.getZ() + f.position.getZ()),
-                            Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing), 3);
+                            Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing)), 3);
                 }
             }
         }
@@ -236,7 +238,7 @@ public class Tools {
                     for (DungeonModel.FeaturePosition f : model.featurePositions) {
                         world.setBlockState(new BlockPos(pos.getX() + model.length - f.position.getZ() - 1,
                                         pos.getY() + f.position.getY(), pos.getZ() + f.position.getX()),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing.rotateY()), 3);
+                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing.rotateY())), 3);
                     }
                 }
                 //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
@@ -261,7 +263,7 @@ public class Tools {
                     for (DungeonModel.FeaturePosition f : model.featurePositions) {
                         world.setBlockState(new BlockPos(pos.getX() + f.position.getZ(),
                                         pos.getY() + f.position.getY(), pos.getZ() + model.width - f.position.getX() - 1),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing.rotateYCCW()), 3);
+                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing.rotateYCCW())), 3);
                     }
                 }
                 //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
@@ -284,7 +286,7 @@ public class Tools {
                     for (DungeonModel.FeaturePosition f : model.featurePositions) {
                         world.setBlockState(new BlockPos(pos.getX() + model.width - f.position.getX() - 1,
                                         pos.getY() + f.position.getY(), pos.getZ() + model.length - f.position.getZ() - 1),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing.getOpposite()), 3);
+                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing.getOpposite())), 3);
                     }
                 }
                 break;
@@ -297,5 +299,20 @@ public class Tools {
                 break;
         }
 
+    }
+
+    private static JigsawOrientation getJigsawOrientation(Direction primary) {
+        switch (primary) {
+            case EAST:
+            case WEST:
+            case SOUTH:
+            case NORTH:
+                return JigsawOrientation.func_239641_a_(primary, Direction.UP);
+            case UP:
+            case DOWN:
+                return JigsawOrientation.func_239641_a_(primary, Direction.EAST);
+            default:
+                return JigsawOrientation.NORTH_UP;
+        }
     }
 }

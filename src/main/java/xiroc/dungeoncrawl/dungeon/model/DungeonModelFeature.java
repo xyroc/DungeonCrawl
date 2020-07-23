@@ -5,12 +5,12 @@ package xiroc.dungeoncrawl.dungeon.model;
  */
 
 import com.google.gson.JsonObject;
+import net.minecraft.loot.RandomValueRange;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.storage.loot.RandomValueRange;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;

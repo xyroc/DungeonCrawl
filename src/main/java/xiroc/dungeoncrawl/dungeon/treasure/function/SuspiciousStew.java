@@ -7,18 +7,16 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
 import java.util.Random;
 
-/*
- * DungeonCrawl (C) 2019 XYROC (XIROC1337), All Rights Reserved
- */
 
 public class SuspiciousStew extends LootFunction {
 
@@ -111,10 +109,15 @@ public class SuspiciousStew extends LootFunction {
         return stack;
     }
 
+    @Override
+    public LootFunctionType func_230425_b_() {
+        return Treasure.SUSPICIOUS_STEW;
+    }
+
     public static class Serializer extends LootFunction.Serializer<SuspiciousStew> {
 
         public Serializer() {
-            super(DungeonCrawl.locate("suspicious_stew"), SuspiciousStew.class);
+            super();
         }
 
         @Override

@@ -36,19 +36,17 @@ public class ModelHandler {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < length; z++) {
-                    BlockState state = world.getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z));
+                    BlockState state = world
+                            .getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z));
                     if (state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.BEDROCK) {
                         model[x][y][z] = null;
                         continue;
                     } else if (state.getBlock() == Blocks.JIGSAW) {
-                        //DungeonCrawl.LOGGER.debug("Found a feature position at {} {} {}", x, y, z);
-                        featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.FACING)));
-                        //model[x][y][z] = new DungeonModelBlock(DungeonModelBlockType.NONE);
+                        featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.field_235907_P_).func_239642_b_()));
                         continue;
                     }
                     model[x][y][z] = new DungeonModelBlock(
-                            DungeonModelBlockType.get(state.getBlock(), spawnerType, chestType))
-                            .loadDataFromState(state);
+                            DungeonModelBlockType.get(state.getBlock(), spawnerType, chestType)).loadDataFromState(state);
                 }
             }
         }
@@ -57,6 +55,7 @@ public class ModelHandler {
                         featurePositions.isEmpty() ? null
                                 : featurePositions.toArray(new FeaturePosition[0])),
                 ((ServerWorld) world).getServer().getDataDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
+
     }
 
     public static void writeModelToFile(DungeonModel model, String file) {

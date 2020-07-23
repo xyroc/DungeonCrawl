@@ -48,7 +48,7 @@ public class DungeonBuilder {
 
     public BlockPos startPos;
 
-    public ChunkGenerator<?> chunkGen;
+    public ChunkGenerator chunkGen;
     public Biome startBiome;
 
     public int theme, subTheme;
@@ -98,7 +98,7 @@ public class DungeonBuilder {
 //		});
     }
 
-    public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
+    public DungeonBuilder(ChunkGenerator world, ChunkPos pos, Random rand) {
         this.chunkGen = world;
 
         this.rand = rand;
@@ -115,7 +115,7 @@ public class DungeonBuilder {
 
         DungeonCrawl.EVENT_BUS.post(startEvent);
 
-        DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
+        DungeonCrawl.LOGGER.info("Building Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
                 + startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
     }
 
@@ -147,7 +147,9 @@ public class DungeonBuilder {
         entrance.modelID = entrance.determineModel(this, rand);
         entrance.setupBoundingBox();
 
-        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x + 4, chunkGen.getGroundHeight(), entrance.z + 4);
+        //this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x + 4, chunkGen.getGroundHeight(), entrance.z + 4);
+
+        this.startBiome = chunkGen.getBiomeProvider().getBiomes(entrance.x + 4, chunkGen.getGroundHeight(), entrance.z + 4, 1).iterator().next();
 
         String biome = startBiome.getRegistryName().toString();
 

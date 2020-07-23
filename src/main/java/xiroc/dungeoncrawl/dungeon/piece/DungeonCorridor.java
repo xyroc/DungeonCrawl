@@ -9,8 +9,9 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -80,9 +81,8 @@ public class DungeonCorridor extends DungeonPiece {
 //        }
 //    }
 
-    @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGen, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos p_74875_4_) {
+    public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
         boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
@@ -130,7 +130,7 @@ public class DungeonCorridor extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id) {
-            this.boundingBox = new MutableBoundingBox(x - 1, y, z - 1, x + 10, y + 8, z + 10);
+            this.boundingBox = new MutableBoundingBox(x - 1, y, z  - 1, x + 10, y + 8, z + 10);
         } else {
             this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
         }

@@ -7,7 +7,7 @@ package xiroc.dungeoncrawl.dungeon.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -318,8 +318,8 @@ public class DungeonBlocks {
         DungeonCrawl.LOGGER.info("Finished calculations (" + (System.currentTimeMillis() - time) + " ms)");
     }
 
-    public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, IProperty<T> property, V value) {
-        if (state.has(property)) {
+    public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, Property<T> property, V value) {
+        if (state.func_235901_b_(property)) {
             return state.with(property, value);
         }
         return state;

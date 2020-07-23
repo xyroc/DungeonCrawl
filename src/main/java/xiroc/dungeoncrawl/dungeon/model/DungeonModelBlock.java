@@ -10,7 +10,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
@@ -112,7 +112,7 @@ public class DungeonModelBlock {
      */
     public DungeonModelBlock loadDataFromState(BlockState state) {
         List<PropertyHolder> properties = Lists.newArrayList();
-        for (IProperty<?> property : state.getProperties()) {
+        for (Property<?> property : state.func_235904_r_()) {
             properties.add(new PropertyHolder(property, state.get(property)));
         }
         this.properties = properties.toArray(new PropertyHolder[0]);
@@ -139,7 +139,7 @@ public class DungeonModelBlock {
                 postProcessing = true;
             }
         }
-        return tuple(state.rotate(rotation), postProcessing);
+        return tuple(state.rotate(world, pos, rotation), postProcessing);
     }
 
     public Tuple<BlockState, Boolean> create(BlockState state, IWorld world, BlockPos pos) {
@@ -270,9 +270,8 @@ public class DungeonModelBlock {
                 });
         PROVIDERS.put(DungeonModelBlockType.TRAPDOOR, (block, rotation, world, pos, theme, subTheme, rand, variation,
                                                        stage) -> block.create(subTheme.trapDoor.get(), world, pos, rotation));
-        PROVIDERS.put(DungeonModelBlockType.PILLAR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-            return block.create(subTheme.wallLog.get(), world, pos, rotation);
-        });
+        PROVIDERS.put(DungeonModelBlockType.PILLAR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) ->
+                block.create(subTheme.wallLog.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.DOOR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
                 .create(subTheme.door.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.OTHER, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
@@ -322,7 +321,7 @@ public class DungeonModelBlock {
 
         public String propertyName, valueName;
 
-        public IProperty<?> property;
+        public Property<?> property;
         public Object value;
 
         public PropertyHolder(String propertyName, String valueName) {
@@ -330,7 +329,7 @@ public class DungeonModelBlock {
             this.valueName = valueName;
         }
 
-        public PropertyHolder(IProperty<?> property, Object value) {
+        public PropertyHolder(Property<?> property, Object value) {
             this.property = property;
             this.value = value;
         }
@@ -338,7 +337,7 @@ public class DungeonModelBlock {
         @SuppressWarnings("unchecked")
         public <T extends Comparable<T>> BlockState apply(BlockState state) {
             if (property == null) {
-                for (IProperty<?> p : state.getProperties()) {
+                for (Property<?> p : state.func_235904_r_()) {
                     if (p.getName().equals(propertyName)) {
                         this.property = p;
                         Optional<?> optional = p.parseValue(valueName);
@@ -351,8 +350,8 @@ public class DungeonModelBlock {
                 }
             }
 
-            if (state.has(property)) {
-                return state.with((IProperty<T>) property, (T) value);
+            if (state.func_235901_b_(property)) {
+                return state.with((Property<T>) property, (T) value);
             }
 
             return state;

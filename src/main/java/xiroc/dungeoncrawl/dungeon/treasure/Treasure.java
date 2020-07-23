@@ -4,9 +4,12 @@ package xiroc.dungeoncrawl.dungeon.treasure;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
+import net.minecraft.loot.ILootSerializer;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootTables;
+import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTables;
-import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraft.util.registry.Registry;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.*;
 
@@ -17,12 +20,20 @@ public class Treasure {
     public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES;
     public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES;
 
+    public static final LootFunctionType ENCHANTED_BOOK = func_237451_a_("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
+    public static final LootFunctionType MATERIAL_BLOCKS = func_237451_a_("dungeoncrawl:material_blocks", new EnchantedBook.Serializer());
+    public static final LootFunctionType RANDOM_ITEM = func_237451_a_("dungeoncrawl:random_item", new RandomItem.Serializer());
+    public static final LootFunctionType RANDOM_POTION = func_237451_a_("dungeoncrawl:random_potion", new RandomPotion.Serializer());
+    public static final LootFunctionType SHIELD = func_237451_a_("dungeoncrawl:shield", new Shield.Serializer());
+    public static final LootFunctionType SUSPICIOUS_STEW = func_237451_a_("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());
+
     static {
         SPECIAL_LOOT_TABLES = new HashMap<>();
 
         MODEL_TREASURE_TYPES = new HashMap<>();
 
         MODEL_TREASURE_TYPES.put(32, Type.FORGE);
+
         MODEL_TREASURE_TYPES.put(34, Type.LIBRARY);
         MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
 
@@ -37,16 +48,10 @@ public class Treasure {
         SPECIAL_LOOT_TABLES.put(Type.SECRET_ROOM, Loot.SECRET_ROOM);
         SPECIAL_LOOT_TABLES.put(Type.FORGE, LootTables.CHESTS_VILLAGE_VILLAGE_WEAPONSMITH);
 
-        LootFunctionManager.registerFunction(new RandomItem.Serializer());
-        LootFunctionManager.registerFunction(new RandomPotion.Serializer());
-        LootFunctionManager.registerFunction(new EnchantedBook.Serializer());
-        LootFunctionManager.registerFunction(new MaterialBlocks.Serializer());
-        LootFunctionManager.registerFunction(new Shield.Serializer());
-        LootFunctionManager.registerFunction(new SuspiciousStew.Serializer());
     }
 
     /**
-     * An enum to determine which LootTable should get used for chest, barrels,
+     * An enum to determine which LootTable should be used for chests, barrels,
      * etc...
      */
     public enum Type {
@@ -80,6 +85,10 @@ public class Treasure {
             return TYPE_TO_INT_MAP.get(type);
         }
 
+    }
+
+    private static LootFunctionType func_237451_a_(String p_237451_0_, ILootSerializer<? extends ILootFunction> p_237451_1_) {
+        return Registry.register(Registry.field_239694_aZ_, new ResourceLocation(p_237451_0_), new LootFunctionType(p_237451_1_));
     }
 
 }

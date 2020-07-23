@@ -8,10 +8,12 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.util.JSONUtils;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.dungeon.treasure.TreasureItems;
 
 public class RandomPotion extends LootFunction {
@@ -28,22 +30,27 @@ public class RandomPotion extends LootFunction {
         return TreasureItems.getRandomSpecialPotion(context.getRandom(), stage - 1);
     }
 
+    @Override
+    public LootFunctionType func_230425_b_() {
+        return Treasure.RANDOM_POTION;
+    }
+
     public static class Serializer extends LootFunction.Serializer<RandomPotion> {
 
         public Serializer() {
-            super(DungeonCrawl.locate("random_potion"), RandomPotion.class);
+            super();
         }
 
         @Override
-        public void serialize(JsonObject object, RandomPotion functionClazz,
-                              JsonSerializationContext serializationContext) {
-            object.add("stage", DungeonCrawl.GSON.toJsonTree(functionClazz.stage));
+        public void func_230424_a_(JsonObject p_230424_1_, RandomPotion p_230424_2_, JsonSerializationContext p_230424_3_) {
+            super.func_230424_a_(p_230424_1_, p_230424_2_, p_230424_3_);
+            p_230424_1_.addProperty("stage", p_230424_2_.stage);
         }
 
         @Override
         public RandomPotion deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                         ILootCondition[] conditionsIn) {
-            return new RandomPotion(conditionsIn, object.get("stage").getAsInt());
+            return new RandomPotion(conditionsIn, JSONUtils.getInt(object, "stage", 1));
         }
 
     }

@@ -33,7 +33,7 @@
                             }
                         }
                     ],
-                    "weight": 4
+                    "weight": 6
                 },
                 {
                     "type": "item",
@@ -47,7 +47,7 @@
                             }
                         }
                     ],
-                    "weight": 3
+                    "weight": 5
                 },
                 {
                 	"type": "item",
@@ -548,7 +548,7 @@
                 {
                 	"type": "item",
                 	"name": "minecraft:air",
-                	"weight": 5,
+                	"weight": 9,
                 	"functions": [
                 		{
                 			"function": "dungeoncrawl:random_item",

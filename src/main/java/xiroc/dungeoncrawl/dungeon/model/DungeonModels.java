@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
@@ -31,9 +31,9 @@ public class DungeonModels {
 
     public static final HashMap<String, DungeonModel> NAME_TO_MODEL = Config.ENABLE_TOOLS.get() ? new HashMap<>() : null;
 
-    public static final HashMap<Integer, Vec3i> OFFSETS = new HashMap<>();
+    public static final HashMap<Integer, Vector3i> OFFSETS = new HashMap<>();
 
-    public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
+    public static final Vector3i NO_OFFSET = new Vector3i(0, 0, 0);
 
     public static DungeonModel CORRIDOR, CORRIDOR_2, CORRIDOR_3, CORRIDOR_STONE, CORRIDOR_ROOM, CORRIDOR_SECRET_ROOM_ENTRANCE;
     public static DungeonModel CAKE_ROOM;
@@ -92,6 +92,7 @@ public class DungeonModels {
         load("models/dungeon/corridor/", "stone_corridor", resourceManager);
         load("models/dungeon/corridor/", "corridor_room", resourceManager);
         load("models/dungeon/corridor/", "corridor_fire", resourceManager);
+
         load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
 
         ENTRANCE = load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
@@ -339,7 +340,7 @@ public class DungeonModels {
         WEIGHTED_MODELS.put(Arrays.hashCode(categories), builder.build());
     }
 
-    public static Vec3i getOffset(int model) {
+    public static Vector3i getOffset(int model) {
         return OFFSETS.getOrDefault(model, NO_OFFSET);
     }
 

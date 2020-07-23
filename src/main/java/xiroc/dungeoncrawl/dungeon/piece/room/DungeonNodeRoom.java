@@ -10,9 +10,10 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.IWorld;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
@@ -133,11 +134,10 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos chunkPosIn) {
+    public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
-        Vec3i offset = DungeonModels.getOffset(modelID);
+        Vector3i offset = DungeonModels.getOffset(modelID);
         BlockPos pos = new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ());
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
@@ -291,5 +291,6 @@ public class DungeonNodeRoom extends DungeonPiece {
         tagCompound.putBoolean("large", large);
         tagCompound.putBoolean("lootRoom", lootRoom);
     }
+
 
 }

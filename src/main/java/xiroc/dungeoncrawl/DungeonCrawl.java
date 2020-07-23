@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage.Decoration;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -15,7 +14,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -39,6 +37,7 @@ import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /* GENRERAL LICENSE FOR DungeonCrawl v1.0
  * 
@@ -79,8 +78,10 @@ public class DungeonCrawl {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
 
-        ForgeRegistries.FEATURES
-                .register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
+        Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase()));
+        ForgeRegistries.STRUCTURE_FEATURES.register(Dungeon.DUNGEON);
+        Structure.field_236365_a_.put(Dungeon.DUNGEON.getRegistryName().toString().toLowerCase(Locale.ROOT), Dungeon.DUNGEON);
+
         StructurePieceTypes.registerAll();
         Treasure.init();
 
@@ -105,13 +106,10 @@ public class DungeonCrawl {
         DungeonCrawl.LOGGER.info("Adding features and structures");
 
         for (Biome biome : ForgeRegistries.BIOMES) {
-            if (Dungeon.OVERWORLD_CATEGORIES.contains(biome.getCategory())) {
-                biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, new ConfiguredFeature<>(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));
-                if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())
-                        && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
-                    DungeonCrawl.LOGGER.info("Generation Biome: " + biome.getRegistryName());
-                    biome.addStructure(new ConfiguredFeature<>(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));
-                }
+            if (!JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(biome.getRegistryName().toString())
+                    && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
+                DungeonCrawl.LOGGER.info("Generation Biome: " + biome.getRegistryName());
+                biome.func_235063_a_(Dungeon.FEATURE);
             }
         }
 
@@ -119,8 +117,9 @@ public class DungeonCrawl {
     }
 
     @SubscribeEvent
-    public void onServerStart(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener(new DataReloadListener());
+    public void addReloadListener(AddReloadListenerEvent event) {
+        DungeonCrawl.LOGGER.info("Adding datapack reload listener");
+        event.addListener(new DataReloadListener());
     }
 
     public static String getDate() {

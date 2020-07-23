@@ -29,8 +29,8 @@ public class JsonConfig implements IJsonConfigurable {
 
     public static final String KEY_CONFIG_VERSION = "config_version";
 
-    public static final String KEY_BIOME_BLACKLIST = "biome_blacklist",
-            KEY_BIOME_OVERWORLD_BLACKLIST = "biome_overworld_blacklist", KEY_BOWS = "bows",
+    public static final String KEY_BIOME_BLOCKLIST = "biome_blocklist",
+            KEY_BIOME_OVERWORLD_BLOCKLIST = "biome_overworld_blocklist", KEY_BOWS = "bows",
             KEY_COLORED_ARMOR = "colored_armor", KEY_SWORDS = "swords", KEY_SWORDS_RARE = "swords_rare",
             KEY_PICKAXES = "pickaxes", KEY_AXES = "axes", KEY_ARMOR_STAGE_1 = "armor_sets_stage_1",
             KEY_ARMOR_STAGE_2 = "armor_sets_stage_2", KEY_ARMOR_STAGE_3 = "armor_sets_stage_3",
@@ -40,13 +40,13 @@ public class JsonConfig implements IJsonConfigurable {
             KEY_BOSSES = "dungeon_bosses";
 
     public static final String[] KEYS = new String[]{KEY_BOSSES, KEY_ARMOR_ENCHANTMENTS, KEY_ARMOR_RARE, KEY_ARMOR_STAGE_1,
-            KEY_ARMOR_STAGE_2, KEY_ARMOR_STAGE_3, KEY_AXE_ENCHANTMENTS, KEY_AXES, KEY_BIOME_BLACKLIST,
-            KEY_BIOME_OVERWORLD_BLACKLIST, KEY_BOW_ENCHANTMENTS, KEY_BOWS, KEY_COLORED_ARMOR, KEY_PICKAXE_ENCHANTMENTS,
+            KEY_ARMOR_STAGE_2, KEY_ARMOR_STAGE_3, KEY_AXE_ENCHANTMENTS, KEY_AXES, KEY_BIOME_BLOCKLIST,
+            KEY_BIOME_OVERWORLD_BLOCKLIST, KEY_BOW_ENCHANTMENTS, KEY_BOWS, KEY_COLORED_ARMOR, KEY_PICKAXE_ENCHANTMENTS,
             KEY_PICKAXES, KEY_SWORD_ENCHANTMENTS, KEY_SWORDS, KEY_SWORDS_RARE};
 
     public static BossEntry[] DUNGEON_BOSSES;
 
-    public static List<?> BIOME_BLACKLIST, BIOME_OVERWORLD_BLACKLIST;
+    public static List<?> BIOME_BLOCKLIST, BIOME_OVERWORLD_BLOCKLIST;
 
     public static String[] ASSUMPTION_SEARCHLIST;
 
@@ -227,8 +227,8 @@ public class JsonConfig implements IJsonConfigurable {
         static {
             DEFAULTS = new HashMap<String, Object>();
 //			DEFAULTS.put(KEY_BOSSES, new BossEntry[0]);
-            DEFAULTS.put(KEY_BIOME_BLACKLIST, BIOME_BLACKLIST);
-            DEFAULTS.put(KEY_BIOME_OVERWORLD_BLACKLIST, BIOME_OVERWORLD_BLACKLIST);
+            DEFAULTS.put(KEY_BIOME_BLOCKLIST, BIOME_BLACKLIST);
+            DEFAULTS.put(KEY_BIOME_OVERWORLD_BLOCKLIST, BIOME_OVERWORLD_BLACKLIST);
             DEFAULTS.put(KEY_BOWS, BOWS);
             DEFAULTS.put(KEY_COLORED_ARMOR, COLORED_ARMOR);
             DEFAULTS.put(KEY_SWORDS, SWORDS);
@@ -278,9 +278,9 @@ public class JsonConfig implements IJsonConfigurable {
     public void load(JsonObject object, File file) {
 //		DUNGEON_BOSSES = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BOSSES, this), BossEntry[].class);
 
-        BIOME_BLACKLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BIOME_BLACKLIST, this), ArrayList.class);
-        BIOME_OVERWORLD_BLACKLIST = DungeonCrawl.GSON
-                .fromJson(getOrRewrite(object, KEY_BIOME_OVERWORLD_BLACKLIST, this), ArrayList.class);
+        BIOME_BLOCKLIST = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_BIOME_BLOCKLIST, this), ArrayList.class);
+        BIOME_OVERWORLD_BLOCKLIST = DungeonCrawl.GSON
+                .fromJson(getOrRewrite(object, KEY_BIOME_OVERWORLD_BLOCKLIST, this), ArrayList.class);
 
         COLORED_ARMOR = DungeonCrawl.GSON.fromJson(getOrRewrite(object, KEY_COLORED_ARMOR, this), Set.class);
 
@@ -322,8 +322,8 @@ public class JsonConfig implements IJsonConfigurable {
 
     @Override
     public JsonObject create(JsonObject object) {
-        object.add(KEY_BIOME_BLACKLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BIOME_BLACKLIST));
-        object.add(KEY_BIOME_OVERWORLD_BLACKLIST,
+        object.add(KEY_BIOME_BLOCKLIST, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BIOME_BLACKLIST));
+        object.add(KEY_BIOME_OVERWORLD_BLOCKLIST,
                 DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BIOME_OVERWORLD_BLACKLIST));
         object.add(KEY_BOWS, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.BOWS));
         object.add(KEY_COLORED_ARMOR, DungeonCrawl.GSON.toJsonTree(JsonConfigManager.COLORED_ARMOR));

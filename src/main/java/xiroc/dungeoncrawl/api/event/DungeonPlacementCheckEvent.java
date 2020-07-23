@@ -16,11 +16,11 @@ import net.minecraftforge.eventbus.api.Event;
 @Cancelable
 public class DungeonPlacementCheckEvent extends Event {
 
-    public final ChunkGenerator<?> chunkGenerator;
+    public final ChunkGenerator chunkGenerator;
     public final Biome biome;
     public final int chunkX, chunkZ;
 
-    public DungeonPlacementCheckEvent(ChunkGenerator<?> chunkGenerator, Biome biome, int chunkX, int chunkZ) {
+    public DungeonPlacementCheckEvent(ChunkGenerator chunkGenerator, Biome biome, int chunkX, int chunkZ) {
         this.chunkGenerator = chunkGenerator;
         this.biome = biome;
         this.chunkX = chunkX;

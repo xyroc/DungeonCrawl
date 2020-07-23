@@ -13,10 +13,12 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -53,8 +55,8 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos p_74875_4_) {
+    public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+
         int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
 
         Theme buildTheme = Theme.get(theme);
@@ -72,7 +74,7 @@ public class DungeonEntrance extends DungeonPiece {
         //}
         DungeonModel entrance = DungeonModels.MODELS.get(modelID);
 
-        Vec3i offset = DungeonModels.getOffset(entrance.id);
+        Vector3i offset = DungeonModels.getOffset(entrance.id);
 
 //        DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, {}", x, cursorHeight, z,
 //                entrance, entrance.id, offset);
@@ -106,7 +108,7 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
-        Vec3i offset = DungeonModels.getOffset(modelID);
+        Vector3i offset = DungeonModels.getOffset(modelID);
         this.boundingBox = new MutableBoundingBox(x + offset.getX(), y + offset.getY(), z + offset.getZ(),
                 x + model.width - 1, y + model.height - 1, z + model.length - 1);
     }

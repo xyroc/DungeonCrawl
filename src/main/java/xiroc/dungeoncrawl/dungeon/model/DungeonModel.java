@@ -8,7 +8,7 @@ import com.google.gson.*;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
@@ -82,15 +82,15 @@ public class DungeonModel {
 
     public static class FeaturePosition {
 
-        public Vec3i position;
+        public Vector3i position;
         public Direction facing;
 
         public FeaturePosition(int x, int y, int z) {
-            this.position = new Vec3i(x, y, z);
+            this.position = new Vector3i(x, y, z);
         }
 
         public FeaturePosition(int x, int y, int z, Direction facing) {
-            this.position = new Vec3i(x, y, z);
+            this.position = new Vector3i(x, y, z);
             this.facing = facing;
         }
 
@@ -158,11 +158,11 @@ public class DungeonModel {
 
         public boolean variation;
 
-        public Vec3i offset;
+        public Vector3i offset;
 
         public int[] stages, weights;
 
-        private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata, Vec3i offset, boolean variation, int[] stages, int[] weights) {
+        private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata, Vector3i offset, boolean variation, int[] stages, int[] weights) {
             this.type = type;
             this.size = size;
             this.id = id;
@@ -190,7 +190,7 @@ public class DungeonModel {
 
                 int[] stages = null, weights = null;
 
-                Vec3i offset = null;
+                Vector3i offset = null;
 
                 boolean variation = false;
 
@@ -247,7 +247,7 @@ public class DungeonModel {
 
             }
 
-            public Vec3i getOffset(JsonObject jsonObject) {
+            public Vector3i getOffset(JsonObject jsonObject) {
                 int x = 0, y = 0, z = 0;
                 if (jsonObject.has("x")) {
                     x = jsonObject.get("x").getAsInt();
@@ -261,7 +261,7 @@ public class DungeonModel {
                 if (x == 0 && y == 0 && z == 0) {
                     return null;
                 }
-                return new Vec3i(x, y, z);
+                return new Vector3i(x, y, z);
             }
 
         }

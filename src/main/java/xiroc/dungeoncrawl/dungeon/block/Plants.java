@@ -33,7 +33,7 @@ public class Plants {
                 world.setBlockState(pos, state, 3);
 
                 BlockState netherWart = Blocks.NETHER_WART.getDefaultState();
-                if (netherWart.has(BlockStateProperties.AGE_0_3))
+                if (netherWart.func_235901_b_(BlockStateProperties.AGE_0_3))
                     netherWart = netherWart.with(BlockStateProperties.AGE_0_3, rand.nextInt(3));
                 world.setBlockState(cropPos, netherWart, 3);
 
@@ -42,7 +42,7 @@ public class Plants {
             state = state.with(BlockStateProperties.MOISTURE_0_7, 7);
             world.setBlockState(pos, state, 3);
             BlockState crop = CROPS[rand.nextInt(CROPS.length)].getDefaultState();
-            if (crop.has(BlockStateProperties.AGE_0_7))
+            if (crop.func_235901_b_(BlockStateProperties.AGE_0_7))
                 crop = crop.with(BlockStateProperties.AGE_0_7, rand.nextInt(8));
             world.setBlockState(cropPos, crop, 3);
         }

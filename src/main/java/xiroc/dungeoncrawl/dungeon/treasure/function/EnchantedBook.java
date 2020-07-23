@@ -10,11 +10,13 @@ import com.google.gson.JsonSerializationContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.util.JSONUtils;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
 public class EnchantedBook extends LootFunction {
 
@@ -31,22 +33,27 @@ public class EnchantedBook extends LootFunction {
                 (int) (RandomEquipment.getStageMultiplier(stage) * 30), true);
     }
 
+    @Override
+    public LootFunctionType func_230425_b_() {
+        return Treasure.ENCHANTED_BOOK;
+    }
+
     public static class Serializer extends LootFunction.Serializer<EnchantedBook> {
 
         public Serializer() {
-            super(DungeonCrawl.locate("enchanted_book"), EnchantedBook.class);
+            super();
         }
 
         @Override
-        public void serialize(JsonObject object, EnchantedBook functionClazz,
-                              JsonSerializationContext serializationContext) {
-            object.add("stage", DungeonCrawl.GSON.toJsonTree(functionClazz.stage));
+        public void func_230424_a_(JsonObject p_230424_1_, EnchantedBook p_230424_2_, JsonSerializationContext p_230424_3_) {
+            super.func_230424_a_(p_230424_1_, p_230424_2_, p_230424_3_);
+            p_230424_1_.addProperty("stage", p_230424_2_.stage);
         }
 
         @Override
         public EnchantedBook deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                          ILootCondition[] conditionsIn) {
-            return new EnchantedBook(conditionsIn, object.get("stage").getAsInt());
+            return new EnchantedBook(conditionsIn, JSONUtils.getInt(object, "stage", 1));
         }
 
     }

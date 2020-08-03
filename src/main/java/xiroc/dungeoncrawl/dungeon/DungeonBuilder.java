@@ -34,7 +34,8 @@ public class DungeonBuilder {
 
     private static final DungeonModel[] ENTRANCES = new DungeonModel[]{DungeonModels.ENTRANCE};
 
-    public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) -> {
+    public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) ->
+    {
         ;
     };
 
@@ -99,24 +100,28 @@ public class DungeonBuilder {
     }
 
     public DungeonBuilder(ChunkGenerator world, ChunkPos pos, Random rand) {
-        this.chunkGen = world;
+        if (world.getGroundHeight() >= 32) {
+            this.chunkGen = world;
 
-        this.rand = rand;
-        this.start = new Position2D(7, 7);
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
-                pos.z * 16 - Dungeon.SIZE / 2 * 9);
+            this.rand = rand;
+            this.start = new Position2D(7, 7);
+            this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
+                    pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-        this.layers = new DungeonLayer[Math.min(5, startPos.getY() / 9)];
-        this.maps = new DungeonLayerMap[layers.length];
+            this.layers = new DungeonLayer[Math.min(5, startPos.getY() / 9)];
+            this.maps = new DungeonLayerMap[layers.length];
 
-        this.statTracker = new DungeonStatTracker(layers.length);
+            this.statTracker = new DungeonStatTracker(layers.length);
 
-        DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
+            DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
 
-        DungeonCrawl.EVENT_BUS.post(startEvent);
+            DungeonCrawl.EVENT_BUS.post(startEvent);
 
         DungeonCrawl.LOGGER.info("Building Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
                 + startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
+        } else {
+            DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
+        }
     }
 
     public List<DungeonPiece> build() {

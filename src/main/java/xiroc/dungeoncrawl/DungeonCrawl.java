@@ -81,7 +81,6 @@ public class DungeonCrawl {
 
         ForgeRegistries.FEATURES
                 .register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
-        StructurePieceTypes.registerAll();
         Treasure.init();
 
         EVENT_BUS = Bus.MOD.bus().get();
@@ -93,6 +92,8 @@ public class DungeonCrawl {
         LOGGER.info("Common Setup");
         ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
+
+        StructurePieceTypes.registerAll();
 
         if (Config.ENABLE_TOOLS.get()) {
             MinecraftForge.EVENT_BUS.register(new Tools());

@@ -28,13 +28,14 @@ public class Config {
     public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
-            NO_NETHER_STUFF, ENABLE_TOOLS;
+            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES;
 //			ENABLE_DUNGEON_BOSS;
 
     static {
         BUILDER.comment("General Settings").push(CONFIG_GENERAL);
 
         ENABLE_TOOLS = BUILDER.comment("Enables the dungeon crawl tools.").define("enable_tools", false);
+        ENABLE_DUMMY_PIECES = BUILDER.comment("This option will make pre-2.0.0 worlds playable with version 2.0.0 and later.").define("enable_dummy_pieces", false);
 
         BUILDER.pop();
 

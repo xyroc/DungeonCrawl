@@ -32,9 +32,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
             .add(Biome.Category.PLAINS).add(Biome.Category.RIVER).add(Biome.Category.SAVANNA).add(Biome.Category.SWAMP)
             .add(Biome.Category.TAIGA).add(Biome.Category.RIVER).build();
 
-    public static final Set<Biome.Category> OVERWORLD_CATEGORIES = ImmutableSet.<Biome.Category>builder()
-            .addAll(ALLOWED_CATEGORIES).add(Biome.Category.MUSHROOM).add(Biome.Category.OCEAN).build();
-
     public static final String NAME = DungeonCrawl.MODID + ":dungeon";
 
     public static final Dungeon DUNGEON = new Dungeon();
@@ -56,9 +53,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         return false;
     }
 
-    //ChunkPos(chunkX - (chunkX % 16) + 4 + (chunkZ % 8), chunkZ - (chunkZ % 16) + 4 + (chunkX % 8))
     private static ChunkPos calculateChunkPos(int chunkX, int chunkZ, SharedSeedRandom rand) {
-        return new ChunkPos(chunkX - (chunkX % 8) + 4 , chunkZ - (chunkZ % 8) + 4);
+        int x = chunkX - (Math.abs(chunkX % 12));
+        int z = chunkZ - (Math.abs(chunkZ % 12));
+        return new ChunkPos( x + x % 8 , z + z % 8);
         //return new ChunkPos(chunkX - (chunkX % 16) + 4 + (chunkZ % 8), chunkZ - (chunkZ % 16) + 4 + (chunkX % 8));
     }
 

@@ -29,11 +29,11 @@ public class DataReloadListener implements IFutureReloadListener {
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
         return stage.markCompleteAwaitingOthers(Unit.INSTANCE).thenRunAsync(() -> {
-            reloadProfiler.startTick();
-            reloadProfiler.startSection("listener");
+            //reloadProfiler.startTick();
+            //reloadProfiler.startSection("listener");
             this.reload(resourceManager);
-            reloadProfiler.endSection();
-            reloadProfiler.endTick();
+            //reloadProfiler.endSection();
+            //reloadProfiler.endTick();
         }, gameExecutor);
     }
 

@@ -187,7 +187,7 @@ public class Tools {
         if (model.featurePositions != null) {
             for (DungeonModel.FeaturePosition featurePosition : model.featurePositions) {
                 DirectionalBlockPos blockPos = featurePosition.directionalBlockPos(pos.getX(), pos.getY(), pos.getZ());
-                world.setBlockState(blockPos.position, Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(blockPos.direction)), 3);
+                world.setBlockState(blockPos.position, Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.ORIENTATION, getJigsawOrientation(blockPos.direction)), 3);
             }
         }
     }
@@ -208,7 +208,7 @@ public class Tools {
             if (model.featurePositions != null) {
                 for (DungeonModel.FeaturePosition f : model.featurePositions) {
                     world.setBlockState(new BlockPos(pos.getX() + f.position.getX(), pos.getY() + f.position.getY(), pos.getZ() + f.position.getZ()),
-                            Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing)), 3);
+                            Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.ORIENTATION, getJigsawOrientation(f.facing)), 3);
                 }
             }
         }
@@ -238,7 +238,7 @@ public class Tools {
                     for (DungeonModel.FeaturePosition f : model.featurePositions) {
                         world.setBlockState(new BlockPos(pos.getX() + model.length - f.position.getZ() - 1,
                                         pos.getY() + f.position.getY(), pos.getZ() + f.position.getX()),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing.rotateY())), 3);
+                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.ORIENTATION, getJigsawOrientation(f.facing.rotateY())), 3);
                     }
                 }
                 //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
@@ -263,7 +263,7 @@ public class Tools {
                     for (DungeonModel.FeaturePosition f : model.featurePositions) {
                         world.setBlockState(new BlockPos(pos.getX() + f.position.getZ(),
                                         pos.getY() + f.position.getY(), pos.getZ() + model.width - f.position.getX() - 1),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing.rotateYCCW())), 3);
+                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.ORIENTATION, getJigsawOrientation(f.facing.rotateYCCW())), 3);
                     }
                 }
                 //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
@@ -286,7 +286,7 @@ public class Tools {
                     for (DungeonModel.FeaturePosition f : model.featurePositions) {
                         world.setBlockState(new BlockPos(pos.getX() + model.width - f.position.getX() - 1,
                                         pos.getY() + f.position.getY(), pos.getZ() + model.length - f.position.getZ() - 1),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.field_235907_P_, getJigsawOrientation(f.facing.getOpposite())), 3);
+                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.ORIENTATION, getJigsawOrientation(f.facing.getOpposite())), 3);
                     }
                 }
                 break;

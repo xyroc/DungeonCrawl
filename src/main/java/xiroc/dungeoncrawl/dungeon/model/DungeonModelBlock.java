@@ -112,7 +112,7 @@ public class DungeonModelBlock {
      */
     public DungeonModelBlock loadDataFromState(BlockState state) {
         List<PropertyHolder> properties = Lists.newArrayList();
-        for (Property<?> property : state.func_235904_r_()) {
+        for (Property<?> property : state.getProperties()) {
             properties.add(new PropertyHolder(property, state.get(property)));
         }
         this.properties = properties.toArray(new PropertyHolder[0]);
@@ -337,7 +337,7 @@ public class DungeonModelBlock {
         @SuppressWarnings("unchecked")
         public <T extends Comparable<T>> BlockState apply(BlockState state) {
             if (property == null) {
-                for (Property<?> p : state.func_235904_r_()) {
+                for (Property<?> p : state.getProperties()) {
                     if (p.getName().equals(propertyName)) {
                         this.property = p;
                         Optional<?> optional = p.parseValue(valueName);
@@ -350,7 +350,7 @@ public class DungeonModelBlock {
                 }
             }
 
-            if (state.func_235901_b_(property)) {
+            if (state.hasProperty(property)) {
                 return state.with((Property<T>) property, (T) value);
             }
 

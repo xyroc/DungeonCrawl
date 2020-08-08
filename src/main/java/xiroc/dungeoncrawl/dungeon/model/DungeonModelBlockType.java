@@ -119,7 +119,7 @@ public enum DungeonModelBlockType {
             return BARREL;
         if (block == Blocks.STONE_BRICK_WALL)
             return VANILLA_WALL;
-        if (BlockTags.CARPETS.func_230235_a_(block)) {
+        if (BlockTags.CARPETS.contains(block)) {
             return CARPET;
         }
         return OTHER;

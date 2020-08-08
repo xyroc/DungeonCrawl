@@ -88,7 +88,7 @@ public class Treasure {
     }
 
     private static LootFunctionType func_237451_a_(String p_237451_0_, ILootSerializer<? extends ILootFunction> p_237451_1_) {
-        return Registry.register(Registry.field_239694_aZ_, new ResourceLocation(p_237451_0_), new LootFunctionType(p_237451_1_));
+        return Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(p_237451_0_), new LootFunctionType(p_237451_1_));
     }
 
 }

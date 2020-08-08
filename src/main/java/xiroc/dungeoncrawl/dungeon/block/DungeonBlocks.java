@@ -319,7 +319,7 @@ public class DungeonBlocks {
     }
 
     public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, Property<T> property, V value) {
-        if (state.func_235901_b_(property)) {
+        if (state.hasProperty(property)) {
             return state.with(property, value);
         }
         return state;

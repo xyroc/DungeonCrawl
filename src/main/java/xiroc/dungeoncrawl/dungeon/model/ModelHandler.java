@@ -8,6 +8,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.JigsawBlock;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -42,7 +43,7 @@ public class ModelHandler {
                         model[x][y][z] = null;
                         continue;
                     } else if (state.getBlock() == Blocks.JIGSAW) {
-                        featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.field_235907_P_).func_239642_b_()));
+                        featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.ORIENTATION).func_239642_b_()));
                         continue;
                     }
                     model[x][y][z] = new DungeonModelBlock(

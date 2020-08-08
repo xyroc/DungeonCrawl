@@ -57,7 +57,7 @@ public class Chest implements IBlockPlacementHandler {
         @Override
         public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
                                int lootLevel) {
-            if (state.func_235901_b_(BlockStateProperties.HORIZONTAL_FACING))
+            if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING))
                 state = state.with(BlockStateProperties.HORIZONTAL_FACING, Orientation.RANDOM_FACING_FLAT.roll(rand));
             world.setBlockState(pos, state, 3);
             if (world.getTileEntity(pos) instanceof LockableLootTileEntity) {

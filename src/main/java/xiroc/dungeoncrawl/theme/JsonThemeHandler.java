@@ -178,7 +178,7 @@ public class JsonThemeHandler {
                         BlockState state = block.getDefaultState();
                         if (element.has("data")) {
                             JsonObject data = element.get("data").getAsJsonObject();
-                            for (Property<?> property : state.func_235904_r_()) {
+                            for (Property<?> property : state.getProperties()) {
                                 if (data.has(property.getName())) {
                                     state = parseProperty(state, property, data.get(property.getName()).getAsString());
                                 }
@@ -195,7 +195,7 @@ public class JsonThemeHandler {
                         .getValue(new ResourceLocation(object.get("block").getAsString())).getDefaultState();
                 if (object.has("data")) {
                     JsonObject data = object.get("data").getAsJsonObject();
-                    for (Property<?> property : state.func_235904_r_()) {
+                    for (Property<?> property : state.getProperties()) {
                         if (data.has(property.getName())) {
                             state = parseProperty(state, property, data.get(property.getName()).getAsString());
                         }
@@ -215,9 +215,8 @@ public class JsonThemeHandler {
     /**
      * Applies the property value to the state.
      */
-    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property,
-                                                                      String value) {
-        if (state.func_235901_b_(property)) {
+    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property, String value) {
+        if (state.hasProperty(property)) {
             Optional<T> optional = property.parseValue(value);
             if (optional.isPresent()) {
                 T t = optional.get();

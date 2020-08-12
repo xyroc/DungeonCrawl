@@ -248,9 +248,9 @@ public class RandomSpecialItem {
                 return STAGE_1.roll(rand).generate(world, rand, theme, lootLevel);
             case 1:
                 return STAGE_2.roll(rand).generate(world, rand, theme, lootLevel);
-            case 3:
+            case 2:
                 return STAGE_3.roll(rand).generate(world, rand, theme, lootLevel);
-            case 4:
+            case 3:
                 return STAGE_4.roll(rand).generate(world, rand, theme, lootLevel);
             default:
                 return STAGE_5.roll(rand).generate(world, rand, theme, lootLevel);
@@ -266,7 +266,7 @@ public class RandomSpecialItem {
         return new TreasureItem("minecraft:air").withProcessor((world, rand, theme, lootLevel) -> {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
             if (item != null) {
-                return EnchantmentHelper.addRandomEnchantment(rand, new ItemStack(item), 10 + 5 * lootLevel, lootLevel > 2);
+                return EnchantmentHelper.addRandomEnchantment(rand, new ItemStack(item), 10 + 3 * lootLevel, lootLevel > 2);
             } else {
                 DungeonCrawl.LOGGER.error("The item {} does not exist.", itemName);
                 return ItemStack.EMPTY;

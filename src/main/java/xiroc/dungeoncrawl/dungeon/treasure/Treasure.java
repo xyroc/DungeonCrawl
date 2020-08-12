@@ -27,6 +27,8 @@ public class Treasure {
         MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
 
         MODEL_TREASURE_TYPES.put(70, Type.SECRET_ROOM);
+
+        MODEL_TREASURE_TYPES.put(76, Type.SUPPLY);
     }
 
     public static void init() {

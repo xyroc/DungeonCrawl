@@ -65,8 +65,7 @@ public class DungeonLayer {
         this.distantNodes = Lists.newArrayList();
     }
 
-    public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, boolean secretRoom, int layer,
-                         boolean lastLayer) {
+    public void buildMap(DungeonBuilder builder, List<DungeonPiece> pieces, Random rand, Position2D start, boolean secretRoom, int layer, boolean lastLayer) {
         this.start = start;
         this.stairsPlaced = false;
         this.createLayout(builder, rand, layer, secretRoom, lastLayer);
@@ -328,92 +327,6 @@ public class DungeonLayer {
                 room.large = true;
             }
         }
-
-//		List<Position2D> nodeList = Lists.newArrayList(), allNodes = Lists.newArrayList();
-//
-//		if (!lastLayer) {
-//			createEndStairs(builder, start, Orientation.RANDOM_FACING_FLAT.roll(rand), nodeList, rand, layer, 0);
-//
-//			nodeList.add(end);
-//			allNodes.add(end);
-//
-//			buildConnection(start, end);
-//
-//		}
-//
-//		nodeList.add(start);
-//		allNodes.add(start);
-//
-//		int nodes = 3 + layer, rooms = 4 + 2 * layer;
-//
-//		while (nodes > 0) {
-//			if (nodeList.isEmpty()) {
-//				DungeonCrawl.LOGGER.debug("Nodelist is empty; breaking out of node generation. {} nodes left.", nodes);
-//				break;
-//			}
-//
-//			DungeonCrawl.LOGGER.debug("-- Node Iteration of Layer {} --", layer);
-//			nodeList.forEach((pos) -> {
-//				DungeonCrawl.LOGGER.debug("Node: [{},{}]", pos.x, pos.z);
-//			});
-//			DungeonCrawl.LOGGER.debug("---");
-//
-//			Position2D nodePos = nodeList.get(rand.nextInt(nodeList.size()));
-//
-//			PlaceHolder node = this.segments[nodePos.x][nodePos.z];
-//
-//			Direction direction = findNext(node.reference, Orientation.RANDOM_FACING_FLAT.roll(rand));
-//
-//			if (direction == null) {
-//				nodeList.remove(nodePos);
-//				continue;
-//			}
-//
-//			if (createNodeRoom(builder, nodePos, direction, nodeList, allNodes, rand, layer, 0))
-//				nodes--;
-//			else
-//				nodeList.remove(nodePos);
-//		}
-//
-//		if (lastLayer) {
-//
-//			DungeonCrawl.LOGGER.debug("There are {} distant nodes.", distantNodes.size());
-//			if (distantNodes.isEmpty()) {
-//				rooms += 8;
-//			} else {
-//				Position2D nodePos = distantNodes.get(rand.nextInt(distantNodes.size()));
-//
-//				DungeonNodeRoom node = (DungeonNodeRoom) segments[nodePos.x][nodePos.z].reference;
-//
-//				node.large = true;
-//				node.lootRoom = true;
-//
-//			}
-//
-//		}
-//
-//		while (rooms > 0) {
-//			if (allNodes.isEmpty()) {
-//				DungeonCrawl.LOGGER.debug("allNodes is empty; breaking out of room generation. {} rooms left.", rooms);
-//				break;
-//			}
-//			Position2D nodePos = allNodes.get(rand.nextInt(allNodes.size()));
-//
-//			PlaceHolder node = this.segments[nodePos.x][nodePos.z];
-//
-//			Direction direction = findNext(node.reference, Orientation.RANDOM_FACING_FLAT.roll(rand));
-//
-//			if (direction == null) {
-//				allNodes.remove(nodePos);
-//				continue;
-//			}
-//
-//			if (createRoom(builder, nodePos, direction, allNodes, layer, 0))
-//				rooms--;
-//			else
-//				allNodes.remove(nodePos);
-//		}
-
     }
 
     public Tuple<Position2D, Rotation> findStarterRoomData(Position2D start, Random rand) {

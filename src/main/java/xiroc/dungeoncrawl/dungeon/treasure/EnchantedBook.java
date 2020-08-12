@@ -18,6 +18,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Random;
 
+/*
+ * CURRENTLY UNUSED
+ */
 public class EnchantedBook implements IJsonConfigurable {
 
     public static final String KEY_ENCHANTMENTS_COMMON = "common_enchantments";

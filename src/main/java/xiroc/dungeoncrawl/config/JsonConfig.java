@@ -62,7 +62,7 @@ public class JsonConfig implements IJsonConfigurable {
         load(new JsonConfig());
 //		load(new EnchantedBook());
         load(new SpecialItemTags());
-        load(new ObfuscationValues());
+        //load(new ObfuscationValues());
     }
 
     public static void load(IJsonConfigurable configurable) {

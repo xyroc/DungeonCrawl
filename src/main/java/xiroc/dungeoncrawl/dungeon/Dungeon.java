@@ -111,10 +111,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
                          Biome biomeIn) {
 
-            /*
-             * Some Reflection stuff. I dont like this but it is the only way I know
-             * currently.
-             */
 //            try {
 //                Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD);
 //

@@ -28,7 +28,7 @@ public class EnchantedBook extends LootFunction {
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
         return EnchantmentHelper.addRandomEnchantment(context.getRandom(), new ItemStack(Items.BOOK),
-                (int) (RandomEquipment.getStageMultiplier(stage) * 30), true);
+                10 + stage * 3, stage > 2);
     }
 
     public static class Serializer extends LootFunction.Serializer<EnchantedBook> {

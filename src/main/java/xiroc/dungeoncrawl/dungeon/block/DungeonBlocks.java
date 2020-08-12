@@ -107,7 +107,7 @@ public class DungeonBlocks {
      */
     public static void load() {
         long time = System.currentTimeMillis();
-        DungeonCrawl.LOGGER.info("Calculating WeightedRandomBlocks");
+        DungeonCrawl.LOGGER.info("Calculating WeightedRandomBlock Probabilities...");
 
         STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[]{
                 new TupleIntBlock(5, STONE_BRICKS), new TupleIntBlock(2, CRACKED_STONE_BRICKS),

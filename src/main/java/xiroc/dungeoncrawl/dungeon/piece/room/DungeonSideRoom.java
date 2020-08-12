@@ -53,7 +53,7 @@ public class DungeonSideRoom extends DungeonPiece {
 //				theme = Theme.BIOME_TO_THEME_MAP
 //						.getOrDefault(worldIn.getBiome(new BlockPos(x, y, z)).getRegistryName().toString(), 0);
             buildRotated(model, worldIn, structureBoundingBoxIn, new BlockPos(x + offsetX, y + offsetY, z + offsetZ),
-                    Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, true);
+                    Theme.get(theme), Theme.getSub(subTheme), Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT), stage, rotation, true);
 
             if (Config.NO_SPAWNERS.get())
                 spawnMobs(worldIn, this, model.width, model.length, new int[]{1});

@@ -12,7 +12,12 @@ import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.ThemeItems;
@@ -25,11 +30,21 @@ public class MaterialBlocks extends LootFunction {
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        String biome = context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString();
-        return new ItemStack(
-                ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(biome, 0),
-                        Theme.BIOME_TO_SUBTHEME_MAP.getOrDefault(biome, 0))),
-                16 + context.getRandom().nextInt(17));
+        Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.field_237457_g_)));
+        ResourceLocation biomeName = WorldGenRegistries.field_243657_i.getKey(biome);
+
+        if (biomeName != null) {
+            return new ItemStack(
+                    ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(biomeName.toString(), 0),
+                            Theme.BIOME_TO_SUBTHEME_MAP.getOrDefault(biomeName.toString(), 0))),
+                    16 + context.getRandom().nextInt(17));
+        } else {
+            DungeonCrawl.LOGGER.warn("MaterialBlocks: Couldn't find a registry name for biome {} - Proceeding with the default theme.", biome.toString());
+            return new ItemStack(
+                    ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(0, 0)),
+                    16 + context.getRandom().nextInt(17));
+        }
+
     }
 
     @Override

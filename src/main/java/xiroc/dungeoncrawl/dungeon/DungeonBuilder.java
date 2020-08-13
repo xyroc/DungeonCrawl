@@ -5,9 +5,11 @@ package xiroc.dungeoncrawl.dungeon;
  */
 
 import com.google.common.collect.Lists;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -117,8 +119,8 @@ public class DungeonBuilder {
 
             DungeonCrawl.EVENT_BUS.post(startEvent);
 
-        DungeonCrawl.LOGGER.info("Building Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
-                + startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
+            DungeonCrawl.LOGGER.info("Building Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
+                    + startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
         } else {
             DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
         }
@@ -156,7 +158,15 @@ public class DungeonBuilder {
 
         this.startBiome = chunkGen.getBiomeProvider().getBiomes(entrance.x + 4, chunkGen.getGroundHeight(), entrance.z + 4, 1).iterator().next();
 
-        String biome = startBiome.getRegistryName().toString();
+        ResourceLocation biomeName = WorldGenRegistries.field_243657_i.getKey(startBiome);
+        String biome;
+
+        if (biomeName != null) {
+            biome = biomeName.toString();
+        } else {
+            DungeonCrawl.LOGGER.warn("Couldn't a the registry name for biome {} - Proceeding with default \"minecraft:plains\".", startBiome.toString());
+            biome = "minecraft:plains";
+        }
 
         this.theme = Theme.getTheme(biome, rand);
         this.subTheme = Theme.getSubTheme(biome, rand);

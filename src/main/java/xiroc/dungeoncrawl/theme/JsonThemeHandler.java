@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.Property;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,7 +54,7 @@ public class JsonThemeHandler {
                 case "theme_mapping":
                     object.get("mapping").getAsJsonObject().entrySet().forEach((entry) -> {
                         String key = entry.getKey();
-                        if (!ForgeRegistries.BIOMES.containsKey(new ResourceLocation(key))) {
+                        if (!WorldGenRegistries.field_243657_i.containsKey(new ResourceLocation(key))) {
                             LOGGER.warn("The biome {} does not exist", key);
                         }
                         int id = entry.getValue().getAsInt();
@@ -63,7 +64,7 @@ public class JsonThemeHandler {
                 case "sub_theme_mapping":
                     object.get("mapping").getAsJsonObject().entrySet().forEach((entry) -> {
                         String key = entry.getKey();
-                        if (!ForgeRegistries.BIOMES.containsKey(new ResourceLocation(key))) {
+                        if (!WorldGenRegistries.field_243657_i.containsKey(new ResourceLocation(key))) {
                             LOGGER.warn("The biome {} does not exist", key);
                         }
                         int id = entry.getValue().getAsInt();

@@ -21,6 +21,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
@@ -307,7 +308,7 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     @Override
-    public void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
+    public void setBlockState(ISeedReader worldIn, BlockState blockstateIn, int x, int y, int z,
                               MutableBoundingBox boundingboxIn) {
         BlockPos blockPos = new BlockPos(x, y, z);
 
@@ -949,7 +950,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
     }
 
-    public void entrances(IWorld world, MutableBoundingBox bounds, DungeonModel model) {
+    public void entrances(ISeedReader world, MutableBoundingBox bounds, DungeonModel model) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
 
         if (sides[0]) {
@@ -1136,7 +1137,7 @@ public abstract class DungeonPiece extends StructurePiece {
         return null;
     }
 
-    public static void spawnMobs(IWorld world, DungeonPiece piece, int width, int length, int[] floors) {
+    public static void spawnMobs(ISeedReader world, DungeonPiece piece, int width, int length, int[] floors) {
         for (int floor : floors) {
             for (int x = 1; x < width; x++) {
                 for (int z = 1; z < length; z++) {

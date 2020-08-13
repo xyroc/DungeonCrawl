@@ -3,7 +3,9 @@ package xiroc.dungeoncrawl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.util.registry.DynamicRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -107,14 +109,22 @@ public class DungeonCrawl {
 
         DungeonCrawl.LOGGER.info("Adding features and structures");
 
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            if (!JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(biome.getRegistryName().toString())
-                    && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
-                DungeonCrawl.LOGGER.info("Generation Biome: " + biome.getRegistryName());
-                biome.func_235063_a_(Dungeon.FEATURE);
+        DynamicRegistries.func_239770_b_().func_243612_b(Registry.BIOME_KEY).forEach((biome) -> {
+            ResourceLocation name = WorldGenRegistries.field_243657_i.getKey(biome);
+            if (name != null) {
+                if (!JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(name.toString())
+                        && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
+                    biome.func_242440_e().func_242491_a(Dungeon.FEATURE);
+                    DungeonCrawl.LOGGER.info("Generation Biome: " + biome.toString());
+                }
+            } else {
+                if (Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
+                    biome.func_242440_e().func_242491_a(Dungeon.FEATURE);
+                    DungeonCrawl.LOGGER.info("Generation Biome (No registry name): " + biome.toString());
+                }
             }
-        }
-
+        });
+        
         Modules.load();
     }
 

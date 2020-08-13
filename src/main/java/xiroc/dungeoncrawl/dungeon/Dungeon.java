@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
@@ -64,14 +65,14 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
     @Override
     protected boolean func_230363_a_(ChunkGenerator chunkGen, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom rand, int chunkX, int chunkZ, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-        if (p_230363_8_.hasStructure(this)) {
+        if (p_230363_8_.func_242440_e().func_242493_a(this)) {
             //ChunkPos pos = getStartPositionForPosition(rand, chunkX, chunkZ, p_230363_3_);
             //DungeonCrawl.LOGGER.debug("Calculated: {} {} Original: {} {}", pos.x, pos.z, chunkX, chunkZ);
             ChunkPos pos = calculateChunkPos(chunkX, chunkZ, rand);
             if (chunkX == pos.x && chunkZ == pos.z) {
                 for (Biome biome : p_230363_2_.getBiomes(chunkX * 16 - SIZE / 2 * 9, chunkGen.getGroundHeight(),
                         chunkZ * 16 - SIZE / 2 * 9, 64)) {
-                    if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !biome.hasStructure(this)) {
+                    if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !biome.func_242440_e().func_242493_a(this)) {
                         return false;
                     }
                 }
@@ -106,7 +107,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         }
 
         @Override
-        public void func_230364_a_(ChunkGenerator chunkGenerator, TemplateManager p_230364_2_, int chunkX, int chunkZ, Biome p_230364_5_, NoFeatureConfig p_230364_6_) {
+        public void func_230364_a_(DynamicRegistries p_230364_1_, ChunkGenerator chunkGenerator, TemplateManager p_230364_3_, int chunkX, int chunkZ, Biome p_230364_6_, NoFeatureConfig p_230364_7_) {
             ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
             long now = System.currentTimeMillis();
             DungeonBuilder builder = new DungeonBuilder(chunkGenerator, chunkpos, rand);
@@ -115,6 +116,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
             DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
                     (System.currentTimeMillis() - now), this.components.size());
         }
+
     }
 
 }

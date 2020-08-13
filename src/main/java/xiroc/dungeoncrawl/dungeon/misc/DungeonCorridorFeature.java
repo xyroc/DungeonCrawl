@@ -9,6 +9,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -184,7 +185,7 @@ public interface DungeonCorridorFeature {
         }
     }
 
-    void build(DungeonCorridor piece, IWorld world, DirectionalBlockPos pos, MutableBoundingBox bounds, Theme
+    void build(DungeonCorridor piece, ISeedReader world, DirectionalBlockPos pos, MutableBoundingBox bounds, Theme
             theme, Theme.SubTheme subTheme, int stage);
 
 }

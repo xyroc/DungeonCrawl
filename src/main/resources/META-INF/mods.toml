@@ -1,5 +1,6 @@
 modLoader="javafml" #mandatory
-loaderVersion="[32,)" #mandatory
+loaderVersion="[33,)" #mandatory
+license="https://github.com/XYROC/DungeonCrawl/blob/1.16.2/LICENSE.txt" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
@@ -18,7 +19,7 @@ https://github.com/XYROC/DungeonCrawl/wiki/'''
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[32.0.61,)" #mandatory
+    versionRange="[33.0.0,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -26,6 +27,6 @@ https://github.com/XYROC/DungeonCrawl/wiki/'''
 [[dependencies.dungeoncrawl]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.1,)"
+    versionRange="[1.16.2,)"
     ordering="NONE"
     side="BOTH"

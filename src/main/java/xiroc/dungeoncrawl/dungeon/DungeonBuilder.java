@@ -15,6 +15,9 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
+import xiroc.dungeoncrawl.dungeon.generator.DefaultGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
@@ -29,6 +32,8 @@ import java.util.List;
 import java.util.Random;
 
 public class DungeonBuilder {
+
+    public static final DungeonGenerator DEFAULT_GENERATOR = new DefaultGenerator(DungeonGeneratorSettings.DEFAULT);
 
     public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
 
@@ -108,17 +113,21 @@ public class DungeonBuilder {
             this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
                     pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-            this.layers = new DungeonLayer[Math.min(5, startPos.getY() / 9)];
-            this.maps = new DungeonLayerMap[layers.length];
+            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(world, rand, startPos.getY());
 
-            this.statTracker = new DungeonStatTracker(layers.length);
+            this.layers = new DungeonLayer[layerCount];
+            this.maps = new DungeonLayerMap[layerCount];
+
+            this.statTracker = new DungeonStatTracker(layerCount);
+
+            DEFAULT_GENERATOR.initialize(chunkGen, this, pos, rand);
 
             DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
 
             DungeonCrawl.EVENT_BUS.post(startEvent);
 
             DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
-                    + startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
+                    + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
         } else {
             DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
         }
@@ -136,12 +145,13 @@ public class DungeonBuilder {
         }
 
         for (int i = 0; i < layers.length; i++) {
-            this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end,
-                    i == secretRoomLayer, i, i == layers.length - 1);
+//            this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end,
+//                    i == secretRoomLayer, i, i == layers.length - 1);
+            DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
         }
 
         for (int i = 0; i < layers.length; i++) {
-            this.layers[i].extend(this, maps[i], rand, i);
+            //this.layers[i].extend(this, maps[i], rand, i);
             processLayer(layers[i], i, startPos);
         }
 

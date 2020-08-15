@@ -10,6 +10,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 
 import java.util.Random;
@@ -54,7 +55,7 @@ public enum DungeonModelBlockType {
     }
 
     public boolean isSolid(IWorld world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ) {
-        return placementBehavior.function.isSolid(world, pos, rand, relativeX, relativeY, relativeZ);
+        return Config.SOLID.get() || placementBehavior.function.isSolid(world, pos, rand, relativeX, relativeY, relativeZ);
     }
 
     public static DungeonModelBlockType get(Block block, int spawnerType, int chestType) {

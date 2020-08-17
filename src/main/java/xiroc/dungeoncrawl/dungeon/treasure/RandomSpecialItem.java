@@ -189,7 +189,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage1)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage1.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage1).getInputStream()))).getAsJsonArray();
-                STAGE_1 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_1 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage1.toString());
             }
@@ -198,7 +198,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage2)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage2.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage2).getInputStream()))).getAsJsonArray();
-                STAGE_2 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_2 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage2.toString());
             }
@@ -207,7 +207,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage3)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage3.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage3).getInputStream()))).getAsJsonArray();
-                STAGE_3 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_3 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage3.toString());
             }
@@ -216,7 +216,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage4)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage4.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage4).getInputStream()))).getAsJsonArray();
-                STAGE_4 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_4 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage4.toString());
             }
@@ -225,7 +225,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage5)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage5.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage5).getInputStream()))).getAsJsonArray();
-                STAGE_5 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_5 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage5.toString());
             }

@@ -82,7 +82,7 @@ public class Spawner implements IBlockPlacementHandler {
             spawnData = new CompoundNBT();
         spawnData.putString("id", type.getRegistryName().toString());
         if (INVENTORY_ENTITIES.contains(type)) {
-            ItemStack[] armor = getArmor(rand, stage);
+            ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
             ListNBT armorList = new ListNBT();
             for (ItemStack stack : armor) {
                 if (stack != ItemStack.EMPTY)
@@ -106,7 +106,7 @@ public class Spawner implements IBlockPlacementHandler {
 
     public static void equipMonster(MonsterEntity entity, Random rand, int stage) {
         if (INVENTORY_ENTITIES.contains(entity.getType())) {
-            ItemStack[] armor = getArmor(rand, stage);
+            ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
             entity.setItemStackToSlot(EquipmentSlotType.FEET, armor[0]);
             entity.setItemStackToSlot(EquipmentSlotType.LEGS, armor[1]);
             entity.setItemStackToSlot(EquipmentSlotType.CHEST, armor[2]);
@@ -119,17 +119,6 @@ public class Spawner implements IBlockPlacementHandler {
 
             if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())
                 entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, Banner.createShield(rand));
-        }
-    }
-
-    public static ItemStack[] getArmor(Random rand, int stage) {
-        switch (stage) {
-            case 1:
-                return RandomEquipment.ARMOR_2.roll(rand);
-            case 2:
-                return RandomEquipment.ARMOR_3.roll(rand);
-            default:
-                return RandomEquipment.ARMOR_1.roll(rand);
         }
     }
 

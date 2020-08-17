@@ -1,0 +1,46 @@
+{
+  "melee": [
+    {
+      "item": "minecraft:wooden_sword"
+    },
+    {
+      "item": "minecraft:wooden_pickaxe"
+    },
+    {
+      "item": "minecraft:wooden_shovel"
+    },
+    {
+      "item": "minecraft:stone_sword",
+      "weight": 3
+    },
+    {
+      "item": "minecraft:stone_pickaxe",
+      "weight": 3
+    },
+    {
+      "item": "minecraft:stone_axe",
+      "weight": 3
+    },
+    {
+      "item": "minecraft:stone_shovel",
+      "weight": 3
+    },
+    {
+      "item": "minecraft:iron_sword"
+    },
+    {
+      "item": "minecraft:iron_pickaxe"
+    },
+    {
+      "item": "minecraft:iron_axe"
+    },
+    {
+      "item": "minecraft:iron_shovel"
+    }
+  ],
+  "ranged": [
+    {
+      "item": "minecraft:bow"
+    }
+  ]
+}

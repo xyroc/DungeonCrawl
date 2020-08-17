@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -66,21 +67,12 @@ public class WeightedRandomInteger implements IRandom<Integer> {
         }
 
         public WeightedRandomInteger.Builder add(WeightedIntegerEntry[] entries) {
-            for (WeightedIntegerEntry entry : entries) {
-                this.entries.add(entry);
-            }
-            return this;
-        }
-
-        public WeightedRandomInteger.Builder addAll(Collection<WeightedIntegerEntry> entries) {
-            for (WeightedIntegerEntry entry : entries) {
-                this.entries.add(entry);
-            }
+            this.entries.addAll(Arrays.asList(entries));
             return this;
         }
 
         public WeightedRandomInteger build() {
-            return new WeightedRandomInteger(entries.toArray(new WeightedIntegerEntry[entries.size()]));
+            return new WeightedRandomInteger(entries.toArray(new WeightedIntegerEntry[0]));
         }
 
     }

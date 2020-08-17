@@ -1,0 +1,27 @@
+{
+  "melee": [
+    {
+      "item": "minecraft:wooden_sword"
+    },
+    {
+      "item": "minecraft:wooden_pickaxe"
+    },
+    {
+      "item": "minecraft:wooden_shovel"
+    },
+    {
+      "item": "minecraft:stone_sword"
+    },
+    {
+      "item": "minecraft:stone_pickaxe"
+    },
+    {
+      "item": "minecraft:stone_shovel"
+    }
+  ],
+  "ranged": [
+    {
+      "item": "minecraft:bow"
+    }
+  ]
+}

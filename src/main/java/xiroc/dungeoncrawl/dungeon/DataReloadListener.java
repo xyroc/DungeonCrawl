@@ -10,6 +10,7 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Unit;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomSpecialItem;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -23,6 +24,7 @@ public class DataReloadListener implements IFutureReloadListener {
         DungeonModels.load(resourceManager);
         Theme.loadJson(resourceManager);
         RandomSpecialItem.loadJson(resourceManager);
+        RandomEquipment.loadJson(resourceManager);
         ChildPieceHandler.load();
     }
 

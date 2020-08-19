@@ -1,0 +1,55 @@
+{
+  "chance": 0.5,
+  "count": {
+    "min": 2,
+    "max": 3
+  },
+  "effects": [
+    {
+      "effect": "minecraft:strength",
+      "duration": 6000,
+      "level": {
+        "min": 2,
+        "max": 3
+      },
+      "weight": 2
+    },
+    {
+      "effect": "minecraft:speed",
+      "duration": 6000,
+      "level": {
+        "min": 2,
+        "max": 2
+      }
+    },
+    {
+      "effect": "minecraft:fire_resistance",
+      "duration": 6000
+    },
+    {
+      "effect": "minecraft:absorption",
+      "duration": 6000,
+      "level": {
+        "min": 3,
+        "max": 6
+      },
+      "weight": 2
+    },
+    {
+      "effect": "minecraft:regeneration",
+      "duration": 6000,
+      "level": {
+        "min": 2,
+        "max": 4
+      }
+    },
+    {
+      "effect": "minecraft:resistance",
+      "duration": 6000,
+      "level": {
+        "min": 2,
+        "max": 3
+      }
+    }
+  ]
+}

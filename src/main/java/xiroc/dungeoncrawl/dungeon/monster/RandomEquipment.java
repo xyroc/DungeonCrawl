@@ -35,102 +35,6 @@ public class RandomEquipment {
 
     public static WeightedRandomItem[] HELMET, CHESTPLATE, LEGGINGS, BOOTS, MELEE_WEAPON, RANGED_WEAPON;
 
-//    public static final IRandom<ItemStack> BOW = (rand) -> {
-//        ItemStack item = new ItemStack(getItem(JsonConfig.BOWS[rand.nextInt(JsonConfig.BOWS.length)]));
-//        if (item.getItem() == null)
-//            return ItemStack.EMPTY;
-//        applyDamage(item, rand);
-//        return item;
-//    };
-//
-//    public static final IRandom<ItemStack> SWORD = (rand) -> {
-//        ItemStack item = new ItemStack(
-//                getItem(rand.nextFloat() < 0.05 ? JsonConfig.SWORDS_RARE[rand.nextInt(JsonConfig.SWORDS_RARE.length)]
-//                        : JsonConfig.SWORDS[rand.nextInt(JsonConfig.SWORDS.length)]));
-//        if (item.getItem() == null)
-//            return ItemStack.EMPTY;
-//        applyDamage(item, rand);
-//        return item;
-//    };
-//
-//    public static final IRandom<ItemStack> PICKAXE = (rand) -> {
-//        ItemStack item = new ItemStack(getItem(JsonConfig.PICKAXES[rand.nextInt(JsonConfig.PICKAXES.length)]));
-//        if (item.getItem() == null)
-//            return ItemStack.EMPTY;
-//        applyDamage(item, rand);
-//        return item;
-//    };
-//
-//    public static final IRandom<ItemStack> AXE = (rand) -> {
-//        ItemStack item = new ItemStack(getItem(JsonConfig.AXES[rand.nextInt(JsonConfig.AXES.length)]));
-//        if (item.getItem() == null)
-//            return ItemStack.EMPTY;
-//        applyDamage(item, rand);
-//        return item;
-//    };
-//
-//    public static final IRandom<ItemStack[]> ARMOR_1 = (rand) -> {
-//        ItemStack[] items = new ItemStack[4];
-//        ArmorSet armor = JsonConfig.ARMOR_SETS_1[rand.nextInt(JsonConfig.ARMOR_SETS_1.length)];
-//        for (int i = 0; i < 4; i++) {
-//            if (rand.nextFloat() < 0.5) {
-//                ItemStack item = new ItemStack(getItem(armor.items[i]));
-//                if (item.getItem() != null) {
-//                    enchantArmor(item, rand, 0.25);
-//                    applyDamage(item, rand);
-//                    if (JsonConfig.COLORED_ARMOR.contains(armor.items[i].toString()))
-//                        setArmorColor(item, getRandomColor(rand));
-//                    items[i] = item;
-//                } else
-//                    items[i] = ItemStack.EMPTY;
-//            } else
-//                items[i] = ItemStack.EMPTY;
-//        }
-//        return items;
-//    };
-//
-//    public static final IRandom<ItemStack[]> ARMOR_2 = (rand) -> {
-//        ItemStack[] items = new ItemStack[4];
-//        ArmorSet armor = JsonConfig.ARMOR_SETS_2[rand.nextInt(JsonConfig.ARMOR_SETS_2.length)];
-//        for (int i = 0; i < 4; i++) {
-//            if (rand.nextFloat() < 0.5) {
-//                ItemStack item = new ItemStack(getItem(armor.items[i]));
-//                if (item.getItem() != null) {
-//                    enchantArmor(item, rand, 0.5);
-//                    applyDamage(item, rand);
-//                    if (JsonConfig.COLORED_ARMOR.contains(armor.items[i].toString()))
-//                        setArmorColor(item, getRandomColor(rand));
-//                    items[i] = item;
-//                } else
-//                    items[i] = ItemStack.EMPTY;
-//            } else
-//                items[i] = ItemStack.EMPTY;
-//        }
-//        return items;
-//    };
-//
-//    public static final IRandom<ItemStack[]> ARMOR_3 = (rand) -> {
-//        ItemStack[] items = new ItemStack[4];
-//        ArmorSet armor = rand.nextFloat() < 0.05
-//                ? JsonConfig.ARMOR_SETS_RARE[rand.nextInt(JsonConfig.ARMOR_SETS_RARE.length)]
-//                : JsonConfig.ARMOR_SETS_3[rand.nextInt(JsonConfig.ARMOR_SETS_3.length)];
-//        for (int i = 0; i < 4; i++) {
-//            if (rand.nextFloat() < 0.5) {
-//                ItemStack item = new ItemStack(getItem(armor.items[i]));
-//                if (item.getItem() != null) {
-//                    enchantArmor(item, rand, 1);
-//                    applyDamage(item, rand);
-//                    if (JsonConfig.COLORED_ARMOR.contains(armor.items[i].toString()))
-//                        setArmorColor(item, getRandomColor(rand));
-//                    items[i] = item;
-//                } else
-//                    items[i] = ItemStack.EMPTY;
-//            } else
-//                items[i] = ItemStack.EMPTY;
-//        }
-//        return items;
-//    };
-
     /**
      * Initializes all WeightedRandomItems from the datapack.
      */
@@ -177,25 +81,25 @@ public class RandomEquipment {
                 if (object.has("helmet")) {
                     HELMET[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("helmet"));
                 } else {
-                    DungeonCrawl.LOGGER.error("Missing entry 'helmet' in {}", file.toString());
+                    DungeonCrawl.LOGGER.warn("Missing entry 'helmet' in {}", file.toString());
                 }
 
                 if (object.has("chestplate")) {
                     CHESTPLATE[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("chestplate"));
                 } else {
-                    DungeonCrawl.LOGGER.error("Missing entry 'chestplate' in {}", file.toString());
+                    DungeonCrawl.LOGGER.warn("Missing entry 'chestplate' in {}", file.toString());
                 }
 
                 if (object.has("leggings")) {
                     LEGGINGS[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("leggings"));
                 } else {
-                    DungeonCrawl.LOGGER.error("Missing entry 'leggings' in {}", file.toString());
+                    DungeonCrawl.LOGGER.warn("Missing entry 'leggings' in {}", file.toString());
                 }
 
                 if (object.has("boots")) {
                     BOOTS[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("boots"));
                 } else {
-                    DungeonCrawl.LOGGER.error("Missing entry 'boots' in {}", file.toString());
+                    DungeonCrawl.LOGGER.warn("Missing entry 'boots' in {}", file.toString());
                 }
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}" + file.toString());
@@ -325,50 +229,6 @@ public class RandomEquipment {
             level = 1;
         item.addEnchantment(enchantment, level);
     }
-
-//    public static ItemStack enchantItem(ItemStack item, Random rand, Enchantment enchantment, double multiplier) {
-//        int minLevel = enchantment.getMinLevel();
-//        int maxLevel = (int) ((double) enchantment.getMaxLevel() * multiplier);
-//        item.addEnchantment(enchantment, minLevel < maxLevel ? minLevel + rand.nextInt(maxLevel - minLevel) : minLevel);
-//        return item;
-//    }
-//
-//    public static ItemStack enchantBow(ItemStack item, Random rand, double multiplier) {
-//        Enchantment enchantment = ForgeRegistries.ENCHANTMENTS
-//                .getValue(JsonConfig.BOW_ENCHANTMENTS[rand.nextInt(JsonConfig.BOW_ENCHANTMENTS.length)]);
-//        enchantItem(item, rand, enchantment, multiplier);
-//        return item;
-//    }
-//
-//    public static ItemStack enchantArmor(ItemStack item, Random rand, double multiplier) {
-//        Enchantment enchantment = ForgeRegistries.ENCHANTMENTS
-//                .getValue(JsonConfig.ARMOR_ENCHANTMENTS[rand.nextInt(JsonConfig.ARMOR_ENCHANTMENTS.length)]);
-//        enchantItem(item, rand, enchantment, multiplier);
-//        return item;
-//    }
-//
-//    public static ItemStack enchantSword(ItemStack item, Random rand, double multiplier) {
-//        Enchantment enchantment = ForgeRegistries.ENCHANTMENTS
-//                .getValue(JsonConfig.SWORD_ENCHANTMENTS[rand.nextInt(JsonConfig.SWORD_ENCHANTMENTS.length)]);
-//        enchantItem(item, rand, enchantment, multiplier);
-//        return item;
-//    }
-//
-//    public static ItemStack enchantPickaxe(ItemStack item, Random rand, double multiplier) {
-//        enchantSword(item, rand, multiplier);
-//        Enchantment enchantment = ForgeRegistries.ENCHANTMENTS
-//                .getValue(JsonConfig.PICKAXE_ENCHANTMENTS[rand.nextInt(JsonConfig.PICKAXE_ENCHANTMENTS.length)]);
-//        enchantItem(item, rand, enchantment, multiplier);
-//        return item;
-//    }
-//
-//    public static ItemStack enchantAxe(ItemStack item, Random rand, double multiplier) {
-//        enchantSword(item, rand, multiplier);
-//        Enchantment enchantment = ForgeRegistries.ENCHANTMENTS
-//                .getValue(JsonConfig.AXE_ENCHANTMENTS[rand.nextInt(JsonConfig.AXE_ENCHANTMENTS.length)]);
-//        enchantItem(item, rand, enchantment, multiplier);
-//        return item;
-//    }
 
     public static ItemStack setArmorColor(ItemStack item, int color) {
         CompoundNBT tag = item.getTag();

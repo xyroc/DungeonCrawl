@@ -21,6 +21,8 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
+import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -34,10 +36,9 @@ public class Spawner implements IBlockPlacementHandler {
             EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.HUSK};
     public static final EntityType<?>[] ENTITIES_RARE = new EntityType<?>[]{EntityType.SILVERFISH, EntityType.CREEPER,
             EntityType.STRAY, EntityType.ENDERMAN};
-    public static final EntityType<?>[] ENTITIES_SPECIAL = new EntityType<?>[]{EntityType.BLAZE}; // Unused
 
     public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
-            .add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.HUSK).add(EntityType.STRAY).build();
+            .add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.HUSK).add(EntityType.STRAY).add(EntityType.WITHER_SKELETON).build();
     public static final Set<EntityType<?>> RANGED_INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
@@ -48,7 +49,7 @@ public class Spawner implements IBlockPlacementHandler {
         TileEntity tileentity = world.getTileEntity(pos);
         if (tileentity instanceof MobSpawnerTileEntity) {
             MobSpawnerTileEntity tile = (MobSpawnerTileEntity) tileentity;
-            EntityType<?> type = getRandomEntityType(rand);
+            EntityType<?> type = RandomMonster.randomMonster(rand, stage);
             tile.getSpawnerBaseLogic().setEntityType(type);
             if (!Config.VANILLA_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
                 CompoundNBT spawnerNBT = tile.getSpawnerBaseLogic().write(new CompoundNBT());
@@ -59,8 +60,11 @@ public class Spawner implements IBlockPlacementHandler {
                     nbt.put("Entity", spawnData);
                     nbt.putInt("Weight", 1);
                     nbt.putShort("MinSpawnDelay", (short) 200);
-                    nbt.putShort("MaxSpawnDelay", (short) 800);
-                    nbt.putShort("SpawnCount", (short) 1);
+                    nbt.putShort("MaxSpawnDelay", (short) 300);
+                    //nbt.putShort("SpawnCount", (short) 1);
+                    if (RandomMonster.NBT_PROCESSORS.containsKey(type)) {
+                        RandomMonster.NBT_PROCESSORS.get(type).process(nbt, rand stage);
+                    }
                     if (i == 0)
                         spawnerNBT.put("SpawnData", spawnData);
                     potentialSpawns.add(nbt);
@@ -91,7 +95,9 @@ public class Spawner implements IBlockPlacementHandler {
             if (armorList.size() > 0)
                 spawnData.put("ArmorItems", armorList);
             ListNBT handItems = new ListNBT();
-            ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
+
+            boolean swap = rand.nextFloat() < 0.1;
+            ItemStack mainHand = swap || RANGED_INVENTORY_ENTITIES.contains(type)
                     ? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
                     : RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
             if (mainHand != ItemStack.EMPTY)
@@ -100,6 +106,11 @@ public class Spawner implements IBlockPlacementHandler {
                     ? Banner.createShield(rand).write(new CompoundNBT())
                     : ItemStack.EMPTY.write(new CompoundNBT()));
             spawnData.put("HandItems", handItems);
+
+            ListNBT potionEffects = RandomPotionEffect.createPotionEffects(rand, stage);
+            if (potionEffects != null) {
+                spawnData.put("ActiveEffects", potionEffects);
+            }
         }
         return spawnData;
     }
@@ -119,6 +130,15 @@ public class Spawner implements IBlockPlacementHandler {
 
             if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())
                 entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, Banner.createShield(rand));
+
+            RandomPotionEffect.applyPotionEffects(entity, rand, stage);
+
+            if (RandomMonster.NBT_PROCESSORS.containsKey(entity.getType())) {
+                CompoundNBT nbt = new CompoundNBT();
+                entity.writeAdditional(nbt);
+                RandomMonster.NBT_PROCESSORS.get(entity.getType()).process(nbt, rand, stage);
+                entity.readAdditional(nbt);
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 {
   "chance": 0.0,
-  "count": {
+  "rolls": {
     "min": 0,
     "max": 0
   },

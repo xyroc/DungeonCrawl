@@ -23,6 +23,10 @@ public class RandomMonster {
 
     public static WeightedRandomEntity[] COMMON, RARE;
 
+    private static final String[] VILLAGER_TYPES = {"desert", "jungle", "plains", "savanna", "snow", "swamp", "taiga"};
+    private static final String[] VILLAGER_PROFESSIONS = {"armorer", "butcher", "cartographer", "cleric", "farmer", "fisherman",
+            "fletcher", "leatherworker", "librarian", "mason", "nitwit", "shepherd", "toolsmith", "weaponsmith"};
+
     static {
         NBT_PROCESSORS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
             nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.toString());
@@ -32,8 +36,13 @@ public class RandomMonster {
             CompoundNBT offers = new CompoundNBT();
             offers.put("Recipes", new ListNBT());
             nbt.put("Offers", offers);
-            nbt.putInt("Xp", 1);
+            nbt.putInt("Xp", 250);
             nbt.putBoolean("Willing", false);
+            CompoundNBT villagerData = new CompoundNBT();
+            villagerData.putString("type", "minecraft:" + VILLAGER_TYPES[rand.nextInt(VILLAGER_TYPES.length)]);
+            villagerData.putString("profession", "minecraft:" + VILLAGER_PROFESSIONS[rand.nextInt(VILLAGER_PROFESSIONS.length)]);
+            villagerData.putInt("level", 6);
+            nbt.put("VillagerData", villagerData);
         });
     }
 
@@ -43,6 +52,9 @@ public class RandomMonster {
      * @param resourceManager
      */
     public static void loadJson(IResourceManager resourceManager) {
+        COMMON = new WeightedRandomEntity[5];
+        RARE = new WeightedRandomEntity[5];
+
         JsonParser parser = new JsonParser();
         try {
             loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_1.json"), parser, 0);

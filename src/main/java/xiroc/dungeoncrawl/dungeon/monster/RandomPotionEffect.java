@@ -22,7 +22,7 @@ import java.util.Random;
 public class RandomPotionEffect {
 
     public static float[] CHANCES;
-    public static RandomValueRange[] AMOUNTS;
+    public static RandomValueRange[] ROLLS;
     public static WeightedRandomPotionEffect[] EFFECTS;
 
     /**
@@ -31,6 +31,10 @@ public class RandomPotionEffect {
      * @param resourceManager
      */
     public static void loadJson(IResourceManager resourceManager) {
+        CHANCES = new float[5];
+        ROLLS = new RandomValueRange[5];
+        EFFECTS = new WeightedRandomPotionEffect[5];
+
         JsonParser parser = new JsonParser();
         try {
             loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_1.json"), parser, 0);
@@ -65,12 +69,12 @@ public class RandomPotionEffect {
                     CHANCES[stage] = 0F;
                 }
 
-                if (object.has("count")) {
-                    JsonObject amount = object.getAsJsonObject("count");
-                    AMOUNTS[stage] = new RandomValueRange(amount.get("min").getAsInt(), amount.get("max").getAsInt());
+                if (object.has("rolls")) {
+                    JsonObject amount = object.getAsJsonObject("rolls");
+                    ROLLS[stage] = new RandomValueRange(amount.get("min").getAsInt(), amount.get("max").getAsInt());
                 } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'count' in {}", file.toString());
-                    AMOUNTS[stage] = new RandomValueRange(0);
+                    DungeonCrawl.LOGGER.warn("Missing entry 'rolls' in {}", file.toString());
+                    ROLLS[stage] = new RandomValueRange(0);
                 }
 
                 if (object.has("effects")) {
@@ -99,18 +103,18 @@ public class RandomPotionEffect {
         if (stage > 4)
             stage = 4;
         if (rand.nextFloat() < CHANCES[stage]) {
-            int count = AMOUNTS[stage].generateInt(rand);
-            if (count > 0) {
-                Effect[] effects = new Effect[count - 1];
+            int rolls = ROLLS[stage].generateInt(rand);
+            if (rolls > 0) {
+                Effect[] effects = new Effect[rolls - 1];
                 loop:
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < rolls; i++) {
                     WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
                     if (effect != null) {
                         for (Effect value : effects) { // Skip duplicates
                             if (value == effect.effect)
                                 continue loop;
                         }
-                        if (i < count - 1)
+                        if (i < rolls - 1)
                             effects[i] = effect.effect;
                         entity.addPotionEffect(new EffectInstance(effect.effect, effect.duration, effect.level.generateInt(rand)));
                     }
@@ -129,19 +133,19 @@ public class RandomPotionEffect {
         if (stage > 4)
             stage = 4;
         if (rand.nextFloat() < CHANCES[stage]) {
-            int count = AMOUNTS[stage].generateInt(rand);
-            if (count > 0) {
+            int rolls = ROLLS[stage].generateInt(rand);
+            if (rolls > 0) {
                 ListNBT list = new ListNBT();
-                Effect[] effects = new Effect[count - 1];
+                Effect[] effects = new Effect[rolls - 1];
                 loop:
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < rolls; i++) {
                     WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
                     if (effect != null) {
                         for (Effect value : effects) { // Skip duplicates
                             if (value == effect.effect)
                                 continue loop;
                         }
-                        if (i < count - 1)
+                        if (i < rolls - 1)
                             effects[i] = effect.effect;
                         list.add(toNBT(effect.effect, effect.duration, effect.level.generateInt(rand)));
                     }

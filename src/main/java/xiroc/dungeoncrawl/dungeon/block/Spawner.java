@@ -62,9 +62,6 @@ public class Spawner implements IBlockPlacementHandler {
                     nbt.putShort("MinSpawnDelay", (short) 200);
                     nbt.putShort("MaxSpawnDelay", (short) 300);
                     //nbt.putShort("SpawnCount", (short) 1);
-                    if (RandomMonster.NBT_PROCESSORS.containsKey(type)) {
-                        RandomMonster.NBT_PROCESSORS.get(type).process(nbt, rand stage);
-                    }
                     if (i == 0)
                         spawnerNBT.put("SpawnData", spawnData);
                     potentialSpawns.add(nbt);
@@ -111,6 +108,10 @@ public class Spawner implements IBlockPlacementHandler {
             if (potionEffects != null) {
                 spawnData.put("ActiveEffects", potionEffects);
             }
+        }
+
+        if (RandomMonster.NBT_PROCESSORS.containsKey(type)) {
+            RandomMonster.NBT_PROCESSORS.get(type).process(spawnData, rand, stage);
         }
         return spawnData;
     }

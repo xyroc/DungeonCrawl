@@ -13,9 +13,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Items;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -161,6 +163,18 @@ public class Tools {
                 event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
                         + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onClickEntity(final PlayerInteractEvent.EntityInteract event) {
+        if (!event.getWorld().isRemote && event.getPlayer().getHeldItem(Hand.MAIN_HAND).getItem() == Items.DEBUG_STICK && event.getTarget() instanceof LivingEntity) {
+            LivingEntity livingEntity = (LivingEntity) event.getTarget();
+            event.getPlayer().sendMessage(new StringTextComponent("Active Potion effects of " + livingEntity.toString()));
+            livingEntity.getActivePotionEffects().forEach((effectInstance) -> {
+                event.getPlayer().sendMessage(new StringTextComponent(effectInstance.toString()));
+            });
+            event.getPlayer().sendMessage(new StringTextComponent("---"));
         }
     }
 

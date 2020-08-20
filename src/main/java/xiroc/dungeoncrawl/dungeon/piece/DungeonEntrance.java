@@ -136,7 +136,7 @@ public class DungeonEntrance extends DungeonPiece {
                 for (int z = zStart; z < length; z++) {
                     if (model.model[x][y][z] == null) {
                         setBlockState(CAVE_AIR, world, boundsIn, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
-                                this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                this.theme, lootLevel, DungeonModelBlockType.SOLID);
                     } else {
                         BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                         Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
@@ -145,7 +145,7 @@ public class DungeonEntrance extends DungeonPiece {
                         if (result == null)
                             continue;
                         setBlockState(result.getA(), world, boundsIn, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
-                                this.theme, lootLevel, fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                                this.theme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                         if (result.getB()) {
                             world.getChunk(position).markBlockForPostprocessing(position);
@@ -172,14 +172,14 @@ public class DungeonEntrance extends DungeonPiece {
                     if (boundsIn.isVecInside(position)) {
                         if (model.model[x][y][z] == null) {
                             setBlockState(CAVE_AIR, world, boundsIn, treasureType, position,
-                                    this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                    this.theme, lootLevel, DungeonModelBlockType.SOLID);
                         } else {
                             Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                     Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                             if (result == null)
                                 continue;
                             setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                    fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                                    fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                             if (result.getB()) {
                                 world.getChunk(position).markBlockForPostprocessing(position);

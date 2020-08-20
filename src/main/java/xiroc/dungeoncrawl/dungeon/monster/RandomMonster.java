@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class RandomMonster {
 
-    public static final HashMap<EntityType<?>, MobNBTProcessor> NBT_PROCESSORS = new HashMap<>();
+    public static final HashMap<EntityType<?>, MobNBTPatcher> NBT_PATCHERS = new HashMap<>();
 
     public static WeightedRandomEntity[] COMMON, RARE;
 
@@ -28,11 +28,11 @@ public class RandomMonster {
             "fletcher", "leatherworker", "librarian", "mason", "nitwit", "shepherd", "toolsmith", "weaponsmith"};
 
     static {
-        NBT_PROCESSORS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
+        NBT_PATCHERS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
             nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.toString());
             nbt.putLong("DeathLootTableSeed", rand.nextInt());
         });
-        NBT_PROCESSORS.put(EntityType.ZOMBIE_VILLAGER, (nbt, rand, stage) -> {
+        NBT_PATCHERS.put(EntityType.ZOMBIE_VILLAGER, (nbt, rand, stage) -> {
             CompoundNBT offers = new CompoundNBT();
             offers.put("Recipes", new ListNBT());
             nbt.put("Offers", offers);
@@ -114,9 +114,9 @@ public class RandomMonster {
     }
 
     @FunctionalInterface
-    public interface MobNBTProcessor {
+    public interface MobNBTPatcher {
 
-        void process(CompoundNBT nbt, Random rand, int stage);
+        void patch(CompoundNBT nbt, Random rand, int stage);
 
     }
 

@@ -110,8 +110,8 @@ public class Spawner implements IBlockPlacementHandler {
             }
         }
 
-        if (RandomMonster.NBT_PROCESSORS.containsKey(type)) {
-            RandomMonster.NBT_PROCESSORS.get(type).process(spawnData, rand, stage);
+        if (RandomMonster.NBT_PATCHERS.containsKey(type)) {
+            RandomMonster.NBT_PATCHERS.get(type).patch(spawnData, rand, stage);
         }
         return spawnData;
     }
@@ -134,10 +134,10 @@ public class Spawner implements IBlockPlacementHandler {
 
             RandomPotionEffect.applyPotionEffects(entity, rand, stage);
 
-            if (RandomMonster.NBT_PROCESSORS.containsKey(entity.getType())) {
+            if (RandomMonster.NBT_PATCHERS.containsKey(entity.getType())) {
                 CompoundNBT nbt = new CompoundNBT();
                 entity.writeAdditional(nbt);
-                RandomMonster.NBT_PROCESSORS.get(entity.getType()).process(nbt, rand, stage);
+                RandomMonster.NBT_PATCHERS.get(entity.getType()).patch(nbt, rand, stage);
                 entity.readAdditional(nbt);
             }
         }

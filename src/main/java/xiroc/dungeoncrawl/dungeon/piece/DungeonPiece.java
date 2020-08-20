@@ -32,7 +32,6 @@ import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
-import xiroc.dungeoncrawl.dungeon.model.PlacementBehaviour;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
@@ -232,13 +231,12 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public void setBlockState(BlockState state, IWorld world, MutableBoundingBox boundsIn, Treasure.Type treasureType,
-                              BlockPos pos, int theme, int lootLevel, PlacementBehaviour placementBehaviour) {
+                              BlockPos pos, int theme, int lootLevel, DungeonModelBlockType type) {
         if (state == null)
             return;
 
         if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
-                || world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM,
-                x - this.x, y - this.y, z - this.z)) {
+                || world.isAirBlock(pos) && !type.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
 
@@ -256,15 +254,14 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public void setBlockState(BlockState state, IWorld world, MutableBoundingBox boundsIn, Treasure.Type treasureType,
-                              int x, int y, int z, int theme, int lootLevel, PlacementBehaviour placementBehaviour) {
+                              int x, int y, int z, int theme, int lootLevel, DungeonModelBlockType type) {
         BlockPos pos = new BlockPos(x, y, z);
 
         if (state == null)
             return;
 
         if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
-                || world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM,
-                x - this.x, y - this.y, z - this.z)) {
+                || world.isAirBlock(pos) && !type.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
 
@@ -466,14 +463,14 @@ public abstract class DungeonPiece extends StructurePiece {
                     if (boundsIn.isVecInside(position)) {
                         if (model.model[x][y][z] == null) {
                             setBlockState(CAVE_AIR, world, boundsIn, treasureType, position,
-                                    this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                    this.theme, lootLevel, DungeonModelBlockType.SOLID);
                         } else {
                             Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                     Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                             if (result == null)
                                 continue;
                             setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                    fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                                    fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                             if (result.getB()) {
                                 world.getChunk(position).markBlockForPostprocessing(position);
@@ -750,14 +747,14 @@ public abstract class DungeonPiece extends StructurePiece {
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
                                     setBlockState(CAVE_AIR, world, boundsIn, treasureType, position,
-                                            this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                            this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                             Rotation.CLOCKWISE_90, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
                                     setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                            fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                                            fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                                     if (result.getB()) {
                                         world.getChunk(position).markBlockForPostprocessing(position);
@@ -816,7 +813,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                             Rotation.COUNTERCLOCKWISE_90, world, position, theme, subTheme,
@@ -824,7 +821,7 @@ public abstract class DungeonPiece extends StructurePiece {
                                     if (result == null)
                                         continue;
                                     setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                            fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                                            fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                                     if (result.getB()) {
                                         world.getChunk(position).markBlockForPostprocessing(position);
@@ -881,14 +878,14 @@ public abstract class DungeonPiece extends StructurePiece {
                             BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, PlacementBehaviour.NON_SOLID);
+                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
                                             position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
                                     setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                            fillAir ? PlacementBehaviour.SOLID : model.model[x][y][z].type.placementBehavior);
+                                            fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                                     if (result.getB()) {
                                         world.getChunk(position).markBlockForPostprocessing(position);

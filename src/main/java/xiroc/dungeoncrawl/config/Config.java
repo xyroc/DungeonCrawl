@@ -23,12 +23,12 @@ public class Config {
 
     public static final ForgeConfigSpec CONFIG;
 
-    public static final IntValue SPAWNER_ENTITIES, LAYER_ADDITIONS_MIN, LAYER_ADDITIONS_EXTRA;
+    public static final IntValue SPAWNER_ENTITIES;
 
     public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
-            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID;
+            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN;
 //			ENABLE_DUNGEON_BOSS;
 
     static {
@@ -51,12 +51,7 @@ public class Config {
                 .defineInRange("mob_spawn_rate", 0.05, 0.001, 1.0);
         SPAWNER_ENTITIES = BUILDER.comment(
                 "The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
-                .defineInRange("spawner_entities", 8, 1, 128);
-        LAYER_ADDITIONS_MIN = BUILDER.comment("The minumum amount of rooms for each dungeon layer.")
-                .defineInRange("layer_min_additions", 5, 0, 24);
-        LAYER_ADDITIONS_EXTRA = BUILDER.comment(
-                "The amount of extra rooms per dungeon layer. A random number in the range [0 ~ layer_extra_additions-1] will be used.")
-                .defineInRange("layer_extra_additions", 6, 1, 24);
+                .defineInRange("spawner_entities", 4, 1, 128);
         IGNORE_OVERWORLD_BLACKLIST = BUILDER.comment(
                 "If set to true, the dungeon generation will ignore the biome blacklist and generate dungeons in any overworld biome.")
                 .define("ignore_overworld_blacklist", false);
@@ -65,6 +60,7 @@ public class Config {
         VANILLA_SPAWNERS = BUILDER.comment(
                 "Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
                 .define("use_vanilla_spawners", false);
+        NATURAL_DESPAWN = BUILDER.comment("Whether mobs from spawners should despawn naturally or not.").define("natural_despawn", true);
 //		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
 //		ENABLE_DUNGEON_BOSS = BUILDER.comment(
 //				"If enabled, there will be a final room with a boss at the lowest layer. Please note that Dungeon Crawl DOES NOT bring its own bosses. The boss entities can be configured in the config.json file.")

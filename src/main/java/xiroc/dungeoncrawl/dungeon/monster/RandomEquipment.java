@@ -23,7 +23,6 @@ import xiroc.dungeoncrawl.util.WeightedRandomItem;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Random;
 
 public class RandomEquipment {
@@ -101,6 +100,7 @@ public class RandomEquipment {
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'boots' in {}", file.toString());
                 }
+
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}" + file.toString());
                 e.printStackTrace();

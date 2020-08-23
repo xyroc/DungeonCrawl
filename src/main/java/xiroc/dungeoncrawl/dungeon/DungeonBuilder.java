@@ -151,8 +151,7 @@ public class DungeonBuilder {
         }
 
         for (int i = 0; i < layers.length; i++) {
-            //this.layers[i].extend(this, maps[i], rand, i);
-            processLayer(layers[i], i, startPos);
+            processCorridors(layers[i], i, startPos);
         }
 
         DungeonPiece entrance = new DungeonEntrance();
@@ -181,7 +180,7 @@ public class DungeonBuilder {
         return list;
     }
 
-    public void processLayer(DungeonLayer layer, int lyr, BlockPos startPos) {
+    public void processCorridors(DungeonLayer layer, int lyr, BlockPos startPos) {
         int stage = Math.min(lyr, 4);
         for (int x = 0; x < layer.width; x++) {
             for (int z = 0; z < layer.length; z++) {
@@ -220,9 +219,9 @@ public class DungeonBuilder {
                             layer.segments[x][z].reference.subTheme = subTheme;
                         }
 
-                        if (layer.segments[x][z].reference.getType() == 0) {
-                            DungeonFeatures.processCorridor(this, layer, x, z, rand, i, i, startPos);
-                        }
+//                        if (layer.segments[x][z].reference.getType() == 0) {
+//                            DungeonFeatures.processCorridor(this, layer, x, z, rand, i, i, startPos);
+//                        }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
                             layer.segments[x][z].reference.modelID = layer.segments[x][z].reference.determineModel(this,

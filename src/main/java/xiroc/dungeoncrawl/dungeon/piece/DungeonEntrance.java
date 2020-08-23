@@ -31,16 +31,12 @@ import java.util.Random;
 
 public class DungeonEntrance extends DungeonPiece {
 
-    //public int cursorHeight = 0;
-
     public DungeonEntrance() {
         super(StructurePieceTypes.ENTRANCE);
     }
 
     public DungeonEntrance(TemplateManager manager, CompoundNBT nbt) {
         super(StructurePieceTypes.ENTRANCE, nbt);
-        //if (nbt.contains("cursorHeight"))
-        //    cursorHeight = nbt.getInt("cursorHeight");
     }
 
     @Override
@@ -59,7 +55,6 @@ public class DungeonEntrance extends DungeonPiece {
 
         Theme buildTheme = Theme.get(theme);
         SubTheme sub = Theme.getSub(subTheme);
-        //if (cursorHeight == 0) {
         int cursorHeight = y;
 
         while (cursorHeight < height) {
@@ -69,7 +64,7 @@ public class DungeonEntrance extends DungeonPiece {
                     new BlockPos(x + 2, cursorHeight, z + 2), buildTheme, sub, Treasure.Type.DEFAULT, stage, true);
             cursorHeight += 8;
         }
-        //}
+
         DungeonModel entrance = DungeonModels.MODELS.get(modelID);
 
         Vec3i offset = DungeonModels.getOffset(entrance.id);
@@ -77,12 +72,12 @@ public class DungeonEntrance extends DungeonPiece {
 //        DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, {}", x, cursorHeight, z,
 //                entrance, entrance.id, offset);
 
-        DungeonCrawl.LOGGER.debug("StructureBoundingBox: [{},{},{}] -> [{},{},{}]", structureBoundingBoxIn.minX,
-                structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ, structureBoundingBoxIn.maxX,
-                structureBoundingBoxIn.maxY, structureBoundingBoxIn.maxZ);
-
-        DungeonCrawl.LOGGER.debug("BoundingBox: [{},{},{}] -> [{},{},{}]", boundingBox.minX, boundingBox.minY,
-                boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
+//        DungeonCrawl.LOGGER.debug("StructureBoundingBox: [{},{},{}] -> [{},{},{}]", structureBoundingBoxIn.minX,
+//                structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ, structureBoundingBoxIn.maxX,
+//                structureBoundingBoxIn.maxY, structureBoundingBoxIn.maxZ);
+//
+//        DungeonCrawl.LOGGER.debug("BoundingBox: [{},{},{}] -> [{},{},{}]", boundingBox.minX, boundingBox.minY,
+//                boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
 
 //		int startX = Math.max(x, structureBoundingBoxIn.minX) - x,
 //				startZ = Math.max(z, structureBoundingBoxIn.minZ) - z;
@@ -119,7 +114,6 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public void readAdditional(CompoundNBT tagCompound) {
         super.readAdditional(tagCompound);
-        //tagCompound.putInt("cursorHeight", cursorHeight);
     }
 
     @Override

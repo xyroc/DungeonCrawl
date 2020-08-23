@@ -61,7 +61,7 @@ public class Spawner implements IBlockPlacementHandler {
                     nbt.putInt("Weight", 1);
                     nbt.putShort("MinSpawnDelay", (short) 200);
                     nbt.putShort("MaxSpawnDelay", (short) 300);
-                    //nbt.putShort("SpawnCount", (short) 1);
+                    nbt.putShort("SpawnCount", (short) (2 + rand.nextInt(2)));
                     if (i == 0)
                         spawnerNBT.put("SpawnData", spawnData);
                     potentialSpawns.add(nbt);
@@ -104,6 +104,10 @@ public class Spawner implements IBlockPlacementHandler {
                     : ItemStack.EMPTY.write(new CompoundNBT()));
             spawnData.put("HandItems", handItems);
 
+            if (!Config.NATURAL_DESPAWN.get()) {
+                spawnData.putBoolean("PersistenceRequired", true);
+            }
+
             ListNBT potionEffects = RandomPotionEffect.createPotionEffects(rand, stage);
             if (potionEffects != null) {
                 spawnData.put("ActiveEffects", potionEffects);
@@ -133,6 +137,10 @@ public class Spawner implements IBlockPlacementHandler {
                 entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, Banner.createShield(rand));
 
             RandomPotionEffect.applyPotionEffects(entity, rand, stage);
+
+            if (!Config.NATURAL_DESPAWN.get()) {
+                entity.enablePersistence();
+            }
 
             if (RandomMonster.NBT_PATCHERS.containsKey(entity.getType())) {
                 CompoundNBT nbt = new CompoundNBT();

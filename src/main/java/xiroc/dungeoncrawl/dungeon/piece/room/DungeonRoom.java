@@ -31,11 +31,7 @@ public class DungeonRoom extends DungeonPiece {
 
     @Override
     public int determineModel(DungeonBuilder builder, Random rand) {
-        if (rand.nextFloat() < 0.4 || connectedSides < 2) {
-            return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
-        }
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER,
-                DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
+        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
     }
 
 

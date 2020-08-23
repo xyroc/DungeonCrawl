@@ -6,10 +6,15 @@ package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.Triple;
@@ -26,8 +31,8 @@ public class DungeonFeatures {
     public static final List<CorridorFeature> CORRIDOR_FEATURES;
 
     static {
-        OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
-        OFFSET_DATA.put(34, new Triple<Integer, Integer, Integer>(0, -1, 0));
+        OFFSET_DATA = new HashMap<>();
+        OFFSET_DATA.put(34, new Triple<>(0, -1, 0));
     }
 
     static {
@@ -73,6 +78,29 @@ public class DungeonFeatures {
             }
             return false;
         });
+
+        CORRIDOR_FEATURES.add(((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+            if (layer.segments[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.1) {
+                Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z));
+                if (sideRoomData != null) {
+                    DungeonSideRoom sideRoom = new DungeonSideRoom();
+                    Direction dir = sideRoomData.getB().rotate(Direction.WEST);
+
+                    sideRoom.openSide(dir);
+                    sideRoom.setPosition(sideRoomData.getA());
+                    sideRoom.setRotation(sideRoomData.getB());
+                    sideRoom.stage = stage;
+                    sideRoom.modelID = DungeonModels.FOOD_SIDE_ROOM.id;
+
+                    layer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).withFlag(PlaceHolder.Flag.FIXED_MODEL);
+                    layer.segments[x][z].reference.openSide(dir.getOpposite());
+                    layer.map.markPositionAsOccupied(sideRoomData.getA());
+                    layer.rotatePiece(layer.segments[x][z]);
+                    return true;
+                }
+            }
+            return false;
+        }));
 
 //		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 //			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2, true)) {
@@ -299,9 +327,9 @@ public class DungeonFeatures {
     }
 
     @FunctionalInterface
-    public static interface CorridorFeature {
+    public interface CorridorFeature {
 
-        public boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+        boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
                                int stage, BlockPos startPos);
 
     }

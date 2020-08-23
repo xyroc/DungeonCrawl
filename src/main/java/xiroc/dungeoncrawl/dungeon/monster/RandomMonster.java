@@ -3,7 +3,9 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.resources.IResourceManager;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 
 public class RandomMonster {
 
@@ -23,26 +26,51 @@ public class RandomMonster {
 
     public static WeightedRandomEntity[] COMMON, RARE;
 
-    private static final String[] VILLAGER_TYPES = {"desert", "jungle", "plains", "savanna", "snow", "swamp", "taiga"};
-    private static final String[] VILLAGER_PROFESSIONS = {"armorer", "butcher", "cartographer", "cleric", "farmer", "fisherman",
-            "fletcher", "leatherworker", "librarian", "mason", "nitwit", "shepherd", "toolsmith", "weaponsmith"};
+//    private static final String[] VILLAGER_TYPES = {"desert", "jungle", "plains", "savanna", "snow", "swamp", "taiga"};
+//    private static final String[] VILLAGER_PROFESSIONS = {"armorer", "butcher", "cartographer", "cleric", "farmer", "fisherman",
+//            "fletcher", "leatherworker", "librarian", "mason", "nitwit", "shepherd", "toolsmith", "weaponsmith"};
+
+    private static final CompoundNBT VILLAGER_OFFERS;
+    private static final ListNBT VILLAGER_GOSSIPS;
 
     static {
+        VILLAGER_OFFERS = new CompoundNBT();
+        ListNBT recipes = new ListNBT();
+        CompoundNBT offer = new CompoundNBT();
+        offer.putBoolean("rewardExp", false);
+        offer.putInt("maxUses", 1);
+        offer.putInt("uses", 1);
+        offer.putInt("xp", 0);
+        offer.putInt("specialPrice", 0);
+        offer.putInt("demand", 0);
+        offer.putFloat("priceMultiplier", 0F);
+        CompoundNBT grassBlock = new ItemStack(Blocks.GRASS_BLOCK).write(new CompoundNBT());
+        offer.put("buy", grassBlock);
+        offer.put("sell", grassBlock);
+        recipes.add(offer);
+        VILLAGER_OFFERS.put("Recipes", recipes);
+
+        VILLAGER_GOSSIPS = new ListNBT();
+        CompoundNBT gossip = new CompoundNBT();
+        gossip.putString("Type", "trading");
+        gossip.putInt("Value", 1);
+        gossip.putUniqueId("Target", UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        VILLAGER_GOSSIPS.add(gossip);
+
         NBT_PATCHERS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
             nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.toString());
             nbt.putLong("DeathLootTableSeed", rand.nextInt());
         });
         NBT_PATCHERS.put(EntityType.ZOMBIE_VILLAGER, (nbt, rand, stage) -> {
-            CompoundNBT offers = new CompoundNBT();
-            offers.put("Recipes", new ListNBT());
-            nbt.put("Offers", offers);
-            nbt.putInt("Xp", 250);
+            nbt.put("Offers", VILLAGER_OFFERS.copy());
+            nbt.putInt("Xp", 1);
             nbt.putBoolean("Willing", false);
-            CompoundNBT villagerData = new CompoundNBT();
-            villagerData.putString("type", "minecraft:" + VILLAGER_TYPES[rand.nextInt(VILLAGER_TYPES.length)]);
-            villagerData.putString("profession", "minecraft:" + VILLAGER_PROFESSIONS[rand.nextInt(VILLAGER_PROFESSIONS.length)]);
-            villagerData.putInt("level", 6);
-            nbt.put("VillagerData", villagerData);
+//            CompoundNBT villagerData = new CompoundNBT();
+//            villagerData.putString("type", "minecraft:" + VILLAGER_TYPES[rand.nextInt(VILLAGER_TYPES.length)]);
+//            villagerData.putString("profession", "minecraft:" + VILLAGER_PROFESSIONS[rand.nextInt(VILLAGER_PROFESSIONS.length)]);
+//            villagerData.putInt("level", 1);
+//            nbt.put("Gossips", VILLAGER_GOSSIPS.copy());
+//            nbt.put("VillagerData", villagerData);
         });
     }
 

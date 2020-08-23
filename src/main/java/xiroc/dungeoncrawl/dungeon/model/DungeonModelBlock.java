@@ -249,10 +249,9 @@ public class DungeonModelBlock {
                     return CAVE_AIR;
                 });
         PROVIDERS.put(DungeonModelBlockType.RAND_WALL_SPAWNER,
-                Config.NO_SPAWNERS.get() ? (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-                    return block.create(theme.solid.get(), world, pos, rotation);
-                } : (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-                    if (rand.nextInt(2 + (4 - stage)) == 0)
+                Config.NO_SPAWNERS.get() ? (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.solid.get(), world, pos, rotation)
+                        : (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
+                    if (rand.nextFloat() < 0.4F + 0.1F * stage)
                         return SPAWNER;
                     return block.create(theme.solid.get(), world, pos, rotation);
                 });

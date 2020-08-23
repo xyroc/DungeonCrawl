@@ -11,6 +11,7 @@ import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonFeatures;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
@@ -297,18 +298,18 @@ public class DefaultGenerator extends DungeonGenerator {
     public void createStarterRoom(DungeonBuilder builder, DungeonLayer dungeonLayer, Random rand, int layer) {
         Tuple<Position2D, Rotation> sideRoomData = dungeonLayer.findStarterRoomData(dungeonLayer.start, rand);
         if (sideRoomData != null) {
-            DungeonSideRoom room = new DungeonSideRoom(null, DungeonPiece.DEFAULT_NBT);
+            DungeonSideRoom room = new DungeonSideRoom();
             room.modelID = 76;
 
             Direction dir = sideRoomData.getB().rotate(Direction.WEST);
             room.openSide(dir);
             room.setPosition(sideRoomData.getA().x, sideRoomData.getA().z);
             room.setRotation(sideRoomData.getB());
-            room.treasureType = Treasure.Type.SUPPLY;
+            room.modelID = DungeonModels.STARTER_ROOM.id;
             room.stage = layer;
 
             dungeonLayer.map.markPositionAsOccupied(sideRoomData.getA());
-            dungeonLayer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(room);
+            dungeonLayer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(room).withFlag(PlaceHolder.Flag.FIXED_MODEL);
 
             Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
             if (dungeonLayer.segments[connectedSegment.x][connectedSegment.z] != null) {

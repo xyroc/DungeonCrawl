@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 public class DataReloadListener implements IFutureReloadListener {
 
     public void reload(IResourceManager resourceManager) {
-        DungeonCrawl.LOGGER.debug("Reloading Models...");
+        DungeonCrawl.LOGGER.info("Loading data...");
         DungeonModels.load(resourceManager);
         ChildPieceHandler.load();
         Theme.loadJson(resourceManager);
@@ -30,6 +30,7 @@ public class DataReloadListener implements IFutureReloadListener {
         RandomMonster.loadJson(resourceManager);
         RandomEquipment.loadJson(resourceManager);
         RandomPotionEffect.loadJson(resourceManager);
+        DungeonCrawl.LOGGER.info("Finished data loading.");
     }
 
     @Override

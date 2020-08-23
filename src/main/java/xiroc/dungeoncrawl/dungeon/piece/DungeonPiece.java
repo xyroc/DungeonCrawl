@@ -62,6 +62,7 @@ public abstract class DungeonPiece extends StructurePiece {
     // 12 prisoner cell
     // 13 staircase
     // 14 secret room
+    // 15 spider room
 
     public static final CompoundNBT DEFAULT_NBT;
 
@@ -494,16 +495,59 @@ public abstract class DungeonPiece extends StructurePiece {
                     for (int z = 1; z < model.length - 1; z++) {
                         if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z))) {
                             BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-                            BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
+                            BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
                             BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
                             BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                             BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+
+                            BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+
+                            if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
+                                DungeonCrawl.LOGGER.error("wrong north! {} -> {}", _p, north);
+                            }
+
+                            if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
+                                DungeonCrawl.LOGGER.error("wrong east! {} -> {}", _p, east);
+                            }
+
+                            if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
+                                DungeonCrawl.LOGGER.error("wrong south! {} -> {}", _p, south);
+                            }
+
+                            if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
+                                DungeonCrawl.LOGGER.error("wrong west! {} -> {}", _p, west);
+                            }
+
+                            if (up.getY() != _p.getY() + 1) {
+                                DungeonCrawl.LOGGER.error("wrong up! {} -> {}", _p, up);
+                            }
+
 
                             boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
                             boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
                             boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
                             boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
                             boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                            if (_north && world.isAirBlock(north)) {
+                                DungeonCrawl.LOGGER.warn("!NORTH! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north);
+                            }
+
+                            if (_east && world.isAirBlock(east)) {
+                                DungeonCrawl.LOGGER.warn("!EAST! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east);
+                            }
+
+                            if (_south && world.isAirBlock(south)) {
+                                DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south);
+                            }
+
+                            if (_west && world.isAirBlock(west)) {
+                                DungeonCrawl.LOGGER.warn("!WEST! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west);
+                            }
+
+                            if (_up && world.isAirBlock(up)) {
+                                DungeonCrawl.LOGGER.warn("!UP! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up);
+                            }
 
                             if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.35) {
                                 BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
@@ -778,17 +822,55 @@ public abstract class DungeonPiece extends StructurePiece {
                         for (int y = 0; y < model.height; y++) {
                             for (int z = 1; z < model.length - 1; z++) {
                                 if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x))) {
-                                    BlockPos north = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x - 1);
+                                    BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                                     BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
                                     BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
                                     BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                                     BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+
+                                    BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+
+                                    if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
+                                        DungeonCrawl.LOGGER.error("wrong north! {} -> {}, {}", _p, north, rotation);
+                                    }
+
+                                    if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
+                                        DungeonCrawl.LOGGER.error("wrong east! {} -> {}, {}", _p, east, rotation);
+                                    }
+
+                                    if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
+                                        DungeonCrawl.LOGGER.error("wrong south! {} -> {}, {}", _p, south, rotation);
+                                    }
+
+                                    if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
+                                        DungeonCrawl.LOGGER.error("wrong west! {} -> {}, {}", _p, west, rotation);
+                                    }
 
                                     boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
                                     boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
                                     boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
                                     boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
                                     boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                                    if (_north && world.isAirBlock(north)) {
+                                        DungeonCrawl.LOGGER.warn("!NORTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north, rotation);
+                                    }
+
+                                    if (_east && world.isAirBlock(east)) {
+                                        DungeonCrawl.LOGGER.warn("!EAST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east, rotation);
+                                    }
+
+                                    if (_south && world.isAirBlock(south)) {
+                                        DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south, rotation);
+                                    }
+
+                                    if (_west && world.isAirBlock(west)) {
+                                        DungeonCrawl.LOGGER.warn("!WEST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west, rotation);
+                                    }
+
+                                    if (_up && world.isAirBlock(up)) {
+                                        DungeonCrawl.LOGGER.warn("!UP! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up, rotation);
+                                    }
 
                                     if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
                                         BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
@@ -845,17 +927,55 @@ public abstract class DungeonPiece extends StructurePiece {
                         for (int y = 0; y < model.height; y++) {
                             for (int z = 1; z < model.length - 1; z++) {
                                 if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1))) {
-                                    BlockPos north = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 2);
+                                    BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                                     BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
                                     BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
                                     BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                                     BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+
+                                    BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+
+                                    if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
+                                        DungeonCrawl.LOGGER.error("wrong north! {} -> {}, {}", _p, north, rotation);
+                                    }
+
+                                    if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
+                                        DungeonCrawl.LOGGER.error("wrong east! {} -> {}, {}", _p, east, rotation);
+                                    }
+
+                                    if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
+                                        DungeonCrawl.LOGGER.error("wrong south! {} -> {}, {}", _p, south, rotation);
+                                    }
+
+                                    if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
+                                        DungeonCrawl.LOGGER.error("wrong west! {} -> {}, {}", _p, west, rotation);
+                                    }
 
                                     boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
                                     boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
                                     boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
                                     boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
                                     boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                                    if (_north && world.isAirBlock(north)) {
+                                        DungeonCrawl.LOGGER.warn("!NORTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north, rotation);
+                                    }
+
+                                    if (_east && world.isAirBlock(east)) {
+                                        DungeonCrawl.LOGGER.warn("!EAST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east, rotation);
+                                    }
+
+                                    if (_south && world.isAirBlock(south)) {
+                                        DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south, rotation);
+                                    }
+
+                                    if (_west && world.isAirBlock(west)) {
+                                        DungeonCrawl.LOGGER.warn("!WEST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west, rotation);
+                                    }
+
+                                    if (_up && world.isAirBlock(up)) {
+                                        DungeonCrawl.LOGGER.warn("!UP! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up, rotation);
+                                    }
 
                                     if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
                                         BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
@@ -909,17 +1029,56 @@ public abstract class DungeonPiece extends StructurePiece {
                         for (int y = 0; y < model.height; y++) {
                             for (int z = 1; z < model.length - 1; z++) {
                                 if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1))) {
-                                    BlockPos north = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 2);
+                                    BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                                     BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
                                     BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
                                     BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                                     BlockPos up = new BlockPos(north.getX(), pos.getY() + y + 1, east.getZ());
+
+                                    BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+
+
+                                    if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
+                                        DungeonCrawl.LOGGER.error("wrong north! {} -> {}, {}", _p, north, rotation);
+                                    }
+
+                                    if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
+                                        DungeonCrawl.LOGGER.error("wrong east! {} -> {}, {}", _p, east, rotation);
+                                    }
+
+                                    if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
+                                        DungeonCrawl.LOGGER.error("wrong south! {} -> {}, {}", _p, south, rotation);
+                                    }
+
+                                    if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
+                                        DungeonCrawl.LOGGER.error("wrong west! {} -> {}, {}", _p, west, rotation);
+                                    }
 
                                     boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
                                     boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
                                     boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
                                     boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
                                     boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+
+                                    if (_north && world.isAirBlock(north)) {
+                                        DungeonCrawl.LOGGER.warn("!NORTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north, rotation);
+                                    }
+
+                                    if (_east && world.isAirBlock(east)) {
+                                        DungeonCrawl.LOGGER.warn("!EAST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east, rotation);
+                                    }
+
+                                    if (_south && world.isAirBlock(south)) {
+                                        DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south, rotation);
+                                    }
+
+                                    if (_west && world.isAirBlock(west)) {
+                                        DungeonCrawl.LOGGER.warn("!WEST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west, rotation);
+                                    }
+
+                                    if (_up && world.isAirBlock(up)) {
+                                        DungeonCrawl.LOGGER.warn("!UP! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up, rotation);
+                                    }
 
                                     if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
                                         BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());

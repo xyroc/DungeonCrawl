@@ -7,11 +7,11 @@
       "entity": "minecraft:skeleton"
     },
     {
-      "entity": "minecraft:zombie_villager"
-    },
-    {
       "entity": "minecraft:stray",
       "weight": 2
+    },
+    {
+      "entity": "minecraft:wither_skeleton"
     }
   ],
   "rare": [

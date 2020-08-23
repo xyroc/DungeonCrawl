@@ -56,7 +56,7 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
             int duration = object.get("duration").getAsInt();
             RandomValueRange level = object.has("level") ?
                     new RandomValueRange(object.getAsJsonObject("level").get("min").getAsInt(), object.getAsJsonObject("level").get("max").getAsInt()) :
-                    new RandomValueRange(1);
+                    new RandomValueRange(0);
             builder.add(object.get("effect").getAsString(), duration, level, weight);
         });
         return builder.build();

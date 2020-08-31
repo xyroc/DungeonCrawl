@@ -14,7 +14,6 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -50,32 +49,22 @@ public class DungeonStairs extends DungeonPiece {
     @Override
     public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos p_74875_4_) {
+        BlockPos pos = new BlockPos(x, y, z);
         switch (stairType) {
             case 0: {
                 DungeonModel model = DungeonModels.MODELS.get(modelID);
-                build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
+                build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                         Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
-
                 ironBars(worldIn, structureBoundingBoxIn, model);
-
-                if (x == -742 && y == 30) {
-                    DungeonCrawl.LOGGER.debug("Stairs bottom Boundingbox: {}, {}, {} -> {}, {}, {}", boundingBox.minX,
-                            boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-                    DungeonCrawl.LOGGER.debug("north: {} east: {} south: {} west: {}", sides[0], sides[1], sides[2],
-                            sides[3]);
-                }
-
-                //buildBoundingBox(worldIn, boundingBox, Blocks.PRISMARINE_BRICK_SLAB);
-
+                decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, model);
                 return true;
             }
             case 1: {
                 DungeonModel model = DungeonModels.MODELS.get(modelID);
-                build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
+                build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                         Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
-//			DungeonCrawl.LOGGER.debug("Stairs top Boundingbox: {}, {}, {} -> {}, {}, {}", boundingBox.minX,
-//					boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
                 entrances(worldIn, structureBoundingBoxIn, model);
+                decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, model);
                 return true;
             }
             default:

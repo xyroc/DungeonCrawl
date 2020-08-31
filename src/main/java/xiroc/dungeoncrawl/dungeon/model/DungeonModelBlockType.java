@@ -21,6 +21,7 @@ public enum DungeonModelBlockType {
     SOLID_STAIRS(Blocks.STONE_BRICK_STAIRS, PlacementBehaviour.SOLID),
     SOLID(Blocks.STONE_BRICKS, PlacementBehaviour.SOLID),
     WALL(Blocks.COBBLESTONE),
+    WALL_2(Blocks.OBSIDIAN),
     PILLAR(Blocks.OAK_LOG),
     FLOOR(Blocks.GRAVEL, PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
     MATERIAL_STAIRS(Blocks.OAK_STAIRS),
@@ -33,17 +34,22 @@ public enum DungeonModelBlockType {
     RAND_WALL_AIR(Blocks.CRACKED_STONE_BRICKS),
     RAND_FLOOR_CHEST_SPAWNER(Blocks.CHEST),
     TRAPDOOR(Blocks.OAK_TRAPDOOR),
-    TORCH(Blocks.WALL_TORCH),
-    TORCH_DARK(Blocks.REDSTONE_WALL_TORCH),
+    SLAB(Blocks.COBBLESTONE_SLAB),
+    SOLID_SLAB(Blocks.STONE_BRICK_SLAB, PlacementBehaviour.SOLID),
+    WOODEN_SLAB(Blocks.OAK_SLAB),
     BARREL(Blocks.BARREL),
     DOOR(Blocks.OAK_DOOR),
+    FENCE(Blocks.OAK_FENCE),
+    FENCE_GATE(Blocks.OAK_FENCE_GATE),
+    WOODEN_BUTTON(Blocks.OAK_BUTTON),
+    WOODEN_PRESSURE_PLATE(Blocks.OAK_PRESSURE_PLATE),
     RAND_FLOOR_WATER(Blocks.CLAY),
     RAND_FLOOR_LAVA(Blocks.SOUL_SAND),
     RAND_BOOKSHELF_COBWEB(Blocks.BOOKSHELF),
-    DISPENSER(Blocks.DISPENSER),
     RAND_COBWEB_AIR(Blocks.COBWEB),
     VANILLA_WALL(Blocks.STONE_BRICK_WALL),
     MATERIAL(Blocks.OAK_PLANKS),
+    SKULL(Blocks.SKELETON_SKULL),
     CARPET,
     OTHER;
 
@@ -90,8 +96,6 @@ public enum DungeonModelBlockType {
             return DOOR;
         if (block == Blocks.COBWEB)
             return RAND_COBWEB_AIR;
-        if (block == Blocks.DISPENSER)
-            return DISPENSER;
         if (block == Blocks.SOUL_SAND)
             return RAND_FLOOR_LAVA;
         if (block == Blocks.CRACKED_STONE_BRICKS)
@@ -114,6 +118,22 @@ public enum DungeonModelBlockType {
             return FLOOR;
         if (block == Blocks.COBBLESTONE_STAIRS)
             return STAIRS;
+        if (block == Blocks.COBBLESTONE_SLAB)
+            return SLAB;
+        if (block == Blocks.STONE_BRICK_SLAB)
+            return SOLID_SLAB;
+        if (block == Blocks.OAK_SLAB)
+            return WOODEN_SLAB;
+        if (block == Blocks.OAK_BUTTON)
+            return WOODEN_BUTTON;
+        if (block == Blocks.OAK_FENCE)
+            return FENCE;
+        if (block == Blocks.OAK_FENCE_GATE)
+            return FENCE_GATE;
+        if (block == Blocks.OAK_PRESSURE_PLATE)
+            return WOODEN_PRESSURE_PLATE;
+        if (block == Blocks.OBSIDIAN)
+            return WALL_2;
         if (block == Blocks.SPAWNER) {
             switch (spawnerType) {
                 case 1:
@@ -141,6 +161,9 @@ public enum DungeonModelBlockType {
             return BARREL;
         if (block == Blocks.STONE_BRICK_WALL)
             return VANILLA_WALL;
+        if (block == Blocks.SKELETON_SKULL) {
+            return SKULL;
+        }
         if (BlockTags.CARPETS.contains(block)) {
             return CARPET;
         }

@@ -41,11 +41,13 @@ public class DungeonStaircase extends DungeonPiece {
                                   ChunkPos chunkPosIn) {
         DungeonModel model = DungeonModels.STAIRCASE;
         Theme buildTheme = Theme.get(theme);
-        build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), buildTheme, Theme.getSub(subTheme),
+        BlockPos pos = new BlockPos(x, y, z);
+
+        build(model, worldIn, structureBoundingBoxIn, pos, buildTheme, Theme.getSub(subTheme),
                 Treasure.Type.DEFAULT, stage, true);
+        decorate(worldIn, pos, model.width, model.height, model.length, buildTheme, structureBoundingBoxIn, model);
         return true;
     }
-
 
     @Override
     public int getType() {

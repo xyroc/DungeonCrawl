@@ -4,7 +4,6 @@ package xiroc.dungeoncrawl.dungeon.piece;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -34,12 +33,10 @@ public class DungeonCorridorHole extends DungeonPiece {
     @Override
     public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGen, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos p_74875_4_) {
-        build(DungeonModels.CORRIDOR, worldIn,
-                structureBoundingBoxIn, new BlockPos(x, y - 15, z), Theme.get(theme), Theme.getSub(subTheme),
-                Treasure.Type.DEFAULT, stage, true);
-        addWalls(this, worldIn, structureBoundingBoxIn, theme);
-        if (theme == 3 && getBlocks(worldIn, Blocks.WATER, x, y - 16, z, 8, 8) > 5)
-            addColumns(this, worldIn, structureBoundingBoxIn, 16, theme);
+//        BlockPos pos = new BlockPos(x, y - 15, z);
+//        build(DungeonModels.CORRIDOR, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, true);
+//        addWalls(this, worldIn, structureBoundingBoxIn, theme);
+
         return true;
     }
 

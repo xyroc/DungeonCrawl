@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.monster;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -11,6 +12,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import javax.annotation.Nullable;
@@ -24,6 +26,7 @@ public class RandomPotionEffect {
     public static float[] CHANCES;
     public static RandomValueRange[] ROLLS;
     public static WeightedRandomPotionEffect[] EFFECTS;
+    public static PotionEffect[][] GUARANTEED_EFFECTS;
 
     /**
      * Loads all potion effect files.
@@ -34,6 +37,7 @@ public class RandomPotionEffect {
         CHANCES = new float[5];
         ROLLS = new RandomValueRange[5];
         EFFECTS = new WeightedRandomPotionEffect[5];
+        GUARANTEED_EFFECTS = new PotionEffect[5][];
 
         JsonParser parser = new JsonParser();
         try {
@@ -83,6 +87,21 @@ public class RandomPotionEffect {
                     DungeonCrawl.LOGGER.warn("Missing entry 'effects' in {}", file.toString());
                     EFFECTS[stage] = WeightedRandomPotionEffect.EMPTY;
                 }
+
+                if (object.has("guaranteed")) {
+                    JsonArray array = object.getAsJsonArray("guaranteed");
+                    GUARANTEED_EFFECTS[stage] = new PotionEffect[array.size()];
+                    for (int i = 0; i < array.size(); i++) {
+                        JsonObject effect = array.get(i).getAsJsonObject();
+                        RandomValueRange amplifier = effect.has("amplifier") ?
+                                new RandomValueRange(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
+                                        effect.getAsJsonObject("amplifier").get("max").getAsInt())
+                                : new RandomValueRange(0);
+                        GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.POTIONS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
+                                effect.get("duration").getAsInt(), amplifier);
+                    }
+                }
+
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}" + file.toString());
                 e.printStackTrace();
@@ -116,9 +135,14 @@ public class RandomPotionEffect {
                         }
                         if (i < rolls - 1)
                             effects[i] = effect.effect;
-                        entity.addPotionEffect(new EffectInstance(effect.effect, effect.duration, effect.level.generateInt(rand)));
+                        entity.addPotionEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
                     }
                 }
+            }
+        }
+        if (GUARANTEED_EFFECTS[stage] != null) {
+            for (PotionEffect effect : GUARANTEED_EFFECTS[stage]) {
+                entity.addPotionEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
             }
         }
     }
@@ -132,27 +156,37 @@ public class RandomPotionEffect {
     public static ListNBT createPotionEffects(Random rand, int stage) {
         if (stage > 4)
             stage = 4;
-        if (rand.nextFloat() < CHANCES[stage]) {
-            int rolls = ROLLS[stage].generateInt(rand);
-            if (rolls > 0) {
-                ListNBT list = new ListNBT();
-                Effect[] effects = new Effect[rolls - 1];
-                loop:
-                for (int i = 0; i < rolls; i++) {
-                    WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
-                    if (effect != null) {
-                        for (Effect value : effects) { // Skip duplicates
-                            if (value == effect.effect)
-                                continue loop;
+        boolean chance = rand.nextFloat() < CHANCES[stage];
+        boolean guaranteed = GUARANTEED_EFFECTS[stage] != null;
+        if (chance || guaranteed) {
+            ListNBT list = new ListNBT();
+            if (chance) {
+                int rolls = ROLLS[stage].generateInt(rand);
+                if (rolls > 0) {
+                    Effect[] effects = new Effect[rolls - 1];
+                    loop:
+                    for (int i = 0; i < rolls; i++) {
+                        WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
+                        if (effect != null) {
+                            for (Effect value : effects) { // Skip duplicates
+                                if (value == effect.effect)
+                                    continue loop;
+                            }
+                            if (i < rolls - 1)
+                                effects[i] = effect.effect;
+                            list.add(toNBT(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
                         }
-                        if (i < rolls - 1)
-                            effects[i] = effect.effect;
-                        list.add(toNBT(effect.effect, effect.duration, effect.level.generateInt(rand)));
                     }
                 }
-                return list;
             }
+            if (guaranteed) {
+                for (PotionEffect effect : GUARANTEED_EFFECTS[stage]) {
+                    list.add(toNBT(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
+                }
+            }
+            return list;
         }
+
         return null;
     }
 
@@ -169,6 +203,19 @@ public class RandomPotionEffect {
         nbt.putInt("Duration", duration);
         nbt.putInt("Amplifier", amplifier);
         return nbt;
+    }
+
+    private static class PotionEffect {
+
+        public final Effect effect;
+        public final int duration;
+        public final RandomValueRange amplifier;
+
+        public PotionEffect(Effect effect, int duration, RandomValueRange amplifier) {
+            this.effect = effect;
+            this.duration = duration;
+            this.amplifier = amplifier;
+        }
     }
 
 }

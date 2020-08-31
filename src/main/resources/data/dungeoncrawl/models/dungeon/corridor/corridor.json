@@ -2,7 +2,7 @@
   "type": "corridor",
   "id": 0,
   "data": {
-    "stages": [ 1, 2, 3, 5 ],
-    "weights": [ 3, 3, 1, 0, 1 ]
+    "stages": [ 1, 2, 3, 4 ],
+    "weights": [ 3, 3, 1, 1, 0 ]
   }
 }

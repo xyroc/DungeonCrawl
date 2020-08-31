@@ -15,11 +15,11 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.ChildPieceHandler;
 import xiroc.dungeoncrawl.dungeon.ChildPieceHandler.ChildPieceSpot;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -95,9 +95,11 @@ public class DungeonCorridorLarge extends DungeonPiece {
     public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos chunkPosIn) {
 
-        DungeonCrawl.LOGGER.debug("x: {}, y: {}, z: {}, rotation: {}", x, y, z, rotation);
+        //DungeonCrawl.LOGGER.debug("x: {}, y: {}, z: {}, rotation: {}", x, y, z, rotation);
 
-        buildRotated(DungeonModels.MODELS.get(modelID), worldIn, structureBoundingBoxIn, new BlockPos(x, y, z),
+        BlockPos pos = new BlockPos(x, y, z);
+        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
         ChildPieceSpot[] spots = getSpots();
@@ -126,6 +128,8 @@ public class DungeonCorridorLarge extends DungeonPiece {
 
             }
         }
+
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, model);
 
         return true;
     }

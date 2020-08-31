@@ -107,8 +107,8 @@ public class DungeonCorridor extends DungeonPiece {
             }
         }
 
-        buildRotated(model, worldIn, structureBoundingBoxIn,
-                new BlockPos(x, y, z),
+        BlockPos pos = new BlockPos(x, y, z);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
 //        if (connectedSides < 3 && corridorFeatures != null && featurePositions != null) {
@@ -121,6 +121,8 @@ public class DungeonCorridor extends DungeonPiece {
         if (connectedSides > 2) {
             entrances(worldIn, structureBoundingBoxIn, model);
         }
+
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{1});

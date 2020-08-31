@@ -1,0 +1,13 @@
+{
+  "type": "node",
+  "id": 50,
+  "data": {
+    "size": "normal",
+    "type": "dead_end",
+    "offset": {
+      "y": -1
+    },
+    "stages": [ 5 ],
+    "weights": [ 0, 0, 0, 0, 1 ]
+  }
+}

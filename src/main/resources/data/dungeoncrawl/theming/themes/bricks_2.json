@@ -1,0 +1,128 @@
+{
+  "type": "theme",
+  "id": 49,
+  "theme": {
+    "normal": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:polished_granite"
+        }
+      ]
+    },
+    "normal_2": {
+      "type": "block",
+      "block": "minecraft:obsidian"
+    },
+    "solid": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:polished_granite"
+        }
+      ]
+    },
+    "floor": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cobblestone",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:stone_bricks"
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks"
+        }
+      ]
+    },
+    "solid_stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:granite_stairs"
+        },
+        {
+          "block": "minecraft:polished_granite_stairs"
+        },
+        {
+          "block": "minecraft:brick_stairs",
+          "weight": 2
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:granite_stairs"
+        },
+        {
+          "block": "minecraft:polished_granite_stairs"
+        },
+        {
+          "block": "minecraft:brick_stairs",
+          "weight": 2
+        }
+      ]
+    },
+    "slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:polished_granite_slab"
+        },
+        {
+          "block": "minecraft:brick_slab",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:granite_slab"
+        }
+      ]
+    },
+    "solid_slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:polished_granite_slab"
+        },
+        {
+          "block": "minecraft:brick_slab",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:granite_slab"
+        }
+      ]
+    },
+    "material": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cobblestone",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:stone_bricks"
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks"
+        }
+      ]
+    },
+    "wall":{
+      "type": "block",
+      "block": "minecraft:brick_wall"
+    }
+  }
+}

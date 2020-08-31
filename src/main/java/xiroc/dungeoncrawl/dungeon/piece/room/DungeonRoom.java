@@ -62,6 +62,8 @@ public class DungeonRoom extends DungeonPiece {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, model);
+
 //        if (featurePositions != null) {
 //            DungeonCrawl.LOGGER.info("SPAWNER ROOM {} {} {} ({}) BOUNDS: [{} {} {} {} {} {}]", x, y, z, featurePositions.length,
 //                    structureBoundingBoxIn.minX, structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ,

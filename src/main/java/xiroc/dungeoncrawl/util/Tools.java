@@ -96,14 +96,14 @@ public class Tools {
 
         event.getServer().getCommandManager().getDispatcher().register(Commands.literal("buildmodel").requires((a) -> {
             return a.hasPermissionLevel(2);
-        }).then(Commands.argument("name", StringArgumentType.word()).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-            String name = command.getArgument("name", String.class);
-            DungeonModel model = DungeonModels.NAME_TO_MODEL.get(name);
+        }).then(Commands.argument("id", IntegerArgumentType.integer()).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+            int id = command.getArgument("id", int.class);
+            DungeonModel model = DungeonModels.MODELS.get(id);
             if (model != null) {
                 BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                 buildModel(model, command.getSource().asPlayer().world, pos);
             } else {
-                command.getSource().sendErrorMessage(new StringTextComponent("Unknown model name: " + name));
+                command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
                 return 1;
             }
             return 0;

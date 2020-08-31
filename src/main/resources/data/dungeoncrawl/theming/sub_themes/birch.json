@@ -1,0 +1,46 @@
+{
+  "type": "sub_theme",
+  "id": 2,
+  "theme": {
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:birch_log"
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:birch_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:birch_door"
+    },
+    "material": {
+      "type": "block",
+      "block": "minecraft:birch_planks"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "minecraft:birch_stairs"
+    },
+    "slab": {
+      "type": "block",
+      "block": "minecraft:birch_slab"
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:birch_fence"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:birch_fence_gate"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:birch_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:birch_pressure_plate"
+    }
+  }
+}

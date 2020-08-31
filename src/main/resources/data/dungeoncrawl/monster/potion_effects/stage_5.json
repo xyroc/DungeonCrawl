@@ -4,11 +4,17 @@
     "min": 2,
     "max": 3
   },
+  "guaranteed": [
+    {
+      "effect": "minecraft:fire_resistance",
+      "duration": 6000
+    }
+  ],
   "effects": [
     {
       "effect": "minecraft:strength",
       "duration": 6000,
-      "level": {
+      "amplifier": {
         "min": 2,
         "max": 3
       },
@@ -17,19 +23,15 @@
     {
       "effect": "minecraft:speed",
       "duration": 6000,
-      "level": {
+      "amplifier": {
         "min": 2,
         "max": 2
       }
     },
     {
-      "effect": "minecraft:fire_resistance",
-      "duration": 6000
-    },
-    {
       "effect": "minecraft:absorption",
       "duration": 6000,
-      "level": {
+      "amplifier": {
         "min": 3,
         "max": 6
       },
@@ -38,7 +40,7 @@
     {
       "effect": "minecraft:regeneration",
       "duration": 6000,
-      "level": {
+      "amplifier": {
         "min": 2,
         "max": 4
       }
@@ -46,7 +48,7 @@
     {
       "effect": "minecraft:resistance",
       "duration": 6000,
-      "level": {
+      "amplifier": {
         "min": 2,
         "max": 3
       }

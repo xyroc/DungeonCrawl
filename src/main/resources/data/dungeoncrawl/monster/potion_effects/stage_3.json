@@ -8,7 +8,7 @@
     {
       "effect": "minecraft:strength",
       "duration": 6000,
-      "level": {
+      "amplifier": {
         "min": 1,
         "max": 1
       }
@@ -16,7 +16,7 @@
     {
       "effect": "minecraft:speed",
       "duration": 6000,
-      "level": {
+      "amplifier": {
         "min": 1,
         "max": 1
       }

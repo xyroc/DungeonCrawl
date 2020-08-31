@@ -40,6 +40,8 @@ public class DungeonNodeConnector extends DungeonPiece {
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
+
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, model);
         return true;
     }
 

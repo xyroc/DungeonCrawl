@@ -30,7 +30,7 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
         int i = 0;
         for (Builder.Entry entry : entries) {
             float weight = (float) entry.weight / (float) totalWeight;
-            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(ForgeRegistries.POTIONS.getValue(new ResourceLocation(entry.effect)), entry.duration, entry.level, weight + f);
+            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(ForgeRegistries.POTIONS.getValue(new ResourceLocation(entry.effect)), entry.duration, entry.amplifier, weight + f);
             f += weight;
             i++;
         }
@@ -54,8 +54,8 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
             JsonObject object = element.getAsJsonObject();
             int weight = object.has("weight") ? object.get("weight").getAsInt() : 1;
             int duration = object.get("duration").getAsInt();
-            RandomValueRange level = object.has("level") ?
-                    new RandomValueRange(object.getAsJsonObject("level").get("min").getAsInt(), object.getAsJsonObject("level").get("max").getAsInt()) :
+            RandomValueRange level = object.has("amplifier") ?
+                    new RandomValueRange(object.getAsJsonObject("amplifier").get("min").getAsInt(), object.getAsJsonObject("amplifier").get("max").getAsInt()) :
                     new RandomValueRange(0);
             builder.add(object.get("effect").getAsString(), duration, level, weight);
         });
@@ -66,13 +66,13 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
 
         public final Effect effect;
         public final int duration;
-        public final RandomValueRange level;
+        public final RandomValueRange amplifier;
         public final float weight;
 
-        public WeightedEntry(Effect effect, int duration, RandomValueRange level, Float weight) {
+        public WeightedEntry(Effect effect, int duration, RandomValueRange amplifier, Float weight) {
             this.effect = effect;
             this.duration = duration;
-            this.level = level;
+            this.amplifier = amplifier;
             this.weight = weight;
         }
 
@@ -101,13 +101,13 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
 
             public final String effect;
             public final int duration;
-            public final RandomValueRange level;
+            public final RandomValueRange amplifier;
             public final int weight;
 
-            public Entry(String effect, int duration, RandomValueRange level, Integer weight) {
+            public Entry(String effect, int duration, RandomValueRange amplifier, Integer weight) {
                 this.effect = effect;
                 this.duration = duration;
-                this.level = level;
+                this.amplifier = amplifier;
                 this.weight = weight;
             }
         }

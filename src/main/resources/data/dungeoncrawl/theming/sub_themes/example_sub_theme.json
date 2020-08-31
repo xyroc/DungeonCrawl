@@ -27,6 +27,26 @@
 		"stairs": {
 			"type": "block",
 			"block": "minecraft:jungle_stairs"
+		},
+		"slab": {
+			"type": "block",
+			"block": "minecraft:oak_slab"
+		},
+		"fence": {
+			"type": "block",
+			"block": "minecraft:birch_fence"
+		},
+		"fence_gate": {
+			"type": "block",
+			"block": "minecraft:spruce_fence_gate"
+		},
+		"button": {
+			"type": "block",
+			"block": "minecraft:stone_button"
+		},
+		"pressure_plate": {
+			"type": "block",
+			"block": "minecraft:dark_oak_pressure_plate"
 		}
 	}	
 }

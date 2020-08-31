@@ -4,6 +4,7 @@ package xiroc.dungeoncrawl.dungeon.piece;
  * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
  */
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
@@ -88,13 +89,15 @@ public class DungeonEntrance extends DungeonPiece {
 //				theme, subTheme, Treasure.Type.SUPPLY, stage, Rotation.NONE, startX, 0, startZ, entrance.width - startX,
 //				entrance.height, entrance.length - startZ);
 
-        buildFull(entrance, worldIn, structureBoundingBoxIn,
-                new BlockPos(x + offset.getX(), cursorHeight + offset.getY(), z + offset.getZ()), Theme.get(theme),
+        BlockPos pos = new BlockPos(x + offset.getX(), cursorHeight + offset.getY(), z + offset.getZ());
+
+        buildFull(entrance, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), Treasure.Type.SUPPLY, stage, true);
 
 //		DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR).process(worldIn,
 //				new BlockPos(x + offset.getA(), cursorHeight, z + offset.getB()), theme, this);
 
+        decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn, entrance);
         return true;
     }
 
@@ -182,36 +185,6 @@ public class DungeonEntrance extends DungeonPiece {
                             if (y == 0 && world.isAirBlock(position.down())
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
                                 DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (theme == Theme.MOSS) {
-            for (int x = 1; x < model.width - 1; x++) {
-                for (int y = 0; y < model.height; y++) {
-                    for (int z = 1; z < model.length - 1; z++) {
-                        if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z))) {
-                            BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-                            BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
-                            BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
-                            BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
-                            BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
-
-                            boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
-                            boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
-                            boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
-                            boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
-                            boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
-
-                            if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.35) {
-                                BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
-                                world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
-                                        .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
-                                        .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
-                                world.getChunk(p).markBlockForPostprocessing(p);
                             }
                         }
                     }

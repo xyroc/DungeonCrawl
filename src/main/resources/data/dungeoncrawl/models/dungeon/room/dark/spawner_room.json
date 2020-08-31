@@ -1,0 +1,13 @@
+{
+  "type": "room",
+  "id": 80,
+  "data": {
+    "feature": {
+      "name": "chests",
+      "min": 2,
+      "max": 2
+    },
+    "stages": [ 5 ],
+    "weights": [ 0, 0, 0, 0, 1 ]
+  }
+}

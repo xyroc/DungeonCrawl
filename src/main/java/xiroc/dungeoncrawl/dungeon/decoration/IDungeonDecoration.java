@@ -26,8 +26,8 @@ public interface IDungeonDecoration {
                     IBlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        JsonObject block = object.getAsJsonObject("block");
-                        blockStateProvider = JsonThemeHandler.deserialize(block, "block");
+                        //JsonObject block = object.getAsJsonObject("block");
+                        blockStateProvider = JsonThemeHandler.deserialize(object, "block");
                         if (blockStateProvider != null) {
                             return new ScatteredDecoration(blockStateProvider, chance);
                         }
@@ -41,8 +41,8 @@ public interface IDungeonDecoration {
                     IBlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        JsonObject block = object.getAsJsonObject("block");
-                        blockStateProvider = JsonThemeHandler.deserialize(block, "block");
+                        //JsonObject block = object.getAsJsonObject("block");
+                        blockStateProvider = JsonThemeHandler.deserialize(object, "block");
                         if (blockStateProvider != null) {
                             return new FloorDecoration(blockStateProvider, chance);
                         }

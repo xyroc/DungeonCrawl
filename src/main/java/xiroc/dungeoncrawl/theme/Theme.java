@@ -369,16 +369,17 @@ public class Theme {
     public static void loadJson(IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.info("Loading themes from JSON");
         JsonParser parser = new JsonParser();
-        try {
-            for (ResourceLocation resource : resourceManager
-                    .getAllResourceLocations(DungeonCrawl.locate("theming/").getPath(), (s) -> s.endsWith(".json"))) {
-                DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
+        for (ResourceLocation resource : resourceManager
+                .getAllResourceLocations(DungeonCrawl.locate("theming/").getPath(), (s) -> s.endsWith(".json"))) {
+            DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
+            try {
                 JsonReader reader = new JsonReader(
                         new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 JsonThemeHandler.deserialize(parser.parse(reader).getAsJsonObject());
+            } catch (Exception e) {
+                DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

@@ -49,17 +49,18 @@
       "blocks": [
         {
           "block": "minecraft:netherrack",
-          "weight": 4
-        },
-        {
-          "block": "minecraft:nether_brick"
-        },
-        {
-          "block": "minecraft:red_nether_brick"
-        },
-        {
-          "block": "minecraft:magma_block",
           "weight": 2
+        },
+        {
+          "block": "minecraft:nether_brick",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:red_nether_brick",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:magma_block"
         },
         {
           "block": "minecraft:lava"

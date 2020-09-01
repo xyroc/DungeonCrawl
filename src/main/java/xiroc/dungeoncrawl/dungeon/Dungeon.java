@@ -70,7 +70,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkX, chunkZ, 0, 0);
         if (chunkX == chunkpos.x && chunkZ == chunkpos.z && p_225558_6_.hasStructure(Dungeon.DUNGEON)) {
             for (Biome biome : chunkGen.getBiomeProvider().func_225530_a_(chunkX * 16 - SIZE / 2 * 9,
-                    chunkZ * 16 - SIZE / 2 * 9, chunkGen.getGroundHeight(), 9 * SIZE)) {
+                    chunkZ * 16 - SIZE / 2 * 9, chunkGen.getSeaLevel(), 9 * SIZE)) {
                 if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !chunkGen.hasStructure(biome, DUNGEON)) {
                     return false;
                 }

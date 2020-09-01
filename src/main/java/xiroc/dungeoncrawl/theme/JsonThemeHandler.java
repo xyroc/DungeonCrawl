@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -21,7 +22,6 @@ import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
-import java.util.Iterator;
 import java.util.Optional;
 
 public class JsonThemeHandler {
@@ -100,14 +100,11 @@ public class JsonThemeHandler {
             theme.stairs = JsonThemeHandler.deserialize(themeObject, "stairs");
             theme.solidStairs = JsonThemeHandler.deserialize(themeObject, "solid_stairs");
 
-            theme.material = JsonThemeHandler.deserialize(themeObject, "material");
-            theme.vanillaWall = JsonThemeHandler.deserialize(themeObject, "wall");
-
             theme.slab = JsonThemeHandler.deserialize(themeObject, "slab");
             theme.solidSlab = JsonThemeHandler.deserialize(themeObject, "solid_slab");
 
-            //theme.column = JsonTheme.deserialize(themeObject, "column");
-
+            theme.material = JsonThemeHandler.deserialize(themeObject, "material");
+            theme.vanillaWall = JsonThemeHandler.deserialize(themeObject, "wall");
 
             int id = object.get("id").getAsInt();
 
@@ -121,14 +118,6 @@ public class JsonThemeHandler {
             }
 
             Theme.ID_TO_THEME_MAP.put(id, theme.toTheme().withDecorations(decorations));
-
-            if (object.has("biomes")) {
-                String[] biomes = DungeonCrawl.GSON.fromJson(object.get("biomes"), String[].class);
-
-                for (String biome : biomes) {
-                    Theme.BIOME_TO_THEME_MAP.put(biome, id);
-                }
-            }
         }
 
         public Theme toTheme() {
@@ -140,7 +129,7 @@ public class JsonThemeHandler {
     public static class JsonSubTheme {
 
         // Mandatory entries
-        public IBlockStateProvider wallLog, trapDoor, torchDark, door, material, stairs, slab, fence, button, pressurePlate, fenceGate;
+        public IBlockStateProvider wallLog, trapDoor, door, material, stairs, slab, fence, button, pressurePlate, fenceGate;
 
         public static void deserialize(JsonObject object) {
 
@@ -150,7 +139,6 @@ public class JsonThemeHandler {
 
             theme.wallLog = JsonThemeHandler.deserialize(themeObject, "pillar");
             theme.trapDoor = JsonThemeHandler.deserialize(themeObject, "trapdoor");
-//			theme.torchDark = JsonTheme.deserialize(themeObject, "torch");
             theme.door = JsonThemeHandler.deserialize(themeObject, "door");
             theme.material = JsonThemeHandler.deserialize(themeObject, "material");
             theme.stairs = JsonThemeHandler.deserialize(themeObject, "stairs");
@@ -163,15 +151,6 @@ public class JsonThemeHandler {
             int id = object.get("id").getAsInt();
 
             Theme.ID_TO_SUBTHEME_MAP.put(id, theme.toSubTheme());
-
-            if (object.has("biomes")) {
-                String[] biomes = DungeonCrawl.GSON.fromJson(object.get("biomes"), String[].class);
-
-                for (String biome : biomes) {
-                    Theme.BIOME_TO_SUBTHEME_MAP.put(biome, id);
-                }
-            }
-
         }
 
         public SubTheme toSubTheme() {
@@ -193,9 +172,8 @@ public class JsonThemeHandler {
                 TupleIntBlock[] blocks = new TupleIntBlock[blockObjects.size()];
 
                 int i = 0;
-                Iterator<JsonElement> iterator = blockObjects.iterator();
-                while (iterator.hasNext()) {
-                    JsonObject element = (JsonObject) iterator.next();
+                for (JsonElement blockObject : blockObjects) {
+                    JsonObject element = (JsonObject) blockObject;
                     Block block = ForgeRegistries.BLOCKS
                             .getValue(new ResourceLocation(element.get("block").getAsString()));
                     if (block != null) {
@@ -215,17 +193,23 @@ public class JsonThemeHandler {
                 }
                 return new WeightedRandomBlock(blocks);
             } else if (type.equalsIgnoreCase("block")) {
-                BlockState state = ForgeRegistries.BLOCKS
-                        .getValue(new ResourceLocation(object.get("block").getAsString())).getDefaultState();
-                if (object.has("data")) {
-                    JsonObject data = object.get("data").getAsJsonObject();
-                    for (IProperty<?> property : state.getProperties()) {
-                        if (data.has(property.getName())) {
-                            state = parseProperty(state, property, data.get(property.getName()).getAsString());
+                Block block = ForgeRegistries.BLOCKS
+                        .getValue(new ResourceLocation(object.get("block").getAsString()));
+                if (block != null) {
+                    BlockState state = block.getDefaultState();
+                    if (object.has("data")) {
+                        JsonObject data = object.get("data").getAsJsonObject();
+                        for (IProperty<?> property : state.getProperties()) {
+                            if (data.has(property.getName())) {
+                                state = parseProperty(state, property, data.get(property.getName()).getAsString());
+                            }
                         }
                     }
+                    return new BlockStateHolder(state);
+                } else {
+                    LOGGER.error("Unknown block: {}", object.get("block").getAsString());
+                    return Blocks.CAVE_AIR::getDefaultState;
                 }
-                return new BlockStateHolder(state);
             } else {
                 LOGGER.error("Failed to load BlockState Provider {}: Unknown type {}.", object, type);
                 return null;
@@ -237,20 +221,18 @@ public class JsonThemeHandler {
     }
 
     /**
-     * Applies the property value to the state.
+     * Applies the property value to the state. It is required that the given state does have that property.
      *
-     * @return
+     * @return the resulting block state
      */
     private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, IProperty<T> property,
                                                                       String value) {
-        if (state.has(property)) {
-            Optional<T> optional = property.parseValue(value);
-            if (optional.isPresent()) {
-                T t = optional.get();
-                return state.<T, T>with(property, t);
-            } else {
-                LOGGER.warn("Couldn't apply {} : {} for {}", property.getName(), value, state.getBlock());
-            }
+        Optional<T> optional = property.parseValue(value);
+        if (optional.isPresent()) {
+            T t = optional.get();
+            return state.with(property, t);
+        } else {
+            LOGGER.warn("Couldn't apply {} : {} for {}", property.getName(), value, state.getBlock());
         }
         return state;
     }

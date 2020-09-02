@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.model;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,8 +43,6 @@ public class DungeonModels {
 
     public static final HashMap<Integer, WeightedRandomInteger> WEIGHTED_MODELS = new HashMap<>();
 
-    public static final HashMap<String, DungeonModel> NAME_TO_MODEL = Config.ENABLE_TOOLS.get() ? new HashMap<>() : null;
-
     public static final HashMap<Integer, Vec3i> OFFSETS = new HashMap<>();
 
     public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
@@ -39,19 +51,10 @@ public class DungeonModels {
     public static DungeonModel CAKE_ROOM;
     public static DungeonModel CORRIDOR_LIGHT, CORRIDOR_CHEST, CORRIDOR_SPAWNER, CORRIDOR_CROPS,
             SECRET_ROOM_ENTRANCE;
-    public static DungeonModel CORRIDOR_LINKER, CORRIDOR_LINKER_2, CORRIDOR_LINKER_3, CORRIDOR_LINKER_4,
-            CORRIDOR_LINKER_5;
     public static DungeonModel ENTRANCE;
     public static DungeonModel FOOD_SIDE_ROOM;
     public static DungeonModel LARGE_CORRIDOR_START, LARGE_CORRIDOR_STRAIGHT, LARGE_CORRIDOR_OPEN, LARGE_CORRIDOR_TURN;
-    public static DungeonModel FORGE;
-    public static DungeonModel LARGE_NODE, LARGE_NODE_LIBRARY;
-    public static DungeonModel LOOT_ROOM;
-    public static DungeonModel NODE, NODE_2, NODE_FORK;
-    public static DungeonModel NODE_CATACOMB_DEAD_END, NODE_CATACOMB_TURN;
-    public static DungeonModel NODE_TURN, NODE_WATER, NODE_WATER_2, NODE_WATER_DEAD_END, NODE_WATER_STRAIGHT,
-            NODE_WATER_FORK;
-    public static DungeonModel NODE_CONNECTOR, NODE_CONNECTOR_2, NODE_CONNECTOR_3, NODE_CONNECTOR_4, NODE_CONNECTOR_5;
+    public static DungeonModel LOOT_ROOM, OLD_LOOT_ROOM;
     public static DungeonModel PRISON_CELL;
     public static DungeonModel SECRET_ROOM;
     public static DungeonModel STAIRCASE, STAIRS_BOTTOM, STAIRS_BOTTOM_2, STAIRS_TOP;
@@ -62,10 +65,6 @@ public class DungeonModels {
 
         MODELS.clear();
         WEIGHTED_MODELS.clear();
-
-        if (NAME_TO_MODEL != null) {
-            NAME_TO_MODEL.clear();
-        }
 
         CORRIDOR_CROPS = loadFromFile("models/dungeon/corridor/feature/corridor_crop_feature.nbt", resourceManager);
         CORRIDOR_LIGHT = loadFromFile("models/dungeon/corridor/feature/corridor_light_feature.nbt", resourceManager);
@@ -78,13 +77,27 @@ public class DungeonModels {
         LARGE_CORRIDOR_TURN = loadFromFile("models/dungeon/corridor/large_corridor_turn.nbt", resourceManager).setId(30);
         LARGE_CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor/large_corridor_open.nbt", resourceManager).setId(31);
 
-        LOOT_ROOM = loadFromFile("models/dungeon/loot_room.nbt", resourceManager).setId(35);
+        LOOT_ROOM = loadFromFile("models/dungeon/loot_room.nbt", resourceManager).setId(27);
+        OLD_LOOT_ROOM = loadFromFile("models/dungeon/old_loot_room.nbt", resourceManager).setId(35);
 
         CORRIDOR_SECRET_ROOM_ENTRANCE = loadFromFile("models/dungeon/corridor/corridor_secret_room_entrance.nbt", resourceManager).setId(7);
 
-        // Models with metadata
-
         FOOD_SIDE_ROOM = load("models/dungeon/room/", "food_side_room", resourceManager);
+
+        ENTRANCE = load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
+
+        PRISON_CELL = loadFromFile("models/dungeon/prison_cell.nbt", resourceManager).setId(64);
+
+        SECRET_ROOM = loadFromFile("models/dungeon/room/secret_room.nbt", resourceManager).setId(70);
+
+        STAIRCASE = loadFromFile("models/dungeon/staircase.nbt", resourceManager).setId(72);
+        STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.nbt", resourceManager).setId(73);
+        STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.nbt", resourceManager).setId(74);
+        STAIRS_BOTTOM_2 = loadFromFile("models/dungeon/stairs_bottom_2.nbt", resourceManager).setId(75);
+
+        STARTER_ROOM = loadFromFile("models/dungeon/room/starter_room.nbt", resourceManager).setId(76);
+
+        // Models with metadata
 
         load("models/dungeon/corridor/", "corridor", resourceManager);
         load("models/dungeon/corridor/", "corridor_2", resourceManager);
@@ -94,64 +107,55 @@ public class DungeonModels {
         load("models/dungeon/corridor/", "corridor_fire", resourceManager);
         load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
 
-        ENTRANCE = load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
+        load("models/dungeon/corridor/dark/", "corridor", resourceManager);
+        load("models/dungeon/corridor/dark/", "corridor_2", resourceManager);
+        load("models/dungeon/corridor/dark/", "corridor_3", resourceManager);
+        load("models/dungeon/corridor/dark/", "corridor_4", resourceManager);
+        load("models/dungeon/corridor/dark/", "corridor_spawner", resourceManager);
 
-        CAKE_ROOM = load("models/dungeon/corridor/linker/", "cake_room", resourceManager);
-        CORRIDOR_LINKER = load("models/dungeon/corridor/linker/", "corridor_linker", resourceManager);
-        CORRIDOR_LINKER_2 = load("models/dungeon/corridor/linker/", "corridor_linker_2", resourceManager);
-        CORRIDOR_LINKER_3 = load("models/dungeon/corridor/linker/", "corridor_linker_3", resourceManager);
-        CORRIDOR_LINKER_4 = load("models/dungeon/corridor/linker/", "corridor_linker_4", resourceManager);
-        CORRIDOR_LINKER_5 = load("models/dungeon/corridor/linker/", "corridor_linker_5", resourceManager);
+        load("models/dungeon/corridor/linker/", "cake_room", resourceManager);
+        load("models/dungeon/corridor/linker/", "corridor_linker", resourceManager);
+        load("models/dungeon/corridor/linker/", "corridor_linker_2", resourceManager);
+        load("models/dungeon/corridor/linker/", "corridor_linker_3", resourceManager);
+        load("models/dungeon/corridor/linker/", "corridor_linker_4", resourceManager);
+        load("models/dungeon/corridor/linker/", "corridor_linker_5", resourceManager);
 
-        FORGE = load("models/dungeon/node/", "forge", resourceManager);
-
-        LARGE_NODE = load("models/dungeon/node/", "large_node", resourceManager);
-        LARGE_NODE_LIBRARY = load("models/dungeon/node/", "large_node_library", resourceManager);
-
-        NODE = load("models/dungeon/node/", "node", resourceManager);
-        NODE_2 = load("models/dungeon/node/", "node_jukebox", resourceManager);
-        NODE_FORK = load("models/dungeon/node/", "node_fork", resourceManager);
-
-        NODE_CATACOMB_DEAD_END = load("models/dungeon/node/", "node_catacomb_dead_end", resourceManager);
-        NODE_CATACOMB_TURN = load("models/dungeon/node/", "node_catacomb_turn", resourceManager);
-
-        NODE_TURN = load("models/dungeon/node/", "node_turn", resourceManager);
-
-        NODE_WATER = load("models/dungeon/node/", "node_water", resourceManager);
-        NODE_WATER_2 = load("models/dungeon/node/", "node_water_2", resourceManager);
-
-        NODE_WATER_DEAD_END = load("models/dungeon/node/", "node_water_dead_end", resourceManager);
-        NODE_WATER_FORK = load("models/dungeon/node/", "node_water_fork", resourceManager);
-        NODE_WATER_STRAIGHT = load("models/dungeon/node/", "node_water_straight", resourceManager);
-
+        load("models/dungeon/node/", "forge", resourceManager);
+        load("models/dungeon/node/", "node", resourceManager);
+        load("models/dungeon/node/", "node_jukebox", resourceManager);
+        load("models/dungeon/node/", "node_fork", resourceManager);
+        load("models/dungeon/node/", "node_catacomb_dead_end", resourceManager);
+        load("models/dungeon/node/", "node_catacomb_turn", resourceManager);
+        load("models/dungeon/node/", "node_turn", resourceManager);
+        load("models/dungeon/node/", "node_water", resourceManager);
+        load("models/dungeon/node/", "node_water_2", resourceManager);
+        load("models/dungeon/node/", "node_water_dead_end", resourceManager);
+        load("models/dungeon/node/", "node_water_fork", resourceManager);
+        load("models/dungeon/node/", "node_water_straight", resourceManager);
         load("models/dungeon/node/", "node_prison_fork", resourceManager);
         load("models/dungeon/node/", "node_prison", resourceManager);
+        load("models/dungeon/node/", "large_node", resourceManager);
+        load("models/dungeon/node/", "large_node_library", resourceManager);
 
-        NODE_CONNECTOR = load("models/dungeon/node/connector/", "node_connector", resourceManager);
-        NODE_CONNECTOR = load("models/dungeon/node/connector/", "node_connector_2", resourceManager);
-        NODE_CONNECTOR = load("models/dungeon/node/connector/", "node_connector_3", resourceManager);
-        NODE_CONNECTOR = load("models/dungeon/node/connector/", "node_connector_4", resourceManager);
-        NODE_CONNECTOR = load("models/dungeon/node/connector/", "node_connector_5", resourceManager);
+        load("models/dungeon/node/dark/", "node_lava", resourceManager);
+        load("models/dungeon/node/dark/", "node_lava_dead_end", resourceManager);
+        load("models/dungeon/node/dark/", "node_lava_fork", resourceManager);
+        load("models/dungeon/node/dark/", "node_lava_straight", resourceManager);
 
-        // - - -
-
-        PRISON_CELL = loadFromFile("models/dungeon/prison_cell.nbt", resourceManager).setId(64);
-
-        SECRET_ROOM = loadFromFile("models/dungeon/room/secret_room.nbt", resourceManager).setId(70);
-
-        //SPAWNER_ROOM = loadFromFile("models/dungeon/room/spawner_room.nbt", resourceManager).build().setId(71);
+        load("models/dungeon/node/connector/", "node_connector", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_2", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_3", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_4", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_5", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_catacomb", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_trap", resourceManager);
 
         load("models/dungeon/room/", "spawner_room", resourceManager);
         load("models/dungeon/room/", "spawner_room_2", resourceManager);
         load("models/dungeon/room/", "spawner_room_material", resourceManager);
         load("models/dungeon/room/", "spawner_room_material_2", resourceManager);
 
-        STAIRCASE = loadFromFile("models/dungeon/staircase.nbt", resourceManager).setId(72);
-        STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.nbt", resourceManager).setId(73);
-        STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.nbt", resourceManager).setId(74);
-        STAIRS_BOTTOM_2 = loadFromFile("models/dungeon/stairs_bottom_2.nbt", resourceManager).setId(75);
-
-        STARTER_ROOM = loadFromFile("models/dungeon/room/starter_room.nbt", resourceManager).setId(76);
+        load("models/dungeon/room/dark/", "spawner_room", resourceManager);
 
         // -Additional Models- //
 
@@ -239,15 +243,12 @@ public class DungeonModels {
             createWeightedRandomIntegers(tempMap, ModelCategory.ROOM, stage, i);
         }
 
-        //OFFSETS.put(ENTRANCE.id, new Vec3i(-2, 0, -2));
-
         DungeonCrawl.LOGGER.info("Finished model loading.");
     }
 
     public static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
         DungeonModel model = loadFromFile(directory + file + ".nbt", resourceManager);
 
-        //ResourceLocation metadata = DungeonCrawl.locate(directory + "metadata/" + file + ".json");
         ResourceLocation metadata = DungeonCrawl.locate(directory + file + ".json");
 
         if (resourceManager.hasResource(metadata)) {
@@ -267,22 +268,6 @@ public class DungeonModels {
         return model;
     }
 
-//	public static DungeonModel loadFromFile(String path) {
-//		DungeonCrawl.LOGGER.info("Loading {}", path);
-//
-//		try {
-//			DataInputStream input = new DataInputStream(
-//					DungeonModels.class.getResourceAsStream("/data/dungeoncrawl/" + path));
-//			CompoundNBT nbt = new CompoundNBT();
-//			nbt.read(input, 16, NBTSizeTracker.INFINITE);
-//			DungeonModel model = ModelHandler.getModelFromNBT(nbt);
-//			return model;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
-
     public static DungeonModel loadFromFile(String path, IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", path);
 
@@ -293,17 +278,13 @@ public class DungeonModels {
             if (Config.ENABLE_TOOLS.get()) {
                 String name = path.substring(path.lastIndexOf("/") + 1, path.indexOf(".nbt"));
                 DungeonCrawl.LOGGER.debug("Adding {}", name);
-                if (NAME_TO_MODEL.containsKey(name)) {
-                    DungeonCrawl.LOGGER.warn("Found multiple models with the same name (\"{}\")", name);
-                }
-                NAME_TO_MODEL.put(name, model);
             }
             return model;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        throw new RuntimeException("Failed to load the model " + path);
+        throw new RuntimeException("Failed to load " + path);
     }
 
     public static DungeonModel loadFromFile(ResourceLocation resource, IResourceManager resourceManager) {
@@ -317,17 +298,13 @@ public class DungeonModels {
                 String path = resource.getPath();
                 String name = path.substring(path.lastIndexOf("/") + 1, path.indexOf(".nbt"));
                 DungeonCrawl.LOGGER.debug("Adding {}", name);
-                if (NAME_TO_MODEL.containsKey(name)) {
-                    DungeonCrawl.LOGGER.warn("Found multiple models with the same name (\"{}\")", name);
-                }
-                NAME_TO_MODEL.put(name, model);
             }
             return model;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        throw new RuntimeException("Failed to load the model " + resource.getPath());
+        throw new RuntimeException("Failed to load " + resource.getPath());
     }
 
     private static void createWeightedRandomIntegers(HashMap<Integer, DungeonModel[]> tempMap, ModelCategory baseCategory, ModelCategory stageCategory, int stage) {
@@ -345,14 +322,20 @@ public class DungeonModels {
 
     public enum ModelCategory {
 
-        STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, NODE_DEAD_END, NODE_STRAIGHT, NODE_TURN, NODE_FORK, NODE_FULL,
-        NORMAL_NODE, LARGE_NODE, CORRIDOR, CORRIDOR_LINKER, SIDE_ROOM, NODE_CONNECTOR, ENTRANCE, ROOM;
+        STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5,
+        NODE_DEAD_END, NODE_STRAIGHT, NODE_TURN, NODE_FORK, NODE_FULL,
+        NORMAL_NODE, LARGE_NODE,
+        CORRIDOR, CORRIDOR_LINKER, NODE_CONNECTOR,
+        ENTRANCE,
+        SIDE_ROOM, ROOM;
 
-        public static final ModelCategory[] STAGES = new ModelCategory[]{STAGE_1, STAGE_2, STAGE_3, STAGE_4,
+        public static final ModelCategory[] STAGES = {STAGE_1, STAGE_2, STAGE_3, STAGE_4,
                 STAGE_5};
 
-        public static final ModelCategory[] NODE_TYPES = new ModelCategory[]{NODE_FULL, NODE_FORK, NODE_STRAIGHT,
+        public static final ModelCategory[] NODE_TYPES = {NODE_FULL, NODE_FORK, NODE_STRAIGHT,
                 NODE_TURN, NODE_DEAD_END};
+
+        public static final ModelCategory[] EMPTY = new ModelCategory[0];
 
         public final List<DungeonModel> members;
 
@@ -396,8 +379,6 @@ public class DungeonModels {
 
         public static ModelCategory[] getSecondaryNodeCategories(ModelCategory primeCategory) {
             switch (primeCategory) {
-                case NODE_FULL:
-                    return new ModelCategory[0];
                 case NODE_DEAD_END:
                     return new ModelCategory[]{NODE_TURN, NODE_STRAIGHT, NODE_FORK, NODE_FULL};
                 case NODE_FORK:
@@ -406,16 +387,15 @@ public class DungeonModels {
                 case NODE_TURN:
                     return new ModelCategory[]{NODE_FULL, NODE_FORK};
                 default:
-                    return null;
+                    return EMPTY;
             }
         }
 
-        /**
-         * @param stage range: [0,4]
-         */
         public static ModelCategory getCategoryForStage(int stage) {
-            if (stage < 0 || stage > 4)
+            if (stage < 0)
                 return STAGE_1;
+            if (stage > 4)
+                return STAGE_5;
             return STAGES[stage];
         }
 

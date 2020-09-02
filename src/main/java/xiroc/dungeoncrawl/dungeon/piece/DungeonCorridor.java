@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.piece;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
@@ -38,17 +52,8 @@ public class DungeonCorridor extends DungeonPiece {
 
     @Override
     public int determineModel(DungeonBuilder builder, Random rand) {
-        if (connectedSides == 2) {
-            //                case 1:
-            ////				return DungeonModels.CORRIDOR_FIRE;
-            //                    return DungeonModels.CORRIDOR.id;
-            //                case 2:
-            ////				return DungeonModels.CORRIDOR_GRASS;
-            //                    return DungeonModels.CORRIDOR.id;
-            if (sides[0] && sides[2] || sides[1] && sides[3]) {
-                //return RandomDungeonModel.CORRIDOR_STRAIGHT.roll(rand).id;
+        if (connectedSides == 2 && isStraight()) {
                 return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
-            }
         }
         return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER,
                 DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
@@ -122,7 +127,7 @@ public class DungeonCorridor extends DungeonPiece {
             entrances(worldIn, structureBoundingBoxIn, model);
         }
 
-        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), boundingBox, model);
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{1});

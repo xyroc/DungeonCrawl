@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.Direction;
@@ -14,7 +28,6 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.Triple;
@@ -80,17 +93,17 @@ public class DungeonFeatures {
         });
 
         CORRIDOR_FEATURES.add(((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-            if (layer.segments[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.1) {
+            if (layer.segments[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.05) {
                 Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z));
                 if (sideRoomData != null) {
                     DungeonSideRoom sideRoom = new DungeonSideRoom();
-                    Direction dir = sideRoomData.getB().rotate(Direction.WEST);
+                    sideRoom.modelID = DungeonModels.FOOD_SIDE_ROOM.id;
 
+                    Direction dir = sideRoomData.getB().rotate(Direction.WEST);
                     sideRoom.openSide(dir);
                     sideRoom.setPosition(sideRoomData.getA());
                     sideRoom.setRotation(sideRoomData.getB());
                     sideRoom.stage = stage;
-                    sideRoom.modelID = DungeonModels.FOOD_SIDE_ROOM.id;
 
                     layer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).withFlag(PlaceHolder.Flag.FIXED_MODEL);
                     layer.segments[x][z].reference.openSide(dir.getOpposite());
@@ -330,7 +343,7 @@ public class DungeonFeatures {
     public interface CorridorFeature {
 
         boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
-                               int stage, BlockPos startPos);
+                        int stage, BlockPos startPos);
 
     }
 

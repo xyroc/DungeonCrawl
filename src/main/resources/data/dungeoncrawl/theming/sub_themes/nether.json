@@ -28,10 +28,10 @@
           "block": "minecraft:obsidian"
         },
         {
-          "block": "minecraft:nether_brick"
+          "block": "minecraft:nether_bricks"
         },
         {
-          "block": "minecraft:red_nether_brick"
+          "block": "minecraft:red_nether_bricks"
         }
       ]
     },

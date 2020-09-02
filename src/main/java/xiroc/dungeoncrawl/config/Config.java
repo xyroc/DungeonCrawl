@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.config;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
@@ -29,7 +43,6 @@ public class Config {
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
             NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN;
-//			ENABLE_DUNGEON_BOSS;
 
     static {
         BUILDER.comment("General Settings").push(CONFIG_GENERAL);
@@ -62,9 +75,6 @@ public class Config {
                 .define("use_vanilla_spawners", false);
         NATURAL_DESPAWN = BUILDER.comment("Whether mobs from spawners should despawn naturally or not.").define("natural_despawn", true);
 //		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
-//		ENABLE_DUNGEON_BOSS = BUILDER.comment(
-//				"If enabled, there will be a final room with a boss at the lowest layer. Please note that Dungeon Crawl DOES NOT bring its own bosses. The boss entities can be configured in the config.json file.")
-//				.define("enable_dungeon_boss", false);
 
         BUILDER.pop();
 

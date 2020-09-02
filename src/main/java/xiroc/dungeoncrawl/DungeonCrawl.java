@@ -1,3 +1,21 @@
+/*
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package xiroc.dungeoncrawl;
 
 import com.google.gson.Gson;
@@ -39,23 +57,6 @@ import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-/* GENRERAL LICENSE FOR DungeonCrawl v1.0
- * 
-(1) DungeonCrawl is the intellectual property of XYROC (otherwise known as XIROC1337).
-    Distribution of the compiled mod on any other site than curseforge.com, minecraft.curseforge.com, xiroc.ovh or minecraftforum.net is strictly forbidden.
-    Further, all sites included in the following list are NOT allowed to redistribute the mod or profit from it in any way:
-    https://stopmodreposts.org/sites.html
-    Redistributing this mod on the above mentioned illegal sites is a violation of copyright.
-    
-(2) Modpack creators are only allowed to include this mod in FREE-TO-PLAY modpacks. 
-    Including this mod in modpacks that require payment to become playable or accessible for the user is forbidden.
-    
-(3) You are allowed to read, use and share the Source Code of this mod, for example to create similar projects.
-    However, completely copying the mod or copying large parts of the source (= more than 20%) without the explicit approval of the mod author is forbidden.
-    
-DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
 
 @Mod(DungeonCrawl.MODID)
 public class DungeonCrawl {

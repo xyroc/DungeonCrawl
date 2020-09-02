@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.math.BlockPos;
@@ -35,15 +49,6 @@ public class DungeonBuilder {
 
     public static final DungeonGenerator DEFAULT_GENERATOR = new DefaultGenerator(DungeonGeneratorSettings.DEFAULT);
 
-    public static final HashMap<Integer, EntranceProcessor> ENTRANCE_PROCESSORS;
-
-    private static final DungeonModel[] ENTRANCES = new DungeonModel[]{DungeonModels.ENTRANCE};
-
-    public static final EntranceProcessor DEFAULT_PROCESSOR = (world, pos, theme, piece) ->
-    {
-        ;
-    };
-
     public Random rand;
     public Position2D start;
 
@@ -58,51 +63,6 @@ public class DungeonBuilder {
     public Biome startBiome;
 
     public int theme, subTheme;
-
-    static {
-//		ENTRANCE_OFFSET_DATA.put(21, new Tuple<Integer, Integer>(-2 , -2));
-
-        ENTRANCE_PROCESSORS = new HashMap<Integer, EntranceProcessor>();
-//		ENTRANCE_PROCESSORS.put(33, (world, pos, theme, piece) -> {
-//			int x = pos.getX(), y = pos.getY(), z = pos.getZ();
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 2), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 2), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 2), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 2), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 2), piece);
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 4), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 5), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 6), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 7), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 2, y, z + 8), piece);
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 4, y, z + 10), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 10), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 6, y, z + 10), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 10), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 8, y, z + 10), piece);
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 4), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 5), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 6), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 7), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 10, y, z + 8), piece);
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 1), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 1), piece);
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 5), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 1, y, z + 7), piece);
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 5, y, z + 11), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 7, y, z + 11), piece);
-//
-//			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 5), piece);
-//			buildWallPillar(world, theme, new BlockPos(x + 11, y, z + 7), piece);
-//		});
-    }
 
     public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
         if (world.getGroundHeight() >= 32) {
@@ -135,8 +95,6 @@ public class DungeonBuilder {
 
     public List<DungeonPiece> build() {
         List<DungeonPiece> list = Lists.newArrayList();
-
-        int secretRoomLayer = rand.nextInt(2);
 
         for (int i = 0; i < layers.length; i++) {
             this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
@@ -260,19 +218,6 @@ public class DungeonBuilder {
         for (int y0 = y - 1; y0 > height; y0--) {
             DungeonPiece.setBlockState(world, theme.solid.get(), x, y0, z, bounds, true);
         }
-    }
-
-    public static BossEntry getRandomBoss(Random rand) {
-        if (JsonConfig.DUNGEON_BOSSES.length < 1)
-            return null;
-        return JsonConfig.DUNGEON_BOSSES[rand.nextInt(JsonConfig.DUNGEON_BOSSES.length)];
-    }
-
-    @FunctionalInterface
-    public interface EntranceProcessor {
-
-        void process(IWorld world, BlockPos pos, int theme, DungeonPiece piece);
-
     }
 
 }

@@ -21,11 +21,11 @@
           "weight": 4
         },
         {
-          "block": "minecraft:nether_brick",
+          "block": "minecraft:nether_bricks",
           "weight": 2
         },
         {
-          "block": "minecraft:red_nether_brick"
+          "block": "minecraft:red_nether_bricks"
         },
         {
           "block": "minecraft:magma_block",
@@ -52,18 +52,15 @@
           "weight": 2
         },
         {
-          "block": "minecraft:nether_brick",
+          "block": "minecraft:nether_bricks",
           "weight": 2
         },
         {
-          "block": "minecraft:red_nether_brick",
+          "block": "minecraft:red_nether_bricks",
           "weight": 2
         },
         {
           "block": "minecraft:magma_block"
-        },
-        {
-          "block": "minecraft:lava"
         },
         {
           "block": "minecraft:obsidian"

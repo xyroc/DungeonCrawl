@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.piece;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.piece;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
@@ -16,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
@@ -69,9 +84,6 @@ public abstract class DungeonPiece extends StructurePiece {
     public static final CompoundNBT DEFAULT_NBT;
 
     private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.IRON_BARS).build();
-
-    private static final Set<Block> PROTECTED_BLOCKS = ImmutableSet.<Block>builder().add(Blocks.END_PORTAL)
-            .add(Blocks.END_PORTAL_FRAME).build();
 
     static {
         DEFAULT_NBT = new CompoundNBT();
@@ -238,7 +250,7 @@ public abstract class DungeonPiece extends StructurePiece {
         if (state == null)
             return;
 
-        if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
+        if (isBlockProtected(world, state, pos)
                 || world.isAirBlock(pos) && !type.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
@@ -261,7 +273,7 @@ public abstract class DungeonPiece extends StructurePiece {
         if (state == null)
             return;
 
-        if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
+        if (isBlockProtected(world, state, pos)
                 || world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
@@ -286,7 +298,7 @@ public abstract class DungeonPiece extends StructurePiece {
         if (state == null)
             return;
 
-        if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
+        if (isBlockProtected(world, state, pos)
                 || world.isAirBlock(pos) && !type.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
@@ -311,7 +323,7 @@ public abstract class DungeonPiece extends StructurePiece {
         if (state == null)
             return;
 
-        if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock())
+        if (isBlockProtected(world, state, pos)
                 || world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
@@ -336,7 +348,7 @@ public abstract class DungeonPiece extends StructurePiece {
         if (state == null)
             return;
 
-        if (PROTECTED_BLOCKS.contains(world.getBlockState(pos).getBlock()) || world.isAirBlock(pos) && !fillAir) {
+        if (isBlockProtected(world, state, pos) || world.isAirBlock(pos) && !fillAir) {
             return;
         }
 
@@ -359,7 +371,7 @@ public abstract class DungeonPiece extends StructurePiece {
                               MutableBoundingBox boundingboxIn) {
         BlockPos blockPos = new BlockPos(x, y, z);
 
-        if (PROTECTED_BLOCKS.contains(worldIn.getBlockState(blockPos).getBlock()))
+        if (isBlockProtected(worldIn, blockstateIn, blockPos))
             return;
 
         //if (boundingboxIn.isVecInside(blockPos)) {
@@ -382,7 +394,7 @@ public abstract class DungeonPiece extends StructurePiece {
                                   MutableBoundingBox boundingboxIn) {
         BlockPos blockPos = new BlockPos(x, y, z);
 
-        if (PROTECTED_BLOCKS.contains(worldIn.getBlockState(blockPos).getBlock()) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
+        if (isBlockProtected(worldIn, blockstateIn, blockPos) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
             return;
 
         if (boundingboxIn.isVecInside(blockPos)) {
@@ -538,84 +550,10 @@ public abstract class DungeonPiece extends StructurePiece {
                 }
             }
         }
-
-//        if (theme == Theme.MOSS) {
-//            for (int x = 1; x < model.width - 1; x++) {
-//                for (int y = 0; y < model.height; y++) {
-//                    for (int z = 1; z < model.length - 1; z++) {
-//                        if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z))) {
-//                            BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-//                            BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
-//                            BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
-//                            BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
-//                            BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
-//
-//                            BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-//
-//                            if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
-//                                DungeonCrawl.LOGGER.error("wrong north! {} -> {}", _p, north);
-//                            }
-//
-//                            if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
-//                                DungeonCrawl.LOGGER.error("wrong east! {} -> {}", _p, east);
-//                            }
-//
-//                            if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
-//                                DungeonCrawl.LOGGER.error("wrong south! {} -> {}", _p, south);
-//                            }
-//
-//                            if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
-//                                DungeonCrawl.LOGGER.error("wrong west! {} -> {}", _p, west);
-//                            }
-//
-//                            if (up.getY() != _p.getY() + 1) {
-//                                DungeonCrawl.LOGGER.error("wrong up! {} -> {}", _p, up);
-//                            }
-//
-//
-//                            boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
-//                            boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
-//                            boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
-//                            boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
-//                            boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
-//
-//                            if (_north && world.isAirBlock(north)) {
-//                                DungeonCrawl.LOGGER.warn("!NORTH! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north);
-//                            }
-//
-//                            if (_east && world.isAirBlock(east)) {
-//                                DungeonCrawl.LOGGER.warn("!EAST! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east);
-//                            }
-//
-//                            if (_south && world.isAirBlock(south)) {
-//                                DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south);
-//                            }
-//
-//                            if (_west && world.isAirBlock(west)) {
-//                                DungeonCrawl.LOGGER.warn("!WEST! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west);
-//                            }
-//
-//                            if (_up && world.isAirBlock(up)) {
-//                                DungeonCrawl.LOGGER.warn("!UP! {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up);
-//                            }
-//
-//                            if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.35) {
-//                                BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
-//                                world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
-//                                        .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
-//                                        .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
-//                                world.getChunk(p).markBlockForPostprocessing(p);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
 
     public void buildRotated(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
                              SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
-        //DungeonCrawl.LOGGER.debug("BuildRotated: {} {} {}, {} {}, {} {}, {} {}", pos.getX(), pos.getY(), pos.getZ(), xStart, zStart, width, length, model.width, model.length);
         buildRotatedFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, rotation, fillAir);
 //        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
 //                width = Math.min(model.width, boundsIn.maxX - pos.getX() + 1);
@@ -866,76 +804,6 @@ public abstract class DungeonPiece extends StructurePiece {
                         }
                     }
                 }
-
-//                if (theme == Theme.MOSS) {
-//                    for (int x = 1; x < model.width - 1; x++) {
-//                        for (int y = 0; y < model.height; y++) {
-//                            for (int z = 1; z < model.length - 1; z++) {
-//                                if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x))) {
-//                                    BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-//                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
-//                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
-//                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
-//                                    BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
-//
-//                                    BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-//
-//                                    if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
-//                                        DungeonCrawl.LOGGER.error("wrong north! {} -> {}, {}", _p, north, rotation);
-//                                    }
-//
-//                                    if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
-//                                        DungeonCrawl.LOGGER.error("wrong east! {} -> {}, {}", _p, east, rotation);
-//                                    }
-//
-//                                    if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
-//                                        DungeonCrawl.LOGGER.error("wrong south! {} -> {}, {}", _p, south, rotation);
-//                                    }
-//
-//                                    if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
-//                                        DungeonCrawl.LOGGER.error("wrong west! {} -> {}, {}", _p, west, rotation);
-//                                    }
-//
-//                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
-//                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
-//                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
-//                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
-//                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
-//
-//                                    if (_north && world.isAirBlock(north)) {
-//                                        DungeonCrawl.LOGGER.warn("!NORTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north, rotation);
-//                                    }
-//
-//                                    if (_east && world.isAirBlock(east)) {
-//                                        DungeonCrawl.LOGGER.warn("!EAST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east, rotation);
-//                                    }
-//
-//                                    if (_south && world.isAirBlock(south)) {
-//                                        DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south, rotation);
-//                                    }
-//
-//                                    if (_west && world.isAirBlock(west)) {
-//                                        DungeonCrawl.LOGGER.warn("!WEST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west, rotation);
-//                                    }
-//
-//                                    if (_up && world.isAirBlock(up)) {
-//                                        DungeonCrawl.LOGGER.warn("!UP! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up, rotation);
-//                                    }
-//
-//                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
-//                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
-//                                        world.setBlockState(p,
-//                                                Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
-//                                                        .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
-//                                                        .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
-//                                        world.getChunk(p).markBlockForPostprocessing(p);
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
                 break;
             }
             case COUNTERCLOCKWISE_90: {
@@ -971,74 +839,6 @@ public abstract class DungeonPiece extends StructurePiece {
                         }
                     }
                 }
-
-//                if (theme == Theme.MOSS) {
-//                    for (int x = 1; x < model.width - 1; x++) {
-//                        for (int y = 0; y < model.height; y++) {
-//                            for (int z = 1; z < model.length - 1; z++) {
-//                                if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1))) {
-//                                    BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-//                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
-//                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
-//                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
-//                                    BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
-//
-//                                    BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-//
-//                                    if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
-//                                        DungeonCrawl.LOGGER.error("wrong north! {} -> {}, {}", _p, north, rotation);
-//                                    }
-//
-//                                    if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
-//                                        DungeonCrawl.LOGGER.error("wrong east! {} -> {}, {}", _p, east, rotation);
-//                                    }
-//
-//                                    if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
-//                                        DungeonCrawl.LOGGER.error("wrong south! {} -> {}, {}", _p, south, rotation);
-//                                    }
-//
-//                                    if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
-//                                        DungeonCrawl.LOGGER.error("wrong west! {} -> {}, {}", _p, west, rotation);
-//                                    }
-//
-//                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
-//                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
-//                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
-//                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
-//                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
-//
-//                                    if (_north && world.isAirBlock(north)) {
-//                                        DungeonCrawl.LOGGER.warn("!NORTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north, rotation);
-//                                    }
-//
-//                                    if (_east && world.isAirBlock(east)) {
-//                                        DungeonCrawl.LOGGER.warn("!EAST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east, rotation);
-//                                    }
-//
-//                                    if (_south && world.isAirBlock(south)) {
-//                                        DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south, rotation);
-//                                    }
-//
-//                                    if (_west && world.isAirBlock(west)) {
-//                                        DungeonCrawl.LOGGER.warn("!WEST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west, rotation);
-//                                    }
-//
-//                                    if (_up && world.isAirBlock(up)) {
-//                                        DungeonCrawl.LOGGER.warn("!UP! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up, rotation);
-//                                    }
-//
-//                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
-//                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
-//                                        world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
-//                                                .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
-//                                                .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
-//                                        world.getChunk(p).markBlockForPostprocessing(p);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
                 break;
             }
             case CLOCKWISE_180: {
@@ -1073,76 +873,6 @@ public abstract class DungeonPiece extends StructurePiece {
                         }
                     }
                 }
-
-//                if (theme == Theme.MOSS) {
-//                    for (int x = 1; x < model.width - 1; x++) {
-//                        for (int y = 0; y < model.height; y++) {
-//                            for (int z = 1; z < model.length - 1; z++) {
-//                                if (model.model[x][y][z] == null && boundsIn.isVecInside(new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1))) {
-//                                    BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-//                                    BlockPos east = new BlockPos(north.getX() + 1, north.getY(), north.getZ() + 1);
-//                                    BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
-//                                    BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
-//                                    BlockPos up = new BlockPos(north.getX(), pos.getY() + y + 1, east.getZ());
-//
-//                                    BlockPos _p = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-//
-//
-//                                    if (!(north.getX() == _p.getX() && north.getZ() == _p.getZ() - 1)) {
-//                                        DungeonCrawl.LOGGER.error("wrong north! {} -> {}, {}", _p, north, rotation);
-//                                    }
-//
-//                                    if (!(east.getX() == _p.getX() + 1 && east.getZ() == _p.getZ())) {
-//                                        DungeonCrawl.LOGGER.error("wrong east! {} -> {}, {}", _p, east, rotation);
-//                                    }
-//
-//                                    if (!(south.getX() == _p.getX() && south.getZ() == _p.getZ() + 1)) {
-//                                        DungeonCrawl.LOGGER.error("wrong south! {} -> {}, {}", _p, south, rotation);
-//                                    }
-//
-//                                    if (!(west.getX() == _p.getX() - 1 && west.getZ() == _p.getZ())) {
-//                                        DungeonCrawl.LOGGER.error("wrong west! {} -> {}, {}", _p, west, rotation);
-//                                    }
-//
-//                                    boolean _north = boundsIn.isVecInside(north) && north.getZ() >= 1 && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
-//                                    boolean _east = boundsIn.isVecInside(east) && east.getX() < model.width - 1 && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
-//                                    boolean _south = boundsIn.isVecInside(south) && south.getZ() < model.length - 1 && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
-//                                    boolean _west = boundsIn.isVecInside(west) && west.getX() >= 1 && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
-//                                    boolean _up = boundsIn.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
-//
-//                                    if (_north && world.isAirBlock(north)) {
-//                                        DungeonCrawl.LOGGER.warn("!NORTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), north, rotation);
-//                                    }
-//
-//                                    if (_east && world.isAirBlock(east)) {
-//                                        DungeonCrawl.LOGGER.warn("!EAST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), east, rotation);
-//                                    }
-//
-//                                    if (_south && world.isAirBlock(south)) {
-//                                        DungeonCrawl.LOGGER.warn("!SOUTH! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), south, rotation);
-//                                    }
-//
-//                                    if (_west && world.isAirBlock(west)) {
-//                                        DungeonCrawl.LOGGER.warn("!WEST! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), west, rotation);
-//                                    }
-//
-//                                    if (_up && world.isAirBlock(up)) {
-//                                        DungeonCrawl.LOGGER.warn("!UP! {}, {}, {}", new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), up, rotation);
-//                                    }
-//
-//                                    if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.25) {
-//                                        BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
-//                                        world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
-//                                                .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
-//                                                .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
-//                                        world.getChunk(p).markBlockForPostprocessing(p);
-//                                    }
-//
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
                 break;
             }
             case NONE:
@@ -1181,10 +911,10 @@ public abstract class DungeonPiece extends StructurePiece {
 
     }
 
-    public void decorate(IWorld world, BlockPos pos, int width, int height, int length, Theme theme, MutableBoundingBox boundingBox, DungeonModel model) {
+    public void decorate(IWorld world, BlockPos pos, int width, int height, int length, Theme theme, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonModel model) {
         if (theme.decorations != null) {
             for (IDungeonDecoration decoration : theme.decorations) {
-                decoration.decorate(model, world, pos, width, height, length, boundingBox, this, stage);
+                decoration.decorate(model, world, pos, width, height, length, worldGenBounds, structureBounds, this, stage);
             }
         }
     }
@@ -1519,6 +1249,10 @@ public abstract class DungeonPiece extends StructurePiece {
             if (world.getBlockState(new BlockPos(x, y, z)).isSolid())
                 return y;
         return 0;
+    }
+
+    public static boolean isBlockProtected(IWorld world, BlockState state, BlockPos pos) {
+        return state.getBlockHardness(world, pos) < 0 || BlockTags.PORTALS.contains(state.getBlock());
     }
 
 }

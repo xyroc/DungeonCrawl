@@ -123,6 +123,7 @@ public class JsonThemeHandler {
             int id = object.get("id").getAsInt();
 
             IDungeonDecoration[] decorations = null;
+
             if (object.has("decorations")) {
                 JsonArray array = object.getAsJsonArray("decorations");
                 decorations = new IDungeonDecoration[array.size()];
@@ -131,7 +132,13 @@ public class JsonThemeHandler {
                 }
             }
 
-            Theme.ID_TO_THEME_MAP.put(id, theme.toTheme().withDecorations(decorations));
+            Theme result = theme.toTheme().withDecorations(decorations);
+
+            if (object.has("sub_theme")) {
+                result.subTheme = object.get("sub_theme").getAsInt();
+            }
+
+            Theme.ID_TO_THEME_MAP.put(id, result);
         }
 
         public Theme toTheme() {

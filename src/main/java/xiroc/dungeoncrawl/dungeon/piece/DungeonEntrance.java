@@ -108,6 +108,10 @@ public class DungeonEntrance extends DungeonPiece {
         buildFull(entrance, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), Treasure.Type.SUPPLY, stage, true);
 
+        if (entrance.metadata != null && entrance.metadata.feature != null && featurePositions != null) {
+            entrance.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        }
+
 //		DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR).process(worldIn,
 //				new BlockPos(x + offset.getA(), cursorHeight, z + offset.getB()), theme, this);
 
@@ -120,7 +124,7 @@ public class DungeonEntrance extends DungeonPiece {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
         Vec3i offset = DungeonModels.getOffset(modelID);
         this.boundingBox = new MutableBoundingBox(x + offset.getX(), y + offset.getY(), z + offset.getZ(),
-                x + model.width - 1, y + model.height - 1, z + model.length - 1);
+                x + offset.getX() + model.width - 1, y + offset.getY() + model.height - 1, z + offset.getZ() + model.length - 1);
     }
 
     @Override

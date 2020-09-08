@@ -119,7 +119,7 @@ public class DungeonBlocks {
     /*
      * Calculate the WeightedRandomBlocks
      */
-    public static void load() {
+    public static void init() {
         long time = System.currentTimeMillis();
         DungeonCrawl.LOGGER.info("Calculating WeightedRandomBlock Probabilities...");
 

@@ -3,7 +3,7 @@
   "id": 80,
   "data": {
     "feature": {
-      "name": "chests",
+      "type": "chests",
       "min": 2,
       "max": 2
     },

@@ -59,7 +59,6 @@ public class StructurePieceTypes {
         SECRET_ROOM = IStructurePieceType.register(DungeonSecretRoom::new, createKey("secret_room"));
         SPIDER_ROOM = IStructurePieceType.register(DungeonSpiderRoom::new, createKey("spider_room"));
 
-
         if (Config.ENABLE_DUMMY_PIECES.get()) {
             DungeonCrawl.LOGGER.info("Registering Dummy Structure Pieces");
             DUMMY  = IStructurePieceType.register(DummyStructurePiece::new, createKey("dummy"));

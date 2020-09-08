@@ -59,6 +59,11 @@ public class DungeonStaircase extends DungeonPiece {
 
         build(model, worldIn, structureBoundingBoxIn, pos, buildTheme, Theme.getSub(subTheme),
                 Treasure.Type.DEFAULT, stage, true);
+
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        }
+
         decorate(worldIn, pos, model.width, model.height, model.length, buildTheme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }

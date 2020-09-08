@@ -61,8 +61,8 @@ public class Chest implements IBlockPlacementHandler {
             case 4:
                 return rand.nextFloat() < 0.1 ? LootTables.CHESTS_STRONGHOLD_CROSSING : Loot.CHEST_STAGE_5;
             default:
-                DungeonCrawl.LOGGER.warn("Unknown Loot Level: {}", lootLevel);
-                return null;
+                //DungeonCrawl.LOGGER.warn("Unknown Loot Level: {}", lootLevel);
+                return Loot.CHEST_STAGE_5;
         }
     }
 

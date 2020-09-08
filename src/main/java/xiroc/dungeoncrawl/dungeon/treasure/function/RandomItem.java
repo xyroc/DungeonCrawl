@@ -32,11 +32,11 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 public class RandomItem extends LootFunction {
 
-    public int stage;
+    public int lootLevel;
 
     public RandomItem(ILootCondition[] conditionsIn, int stage) {
         super(conditionsIn);
-        this.stage = stage;
+        this.lootLevel = stage;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RandomItem extends LootFunction {
                 Theme.BIOME_TO_THEME_MAP.getOrDefault(
                         context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(),
                         0),
-                stage - 1);
+                lootLevel - 1);
     }
 
     public static class Serializer extends LootFunction.Serializer<RandomItem> {
@@ -57,13 +57,13 @@ public class RandomItem extends LootFunction {
         @Override
         public void serialize(JsonObject object, RandomItem functionClazz,
                               JsonSerializationContext serializationContext) {
-            object.add("stage", DungeonCrawl.GSON.toJsonTree(functionClazz.stage));
+            object.add("loot_level", DungeonCrawl.GSON.toJsonTree(functionClazz.lootLevel));
         }
 
         @Override
         public RandomItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                       ILootCondition[] conditionsIn) {
-            return new RandomItem(conditionsIn, object.get("stage").getAsInt());
+            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt());
         }
 
     }

@@ -37,7 +37,6 @@ import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -50,13 +49,6 @@ public class DefaultGenerator extends DungeonGenerator {
     private int[] nodesLeft, roomsLeft;
     private int[] nodes, rooms;
     private boolean[] secretRoom;
-
-    /*
-     * Contains all nodes that do not have a direct connection to the start
-     * position. The only use case for this right now is that in the last layer, one
-     * of these nodes will be chosen to become the loot room.
-     */
-    public List<Position2D> distantNodes;
 
     public DefaultGenerator(DungeonGeneratorSettings settings) {
         super(settings);
@@ -76,8 +68,6 @@ public class DefaultGenerator extends DungeonGenerator {
         }
 
         this.secretRoom[rand.nextInt(2)] = true;
-
-        this.distantNodes = Lists.newArrayList();
     }
 
     @Override
@@ -110,10 +100,10 @@ public class DefaultGenerator extends DungeonGenerator {
             }
         }
 
-        DungeonCrawl.LOGGER.debug("Finished basic generation of layer {}: Generated {}/{} nodes and {}/{} rooms.", layer, nodes,
-                nodes[layer] + nodesLeft[layer], rooms, rooms[layer] + roomsLeft[layer]);
+        DungeonCrawl.LOGGER.debug("Finished basic generation of layer {}: Generated {}/{} nodes and {}/{} rooms.", layer, nodes[layer],
+                nodes[layer] + nodesLeft[layer], rooms[layer], rooms[layer] + roomsLeft[layer]);
 
-        DungeonCrawl.LOGGER.debug("There are {} distant nodes", distantNodes.size());
+        DungeonCrawl.LOGGER.debug("There are {} distant nodes", dungeonLayer.distantNodes.size());
 
         if (layer == 0) {
             createStarterRoom(dungeonBuilder, dungeonLayer, rand, layer);
@@ -138,10 +128,8 @@ public class DefaultGenerator extends DungeonGenerator {
             }
         }
 
-
-
-        if (layer == layers && !distantNodes.isEmpty()) {
-            Position2D pos = distantNodes.get(rand.nextInt(distantNodes.size()));
+        if (layer == layers - 1 && !dungeonLayer.distantNodes.isEmpty()) {
+            Position2D pos = dungeonLayer.distantNodes.get(rand.nextInt(dungeonLayer.distantNodes.size()));
             if (dungeonLayer.segments[pos.x][pos.z] != null && dungeonLayer.segments[pos.x][pos.z].reference instanceof DungeonNodeRoom) {
                 DungeonNodeRoom room = (DungeonNodeRoom) dungeonLayer.segments[pos.x][pos.z].reference;
                 room.lootRoom = true;
@@ -259,7 +247,7 @@ public class DefaultGenerator extends DungeonGenerator {
         switch (direction) {
             case NORTH:
                 if (origin.z > min) {
-                    Position2D pos = origin.shift(direction, Math.min(max, origin.z));
+                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, origin.z) - min) : Math.min(1 + max, origin.z));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;
@@ -269,7 +257,7 @@ public class DefaultGenerator extends DungeonGenerator {
             case EAST:
                 int east = Dungeon.SIZE - origin.x - 1;
                 if (east > min) {
-                    Position2D pos = origin.shift(direction, Math.min(max, east));
+                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, east) - min) : Math.min(1 + max, east));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;
@@ -279,7 +267,7 @@ public class DefaultGenerator extends DungeonGenerator {
             case SOUTH:
                 int south = Dungeon.SIZE - origin.z - 1;
                 if (south > min) {
-                    Position2D pos = origin.shift(direction, Math.min(max, south));
+                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, south) - min) : Math.min(1 + max, south));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;
@@ -288,7 +276,7 @@ public class DefaultGenerator extends DungeonGenerator {
                 return false;
             case WEST:
                 if (origin.x > min) {
-                    Position2D pos = origin.shift(direction, Math.min(max, origin.x));
+                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, origin.x) - min) : Math.min(1 + max, origin.x));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;

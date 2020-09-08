@@ -5,7 +5,7 @@
     "size": "normal",
     "type": "full",
     "feature": {
-      "name": "spawners",
+      "type": "spawners",
       "min": 1,
       "max": 4
     },

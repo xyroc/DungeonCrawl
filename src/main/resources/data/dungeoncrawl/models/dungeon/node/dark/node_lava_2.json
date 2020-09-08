@@ -1,9 +1,9 @@
 {
   "type": "node",
-  "id": 49,
+  "id": 51,
   "data": {
     "size": "normal",
-    "type": "fork",
+    "type": "full",
     "offset": {
       "y": -1
     },

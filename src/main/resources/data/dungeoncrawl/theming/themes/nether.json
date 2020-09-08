@@ -9,7 +9,7 @@
         "type": "block",
         "block": "minecraft:fire"
       },
-      "chance": 0.25
+      "chance": 0.15
     }
   ],
   "theme": {

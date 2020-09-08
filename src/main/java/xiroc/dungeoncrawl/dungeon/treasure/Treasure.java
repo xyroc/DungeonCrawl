@@ -28,30 +28,26 @@ import java.util.HashMap;
 
 public class Treasure {
 
-    public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES;
-    public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES;
-
-    static {
-        SPECIAL_LOOT_TABLES = new HashMap<>();
-
-        MODEL_TREASURE_TYPES = new HashMap<>();
-
-        MODEL_TREASURE_TYPES.put(32, Type.FORGE);
-        MODEL_TREASURE_TYPES.put(34, Type.LIBRARY);
-        MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
-
-        MODEL_TREASURE_TYPES.put(70, Type.SECRET_ROOM);
-
-        MODEL_TREASURE_TYPES.put(76, Type.SUPPLY);
-    }
+    public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES = new HashMap<>();
+    public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES = new HashMap<>();
 
     public static void init() {
+//        MODEL_TREASURE_TYPES.put(24, Type.FOOD);
+//
+//        MODEL_TREASURE_TYPES.put(32, Type.FORGE);
+//        MODEL_TREASURE_TYPES.put(34, Type.LIBRARY);
+//        MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
+//
+//        MODEL_TREASURE_TYPES.put(70, Type.SECRET_ROOM);
+//
+//        MODEL_TREASURE_TYPES.put(76, Type.SUPPLY);
+
         SPECIAL_LOOT_TABLES.put(Type.SUPPLY, Loot.SUPPLY_CHEST);
-        SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Loot.KITCHEN_CHEST);
+        SPECIAL_LOOT_TABLES.put(Type.FOOD, Loot.FOOD);
         SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
         SPECIAL_LOOT_TABLES.put(Type.LIBRARY, Loot.LIBRARY);
         SPECIAL_LOOT_TABLES.put(Type.SECRET_ROOM, Loot.SECRET_ROOM);
-        SPECIAL_LOOT_TABLES.put(Type.FORGE, LootTables.CHESTS_VILLAGE_VILLAGE_WEAPONSMITH);
+        SPECIAL_LOOT_TABLES.put(Type.FORGE, Loot.FORGE);
 
         LootFunctionManager.registerFunction(new RandomItem.Serializer());
         LootFunctionManager.registerFunction(new RandomPotion.Serializer());
@@ -67,7 +63,7 @@ public class Treasure {
      */
     public enum Type {
 
-        DEFAULT, KITCHEN, FORGE, CATACOMB, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE, SUPPLY;
+        DEFAULT, FOOD, FORGE, CATACOMB, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE, SUPPLY;
 
         public static final HashMap<Integer, Type> INT_TO_TYPE_MAP;
         public static final HashMap<Type, Integer> TYPE_TO_INT_MAP;
@@ -75,7 +71,7 @@ public class Treasure {
         static {
             INT_TO_TYPE_MAP = new HashMap<>();
             INT_TO_TYPE_MAP.put(0, DEFAULT);
-            INT_TO_TYPE_MAP.put(1, KITCHEN);
+            INT_TO_TYPE_MAP.put(1, FOOD);
             INT_TO_TYPE_MAP.put(2, FORGE);
             INT_TO_TYPE_MAP.put(3, CATACOMB);
             INT_TO_TYPE_MAP.put(4, SECRET_ROOM);

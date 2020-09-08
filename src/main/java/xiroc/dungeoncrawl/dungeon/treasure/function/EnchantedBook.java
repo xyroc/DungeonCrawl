@@ -28,21 +28,20 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
 public class EnchantedBook extends LootFunction {
 
-    public int stage;
+    public int lootLevel;
 
     public EnchantedBook(ILootCondition[] conditionsIn, int stage) {
         super(conditionsIn);
-        this.stage = stage;
+        this.lootLevel = stage;
     }
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
         return EnchantmentHelper.addRandomEnchantment(context.getRandom(), new ItemStack(Items.BOOK),
-                10 + stage * 3, stage > 2);
+                10 + lootLevel * 3, lootLevel > 2);
     }
 
     public static class Serializer extends LootFunction.Serializer<EnchantedBook> {
@@ -54,13 +53,13 @@ public class EnchantedBook extends LootFunction {
         @Override
         public void serialize(JsonObject object, EnchantedBook functionClazz,
                               JsonSerializationContext serializationContext) {
-            object.add("stage", DungeonCrawl.GSON.toJsonTree(functionClazz.stage));
+            object.add("loot_level", DungeonCrawl.GSON.toJsonTree(functionClazz.lootLevel));
         }
 
         @Override
         public EnchantedBook deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                          ILootCondition[] conditionsIn) {
-            return new EnchantedBook(conditionsIn, object.get("stage").getAsInt());
+            return new EnchantedBook(conditionsIn, object.get("loot_level").getAsInt());
         }
 
     }

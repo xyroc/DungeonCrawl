@@ -78,7 +78,7 @@ public abstract class DungeonGenerator {
         loadSettings(settings);
     }
 
-    public DungeonGenerator loadSettings(DungeonGeneratorSettings settings) {
+    public void loadSettings(DungeonGeneratorSettings settings) {
         this.maxNodes = new int[settings.maxLayers];
         this.maxRooms = new int[settings.maxLayers];
 
@@ -95,7 +95,6 @@ public abstract class DungeonGenerator {
         this.randomDistances = settings.randomDistances;
 
         this.settings = settings;
-        return this;
     }
 
     /**

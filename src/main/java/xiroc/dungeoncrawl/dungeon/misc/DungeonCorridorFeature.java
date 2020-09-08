@@ -66,7 +66,7 @@ public interface DungeonCorridorFeature {
 
     HashMap<Byte, DungeonCorridorFeature> FEATURES = new HashMap<>();
 
-    static void load() {
+    static void init() {
         FEATURES.put((byte) 0, CROPS);
         FEATURES.put((byte) 1, LIGHT);
         FEATURES.put((byte) 2, STAIRS);

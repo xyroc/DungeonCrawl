@@ -22,7 +22,14 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:cut_sandstone"
+          "block": "minecraft:sandstone"
+        },
+        {
+          "block": "minecraft:cut_sandstone",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:chiseled_sandstone"
         }
       ]
     },

@@ -7,16 +7,14 @@
       "blocks": [
         {
           "block": "minecraft:cobblestone",
+          "weight": 3
+        },
+        {
+          "block": "minecraft:stone_bricks",
           "weight": 2
         },
         {
-          "block": "minecraft:stone_bricks"
-        },
-        {
           "block": "minecraft:cracked_stone_bricks"
-        },
-        {
-          "block": "minecraft:mossy_stone_bricks"
         }
       ]
     },
@@ -29,13 +27,11 @@
       "blocks": [
         {
           "block": "minecraft:stone_bricks",
+          "weight": 4
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks",
           "weight": 2
-        },
-        {
-          "block": "minecraft:cracked_stone_bricks"
-        },
-        {
-          "block": "minecraft:mossy_stone_bricks"
         }
       ]
     },
@@ -56,17 +52,11 @@
       "blocks": [
         {
           "block": "minecraft:cobblestone_stairs",
-          "weight": 2
+          "weight": 4
         },
         {
           "block": "minecraft:stone_brick_stairs",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_stairs"
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_stairs"
+          "weight": 4
         }
       ]
     },
@@ -75,13 +65,10 @@
       "blocks": [
         {
           "block": "minecraft:stone_brick_stairs",
-          "weight": 2
+          "weight": 3
         },
         {
-          "block": "minecraft:mossy_cobblestone_stairs"
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_stairs"
+          "block": "minecraft:cobblestone_stairs"
         }
       ]
     },
@@ -89,20 +76,16 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:cobblestone"
+          "block": "minecraft:cobblestone",
+          "weight": 3
         },
         {
           "block": "minecraft:stone_bricks",
+          "weight": 3
+        },
+        {
+          "block": "minecraft:gravel",
           "weight": 2
-        },
-        {
-          "block": "minecraft:gravel"
-        },
-        {
-          "block": "minecraft:mossy_stone_bricks"
-        },
-        {
-          "block": "minecraft:mossy_cobblestone"
         }
       ]
     },
@@ -114,14 +97,7 @@
           "weight": 2
         },
         {
-          "block": "minecraft:stone_brick_slab",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_slab"
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_slab"
+          "block": "minecraft:stone_brick_slab"
         }
       ]
     },
@@ -129,18 +105,10 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:cobblestone_slab",
-          "weight": 2
+          "block": "minecraft:cobblestone_slab"
         },
         {
-          "block": "minecraft:stone_brick_slab",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_slab"
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_slab"
+          "block": "minecraft:stone_brick_slab"
         }
       ]
     },
@@ -148,18 +116,10 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:cobblestone_wall",
-          "weight": 2
+          "block": "minecraft:cobblestone_wall"
         },
         {
-          "block": "minecraft:stone_brick_wall",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_wall"
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_wall"
+          "block": "minecraft:stone_brick_wall"
         }
       ]
     }

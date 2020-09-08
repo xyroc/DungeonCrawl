@@ -2,6 +2,7 @@
 	"type": "node",
 	"id": 32,
 	"data": {
+		"treasure_type": "forge",
 		"size": "normal",
 		"type": "dead_end",
 		"stages": [ 1, 2 ],

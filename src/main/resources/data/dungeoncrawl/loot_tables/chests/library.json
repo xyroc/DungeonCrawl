@@ -84,7 +84,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:enchanted_book",
-              "stage": 3
+              "loot_level": 3
             }
           ]
         }

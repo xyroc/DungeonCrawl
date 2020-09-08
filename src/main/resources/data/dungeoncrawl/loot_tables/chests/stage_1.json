@@ -589,7 +589,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_potion",
-              "stage": 1
+              "loot_level": 1
             }
           ]
         },
@@ -600,7 +600,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_item",
-              "stage": 1
+              "loot_level": 1
             }
           ]
         },

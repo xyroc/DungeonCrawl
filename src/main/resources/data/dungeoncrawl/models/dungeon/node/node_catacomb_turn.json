@@ -5,7 +5,7 @@
 		"size": "normal",
 		"type": "turn",
 		"feature": {
-			"name": "catacomb",
+			"type": "catacomb",
 			"min": 6,
 			"max": 12
 		},

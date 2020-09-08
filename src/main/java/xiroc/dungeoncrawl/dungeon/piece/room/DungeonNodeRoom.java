@@ -177,8 +177,9 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        this.boundingBox = large ? new MutableBoundingBox(x, y, z, x + 26, y + 8, z + 26)
-                : new MutableBoundingBox(x, y, z, x + 16, y + 8, z + 16);
+        Vec3i offset = DungeonModels.getOffset(modelID);
+        this.boundingBox = large ? new MutableBoundingBox(x, y + offset.getY(), z, x + 26, y + offset.getY() + 8, z + 26)
+                : new MutableBoundingBox(x, y + offset.getY(), z, x + 16, y + offset.getY() + 8, z + 16);
     }
 
     @Override

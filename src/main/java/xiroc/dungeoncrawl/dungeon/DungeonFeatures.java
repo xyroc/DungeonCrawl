@@ -23,15 +23,15 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
-import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.Triple;
+import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -50,54 +50,59 @@ public class DungeonFeatures {
 
     static {
         CORRIDOR_FEATURES = Lists.newArrayList();
-        CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-            if (stage > 1 && stage != 4 && rand.nextFloat() < 0.35) {
-                List<Direction> list = Lists.newArrayList();
-                Position2D center = new Position2D(x, z);
-
-                for (int i = 0; i < 4; i++) {
-                    if (layer.segments[x][z].reference.sides[i]) {
-                        Position2D pos = center.shift(Direction.byHorizontalIndex(i + 2), 1);
-                        PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
-                        if (placeHolder != null) {
-                            if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
-                                    && ((DungeonCorridor) placeHolder.reference).isStraight()) {
-                                list.add(Direction.byHorizontalIndex(i + 2));
-                            } else {
-                                return false;
-                            }
-                        }
-                    }
-                }
-
-                if (list.size() > 1 && list.size() < 4) {
-
-                    for (Direction direction : list) {
-                        Position2D pos = center.shift(direction, 1);
-                        DungeonCorridorLarge corridor = new DungeonCorridorLarge(
-                                (DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
-                        corridor.rotation = Orientation.getRotationFromFacing(direction.getOpposite());
-                        layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
-                                .withFlag(PlaceHolder.Flag.FIXED_ROTATION);
-                    }
-
-                    DungeonCorridorLarge corridor = new DungeonCorridorLarge(
-                            (DungeonCorridor) layer.segments[x][z].reference, 1);
-                    layer.segments[x][z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            return false;
-        });
+//        CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+//            if (stage > 1 && stage != 4 && rand.nextFloat() < 0.35) {
+//                List<Direction> list = Lists.newArrayList();
+//                Position2D center = new Position2D(x, z);
+//
+//                for (int i = 0; i < 4; i++) {
+//                    if (layer.segments[x][z].reference.sides[i]) {
+//                        Position2D pos = center.shift(Direction.byHorizontalIndex(i + 2), 1);
+//                        PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
+//                        if (placeHolder != null) {
+//                            if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
+//                                    && ((DungeonCorridor) placeHolder.reference).isStraight()) {
+//                                list.add(Direction.byHorizontalIndex(i + 2));
+//                            } else {
+//                                return false;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (list.size() > 1 && list.size() < 4) {
+//
+//                    for (Direction direction : list) {
+//                        Position2D pos = center.shift(direction, 1);
+//                        DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+//                                (DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
+//                        corridor.rotation = Orientation.getRotationFromFacing(direction.getOpposite());
+//                        layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
+//                                .withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+//                    }
+//
+//                    DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+//                            (DungeonCorridor) layer.segments[x][z].reference, 1);
+//                    layer.segments[x][z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+//            }
+//            return false;
+//        });
 
         CORRIDOR_FEATURES.add(((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-            if (layer.segments[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.05) {
+            if (layer.segments[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.075) {
                 Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z));
                 if (sideRoomData != null) {
                     DungeonSideRoom sideRoom = new DungeonSideRoom();
-                    sideRoom.modelID = DungeonModels.FOOD_SIDE_ROOM.id;
+                    WeightedRandomInteger randomModel = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.SIDE_ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage));
+                    if (randomModel != null && randomModel.integers.length > 0) {
+                        sideRoom.modelID = randomModel.roll(rand);
+                    } else {
+                        return false;
+                    }
 
                     Direction dir = sideRoomData.getB().rotate(Direction.WEST);
                     sideRoom.openSide(dir);

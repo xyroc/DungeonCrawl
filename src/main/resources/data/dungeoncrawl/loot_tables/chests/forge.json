@@ -1,0 +1,146 @@
+{
+  "pools": [
+    {
+      "name": "guaranteed_coal",
+      "rolls": {
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:coal",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 4,
+                "max": 8
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "forge",
+      "rolls": {
+        "min": 2,
+        "max": 4
+      },
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:iron_ingot",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 4,
+                "max": 8
+              }
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_helmet",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_chestplate",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_leggings",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_boots",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:chainmail_helmet",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:chainmail_chestplate",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:chainmail_leggings",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:chainmail_boots",
+          "functions": [
+            {
+              "function": "enchant_with_levels",
+              "levels": 5
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_block"
+        },
+        {
+          "type": "item",
+          "name": "minecraft:iron_sword"
+        },
+        {
+          "type": "item",
+          "name": "minecraft:air",
+          "functions": [
+            {
+              "function": "dungeoncrawl:random_item",
+              "loot_level": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -30,16 +30,16 @@ import xiroc.dungeoncrawl.dungeon.treasure.TreasureItems;
 
 public class RandomPotion extends LootFunction {
 
-    public int stage;
+    public int lootLevel;
 
     public RandomPotion(ILootCondition[] conditionsIn, int stage) {
         super(conditionsIn);
-        this.stage = stage;
+        this.lootLevel = stage;
     }
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        return TreasureItems.getRandomSpecialPotion(context.getRandom(), stage - 1);
+        return TreasureItems.getRandomSpecialPotion(context.getRandom(), lootLevel - 1);
     }
 
     public static class Serializer extends LootFunction.Serializer<RandomPotion> {
@@ -51,13 +51,13 @@ public class RandomPotion extends LootFunction {
         @Override
         public void serialize(JsonObject object, RandomPotion functionClazz,
                               JsonSerializationContext serializationContext) {
-            object.add("stage", DungeonCrawl.GSON.toJsonTree(functionClazz.stage));
+            object.add("loot_level", DungeonCrawl.GSON.toJsonTree(functionClazz.lootLevel));
         }
 
         @Override
         public RandomPotion deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                         ILootCondition[] conditionsIn) {
-            return new RandomPotion(conditionsIn, object.get("stage").getAsInt());
+            return new RandomPotion(conditionsIn, object.get("loot_level").getAsInt());
         }
 
     }

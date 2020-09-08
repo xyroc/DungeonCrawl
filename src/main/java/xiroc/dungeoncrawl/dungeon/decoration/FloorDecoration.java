@@ -44,10 +44,13 @@ public class FloorDecoration implements IDungeonDecoration {
         for (int x = 0; x < model.width; x++) {
             for (int z = 0; z < model.length; z++) {
                 for (int y = 0; y < model.height; y++) {
-                    if (model.model[x][y][z] != null && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1 && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                    if (model.model[x][y][z] != null && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1
+                            && world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z))
+                            && world.getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z)).isSolid()
+                            && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
                         piece.setBlockState(blockStateProvider.get(), world, worldGenBounds, null,
                                 IDungeonDecoration.getRotatedBlockPos(x, y + 1, z, pos, model, piece.rotation),
-                                0, 0, PlacementBehaviour.NON_SOLID);
+                                0, 0, PlacementBehaviour.SOLID);
                     }
                 }
             }

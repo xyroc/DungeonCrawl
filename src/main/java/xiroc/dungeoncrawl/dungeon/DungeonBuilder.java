@@ -28,20 +28,15 @@ import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.generator.DefaultGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.util.BossEntry;
 import xiroc.dungeoncrawl.util.Position2D;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -62,7 +57,7 @@ public class DungeonBuilder {
     public ChunkGenerator<?> chunkGen;
     public Biome startBiome;
 
-    public int theme, subTheme;
+    public int theme, subTheme, lowerTheme, lowerSubTheme, bottomTheme, bottomSubTheme;
 
     public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
         if (world.getGroundHeight() >= 32) {
@@ -86,7 +81,7 @@ public class DungeonBuilder {
 
             DungeonCrawl.EVENT_BUS.post(startEvent);
 
-            DungeonCrawl.LOGGER.info("DungeonBuilder starts at (" + startPos.getX() + " / " + startPos.getY() + " / "
+            DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
                     + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
         } else {
             DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
@@ -109,7 +104,7 @@ public class DungeonBuilder {
         }
 
         for (int i = 0; i < layers.length; i++) {
-            processCorridors(layers[i], i, startPos);
+            processCorridors(layers[i], i);
         }
 
         DungeonPiece entrance = new DungeonEntrance();
@@ -119,12 +114,33 @@ public class DungeonBuilder {
         entrance.modelID = entrance.determineModel(this, rand);
         entrance.setupBoundingBox();
 
-        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x + 4, chunkGen.getGroundHeight(), entrance.z + 4);
+        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
 
         String biome = startBiome.getRegistryName().toString();
 
         this.theme = Theme.getTheme(biome, rand);
-        this.subTheme = Theme.getSubTheme(biome, rand);
+
+        if (Theme.get(theme).subTheme != null) {
+            this.subTheme = Theme.randomizeSubTheme(Theme.get(theme).subTheme, rand);
+        } else {
+            this.subTheme = Theme.getSubTheme(biome, rand);
+        }
+
+        this.lowerTheme = Theme.randomizeTheme(80, rand);
+
+        if (Theme.get(lowerTheme).subTheme != null) {
+            this.lowerSubTheme = Theme.randomizeSubTheme(Theme.get(lowerTheme).subTheme, rand);
+        } else {
+            this.lowerSubTheme = this.subTheme;
+        }
+
+        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.randomizeTheme(81, rand) : Theme.randomizeTheme(1, rand);
+
+        if (Theme.get(bottomTheme).subTheme != null) {
+            this.bottomSubTheme = Theme.randomizeSubTheme(Theme.get(bottomTheme).subTheme, rand);
+        } else {
+            this.bottomSubTheme = this.subTheme;
+        }
 
         DungeonCrawl.LOGGER.debug("Entrance Biome: {} SubTheme: {}", biome, subTheme);
 
@@ -138,7 +154,7 @@ public class DungeonBuilder {
         return list;
     }
 
-    public void processCorridors(DungeonLayer layer, int lyr, BlockPos startPos) {
+    public void processCorridors(DungeonLayer layer, int lyr) {
         int stage = Math.min(lyr, 4);
         for (int x = 0; x < layer.width; x++) {
             for (int z = 0; z < layer.length; z++) {
@@ -162,21 +178,15 @@ public class DungeonBuilder {
                 for (int z = 0; z < layer.length; z++) {
                     if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
                         if (i == layers.length - 1) {
-                            if (Config.NO_NETHER_STUFF.get()) {
-                                layer.segments[x][z].reference.theme = 81;
-                                layer.segments[x][z].reference.subTheme = 9;
-                            } else {
-                                layer.segments[x][z].reference.theme = 1;
-                                layer.segments[x][z].reference.subTheme = 8;
-                            }
+                            layer.segments[x][z].reference.theme = bottomTheme;
+                            layer.segments[x][z].reference.subTheme = bottomSubTheme;
                         } else if (mossArea && layers.length - i < 4) {
-                            layer.segments[x][z].reference.theme = 80;
-                            layer.segments[x][z].reference.subTheme = subTheme;
+                            layer.segments[x][z].reference.theme = lowerTheme;
+                            layer.segments[x][z].reference.subTheme = lowerSubTheme;
                         } else {
                             layer.segments[x][z].reference.theme = theme;
                             layer.segments[x][z].reference.subTheme = subTheme;
                         }
-
 //                        if (layer.segments[x][z].reference.getType() == 0) {
 //                            DungeonFeatures.processCorridor(this, layer, x, z, rand, i, i, startPos);
 //                        }

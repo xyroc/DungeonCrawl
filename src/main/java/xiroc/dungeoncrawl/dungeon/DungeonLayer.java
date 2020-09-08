@@ -51,6 +51,12 @@ public class DungeonLayer {
     public int length; // z
 
     /*
+     * Contains all nodes that do not have a direct connection to the start
+     * position.
+     */
+    public List<Position2D> distantNodes;
+
+    /*
      * Tracking values for recursive layer generation
      */
     public int nodes, rooms, nodesLeft, roomsLeft;
@@ -59,13 +65,6 @@ public class DungeonLayer {
     public LayerStatTracker statTracker;
 
     public DungeonLayerMap map;
-
-    /*
-     * Contains all nodes that do not have a direct connection to the start
-     * position. The only use case for this right now is that in the last layer, one
-     * of these nodes will be chosen to become the loot room.
-     */
-    public List<Position2D> distantNodes;
 
     public DungeonLayer() {
         this(16, 16);

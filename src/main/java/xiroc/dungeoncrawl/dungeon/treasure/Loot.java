@@ -33,7 +33,8 @@ public class Loot {
     public static final ResourceLocation CHEST_STAGE_4 = DungeonCrawl.locate("chests/stage_4");
     public static final ResourceLocation CHEST_STAGE_5 = DungeonCrawl.locate("chests/stage_5");
 
-    public static final ResourceLocation KITCHEN_CHEST = DungeonCrawl.locate("chests/kitchen");
+    public static final ResourceLocation FORGE = DungeonCrawl.locate("chests/forge");
+    public static final ResourceLocation FOOD = DungeonCrawl.locate("chests/food");
     public static final ResourceLocation TREASURE_ROOM = DungeonCrawl.locate("chests/treasure_room");
     public static final ResourceLocation SUPPLY_CHEST = DungeonCrawl.locate("chests/supply_chest");
     public static final ResourceLocation LIBRARY = DungeonCrawl.locate("chests/library");

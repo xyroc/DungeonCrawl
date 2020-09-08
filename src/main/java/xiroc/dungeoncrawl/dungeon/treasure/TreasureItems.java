@@ -51,11 +51,10 @@ public class TreasureItems {
     public static final ItemStack SPLASH_HARMING;
     public static final ItemStack SPLASH_HARMING_II;
 
+    public static ItemStack[] POTIONS;
     public static ItemStack[] SPECIAL_POTIONS;
 
     public static final TreasureItem RANDOM_SPECIAL_ITEM;
-
-    // Enchantments
 
     static {
         {
@@ -84,6 +83,7 @@ public class TreasureItems {
             customPotionEffects.add(nausea);
             nbt.put("CustomPotionEffects", customPotionEffects);
             nbt.putInt("CustomPotionColor", 7014144);
+            //nbt.putInt("CustomPotionColor", 0xca03fc);
             nbt.putInt("HideFlags", 32);
             CompoundNBT display = new CompoundNBT();
             ListNBT lore = new ListNBT();
@@ -137,7 +137,7 @@ public class TreasureItems {
             CompoundNBT absorption = new CompoundNBT();
             absorption.putInt("Id", 22);
             absorption.putInt("Amplifier", 14);
-            absorption.putInt("Duration", 400);
+            absorption.putInt("Duration", 2400);
             customPotionEffects.add(absorption);
             customPotionEffects.add(resistance);
             customPotionEffects.add(blindness);
@@ -212,7 +212,6 @@ public class TreasureItems {
 
             POTION_REGENERATION = createItemWithNbt(Items.POTION, createPotionTag("minecraft:regeneration"));
             POTION_REGENERATION_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_regeneration"));
-
             POTION_REGENERATION_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_regeneration"));
 
             SPLASH_POISON = createItemWithNbt(Items.POTION, createPotionTag("minecraft:poison"));
@@ -220,6 +219,8 @@ public class TreasureItems {
             SPLASH_HARMING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:harming"));
             SPLASH_HARMING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_harming"));
 
+            POTIONS = new ItemStack[]{POTION_HEALING, POTION_HEALING_II, POTION_REGENERATION, POTION_REGENERATION_LONG,
+                    POTION_REGENERATION_II, SPLASH_HARMING, SPLASH_HARMING_II, SPLASH_POISON, SPLASH_POISON_LONG};
             SPECIAL_POTIONS = new ItemStack[]{LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS};
 
         }
@@ -256,6 +257,8 @@ public class TreasureItems {
     }
 
     public static ItemStack getRandomSpecialPotion(Random rand, int stage) {
+        if (rand.nextFloat() < 0.4)
+            return POTIONS[rand.nextInt(POTIONS.length)].copy();
         int bound = stage == 0 ? 1 : SPECIAL_POTIONS.length;
         return SPECIAL_POTIONS[rand.nextInt(bound)].copy();
     }

@@ -38,12 +38,14 @@ public class Theme {
 
     public static final Random RANDOM = new Random();
 
-    public static HashMap<String, Integer> BIOME_TO_THEME_MAP;
-    public static HashMap<String, Integer> BIOME_TO_SUBTHEME_MAP;
-    public static HashMap<Integer, Theme> ID_TO_THEME_MAP;
-    public static HashMap<Integer, SubTheme> ID_TO_SUBTHEME_MAP;
+    public static HashMap<String, Integer> BIOME_TO_THEME_MAP = new HashMap<>();
+    public static HashMap<String, Integer> BIOME_TO_SUBTHEME_MAP = new HashMap<>();
+    ;
+    public static HashMap<Integer, Theme> ID_TO_THEME_MAP = new HashMap<>();
+    ;
+    public static HashMap<Integer, SubTheme> ID_TO_SUBTHEME_MAP = new HashMap<>();
 
-    public static HashMap<Integer, ThemeRandomizer> THEME_RANDOMIZERS, SUB_THEME_RANDOMIZERS;
+    public static HashMap<Integer, ThemeRandomizer> THEME_RANDOMIZERS = new HashMap<>(), SUB_THEME_RANDOMIZERS = new HashMap<>();
 
     /* **************************** */
     /*          BASE THEMES         */
@@ -179,129 +181,11 @@ public class Theme {
 //    public static final SubTheme ICE_SUB = new SubTheme(Blocks.ICE, Blocks.CAVE_AIR, Blocks.CAVE_AIR, Blocks.CAVE_AIR,
 //            Blocks.CAVE_AIR, Blocks.CAVE_AIR);
 
-    private static final ThemeRandomizer DEFAULT_RANDOMIZER = (rand, base) -> base;
-
-    static {
-
-        // Base Themes
-
-        BIOME_TO_THEME_MAP = new HashMap<String, Integer>();
-
-//        BIOME_TO_THEME_MAP.put("minecraft:ocean", 2);
-//        BIOME_TO_THEME_MAP.put("minecraft:deep_ocean", 2);
-//        BIOME_TO_THEME_MAP.put("minecraft:cold_ocean", 2);
-//        BIOME_TO_THEME_MAP.put("minecraft:deep_cold_ocean", 2);
-//        BIOME_TO_THEME_MAP.put("minecraft:lukewarm_ocean", 2);
-//        BIOME_TO_THEME_MAP.put("minecraft:deep_lukewarm_ocean", 2);
-//        BIOME_TO_THEME_MAP.put("minecraft:warm_ocean", 2);
-//        BIOME_TO_THEME_MAP.put("minecraft:deep_warm_ocean", 2);
-//
-//        BIOME_TO_THEME_MAP.put("minecraft:frozen_ocean", 2);
-//        BIOME_TO_THEME_MAP.put("mineraft:deep_frozen_ocean", 2);
-//
-//        BIOME_TO_THEME_MAP.put("minecraft:desert", 16);
-//        BIOME_TO_THEME_MAP.put("minecraft:desert_hills", 16);
-//        BIOME_TO_THEME_MAP.put("minecraft:desert_lakes", 16);
-//
-//        BIOME_TO_THEME_MAP.put("minecraft:badlands", 17);
-//        BIOME_TO_THEME_MAP.put("minecraft:wooded_badlands_plateau", 17);
-//        BIOME_TO_THEME_MAP.put("minecraft:badlands_plateau", 17);
-//        BIOME_TO_THEME_MAP.put("minecraft:eroded_badlands", 17);
-//        BIOME_TO_THEME_MAP.put("minecraft:modified_wooded_badlands_plateau", 17);
-//        BIOME_TO_THEME_MAP.put("minecraft:modified_badlands_plateau", 17);
-//
-//        BIOME_TO_THEME_MAP.put("minecraft:ice_spikes", 32);
-//
-//        BIOME_TO_THEME_MAP.put("minecraft:swamp", 80);
-//        BIOME_TO_THEME_MAP.put("minecraft:swamp_hills", 80);
-
-        ID_TO_THEME_MAP = new HashMap<>();
-
-//        ID_TO_THEME_MAP.put(-1, MODEL);
-//        ID_TO_THEME_MAP.put(0, DEFAULT);
-//        ID_TO_THEME_MAP.put(1, NETHER);
-//        ID_TO_THEME_MAP.put(2, OCEAN);
-//
-//        ID_TO_THEME_MAP.put(16, DESERT);
-//        ID_TO_THEME_MAP.put(17, BADLANDS);
-//
-//        //ID_TO_THEME_MAP.put(32, ICE);
-//
-//        ID_TO_THEME_MAP.put(48, BRICKS);
-//        ID_TO_THEME_MAP.put(49, BRICKS_2);
-//        ID_TO_THEME_MAP.put(50, ANDESITE);
-//
-//        ID_TO_THEME_MAP.put(80, MOSS);
-//        ID_TO_THEME_MAP.put(81, OBSIDIAN_MOSSY);
-
-        // Sub-Themes
-
-        BIOME_TO_SUBTHEME_MAP = new HashMap<String, Integer>();
-
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:jungle", 1);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:jungle_edge", 1);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:jungle_hills", 1);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:modified_jungle", 1);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:modified_jungle_edge", 1);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:bamboo_jungle", 1);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:bamboo_jungle_hills", 1);
-//
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:birch_forest", 2);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:birch_forest_hills", 2);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:tall_birch_forest", 2);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:tall_birch_hills", 2);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:flower_forest", 2);
-//
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:savanna", 3);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:savanna_plateau", 3);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:shattered_savanna", 3);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:shattered_savanna_plateau", 3);
-//
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:dark_forest", 4);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:dark_forest_hills", 4);
-//
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:taiga", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:snowy_tundra", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:taiga_hills", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:snowy_taiga", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:snowy_taga_hills", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_tree_taiga", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_tree_taiga_hills", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:taiga_mountains", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:snowy_taiga_mountains", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_spruce_taiga", 5);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:giant_spruce_taiga_hills", 5);
-//
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:desert", 6);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:desert_hills", 6);
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:desert_lakes", 6);
-//
-//        BIOME_TO_SUBTHEME_MAP.put("minecraft:ice_spikes", 7);
-
-        ID_TO_SUBTHEME_MAP = new HashMap<Integer, SubTheme>();
-
-//        ID_TO_SUBTHEME_MAP.put(0, OAK);
-//        ID_TO_SUBTHEME_MAP.put(1, JUNGLE);
-//        ID_TO_SUBTHEME_MAP.put(2, BIRCH);
-//        ID_TO_SUBTHEME_MAP.put(3, ACACIA);
-//        ID_TO_SUBTHEME_MAP.put(4, DARK_OAK);
-//        ID_TO_SUBTHEME_MAP.put(5, SPRUCE);
-//        ID_TO_SUBTHEME_MAP.put(6, DESERT_SUB);
-//        //ID_TO_SUBTHEME_MAP.put(7, ICE_SUB);
-//
-//        ID_TO_SUBTHEME_MAP.put(8, NETHER_SUB);
-//        ID_TO_SUBTHEME_MAP.put(9, OBSIDIAN_MOSSY_SUB);
-
-        THEME_RANDOMIZERS = new HashMap<>();
-        SUB_THEME_RANDOMIZERS = new HashMap<>();
-
-//		ThemeRandomizer randomizer = createRandomizer(0, 0, 48, 49, 50);
-//
-//		RANDOMIZERS.put(0, randomizer);
-
-    }
+    public static final ThemeRandomizer DEFAULT_RANDOMIZER = (rand, base) -> base;
 
     public final IBlockStateProvider ceiling, solid, normal, normal2, floor, solidStairs, stairs, material, vanillaWall, column, slab, solidSlab;
+    public Integer subTheme;
+
     public IDungeonDecoration[] decorations;
 
     public Theme(IBlockStateProvider ceiling, IBlockStateProvider solid, IBlockStateProvider normal,
@@ -442,9 +326,16 @@ public class Theme {
         return ID_TO_SUBTHEME_MAP.getOrDefault(id, ID_TO_SUBTHEME_MAP.getOrDefault(0, OAK));
     }
 
+    public static int randomizeTheme(int base, Random rand) {
+        return THEME_RANDOMIZERS.getOrDefault(base, DEFAULT_RANDOMIZER).randomize(rand, base);
+    }
+
+    public static int randomizeSubTheme(int base, Random rand) {
+        return SUB_THEME_RANDOMIZERS.getOrDefault(base, DEFAULT_RANDOMIZER).randomize(rand, base);
+    }
+
     public static ThemeRandomizer createRandomizer(int... themes) {
         return (rand, base) -> themes[rand.nextInt(themes.length)];
-
     }
 
     @FunctionalInterface

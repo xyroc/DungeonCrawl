@@ -85,13 +85,13 @@
         {
           "type": "item",
           "name": "minecraft:golden_apple",
-          "weight": 3,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
               "count": {
                 "min": 1,
-                "max": 2
+                "max": 3
               }
             }
           ]
@@ -389,7 +389,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_potion",
-              "stage": 5
+              "loot_level": 5
             }
           ]
         },
@@ -400,7 +400,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_item",
-              "stage": 5
+              "loot_level": 5
             }
           ]
         },

@@ -23,14 +23,14 @@
         },
         {
           "type": "item",
-          "name": "minecraft:gold_nugget",
+          "name": "minecraft:gold_ingot",
           "weight": 3,
           "functions": [
             {
               "function": "set_count",
               "count": {
-                "min": 20,
-                "max": 56
+                "min": 10,
+                "max": 20
               }
             }
           ]
@@ -211,7 +211,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_item",
-              "stage": 5
+              "loot_level": 5
             }
           ]
         },
@@ -222,7 +222,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:enchanted_book",
-              "stage": 5
+              "loot_level": 5
             }
           ]
         }

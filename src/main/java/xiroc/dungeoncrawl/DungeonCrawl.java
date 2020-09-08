@@ -48,6 +48,7 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.misc.DungeonCorridorFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
@@ -63,7 +64,7 @@ public class DungeonCrawl {
 
     public static final String MODID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
-    public static final String VERSION = "2.0.3";
+    public static final String VERSION = "2.1.0";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -83,10 +84,11 @@ public class DungeonCrawl {
         ForgeRegistries.FEATURES
                 .register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
         Treasure.init();
+        DungeonModelFeature.init();
 
         EVENT_BUS = Bus.MOD.bus().get();
 
-        DungeonCorridorFeature.load();
+        DungeonCorridorFeature.init();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -101,8 +103,8 @@ public class DungeonCrawl {
         }
 
         DungeonModelBlock.createProviders();
-        IBlockPlacementHandler.load();
-        DungeonBlocks.load();
+        IBlockPlacementHandler.init();
+        DungeonBlocks.init();
 
         DungeonCrawl.LOGGER.info("Adding features and structures");
 

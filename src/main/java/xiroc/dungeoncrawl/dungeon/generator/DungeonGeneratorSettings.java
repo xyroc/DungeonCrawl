@@ -25,11 +25,15 @@ public class DungeonGeneratorSettings {
 
     public static final DungeonGeneratorSettings DEFAULT = new DungeonGeneratorSettings(
             (rand, layer) -> 3 + layer, (rand, layer) -> 4 + (int) (1.5 * layer),
-            5, 2, 3, 5, 1, 3, 1, 5, 2, false);
+            5, 1, 2, 5, 1, 3, 1, 5, 2, true);
 
     public static final DungeonGeneratorSettings LARGE = new DungeonGeneratorSettings(
             (rand, layer) -> 5 + layer / 2, (rand, layer) -> 6 + layer,
-            5, 2, 3, 5, 1, 4, 1, 5, 1, true);
+            5, 1, 3, 5, 1, 4, 1, 5, 2, true);
+
+    public static final DungeonGeneratorSettings COMPLEX = new DungeonGeneratorSettings(
+            (rand, layer) -> 3 + layer / 2, (rand, layer) -> 10,
+            5, 1, 1, 7, 1, 4, 1, 7, 3, true);
 
     /**
      * Functions to calculate the highest allowed amount of nodes and rooms for each layer.

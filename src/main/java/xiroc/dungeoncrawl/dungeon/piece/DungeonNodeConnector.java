@@ -23,6 +23,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -50,10 +51,14 @@ public class DungeonNodeConnector extends DungeonPiece {
                                   ChunkPos chunkPosIn) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
+
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        }
 
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
         return true;
@@ -89,13 +94,14 @@ public class DungeonNodeConnector extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
+        Vec3i offset = DungeonModels.getOffset(modelID);
 
         if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + 4, y + model.height - 1,
+            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 4, y + offset.getY() + model.height - 1,
                     z + model.length - 1);
         } else {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + model.length - 1,
-                    y + model.height - 1, z + 4);
+            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + model.length - 1,
+                    y + offset.getY() + model.height - 1, z + 4);
         }
 
     }

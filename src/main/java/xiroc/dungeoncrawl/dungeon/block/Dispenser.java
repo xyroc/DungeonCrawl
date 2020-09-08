@@ -49,11 +49,8 @@ public class Dispenser implements IBlockPlacementHandler {
                 return Loot.DISPENSER_STAGE_1;
             case 1:
                 return Loot.DISPENSER_STAGE_2;
-            case 2:
-                return Loot.DISPENSER_STAGE_3;
             default:
-                DungeonCrawl.LOGGER.warn("Unknown Loot Level: " + lootLevel);
-                return null;
+                return Loot.DISPENSER_STAGE_3;
         }
     }
 

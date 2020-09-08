@@ -35,7 +35,7 @@ public enum DungeonModelBlockType {
     SOLID_STAIRS(Blocks.STONE_BRICK_STAIRS, PlacementBehaviour.SOLID),
     SOLID(Blocks.STONE_BRICKS, PlacementBehaviour.SOLID),
     WALL(Blocks.COBBLESTONE),
-    WALL_2(Blocks.OBSIDIAN),
+    WALL_2(Blocks.OBSIDIAN, PlacementBehaviour.SOLID),
     PILLAR(Blocks.OAK_LOG),
     FLOOR(Blocks.GRAVEL, PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
     MATERIAL_STAIRS(Blocks.OAK_STAIRS),

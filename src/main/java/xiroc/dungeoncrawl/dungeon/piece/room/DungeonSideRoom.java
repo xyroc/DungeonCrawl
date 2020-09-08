@@ -56,11 +56,15 @@ public class DungeonSideRoom extends DungeonPiece {
     public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos chunkPosIn) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
-        Vec3i offset = DungeonModels.getOffset(modelID);
-        BlockPos pos = new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ());
+        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT), stage, rotation, true);
+
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        }
+
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
@@ -71,8 +75,7 @@ public class DungeonSideRoom extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         Vec3i offset = DungeonModels.getOffset(modelID);
-        this.boundingBox = new MutableBoundingBox(x + offset.getX(), y + offset.getY(),
-                z + offset.getZ(), x + offset.getX() + 7, y + offset.getY() + 7, z + offset.getZ() + 7);
+        this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
     }
 
     @Override

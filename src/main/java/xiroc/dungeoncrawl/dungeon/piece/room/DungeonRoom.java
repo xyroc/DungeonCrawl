@@ -22,6 +22,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -48,15 +49,6 @@ public class DungeonRoom extends DungeonPiece {
         return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
     }
 
-
-    @Override
-    public void customSetup(Random rand) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-        if (model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
-            DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata, x, y, z);
-        }
-    }
-
     @Override
     public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos p_74875_4_) {
@@ -65,14 +57,14 @@ public class DungeonRoom extends DungeonPiece {
         if (model == null)
             return false;
 
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
 
         build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
                 Treasure.Type.DEFAULT, stage, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
-        if (model.metadata.feature != null && featurePositions != null) {
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
@@ -104,7 +96,8 @@ public class DungeonRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+        Vec3i offset = DungeonModels.getOffset(modelID);
+        this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
     }
 
     @Override

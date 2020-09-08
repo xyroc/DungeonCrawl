@@ -66,38 +66,36 @@ public class DungeonModels {
         MODELS.clear();
         WEIGHTED_MODELS.clear();
 
-        CORRIDOR_CROPS = loadFromFile("models/dungeon/corridor/feature/corridor_crop_feature.nbt", resourceManager);
-        CORRIDOR_LIGHT = loadFromFile("models/dungeon/corridor/feature/corridor_light_feature.nbt", resourceManager);
-        CORRIDOR_CHEST = loadFromFile("models/dungeon/corridor/feature/corridor_chest_feature.nbt", resourceManager);
-        CORRIDOR_SPAWNER = loadFromFile("models/dungeon/corridor/feature/corridor_spawner_feature.nbt", resourceManager);
+//        CORRIDOR_CROPS = loadModel("models/dungeon/corridor/feature/corridor_crop_feature.nbt", resourceManager);
+//        CORRIDOR_LIGHT = loadModel("models/dungeon/corridor/feature/corridor_light_feature.nbt", resourceManager);
+//        CORRIDOR_CHEST = loadModel("models/dungeon/corridor/feature/corridor_chest_feature.nbt", resourceManager);
+//        CORRIDOR_SPAWNER = loadModel("models/dungeon/corridor/feature/corridor_spawner_feature.nbt", resourceManager);
         //SECRET_ROOM_ENTRANCE = loadFromFile("models/dungeon/corridor/feature/corridor_secret_room_entrance.nbt", resourceManager);
 
-        LARGE_CORRIDOR_START = loadFromFile("models/dungeon/corridor/large_corridor_start.nbt", resourceManager).setId(28);
-        LARGE_CORRIDOR_STRAIGHT = loadFromFile("models/dungeon/corridor/large_corridor_straight.nbt", resourceManager).setId(29);
-        LARGE_CORRIDOR_TURN = loadFromFile("models/dungeon/corridor/large_corridor_turn.nbt", resourceManager).setId(30);
-        LARGE_CORRIDOR_OPEN = loadFromFile("models/dungeon/corridor/large_corridor_open.nbt", resourceManager).setId(31);
+        LARGE_CORRIDOR_START = loadModel("models/dungeon/corridor/large_corridor_start.nbt", resourceManager).setId(28);
+        LARGE_CORRIDOR_STRAIGHT = loadModel("models/dungeon/corridor/large_corridor_straight.nbt", resourceManager).setId(29);
+        LARGE_CORRIDOR_TURN = loadModel("models/dungeon/corridor/large_corridor_turn.nbt", resourceManager).setId(30);
+        LARGE_CORRIDOR_OPEN = loadModel("models/dungeon/corridor/large_corridor_open.nbt", resourceManager).setId(31);
 
-        LOOT_ROOM = loadFromFile("models/dungeon/loot_room.nbt", resourceManager).setId(27);
-        OLD_LOOT_ROOM = loadFromFile("models/dungeon/old_loot_room.nbt", resourceManager).setId(35);
+        OLD_LOOT_ROOM = loadModel("models/dungeon/old_loot_room.nbt", resourceManager).setId(35);
 
-        CORRIDOR_SECRET_ROOM_ENTRANCE = loadFromFile("models/dungeon/corridor/corridor_secret_room_entrance.nbt", resourceManager).setId(7);
+        CORRIDOR_SECRET_ROOM_ENTRANCE = loadModel("models/dungeon/corridor/corridor_secret_room_entrance.nbt", resourceManager).setId(7);
 
-        FOOD_SIDE_ROOM = load("models/dungeon/room/", "food_side_room", resourceManager);
+        PRISON_CELL = loadModel("models/dungeon/prison_cell.nbt", resourceManager).setId(64);
 
-        ENTRANCE = load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
-
-        PRISON_CELL = loadFromFile("models/dungeon/prison_cell.nbt", resourceManager).setId(64);
-
-        SECRET_ROOM = loadFromFile("models/dungeon/room/secret_room.nbt", resourceManager).setId(70);
-
-        STAIRCASE = loadFromFile("models/dungeon/staircase.nbt", resourceManager).setId(72);
-        STAIRS_TOP = loadFromFile("models/dungeon/stairs_top.nbt", resourceManager).setId(73);
-        STAIRS_BOTTOM = loadFromFile("models/dungeon/stairs_bottom.nbt", resourceManager).setId(74);
-        STAIRS_BOTTOM_2 = loadFromFile("models/dungeon/stairs_bottom_2.nbt", resourceManager).setId(75);
-
-        STARTER_ROOM = loadFromFile("models/dungeon/room/starter_room.nbt", resourceManager).setId(76);
+        STAIRCASE = loadModel("models/dungeon/staircase.nbt", resourceManager).setId(72);
+        STAIRS_TOP = loadModel("models/dungeon/stairs_top.nbt", resourceManager).setId(73);
+        STAIRS_BOTTOM = loadModel("models/dungeon/stairs_bottom.nbt", resourceManager).setId(74);
+        STAIRS_BOTTOM_2 = loadModel("models/dungeon/stairs_bottom_2.nbt", resourceManager).setId(75);
 
         // Models with metadata
+        FOOD_SIDE_ROOM = load("models/dungeon/room/", "food_side_room", resourceManager);
+        ENTRANCE = load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
+        LOOT_ROOM = load("models/dungeon/", "loot_room", resourceManager);
+        SECRET_ROOM = load("models/dungeon/room/", "secret_room", resourceManager);
+        STARTER_ROOM = load("models/dungeon/room/", "starter_room", resourceManager);
+
+        load("models/dungeon/room/", "tnt_trap_side_room", resourceManager);
 
         load("models/dungeon/corridor/", "corridor", resourceManager);
         load("models/dungeon/corridor/", "corridor_2", resourceManager);
@@ -138,9 +136,7 @@ public class DungeonModels {
         load("models/dungeon/node/", "large_node_library", resourceManager);
 
         load("models/dungeon/node/dark/", "node_lava", resourceManager);
-        load("models/dungeon/node/dark/", "node_lava_dead_end", resourceManager);
-        load("models/dungeon/node/dark/", "node_lava_fork", resourceManager);
-        load("models/dungeon/node/dark/", "node_lava_straight", resourceManager);
+        load("models/dungeon/node/dark/", "node_lava_2", resourceManager);
 
         load("models/dungeon/node/connector/", "node_connector", resourceManager);
         load("models/dungeon/node/connector/", "node_connector_2", resourceManager);
@@ -162,7 +158,7 @@ public class DungeonModels {
         DungeonCrawl.LOGGER.info("Loading additional models");
 
         resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional/").getPath(), (s) -> s.endsWith(".nbt")).forEach((resource) -> {
-            DungeonModel model = loadFromFile(resource, resourceManager);
+            DungeonModel model = loadModel(resource, resourceManager);
             ResourceLocation metadata = new ResourceLocation(resource.getNamespace(),
                     resource.getPath().substring(0, resource.getPath().indexOf(".nbt")) + ".json");
             if (resourceManager.hasResource(metadata)) {
@@ -247,7 +243,7 @@ public class DungeonModels {
     }
 
     public static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
-        DungeonModel model = loadFromFile(directory + file + ".nbt", resourceManager);
+        DungeonModel model = loadModel(directory + file + ".nbt", resourceManager);
 
         ResourceLocation metadata = DungeonCrawl.locate(directory + file + ".json");
 
@@ -268,7 +264,7 @@ public class DungeonModels {
         return model;
     }
 
-    public static DungeonModel loadFromFile(String path, IResourceManager resourceManager) {
+    public static DungeonModel loadModel(String path, IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", path);
 
         try {
@@ -287,7 +283,7 @@ public class DungeonModels {
         throw new RuntimeException("Failed to load " + path);
     }
 
-    public static DungeonModel loadFromFile(ResourceLocation resource, IResourceManager resourceManager) {
+    public static DungeonModel loadModel(ResourceLocation resource, IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", resource.getPath());
 
         try {

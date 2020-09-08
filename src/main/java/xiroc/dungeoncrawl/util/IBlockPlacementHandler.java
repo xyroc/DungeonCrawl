@@ -39,7 +39,7 @@ public interface IBlockPlacementHandler {
         world.setBlockState(pos, state, 2);
     };
 
-    static void load() {
+    static void init() {
         PLACEMENT_HANDLERS.put(Blocks.WATER, new Water());
         PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);
         PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, TRAPPED_CHEST);

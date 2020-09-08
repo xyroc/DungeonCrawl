@@ -23,6 +23,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -111,8 +112,7 @@ public class DungeonCorridor extends DungeonPiece {
                     break;
             }
         }
-
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
@@ -122,6 +122,10 @@ public class DungeonCorridor extends DungeonPiece {
 //                        structureBoundingBoxIn, Theme.get(theme), Theme.getSub(subTheme), stage);
 //            }
 //        }
+
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        }
 
         if (connectedSides > 2) {
             entrances(worldIn, structureBoundingBoxIn, model);
@@ -136,10 +140,11 @@ public class DungeonCorridor extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
+        Vec3i offset = DungeonModels.getOffset(modelID);
         if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id) {
-            this.boundingBox = new MutableBoundingBox(x - 1, y, z - 1, x + 10, y + 8, z + 10);
+            this.boundingBox = new MutableBoundingBox(x - 1, y + offset.getY(), z - 1, x + 10, y + offset.getY() + 8, z + 10);
         } else {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
         }
 
 //        if (corridorFeatures != null) {

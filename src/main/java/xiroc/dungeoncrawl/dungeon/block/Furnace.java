@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.block;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.FurnaceTileEntity;
@@ -35,7 +36,10 @@ import java.util.Random;
 
 public class Furnace implements IBlockPlacementHandler {
 
-    public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(1, 16);
+    private static final Item[] FOOD = {Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_MUTTON,
+            Items.COOKED_COD, Items.COOKED_PORKCHOP, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.BAKED_POTATO};
+
+    public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(4, 16);
 
     @Override
     public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
@@ -44,9 +48,9 @@ public class Furnace implements IBlockPlacementHandler {
         if (world.getTileEntity(pos) instanceof FurnaceTileEntity) {
             FurnaceTileEntity tile = (FurnaceTileEntity) world.getTileEntity(pos);
             tile.setInventorySlotContents(1, new ItemStack(Items.COAL, COAL_AMOUNT.generateInt(rand)));
-        } else
+        } else {
             DungeonCrawl.LOGGER.warn("Failed to fetch a furnace entity at {}", pos.toString());
-
+        }
     }
 
     public static class Smoker implements IBlockPlacementHandler {
@@ -58,13 +62,11 @@ public class Furnace implements IBlockPlacementHandler {
             if (world.getTileEntity(pos) instanceof SmokerTileEntity) {
                 SmokerTileEntity tile = (SmokerTileEntity) world.getTileEntity(pos);
                 tile.setInventorySlotContents(1, new ItemStack(Items.CHARCOAL, COAL_AMOUNT.generateInt(rand)));
-//				tile.setInventorySlotContents(2, theme == 3 ? Kitchen.SMOKER_OCEAN.getItemStack((ServerWorld) world.getWorld(), rand, theme, lootLevel)
-//				: Kitchen.SMOKER.getItemStack((ServerWorld) world.getWorld(), rand, theme, lootLevel));
-            } else
+                tile.setInventorySlotContents(2, new ItemStack(FOOD[rand.nextInt(FOOD.length)], 1 + rand.nextInt(16)));
+            } else {
                 DungeonCrawl.LOGGER.warn("Failed to fetch a smoker entity at {}", pos.toString());
-
+            }
         }
-
     }
 
 }

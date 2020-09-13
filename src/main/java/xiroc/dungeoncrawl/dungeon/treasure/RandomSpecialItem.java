@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.treasure;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.treasure;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -189,7 +203,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage1)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage1.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage1).getInputStream()))).getAsJsonArray();
-                STAGE_1 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_1 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage1.toString());
             }
@@ -198,7 +212,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage2)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage2.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage2).getInputStream()))).getAsJsonArray();
-                STAGE_2 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_2 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage2.toString());
             }
@@ -207,7 +221,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage3)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage3.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage3).getInputStream()))).getAsJsonArray();
-                STAGE_3 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_3 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage3.toString());
             }
@@ -216,7 +230,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage4)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage4.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage4).getInputStream()))).getAsJsonArray();
-                STAGE_4 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_4 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage4.toString());
             }
@@ -225,7 +239,7 @@ public class RandomSpecialItem {
             if (resourceManager.hasResource(stage5)) {
                 DungeonCrawl.LOGGER.debug("Loading {}", stage5.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage5).getInputStream()))).getAsJsonArray();
-                STAGE_5 = WeightedRandomTreasureItem.loadFromJSON(array);
+                STAGE_5 = WeightedRandomTreasureItem.fromJson(array);
             } else {
                 throw new RuntimeException("Missing file " + stage5.toString());
             }

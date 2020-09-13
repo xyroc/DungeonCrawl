@@ -1,10 +1,25 @@
+/*
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package xiroc.dungeoncrawl.dungeon.model;
 
-/*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
-
 import com.google.gson.JsonObject;
+import net.minecraft.block.Blocks;
 import net.minecraft.loot.RandomValueRange;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Rotation;
@@ -16,16 +31,33 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.Orientation;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public interface DungeonModelFeature {
+
+    HashMap<String, DungeonModelFeature> FEATURES = new HashMap<>();
 
     DungeonModelFeature CHESTS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
             if (bounds.isVecInside(position.position)) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
                         position.position, rand, Treasure.Type.DEFAULT, theme, stage);
+            }
+        }
+    };
+
+    DungeonModelFeature TNT_CHESTS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
+        for (DirectionalBlockPos position : positions) {
+            if (bounds.isVecInside(position.position)) {
+                IBlockPlacementHandler.CHEST.placeBlock(world, Blocks.TRAPPED_CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
+                        Orientation.RANDOM_FACING_FLAT.roll(rand)),
+                        position.position, rand, Treasure.Type.DEFAULT, theme, stage);
+                if (!world.isAirBlock(position.position.down(2))) {
+                    world.setBlockState(position.position.down(2), Blocks.TNT.getDefaultState(), 2);
+                }
             }
         }
     };
@@ -51,7 +83,6 @@ public interface DungeonModelFeature {
                 IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER, spawner, rand, null, theme, stage);
             }
         }
-
     };
 
     void build(IWorld world, Random rand, BlockPos pos, DirectionalBlockPos[] positions, MutableBoundingBox bounds, int theme, int subTheme, int stage);
@@ -89,17 +120,19 @@ public interface DungeonModelFeature {
         }
     }
 
+    static void init() {
+        FEATURES.put("chests", CHESTS);
+        FEATURES.put("tnt_chests", TNT_CHESTS);
+        FEATURES.put("spawners", SPAWNERS);
+        FEATURES.put("catacomb", CATACOMB);
+    }
+
     static DungeonModelFeature getFromName(String name) {
-        if (name.equals("chests")) {
-            return CHESTS;
+        DungeonModelFeature feature = FEATURES.get(name.toLowerCase());
+        if (feature != null) {
+            return feature;
         }
-        if (name.equals("spawners")) {
-            return SPAWNERS;
-        }
-        if (name.equals("catacomb")) {
-            return CATACOMB;
-        }
-        throw new IllegalArgumentException("Unknown feature " + name);
+        throw new IllegalArgumentException("Unknown model feature: " + name);
     }
 
     class Metadata {

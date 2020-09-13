@@ -1,0 +1,16 @@
+{
+  "type": "side_room",
+  "id": 25,
+  "data": {
+    "stages": [ 2, 3, 4 ],
+    "weights": [ 0, 1, 2, 2, 0 ],
+    "feature": {
+      "type": "tnt_chests",
+      "min": 1,
+      "max": 2
+    },
+    "offset": {
+      "y": -1
+    }
+  }
+}

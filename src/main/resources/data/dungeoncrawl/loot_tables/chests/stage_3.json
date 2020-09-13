@@ -136,11 +136,6 @@
         },
         {
           "type": "item",
-          "name": "minecraft:enchanted_golden_apple",
-          "weight": 1
-        },
-        {
-          "type": "item",
           "name": "minecraft:music_disc_13",
           "weight": 1
         },
@@ -541,18 +536,18 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_potion",
-              "stage": 3
+              "loot_level": 3
             }
           ]
         },
         {
           "type": "item",
           "name": "minecraft:air",
-          "weight": 5,
+          "weight": 8,
           "functions": [
             {
               "function": "dungeoncrawl:random_item",
-              "stage": 3
+              "loot_level": 3
             }
           ]
         },

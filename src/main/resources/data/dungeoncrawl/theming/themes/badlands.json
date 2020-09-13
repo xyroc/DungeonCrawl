@@ -1,0 +1,110 @@
+{
+  "type": "theme",
+  "id": 17,
+  "sub_theme": 10,
+  "theme": {
+    "normal": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sandstone"
+        },
+        {
+          "block": "minecraft:cut_red_sandstone"
+        }
+      ]
+    },
+    "normal_2": {
+      "type": "block",
+      "block": "minecraft:obsidian"
+    },
+    "solid": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sandstone"
+        },
+        {
+          "block": "minecraft:cut_red_sandstone",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:chiseled_red_sandstone"
+        }
+      ]
+    },
+    "floor": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sand"
+        },
+        {
+          "block": "minecraft:red_sandstone"
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sandstone_stairs"
+        },
+        {
+          "block": "minecraft:smooth_red_sandstone_stairs"
+        }
+      ]
+    },
+    "solid_stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sandstone_stairs"
+        },
+        {
+          "block": "minecraft:smooth_red_sandstone_stairs"
+        }
+      ]
+    },
+    "slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sandstone_slab"
+        },
+        {
+          "block": "minecraft:cut_red_sandstone_slab"
+        }
+      ]
+    },
+    "solid_slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sandstone_slab"
+        },
+        {
+          "block": "minecraft:cut_red_sandstone_slab"
+        }
+      ]
+    },
+    "material": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:red_sandstone"
+        },
+        {
+          "block": "minecraft:cut_red_sandstone"
+        },
+        {
+          "block": "minecraft:smooth_red_sandstone"
+        }
+      ]
+    },
+    "wall": {
+      "type": "block",
+      "block": "minecraft:red_sandstone_wall"
+    }
+  }
+}

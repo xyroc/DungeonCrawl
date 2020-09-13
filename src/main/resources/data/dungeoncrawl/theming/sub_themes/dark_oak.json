@@ -1,0 +1,46 @@
+{
+  "type": "sub_theme",
+  "id": 4,
+  "theme": {
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:dark_oak_log"
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:dark_oak_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:dark_oak_door"
+    },
+    "material": {
+      "type": "block",
+      "block": "minecraft:dark_oak_planks"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "minecraft:dark_oak_stairs"
+    },
+    "slab": {
+      "type": "block",
+      "block": "minecraft:dark_oak_slab"
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:dark_oak_fence"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:dark_oak_fence_gate"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:dark_oak_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:dark_oak_pressure_plate"
+    }
+  }
+}

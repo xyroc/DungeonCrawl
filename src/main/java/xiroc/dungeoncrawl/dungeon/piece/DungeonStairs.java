@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.piece;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,7 +30,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -51,33 +64,32 @@ public class DungeonStairs extends DungeonPiece {
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-
+        BlockPos pos = new BlockPos(x, y, z);
         switch (stairType) {
             case 0: {
                 DungeonModel model = DungeonModels.MODELS.get(modelID);
-                build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
+                build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                         Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
-
                 ironBars(worldIn, structureBoundingBoxIn, model);
 
-                if (x == -742 && y == 30) {
-                    DungeonCrawl.LOGGER.debug("Stairs bottom Boundingbox: {}, {}, {} -> {}, {}, {}", boundingBox.minX,
-                            boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-                    DungeonCrawl.LOGGER.debug("north: {} east: {} south: {} west: {}", sides[0], sides[1], sides[2],
-                            sides[3]);
+                if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+                    model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
                 }
 
-                //buildBoundingBox(worldIn, boundingBox, Blocks.PRISMARINE_BRICK_SLAB);
-
+                decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             case 1: {
                 DungeonModel model = DungeonModels.MODELS.get(modelID);
-                build(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), Theme.get(theme),
+                build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                         Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
-//			DungeonCrawl.LOGGER.debug("Stairs top Boundingbox: {}, {}, {} -> {}, {}, {}", boundingBox.minX,
-//					boundingBox.minY, boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
                 entrances(worldIn, structureBoundingBoxIn, model);
+
+                if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+                    model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+                }
+
+                decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             default:
@@ -85,76 +97,6 @@ public class DungeonStairs extends DungeonPiece {
         }
 
     }
-
-//	public void ironBars(IWorld world, MutableBoundingBox bounds, DungeonModel model) {
-//		BlockState ironBars = Blocks.IRON_BARS.getDefaultState();
-//
-////		DungeonModelBlock stairs = new DungeonModelBlock(DungeonModelBlockType.STAIRS);
-////		stairs.half = Half.TOP;
-//
-//		int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
-//
-////		for (int i = 0; i < sides.length - 2; i++) {
-////			switch (Direction.byHorizontalIndex(i + 2)) {
-////			case EAST:
-////				if (sides[i]) {
-////					for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-////						for (int y0 = 1; y0 < 4; y0++)
-////							setBlockState(world, ironBars, x + model.width - 1, y + y0, z + z0, bounds);
-////				}
-////				continue;
-////			case NORTH:
-////				if (sides[i]) {
-////					for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-////						for (int y0 = 1; y0 < 4; y0++)
-////							setBlockState(world, ironBars, x + x0, y + y0, z, bounds);
-////				}
-////				continue;
-////			case SOUTH:
-////				if (sides[i]) {
-////					for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-////						for (int y0 = 1; y0 < 4; y0++)
-////							setBlockState(world, ironBars, x + x0, y + y0, z + model.length - 1, bounds);
-////				}
-////				continue;
-////			case WEST:
-////				if (sides[i]) {
-////					for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-////						for (int y0 = 1; y0 < 4; y0++)
-////							setBlockState(world, ironBars, x, y + y0, z + z0, bounds);
-////				}
-////				continue;
-////			default:
-////				continue;
-////
-////			}
-////		}
-//
-//		if (sides[0]) {
-//			for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-//				for (int y0 = 1; y0 < 4; y0++)
-//					setBlockState(world, ironBars, x + x0, y + y0, z, bounds);
-//		}
-//
-//		if (sides[1]) {
-//			for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-//				for (int y0 = 1; y0 < 4; y0++)
-//					setBlockState(world, ironBars, x + model.width - 1, y + y0, z + z0, bounds);
-//		}
-//
-//		if (sides[2]) {
-//			for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
-//				for (int y0 = 1; y0 < 4; y0++)
-//					setBlockState(world, ironBars, x + x0, y + y0, z + model.length - 1, bounds);
-//		}
-//
-//		if (sides[3]) {
-//			for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
-//				for (int y0 = 1; y0 < 4; y0++)
-//					setBlockState(world, ironBars, x, y + y0, z + z0, bounds);
-//		}
-//
-//	}
 
     public void ironBars(IWorld world, MutableBoundingBox bounds, DungeonModel model) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;

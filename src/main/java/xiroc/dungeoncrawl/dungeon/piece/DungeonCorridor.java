@@ -1,14 +1,29 @@
-package xiroc.dungeoncrawl.dungeon.piece;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
@@ -39,17 +54,8 @@ public class DungeonCorridor extends DungeonPiece {
 
     @Override
     public int determineModel(DungeonBuilder builder, Random rand) {
-        if (connectedSides == 2) {
-            //                case 1:
-            ////				return DungeonModels.CORRIDOR_FIRE;
-            //                    return DungeonModels.CORRIDOR.id;
-            //                case 2:
-            ////				return DungeonModels.CORRIDOR_GRASS;
-            //                    return DungeonModels.CORRIDOR.id;
-            if (sides[0] && sides[2] || sides[1] && sides[3]) {
-                //return RandomDungeonModel.CORRIDOR_STRAIGHT.roll(rand).id;
-                return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
-            }
+        if (connectedSides == 2 && isStraight()) {
+            return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
         }
         return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER,
                 DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
@@ -106,9 +112,8 @@ public class DungeonCorridor extends DungeonPiece {
                     break;
             }
         }
-
-        buildRotated(model, worldIn, structureBoundingBoxIn,
-                new BlockPos(x, y, z),
+        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
 //        if (connectedSides < 3 && corridorFeatures != null && featurePositions != null) {
@@ -118,9 +123,15 @@ public class DungeonCorridor extends DungeonPiece {
 //            }
 //        }
 
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        }
+
         if (connectedSides > 2) {
             entrances(worldIn, structureBoundingBoxIn, model);
         }
+
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{1});
@@ -129,18 +140,12 @@ public class DungeonCorridor extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
+        Vector3i offset = DungeonModels.getOffset(modelID);
         if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id) {
-            this.boundingBox = new MutableBoundingBox(x - 1, y, z  - 1, x + 10, y + 8, z + 10);
+            this.boundingBox = new MutableBoundingBox(x - 1, y + offset.getY(), z - 1, x + 10, y + offset.getY() + 8, z + 10);
         } else {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
         }
-
-//        if (corridorFeatures != null) {
-//            DungeonModel model = DungeonModels.MODELS.get(modelID);
-//            for (byte corridorFeature : corridorFeatures) {
-//                DungeonCorridorFeature.setupBounds(this, model, boundingBox, new BlockPos(x, y, z), corridorFeature);
-//            }
-//        }
     }
 
     @Override

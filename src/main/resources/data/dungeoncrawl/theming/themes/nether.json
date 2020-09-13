@@ -1,0 +1,130 @@
+{
+  "type": "theme",
+  "id": 1,
+  "sub_theme": 8,
+  "decorations": [
+    {
+      "type": "floor",
+      "block": {
+        "type": "block",
+        "block": "minecraft:fire"
+      },
+      "chance": 0.15
+    }
+  ],
+  "theme": {
+    "normal": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:netherrack",
+          "weight": 4
+        },
+        {
+          "block": "minecraft:nether_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:red_nether_bricks"
+        },
+        {
+          "block": "minecraft:magma_block",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:nether_quartz_ore"
+        }
+      ]
+    },
+    "normal_2": {
+      "type": "block",
+      "block": "minecraft:obsidian"
+    },
+    "solid": {
+      "type": "block",
+      "block": "minecraft:magma_block"
+    },
+    "floor": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:netherrack",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:nether_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:red_nether_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:magma_block"
+        },
+        {
+          "block": "minecraft:obsidian"
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_brick_stairs"
+        },
+        {
+          "block": "minecraft:red_nether_brick_stairs"
+        }
+      ]
+    },
+    "solid_stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_brick_stairs"
+        },
+        {
+          "block": "minecraft:red_nether_brick_stairs"
+        }
+      ]
+    },
+    "material": {
+      "type": "block",
+      "block": "minecraft:netherrack"
+    },
+    "wall": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_brick_wall"
+        },
+        {
+          "block": "minecraft:red_nether_brick_wall"
+        }
+      ]
+    },
+    "slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_brick_slab"
+        },
+        {
+          "block": "minecraft:red_nether_brick_slab"
+        }
+      ]
+    },
+    "solid_slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_brick_slab"
+        },
+        {
+          "block": "minecraft:red_nether_brick_slab"
+        }
+      ]
+    }
+  }
+}

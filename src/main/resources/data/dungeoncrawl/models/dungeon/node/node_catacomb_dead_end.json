@@ -5,11 +5,11 @@
 		"size": "normal",
 		"type": "dead_end",
 		"feature": {
-			"name": "catacomb",
+			"type": "catacomb",
 			"min": 8,
 			"max": 16
 		},
 		"stages": [ 3, 4 ],
-		"weights": [ 0, 0, 5, 5, 0 ]
+		"weights": [ 0, 0, 10, 10, 0 ]
 	}
 }

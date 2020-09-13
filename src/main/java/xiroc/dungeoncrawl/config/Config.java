@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.config;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
@@ -23,13 +37,12 @@ public class Config {
 
     public static final ForgeConfigSpec CONFIG;
 
-    public static final IntValue SPAWNER_ENTITIES, LAYER_ADDITIONS_MIN, LAYER_ADDITIONS_EXTRA;
+    public static final IntValue SPAWNER_ENTITIES;
 
     public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
-            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES;
-//			ENABLE_DUNGEON_BOSS;
+            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN;
 
     static {
         BUILDER.comment("General Settings").push(CONFIG_GENERAL);
@@ -51,12 +64,7 @@ public class Config {
                 .defineInRange("mob_spawn_rate", 0.05, 0.001, 1.0);
         SPAWNER_ENTITIES = BUILDER.comment(
                 "The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
-                .defineInRange("spawner_entities", 8, 1, 128);
-        LAYER_ADDITIONS_MIN = BUILDER.comment("The minumum amount of rooms for each dungeon layer.")
-                .defineInRange("layer_min_additions", 5, 0, 24);
-        LAYER_ADDITIONS_EXTRA = BUILDER.comment(
-                "The amount of extra rooms per dungeon layer. A random number in the range [0 ~ layer_extra_additions-1] will be used.")
-                .defineInRange("layer_extra_additions", 6, 1, 24);
+                .defineInRange("spawner_entities", 4, 1, 128);
         IGNORE_OVERWORLD_BLACKLIST = BUILDER.comment(
                 "If set to true, the dungeon generation will ignore the biome blacklist and generate dungeons in any overworld biome.")
                 .define("ignore_overworld_blacklist", false);
@@ -65,10 +73,8 @@ public class Config {
         VANILLA_SPAWNERS = BUILDER.comment(
                 "Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
                 .define("use_vanilla_spawners", false);
+        NATURAL_DESPAWN = BUILDER.comment("Whether mobs from spawners should despawn naturally or not.").define("natural_despawn", true);
 //		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
-//		ENABLE_DUNGEON_BOSS = BUILDER.comment(
-//				"If enabled, there will be a final room with a boss at the lowest layer. Please note that Dungeon Crawl DOES NOT bring its own bosses. The boss entities can be configured in the config.json file.")
-//				.define("enable_dungeon_boss", false);
 
         BUILDER.pop();
 
@@ -78,6 +84,7 @@ public class Config {
         IGNORE_DIMENSION = BUILDER.comment(
                 "If this is set to false, no dungeons can be generated outside the overworld.")
                 .define("ignore_dimension", true);
+        SOLID = BUILDER.comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.").define("solid", false);
         BUILDER.pop();
 
         BUILDER.comment("There are a lot more other config options in config/DungeonCrawl.").push("Information");

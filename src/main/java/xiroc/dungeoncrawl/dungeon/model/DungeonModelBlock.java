@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.model;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
@@ -11,6 +25,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.Property;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
@@ -177,12 +192,47 @@ public class DungeonModelBlock {
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.solid.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.WALL,
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.normal.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.WALL_2,
+                (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.normal2.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.STAIRS, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
                 .create(theme.stairs.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.SOLID_STAIRS, (block, rotation, world, pos, theme, subTheme, rand, variation,
                                                            stage) -> block.create(theme.solidStairs.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.MATERIAL_STAIRS, (block, rotation, world, pos, theme, subTheme, rand, variation,
                                                               stage) -> block.create(subTheme.stairs.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.SLAB, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                   stage) -> block.create(theme.slab.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.SOLID_SLAB, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                         stage) -> block.create(theme.solidSlab.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.WOODEN_SLAB, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                          stage) -> block.create(subTheme.slab.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.WOODEN_PRESSURE_PLATE, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                                    stage) -> block.create(subTheme.pressurePlate.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.FENCE, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                    stage) -> block.create(subTheme.fence.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.FENCE_GATE, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                         stage) -> block.create(subTheme.fenceGate.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.WOODEN_BUTTON, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                            stage) -> block.create(subTheme.button.get(), world, pos, rotation));
+        PROVIDERS.put(DungeonModelBlockType.SKULL, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                    stage) -> {
+            Tuple<BlockState, Boolean> skull = block.create(Blocks.SKELETON_SKULL.getDefaultState(), world, pos, rotation);
+            BlockState state = skull.getA();
+            if (state.hasProperty(BlockStateProperties.ROTATION_0_15)) {
+                int r = state.get(BlockStateProperties.ROTATION_0_15);
+                int add = rand.nextInt(3);
+                if (rand.nextBoolean()) {
+                    r -= add;
+                    if (r < 0)
+                        r += 16;
+                } else {
+                    r = (r + add) % 16;
+                }
+                state = state.with(BlockStateProperties.ROTATION_0_15, r);
+                return new Tuple<>(state, skull.getB());
+            }
+            return skull;
+        });
         PROVIDERS.put(DungeonModelBlockType.CHEST, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
                 .create(DungeonBlocks.CHEST, world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.RARE_CHEST,
@@ -193,8 +243,6 @@ public class DungeonModelBlock {
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> rand.nextFloat() < 0.5
                         ? block.create(DungeonBlocks.CHEST, world, pos, rotation)
                         : CAVE_AIR);
-        PROVIDERS.put(DungeonModelBlockType.DISPENSER, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                        stage) -> block.create(Blocks.DISPENSER.getDefaultState(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.FLOOR,
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.floor.get(), world, pos, rotation));
         PROVIDERS.put(DungeonModelBlockType.SPAWNER,
@@ -249,10 +297,9 @@ public class DungeonModelBlock {
                     return CAVE_AIR;
                 });
         PROVIDERS.put(DungeonModelBlockType.RAND_WALL_SPAWNER,
-                Config.NO_SPAWNERS.get() ? (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-                    return block.create(theme.solid.get(), world, pos, rotation);
-                } : (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-                    if (rand.nextInt(2 + (4 - stage)) == 0)
+                Config.NO_SPAWNERS.get() ? (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.solid.get(), world, pos, rotation)
+                        : (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
+                    if (rand.nextFloat() < 0.4F + 0.1F * stage)
                         return SPAWNER;
                     return block.create(theme.solid.get(), world, pos, rotation);
                 });

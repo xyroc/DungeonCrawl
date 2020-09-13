@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.model;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.*;
 import net.minecraft.util.Direction;
@@ -11,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.Orientation;
 
@@ -38,9 +53,6 @@ public class DungeonModel {
     }
 
     public DungeonModel setId(int id) {
-        if (DungeonModels.MODELS.containsKey(id)) {
-            DungeonCrawl.LOGGER.warn("A model with the id {} has already been registered.", id);
-        }
         DungeonModels.MODELS.put(id, this);
         this.id = id;
         return this;
@@ -50,11 +62,8 @@ public class DungeonModel {
         this.metadata = metadata;
 
         this.id = metadata.id;
-        if (DungeonModels.MODELS.containsKey(id)) {
-            DungeonCrawl.LOGGER.warn("A model with the id {} has already been registered.", id);
-        }
-        DungeonModels.MODELS.put(id, this);
 
+        DungeonModels.MODELS.put(id, this);
 
         if (metadata.type != null) {
             metadata.type.members.add(this);
@@ -62,6 +71,10 @@ public class DungeonModel {
 
         if (metadata.offset != null) {
             DungeonModels.OFFSETS.put(id, metadata.offset);
+        }
+
+        if (metadata.treasureType != null) {
+            Treasure.MODEL_TREASURE_TYPES.put(id, metadata.treasureType);
         }
 
         if (metadata.size != null) {
@@ -156,19 +169,22 @@ public class DungeonModel {
         public DungeonModelFeature feature;
         public DungeonModelFeature.Metadata featureMetadata;
 
+        public Treasure.Type treasureType;
+
         public boolean variation;
 
         public Vector3i offset;
 
         public int[] stages, weights;
 
-        private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata, Vector3i offset, boolean variation, int[] stages, int[] weights) {
+        private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata, Vector3i offset, Treasure.Type treasureType, boolean variation, int[] stages, int[] weights) {
             this.type = type;
             this.size = size;
             this.id = id;
             this.feature = feature;
             this.featureMetadata = featureMetadata;
             this.offset = offset;
+            this.treasureType = treasureType;
             this.variation = variation;
             this.stages = stages;
             this.weights = weights;
@@ -196,6 +212,8 @@ public class DungeonModel {
 
                 JsonObject data = null;
 
+                Treasure.Type treasureType = null;
+
                 if (object.has("data")) {
                     data = object.getAsJsonObject("data");
 
@@ -204,7 +222,7 @@ public class DungeonModel {
 
                     if (data.has("feature")) {
                         JsonObject featureData = data.getAsJsonObject("feature");
-                        feature = DungeonModelFeature.getFromName(featureData.get("name").getAsString());
+                        feature = DungeonModelFeature.getFromName(featureData.get("type").getAsString());
                         featureMetadata = new DungeonModelFeature.Metadata(featureData);
                     }
 
@@ -212,16 +230,24 @@ public class DungeonModel {
                         variation = data.get("variation").getAsBoolean();
                     }
 
+                    if (data.has("treasure_type")) {
+                        try {
+                            treasureType = Treasure.Type.valueOf(data.get("treasure_type").getAsString().toUpperCase(Locale.ROOT));
+                        } catch (IllegalArgumentException e) {
+                            DungeonCrawl.LOGGER.error("Invalid treasure type {} for model {}", data.get("treasure_type"), id);
+                            e.printStackTrace();
+                        }
+                    }
                     offset = data.has("offset") ? getOffset(data.getAsJsonObject("offset")) : null;
                 }
 
                 switch (modelType) {
                     case "normal":
-                        return new Metadata(null, null, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(null, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     case "entrance":
-                        return new Metadata(ModelCategory.ENTRANCE, null, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(ModelCategory.ENTRANCE, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     case "room":
-                        return new Metadata(ModelCategory.ROOM, null, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(ModelCategory.ROOM, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     case "node":
                         ModelCategory size;
                         String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
@@ -232,15 +258,15 @@ public class DungeonModel {
                         } else {
                             throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
                         }
-                        return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     case "corridor":
-                        return new Metadata(ModelCategory.CORRIDOR, null, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(ModelCategory.CORRIDOR, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     case "corridor_linker":
-                        return new Metadata(ModelCategory.CORRIDOR_LINKER, null, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(ModelCategory.CORRIDOR_LINKER, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     case "node_connector":
-                        return new Metadata(ModelCategory.NODE_CONNECTOR, null, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(ModelCategory.NODE_CONNECTOR, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     case "side_room":
-                        return new Metadata(ModelCategory.SIDE_ROOM, null, id, feature, featureMetadata, offset, variation, stages, weights);
+                        return new Metadata(ModelCategory.SIDE_ROOM, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
                     default:
                         throw new IllegalArgumentException("Unknown model type \"" + modelType + "\"");
                 }

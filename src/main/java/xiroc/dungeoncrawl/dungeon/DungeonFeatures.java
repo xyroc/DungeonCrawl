@@ -1,19 +1,37 @@
-package xiroc.dungeoncrawl.dungeon;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridorLarge;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
-import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.Triple;
+import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -26,53 +44,81 @@ public class DungeonFeatures {
     public static final List<CorridorFeature> CORRIDOR_FEATURES;
 
     static {
-        OFFSET_DATA = new HashMap<Integer, Triple<Integer, Integer, Integer>>();
-        OFFSET_DATA.put(34, new Triple<Integer, Integer, Integer>(0, -1, 0));
+        OFFSET_DATA = new HashMap<>();
+        OFFSET_DATA.put(34, new Triple<>(0, -1, 0));
     }
 
     static {
         CORRIDOR_FEATURES = Lists.newArrayList();
-        CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-            if (stage > 1 && stage != 4 && rand.nextFloat() < 0.35) {
-                List<Direction> list = Lists.newArrayList();
-                Position2D center = new Position2D(x, z);
+//        CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+//            if (stage > 1 && stage != 4 && rand.nextFloat() < 0.35) {
+//                List<Direction> list = Lists.newArrayList();
+//                Position2D center = new Position2D(x, z);
+//
+//                for (int i = 0; i < 4; i++) {
+//                    if (layer.segments[x][z].reference.sides[i]) {
+//                        Position2D pos = center.shift(Direction.byHorizontalIndex(i + 2), 1);
+//                        PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
+//                        if (placeHolder != null) {
+//                            if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
+//                                    && ((DungeonCorridor) placeHolder.reference).isStraight()) {
+//                                list.add(Direction.byHorizontalIndex(i + 2));
+//                            } else {
+//                                return false;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if (list.size() > 1 && list.size() < 4) {
+//
+//                    for (Direction direction : list) {
+//                        Position2D pos = center.shift(direction, 1);
+//                        DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+//                                (DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
+//                        corridor.rotation = Orientation.getRotationFromFacing(direction.getOpposite());
+//                        layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
+//                                .withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+//                    }
+//
+//                    DungeonCorridorLarge corridor = new DungeonCorridorLarge(
+//                            (DungeonCorridor) layer.segments[x][z].reference, 1);
+//                    layer.segments[x][z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+//                    return true;
+//                } else {
+//                    return false;
+//                }
+//            }
+//            return false;
+//        });
 
-                for (int i = 0; i < 4; i++) {
-                    if (layer.segments[x][z].reference.sides[i]) {
-                        Position2D pos = center.shift(Direction.byHorizontalIndex(i + 2), 1);
-                        PlaceHolder placeHolder = layer.segments[pos.x][pos.z];
-                        if (placeHolder != null) {
-                            if (placeHolder.reference.getType() == 0 && placeHolder.reference.connectedSides == 2
-                                    && ((DungeonCorridor) placeHolder.reference).isStraight()) {
-                                list.add(Direction.byHorizontalIndex(i + 2));
-                            } else {
-                                return false;
-                            }
-                        }
+        CORRIDOR_FEATURES.add(((builder, layer, x, z, rand, lyr, stage, startPos) -> {
+            if (layer.segments[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.075) {
+                Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z));
+                if (sideRoomData != null) {
+                    DungeonSideRoom sideRoom = new DungeonSideRoom();
+                    WeightedRandomInteger randomModel = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.SIDE_ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage));
+                    if (randomModel != null && randomModel.integers.length > 0) {
+                        sideRoom.modelID = randomModel.roll(rand);
+                    } else {
+                        return false;
                     }
-                }
 
-                if (list.size() > 1 && list.size() < 4) {
+                    Direction dir = sideRoomData.getB().rotate(Direction.WEST);
+                    sideRoom.openSide(dir);
+                    sideRoom.setPosition(sideRoomData.getA());
+                    sideRoom.setRotation(sideRoomData.getB());
+                    sideRoom.stage = stage;
 
-                    for (Direction direction : list) {
-                        Position2D pos = center.shift(direction, 1);
-                        DungeonCorridorLarge corridor = new DungeonCorridorLarge(
-                                (DungeonCorridor) layer.segments[pos.x][pos.z].reference, 0);
-                        corridor.rotation = Orientation.getRotationFromFacing(direction.getOpposite());
-                        layer.segments[pos.x][pos.z] = new PlaceHolder(corridor)
-                                .withFlag(PlaceHolder.Flag.FIXED_ROTATION);
-                    }
-
-                    DungeonCorridorLarge corridor = new DungeonCorridorLarge(
-                            (DungeonCorridor) layer.segments[x][z].reference, 1);
-                    layer.segments[x][z] = new PlaceHolder(corridor).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+                    layer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).withFlag(PlaceHolder.Flag.FIXED_MODEL);
+                    layer.segments[x][z].reference.openSide(dir.getOpposite());
+                    layer.map.markPositionAsOccupied(sideRoomData.getA());
+                    layer.rotatePiece(layer.segments[x][z]);
                     return true;
-                } else {
-                    return false;
                 }
             }
             return false;
-        });
+        }));
 
 //		CORRIDOR_FEATURES.add((builder, layer, x, z, rand, lyr, stage, startPos) -> {
 //			if (rand.nextDouble() < 0.06 && canPlacePieceWithHeight(builder, lyr, x, z, 1, 1, -2, true)) {
@@ -299,10 +345,10 @@ public class DungeonFeatures {
     }
 
     @FunctionalInterface
-    public static interface CorridorFeature {
+    public interface CorridorFeature {
 
-        public boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
-                               int stage, BlockPos startPos);
+        boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+                        int stage, BlockPos startPos);
 
     }
 

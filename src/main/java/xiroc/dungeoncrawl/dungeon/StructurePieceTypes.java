@@ -1,17 +1,28 @@
-package xiroc.dungeoncrawl.dungeon;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon;
 
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.piece.*;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
+import xiroc.dungeoncrawl.dungeon.piece.room.*;
 
 public class StructurePieceTypes {
 
@@ -27,6 +38,7 @@ public class StructurePieceTypes {
     public static IStructurePieceType NODE_CONNECTOR;
     public static IStructurePieceType PRISONER_CELL;
     public static IStructurePieceType SECRET_ROOM;
+    public static IStructurePieceType SPIDER_ROOM;
 
     public static IStructurePieceType DUMMY;
 
@@ -45,6 +57,7 @@ public class StructurePieceTypes {
         NODE_CONNECTOR = IStructurePieceType.register(DungeonNodeConnector::new, createKey("node_connector"));
         PRISONER_CELL = IStructurePieceType.register(DungeonPrisonCell::new, createKey("prison_cell"));
         SECRET_ROOM = IStructurePieceType.register(DungeonSecretRoom::new, createKey("secret_room"));
+        SPIDER_ROOM = IStructurePieceType.register(DungeonSpiderRoom::new, createKey("spider_room"));
 
         if (Config.ENABLE_DUMMY_PIECES.get()) {
             DungeonCrawl.LOGGER.info("Registering Dummy Structure Pieces");

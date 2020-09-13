@@ -1,14 +1,29 @@
-package xiroc.dungeoncrawl.theme;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.theme;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -16,11 +31,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
-import java.util.Iterator;
 import java.util.Optional;
 
 public class JsonThemeHandler {
@@ -81,7 +97,8 @@ public class JsonThemeHandler {
 
     public static class JsonBaseTheme {
 
-        public IBlockStateProvider solid, normal, floor, solidStairs, stairs, material, vanillaWall, column;
+        // Mandatory entries
+        public IBlockStateProvider solid, normal, normal_2, floor, solidStairs, stairs, material, vanillaWall, column, slab, solidSlab;
 
         public static void deserialize(JsonObject object) {
             JsonObject themeObject = object.get("theme").getAsJsonObject();
@@ -91,37 +108,50 @@ public class JsonThemeHandler {
             theme.normal = JsonThemeHandler.deserialize(themeObject, "normal");
             theme.solid = JsonThemeHandler.deserialize(themeObject, "solid");
 
+            theme.normal_2 = JsonThemeHandler.deserialize(themeObject, "normal_2");
+
             theme.floor = JsonThemeHandler.deserialize(themeObject, "floor");
 
             theme.stairs = JsonThemeHandler.deserialize(themeObject, "stairs");
             theme.solidStairs = JsonThemeHandler.deserialize(themeObject, "solid_stairs");
 
+            theme.slab = JsonThemeHandler.deserialize(themeObject, "slab");
+            theme.solidSlab = JsonThemeHandler.deserialize(themeObject, "solid_slab");
+
             theme.material = JsonThemeHandler.deserialize(themeObject, "material");
             theme.vanillaWall = JsonThemeHandler.deserialize(themeObject, "wall");
-//			theme.column = JsonTheme.deserialize(themeObject, "column");
 
             int id = object.get("id").getAsInt();
 
-            Theme.ID_TO_THEME_MAP.put(id, theme.toTheme());
+            IDungeonDecoration[] decorations = null;
 
-            if (object.has("biomes")) {
-                String[] biomes = DungeonCrawl.GSON.fromJson(object.get("biomes"), String[].class);
-
-                for (String biome : biomes) {
-                    Theme.BIOME_TO_THEME_MAP.put(biome, id);
+            if (object.has("decorations")) {
+                JsonArray array = object.getAsJsonArray("decorations");
+                decorations = new IDungeonDecoration[array.size()];
+                for (int i = 0; i < decorations.length; i++) {
+                    decorations[i] = IDungeonDecoration.fromJson(array.get(i).getAsJsonObject());
                 }
             }
+
+            Theme result = theme.toTheme().withDecorations(decorations);
+
+            if (object.has("sub_theme")) {
+                result.subTheme = object.get("sub_theme").getAsInt();
+            }
+
+            Theme.ID_TO_THEME_MAP.put(id, result);
         }
 
         public Theme toTheme() {
-            return new Theme(null, solid, normal, floor, solidStairs, stairs, material, vanillaWall, null);
+            return new Theme(null, solid, normal, floor, solidStairs, stairs, material, vanillaWall, null, normal_2, slab, solidSlab);
         }
 
     }
 
     public static class JsonSubTheme {
 
-        public IBlockStateProvider wallLog, trapDoor, torchDark, door, material, stairs;
+        // Mandatory entries
+        public IBlockStateProvider wallLog, trapDoor, door, material, stairs, slab, fence, button, pressurePlate, fenceGate;
 
         public static void deserialize(JsonObject object) {
 
@@ -131,27 +161,22 @@ public class JsonThemeHandler {
 
             theme.wallLog = JsonThemeHandler.deserialize(themeObject, "pillar");
             theme.trapDoor = JsonThemeHandler.deserialize(themeObject, "trapdoor");
-//			theme.torchDark = JsonTheme.deserialize(themeObject, "torch");
             theme.door = JsonThemeHandler.deserialize(themeObject, "door");
             theme.material = JsonThemeHandler.deserialize(themeObject, "material");
             theme.stairs = JsonThemeHandler.deserialize(themeObject, "stairs");
+            theme.slab = JsonThemeHandler.deserialize(themeObject, "slab");
+            theme.fence = JsonThemeHandler.deserialize(themeObject, "fence");
+            theme.fenceGate = JsonThemeHandler.deserialize(themeObject, "fence_gate");
+            theme.button = JsonThemeHandler.deserialize(themeObject, "button");
+            theme.pressurePlate = JsonThemeHandler.deserialize(themeObject, "pressure_plate");
 
             int id = object.get("id").getAsInt();
 
             Theme.ID_TO_SUBTHEME_MAP.put(id, theme.toSubTheme());
-
-            if (object.has("biomes")) {
-                String[] biomes = DungeonCrawl.GSON.fromJson(object.get("biomes"), String[].class);
-
-                for (String biome : biomes) {
-                    Theme.BIOME_TO_SUBTHEME_MAP.put(biome, id);
-                }
-            }
-
         }
 
         public SubTheme toSubTheme() {
-            return new SubTheme(wallLog, trapDoor, null, door, material, stairs);
+            return new SubTheme(wallLog, trapDoor, null, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
         }
 
     }
@@ -169,9 +194,8 @@ public class JsonThemeHandler {
                 TupleIntBlock[] blocks = new TupleIntBlock[blockObjects.size()];
 
                 int i = 0;
-                Iterator<JsonElement> iterator = blockObjects.iterator();
-                while (iterator.hasNext()) {
-                    JsonObject element = (JsonObject) iterator.next();
+                for (JsonElement blockObject : blockObjects) {
+                    JsonObject element = (JsonObject) blockObject;
                     Block block = ForgeRegistries.BLOCKS
                             .getValue(new ResourceLocation(element.get("block").getAsString()));
                     if (block != null) {
@@ -184,24 +208,30 @@ public class JsonThemeHandler {
                                 }
                             }
                         }
-                        blocks[i++] = new TupleIntBlock(element.get("weight").getAsInt(), state);
+                        blocks[i++] = new TupleIntBlock(element.has("weight") ? element.get("weight").getAsInt() : 1, state);
                     } else {
                         LOGGER.error("Unknown block: {}", element.get("block").getAsString());
                     }
                 }
                 return new WeightedRandomBlock(blocks);
             } else if (type.equalsIgnoreCase("block")) {
-                BlockState state = ForgeRegistries.BLOCKS
-                        .getValue(new ResourceLocation(object.get("block").getAsString())).getDefaultState();
-                if (object.has("data")) {
-                    JsonObject data = object.get("data").getAsJsonObject();
-                    for (Property<?> property : state.getProperties()) {
-                        if (data.has(property.getName())) {
-                            state = parseProperty(state, property, data.get(property.getName()).getAsString());
+                Block block = ForgeRegistries.BLOCKS
+                        .getValue(new ResourceLocation(object.get("block").getAsString()));
+                if (block != null) {
+                    BlockState state = block.getDefaultState();
+                    if (object.has("data")) {
+                        JsonObject data = object.get("data").getAsJsonObject();
+                        for (Property<?> property : state.getProperties()) {
+                            if (data.has(property.getName())) {
+                                state = parseProperty(state, property, data.get(property.getName()).getAsString());
+                            }
                         }
                     }
+                    return new BlockStateHolder(state);
+                } else {
+                    LOGGER.error("Unknown block: {}", object.get("block").getAsString());
+                    return Blocks.CAVE_AIR::getDefaultState;
                 }
-                return new BlockStateHolder(state);
             } else {
                 LOGGER.error("Failed to load BlockState Provider {}: Unknown type {}.", object, type);
                 return null;

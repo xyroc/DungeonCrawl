@@ -123,9 +123,14 @@ public class DungeonCrawl {
     }
 
     @SubscribeEvent
-    public void onServerStart(FMLServerAboutToStartEvent event) {
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         event.getServer().getResourceManager().addReloadListener(new DataReloadListener());
     }
+
+//    @SubscribeEvent
+//    public void onServerStart(FMLServerStartingEvent event) {
+//        SpawnDungeonCommand.register(event.getCommandDispatcher());
+//    }
 
     public static String getDate() {
         return new SimpleDateFormat().format(new Date());

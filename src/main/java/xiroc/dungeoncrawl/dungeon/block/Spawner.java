@@ -73,18 +73,18 @@ public class Spawner implements IBlockPlacementHandler {
                     CompoundNBT spawnData = createSpawnData(type, null, rand, stage);
                     nbt.put("Entity", spawnData);
                     nbt.putInt("Weight", 1);
-                    nbt.putShort("MinSpawnDelay", (short) 200);
-                    nbt.putShort("MaxSpawnDelay", (short) 300);
-                    nbt.putShort("SpawnCount", (short) (2 + rand.nextInt(2)));
                     if (i == 0)
                         spawnerNBT.put("SpawnData", spawnData);
                     potentialSpawns.add(nbt);
                 }
                 spawnerNBT.put("SpawnPotentials", potentialSpawns);
+                spawnerNBT.putShort("MinSpawnDelay", (short) 100);
+                spawnerNBT.putShort("MaxSpawnDelay", (short) 140);
+                spawnerNBT.putShort("SpawnCount", (short) (2 + rand.nextInt(2)));
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {
-            DungeonCrawl.LOGGER.error("Failed to fetch mob spawner entity at ({}, {}, {})", pos.getX(), pos.getY(),
+            DungeonCrawl.LOGGER.error("Failed to fetch a mob spawner at ({}, {}, {})", pos.getX(), pos.getY(),
                     pos.getZ());
         }
     }

@@ -6,9 +6,6 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:andesite"
-        },
-        {
           "block": "minecraft:polished_andesite",
           "weight": 2
         },
@@ -47,10 +44,6 @@
       "blocks": [
         {
           "block": "minecraft:cracked_stone_bricks"
-        },
-        {
-          "block": "minecraft:andesite",
-          "weight": 3
         },
         {
           "block": "minecraft:cobblestone"

@@ -107,12 +107,12 @@ public abstract class DungeonGenerator {
     /**
      * Called in constructor of the dungeon builder. This should be used to setup
      */
-    public abstract void initialize(ChunkGenerator<?> chunkGenerator, DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand);
+    public abstract void initialize(DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand);
 
     /**
      * @return the amount of layers the dungeon will have.
      */
-    public abstract int calculateLayerCount(ChunkGenerator<?> chunkGenerator, Random rand, int height);
+    public abstract int calculateLayerCount(Random rand, int height);
 
     /**
      * Generates a specific layer.

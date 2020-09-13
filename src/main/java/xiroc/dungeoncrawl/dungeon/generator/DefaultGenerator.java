@@ -55,7 +55,7 @@ public class DefaultGenerator extends DungeonGenerator {
     }
 
     @Override
-    public void initialize(ChunkGenerator<?> chunkGenerator, DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand) {
+    public void initialize(DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand) {
         this.nodesLeft = new int[layers];
         this.roomsLeft = new int[layers];
         this.nodes = new int[layers];
@@ -71,7 +71,7 @@ public class DefaultGenerator extends DungeonGenerator {
     }
 
     @Override
-    public int calculateLayerCount(ChunkGenerator<?> chunkGenerator, Random rand, int height) {
+    public int calculateLayerCount(Random rand, int height) {
         this.layers = Math.min(maxLayers, height / 9);
         return layers;
     }

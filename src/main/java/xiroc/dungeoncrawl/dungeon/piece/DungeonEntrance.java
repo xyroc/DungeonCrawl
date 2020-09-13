@@ -84,25 +84,6 @@ public class DungeonEntrance extends DungeonPiece {
 
         Vec3i offset = DungeonModels.getOffset(entrance.id);
 
-//        DungeonCrawl.LOGGER.info("Entrance data: Position: ({}|{}|{}), Model: {}, Entrance id: {}, {}", x, cursorHeight, z,
-//                entrance, entrance.id, offset);
-
-//        DungeonCrawl.LOGGER.debug("StructureBoundingBox: [{},{},{}] -> [{},{},{}]", structureBoundingBoxIn.minX,
-//                structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ, structureBoundingBoxIn.maxX,
-//                structureBoundingBoxIn.maxY, structureBoundingBoxIn.maxZ);
-//
-//        DungeonCrawl.LOGGER.debug("BoundingBox: [{},{},{}] -> [{},{},{}]", boundingBox.minX, boundingBox.minY,
-//                boundingBox.minZ, boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
-
-//		int startX = Math.max(x, structureBoundingBoxIn.minX) - x,
-//				startZ = Math.max(z, structureBoundingBoxIn.minZ) - z;
-
-//		buildRotatedPart(entrance, worldIn, structureBoundingBoxIn,
-//				new BlockPos(Math.max(x + offset.getA(), structureBoundingBoxIn.minX), cursorHeight,
-//						Math.max(z + offset.getB(), structureBoundingBoxIn.minZ)),
-//				theme, subTheme, Treasure.Type.SUPPLY, stage, Rotation.NONE, startX, 0, startZ, entrance.width - startX,
-//				entrance.height, entrance.length - startZ);
-
         BlockPos pos = new BlockPos(x + offset.getX(), cursorHeight + offset.getY(), z + offset.getZ());
 
         buildFull(entrance, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
@@ -111,9 +92,6 @@ public class DungeonEntrance extends DungeonPiece {
         if (entrance.metadata != null && entrance.metadata.feature != null && featurePositions != null) {
             entrance.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
-
-//		DungeonBuilder.ENTRANCE_PROCESSORS.getOrDefault(entrance.id, DungeonBuilder.DEFAULT_PROCESSOR).process(worldIn,
-//				new BlockPos(x + offset.getA(), cursorHeight, z + offset.getB()), theme, this);
 
         decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, entrance);
         return true;

@@ -25,6 +25,8 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.Config;
@@ -68,14 +70,14 @@ public class DungeonBuilder {
             this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
                     pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(world, rand, startPos.getY());
+            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
 
             this.layers = new DungeonLayer[layerCount];
             this.maps = new DungeonLayerMap[layerCount];
 
             this.statTracker = new DungeonStatTracker(layerCount);
 
-            DEFAULT_GENERATOR.initialize(chunkGen, this, pos, rand);
+            DEFAULT_GENERATOR.initialize(this, pos, rand);
 
             DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
 
@@ -85,6 +87,28 @@ public class DungeonBuilder {
                     + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
         } else {
             DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
+        }
+    }
+
+    public DungeonBuilder(ServerWorld world, ChunkPos pos) {
+        int height = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.x * 16, pos.z * 16);
+        if (height >= 32) {
+
+            this.rand = new Random();
+            this.start = new Position2D(7, 7);
+            this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, height - 16,
+                    pos.z * 16 - Dungeon.SIZE / 2 * 9);
+
+            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
+
+            this.chunkGen = world.getChunkProvider().generator;
+
+            this.layers = new DungeonLayer[layerCount];
+            this.maps = new DungeonLayerMap[layerCount];
+
+            this.statTracker = new DungeonStatTracker(layerCount);
+
+            DEFAULT_GENERATOR.initialize(this, pos, rand);
         }
     }
 
@@ -98,8 +122,6 @@ public class DungeonBuilder {
         }
 
         for (int i = 0; i < layers.length; i++) {
-//            this.layers[i].buildMap(this, list, rand, (i == 0) ? this.start : layers[i - 1].end,
-//                    i == secretRoomLayer, i, i == layers.length - 1);
             DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
         }
 
@@ -142,7 +164,67 @@ public class DungeonBuilder {
             this.bottomSubTheme = this.subTheme;
         }
 
-        DungeonCrawl.LOGGER.debug("Entrance Biome: {} SubTheme: {}", biome, subTheme);
+        entrance.theme = theme;
+        entrance.subTheme = subTheme;
+
+        list.add(entrance);
+
+        postProcessDungeon(list, rand);
+
+        return list;
+    }
+
+    public List<DungeonPiece> build(int theme, int subTheme) {
+        List<DungeonPiece> list = Lists.newArrayList();
+
+        for (int i = 0; i < layers.length; i++) {
+            this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
+            this.layers[i] = new DungeonLayer(Dungeon.SIZE, Dungeon.SIZE);
+            this.layers[i].map = maps[i];
+        }
+
+        for (int i = 0; i < layers.length; i++) {
+            DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
+        }
+
+        for (int i = 0; i < layers.length; i++) {
+            processCorridors(layers[i], i);
+        }
+
+        DungeonPiece entrance = new DungeonEntrance();
+        entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
+                startPos.getZ() + layers[0].start.z * 9);
+        entrance.stage = 0;
+        entrance.modelID = entrance.determineModel(this, rand);
+        entrance.setupBoundingBox();
+
+        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
+
+        //String biome = startBiome.getRegistryName().toString();
+
+        this.theme = theme;
+
+        if (Theme.get(theme).subTheme != null) {
+            this.subTheme = Theme.randomizeSubTheme(Theme.get(theme).subTheme, rand);
+        } else {
+            this.subTheme = subTheme;
+        }
+
+        this.lowerTheme = Theme.randomizeTheme(80, rand);
+
+        if (Theme.get(lowerTheme).subTheme != null) {
+            this.lowerSubTheme = Theme.randomizeSubTheme(Theme.get(lowerTheme).subTheme, rand);
+        } else {
+            this.lowerSubTheme = this.subTheme;
+        }
+
+        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.randomizeTheme(81, rand) : Theme.randomizeTheme(1, rand);
+
+        if (Theme.get(bottomTheme).subTheme != null) {
+            this.bottomSubTheme = Theme.randomizeSubTheme(Theme.get(bottomTheme).subTheme, rand);
+        } else {
+            this.bottomSubTheme = this.subTheme;
+        }
 
         entrance.theme = theme;
         entrance.subTheme = subTheme;

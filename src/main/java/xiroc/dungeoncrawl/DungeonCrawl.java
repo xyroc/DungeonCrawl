@@ -82,7 +82,6 @@ public class DungeonCrawl {
         ForgeRegistries.STRUCTURE_FEATURES.register(Dungeon.DUNGEON);
         Structure.field_236365_a_.put(Dungeon.DUNGEON.getRegistryName().toString().toLowerCase(Locale.ROOT), Dungeon.DUNGEON);
 
-        StructurePieceTypes.registerAll();
         Treasure.init();
 
         EVENT_BUS = Bus.MOD.bus().get();

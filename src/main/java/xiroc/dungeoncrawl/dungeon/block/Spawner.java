@@ -107,8 +107,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnData.put("ArmorItems", armorList);
             ListNBT handItems = new ListNBT();
 
-            boolean swap = rand.nextFloat() < 0.1;
-            ItemStack mainHand = swap || RANGED_INVENTORY_ENTITIES.contains(type)
+            ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
                     ? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
                     : RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
             if (mainHand != ItemStack.EMPTY)

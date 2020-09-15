@@ -1,14 +1,29 @@
-package xiroc.dungeoncrawl.dungeon.piece;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
@@ -37,10 +52,16 @@ public class DungeonNodeConnector extends DungeonPiece {
 
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
+
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        }
+
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 
@@ -74,13 +95,14 @@ public class DungeonNodeConnector extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
+        Vector3i offset = DungeonModels.getOffset(modelID);
 
         if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + 4, y + model.height - 1,
+            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 4, y + offset.getY() + model.height - 1,
                     z + model.length - 1);
         } else {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + model.length - 1,
-                    y + model.height - 1, z + 4);
+            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + model.length - 1,
+                    y + offset.getY() + model.height - 1, z + 4);
         }
 
     }

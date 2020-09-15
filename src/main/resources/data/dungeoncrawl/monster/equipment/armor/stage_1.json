@@ -1,0 +1,34 @@
+{
+  "helmet": [
+    {
+      "item": "minecraft:leather_helmet"
+    },
+    {
+      "item": "minecraft:chainmail_helmet"
+    }
+  ],
+  "chestplate": [
+    {
+      "item": "minecraft:leather_chestplate"
+    },
+    {
+      "item": "minecraft:chainmail_chestplate"
+    }
+  ],
+  "leggings": [
+    {
+      "item": "minecraft:leather_leggings"
+    },
+    {
+      "item": "minecraft:chainmail_leggings"
+    }
+  ],
+  "boots": [
+    {
+      "item": "minecraft:leather_boots"
+    },
+    {
+      "item": "minecraft:chainmail_boots"
+    }
+  ]
+}

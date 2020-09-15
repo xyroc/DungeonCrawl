@@ -1,0 +1,46 @@
+{
+  "type": "sub_theme",
+  "id": 3,
+  "theme": {
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:acacia_log"
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:acacia_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:acacia_door"
+    },
+    "material": {
+      "type": "block",
+      "block": "minecraft:acacia_planks"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "minecraft:acacia_stairs"
+    },
+    "slab": {
+      "type": "block",
+      "block": "minecraft:acacia_slab"
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:acacia_fence"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:acacia_fence_gate"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:acacia_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:acacia_pressure_plate"
+    }
+  }
+}

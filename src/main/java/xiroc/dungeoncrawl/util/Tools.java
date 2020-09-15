@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.util;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.util;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -14,6 +28,7 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.INBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
@@ -90,36 +105,18 @@ public class Tools {
 
         event.getServer().getCommandManager().getDispatcher().register(Commands.literal("buildmodel").requires((a) -> {
             return a.hasPermissionLevel(2);
-        }).then(Commands.argument("name", StringArgumentType.word()).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-            String name = command.getArgument("name", String.class);
-            DungeonModel model = DungeonModels.NAME_TO_MODEL.get(name);
+        }).then(Commands.argument("id", IntegerArgumentType.integer()).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+            int id = command.getArgument("id", int.class);
+            DungeonModel model = DungeonModels.MODELS.get(id);
             if (model != null) {
                 BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                 buildModel(model, command.getSource().asPlayer().world, pos);
             } else {
-                command.getSource().sendErrorMessage(new StringTextComponent("Unknown model name: " + name));
+                command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
                 return 1;
             }
             return 0;
         }))));
-
-        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("debugmodel")
-                .then(Commands.argument("name", StringArgumentType.word()).then(Commands.argument("location", Vec3Argument.vec3())
-                        .then(Commands.argument("rotation", IntegerArgumentType.integer(0, 3))
-                                .executes((command) -> {
-                                    String name = command.getArgument("name", String.class);
-                                    DungeonModel model = DungeonModels.NAME_TO_MODEL.get(name);
-                                    if (model != null) {
-                                        BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                                        Rotation rotation = Rotation.values()[command.getArgument("rotation", int.class)];
-                                        DungeonCrawl.LOGGER.info("ROTATION: {}", rotation);
-                                        debugModelRotated(model, command.getSource().asPlayer().world, pos, rotation);
-                                    } else {
-                                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model name: " + name));
-                                        return 1;
-                                    }
-                                    return 0;
-                                })))));
     }
 
     @SubscribeEvent
@@ -315,4 +312,13 @@ public class Tools {
                 return JigsawOrientation.NORTH_UP;
         }
     }
+
+    private static String nbtToString(INBT nbt) {
+        if (nbt != null) {
+            return nbt.toString();
+        } else {
+            return "N/A";
+        }
+    }
+
 }

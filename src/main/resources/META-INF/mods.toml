@@ -1,10 +1,19 @@
 modLoader="javafml" #mandatory
-loaderVersion="[33,)" #mandatory
-license="https://github.com/XYROC/DungeonCrawl/blob/1.16.2/LICENSE.txt" #mandatory
+license='''
+
+
+Copyright (C) 2020
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.'''
+loaderVersion="[34,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
-version="2.0.3" #mandatory
+version="2.1.0" #mandatory
 displayName="Dungeon Crawl" #mandatory
 #updateJSONURL="URL" #optional
 #displayURL="URL" #optional
@@ -19,7 +28,7 @@ https://github.com/XYROC/DungeonCrawl/wiki/'''
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[33.0.0,)" #mandatory
+    versionRange="[34.0.2,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER

@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.SharedSeedRandom;
@@ -13,11 +27,13 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
@@ -38,6 +54,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final Dungeon DUNGEON = new Dungeon();
     public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> FEATURE = DUNGEON.func_236391_a_(NoFeatureConfig.field_236559_b_);
 
+    private static final StructureSeparationSettings SEPARATION_SETTINGS = new StructureSeparationSettings(15, 5, 10387313);
+
     public static final int SIZE = 15;
 
     public Dungeon() {
@@ -54,37 +72,21 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         return false;
     }
 
-    private static ChunkPos calculateChunkPos(int chunkX, int chunkZ, SharedSeedRandom rand) {
-        int x = chunkX - (Math.abs(chunkX % 12));
-        int z = chunkZ - (Math.abs(chunkZ % 12));
-        return new ChunkPos( x + x % 8 , z + z % 8);
-        //return new ChunkPos(chunkX - (chunkX % 16) + 4 + (chunkZ % 8), chunkZ - (chunkZ % 16) + 4 + (chunkX % 8));
-    }
-
-    //DimensionStructuresSettings
-
     @Override
     protected boolean func_230363_a_(ChunkGenerator chunkGen, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom rand, int chunkX, int chunkZ, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-        if (p_230363_8_.func_242440_e().func_242493_a(this)) {
-            //ChunkPos pos = getStartPositionForPosition(rand, chunkX, chunkZ, p_230363_3_);
-            //DungeonCrawl.LOGGER.debug("Calculated: {} {} Original: {} {}", pos.x, pos.z, chunkX, chunkZ);
-            ChunkPos pos = calculateChunkPos(chunkX, chunkZ, rand);
-            if (chunkX == pos.x && chunkZ == pos.z) {
-                for (Biome biome : p_230363_2_.getBiomes(chunkX * 16 - SIZE / 2 * 9, chunkGen.getGroundHeight(),
-                        chunkZ * 16 - SIZE / 2 * 9, 64)) {
-                    if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !biome.func_242440_e().func_242493_a(this)) {
-                        return false;
-                    }
-                }
-                if (DungeonCrawl.EVENT_BUS
-                        .post(new DungeonPlacementCheckEvent(chunkGen, chunkGen.getBiomeProvider().getNoiseBiome(chunkX * 16, chunkGen.getGroundHeight(), chunkZ * 16), chunkX, chunkZ))) {
+        ChunkPos pos = func_236392_a_(SEPARATION_SETTINGS, p_230363_3_, rand, chunkX, chunkZ);
+        if (pos.x == chunkX && pos.z == chunkZ) {
+            int x = chunkX * 16, z = chunkZ * 16;
+            for (Biome biome : p_230363_2_.getBiomes(x, chunkGen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG), z, 64)) {
+                if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !biome.func_242440_e().func_242493_a(this)) {
                     return false;
                 }
-                //rand.setLargeFeatureSeed(p_230363_3_, chunkX, chunkZ);
-                double r = rand.nextDouble();
-                //DungeonCrawl.LOGGER.info("Random: {}", r);
-                return r < Config.DUNGEON_PROBABLILITY.get();
             }
+            if (DungeonCrawl.EVENT_BUS
+                    .post(new DungeonPlacementCheckEvent(chunkGen, chunkGen.getBiomeProvider().getNoiseBiome(chunkX * 16, chunkGen.getGroundHeight(), chunkZ * 16), chunkX, chunkZ))) {
+                return false;
+            }
+            return rand.nextDouble() < Config.DUNGEON_PROBABLILITY.get();
         }
         return false;
     }

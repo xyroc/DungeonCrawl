@@ -1,0 +1,110 @@
+{
+  "type": "theme",
+  "id": 16,
+  "sub_theme": 6,
+  "theme": {
+    "normal": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone"
+        },
+        {
+          "block": "minecraft:cut_sandstone"
+        }
+      ]
+    },
+    "normal_2": {
+      "type": "block",
+      "block": "minecraft:obsidian"
+    },
+    "solid": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone"
+        },
+        {
+          "block": "minecraft:cut_sandstone",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:chiseled_sandstone"
+        }
+      ]
+    },
+    "floor": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sand"
+        },
+        {
+          "block": "minecraft:sandstone"
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone_stairs"
+        },
+        {
+          "block": "minecraft:smooth_sandstone_stairs"
+        }
+      ]
+    },
+    "solid_stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone_stairs"
+        },
+        {
+          "block": "minecraft:smooth_sandstone_stairs"
+        }
+      ]
+    },
+    "slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone_slab"
+        },
+        {
+          "block": "minecraft:cut_sandstone_slab"
+        }
+      ]
+    },
+    "solid_slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone_slab"
+        },
+        {
+          "block": "minecraft:cut_sandstone_slab"
+        }
+      ]
+    },
+    "material": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone"
+        },
+        {
+          "block": "minecraft:cut_sandstone"
+        },
+        {
+          "block": "minecraft:smooth_sandstone"
+        }
+      ]
+    },
+    "wall": {
+      "type": "block",
+      "block": "minecraft:sandstone_wall"
+    }
+  }
+}

@@ -1,13 +1,28 @@
-package xiroc.dungeoncrawl.util;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -26,7 +41,6 @@ public class WeightedRandomInteger implements IRandom<Integer> {
         this.totalWeight = weight;
         this.integers = new WeightedInteger[entries.length];
         this.assign(entries);
-        DungeonCrawl.LOGGER.debug("WeightedRandomIntger: {} entries", entries.length);
     }
 
     private void assign(WeightedIntegerEntry[] values) {
@@ -66,21 +80,12 @@ public class WeightedRandomInteger implements IRandom<Integer> {
         }
 
         public WeightedRandomInteger.Builder add(WeightedIntegerEntry[] entries) {
-            for (WeightedIntegerEntry entry : entries) {
-                this.entries.add(entry);
-            }
-            return this;
-        }
-
-        public WeightedRandomInteger.Builder addAll(Collection<WeightedIntegerEntry> entries) {
-            for (WeightedIntegerEntry entry : entries) {
-                this.entries.add(entry);
-            }
+            this.entries.addAll(Arrays.asList(entries));
             return this;
         }
 
         public WeightedRandomInteger build() {
-            return new WeightedRandomInteger(entries.toArray(new WeightedIntegerEntry[entries.size()]));
+            return new WeightedRandomInteger(entries.toArray(new WeightedIntegerEntry[0]));
         }
 
     }

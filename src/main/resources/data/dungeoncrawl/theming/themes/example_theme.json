@@ -18,6 +18,10 @@
 				}
 			]
 		},
+		"normal_2": {
+			"type": "block",
+			"block": "minecraft:obsidian"
+		},
 		"solid": {
 			"type": "block",
 			"block": "minecraft:piston",
@@ -40,6 +44,14 @@
 		"material": {
 			"type": "block",
 			"block": "minecraft:cracked_stone_bricks"
+		},
+		"slab": {
+			"type": "block",
+			"block": "minecraft:mossy_cobblestone_slab"
+		},
+		"solid_slab": {
+			"type": "block",
+			"block": "minecraft:mossy_stone_brick_slab"
 		},
 		"wall": {
 			"type": "block",

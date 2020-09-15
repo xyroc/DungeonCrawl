@@ -1,0 +1,57 @@
+{
+  "chance": 0.5,
+  "rolls": {
+    "min": 2,
+    "max": 3
+  },
+  "guaranteed": [
+    {
+      "effect": "minecraft:fire_resistance",
+      "duration": 6000
+    }
+  ],
+  "effects": [
+    {
+      "effect": "minecraft:strength",
+      "duration": 6000,
+      "amplifier": {
+        "min": 2,
+        "max": 3
+      },
+      "weight": 2
+    },
+    {
+      "effect": "minecraft:speed",
+      "duration": 6000,
+      "amplifier": {
+        "min": 2,
+        "max": 2
+      }
+    },
+    {
+      "effect": "minecraft:absorption",
+      "duration": 6000,
+      "amplifier": {
+        "min": 3,
+        "max": 6
+      },
+      "weight": 2
+    },
+    {
+      "effect": "minecraft:regeneration",
+      "duration": 6000,
+      "amplifier": {
+        "min": 1,
+        "max": 2
+      }
+    },
+    {
+      "effect": "minecraft:resistance",
+      "duration": 6000,
+      "amplifier": {
+        "min": 1,
+        "max": 1
+      }
+    }
+  ]
+}

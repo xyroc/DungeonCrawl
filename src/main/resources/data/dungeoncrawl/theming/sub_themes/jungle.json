@@ -1,0 +1,46 @@
+{
+  "type": "sub_theme",
+  "id": 1,
+  "theme": {
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:jungle_log"
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:jungle_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:jungle_door"
+    },
+    "material": {
+      "type": "block",
+      "block": "minecraft:jungle_planks"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "minecraft:jungle_stairs"
+    },
+    "slab": {
+      "type": "block",
+      "block": "minecraft:jungle_slab"
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:jungle_fence"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:jungle_fence_gate"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:jungle_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:jungle_pressure_plate"
+    }
+  }
+}

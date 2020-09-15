@@ -1,12 +1,25 @@
-package xiroc.dungeoncrawl.dungeon.treasure;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.treasure;
 
 import net.minecraft.loot.ILootSerializer;
 import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.LootTables;
 import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -17,38 +30,24 @@ import java.util.HashMap;
 
 public class Treasure {
 
-    public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES;
-    public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES;
 
     public static final LootFunctionType ENCHANTED_BOOK = func_237451_a_("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
-    public static final LootFunctionType MATERIAL_BLOCKS = func_237451_a_("dungeoncrawl:material_blocks", new EnchantedBook.Serializer());
+    public static final LootFunctionType MATERIAL_BLOCKS = func_237451_a_("dungeoncrawl:material_blocks", new MaterialBlocks.Serializer());
     public static final LootFunctionType RANDOM_ITEM = func_237451_a_("dungeoncrawl:random_item", new RandomItem.Serializer());
     public static final LootFunctionType RANDOM_POTION = func_237451_a_("dungeoncrawl:random_potion", new RandomPotion.Serializer());
     public static final LootFunctionType SHIELD = func_237451_a_("dungeoncrawl:shield", new Shield.Serializer());
     public static final LootFunctionType SUSPICIOUS_STEW = func_237451_a_("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());
 
-    static {
-        SPECIAL_LOOT_TABLES = new HashMap<>();
-
-        MODEL_TREASURE_TYPES = new HashMap<>();
-
-        MODEL_TREASURE_TYPES.put(32, Type.FORGE);
-
-        MODEL_TREASURE_TYPES.put(34, Type.LIBRARY);
-        MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
-
-        MODEL_TREASURE_TYPES.put(70, Type.SECRET_ROOM);
-
-        MODEL_TREASURE_TYPES.put(76, Type.SUPPLY);
-    }
+    public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES = new HashMap<>();
+    public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES = new HashMap<>();
 
     public static void init() {
         SPECIAL_LOOT_TABLES.put(Type.SUPPLY, Loot.SUPPLY_CHEST);
-        SPECIAL_LOOT_TABLES.put(Type.KITCHEN, Loot.KITCHEN_CHEST);
+        SPECIAL_LOOT_TABLES.put(Type.FOOD, Loot.FOOD);
         SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);
         SPECIAL_LOOT_TABLES.put(Type.LIBRARY, Loot.LIBRARY);
         SPECIAL_LOOT_TABLES.put(Type.SECRET_ROOM, Loot.SECRET_ROOM);
-        SPECIAL_LOOT_TABLES.put(Type.FORGE, LootTables.CHESTS_VILLAGE_VILLAGE_WEAPONSMITH);
+        SPECIAL_LOOT_TABLES.put(Type.FORGE, Loot.FORGE);
 
     }
 
@@ -58,7 +57,7 @@ public class Treasure {
      */
     public enum Type {
 
-        DEFAULT, KITCHEN, FORGE, CATACOMB, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE, SUPPLY;
+        DEFAULT, FOOD, FORGE, CATACOMB, SECRET_ROOM, LIBRARY, BUILDERS_ROOM, TREASURE, SUPPLY;
 
         public static final HashMap<Integer, Type> INT_TO_TYPE_MAP;
         public static final HashMap<Type, Integer> TYPE_TO_INT_MAP;
@@ -66,7 +65,7 @@ public class Treasure {
         static {
             INT_TO_TYPE_MAP = new HashMap<>();
             INT_TO_TYPE_MAP.put(0, DEFAULT);
-            INT_TO_TYPE_MAP.put(1, KITCHEN);
+            INT_TO_TYPE_MAP.put(1, FOOD);
             INT_TO_TYPE_MAP.put(2, FORGE);
             INT_TO_TYPE_MAP.put(3, CATACOMB);
             INT_TO_TYPE_MAP.put(4, SECRET_ROOM);

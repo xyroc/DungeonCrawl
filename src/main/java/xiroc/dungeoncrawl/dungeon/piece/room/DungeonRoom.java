@@ -1,9 +1,28 @@
+/*
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package xiroc.dungeoncrawl.dungeon.piece.room;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
@@ -12,17 +31,12 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
-
-/*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
 
 public class DungeonRoom extends DungeonPiece {
 
@@ -32,20 +46,7 @@ public class DungeonRoom extends DungeonPiece {
 
     @Override
     public int determineModel(DungeonBuilder builder, Random rand) {
-        if (rand.nextFloat() < 0.4 || connectedSides < 2) {
-            return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
-        }
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER,
-                DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
-    }
-
-
-    @Override
-    public void customSetup(Random rand) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-        if (model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
-            DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata, x, y, z);
-        }
+        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
     }
 
     @Override
@@ -56,16 +57,18 @@ public class DungeonRoom extends DungeonPiece {
         if (model == null)
             return false;
 
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
 
         build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
                 Treasure.Type.DEFAULT, stage, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
-        if (model.metadata.feature != null && featurePositions != null) {
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
+
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
 //        if (featurePositions != null) {
 //            DungeonCrawl.LOGGER.info("SPAWNER ROOM {} {} {} ({}) BOUNDS: [{} {} {} {} {} {}]", x, y, z, featurePositions.length,
@@ -93,7 +96,8 @@ public class DungeonRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+        Vector3i offset = DungeonModels.getOffset(modelID);
+        this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
     }
 
     @Override

@@ -2,6 +2,7 @@
 	"type": "node",
 	"id": 34,
 	"data": {
+		"treasure_type": "library",
 		"size": "large",
 		"type": "full",
 		"stages": [ 2, 3, 4 ],

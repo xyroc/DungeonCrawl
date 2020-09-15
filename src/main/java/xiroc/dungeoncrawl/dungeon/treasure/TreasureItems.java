@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.treasure;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.treasure;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,11 +51,10 @@ public class TreasureItems {
     public static final ItemStack SPLASH_HARMING;
     public static final ItemStack SPLASH_HARMING_II;
 
+    public static ItemStack[] POTIONS;
     public static ItemStack[] SPECIAL_POTIONS;
 
     public static final TreasureItem RANDOM_SPECIAL_ITEM;
-
-    // Enchantments
 
     static {
         {
@@ -70,6 +83,7 @@ public class TreasureItems {
             customPotionEffects.add(nausea);
             nbt.put("CustomPotionEffects", customPotionEffects);
             nbt.putInt("CustomPotionColor", 7014144);
+            //nbt.putInt("CustomPotionColor", 0xca03fc);
             nbt.putInt("HideFlags", 32);
             CompoundNBT display = new CompoundNBT();
             ListNBT lore = new ListNBT();
@@ -123,7 +137,7 @@ public class TreasureItems {
             CompoundNBT absorption = new CompoundNBT();
             absorption.putInt("Id", 22);
             absorption.putInt("Amplifier", 14);
-            absorption.putInt("Duration", 400);
+            absorption.putInt("Duration", 2400);
             customPotionEffects.add(absorption);
             customPotionEffects.add(resistance);
             customPotionEffects.add(blindness);
@@ -198,7 +212,6 @@ public class TreasureItems {
 
             POTION_REGENERATION = createItemWithNbt(Items.POTION, createPotionTag("minecraft:regeneration"));
             POTION_REGENERATION_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_regeneration"));
-
             POTION_REGENERATION_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_regeneration"));
 
             SPLASH_POISON = createItemWithNbt(Items.POTION, createPotionTag("minecraft:poison"));
@@ -206,6 +219,8 @@ public class TreasureItems {
             SPLASH_HARMING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:harming"));
             SPLASH_HARMING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_harming"));
 
+            POTIONS = new ItemStack[]{POTION_HEALING, POTION_HEALING_II, POTION_REGENERATION, POTION_REGENERATION_LONG,
+                    POTION_REGENERATION_II, SPLASH_HARMING, SPLASH_HARMING_II, SPLASH_POISON, SPLASH_POISON_LONG};
             SPECIAL_POTIONS = new ItemStack[]{LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS};
 
         }
@@ -242,6 +257,8 @@ public class TreasureItems {
     }
 
     public static ItemStack getRandomSpecialPotion(Random rand, int stage) {
+        if (rand.nextFloat() < 0.4)
+            return POTIONS[rand.nextInt(POTIONS.length)].copy();
         int bound = stage == 0 ? 1 : SPECIAL_POTIONS.length;
         return SPECIAL_POTIONS[rand.nextInt(bound)].copy();
     }

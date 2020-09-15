@@ -1,0 +1,46 @@
+{
+  "type": "sub_theme",
+  "id": 5,
+  "theme": {
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:spruce_log"
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:spruce_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:spruce_door"
+    },
+    "material": {
+      "type": "block",
+      "block": "minecraft:spruce_planks"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "minecraft:spruce_stairs"
+    },
+    "slab": {
+      "type": "block",
+      "block": "minecraft:spruce_slab"
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:spruce_fence"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:spruce_fence_gate"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:spruce_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:spruce_pressure_plate"
+    }
+  }
+}

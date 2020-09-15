@@ -1,8 +1,22 @@
-package xiroc.dungeoncrawl.dungeon.piece.room;
-
 /*
- * DungeonCrawl (C) 2019 - 2020 XYROC (XIROC1337), All Rights Reserved
- */
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+package xiroc.dungeoncrawl.dungeon.piece.room;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -95,7 +109,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             DungeonCrawl.LOGGER.error("Didnt find a model provider for {} in stage {}. Connected Sides: {}, Base: {}",
                     this, stage, connectedSides, base);
 
-            return large ? DungeonModels.LARGE_NODE.id : DungeonModels.NODE_2.id;
+            return large ? 33 : 38;
         }
 
         Integer id = provider.roll(rand);
@@ -103,7 +117,7 @@ public class DungeonNodeRoom extends DungeonPiece {
         if (id == null) {
             DungeonCrawl.LOGGER.error("Empty model provider for {} in stage {}. Connected Sides: {}, Base: {}",
                     this, stage, connectedSides, base);
-            return large ? DungeonModels.LARGE_NODE.id : DungeonModels.NODE_2.id;
+            return large ? 33 : 38;
         }
 
         return id;
@@ -149,6 +163,8 @@ public class DungeonNodeRoom extends DungeonPiece {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
+        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
+
 //        if (large) {
 //            buildBoundingBox(worldIn, new MutableBoundingBox(structureBoundingBoxIn.minX, y, structureBoundingBoxIn.minZ,
 //                    structureBoundingBoxIn.maxX, y + 8, structureBoundingBoxIn.maxZ), Blocks.COBWEB);
@@ -161,8 +177,9 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        this.boundingBox = large ? new MutableBoundingBox(x, y, z, x + 26, y + 8, z + 26)
-                : new MutableBoundingBox(x, y, z, x + 16, y + 8, z + 16);
+        Vector3i offset = DungeonModels.getOffset(modelID);
+        this.boundingBox = large ? new MutableBoundingBox(x, y + offset.getY(), z, x + 26, y + offset.getY() + 8, z + 26)
+                : new MutableBoundingBox(x, y + offset.getY(), z, x + 16, y + offset.getY() + 8, z + 16);
     }
 
     @Override
@@ -244,7 +261,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 
         Position2D center = new Position2D(posX, posZ);
 
-        return new Tuple<Position2D, Position2D>(center.shift(node.findClosest(current.facing), 1),
+        return new Tuple<>(center.shift(node.findClosest(current.facing), 1),
                 center.shift(findExitToPosition(end), 1));
     }
 

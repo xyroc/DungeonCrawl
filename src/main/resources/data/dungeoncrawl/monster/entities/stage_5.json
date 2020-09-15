@@ -1,0 +1,28 @@
+{
+  "common": [
+    {
+      "entity": "minecraft:zombie"
+    },
+    {
+      "entity": "minecraft:skeleton"
+    },
+    {
+      "entity": "minecraft:stray",
+      "weight": 2
+    },
+    {
+      "entity": "minecraft:wither_skeleton"
+    }
+  ],
+  "rare": [
+    {
+      "entity": "minecraft:creeper"
+    },
+    {
+      "entity": "minecraft:enderman"
+    },
+    {
+      "entity": "minecraft:silverfish"
+    }
+  ]
+}

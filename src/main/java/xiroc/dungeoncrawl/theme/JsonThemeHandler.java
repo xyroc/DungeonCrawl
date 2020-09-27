@@ -70,7 +70,7 @@ public class JsonThemeHandler {
                 case "theme_mapping":
                     object.get("mapping").getAsJsonObject().entrySet().forEach((entry) -> {
                         String key = entry.getKey();
-                        if (!WorldGenRegistries.field_243657_i.containsKey(new ResourceLocation(key))) {
+                        if (!ForgeRegistries.BIOMES.containsKey(new ResourceLocation(key))) {
                             LOGGER.warn("The biome {} does not exist", key);
                         }
                         int id = entry.getValue().getAsInt();
@@ -80,7 +80,7 @@ public class JsonThemeHandler {
                 case "sub_theme_mapping":
                     object.get("mapping").getAsJsonObject().entrySet().forEach((entry) -> {
                         String key = entry.getKey();
-                        if (!WorldGenRegistries.field_243657_i.containsKey(new ResourceLocation(key))) {
+                        if (!ForgeRegistries.BIOMES.containsKey(new ResourceLocation(key))) {
                             LOGGER.warn("The biome {} does not exist", key);
                         }
                         int id = entry.getValue().getAsInt();

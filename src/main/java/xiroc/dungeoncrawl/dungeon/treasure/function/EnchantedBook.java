@@ -46,7 +46,7 @@ public class EnchantedBook extends LootFunction {
     }
 
     @Override
-    public LootFunctionType func_230425_b_() {
+    public LootFunctionType getFunctionType() {
         return Treasure.ENCHANTED_BOOK;
     }
 
@@ -57,10 +57,11 @@ public class EnchantedBook extends LootFunction {
         }
 
         @Override
-        public void func_230424_a_(JsonObject p_230424_1_, EnchantedBook p_230424_2_, JsonSerializationContext p_230424_3_) {
-            super.func_230424_a_(p_230424_1_, p_230424_2_, p_230424_3_);
+        public void serialize(JsonObject p_230424_1_, EnchantedBook p_230424_2_, JsonSerializationContext p_230424_3_) {
+            super.serialize(p_230424_1_, p_230424_2_, p_230424_3_);
             p_230424_1_.addProperty("stage", p_230424_2_.lootLevel);
         }
+
 
         @Override
         public EnchantedBook deserialize(JsonObject object, JsonDeserializationContext deserializationContext,

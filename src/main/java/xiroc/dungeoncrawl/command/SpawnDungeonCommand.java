@@ -34,32 +34,32 @@ import xiroc.dungeoncrawl.theme.Theme;
 public class SpawnDungeonCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(Commands.literal("dcdungeon").requires((a)
-                -> a.hasPermissionLevel(4)).then(Commands.argument("location", Vec3Argument.vec3())
-                .executes((command) -> {
-                            command.getSource().sendFeedback(new StringTextComponent("Building a dungeon..."), true);
-                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                            ServerWorld world = command.getSource().getWorld();
-                            spawnDungeon(world, pos,
-                                    Theme.getTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()),
-                                    Theme.getSubTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()));
-                            return 0;
-                        }
-                ).then(Commands.argument("theme", IntegerArgumentType.integer())
-                        .then(Commands.argument("sub_theme", IntegerArgumentType.integer())
-                                .executes((command) -> {
-                                    command.getSource().sendFeedback(new StringTextComponent("Building a dungeon..."), true);
-                                    spawnDungeon(command.getSource().getWorld(), Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
-                                            command.getArgument("theme", int.class), command.getArgument("sub_theme", int.class));
-                                    return 0;
-                                })))));
+//        dispatcher.register(Commands.literal("dcdungeon").requires((a)
+//                -> a.hasPermissionLevel(4)).then(Commands.argument("location", Vec3Argument.vec3())
+//                .executes((command) -> {
+//                            command.getSource().sendFeedback(new StringTextComponent("Building a dungeon..."), true);
+//                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+//                            ServerWorld world = command.getSource().getWorld();
+//                            spawnDungeon(world, pos,
+//                                    Theme.getTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()),
+//                                    Theme.getSubTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()));
+//                            return 0;
+//                        }
+//                ).then(Commands.argument("theme", IntegerArgumentType.integer())
+//                        .then(Commands.argument("sub_theme", IntegerArgumentType.integer())
+//                                .executes((command) -> {
+//                                    command.getSource().sendFeedback(new StringTextComponent("Building a dungeon..."), true);
+//                                    spawnDungeon(command.getSource().getWorld(), Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
+//                                            command.getArgument("theme", int.class), command.getArgument("sub_theme", int.class));
+//                                    return 0;
+//                                })))));
     }
 
-    private static void spawnDungeon(ServerWorld world, BlockPos pos, int theme, int subTheme) {
-        DungeonBuilder builder = new DungeonBuilder(world, new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
-        builder.build(theme, subTheme).forEach((piece) -> {
-            //piece.func_230383_a_(world, null, builder.rand, piece.getBoundingBox(), new ChunkPos(piece.x >> 4, piece.z >> 4));
-        });
-    }
+//    private static void spawnDungeon(ServerWorld world, BlockPos pos, int theme, int subTheme) {
+//        DungeonBuilder builder = new DungeonBuilder(world, new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
+//        builder.build(theme, subTheme).forEach((piece) -> {
+//            //piece.func_230383_a_(world, null, builder.rand, piece.getBoundingBox(), new ChunkPos(piece.x >> 4, piece.z >> 4));
+//        });
+//    }
 
 }

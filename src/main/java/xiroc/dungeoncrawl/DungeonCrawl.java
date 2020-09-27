@@ -18,15 +18,19 @@
 
 package xiroc.dungeoncrawl;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.gen.DimensionSettings;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.settings.DimensionStructuresSettings;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -85,6 +89,8 @@ public class DungeonCrawl {
         Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT)));
         ForgeRegistries.STRUCTURE_FEATURES.register(Dungeon.DUNGEON);
         Structure.field_236365_a_.put(Dungeon.DUNGEON.getRegistryName().toString().toLowerCase(Locale.ROOT), Dungeon.DUNGEON);
+        LOGGER.info(Dungeon.FEATURE);
+        LOGGER.info(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE.getKey(Dungeon.FEATURE));
 
         Treasure.init();
         DungeonModelFeature.init();
@@ -109,24 +115,13 @@ public class DungeonCrawl {
         IBlockPlacementHandler.init();
         DungeonBlocks.init();
 
-        DungeonCrawl.LOGGER.info("Adding features and structures");
+        DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
+                .putAll(DimensionStructuresSettings.field_236191_b_)
+                .put(Dungeon.DUNGEON, Dungeon.SEPARATION_SETTINGS)
+                .build();
 
-        DynamicRegistries.func_239770_b_().func_243612_b(Registry.BIOME_KEY).forEach((biome) -> {
-            ResourceLocation name = WorldGenRegistries.field_243657_i.getKey(biome);
-            if (name != null) {
-                if (!JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(name.toString())
-                        && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
-                    biome.func_242440_e().func_242491_a(Dungeon.FEATURE);
-                    DungeonCrawl.LOGGER.info("Generation Biome: " + biome.toString());
-                }
-            } else {
-                if (Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
-                    biome.func_242440_e().func_242491_a(Dungeon.FEATURE);
-                    DungeonCrawl.LOGGER.info("Generation Biome (No registry name): " + biome.toString());
-                }
-            }
-        });
-        
+        DimensionSettings.field_242740_q.getStructures().func_236195_a_().put(Dungeon.DUNGEON, Dungeon.SEPARATION_SETTINGS);
+
         Modules.load();
     }
 
@@ -134,6 +129,14 @@ public class DungeonCrawl {
     public void addReloadListener(AddReloadListenerEvent event) {
         DungeonCrawl.LOGGER.info("Adding datapack reload listener");
         event.addListener(new DataReloadListener());
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void onBiomeLoad(BiomeLoadingEvent event) {
+        if (!JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(event.getName().toString()) && Dungeon.ALLOWED_CATEGORIES.contains(event.getCategory())) {
+            LOGGER.debug("Generation Biome: {}", event.getName());
+            event.getGeneration().withStructure(Dungeon.FEATURE);
+        }
     }
 
 //    @SubscribeEvent

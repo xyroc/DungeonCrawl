@@ -28,6 +28,8 @@ import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.DynamicRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -45,7 +47,7 @@ public class MaterialBlocks extends LootFunction {
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
         Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.field_237457_g_)));
-        ResourceLocation biomeName = WorldGenRegistries.field_243657_i.getKey(biome);
+        ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
 
         if (biomeName != null) {
             return new ItemStack(
@@ -62,7 +64,7 @@ public class MaterialBlocks extends LootFunction {
     }
 
     @Override
-    public LootFunctionType func_230425_b_() {
+    public LootFunctionType getFunctionType() {
         return Treasure.MATERIAL_BLOCKS;
     }
 

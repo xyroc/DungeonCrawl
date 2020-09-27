@@ -272,7 +272,7 @@ public class DungeonModels {
 
         try {
             DataInputStream input = new DataInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
-            CompoundNBT nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
+            CompoundNBT nbt = CompoundNBT.TYPE.readNBT(input, 16, NBTSizeTracker.INFINITE);
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
             if (Config.ENABLE_TOOLS.get()) {
                 String name = path.substring(path.lastIndexOf("/") + 1, path.indexOf(".nbt"));
@@ -291,7 +291,7 @@ public class DungeonModels {
 
         try {
             DataInputStream input = new DataInputStream(resourceManager.getResource(resource).getInputStream());
-            CompoundNBT nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
+            CompoundNBT nbt = CompoundNBT.TYPE.readNBT(input, 16, NBTSizeTracker.INFINITE);
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
             if (Config.ENABLE_TOOLS.get()) {
                 String path = resource.getPath();

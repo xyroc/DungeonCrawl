@@ -29,8 +29,11 @@ import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.DynamicRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomSpecialItem;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -48,7 +51,7 @@ public class RandomItem extends LootFunction {
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
         Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.field_237457_g_)));
-        ResourceLocation biomeName = WorldGenRegistries.field_243657_i.getKey(biome);
+        ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
 
         if (biomeName != null) {
             return RandomSpecialItem.generate(context.getWorld(), context.getRandom(),
@@ -60,7 +63,7 @@ public class RandomItem extends LootFunction {
     }
 
     @Override
-    public LootFunctionType func_230425_b_() {
+    public LootFunctionType getFunctionType() {
         return Treasure.RANDOM_ITEM;
     }
 
@@ -71,8 +74,8 @@ public class RandomItem extends LootFunction {
         }
 
         @Override
-        public void func_230424_a_(JsonObject p_230424_1_, RandomItem p_230424_2_, JsonSerializationContext p_230424_3_) {
-            super.func_230424_a_(p_230424_1_, p_230424_2_, p_230424_3_);
+        public void serialize(JsonObject p_230424_1_, RandomItem p_230424_2_, JsonSerializationContext p_230424_3_) {
+            super.serialize(p_230424_1_, p_230424_2_, p_230424_3_);
             p_230424_1_.addProperty("loot_level", p_230424_2_.lootLevel);
         }
 

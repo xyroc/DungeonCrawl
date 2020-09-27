@@ -81,7 +81,7 @@ public class Modules {
         public String name;
         public int version;
 
-        public Module(ResourceLocation name, String... requiredMods) {
+        public Module(ResourceLocation name) {
             this.name = name.toString();
             this.version = 0;
         }

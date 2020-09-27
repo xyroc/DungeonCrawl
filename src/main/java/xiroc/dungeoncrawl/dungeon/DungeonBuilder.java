@@ -23,12 +23,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.registry.DynamicRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.Config;
@@ -63,7 +66,10 @@ public class DungeonBuilder {
 
     public int theme, subTheme, lowerTheme, lowerSubTheme, bottomTheme, bottomSubTheme;
 
-    public DungeonBuilder(ChunkGenerator world, ChunkPos pos, Random rand) {
+    private final DynamicRegistries dynamicRegistries;
+
+    public DungeonBuilder(DynamicRegistries dynamicRegistries, ChunkGenerator world, ChunkPos pos, Random rand) {
+        this.dynamicRegistries = dynamicRegistries;
         if (world.getGroundHeight() >= 32) {
             this.chunkGen = world;
 
@@ -89,28 +95,6 @@ public class DungeonBuilder {
                     + startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
         } else {
             DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
-        }
-    }
-
-    public DungeonBuilder(ServerWorld world, ChunkPos pos) {
-        int height = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.x * 16, pos.z * 16);
-        if (height >= 32) {
-
-            this.rand = new Random();
-            this.start = new Position2D(7, 7);
-            this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, height - 16,
-                    pos.z * 16 - Dungeon.SIZE / 2 * 9);
-
-            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
-
-            this.chunkGen = world.getChunkProvider().generator;
-
-            this.layers = new DungeonLayer[layerCount];
-            this.maps = new DungeonLayerMap[layerCount];
-
-            this.statTracker = new DungeonStatTracker(layerCount);
-
-            DEFAULT_GENERATOR.initialize(this, pos, rand);
         }
     }
 
@@ -140,13 +124,13 @@ public class DungeonBuilder {
 
         this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.func_230356_f_() >> 2, entrance.z >> 2);
 
-        ResourceLocation biomeName = WorldGenRegistries.field_243657_i.getKey(startBiome);
+        ResourceLocation biomeName = dynamicRegistries.getRegistry(Registry.BIOME_KEY).getKey(startBiome);
         String biome;
 
         if (biomeName != null) {
             biome = biomeName.toString();
         } else {
-            DungeonCrawl.LOGGER.warn("Couldn't a the registry name for biome {} - Proceeding with default \"minecraft:plains\".", startBiome.toString());
+            DungeonCrawl.LOGGER.warn("Couldn't find the registry name for biome {} - Proceeding with default \"minecraft:plains\".", startBiome.toString());
             biome = "minecraft:plains";
         }
 

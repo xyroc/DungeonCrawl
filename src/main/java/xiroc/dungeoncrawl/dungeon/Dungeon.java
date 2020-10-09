@@ -35,6 +35,7 @@ import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 
 import java.util.Set;
@@ -72,30 +73,19 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         return false;
     }
 
-//    @Override
-//    protected boolean func_230363_a_(ChunkGenerator chunkGen, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom rand, int chunkX, int chunkZ, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-//        DungeonCrawl.LOGGER.info("func_230363_a {} {} {}", chunkGen.getBiomeProvider().hasStructure(this), chunkX, chunkZ);
-//        ChunkPos pos = func_236392_a_(SEPARATION_SETTINGS, p_230363_3_, rand, chunkX, chunkZ);
-//        if (pos.x == chunkX && pos.z == chunkZ) {
-//            int x = chunkX * 16, z = chunkZ * 16;
-//            for (Biome biome : p_230363_2_.getBiomes(x, chunkGen.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG), z, 64)) {
-//                if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !biome.func_242440_e().func_242493_a(this)) {
-//                    return false;
-//                }
-//            }
-//            if (DungeonCrawl.EVENT_BUS
-//                    .post(new DungeonPlacementCheckEvent(chunkGen, chunkGen.getBiomeProvider().getNoiseBiome(chunkX * 16, chunkGen.getGroundHeight(), chunkZ * 16), chunkX, chunkZ))) {
-//                return false;
-//            }
-//            return rand.nextDouble() < Config.DUNGEON_PROBABLILITY.get();
-//        }
-//        return false;
-//    }
-
-
     @Override
     protected boolean func_230363_a_(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-        return super.func_230363_a_(p_230363_1_, p_230363_2_, p_230363_3_, p_230363_5_, p_230363_6_, p_230363_7_, p_230363_8_, p_230363_9_, p_230363_10_) && p_230363_5_.nextDouble() < Config.DUNGEON_PROBABLILITY.get();
+        Set<Biome> biomes = p_230363_2_.getBiomes(p_230363_6_ * 16, p_230363_1_.func_230356_f_(), p_230363_7_ * 16, 32);
+        DungeonCrawl.LOGGER.info("{} biomes to check", biomes.size());
+        for (Biome biome : biomes) {
+            if (!biome.getGenerationSettings().hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
+                return false;
+            }
+        }
+        if (DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(p_230363_1_, p_230363_8_, p_230363_6_, p_230363_7_))) {
+            return false;
+        }
+        return p_230363_5_.nextDouble() < Config.DUNGEON_PROBABLILITY.get();
     }
 
     @Override
@@ -117,13 +107,17 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
         @Override
         public void func_230364_a_(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGenerator, TemplateManager p_230364_3_, int chunkX, int chunkZ, Biome p_230364_6_, NoFeatureConfig p_230364_7_) {
-            ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
-            long now = System.currentTimeMillis();
-            DungeonBuilder builder = new DungeonBuilder(dynamicRegistries, chunkGenerator, chunkpos, rand);
-            this.components.addAll(builder.build());
-            this.recalculateStructureSize();
-            DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
-                    (System.currentTimeMillis() - now), this.components.size());
+            if (DungeonBuilder.isWorldEligible(chunkGenerator)) {
+                ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
+                long now = System.currentTimeMillis();
+                DungeonBuilder builder = new DungeonBuilder(dynamicRegistries, chunkGenerator, chunkpos, rand);
+                this.components.addAll(builder.build());
+                this.recalculateStructureSize();
+                DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
+                        (System.currentTimeMillis() - now), this.components.size());
+            } else {
+                DungeonCrawl.LOGGER.warn("The current world seems to have biomes of overworld-like categories, but is not eligible for dungeon generation.");
+            }
         }
 
     }

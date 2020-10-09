@@ -25,13 +25,11 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.Config;
@@ -70,32 +68,53 @@ public class DungeonBuilder {
 
     public DungeonBuilder(DynamicRegistries dynamicRegistries, ChunkGenerator world, ChunkPos pos, Random rand) {
         this.dynamicRegistries = dynamicRegistries;
-        if (world.getGroundHeight() >= 32) {
-            this.chunkGen = world;
+        this.rand = rand;
+        this.start = new Position2D(7, 7);
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
+                pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-            this.rand = rand;
-            this.start = new Position2D(7, 7);
-            this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
-                    pos.z * 16 - Dungeon.SIZE / 2 * 9);
+        int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
 
-            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
+        this.layers = new DungeonLayer[layerCount];
+        this.maps = new DungeonLayerMap[layerCount];
 
-            this.layers = new DungeonLayer[layerCount];
-            this.maps = new DungeonLayerMap[layerCount];
+        this.statTracker = new DungeonStatTracker(layerCount);
 
-            this.statTracker = new DungeonStatTracker(layerCount);
+        DEFAULT_GENERATOR.initialize(this, pos, rand);
 
-            DEFAULT_GENERATOR.initialize(this, pos, rand);
+        DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
 
-            DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
+        DungeonCrawl.EVENT_BUS.post(startEvent);
 
-            DungeonCrawl.EVENT_BUS.post(startEvent);
+        DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
+                + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
+    }
 
-            DungeonCrawl.LOGGER.info("Building Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
-                    + startPos.getZ() + "), " + +this.layers.length + " layers, Theme: {}, {}", theme, subTheme);
-        } else {
-            DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
-        }
+    public DungeonBuilder(ServerWorld world, ChunkPos pos) {
+        this.dynamicRegistries = world.func_241828_r();
+        this.rand = new Random();
+        this.start = new Position2D(7, 7);
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, 100 - 16,
+                pos.z * 16 - Dungeon.SIZE / 2 * 9);
+
+        int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
+
+        this.chunkGen = world.getChunkProvider().generator;
+
+        this.layers = new DungeonLayer[layerCount];
+        this.maps = new DungeonLayerMap[layerCount];
+
+        this.statTracker = new DungeonStatTracker(layerCount);
+
+        DEFAULT_GENERATOR.initialize(this, pos, rand);
+    }
+
+    public static boolean isWorldEligible(ServerWorld world, BlockPos pos) {
+        return world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.getX(), pos.getZ()) > 32;
+    }
+
+    public static boolean isWorldEligible(ChunkGenerator chunkGenerator) {
+        return chunkGenerator.func_230356_f_() > 32;
     }
 
     public List<DungeonPiece> build() {

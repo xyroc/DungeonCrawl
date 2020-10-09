@@ -102,7 +102,7 @@ public class DungeonCrawl {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("Common Setup");
-        ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
+        //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
 
         StructurePieceTypes.registerAll();

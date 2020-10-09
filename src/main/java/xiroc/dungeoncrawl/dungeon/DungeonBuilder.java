@@ -59,18 +59,19 @@ public class DungeonBuilder {
 
     public BlockPos startPos;
 
-    public ChunkGenerator chunkGen;
+    public ChunkGenerator chunkGenerator;
     public Biome startBiome;
 
     public int theme, subTheme, lowerTheme, lowerSubTheme, bottomTheme, bottomSubTheme;
 
     private final DynamicRegistries dynamicRegistries;
 
-    public DungeonBuilder(DynamicRegistries dynamicRegistries, ChunkGenerator world, ChunkPos pos, Random rand) {
+    public DungeonBuilder(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGenerator, ChunkPos pos, Random rand) {
         this.dynamicRegistries = dynamicRegistries;
+        this.chunkGenerator = chunkGenerator;
         this.rand = rand;
         this.start = new Position2D(7, 7);
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getGroundHeight() - 16,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
         int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
@@ -82,7 +83,7 @@ public class DungeonBuilder {
 
         DEFAULT_GENERATOR.initialize(this, pos, rand);
 
-        DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
+        DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(chunkGenerator, startPos, statTracker, layers.length);
 
         DungeonCrawl.EVENT_BUS.post(startEvent);
 
@@ -99,7 +100,7 @@ public class DungeonBuilder {
 
         int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
 
-        this.chunkGen = world.getChunkProvider().generator;
+        this.chunkGenerator = world.getChunkProvider().generator;
 
         this.layers = new DungeonLayer[layerCount];
         this.maps = new DungeonLayerMap[layerCount];
@@ -141,7 +142,7 @@ public class DungeonBuilder {
         entrance.modelID = entrance.determineModel(this, rand);
         entrance.setupBoundingBox();
 
-        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.func_230356_f_() >> 2, entrance.z >> 2);
+        this.startBiome = chunkGenerator.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGenerator.func_230356_f_() >> 2, entrance.z >> 2);
 
         ResourceLocation biomeName = dynamicRegistries.getRegistry(Registry.BIOME_KEY).getKey(startBiome);
         String biome;
@@ -211,7 +212,7 @@ public class DungeonBuilder {
         entrance.modelID = entrance.determineModel(this, rand);
         entrance.setupBoundingBox();
 
-        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.func_230356_f_() >> 2, entrance.z >> 2);
+        this.startBiome = chunkGenerator.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGenerator.func_230356_f_() >> 2, entrance.z >> 2);
 
         //String biome = startBiome.getRegistryName().toString();
 

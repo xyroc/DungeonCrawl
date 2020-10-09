@@ -83,14 +83,13 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public boolean func_225558_a_(BiomeManager p_225558_1_, ChunkGenerator<?> chunkGen, Random rand, int chunkX, int chunkZ, Biome p_225558_6_) {
         ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkX, chunkZ, 0, 0);
         if (chunkX == chunkpos.x && chunkZ == chunkpos.z && p_225558_6_.hasStructure(Dungeon.DUNGEON)) {
-            for (Biome biome : chunkGen.getBiomeProvider().func_225530_a_(chunkX * 16 - SIZE / 2 * 9,
-                    chunkZ * 16 - SIZE / 2 * 9, chunkGen.getSeaLevel(), 9 * SIZE)) {
-                if (!Config.IGNORE_OVERWORLD_BLACKLIST.get() && !chunkGen.hasStructure(biome, DUNGEON)) {
+            for (Biome biome : chunkGen.getBiomeProvider().func_225530_a_(chunkX * 16, chunkGen.getSeaLevel(), chunkZ * 16, 32)) {
+                if (!chunkGen.hasStructure(biome, DUNGEON) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
                     return false;
                 }
             }
-            if (DungeonCrawl.EVENT_BUS
-                    .post(new DungeonPlacementCheckEvent(chunkGen, chunkGen.getBiomeProvider().getNoiseBiome(chunkX * 16, chunkGen.getGroundHeight(), chunkZ * 16), chunkX, chunkZ))) {
+            if (DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(chunkGen,
+                    chunkGen.getBiomeProvider().getNoiseBiome(chunkX * 16, chunkGen.getSeaLevel(), chunkZ * 16), chunkX, chunkZ))) {
                 return false;
             }
             return rand.nextFloat() < Config.DUNGEON_PROBABLILITY.get();
@@ -122,54 +121,18 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         }
 
         @Override
-        public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ,
-                         Biome biomeIn) {
-
-//            try {
-//                Field world = ChunkGenerator.class.getDeclaredField(ObfuscationValues.CHUNKGEN_WORLD);
-//
-//                world.setAccessible(true);
-//
-//                Field modifierField = Field.class.getDeclaredField("modifiers");
-//                modifierField.setAccessible(true);
-//                modifierField.setInt(world, world.getModifiers() & ~Modifier.FINAL);
-//
-//                DungeonCrawl.LOGGER.debug("Checking [{}, {}]", chunkX, chunkZ);
-//
-//                IWorld iWorld = (IWorld) world.get(generator);
-//
-//                if (!(iWorld instanceof ServerWorld))
-//                    return;
-//
-//                ServerWorld serverWorld = (ServerWorld) iWorld;
-//                BlockPos spawn = serverWorld.getSpawnPoint();
-//
-//                int spawnChunkX = spawn.getX() % 16, spawnChunkZ = spawn.getZ() % 16;
-
-//                if ((serverWorld.getDimension().getType() != DimensionType.OVERWORLD && !Config.IGNORE_DIMENSION.get())
-//                        || DungeonCrawl.EVENT_BUS
-//                        .post(new DungeonPlacementCheckEvent(serverWorld, biomeIn, chunkX, chunkZ)) || (Math.abs(spawnChunkX - chunkX) < 5 && Math.abs(spawnChunkZ - chunkZ) < 5))
-//                    return;
-//
-//                /* Undoing everything */
-//
-//                modifierField.setInt(world, Modifier.PRIVATE | Modifier.FINAL); // TODO Does this work as intended?
-//                modifierField.setAccessible(false);
-//                world.setAccessible(false);
-//
-//            } catch (SecurityException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException e) {
-//                DungeonCrawl.LOGGER.error(
-//                        "Failed to access the chunkGen world through reflection. This might result in dungeons getting generated near the spawn chunk.");
-//                e.printStackTrace();
-//            }
-
-            ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
-            long now = System.currentTimeMillis();
-            DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
-            this.components.addAll(builder.build());
-            this.recalculateStructureSize();
-            DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
-                    (System.currentTimeMillis() - now), this.components.size());
+        public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn) {
+            if (DungeonBuilder.isWorldEligible(generator)) {
+                ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
+                long now = System.currentTimeMillis();
+                DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
+                this.components.addAll(builder.build());
+                this.recalculateStructureSize();
+                DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
+                        (System.currentTimeMillis() - now), this.components.size());
+            } else {
+                DungeonCrawl.LOGGER.warn("The current world seems to have biomes of overworld-like categories, but is not eligible for dungeon generation.");
+            }
         }
 
         @Override

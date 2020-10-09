@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -62,54 +63,55 @@ public class DungeonBuilder {
     public int theme, subTheme, lowerTheme, lowerSubTheme, bottomTheme, bottomSubTheme;
 
     public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
-        if (world.getGroundHeight() >= 32) {
-            this.chunkGen = world;
+        this.chunkGen = world;
 
-            this.rand = rand;
-            this.start = new Position2D(7, 7);
-            this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
-                    pos.z * 16 - Dungeon.SIZE / 2 * 9);
+        this.rand = rand;
+        this.start = new Position2D(7, 7);
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
+                pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
+        int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
 
-            this.layers = new DungeonLayer[layerCount];
-            this.maps = new DungeonLayerMap[layerCount];
+        this.layers = new DungeonLayer[layerCount];
+        this.maps = new DungeonLayerMap[layerCount];
 
-            this.statTracker = new DungeonStatTracker(layerCount);
+        this.statTracker = new DungeonStatTracker(layerCount);
 
-            DEFAULT_GENERATOR.initialize(this, pos, rand);
+        DEFAULT_GENERATOR.initialize(this, pos, rand);
 
-            DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
+        DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
 
-            DungeonCrawl.EVENT_BUS.post(startEvent);
+        DungeonCrawl.EVENT_BUS.post(startEvent);
 
-            DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
-                    + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
-        } else {
-            DungeonCrawl.LOGGER.warn("The world does have a ground height below 32 and is therefore not eligible for dungeon generation.");
-        }
+        DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
+                + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
+
     }
 
     public DungeonBuilder(ServerWorld world, ChunkPos pos) {
-        int height = world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.x * 16, pos.z * 16);
-        if (height >= 32) {
+        this.rand = new Random();
+        this.start = new Position2D(7, 7);
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, 100 - 16,
+                pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-            this.rand = new Random();
-            this.start = new Position2D(7, 7);
-            this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, height - 16,
-                    pos.z * 16 - Dungeon.SIZE / 2 * 9);
+        int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
 
-            int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
+        this.chunkGen = world.getChunkProvider().generator;
 
-            this.chunkGen = world.getChunkProvider().generator;
+        this.layers = new DungeonLayer[layerCount];
+        this.maps = new DungeonLayerMap[layerCount];
 
-            this.layers = new DungeonLayer[layerCount];
-            this.maps = new DungeonLayerMap[layerCount];
+        this.statTracker = new DungeonStatTracker(layerCount);
 
-            this.statTracker = new DungeonStatTracker(layerCount);
+        DEFAULT_GENERATOR.initialize(this, pos, rand);
+    }
 
-            DEFAULT_GENERATOR.initialize(this, pos, rand);
-        }
+    public static boolean isWorldEligible(ServerWorld world, BlockPos pos) {
+        return world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.getX(), pos.getZ()) > 32;
+    }
+
+    public static boolean isWorldEligible(ChunkGenerator<?> chunkGenerator) {
+        return chunkGenerator.getSeaLevel() > 32;
     }
 
     public List<DungeonPiece> build() {
@@ -138,14 +140,14 @@ public class DungeonBuilder {
 
         this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
 
-        String biome = startBiome.getRegistryName().toString();
+        ResourceLocation registryName = startBiome.getRegistryName();
 
-        this.theme = Theme.getTheme(biome, rand);
+        this.theme = registryName != null ? Theme.getTheme(registryName.toString(), rand) : Theme.randomizeTheme(0, rand);
 
         if (Theme.get(theme).subTheme != null) {
             this.subTheme = Theme.randomizeSubTheme(Theme.get(theme).subTheme, rand);
         } else {
-            this.subTheme = Theme.getSubTheme(biome, rand);
+            this.subTheme = registryName != null ? Theme.getSubTheme(registryName.toString(), rand) : Theme.randomizeSubTheme(0, rand);
         }
 
         this.lowerTheme = Theme.randomizeTheme(80, rand);

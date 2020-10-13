@@ -2,9 +2,9 @@ package xiroc.dungeoncrawl.dungeon.monster;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.loot.RandomValueRange;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.RandomValueRange;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.io.FileNotFoundException;

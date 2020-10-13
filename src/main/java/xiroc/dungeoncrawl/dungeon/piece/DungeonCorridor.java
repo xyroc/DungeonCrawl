@@ -52,12 +52,11 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
         if (connectedSides == 2 && isStraight()) {
-                return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
+                return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, layerCategory).roll(rand);
         }
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER,
-                DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
+        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand);
     }
 
 //    @Override

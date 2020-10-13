@@ -70,9 +70,8 @@ public class DungeonNodeConnector extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.NODE_CONNECTOR,
-                DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand);
     }
 
     public void adjustPositionAndBounds() {

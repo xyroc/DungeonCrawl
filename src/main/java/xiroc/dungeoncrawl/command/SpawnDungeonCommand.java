@@ -24,10 +24,8 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
-import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.theme.Theme;
 
 public class SpawnDungeonCommand {
@@ -55,14 +53,14 @@ public class SpawnDungeonCommand {
     }
 
     private static void spawnDungeon(ServerWorld world, BlockPos pos, int theme, int subTheme) {
-        if (DungeonBuilder.isWorldEligible(world, pos)) {
-            DungeonBuilder builder = new DungeonBuilder(world, new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
-            builder.build(theme, subTheme).forEach((piece) -> {
-                piece.func_225577_a_(world, null, builder.rand, piece.getBoundingBox(), new ChunkPos(piece.x >> 4, piece.z >> 4));
-            });
-        } else {
-
-        }
+//        if (DungeonBuilder.isWorldEligible(world, pos)) {
+//            DungeonBuilder builder = new DungeonBuilder(world, new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
+//            builder.build(theme, subTheme).forEach((piece) -> {
+//                piece.func_225577_a_(world, null, builder.rand, piece.getBoundingBox(), new ChunkPos(piece.x >> 4, piece.z >> 4));
+//            });
+//        } else {
+//
+//        }
     }
 
 }

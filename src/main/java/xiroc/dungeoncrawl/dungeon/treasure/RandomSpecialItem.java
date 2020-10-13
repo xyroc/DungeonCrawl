@@ -35,6 +35,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.SpecialItemTags;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
@@ -205,7 +206,7 @@ public class RandomSpecialItem {
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage1).getInputStream()))).getAsJsonArray();
                 STAGE_1 = WeightedRandomTreasureItem.fromJson(array);
             } else {
-                throw new RuntimeException("Missing file " + stage1.toString());
+                throw new FileNotFoundException("Missing file " + stage1.toString());
             }
 
             ResourceLocation stage2 = DungeonCrawl.locate("treasure/stage_2.json");
@@ -214,7 +215,7 @@ public class RandomSpecialItem {
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage2).getInputStream()))).getAsJsonArray();
                 STAGE_2 = WeightedRandomTreasureItem.fromJson(array);
             } else {
-                throw new RuntimeException("Missing file " + stage2.toString());
+                throw new FileNotFoundException("Missing file " + stage2.toString());
             }
 
             ResourceLocation stage3 = DungeonCrawl.locate("treasure/stage_3.json");
@@ -223,7 +224,7 @@ public class RandomSpecialItem {
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage3).getInputStream()))).getAsJsonArray();
                 STAGE_3 = WeightedRandomTreasureItem.fromJson(array);
             } else {
-                throw new RuntimeException("Missing file " + stage3.toString());
+                throw new FileNotFoundException("Missing file " + stage3.toString());
             }
 
             ResourceLocation stage4 = DungeonCrawl.locate("treasure/stage_4.json");
@@ -232,7 +233,7 @@ public class RandomSpecialItem {
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage4).getInputStream()))).getAsJsonArray();
                 STAGE_4 = WeightedRandomTreasureItem.fromJson(array);
             } else {
-                throw new RuntimeException("Missing file " + stage4.toString());
+                throw new FileNotFoundException("Missing file " + stage4.toString());
             }
 
             ResourceLocation stage5 = DungeonCrawl.locate("treasure/stage_5.json");
@@ -241,7 +242,7 @@ public class RandomSpecialItem {
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage5).getInputStream()))).getAsJsonArray();
                 STAGE_5 = WeightedRandomTreasureItem.fromJson(array);
             } else {
-                throw new RuntimeException("Missing file " + stage5.toString());
+                throw new FileNotFoundException("Missing file " + stage5.toString());
             }
         } catch (IOException e) {
             e.printStackTrace();

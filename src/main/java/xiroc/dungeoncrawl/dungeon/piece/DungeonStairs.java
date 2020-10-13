@@ -49,7 +49,7 @@ public class DungeonStairs extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
         switch (stairType) {
             case 0:
                 return stage > 0 ? DungeonModels.STAIRS_BOTTOM_2.id : DungeonModels.STAIRS_BOTTOM.id;

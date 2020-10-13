@@ -22,6 +22,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.util.Position2D;
 
 import java.util.Random;
@@ -100,12 +101,12 @@ public abstract class DungeonGenerator {
     /**
      * @return whether the given layer contains a secret room or not.
      */
-    private boolean doesLayerHaveSecretRoom(int layer) {
+    public boolean doesLayerHaveSecretRoom(int layer) {
         return false;
     }
 
     /**
-     * Called in constructor of the dungeon builder. This should be used to setup
+     * Used to (re-)initialize the layer generator.
      */
     public abstract void initialize(DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand);
 
@@ -128,5 +129,10 @@ public abstract class DungeonGenerator {
      * Used to mutate this generator after its initialization, if supported.
      */
     public abstract void mutate(Random rand);
+
+    /**
+     * @return the model category for the given layer
+     */
+    public abstract DungeonModels.ModelCategory getCategoryForLayer(int layer);
 
 }

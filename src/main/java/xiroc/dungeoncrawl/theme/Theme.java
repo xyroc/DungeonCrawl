@@ -264,7 +264,6 @@ public class Theme {
     }
 
     public static void loadJson(IResourceManager resourceManager) {
-        DungeonCrawl.LOGGER.info("Loading themes from JSON");
         JsonParser parser = new JsonParser();
         for (ResourceLocation resource : resourceManager
                 .getAllResourceLocations(DungeonCrawl.locate("theming/").getPath(), (s) -> s.endsWith(".json"))) {

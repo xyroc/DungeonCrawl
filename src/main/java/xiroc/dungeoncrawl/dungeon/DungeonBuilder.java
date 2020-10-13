@@ -34,6 +34,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.generator.DefaultGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
@@ -66,7 +67,6 @@ public class DungeonBuilder {
         this.chunkGen = world;
 
         this.rand = rand;
-        this.start = new Position2D(7, 7);
         this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
@@ -116,10 +116,15 @@ public class DungeonBuilder {
 
     public List<DungeonPiece> build() {
         List<DungeonPiece> list = Lists.newArrayList();
+        
+        int startCoordinate = DEFAULT_GENERATOR.settings.gridSize.apply(0) / 2;
+
+        this.start = new Position2D(startCoordinate, startCoordinate);
 
         for (int i = 0; i < layers.length; i++) {
-            this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
-            this.layers[i] = new DungeonLayer(Dungeon.SIZE, Dungeon.SIZE);
+            int size = DEFAULT_GENERATOR.settings.gridSize.apply(i);
+            this.maps[i] = new DungeonLayerMap(size, size);
+            this.layers[i] = new DungeonLayer(size, size);
             this.layers[i].map = maps[i];
         }
 
@@ -135,7 +140,7 @@ public class DungeonBuilder {
         entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
-        entrance.modelID = entrance.determineModel(this, rand);
+        entrance.modelID = entrance.determineModel(this, null, rand);
         entrance.setupBoundingBox();
 
         this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
@@ -176,67 +181,67 @@ public class DungeonBuilder {
         return list;
     }
 
-    public List<DungeonPiece> build(int theme, int subTheme) {
-        List<DungeonPiece> list = Lists.newArrayList();
-
-        for (int i = 0; i < layers.length; i++) {
-            this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
-            this.layers[i] = new DungeonLayer(Dungeon.SIZE, Dungeon.SIZE);
-            this.layers[i].map = maps[i];
-        }
-
-        for (int i = 0; i < layers.length; i++) {
-            DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
-        }
-
-        for (int i = 0; i < layers.length; i++) {
-            processCorridors(layers[i], i);
-        }
-
-        DungeonPiece entrance = new DungeonEntrance();
-        entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
-                startPos.getZ() + layers[0].start.z * 9);
-        entrance.stage = 0;
-        entrance.modelID = entrance.determineModel(this, rand);
-        entrance.setupBoundingBox();
-
-        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
-
-        //String biome = startBiome.getRegistryName().toString();
-
-        this.theme = theme;
-
-        if (Theme.get(theme).subTheme != null) {
-            this.subTheme = Theme.randomizeSubTheme(Theme.get(theme).subTheme, rand);
-        } else {
-            this.subTheme = subTheme;
-        }
-
-        this.lowerTheme = Theme.randomizeTheme(80, rand);
-
-        if (Theme.get(lowerTheme).subTheme != null) {
-            this.lowerSubTheme = Theme.randomizeSubTheme(Theme.get(lowerTheme).subTheme, rand);
-        } else {
-            this.lowerSubTheme = this.subTheme;
-        }
-
-        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.randomizeTheme(81, rand) : Theme.randomizeTheme(1, rand);
-
-        if (Theme.get(bottomTheme).subTheme != null) {
-            this.bottomSubTheme = Theme.randomizeSubTheme(Theme.get(bottomTheme).subTheme, rand);
-        } else {
-            this.bottomSubTheme = this.subTheme;
-        }
-
-        entrance.theme = theme;
-        entrance.subTheme = subTheme;
-
-        list.add(entrance);
-
-        postProcessDungeon(list, rand);
-
-        return list;
-    }
+//    public List<DungeonPiece> build(int theme, int subTheme) {
+//        List<DungeonPiece> list = Lists.newArrayList();
+//
+//        for (int i = 0; i < layers.length; i++) {
+//            this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
+//            this.layers[i] = new DungeonLayer(Dungeon.SIZE, Dungeon.SIZE);
+//            this.layers[i].map = maps[i];
+//        }
+//
+//        for (int i = 0; i < layers.length; i++) {
+//            DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
+//        }
+//
+//        for (int i = 0; i < layers.length; i++) {
+//            processCorridors(layers[i], i);
+//        }
+//
+//        DungeonPiece entrance = new DungeonEntrance();
+//        entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
+//                startPos.getZ() + layers[0].start.z * 9);
+//        entrance.stage = 0;
+//        entrance.modelID = entrance.determineModel(this, rand);
+//        entrance.setupBoundingBox();
+//
+//        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
+//
+//        //String biome = startBiome.getRegistryName().toString();
+//
+//        this.theme = theme;
+//
+//        if (Theme.get(theme).subTheme != null) {
+//            this.subTheme = Theme.randomizeSubTheme(Theme.get(theme).subTheme, rand);
+//        } else {
+//            this.subTheme = subTheme;
+//        }
+//
+//        this.lowerTheme = Theme.randomizeTheme(80, rand);
+//
+//        if (Theme.get(lowerTheme).subTheme != null) {
+//            this.lowerSubTheme = Theme.randomizeSubTheme(Theme.get(lowerTheme).subTheme, rand);
+//        } else {
+//            this.lowerSubTheme = this.subTheme;
+//        }
+//
+//        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.randomizeTheme(81, rand) : Theme.randomizeTheme(1, rand);
+//
+//        if (Theme.get(bottomTheme).subTheme != null) {
+//            this.bottomSubTheme = Theme.randomizeSubTheme(Theme.get(bottomTheme).subTheme, rand);
+//        } else {
+//            this.bottomSubTheme = this.subTheme;
+//        }
+//
+//        entrance.theme = theme;
+//        entrance.subTheme = subTheme;
+//
+//        list.add(entrance);
+//
+//        postProcessDungeon(list, rand);
+//
+//        return list;
+//    }
 
     public void processCorridors(DungeonLayer layer, int lyr) {
         int stage = Math.min(lyr, 4);
@@ -258,6 +263,7 @@ public class DungeonBuilder {
 
         for (int i = 0; i < layers.length; i++) {
             DungeonLayer layer = layers[i];
+            DungeonModels.ModelCategory layerCategory = DEFAULT_GENERATOR.getCategoryForLayer(i);
             for (int x = 0; x < layer.width; x++)
                 for (int z = 0; z < layer.length; z++) {
                     if (layer.segments[x][z] != null && !layer.segments[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
@@ -271,13 +277,9 @@ public class DungeonBuilder {
                             layer.segments[x][z].reference.theme = theme;
                             layer.segments[x][z].reference.subTheme = subTheme;
                         }
-//                        if (layer.segments[x][z].reference.getType() == 0) {
-//                            DungeonFeatures.processCorridor(this, layer, x, z, rand, i, i, startPos);
-//                        }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
-                            layer.segments[x][z].reference.modelID = layer.segments[x][z].reference.determineModel(this,
-                                    rand);
+                            layer.segments[x][z].reference.modelID = layer.segments[x][z].reference.determineModel(this, layerCategory, rand);
                         }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
@@ -288,7 +290,7 @@ public class DungeonBuilder {
                         layer.segments[x][z].reference.setupBoundingBox();
 
                         if (layer.segments[x][z].reference.hasChildPieces()) {
-                            layer.segments[x][z].reference.addChildPieces(list, this, i, rand);
+                            layer.segments[x][z].reference.addChildPieces(list, this, layerCategory, i, rand);
                         }
 
                         if (layer.segments[x][z].reference.getType() == 10) {

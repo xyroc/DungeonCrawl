@@ -55,7 +55,7 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
         if (DungeonModels.ModelCategory.ENTRANCE.members.isEmpty()) {
             DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the roguelike entrance.");
             return DungeonModels.ENTRANCE.id;

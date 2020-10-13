@@ -18,10 +18,15 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
+import xiroc.dungeoncrawl.dungeon.Dungeon;
+
 import java.util.Random;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class DungeonGeneratorSettings {
+
+    private static final Function<Integer, Integer> DEFAULT_GRID_SIZE = (layer) -> Dungeon.SIZE;
 
     public static final DungeonGeneratorSettings DEFAULT = new DungeonGeneratorSettings(
             (rand, layer) -> 3 + layer, (rand, layer) -> 4 + (int) (1.5 * layer),
@@ -34,6 +39,15 @@ public class DungeonGeneratorSettings {
     public static final DungeonGeneratorSettings COMPLEX = new DungeonGeneratorSettings(
             (rand, layer) -> 3 + layer / 2, (rand, layer) -> 10,
             5, 1, 1, 7, 1, 4, 1, 7, 3, true);
+
+    public static final DungeonGeneratorSettings CATACOMB_LABYRINTH = new DungeonGeneratorSettings(
+            (rand, layer) -> 6 + layer, (rand, layer) -> 20 + layer, (layer) -> 20 + layer,
+            5, 1, 3, 20, 1, 15, 1, 20, 5, true);
+
+    /**
+     * A function to calculate the grid size for each layer.
+     */
+    public final Function<Integer, Integer> gridSize;
 
     /**
      * Functions to calculate the highest allowed amount of nodes and rooms for each layer.
@@ -80,6 +94,27 @@ public class DungeonGeneratorSettings {
                                     boolean randomDistances) {
         this.maxNodes = maxNodes;
         this.maxRooms = maxRooms;
+        this.gridSize = DEFAULT_GRID_SIZE;
+
+        this.maxLayers = maxLayers;
+        this.maxDistance = maxDistance;
+        this.minDistance = minDistance;
+        this.maxDepth = maxDepth;
+        this.minNodeDepth = minNodeDepth;
+        this.maxNodeDepth = maxNodeDepth;
+        this.minRoomDepth = minRoomDepth;
+        this.maxRoomDepth = maxRoomDepth;
+        this.minStairsDepth = minStairsDepth;
+
+        this.randomDistances = randomDistances;
+    }
+
+    public DungeonGeneratorSettings(BiFunction<Random, Integer, Integer> maxNodes, BiFunction<Random, Integer, Integer> maxRooms, Function<Integer, Integer> gridSize, int maxLayers,
+                                    int minDistance, int maxDistance, int maxDepth, int minNodeDepth, int maxNodeDepth, int minRoomDepth, int maxRoomDepth, int minStairsDepth,
+                                    boolean randomDistances) {
+        this.maxNodes = maxNodes;
+        this.maxRooms = maxRooms;
+        this.gridSize = gridSize;
 
         this.maxLayers = maxLayers;
         this.maxDistance = maxDistance;

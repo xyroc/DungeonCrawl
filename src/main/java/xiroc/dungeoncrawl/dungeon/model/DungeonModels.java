@@ -63,7 +63,7 @@ public class DungeonModels {
     public static DungeonModel STARTER_ROOM;
 
     public static synchronized void load(IResourceManager resourceManager) {
-        DungeonCrawl.LOGGER.info("Loading all models...");
+        //DungeonCrawl.LOGGER.info("Loading models...");
 
         MODELS.clear();
         WEIGHTED_MODELS.clear();
@@ -158,7 +158,7 @@ public class DungeonModels {
 
         // -Additional Models- //
 
-        DungeonCrawl.LOGGER.info("Loading additional models");
+        //DungeonCrawl.LOGGER.info("Loading additional models");
 
         resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional/").getPath(), (s) -> s.endsWith(".nbt")).forEach((resource) -> {
             DungeonModel model = loadModel(resource, resourceManager);
@@ -242,7 +242,7 @@ public class DungeonModels {
             createWeightedRandomIntegers(tempMap, ModelCategory.ROOM, stage, i);
         }
 
-        DungeonCrawl.LOGGER.info("Finished model loading.");
+        //DungeonCrawl.LOGGER.info("Finished model loading.");
     }
 
     public static DungeonModel load(String directory, String file, IResourceManager resourceManager) {

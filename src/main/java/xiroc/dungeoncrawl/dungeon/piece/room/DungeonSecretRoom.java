@@ -70,7 +70,7 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
         return DungeonModels.SECRET_ROOM.id;
     }
 

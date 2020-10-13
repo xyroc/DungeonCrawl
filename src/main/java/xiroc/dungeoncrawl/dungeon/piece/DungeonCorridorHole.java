@@ -38,7 +38,7 @@ public class DungeonCorridorHole extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
         return 0;
     }
 

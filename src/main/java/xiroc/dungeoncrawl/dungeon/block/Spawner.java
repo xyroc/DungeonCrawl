@@ -31,12 +31,14 @@ import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -77,10 +79,11 @@ public class Spawner implements IBlockPlacementHandler {
                         spawnerNBT.put("SpawnData", spawnData);
                     potentialSpawns.add(nbt);
                 }
+                RandomValueRange delay = SpawnRates.getDelay(stage);
                 spawnerNBT.put("SpawnPotentials", potentialSpawns);
-                spawnerNBT.putShort("MinSpawnDelay", (short) 100);
-                spawnerNBT.putShort("MaxSpawnDelay", (short) 140);
-                spawnerNBT.putShort("SpawnCount", (short) (2 + rand.nextInt(2)));
+                spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
+                spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
+                spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).generateInt(rand));
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {

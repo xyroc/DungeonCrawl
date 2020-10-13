@@ -57,8 +57,6 @@ public class ChildPieceHandler {
     }
 
     public static void load() {
-        DungeonCrawl.LOGGER.info("Creating Child Piece Handlers");
-
         LARGE_CORRIDOR_START = new ChildPieceHandler(DungeonModels.LARGE_CORRIDOR_START.id,
                 new ChildPieceSpot[]{new ChildPieceSpot(1, 1, 0, Rotation.COUNTERCLOCKWISE_90),
                         new ChildPieceSpot(5, 1, 0, Rotation.COUNTERCLOCKWISE_90),

@@ -143,7 +143,7 @@ public abstract class DungeonPiece extends StructurePiece {
      * Called during the dungeon-post-processing to determine the model that will be
      * used to build this piece.
      */
-    public abstract int determineModel(DungeonBuilder builder, Random rand);
+    public abstract int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand);
 
     public abstract void setupBoundingBox();
 
@@ -422,7 +422,7 @@ public abstract class DungeonPiece extends StructurePiece {
         return false;
     }
 
-    public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
     }
 
     public static void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,

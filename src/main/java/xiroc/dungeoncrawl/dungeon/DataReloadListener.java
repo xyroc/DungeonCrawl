@@ -27,6 +27,7 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomSpecialItem;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -40,6 +41,7 @@ public class DataReloadListener implements IFutureReloadListener {
         DungeonModels.load(resourceManager);
         ChildPieceHandler.load();
         Theme.loadJson(resourceManager);
+        SpawnRates.loadJson(resourceManager);
         RandomSpecialItem.loadJson(resourceManager);
         RandomMonster.loadJson(resourceManager);
         RandomEquipment.loadJson(resourceManager);

@@ -45,8 +45,8 @@ public class DungeonRoom extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage)).roll(rand);
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, layerCategory).roll(rand);
     }
 
     @Override

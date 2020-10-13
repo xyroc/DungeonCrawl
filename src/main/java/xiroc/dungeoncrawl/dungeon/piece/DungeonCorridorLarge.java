@@ -73,7 +73,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
         if (type == 0) {
             this.maxCellCount = getMaxCellCount();
             this.cells = new int[maxCellCount];
@@ -82,7 +82,6 @@ public class DungeonCorridorLarge extends DungeonPiece {
             switch (connectedSides) {
                 case 2:
                     if ((sides[0] && sides[2]) || (sides[1] && sides[3])) {
-                        this.type = 1;
                         this.maxCellCount = getMaxCellCount();
                         this.cells = new int[maxCellCount];
                         return DungeonModels.LARGE_CORRIDOR_STRAIGHT.id;
@@ -97,7 +96,6 @@ public class DungeonCorridorLarge extends DungeonPiece {
                     this.cells = new int[maxCellCount];
                     return DungeonModels.LARGE_CORRIDOR_OPEN.id;
             }
-            this.type = 1;
             this.maxCellCount = getMaxCellCount();
             this.cells = new int[maxCellCount];
             return DungeonModels.LARGE_CORRIDOR_STRAIGHT.id;
@@ -175,7 +173,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
     }
 
     @Override
-    public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
         ChildPieceSpot[] spots = getSpots();
 
         List<Position2D> positions = Lists.newArrayList();
@@ -190,7 +188,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
 
                 cells[i] = 1;
                 DungeonPrisonCell cell = new DungeonPrisonCell();
-                cell.modelID = cell.determineModel(builder, rand);
+                cell.modelID = cell.determineModel(builder, layerCategory, rand);
                 cell.setPosition(pos.x, pos.z);
                 cell.rotation = spot.rotation;
 

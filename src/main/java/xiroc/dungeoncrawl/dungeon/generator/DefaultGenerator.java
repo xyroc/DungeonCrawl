@@ -23,7 +23,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.gen.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -74,6 +73,11 @@ public class DefaultGenerator extends DungeonGenerator {
     public int calculateLayerCount(Random rand, int height) {
         this.layers = Math.min(maxLayers, height / 9);
         return layers;
+    }
+
+    @Override
+    public DungeonModels.ModelCategory getCategoryForLayer(int layer) {
+        return DungeonModels.ModelCategory.getCategoryForStage(layer);
     }
 
     @Override
@@ -178,7 +182,6 @@ public class DefaultGenerator extends DungeonGenerator {
                     }
                 }
             }
-
             return;
         }
 

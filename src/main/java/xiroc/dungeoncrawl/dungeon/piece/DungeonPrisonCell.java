@@ -65,7 +65,7 @@ public class DungeonPrisonCell extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, Random rand) {
+    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
         return DungeonModels.PRISON_CELL.id;
     }
 

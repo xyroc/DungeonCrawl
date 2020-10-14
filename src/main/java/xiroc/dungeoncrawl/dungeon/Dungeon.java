@@ -55,7 +55,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> FEATURE =
             WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, "dungeoncrawl:dungeon", DUNGEON.func_236391_a_(NoFeatureConfig.field_236559_b_));
 
-    public static final StructureSeparationSettings SEPARATION_SETTINGS = new StructureSeparationSettings(15, 5, 10387313);
+    public static final StructureSeparationSettings SEPARATION_SETTINGS = new StructureSeparationSettings(20, 8, 10387313);
 
     public static final int SIZE = 15;
 

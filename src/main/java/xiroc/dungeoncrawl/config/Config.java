@@ -80,7 +80,7 @@ public class Config {
 
         BUILDER.comment("World Generation Settings").push(CONFIG_WORLDGEN);
         DUNGEON_PROBABLILITY = BUILDER.comment("The probability of a dungeon getting generated on each fitting chunk.")
-                .defineInRange("dungeon_probability", 0.3, 0.0001, 1.0);
+                .defineInRange("dungeon_probability", 0.22, 0.0001, 1.0);
         IGNORE_DIMENSION = BUILDER.comment(
                 "If this is set to false, no dungeons can be generated outside the overworld.")
                 .define("ignore_dimension", true);

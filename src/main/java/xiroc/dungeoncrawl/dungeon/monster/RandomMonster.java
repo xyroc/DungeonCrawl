@@ -94,8 +94,6 @@ public class RandomMonster {
 
     /**
      * Loads all monster entity files.
-     *
-     * @param resourceManager
      */
     public static void loadJson(IResourceManager resourceManager) {
         COMMON = new WeightedRandomEntity[5];
@@ -116,11 +114,6 @@ public class RandomMonster {
 
     /**
      * Convenience method to load a single entity file.
-     *
-     * @param resourceManager
-     * @param file
-     * @param parser
-     * @param stage
      */
     private static void loadEntityFile(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {

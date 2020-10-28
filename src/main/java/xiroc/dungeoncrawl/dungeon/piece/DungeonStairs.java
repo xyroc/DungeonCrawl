@@ -35,6 +35,7 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonStairs extends DungeonPiece {
@@ -49,14 +50,13 @@ public class DungeonStairs extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         switch (stairType) {
             case 0:
-                return stage > 0 ? DungeonModels.STAIRS_BOTTOM_2.id : DungeonModels.STAIRS_BOTTOM.id;
+                this.modelID = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2.id : DungeonModels.STAIRS_BOTTOM.id;
+                return;
             case 1:
-                return DungeonModels.STAIRS_TOP.id;
-            default:
-                return 0;
+                this.modelID = DungeonModels.STAIRS_TOP.id;
         }
     }
 

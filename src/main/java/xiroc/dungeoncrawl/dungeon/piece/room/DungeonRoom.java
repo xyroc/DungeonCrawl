@@ -30,12 +30,12 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonRoom extends DungeonPiece {
@@ -45,8 +45,8 @@ public class DungeonRoom extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, layerCategory).roll(rand);
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelID = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, layerCategory).roll(rand);
     }
 
     @Override

@@ -66,10 +66,11 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, ModelCategory layerCategory, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (lootRoom) {
             node = Node.ALL;
-            return DungeonModels.LOOT_ROOM.id;
+            this.modelID = DungeonModels.LOOT_ROOM.id;
+            return;
         }
 
         large = stage >= 2 && rand.nextFloat() < 0.15;
@@ -108,7 +109,8 @@ public class DungeonNodeRoom extends DungeonPiece {
             DungeonCrawl.LOGGER.error("Didnt find a model provider for {} in stage {}. Connected Sides: {}, Base: {}",
                     this, stage, connectedSides, base);
 
-            return large ? 33 : 38;
+            this.modelID = large ? 33 : 38;
+            return;
         }
 
         Integer id = provider.roll(rand);
@@ -116,10 +118,11 @@ public class DungeonNodeRoom extends DungeonPiece {
         if (id == null) {
             DungeonCrawl.LOGGER.error("Empty model provider for {} in stage {}. Connected Sides: {}, Base: {}",
                     this, stage, connectedSides, base);
-            return large ? 33 : 38;
+            this.modelID = large ? 33 : 38;
+            return;
         }
 
-        return id;
+        this.modelID = id;
     }
 
     @Override
@@ -155,7 +158,7 @@ public class DungeonNodeRoom extends DungeonPiece {
         BlockPos pos = new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ());
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
-                Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT), stage, rotation, false);
+                Treasure.getModelTreasureType(modelID), stage, rotation, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
@@ -198,7 +201,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, ModelCategory layerCategory, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelCategory layerCategory, int layer, Random rand) {
+        super.addChildPieces(pieces, builder, layerCategory, layer, rand);
         if (large) {
             return;
         }
@@ -209,10 +213,10 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.modelID = connector.determineModel(builder, layerCategory, rand);
+            connector.setupModel(builder, layerCategory, pieces, rand);
             connector.setRealPosition(x + 7, y, z - 5);
             connector.adjustPositionAndBounds();
-            list.add(connector);
+            pieces.add(connector);
         }
 
         if (sides[1]) {
@@ -221,10 +225,10 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.modelID = connector.determineModel(builder, layerCategory, rand);
+            connector.setupModel(builder, layerCategory, pieces, rand);
             connector.setRealPosition(x + 17, y, z + 7);
             connector.adjustPositionAndBounds();
-            list.add(connector);
+            pieces.add(connector);
         }
 
         if (sides[2]) {
@@ -233,10 +237,10 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.modelID = connector.determineModel(builder, layerCategory, rand);
+            connector.setupModel(builder, layerCategory, pieces, rand);
             connector.setRealPosition(x + 7, y, z + 17);
             connector.adjustPositionAndBounds();
-            list.add(connector);
+            pieces.add(connector);
         }
 
         if (sides[3]) {
@@ -245,10 +249,10 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.modelID = connector.determineModel(builder, layerCategory, rand);
+            connector.setupModel(builder, layerCategory, pieces, rand);
             connector.setRealPosition(x - 5, y, z + 7);
             connector.adjustPositionAndBounds();
-            list.add(connector);
+            pieces.add(connector);
         }
     }
 

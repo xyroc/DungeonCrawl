@@ -31,6 +31,7 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonCorridorHole extends DungeonPiece {
@@ -40,8 +41,7 @@ public class DungeonCorridorHole extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
-        return 0;
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
     }
 
     @Override

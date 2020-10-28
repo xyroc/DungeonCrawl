@@ -31,6 +31,10 @@ public class Treasure {
     public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES = new HashMap<>();
     public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES = new HashMap<>();
 
+    public static Treasure.Type getModelTreasureType(int modelID) {
+        return MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT);
+    }
+
     public static void init() {
 //        MODEL_TREASURE_TYPES.put(24, Type.FOOD);
 //

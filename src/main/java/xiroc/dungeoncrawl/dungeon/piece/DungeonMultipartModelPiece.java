@@ -25,6 +25,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -35,43 +36,39 @@ import xiroc.dungeoncrawl.theme.Theme;
 import java.util.List;
 import java.util.Random;
 
-public class DungeonStaircase extends DungeonPiece {
+public class DungeonMultipartModelPiece extends DungeonPiece {
 
-    public DungeonStaircase(TemplateManager manager, CompoundNBT p_i51343_2_) {
-        super(StructurePieceTypes.STAIRCASE, p_i51343_2_);
-    }
-
-    @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.modelID = DungeonModels.STAIRCASE.id;
-    }
-
-    @Override
-    public void setupBoundingBox() {
-        this.boundingBox = new MutableBoundingBox(x, y, z, x + 4, y + 8, z + 4);
-    }
-
-    @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos chunkPosIn) {
-        DungeonModel model = DungeonModels.STAIRCASE;
-        Theme buildTheme = Theme.get(theme);
-        BlockPos pos = new BlockPos(x, y, z);
-
-        build(model, worldIn, structureBoundingBoxIn, pos, buildTheme, Theme.getSub(subTheme),
-                Treasure.Type.DEFAULT, stage, true);
-
-        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
-        }
-
-        decorate(worldIn, pos, model.width, model.height, model.length, buildTheme, structureBoundingBoxIn, boundingBox, model);
-        return true;
+    public DungeonMultipartModelPiece(TemplateManager manager, CompoundNBT p_i51343_2_) {
+        super(StructurePieceTypes.MULTIPART_MODEL_PIECE, p_i51343_2_);
     }
 
     @Override
     public int getType() {
-        return 13;
+        return 16;
     }
 
+    @Override
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    }
+
+    @Override
+    public void setupBoundingBox() {
+        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBox(x, y, z, rotation);
+        } else {
+            this.boundingBox = new MutableBoundingBox();
+            DungeonCrawl.LOGGER.warn("The multipart model piece {} does not have a valid model: {}", this, modelID);
+        }
+    }
+
+    @Override
+    public boolean func_225577_a_(IWorld p_225577_1_, ChunkGenerator<?> p_225577_2_, Random p_225577_3_, MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
+        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        if (model != null) {
+            DungeonCrawl.LOGGER.info("Building Multipart piece at {} {} {}", x, y, z);
+            build(model, p_225577_1_, p_225577_4_, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme), Treasure.getModelTreasureType(modelID), stage, false);
+        }
+        return true;
+    }
 }

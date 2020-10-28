@@ -50,10 +50,7 @@ import xiroc.dungeoncrawl.dungeon.model.*;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
-import xiroc.dungeoncrawl.util.DirectionalBlockPos;
-import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.Position2D;
+import xiroc.dungeoncrawl.util.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -78,6 +75,7 @@ public abstract class DungeonPiece extends StructurePiece {
     // 13 staircase
     // 14 secret room
     // 15 spider room
+    // 16 multipart model piece
 
     public static final CompoundNBT DEFAULT_NBT;
 
@@ -142,7 +140,7 @@ public abstract class DungeonPiece extends StructurePiece {
      * Called during the dungeon-post-processing to determine the model that will be
      * used to build this piece.
      */
-    public abstract int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand);
+    public abstract void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand);
 
     public abstract void setupBoundingBox();
 
@@ -418,10 +416,18 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public boolean hasChildPieces() {
-        return false;
+        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        return model != null && model.multipartData != null;
     }
 
-    public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
+        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        if (model != null && model.multipartData != null) {
+            for (WeightedRandom<?> randomData : model.multipartData) {
+                DungeonCrawl.LOGGER.info("Adding a multipart piece. Base Coordinates: {} {} {}", x, y, z);
+                pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, this.rotation, this.x, this.y, this.z));
+            }
+        }
     }
 
     public static void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
@@ -787,8 +793,10 @@ public abstract class DungeonPiece extends StructurePiece {
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                             Rotation.CLOCKWISE_90, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+
                                     if (result == null)
                                         continue;
+
                                     setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
                                             fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
@@ -822,8 +830,10 @@ public abstract class DungeonPiece extends StructurePiece {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                             Rotation.COUNTERCLOCKWISE_90, world, position, theme, subTheme,
                                             WeightedRandomBlock.RANDOM, variation, lootLevel);
+
                                     if (result == null)
                                         continue;
+
                                     setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
                                             fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
@@ -856,8 +866,10 @@ public abstract class DungeonPiece extends StructurePiece {
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
                                             position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+
                                     if (result == null)
                                         continue;
+
                                     setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
                                             fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 

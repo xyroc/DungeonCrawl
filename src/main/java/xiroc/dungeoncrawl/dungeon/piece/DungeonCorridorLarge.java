@@ -72,35 +72,36 @@ public class DungeonCorridorLarge extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (type == 0) {
             this.maxCellCount = getMaxCellCount();
             this.cells = new int[maxCellCount];
-            return DungeonModels.LARGE_CORRIDOR_START.id;
+            this.modelID = DungeonModels.LARGE_CORRIDOR_START.id;
         } else if (type == 1) {
             switch (connectedSides) {
                 case 2:
                     if ((sides[0] && sides[2]) || (sides[1] && sides[3])) {
                         this.maxCellCount = getMaxCellCount();
                         this.cells = new int[maxCellCount];
-                        return DungeonModels.LARGE_CORRIDOR_STRAIGHT.id;
+                        this.modelID = DungeonModels.LARGE_CORRIDOR_STRAIGHT.id;
+                        return;
                     }
                     this.type = 2;
                     this.maxCellCount = getMaxCellCount();
                     this.cells = new int[maxCellCount];
-                    return DungeonModels.LARGE_CORRIDOR_TURN.id;
+                    this.modelID = DungeonModels.LARGE_CORRIDOR_TURN.id;
+                    return;
                 case 3:
                     this.type = 3;
                     this.maxCellCount = getMaxCellCount();
                     this.cells = new int[maxCellCount];
-                    return DungeonModels.LARGE_CORRIDOR_OPEN.id;
+                    this.modelID = DungeonModels.LARGE_CORRIDOR_OPEN.id;
+                    return;
             }
             this.maxCellCount = getMaxCellCount();
             this.cells = new int[maxCellCount];
-            return DungeonModels.LARGE_CORRIDOR_STRAIGHT.id;
+            this.modelID = DungeonModels.LARGE_CORRIDOR_STRAIGHT.id;
         }
-        // end of the world
-        return 0;
     }
 
     @Override
@@ -175,7 +176,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
     }
 
     @Override
-    public void addChildPieces(List<DungeonPiece> list, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
         ChildPieceSpot[] spots = getSpots();
 
         List<Position2D> positions = Lists.newArrayList();
@@ -190,7 +191,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
 
                 cells[i] = 1;
                 DungeonPrisonCell cell = new DungeonPrisonCell();
-                cell.modelID = cell.determineModel(builder, layerCategory, rand);
+                cell.setupModel(builder, layerCategory, pieces, rand);
                 cell.setPosition(pos.x, pos.z);
                 cell.rotation = spot.rotation;
 
@@ -200,7 +201,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
                 cell.setRealPosition(x + vec.getX(), y + vec.getY(), z + vec.getZ());
                 cell.setupBoundingBox();
 
-                list.add(cell);
+                pieces.add(cell);
                 positions.add(pos);
             }
         }

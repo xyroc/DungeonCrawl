@@ -22,15 +22,21 @@ import com.google.gson.*;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
+import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class DungeonModel {
@@ -40,8 +46,13 @@ public class DungeonModel {
 
     public DungeonModelBlock[][][] model;
 
+    @Nullable
     public FeaturePosition[] featurePositions;
 
+    @Nullable
+    public List<WeightedRandom<MultipartModelData>> multipartData;
+
+    @Nullable
     public Metadata metadata;
 
     public DungeonModel(DungeonModelBlock[][][] model, FeaturePosition[] featurePositions) {
@@ -85,6 +96,38 @@ public class DungeonModel {
             for (int stage : metadata.stages) {
                 ModelCategory.getCategoryForStage(stage - 1).members.add(this);
             }
+        }
+
+        if (metadata.multipartData != null) {
+            this.multipartData = metadata.multipartData;
+        }
+    }
+
+    public MutableBoundingBox createBoundingBox(int x, int y, int z, Rotation rotation) {
+        switch (rotation) {
+            case NONE:
+            case CLOCKWISE_180:
+                return new MutableBoundingBox(x, y, z, x + width, y + height, z + length);
+            case CLOCKWISE_90:
+            case COUNTERCLOCKWISE_90:
+                return new MutableBoundingBox(x, y, z, x + length, y + height, z + width);
+            default:
+                DungeonCrawl.LOGGER.warn("Unknown rotation: {}", rotation);
+                return new MutableBoundingBox(x, y, z, x + width, y + height, z + length);
+        }
+    }
+
+    public MutableBoundingBox createBoundingBox(BlockPos origin, Rotation rotation) {
+        switch (rotation) {
+            case NONE:
+            case CLOCKWISE_180:
+                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width, origin.getY() + height, origin.getZ() + length);
+            case CLOCKWISE_90:
+            case COUNTERCLOCKWISE_90:
+                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + length, origin.getY() + height, origin.getZ() + width);
+            default:
+                DungeonCrawl.LOGGER.warn("Unknown rotation: {}", rotation);
+                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width, origin.getY() + height, origin.getZ() + length);
         }
     }
 
@@ -171,19 +214,24 @@ public class DungeonModel {
 
         public Treasure.Type treasureType;
 
+        public List<WeightedRandom<MultipartModelData>> multipartData;
+
         public boolean variation;
 
         public Vec3i offset;
 
         public int[] stages, weights;
 
-        private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata, Vec3i offset, Treasure.Type treasureType, boolean variation, int[] stages, int[] weights) {
+        private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata,
+                         Vec3i offset, Treasure.Type treasureType, List<WeightedRandom<MultipartModelData>> multipartData,
+                         boolean variation, int[] stages, int[] weights) {
             this.type = type;
             this.size = size;
             this.id = id;
             this.feature = feature;
             this.featureMetadata = featureMetadata;
             this.offset = offset;
+            this.multipartData = multipartData;
             this.treasureType = treasureType;
             this.variation = variation;
             this.stages = stages;
@@ -214,11 +262,15 @@ public class DungeonModel {
 
                 Treasure.Type treasureType = null;
 
+                List<WeightedRandom<MultipartModelData>> multipartData = null;
+
                 if (object.has("data")) {
                     data = object.getAsJsonObject("data");
 
                     stages = data.has("stages") ? DungeonCrawl.GSON.fromJson(data.get("stages"), int[].class) : null;
                     weights = data.has("weights") ? DungeonCrawl.GSON.fromJson(data.get("weights"), int[].class) : null;
+
+                    offset = data.has("offset") ? JSONUtils.getOffset(data.getAsJsonObject("offset")) : null;
 
                     if (data.has("feature")) {
                         JsonObject featureData = data.getAsJsonObject("feature");
@@ -238,18 +290,35 @@ public class DungeonModel {
                             e.printStackTrace();
                         }
                     }
-                    offset = data.has("offset") ? getOffset(data.getAsJsonObject("offset")) : null;
+
+                    if (data.has("multipart")) {
+                        JsonArray array = data.getAsJsonArray("multipart");
+                        int size = array.size();
+                        if (size > 0) {
+                            multipartData = new ArrayList<>();
+
+                            for (int i = 0; i < size; i++) {
+                                JsonArray array1 = array.get(i).getAsJsonArray();
+                                WeightedRandom.Builder<MultipartModelData> builder = new WeightedRandom.Builder<>();
+
+                                array1.forEach((element1) -> {
+                                    JsonObject object1 = element1.getAsJsonObject();
+                                    MultipartModelData multipartModelData = MultipartModelData.fromJson(object1);
+                                    builder.add(multipartModelData, JSONUtils.getWeightOrDefault(object1));
+                                    if (multipartModelData != MultipartModelData.EMPTY) {
+                                        DungeonModels.REFERENCES_TO_UPDATE.add(multipartModelData);
+                                    }
+                                });
+
+                                multipartData.add(builder.build());
+                            }
+                        }
+                    }
                 }
 
-                switch (modelType) {
-                    case "normal":
-                        return new Metadata(null, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    case "entrance":
-                        return new Metadata(ModelCategory.ENTRANCE, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    case "room":
-                        return new Metadata(ModelCategory.ROOM, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    case "node":
-                        ModelCategory size;
+                if (modelType.equalsIgnoreCase("node")) {
+                    ModelCategory size;
+                    if (data != null) {
                         String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
                         if (sizeString.equals("large")) {
                             size = ModelCategory.LARGE_NODE;
@@ -258,36 +327,26 @@ public class DungeonModel {
                         } else {
                             throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
                         }
-                        return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    case "corridor":
-                        return new Metadata(ModelCategory.CORRIDOR, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    case "corridor_linker":
-                        return new Metadata(ModelCategory.CORRIDOR_LINKER, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    case "node_connector":
-                        return new Metadata(ModelCategory.NODE_CONNECTOR, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    case "side_room":
-                        return new Metadata(ModelCategory.SIDE_ROOM, null, id, feature, featureMetadata, offset, treasureType, variation, stages, weights);
-                    default:
-                        throw new IllegalArgumentException("Unknown model type \"" + modelType + "\"");
+                        return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
+                    } else {
+                        throw new RuntimeException("Missing metadata for a node model. (ID: " + id + ")");
+                    }
+                } else {
+                    return new Metadata(getModelCategory(modelType), null, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
                 }
-
             }
 
-            public Vec3i getOffset(JsonObject jsonObject) {
-                int x = 0, y = 0, z = 0;
-                if (jsonObject.has("x")) {
-                    x = jsonObject.get("x").getAsInt();
-                }
-                if (jsonObject.has("y")) {
-                    y = jsonObject.get("y").getAsInt();
-                }
-                if (jsonObject.has("z")) {
-                    z = jsonObject.get("z").getAsInt();
-                }
-                if (x == 0 && y == 0 && z == 0) {
+            @Nullable
+            private static ModelCategory getModelCategory(String name) {
+                if (name.toLowerCase().equals("normal")) {
                     return null;
                 }
-                return new Vec3i(x, y, z);
+                try {
+                    return ModelCategory.valueOf(name.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    DungeonCrawl.LOGGER.warn("Unknown model type: {}", name);
+                    return null;
+                }
             }
 
         }

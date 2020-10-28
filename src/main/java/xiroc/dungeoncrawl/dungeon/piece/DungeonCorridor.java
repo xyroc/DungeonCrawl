@@ -35,6 +35,7 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonCorridor extends DungeonPiece {
@@ -52,11 +53,12 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (connectedSides == 2 && isStraight()) {
-                return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, layerCategory).roll(rand);
+            this.modelID = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, layerCategory).roll(rand);
+        } else {
+            this.modelID = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand);
         }
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand);
     }
 
 //    @Override

@@ -40,6 +40,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonSecretRoom extends DungeonPiece {
@@ -54,7 +55,7 @@ public class DungeonSecretRoom extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z);
 
         buildRotatedFull(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
-                Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT), stage, rotation, false);
+                Treasure.getModelTreasureType(modelID), stage, rotation, false);
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
         return true;
     }
@@ -65,8 +66,8 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
-        return DungeonModels.SECRET_ROOM.id;
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelID = DungeonModels.SECRET_ROOM.id;
     }
 
     @Override

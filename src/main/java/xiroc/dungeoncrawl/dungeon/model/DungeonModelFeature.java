@@ -42,7 +42,7 @@ public interface DungeonModelFeature {
 
     DungeonModelFeature CHESTS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
-            if (bounds.isVecInside(position.position)) {
+            if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
                         position.position, rand, Treasure.Type.DEFAULT, theme, stage);
             }
@@ -51,7 +51,7 @@ public interface DungeonModelFeature {
 
     DungeonModelFeature TNT_CHESTS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
-            if (bounds.isVecInside(position.position)) {
+            if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, Blocks.TRAPPED_CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
                         Orientation.RANDOM_FACING_FLAT.roll(rand)),
                         position.position, rand, Treasure.Type.DEFAULT, theme, stage);
@@ -64,7 +64,7 @@ public interface DungeonModelFeature {
 
     DungeonModelFeature SPAWNERS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
-            if (bounds.isVecInside(position.position)) {
+            if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER,
                         position.position, rand, null, theme, stage);
             }
@@ -74,12 +74,12 @@ public interface DungeonModelFeature {
     DungeonModelFeature CATACOMB = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
 
         for (DirectionalBlockPos position : positions) {
-            if (bounds.isVecInside(position.position)) {
+            if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
                         position.position, rand, Treasure.Type.CATACOMB, theme, stage);
             }
             BlockPos spawner = position.position.offset(position.direction);
-            if (bounds.isVecInside(spawner)) {
+            if (bounds.isVecInside(spawner) && world.getBlockState(spawner.down()).isSolid()) {
                 IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER, spawner, rand, null, theme, stage);
             }
         }

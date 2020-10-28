@@ -34,6 +34,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.generator.DefaultGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -115,8 +116,8 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
-        List<DungeonPiece> list = Lists.newArrayList();
-        
+        List<DungeonPiece> pieces = Lists.newArrayList();
+
         int startCoordinate = DEFAULT_GENERATOR.settings.gridSize.apply(0) / 2;
 
         this.start = new Position2D(startCoordinate, startCoordinate);
@@ -140,7 +141,7 @@ public class DungeonBuilder {
         entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
-        entrance.modelID = entrance.determineModel(this, null, rand);
+        entrance.setupModel(this, null, pieces, rand);
         entrance.setupBoundingBox();
 
         this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
@@ -174,11 +175,11 @@ public class DungeonBuilder {
         entrance.theme = theme;
         entrance.subTheme = subTheme;
 
-        list.add(entrance);
+        pieces.add(entrance);
 
-        postProcessDungeon(list, rand);
+        postProcessDungeon(pieces, rand);
 
-        return list;
+        return pieces;
     }
 
 //    public List<DungeonPiece> build(int theme, int subTheme) {
@@ -258,7 +259,7 @@ public class DungeonBuilder {
         }
     }
 
-    public void postProcessDungeon(List<DungeonPiece> list, Random rand) {
+    public void postProcessDungeon(List<DungeonPiece> pieces, Random rand) {
         boolean mossArea = layers.length > 3;
 
         for (int i = 0; i < layers.length; i++) {
@@ -279,7 +280,7 @@ public class DungeonBuilder {
                         }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
-                            layer.segments[x][z].reference.modelID = layer.segments[x][z].reference.determineModel(this, layerCategory, rand);
+                            layer.segments[x][z].reference.setupModel(this, layerCategory, pieces, rand);
                         }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
@@ -290,7 +291,7 @@ public class DungeonBuilder {
                         layer.segments[x][z].reference.setupBoundingBox();
 
                         if (layer.segments[x][z].reference.hasChildPieces()) {
-                            layer.segments[x][z].reference.addChildPieces(list, this, layerCategory, i, rand);
+                            layer.segments[x][z].reference.addChildPieces(pieces, this, layerCategory, i, rand);
                         }
 
                         if (layer.segments[x][z].reference.getType() == 10) {
@@ -299,7 +300,7 @@ public class DungeonBuilder {
 
                         layer.segments[x][z].reference.customSetup(rand);
 
-                        list.add(layer.segments[x][z].reference);
+                        pieces.add(layer.segments[x][z].reference);
                     }
                 }
         }

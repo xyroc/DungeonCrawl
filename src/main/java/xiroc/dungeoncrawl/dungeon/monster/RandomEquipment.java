@@ -80,11 +80,6 @@ public class RandomEquipment {
 
     /**
      * Convenience method to load an armor file from json.
-     *
-     * @param resourceManager
-     * @param file
-     * @param parser
-     * @param stage
      */
     private static void loadArmorFromJson(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
@@ -126,11 +121,6 @@ public class RandomEquipment {
 
     /**
      * Convenience method to load a weapon file from json.
-     *
-     * @param resourceManager
-     * @param file
-     * @param parser
-     * @param stage
      */
     private static void loadWeaponsFromJson(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {

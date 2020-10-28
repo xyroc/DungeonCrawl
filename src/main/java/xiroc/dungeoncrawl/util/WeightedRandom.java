@@ -30,7 +30,7 @@ import java.util.Random;
 
 public class WeightedRandom<T> implements IRandom<T> {
 
-    //TODO: migrate other WeightedRandom classes to this
+    // TODO: migrate other WeightedRandom classes to this
 
     public static final WeightedRandom.JsonReader<IDungeonDecoration> DECORATION = (array) -> {
         WeightedRandom.Builder<IDungeonDecoration> builder = new WeightedRandom.Builder<>();
@@ -39,7 +39,7 @@ public class WeightedRandom<T> implements IRandom<T> {
             int weight = object.has("weight") ? object.get("weight").getAsInt() : 1;
             IDungeonDecoration decoration = IDungeonDecoration.fromJson(object);
             if (decoration != null) {
-                builder.entries.add(new WeightedEntry((float) weight, decoration));
+                builder.entries.add(new WeightedEntry(weight, decoration));
             }
         });
         return builder.build();
@@ -53,17 +53,16 @@ public class WeightedRandom<T> implements IRandom<T> {
         for (WeightedEntry entry : entries)
             weight += entry.getA();
         this.totalWeight = weight;
-        this.entries = new WeightedEntry[entries.length];
+        this.entries = entries;
         this.assign(this.entries);
     }
 
     private void assign(WeightedEntry[] values) {
-        float f = 0.0F;
         int i = 0;
+        int totalWeight = 0;
         for (WeightedEntry entry : values) {
-            float weight = entry.getA() / (float) totalWeight;
-            entries[i] = new WeightedRandom.WeightedEntry(weight + f, entry.getB());
-            f += weight;
+            totalWeight += entry.getA();
+            entries[i] = new WeightedRandom.WeightedEntry(totalWeight, entry.getB());
             i++;
         }
     }
@@ -71,17 +70,18 @@ public class WeightedRandom<T> implements IRandom<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T roll(Random rand) {
-        float f = rand.nextFloat();
-        for (WeightedEntry entry : entries)
-            if (entry.getA() >= f) {
+        int r = rand.nextInt(totalWeight);
+        for (WeightedEntry entry : entries) {
+            if (r < entry.getA()) {
                 return (T) entry.getB();
             }
+        }
         return null;
     }
 
-    private static class WeightedEntry extends Tuple<Float, Object> {
+    private static class WeightedEntry extends Tuple<Integer, Object> {
 
-        public WeightedEntry(Float aIn, Object bIn) {
+        public WeightedEntry(Integer aIn, Object bIn) {
             super(aIn, bIn);
         }
 
@@ -93,6 +93,11 @@ public class WeightedRandom<T> implements IRandom<T> {
 
         public Builder() {
             entries = Lists.newArrayList();
+        }
+
+        public WeightedRandom.Builder<T> add(T t, int weight) {
+            entries.add(new WeightedEntry(weight, t));
+            return this;
         }
 
         public WeightedRandom.Builder<T> add(WeightedEntry[] entries) {

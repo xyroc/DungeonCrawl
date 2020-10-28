@@ -32,6 +32,7 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonPrisonCell extends DungeonPiece {
@@ -64,8 +65,8 @@ public class DungeonPrisonCell extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
-        return DungeonModels.PRISON_CELL.id;
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelID = DungeonModels.PRISON_CELL.id;
     }
 
     @Override
@@ -78,7 +79,6 @@ public class DungeonPrisonCell extends DungeonPiece {
             case CLOCKWISE_90:
             case COUNTERCLOCKWISE_90:
                 this.boundingBox = new MutableBoundingBox(x, y, z, x + 4, y + 4, z + 3);
-                return;
         }
     }
 

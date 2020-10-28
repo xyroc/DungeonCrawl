@@ -42,6 +42,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonEntrance extends DungeonPiece {
@@ -55,12 +56,13 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (DungeonModels.ModelCategory.ENTRANCE.members.isEmpty()) {
-            DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the roguelike entrance.");
-            return DungeonModels.ENTRANCE.id;
+            DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the RLD default entrance.");
+            this.modelID = DungeonModels.ENTRANCE.id;
+        } else {
+            this.modelID = DungeonModels.ModelCategory.ENTRANCE.members.get(rand.nextInt(DungeonModels.ModelCategory.ENTRANCE.members.size())).id;
         }
-        return DungeonModels.ModelCategory.ENTRANCE.members.get(rand.nextInt(DungeonModels.ModelCategory.ENTRANCE.members.size())).id;
     }
 
     @Override

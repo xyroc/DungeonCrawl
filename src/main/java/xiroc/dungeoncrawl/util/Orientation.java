@@ -65,7 +65,7 @@ public class Orientation {
             case CLOCKWISE_180:
                 return new Vec3i(parent.width - offset.getX() - multipart.width, offset.getY(), parent.length - offset.getZ() - multipart.length);
             case COUNTERCLOCKWISE_90:
-                return new Vec3i(offset.getZ(), offset.getY(), parent.width - offset.getX() - multipart.length);
+                return new Vec3i(offset.getZ(), offset.getY(), parent.width - offset.getX() - multipart.width);
             default:
                 return offset;
         }

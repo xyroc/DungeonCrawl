@@ -27,15 +27,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.ZombieVillagerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +39,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -304,34 +298,34 @@ public class Tools {
         }
     }
 
-    @SubscribeEvent
-    public void onClickEntity(final PlayerInteractEvent.EntityInteract event) {
-        if (!event.getWorld().isRemote && event.getPlayer().getHeldItem(Hand.MAIN_HAND).getItem() == Items.DEBUG_STICK && event.getTarget() instanceof LivingEntity) {
-            LivingEntity livingEntity = (LivingEntity) event.getTarget();
-            if (event.getPlayer().func_226296_dJ_() && (livingEntity instanceof VillagerEntity || livingEntity instanceof ZombieVillagerEntity)) {
-                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
-                event.getPlayer().sendMessage(new StringTextComponent("Villager NBT of " + livingEntity.toString()));
-                CompoundNBT nbt = new CompoundNBT();
-                livingEntity.writeAdditional(nbt);
-                event.getPlayer().sendMessage(new StringTextComponent("Inventory: " + (nbtToString(nbt.get("Inventory")))));
-                event.getPlayer().sendMessage(new StringTextComponent("VillagerData: " + (nbtToString(nbt.get("VillagerData")))));
-                event.getPlayer().sendMessage(new StringTextComponent("RestocksToday: " + (nbtToString(nbt.get("RestocksToday")))));
-                event.getPlayer().sendMessage(new StringTextComponent("LastRestock: " + (nbtToString(nbt.get("LastRestock")))));
-                event.getPlayer().sendMessage(new StringTextComponent("Gossips: " + (nbtToString(nbt.get("Gossips")))));
-                event.getPlayer().sendMessage(new StringTextComponent("Xp: " + (nbtToString(nbt.get("Xp")))));
-                event.getPlayer().sendMessage(new StringTextComponent("Offers: " + (nbtToString(nbt.get("Offers")))));
-
-                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
-            } else {
-                event.getPlayer().sendMessage(new StringTextComponent("Active Potion effects of " + livingEntity.toString()));
-                livingEntity.getActivePotionEffects().forEach((effectInstance) -> {
-                    event.getPlayer().sendMessage(new StringTextComponent(effectInstance.toString()));
-                });
-                event.getPlayer().sendMessage(new StringTextComponent("---"));
-            }
-            event.setResult(Event.Result.ALLOW);
-        }
-    }
+//    @SubscribeEvent
+//    public void onClickEntity(final PlayerInteractEvent.EntityInteract event) {
+//        if (!event.getWorld().isRemote && event.getPlayer().getHeldItem(Hand.MAIN_HAND).getItem() == Items.DEBUG_STICK && event.getTarget() instanceof LivingEntity) {
+//            LivingEntity livingEntity = (LivingEntity) event.getTarget();
+//            if (event.getPlayer().isCreative() && (livingEntity instanceof VillagerEntity || livingEntity instanceof ZombieVillagerEntity)) {
+//                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
+//                event.getPlayer().sendMessage(new StringTextComponent("Villager NBT of " + livingEntity.toString()));
+//                CompoundNBT nbt = new CompoundNBT();
+//                livingEntity.writeAdditional(nbt);
+//                event.getPlayer().sendMessage(new StringTextComponent("Inventory: " + (nbtToString(nbt.get("Inventory")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("VillagerData: " + (nbtToString(nbt.get("VillagerData")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("RestocksToday: " + (nbtToString(nbt.get("RestocksToday")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("LastRestock: " + (nbtToString(nbt.get("LastRestock")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("Gossips: " + (nbtToString(nbt.get("Gossips")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("Xp: " + (nbtToString(nbt.get("Xp")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("Offers: " + (nbtToString(nbt.get("Offers")))));
+//
+//                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
+//            } else {
+//                event.getPlayer().sendMessage(new StringTextComponent("Active Potion effects of " + livingEntity.toString()));
+//                livingEntity.getActivePotionEffects().forEach((effectInstance) -> {
+//                    event.getPlayer().sendMessage(new StringTextComponent(effectInstance.toString()));
+//                });
+//                event.getPlayer().sendMessage(new StringTextComponent("---"));
+//            }
+//            event.setResult(Event.Result.ALLOW);
+//        }
+//    }
 
     public static void buildModel(DungeonModel model, IWorld world, BlockPos pos) {
         for (int y = 0; y < model.height; y++) {

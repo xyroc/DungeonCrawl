@@ -55,9 +55,7 @@ public class DungeonModels {
     public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
 
     public static DungeonModel CORRIDOR, CORRIDOR_2, CORRIDOR_3, CORRIDOR_STONE, CORRIDOR_ROOM, CORRIDOR_SECRET_ROOM_ENTRANCE;
-    public static DungeonModel CAKE_ROOM;
-    public static DungeonModel CORRIDOR_LIGHT, CORRIDOR_CHEST, CORRIDOR_SPAWNER, CORRIDOR_CROPS,
-            SECRET_ROOM_ENTRANCE;
+
     public static DungeonModel ENTRANCE;
     public static DungeonModel FOOD_SIDE_ROOM;
     public static DungeonModel LARGE_CORRIDOR_START, LARGE_CORRIDOR_STRAIGHT, LARGE_CORRIDOR_OPEN, LARGE_CORRIDOR_TURN;
@@ -77,13 +75,7 @@ public class DungeonModels {
         OFFSETS.clear();
 
         ModelCategory.clear();
-
-//        CORRIDOR_CROPS = loadModel("models/dungeon/corridor/feature/corridor_crop_feature.nbt", resourceManager);
-//        CORRIDOR_LIGHT = loadModel("models/dungeon/corridor/feature/corridor_light_feature.nbt", resourceManager);
-//        CORRIDOR_CHEST = loadModel("models/dungeon/corridor/feature/corridor_chest_feature.nbt", resourceManager);
-//        CORRIDOR_SPAWNER = loadModel("models/dungeon/corridor/feature/corridor_spawner_feature.nbt", resourceManager);
-        //SECRET_ROOM_ENTRANCE = loadFromFile("models/dungeon/corridor/feature/corridor_secret_room_entrance.nbt", resourceManager);
-
+        
         LARGE_CORRIDOR_START = loadModel("models/dungeon/corridor/large_corridor_start.nbt", resourceManager).setId(28);
         LARGE_CORRIDOR_STRAIGHT = loadModel("models/dungeon/corridor/large_corridor_straight.nbt", resourceManager).setId(29);
         LARGE_CORRIDOR_TURN = loadModel("models/dungeon/corridor/large_corridor_turn.nbt", resourceManager).setId(30);
@@ -116,6 +108,8 @@ public class DungeonModels {
         load("models/dungeon/corridor/", "corridor_room", resourceManager);
         load("models/dungeon/corridor/", "corridor_fire", resourceManager);
         load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
+        load("models/dungeon/corridor/", "base_corridor", resourceManager);
+        load("models/dungeon/corridor/", "base_corridor_light", resourceManager);
 
         load("models/dungeon/corridor/dark/", "corridor", resourceManager);
         load("models/dungeon/corridor/dark/", "corridor_2", resourceManager);
@@ -164,6 +158,15 @@ public class DungeonModels {
         load("models/dungeon/room/", "spawner_room_material_2", resourceManager);
 
         load("models/dungeon/room/dark/", "spawner_room", resourceManager);
+
+        load("models/dungeon/corridor/multipart/", "corridor_default", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_variant", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_variant_2", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_crops", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_chest", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_spawner", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_light", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_light_switch", resourceManager);
 
         // -Additional Models- //
 

@@ -27,13 +27,16 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.util.List;
 import java.util.Random;
@@ -61,35 +64,9 @@ public class DungeonCorridor extends DungeonPiece {
         }
     }
 
-//    @Override
-//    public void customSetup(Random rand) {
-//        DungeonModel model = DungeonModels.MODELS.get(modelID);
-//        if (model.featurePositions != null) {
-//            int features = 0;
-//            float random = rand.nextFloat();
-//            for (int i = model.featurePositions.length; i > 0; i--) {
-//                if (random < Math.pow(0.5, i)) {
-//                    features = i;
-//                    break;
-//                }
-//            }
-//            if (features > 0) {
-//                this.corridorFeatures = new byte[features];
-//                this.featurePositions = new DirectionalBlockPos[features];
-//                for (int i = 0; i < features; i++) {
-//                    int feature = rand.nextInt(5);
-//                    this.corridorFeatures[i] = (byte) feature;
-//                    this.featurePositions[i] = DungeonCorridorFeature.setup(this, model, model.featurePositions[i].rotate(rotation, model), feature);
-//                    //DungeonCrawl.LOGGER.info("Corridor Feature Pos: {} ({})", featurePositions[i], feature);
-//                    DungeonCorridorFeature.setupBounds(this, model, boundingBox, new BlockPos(x, y, z), feature);
-//                }
-//            }
-//        }
-//    }
-
     @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGen, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos p_74875_4_) {
+    public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGen, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+                          ChunkPos p_74875_4_) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
         boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
@@ -117,13 +94,6 @@ public class DungeonCorridor extends DungeonPiece {
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
-//        if (connectedSides < 3 && corridorFeatures != null && featurePositions != null) {
-//            for (int i = 0; i < featurePositions.length; i++) {
-//                DungeonCorridorFeature.FEATURES.get(corridorFeatures[i]).build(this, worldIn, featurePositions[i],
-//                        structureBoundingBoxIn, Theme.get(theme), Theme.getSub(subTheme), stage);
-//            }
-//        }
-
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
@@ -139,6 +109,22 @@ public class DungeonCorridor extends DungeonPiece {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
+        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        if (model != null && model.multipartData != null) {
+            boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
+
+            int x = ew ? this.x : this.x + (9 - model.length) / 2;
+            int z = ew ? this.z + (9 - model.length) / 2 : this.z;
+            for (WeightedRandom<?> randomData : model.multipartData) {
+                DungeonCrawl.LOGGER.info("Adding a multipart piece. Base Coordinates: {} {} {}", x, y, z);
+                pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, rotation, x, y ,z));
+            }
+        }
+    }
+
     @Override
     public void setupBoundingBox() {
         Vec3i offset = DungeonModels.getOffset(modelID);
@@ -147,13 +133,6 @@ public class DungeonCorridor extends DungeonPiece {
         } else {
             this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
         }
-
-//        if (corridorFeatures != null) {
-//            DungeonModel model = DungeonModels.MODELS.get(modelID);
-//            for (byte corridorFeature : corridorFeatures) {
-//                DungeonCorridorFeature.setupBounds(this, model, boundingBox, new BlockPos(x, y, z), corridorFeature);
-//            }
-//        }
     }
 
     @Override

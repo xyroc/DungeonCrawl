@@ -53,7 +53,7 @@ public class DungeonSideRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+    public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos chunkPosIn) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
         BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);

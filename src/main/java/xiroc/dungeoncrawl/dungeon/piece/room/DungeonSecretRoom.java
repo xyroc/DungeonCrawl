@@ -50,7 +50,7 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
+    public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
         BlockPos pos = new BlockPos(x, y, z);
 

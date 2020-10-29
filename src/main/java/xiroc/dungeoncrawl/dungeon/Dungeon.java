@@ -80,10 +80,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    public boolean func_225558_a_(BiomeManager p_225558_1_, ChunkGenerator<?> chunkGen, Random rand, int chunkX, int chunkZ, Biome p_225558_6_) {
+    public boolean canBeGenerated(BiomeManager p_225558_1_, ChunkGenerator<?> chunkGen, Random rand, int chunkX, int chunkZ, Biome p_225558_6_) {
         ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkX, chunkZ, 0, 0);
         if (chunkX == chunkpos.x && chunkZ == chunkpos.z && p_225558_6_.hasStructure(Dungeon.DUNGEON)) {
-            for (Biome biome : chunkGen.getBiomeProvider().func_225530_a_(chunkX * 16, chunkGen.getSeaLevel(), chunkZ * 16, 32)) {
+            for (Biome biome : chunkGen.getBiomeProvider().getBiomes(chunkX * 16, chunkGen.getSeaLevel(), chunkZ * 16, 32)) {
                 if (!chunkGen.hasStructure(biome, DUNGEON) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
                     return false;
                 }
@@ -136,14 +136,14 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         }
 
         @Override
-        public void func_225565_a_(IWorld worldIn, ChunkGenerator<?> chunkGen, Random rand, MutableBoundingBox structurebb, ChunkPos pos) {
+        public void generateStructure(IWorld worldIn, ChunkGenerator<?> chunkGen, Random rand, MutableBoundingBox structurebb, ChunkPos pos) {
             if (!Config.IGNORE_DIMENSION.get() && !(worldIn.getDimension().getType() == DimensionType.OVERWORLD)) {
                 DungeonCrawl.LOGGER.info(
                         "Cancelling the generation of an existing Dungeon because it is not in the overworld. To avoid this, set \"ignore_dimension\" in the config to true. Dimension: {}",
                         worldIn.getDimension().getType());
                 return;
             }
-            super.func_225565_a_(worldIn, chunkGen, rand, structurebb, pos);
+            super.generateStructure(worldIn, chunkGen, rand, structurebb, pos);
         }
 
     }

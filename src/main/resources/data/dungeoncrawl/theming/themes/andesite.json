@@ -13,9 +13,6 @@
           "block": "minecraft:cobblestone"
         },
         {
-          "block": "minecraft:mossy_cobblestone"
-        },
-        {
           "block": "minecraft:cracked_stone_bricks"
         }
       ]
@@ -46,17 +43,12 @@
           "block": "minecraft:cracked_stone_bricks"
         },
         {
-          "block": "minecraft:cobblestone"
-        },
-        {
-          "block": "minecraft:mossy_cobblestone"
-        },
-        {
           "block": "minecraft:polished_andesite",
-          "weight": 2
+          "weight": 4
         },
         {
-          "block": "minecraft:chiseled_stone_bricks"
+          "block": "minecraft:chiseled_stone_bricks",
+          "weight": 2
         }
       ]
     },
@@ -69,9 +61,6 @@
         {
           "block": "minecraft:polished_andesite_stairs",
           "weight": 3
-        },
-        {
-          "block": "minecraft:cobblestone_stairs"
         }
       ]
     },
@@ -89,25 +78,12 @@
         {
           "block": "minecraft:polished_andesite_slab",
           "weight": 2
-        },
-        {
-          "block": "minecraft:cobblestone_slab"
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_slab"
         }
       ]
     },
     "solid_slab": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:andesite_slab"
-        },
-        {
-          "block": "minecraft:polished_andesite_slab"
-        }
-      ]
+      "type": "block",
+      "block": "minecraft:polished_andesite_slab"
     },
     "material": {
       "type": "random_block",
@@ -118,12 +94,6 @@
         {
           "block": "minecraft:polished_andesite",
           "weight": 2
-        },
-        {
-          "block": "minecraft:cobblestone"
-        },
-        {
-          "block": "minecraft:mossy_cobblestone"
         },
         {
           "block": "minecraft:cracked_stone_bricks"

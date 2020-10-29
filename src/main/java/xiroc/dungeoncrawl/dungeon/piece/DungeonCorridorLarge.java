@@ -105,7 +105,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+    public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos chunkPosIn) {
 
         //DungeonCrawl.LOGGER.debug("x: {}, y: {}, z: {}, rotation: {}", x, y, z, rotation);

@@ -420,6 +420,7 @@ public abstract class DungeonPiece extends StructurePiece {
         return model != null && model.multipartData != null;
     }
 
+    @SuppressWarnings("unchecked")
     public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
         if (model != null && model.multipartData != null) {

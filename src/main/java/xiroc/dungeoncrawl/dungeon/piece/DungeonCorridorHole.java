@@ -45,7 +45,7 @@ public class DungeonCorridorHole extends DungeonPiece {
     }
 
     @Override
-    public boolean func_225577_a_(IWorld worldIn, ChunkGenerator<?> chunkGen, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
+    public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGen, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos p_74875_4_) {
 //        BlockPos pos = new BlockPos(x, y - 15, z);
 //        build(DungeonModels.CORRIDOR, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, true);

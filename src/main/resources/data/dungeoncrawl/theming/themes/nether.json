@@ -2,16 +2,6 @@
   "type": "theme",
   "id": 1,
   "sub_theme": 8,
-  "decorations": [
-    {
-      "type": "floor",
-      "block": {
-        "type": "block",
-        "block": "minecraft:fire"
-      },
-      "chance": 0.15
-    }
-  ],
   "theme": {
     "normal": {
       "type": "random_block",

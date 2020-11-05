@@ -119,7 +119,6 @@ public class DungeonCorridor extends DungeonPiece {
             int x = ew ? this.x : this.x + (9 - model.length) / 2;
             int z = ew ? this.z + (9 - model.length) / 2 : this.z;
             for (WeightedRandom<?> randomData : model.multipartData) {
-                DungeonCrawl.LOGGER.info("Adding a multipart piece. Base Coordinates: {} {} {}", x, y, z);
                 pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, rotation, x, y ,z));
             }
         }

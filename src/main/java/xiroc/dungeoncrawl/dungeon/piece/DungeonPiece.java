@@ -425,7 +425,6 @@ public abstract class DungeonPiece extends StructurePiece {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
         if (model != null && model.multipartData != null) {
             for (WeightedRandom<?> randomData : model.multipartData) {
-                DungeonCrawl.LOGGER.info("Adding a multipart piece. Base Coordinates: {} {} {}", x, y, z);
                 pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, this.rotation, this.x, this.y, this.z));
             }
         }

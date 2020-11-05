@@ -98,7 +98,7 @@ public class DefaultGenerator extends DungeonGenerator {
         for (int i = 0; i < 4; i++) {
             if (counter < maxDirections) {
                 Direction direction = directions[(i + start) % 4];
-                if (findPositionAndContinue(dungeonBuilder, dungeonLayer, startPosition, direction, rand, 2, 3, layer, 1)) {
+                if (findPositionAndContinue(dungeonBuilder, dungeonLayer, startPosition, direction, rand, minDistance, maxDistance, layer, 1)) {
                     counter++;
                 }
             }
@@ -177,7 +177,7 @@ public class DefaultGenerator extends DungeonGenerator {
             for (int i = 0; i < 3; i++) {
                 if (counter < maxDirections) {
                     Direction direction = directions[(i + start) % 3];
-                    if (findPositionAndContinue(builder, dungeonLayer, currentPosition, direction, rand, 2, 3, layer, ++depth)) {
+                    if (findPositionAndContinue(builder, dungeonLayer, currentPosition, direction, rand, minDistance, maxDistance, layer, ++depth)) {
                         counter++;
                     }
                 }
@@ -210,7 +210,7 @@ public class DefaultGenerator extends DungeonGenerator {
                         Direction direction = directions[(i + start) % 3];
                         if (findPositionAndContinue(builder, dungeonLayer,
                                 currentPosition.shift(currentPosition.directionTo(center), 1).shift(direction, 1),
-                                direction, rand, 2, 3, layer, ++depth)) {
+                                direction, rand, minDistance, maxDistance, layer, ++depth)) {
                             counter++;
                         }
                     }
@@ -237,7 +237,7 @@ public class DefaultGenerator extends DungeonGenerator {
             for (int i = 0; i < 3; i++) {
                 if (counter < maxDirections) {
                     Direction direction = directions[(i + start) % 3];
-                    if (findPositionAndContinue(builder, dungeonLayer, currentPosition, direction, rand, 2, 3, layer, ++depth)) {
+                    if (findPositionAndContinue(builder, dungeonLayer, currentPosition, direction, rand, minDistance, maxDistance, layer, ++depth)) {
                         counter++;
                     }
                 }
@@ -250,7 +250,7 @@ public class DefaultGenerator extends DungeonGenerator {
         switch (direction) {
             case NORTH:
                 if (origin.z > min) {
-                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, origin.z) - min) : Math.min(1 + max, origin.z));
+                    Position2D pos = origin.shift(direction, (randomDistances ? min + rand.nextInt(Math.min(max, origin.z) - min + 1) : Math.min(1 + max, origin.z)));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;
@@ -260,7 +260,7 @@ public class DefaultGenerator extends DungeonGenerator {
             case EAST:
                 int east = Dungeon.SIZE - origin.x - 1;
                 if (east > min) {
-                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, east) - min) : Math.min(1 + max, east));
+                    Position2D pos = origin.shift(direction, (randomDistances ? min + rand.nextInt(Math.min(max, east) - min + 1) : Math.min(1 + max, east)));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;
@@ -270,7 +270,7 @@ public class DefaultGenerator extends DungeonGenerator {
             case SOUTH:
                 int south = Dungeon.SIZE - origin.z - 1;
                 if (south > min) {
-                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, south) - min) : Math.min(1 + max, south));
+                    Position2D pos = origin.shift(direction, (randomDistances ? min + rand.nextInt(Math.min(max, south) - min + 1) : Math.min(1 + max, south)));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;
@@ -279,7 +279,7 @@ public class DefaultGenerator extends DungeonGenerator {
                 return false;
             case WEST:
                 if (origin.x > min) {
-                    Position2D pos = origin.shift(direction, randomDistances ? min + rand.nextInt(Math.min(max, origin.x) - min) : Math.min(1 + max, origin.x));
+                    Position2D pos = origin.shift(direction, (randomDistances ? min + rand.nextInt(Math.min(max, origin.x) - min + 1) : Math.min(1 + max, origin.x)));
                     if (dungeonLayer.segments[pos.x][pos.z] == null && dungeonLayer.map.isPositionFree(pos.x, pos.z)) {
                         layerGenerationStep(builder, dungeonLayer, pos, origin, rand, layer, depth);
                         return true;

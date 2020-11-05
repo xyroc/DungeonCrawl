@@ -4,6 +4,14 @@
   "decorations": [
     {
       "type": "vines"
+    },
+    {
+      "type": "floor_next_to_solid",
+      "block": {
+        "type": "block",
+        "block": "minecraft:torch"
+      },
+      "chance": 0.1
     }
   ],
   "theme": {

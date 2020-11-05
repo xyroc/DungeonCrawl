@@ -53,7 +53,7 @@ public abstract class DungeonGenerator {
     public int maxDepth;
 
     /**
-     * The minimum and maximum distance between rooms.
+     * The minimum and maximum distance
      */
     public int minDistance, maxDistance;
 

@@ -167,6 +167,7 @@ public class DungeonModels {
         load("models/dungeon/corridor/multipart/", "corridor_spawner", resourceManager);
         load("models/dungeon/corridor/multipart/", "corridor_light", resourceManager);
         load("models/dungeon/corridor/multipart/", "corridor_light_switch", resourceManager);
+        load("models/dungeon/corridor/multipart/", "corridor_bookshelf", resourceManager);
 
         // -Additional Models- //
 

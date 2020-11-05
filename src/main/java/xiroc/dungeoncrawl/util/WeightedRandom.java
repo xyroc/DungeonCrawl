@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -39,74 +38,63 @@ public class WeightedRandom<T> implements IRandom<T> {
             int weight = object.has("weight") ? object.get("weight").getAsInt() : 1;
             IDungeonDecoration decoration = IDungeonDecoration.fromJson(object);
             if (decoration != null) {
-                builder.entries.add(new WeightedEntry(weight, decoration));
+                builder.entries.add(new Tuple<>(weight, decoration));
             }
         });
         return builder.build();
     };
 
     private final int totalWeight;
-    private final WeightedEntry[] entries;
+    private final List<Tuple<Integer, T>> entries;
 
-    private WeightedRandom(WeightedEntry[] entries) {
+    private WeightedRandom(List<Tuple<Integer, T>> entries) {
         int weight = 0;
-        for (WeightedEntry entry : entries)
+        for (Tuple<Integer, T> entry : entries)
             weight += entry.getA();
         this.totalWeight = weight;
         this.entries = entries;
         this.assign(this.entries);
     }
 
-    private void assign(WeightedEntry[] values) {
-        int i = 0;
-        int totalWeight = 0;
-        for (WeightedEntry entry : values) {
-            totalWeight += entry.getA();
-            entries[i] = new WeightedRandom.WeightedEntry(totalWeight, entry.getB());
-            i++;
+    private void assign(List<Tuple<Integer, T>> values) {
+        int currentWeight = 0;
+        for (Tuple<Integer, T> entry : values) {
+            currentWeight += entry.getA();
+            entries.add(new Tuple<>(currentWeight, entry.getB()));
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T roll(Random rand) {
         int r = rand.nextInt(totalWeight);
-        for (WeightedEntry entry : entries) {
+        for (Tuple<Integer, T> entry : entries) {
             if (r < entry.getA()) {
-                return (T) entry.getB();
+                return entry.getB();
             }
         }
         return null;
     }
 
-    private static class WeightedEntry extends Tuple<Integer, Object> {
-
-        public WeightedEntry(Integer aIn, Object bIn) {
-            super(aIn, bIn);
-        }
-
-    }
-
     public static class Builder<T> {
 
-        public List<WeightedEntry> entries;
+        public List<Tuple<Integer, T>> entries;
 
         public Builder() {
             entries = Lists.newArrayList();
         }
 
         public WeightedRandom.Builder<T> add(T t, int weight) {
-            entries.add(new WeightedEntry(weight, t));
+            entries.add(new Tuple<>(weight, t));
             return this;
         }
 
-        public WeightedRandom.Builder<T> add(WeightedEntry[] entries) {
-            this.entries.addAll(Arrays.asList(entries));
+        public WeightedRandom.Builder<T> add(List<Tuple<Integer, T>> entries) {
+            this.entries.addAll(entries);
             return this;
         }
 
         public WeightedRandom<T> build() {
-            return new WeightedRandom<>(entries.toArray(new WeightedEntry[0]));
+            return new WeightedRandom<>(entries);
         }
 
     }

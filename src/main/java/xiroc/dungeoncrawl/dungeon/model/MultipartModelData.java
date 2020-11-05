@@ -68,6 +68,8 @@ public class MultipartModelData {
             piece.modelID = model.id;
             piece.rotation = this.rotation.add(rotation);
             piece.stage = parentPiece.stage;
+            piece.theme = parentPiece.theme;
+            piece.subTheme = parentPiece.subTheme;
             piece.setupBoundingBox();
             return piece;
         } else {

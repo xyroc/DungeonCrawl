@@ -21,8 +21,6 @@ package xiroc.dungeoncrawl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -47,7 +45,6 @@ import xiroc.dungeoncrawl.dungeon.DataReloadListener;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.misc.DungeonCorridorFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
@@ -55,7 +52,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Tools;
 import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 
@@ -90,87 +86,6 @@ public class DungeonCrawl {
         DungeonModelFeature.init();
 
         EVENT_BUS = Bus.MOD.bus().get();
-
-        DungeonCorridorFeature.init();
-
-        {
-            LOGGER.info(">>> MULTIPART OFFSET TEST RESULTS BELOW <<<");
-            test(8, 8, 2, 2, 0, 0, 0, Rotation.NONE);
-            test(8, 8, 2, 2, 0, 0, 0, Rotation.CLOCKWISE_90);
-            test(8, 8, 2, 2, 0, 0, 0, Rotation.CLOCKWISE_180);
-            test(8, 8, 2, 2, 0, 0, 0, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(8, 8, 2, 2, 1, 0, 0, Rotation.NONE);
-            test(8, 8, 2, 2, 1, 0, 0, Rotation.CLOCKWISE_90);
-            test(8, 8, 2, 2, 1, 0, 0, Rotation.CLOCKWISE_180);
-            test(8, 8, 2, 2, 1, 0, 0, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(8, 8, 2, 2, 0, 0, 1, Rotation.NONE);
-            test(8, 8, 2, 2, 0, 0, 1, Rotation.CLOCKWISE_90);
-            test(8, 8, 2, 2, 0, 0, 1, Rotation.CLOCKWISE_180);
-            test(8, 8, 2, 2, 0, 0, 1, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(8, 8, 2, 2, 1, 0, 1, Rotation.NONE);
-            test(8, 8, 2, 2, 1, 0, 1, Rotation.CLOCKWISE_90);
-            test(8, 8, 2, 2, 1, 0, 1, Rotation.CLOCKWISE_180);
-            test(8, 8, 2, 2, 1, 0, 1, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-
-            LOGGER.info("============================================");
-            test(5, 8, 2, 2, 0, 0, 0, Rotation.NONE);
-            test(5, 8, 2, 2, 0, 0, 0, Rotation.CLOCKWISE_90);
-            test(5, 8, 2, 2, 0, 0, 0, Rotation.CLOCKWISE_180);
-            test(5, 8, 2, 2, 0, 0, 0, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(5, 8, 2, 2, 1, 0, 0, Rotation.NONE);
-            test(5, 8, 2, 2, 1, 0, 0, Rotation.CLOCKWISE_90);
-            test(5, 8, 2, 2, 1, 0, 0, Rotation.CLOCKWISE_180);
-            test(5, 8, 2, 2, 1, 0, 0, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(5, 8, 2, 2, 0, 0, 1, Rotation.NONE);
-            test(5, 8, 2, 2, 0, 0, 1, Rotation.CLOCKWISE_90);
-            test(5, 8, 2, 2, 0, 0, 1, Rotation.CLOCKWISE_180);
-            test(5, 8, 2, 2, 0, 0, 1, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(5, 8, 2, 2, 1, 0, 1, Rotation.NONE);
-            test(5, 8, 2, 2, 1, 0, 1, Rotation.CLOCKWISE_90);
-            test(5, 8, 2, 2, 1, 0, 1, Rotation.CLOCKWISE_180);
-            test(5, 8, 2, 2, 1, 0, 1, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-
-            LOGGER.info("============================================");
-            test(5, 8, 1, 2, 0, 0, 0, Rotation.NONE);
-            test(5, 8, 1, 2, 0, 0, 0, Rotation.CLOCKWISE_90);
-            test(5, 8, 1, 2, 0, 0, 0, Rotation.CLOCKWISE_180);
-            test(5, 8, 1, 2, 0, 0, 0, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(5, 8, 1, 2, 1, 0, 0, Rotation.NONE);
-            test(5, 8, 1, 2, 1, 0, 0, Rotation.CLOCKWISE_90);
-            test(5, 8, 1, 2, 1, 0, 0, Rotation.CLOCKWISE_180);
-            test(5, 8, 1, 2, 1, 0, 0, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(5, 8, 1, 2, 0, 0, 1, Rotation.NONE);
-            test(5, 8, 1, 2, 0, 0, 1, Rotation.CLOCKWISE_90);
-            test(5, 8, 1, 2, 0, 0, 1, Rotation.CLOCKWISE_180);
-            test(5, 8, 1, 2, 0, 0, 1, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info("============================================");
-            test(5, 8, 1, 2, 1, 0, 1, Rotation.NONE);
-            test(5, 8, 1, 2, 1, 0, 1, Rotation.CLOCKWISE_90);
-            test(5, 8, 1, 2, 1, 0, 1, Rotation.CLOCKWISE_180);
-            test(5, 8, 1, 2, 1, 0, 1, Rotation.COUNTERCLOCKWISE_90);
-            LOGGER.info(">>>         END OF TEST         <<<");
-        }
-    }
-
-    private static void test(int pWidth, int pLength, int mWidth, int mLength, int offsetX, int offsetY, int offsetZ, Rotation rotation) {
-        LOGGER.info("   ");
-        LOGGER.info("PARENT SIZE:       {} x {}", pWidth, pLength);
-        LOGGER.info("MULTIPART SIZE:    {} x {}", mWidth, mLength);
-        LOGGER.info("MULTIPART OFFSET: ({} / {})", offsetX, offsetZ);
-        LOGGER.info("ROTATION:          {}", rotation.name());
-        LOGGER.info(Orientation.rotatedMultipartOffset(pWidth,pLength, mWidth, mLength, new Vec3i(offsetX, offsetY, offsetZ), rotation));
-        LOGGER.info("   ");
-
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

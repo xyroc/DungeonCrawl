@@ -21,15 +21,31 @@ package xiroc.dungeoncrawl.util;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
+import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class WeightedRandom<T> implements IRandom<T> {
 
     // TODO: migrate other WeightedRandom classes to this
+
+    public static final WeightedRandom.JsonReader<Item> ITEM = (array) -> {
+        WeightedRandom.Builder<Item> builder = new WeightedRandom.Builder<>();
+        array.forEach((element) -> {
+            JsonObject object = element.getAsJsonObject();
+            int weight = object.has("weight") ? object.get("weight").getAsInt() : 1;
+            builder.add(RandomEquipment.getItem(new ResourceLocation(object.get("item").getAsString())), weight);
+        });
+        return builder.build();
+    };
 
     public static final WeightedRandom.JsonReader<IDungeonDecoration> DECORATION = (array) -> {
         WeightedRandom.Builder<IDungeonDecoration> builder = new WeightedRandom.Builder<>();
@@ -47,20 +63,20 @@ public class WeightedRandom<T> implements IRandom<T> {
     private final int totalWeight;
     private final List<Tuple<Integer, T>> entries;
 
-    private WeightedRandom(List<Tuple<Integer, T>> entries) {
+    public WeightedRandom(List<Tuple<Integer, T>> entries) {
         int weight = 0;
         for (Tuple<Integer, T> entry : entries)
             weight += entry.getA();
         this.totalWeight = weight;
-        this.entries = entries;
-        this.assign(this.entries);
+        this.entries = new ArrayList<>();
+        this.assign(entries);
     }
 
     private void assign(List<Tuple<Integer, T>> values) {
         int currentWeight = 0;
         for (Tuple<Integer, T> entry : values) {
             currentWeight += entry.getA();
-            entries.add(new Tuple<>(currentWeight, entry.getB()));
+            this.entries.add(new Tuple<>(currentWeight, entry.getB()));
         }
     }
 

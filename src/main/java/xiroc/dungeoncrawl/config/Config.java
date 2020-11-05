@@ -64,7 +64,7 @@ public class Config {
                 .defineInRange("mob_spawn_rate", 0.05, 0.001, 1.0);
         SPAWNER_ENTITIES = BUILDER.comment(
                 "The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
-                .defineInRange("spawner_entities", 4, 1, 128);
+                .defineInRange("spawner_entities", 6, 1, 128);
         IGNORE_OVERWORLD_BLACKLIST = BUILDER.comment(
                 "If set to true, the dungeon generation will ignore the biome blacklist and generate dungeons in any overworld biome.")
                 .define("ignore_overworld_blacklist", false);

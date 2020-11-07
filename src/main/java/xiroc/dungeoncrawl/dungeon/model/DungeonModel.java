@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.*;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -41,6 +42,8 @@ import java.util.Locale;
 
 public class DungeonModel {
 
+    public ResourceLocation location;
+
     public Integer id;
     public int width, height, length;
 
@@ -61,6 +64,10 @@ public class DungeonModel {
         this.height = model[0].length;
         this.length = model[0][0].length;
         this.featurePositions = featurePositions;
+    }
+
+    public void setLocation(ResourceLocation location) {
+        this.location = location;
     }
 
     public DungeonModel setId(int id) {

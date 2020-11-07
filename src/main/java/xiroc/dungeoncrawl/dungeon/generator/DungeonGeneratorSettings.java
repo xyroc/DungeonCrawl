@@ -30,7 +30,7 @@ public class DungeonGeneratorSettings {
 
     public static final DungeonGeneratorSettings DEFAULT = new DungeonGeneratorSettings(
             (rand, layer) -> 3 + layer, (rand, layer) -> 4 + (int) (1.5 * layer),
-            5, 2, 3, 5, 1, 3, 1, 5, 2, true);
+            5, 2, 4, 5, 1, 3, 1, 5, 2, true);
 
     public static final DungeonGeneratorSettings LARGE = new DungeonGeneratorSettings(
             (rand, layer) -> 5 + layer / 2, (rand, layer) -> 6 + layer,

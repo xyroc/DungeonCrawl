@@ -66,8 +66,6 @@ public class DungeonModels {
     public static DungeonModel STARTER_ROOM;
 
     public static synchronized void load(IResourceManager resourceManager) {
-        //DungeonCrawl.LOGGER.info("Loading models...");
-
         REFERENCES_TO_UPDATE.clear();
         MODELS.clear();
         PATH_TO_MODEL.clear();
@@ -75,7 +73,7 @@ public class DungeonModels {
         OFFSETS.clear();
 
         ModelCategory.clear();
-        
+
         LARGE_CORRIDOR_START = loadModel("models/dungeon/corridor/large_corridor_start.nbt", resourceManager).setId(28);
         LARGE_CORRIDOR_STRAIGHT = loadModel("models/dungeon/corridor/large_corridor_straight.nbt", resourceManager).setId(29);
         LARGE_CORRIDOR_TURN = loadModel("models/dungeon/corridor/large_corridor_turn.nbt", resourceManager).setId(30);
@@ -104,12 +102,13 @@ public class DungeonModels {
         load("models/dungeon/corridor/", "corridor", resourceManager);
         load("models/dungeon/corridor/", "corridor_2", resourceManager);
         load("models/dungeon/corridor/", "corridor_3", resourceManager);
+        load("models/dungeon/corridor/", "old_corridor", resourceManager);
+        load("models/dungeon/corridor/", "old_corridor_3", resourceManager);
         load("models/dungeon/corridor/", "stone_corridor", resourceManager);
         load("models/dungeon/corridor/", "corridor_room", resourceManager);
         load("models/dungeon/corridor/", "corridor_fire", resourceManager);
         load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
-        load("models/dungeon/corridor/", "base_corridor", resourceManager);
-        load("models/dungeon/corridor/", "base_corridor_light", resourceManager);
+        load("models/dungeon/corridor/", "corridor_light", resourceManager);
 
         load("models/dungeon/corridor/dark/", "corridor", resourceManager);
         load("models/dungeon/corridor/dark/", "corridor_2", resourceManager);
@@ -197,6 +196,11 @@ public class DungeonModels {
 
         // -End of Model loading- //
 
+        DungeonCrawl.LOGGER.debug("Dumping all registered models below:");
+        MODELS.forEach((key, value) -> {
+            DungeonCrawl.LOGGER.debug("{}   {}", key, value.location);
+        });
+
         REFERENCES_TO_UPDATE.forEach(MultipartModelData::updateReference);
 
         HashMap<Integer, DungeonModel[]> tempMap = new HashMap<>();
@@ -214,8 +218,7 @@ public class DungeonModels {
 
                     for (DungeonModel model : ModelCategory.getIntersection(tempMap, category)) {
                         DungeonCrawl.LOGGER.debug("adding primary node entry ({} {})", stage, nodeType);
-                        builder.entries.add(
-                                new WeightedIntegerEntry(model.metadata.weights[i], model.id));
+                        builder.entries.add(new WeightedIntegerEntry(model.metadata.weights[i], model.id));
                     }
 
                     for (ModelCategory secondaryType : ModelCategory.getSecondaryNodeCategories(nodeType)) {
@@ -257,8 +260,6 @@ public class DungeonModels {
             createWeightedRandomIntegers(tempMap, ModelCategory.SIDE_ROOM, stage, i);
             createWeightedRandomIntegers(tempMap, ModelCategory.ROOM, stage, i);
         }
-
-        //DungeonCrawl.LOGGER.info("Finished model loading.");
     }
 
     public static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
@@ -267,7 +268,7 @@ public class DungeonModels {
         ResourceLocation metadata = DungeonCrawl.locate(directory + file + ".json");
 
         if (resourceManager.hasResource(metadata)) {
-            DungeonCrawl.LOGGER.debug("Loading metadata for {}", file);
+            // DungeonCrawl.LOGGER.debug("Loading metadata for {}", file);
 
             try {
                 Metadata data = DungeonCrawl.GSON.fromJson(
@@ -290,14 +291,16 @@ public class DungeonModels {
         DungeonCrawl.LOGGER.debug("Loading {}", path);
 
         try {
-            DataInputStream input = new DataInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
+            ResourceLocation resource = DungeonCrawl.locate(path);
+            DataInputStream input = new DataInputStream(resourceManager.getResource(resource).getInputStream());
             CompoundNBT nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
             if (Config.ENABLE_TOOLS.get()) {
                 String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
                 PATH_TO_MODEL.put(key, model);
-                DungeonCrawl.LOGGER.debug("Model key: {}", key);
+                // DungeonCrawl.LOGGER.debug("Model key: {}", key);
             }
+            model.setLocation(resource);
             return model;
         } catch (IOException e) {
             e.printStackTrace();
@@ -317,8 +320,9 @@ public class DungeonModels {
                 String path = resource.getPath();
                 String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
                 PATH_TO_MODEL.put(key, model);
-                DungeonCrawl.LOGGER.debug("Model key (2): {}", key);
+                // DungeonCrawl.LOGGER.debug("Model key (2): {}", key);
             }
+            model.setLocation(resource);
             return model;
         } catch (IOException e) {
             e.printStackTrace();

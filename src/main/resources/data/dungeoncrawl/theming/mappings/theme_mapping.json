@@ -1,6 +1,14 @@
 {
   "type": "theme_mapping",
   "mapping": {
+    "minecraft:jungle": 2,
+    "minecraft:jungle_edge": 2,
+    "minecraft:jungle_hills": 2,
+    "minecraft:modified_jungle": 2,
+    "minecraft:modified_jungle_edge": 2,
+    "minecraft:bamboo_jungle": 2,
+    "minecraft:bamboo_jungle_edge": 2,
+
     "minecraft:desert": 16,
     "minecraft:desert_hills": 16,
     "minecraft:desert_lakes": 16,

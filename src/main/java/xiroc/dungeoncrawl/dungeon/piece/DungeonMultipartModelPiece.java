@@ -66,7 +66,6 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     public boolean create(IWorld p_225577_1_, ChunkGenerator<?> p_225577_2_, Random p_225577_3_, MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
         if (model != null) {
-            DungeonCrawl.LOGGER.info("Building Multipart piece at {} {} {}", x, y, z);
             buildRotated(model, p_225577_1_, p_225577_4_, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme), Treasure.getModelTreasureType(modelID), stage, rotation, false);
         }
         return true;

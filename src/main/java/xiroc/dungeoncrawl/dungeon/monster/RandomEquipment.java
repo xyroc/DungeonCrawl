@@ -37,7 +37,6 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -146,8 +145,8 @@ public class RandomEquipment {
     }
 
     public static ItemStack[] createArmor(Random rand, int stage) {
-        if (stage > 4)
-            stage = 4;
+        if (stage > HIGHEST_STAGE)
+            stage = HIGHEST_STAGE;
 
         ItemStack[] items = new ItemStack[4];
         float chance = 0.4F + 0.15F * stage;
@@ -252,8 +251,8 @@ public class RandomEquipment {
     }
 
     public static ItemStack getMeleeWeapon(Random rand, int stage) {
-        if (stage > 4)
-            stage = 4;
+        if (stage > HIGHEST_STAGE)
+            stage = HIGHEST_STAGE;
         if (MELEE_WEAPON.containsKey(stage)) {
             return createItemStack(rand, MELEE_WEAPON.get(stage).roll(rand), stage);
         } else {
@@ -263,8 +262,8 @@ public class RandomEquipment {
     }
 
     public static ItemStack getRangedWeapon(Random rand, int stage) {
-        if (stage > 4)
-            stage = 4;
+        if (stage > HIGHEST_STAGE)
+            stage = HIGHEST_STAGE;
         if (RANGED_WEAPON.containsKey(stage)) {
             return createItemStack(rand, RANGED_WEAPON.get(stage).roll(rand), stage);
         } else {
@@ -274,9 +273,9 @@ public class RandomEquipment {
     }
 
     public static double getStageMultiplier(int stage) {
-        if (stage > 2)
+        if (stage > HIGHEST_STAGE)
             return 1.0D;
-        return 1D * Math.pow(0.5, HIGHEST_STAGE - stage);
+        return 1D / (HIGHEST_STAGE - stage + 1);
     }
 
     public static int getRandomColor(Random rand) {

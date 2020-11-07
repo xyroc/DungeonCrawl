@@ -67,7 +67,7 @@ public class DungeonEntrance extends DungeonPiece {
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos p_74875_4_) {
+                          ChunkPos p_74875_4_) {
         int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
 
         Theme buildTheme = Theme.get(theme);
@@ -95,7 +95,9 @@ public class DungeonEntrance extends DungeonPiece {
             entrance.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, entrance);
+        //Passing over a custom boundingbox because the cursor height is unknown during #setupBoundingBox.
+        decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn,
+                new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + entrance.width, pos.getY() + entrance.height, pos.getZ() + entrance.length), entrance);
         return true;
     }
 

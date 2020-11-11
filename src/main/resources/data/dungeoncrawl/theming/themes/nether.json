@@ -7,22 +7,11 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:netherrack",
-          "weight": 4
-        },
-        {
           "block": "minecraft:nether_bricks",
           "weight": 2
         },
         {
           "block": "minecraft:red_nether_bricks"
-        },
-        {
-          "block": "minecraft:magma_block",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:nether_quartz_ore"
         }
       ]
     },
@@ -38,22 +27,10 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:netherrack",
-          "weight": 2
+          "block": "minecraft:nether_bricks"
         },
         {
-          "block": "minecraft:nether_bricks",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:red_nether_bricks",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:magma_block"
-        },
-        {
-          "block": "minecraft:obsidian"
+          "block": "minecraft:red_nether_bricks"
         }
       ]
     },

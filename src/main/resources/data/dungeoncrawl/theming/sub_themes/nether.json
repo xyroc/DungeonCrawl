@@ -18,16 +18,6 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:netherrack",
-          "weight": 3
-        },
-        {
-          "block": "minecraft:magma_block"
-        },
-        {
-          "block": "minecraft:obsidian"
-        },
-        {
           "block": "minecraft:nether_bricks"
         },
         {

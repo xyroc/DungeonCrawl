@@ -41,7 +41,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
-import xiroc.dungeoncrawl.dungeon.DataReloadListener;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
+import xiroc.dungeoncrawl.util.DataReloadListener;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -63,7 +64,7 @@ public class DungeonCrawl {
 
     public static final String MODID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
-    public static final String VERSION = "2.1.1";
+    public static final String VERSION = "2.2.0";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -84,6 +85,7 @@ public class DungeonCrawl {
                 .register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
         Treasure.init();
         DungeonModelFeature.init();
+        DungeonModelBlockType.buildNameTable();
 
         EVENT_BUS = Bus.MOD.bus().get();
     }
@@ -99,7 +101,7 @@ public class DungeonCrawl {
             MinecraftForge.EVENT_BUS.register(new Tools());
         }
 
-        DungeonModelBlock.createProviders();
+        DungeonModelBlock.init();
         IBlockPlacementHandler.init();
         DungeonBlocks.init();
 

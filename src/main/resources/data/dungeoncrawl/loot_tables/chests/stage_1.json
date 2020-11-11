@@ -620,7 +620,8 @@
           "weight": 2,
           "functions": [
             {
-              "function": "dungeoncrawl:shield"
+              "function": "dungeoncrawl:shield",
+              "loot_level": 1
             }
           ]
         }

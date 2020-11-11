@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.*;
@@ -59,6 +58,7 @@ public class Treasure {
         LootFunctionManager.registerFunction(new MaterialBlocks.Serializer());
         LootFunctionManager.registerFunction(new Shield.Serializer());
         LootFunctionManager.registerFunction(new SuspiciousStew.Serializer());
+        LootFunctionManager.registerFunction(new SpecialItem.Serializer());
     }
 
     /**

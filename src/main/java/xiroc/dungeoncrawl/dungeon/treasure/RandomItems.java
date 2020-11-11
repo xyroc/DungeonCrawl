@@ -26,13 +26,16 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.SpecialItemTags;
+import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
 import java.io.FileNotFoundException;
@@ -40,7 +43,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
 
-public class RandomSpecialItem {
+public class RandomItems {
 
     public static final int COLOR = 3847130;
 
@@ -56,6 +59,9 @@ public class RandomSpecialItem {
 
     public static WeightedRandomTreasureItem STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5;
     public static final TreasureItem[] SPECIAL_ITEMS, RARE_SPECIAL_ITEMS;
+
+    private static final RandomValueRange[] UNBREAKING_LEVELS = {new RandomValueRange(1, 1), new RandomValueRange(1, 2),
+            new RandomValueRange(2, 2), new RandomValueRange(2, 3), new RandomValueRange(3, 3)};
 
     static {
         REINFORCED_BOW = new ItemStack(Items.BOW);
@@ -249,15 +255,16 @@ public class RandomSpecialItem {
         }
     }
 
+    public static ItemStack generateSpecialItem(ServerWorld world, Random rand, int theme, int lootLevel) {
+        if (lootLevel > 4 || rand.nextDouble() < 0.025 * lootLevel)
+            return rand.nextBoolean() ? RARE_SPECIAL_ITEMS[rand.nextInt(RARE_SPECIAL_ITEMS.length)].generate(world,
+                    rand, theme, lootLevel) : RARE_ITEMS[rand.nextInt(RARE_ITEMS.length)].copy();
+        return rand.nextDouble() < 0.8
+                ? SPECIAL_ITEMS[rand.nextInt(SPECIAL_ITEMS.length)].generate(world, rand, theme, lootLevel)
+                : ITEMS[rand.nextInt(ITEMS.length)].copy();
+    }
+
     public static ItemStack generate(ServerWorld world, Random rand, int theme, Integer lootLevel) {
-        if (rand.nextFloat() < 0.4) {
-            if (lootLevel > 4 || rand.nextDouble() < 0.025 * lootLevel)
-                return rand.nextBoolean() ? RARE_SPECIAL_ITEMS[rand.nextInt(RARE_SPECIAL_ITEMS.length)].generate(world,
-                        rand, theme, lootLevel) : RARE_ITEMS[rand.nextInt(RARE_ITEMS.length)].copy();
-            return rand.nextDouble() < 0.8
-                    ? SPECIAL_ITEMS[rand.nextInt(SPECIAL_ITEMS.length)].generate(world, rand, theme, lootLevel)
-                    : ITEMS[rand.nextInt(ITEMS.length)].copy();
-        }
         switch (lootLevel) {
             case 0:
                 return STAGE_1.roll(rand).generate(world, rand, theme, lootLevel);
@@ -287,6 +294,29 @@ public class RandomSpecialItem {
                 return ItemStack.EMPTY;
             }
         });
+    }
+
+    /**
+     * Creates a shield item stack with random patterns.
+     */
+    public static ItemStack createShield(Random rand, int lootLevel) {
+        ItemStack shield = new ItemStack(Items.SHIELD);
+        lootLevel = Math.min(4, lootLevel);
+        float f = rand.nextFloat();
+        if (f < 0.2f + lootLevel * 0.2f) {
+            shield.addEnchantment(Enchantments.UNBREAKING, UNBREAKING_LEVELS[lootLevel].generateInt(rand));
+            if (f < 0.04 + lootLevel * 0.01) {
+                shield.addEnchantment(Enchantments.MENDING, 1);
+            }
+//            if (rand.nextFloat() < 0.1) {
+                shield.addEnchantment(Enchantments.VANISHING_CURSE, 1);
+//            }
+        } else {
+            CompoundNBT nbt = new CompoundNBT();
+            nbt.put("BlockEntityTag", Banner.createPatterns(rand));
+            shield.setTag(nbt);
+        }
+        return shield;
     }
 
 }

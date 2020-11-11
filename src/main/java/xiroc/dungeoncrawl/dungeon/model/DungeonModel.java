@@ -140,7 +140,7 @@ public class DungeonModel {
 
     @Override
     public String toString() {
-        return "{" + id + (metadata != null ? ", " + (metadata.type.toString() + (metadata.stages != null ? ", " + Arrays.toString(metadata.stages) : "")) + "}" : "}");
+        return "{" + id + (metadata != null ? ", " + ((metadata.type != null ? metadata.type.toString() : "-") + (metadata.stages != null ? ", " + Arrays.toString(metadata.stages) : "")) + "}" : "}");
     }
 
     public static class FeaturePosition {

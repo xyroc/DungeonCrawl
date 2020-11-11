@@ -27,25 +27,24 @@ import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.treasure.RandomSpecialItem;
+import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.theme.Theme;
 
 public class RandomItem extends LootFunction {
 
     public int lootLevel;
 
-    public RandomItem(ILootCondition[] conditionsIn, int stage) {
+    public RandomItem(ILootCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
-        this.lootLevel = stage;
+        this.lootLevel = Math.max(0, lootLevel);
     }
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        return RandomSpecialItem.generate(context.getWorld(), context.getRandom(),
+        return RandomItems.generate(context.getWorld(), context.getRandom(),
                 Theme.BIOME_TO_THEME_MAP.getOrDefault(
                         context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(),
-                        0),
-                lootLevel - 1);
+                        0), lootLevel);
     }
 
     public static class Serializer extends LootFunction.Serializer<RandomItem> {
@@ -63,7 +62,7 @@ public class RandomItem extends LootFunction {
         @Override
         public RandomItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                       ILootCondition[] conditionsIn) {
-            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt());
+            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt() - 1);
         }
 
     }

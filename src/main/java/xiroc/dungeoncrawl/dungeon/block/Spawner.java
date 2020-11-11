@@ -39,6 +39,7 @@ import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
+import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -116,7 +117,7 @@ public class Spawner implements IBlockPlacementHandler {
             if (mainHand != ItemStack.EMPTY)
                 handItems.add(mainHand.write(new CompoundNBT()));
             handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
-                    ? Banner.createShield(rand).write(new CompoundNBT())
+                    ? RandomItems.createShield(rand, stage).write(new CompoundNBT())
                     : ItemStack.EMPTY.write(new CompoundNBT()));
             spawnData.put("HandItems", handItems);
 
@@ -150,7 +151,7 @@ public class Spawner implements IBlockPlacementHandler {
             entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, mainHand);
 
             if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())
-                entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, Banner.createShield(rand));
+                entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, RandomItems.createShield(rand, stage));
 
             RandomPotionEffect.applyPotionEffects(entity, rand, stage);
 

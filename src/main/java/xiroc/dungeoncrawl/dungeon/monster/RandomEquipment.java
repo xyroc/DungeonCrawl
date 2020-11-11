@@ -224,7 +224,7 @@ public class RandomEquipment {
 
     public static void applyDamage(ItemStack item, Random rand) {
         if (item.isDamageable())
-            item.setDamage(rand.nextInt(item.getMaxDamage()));
+            item.setDamage(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
     }
 
     public static void enchantItem(ItemStack item, Enchantment enchantment, double multiplier) {

@@ -649,10 +649,11 @@
         {
           "type": "item",
           "name": "minecraft:shield",
-          "weight": 2,
+          "weight": 4,
           "functions": [
             {
-              "function": "dungeoncrawl:shield"
+              "function": "dungeoncrawl:shield",
+              "loot_level": 2
             }
           ]
         }

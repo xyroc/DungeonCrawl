@@ -43,7 +43,7 @@ public class WeightedRandomTreasureItem implements IRandom<TreasureItem> {
         int i = 0;
         for (Tuple<String, Integer> entry : entries) {
             float weight = (float) entry.getB() / (float) totalWeight;
-            this.entries[i] = new WeightedEntry(RandomSpecialItem.createEnchantedSpecialItem(entry.getA()), weight + f);
+            this.entries[i] = new WeightedEntry(RandomItems.createEnchantedSpecialItem(entry.getA()), weight + f);
             f += weight;
             i++;
         }

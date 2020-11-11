@@ -48,7 +48,7 @@ public class DungeonModels {
     public static final HashMap<Integer, Vec3i> OFFSETS = new HashMap<>();
 
     /*
-    A list of all MultipartModelData instances to update their "forward references" after all models have been loaded.
+     * A list of all MultipartModelData instances to update their "forward references" after all models have been loaded.
      */
     public static final ArrayList<MultipartModelData> REFERENCES_TO_UPDATE = new ArrayList<>();
 
@@ -197,9 +197,14 @@ public class DungeonModels {
         // -End of Model loading- //
 
         DungeonCrawl.LOGGER.debug("Dumping all registered models below:");
-        MODELS.forEach((key, value) -> {
-            DungeonCrawl.LOGGER.debug("{}   {}", key, value.location);
-        });
+        MODELS.entrySet().stream().sorted((first, second) -> {
+            if (first.getKey() > second.getKey()) {
+                return 1;
+            } else if (first.getKey() < second.getKey()) {
+                return -1;
+            }
+            return 0;
+        }).forEach((entry) -> DungeonCrawl.LOGGER.debug("{}  {}", entry.getKey(), entry.getValue().location));
 
         REFERENCES_TO_UPDATE.forEach(MultipartModelData::updateReference);
 
@@ -209,7 +214,7 @@ public class DungeonModels {
             ModelCategory stage = ModelCategory.STAGES[i];
             for (ModelCategory nodeType : ModelCategory.NODE_TYPES) {
 
-                DungeonCrawl.LOGGER.debug("Node type: {}, {}", i, nodeType);
+//                DungeonCrawl.LOGGER.debug("Node type: {}, {}", i, nodeType);
 
                 // Nodes
                 {
@@ -217,14 +222,14 @@ public class DungeonModels {
                     ModelCategory[] category = new ModelCategory[]{ModelCategory.NORMAL_NODE, stage, nodeType};
 
                     for (DungeonModel model : ModelCategory.getIntersection(tempMap, category)) {
-                        DungeonCrawl.LOGGER.debug("adding primary node entry ({} {})", stage, nodeType);
+//                        DungeonCrawl.LOGGER.debug("adding primary node entry ({} {})", stage, nodeType);
                         builder.entries.add(new WeightedIntegerEntry(model.metadata.weights[i], model.id));
                     }
 
                     for (ModelCategory secondaryType : ModelCategory.getSecondaryNodeCategories(nodeType)) {
                         for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.NORMAL_NODE,
                                 stage, secondaryType)) {
-                            DungeonCrawl.LOGGER.debug("adding secondary node entry: {}, {}", stage, model.id);
+//                            DungeonCrawl.LOGGER.debug("adding secondary node entry: {}, {}", stage, model.id);
                             builder.entries.add(new WeightedIntegerEntry(1, model.id));
                         }
                     }
@@ -238,7 +243,7 @@ public class DungeonModels {
                     ModelCategory[] category = new ModelCategory[]{ModelCategory.LARGE_NODE, stage, nodeType};
 
                     for (DungeonModel model : ModelCategory.getIntersection(tempMap, category)) {
-                        DungeonCrawl.LOGGER.debug("adding primary node entry ({} {})", stage, nodeType);
+//                        DungeonCrawl.LOGGER.debug("adding primary node entry ({} {})", stage, nodeType);
                         builder.entries.add(
                                 new WeightedIntegerEntry(model.metadata.weights[i], model.id));
                     }
@@ -246,7 +251,7 @@ public class DungeonModels {
                     for (ModelCategory secondaryType : ModelCategory.getSecondaryNodeCategories(nodeType)) {
                         for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.LARGE_NODE,
                                 stage, secondaryType)) {
-                            DungeonCrawl.LOGGER.debug("adding secondary node entry: {}, {}", stage, model.id);
+//                            DungeonCrawl.LOGGER.debug("adding secondary node entry: {}, {}", stage, model.id);
                             builder.entries.add(new WeightedIntegerEntry(1, model.id));
                         }
                     }
@@ -301,6 +306,7 @@ public class DungeonModels {
                 // DungeonCrawl.LOGGER.debug("Model key: {}", key);
             }
             model.setLocation(resource);
+//            ModelHandler.writeModelToFile(model, "models/converted/" + path);
             return model;
         } catch (IOException e) {
             e.printStackTrace();
@@ -402,7 +408,7 @@ public class DungeonModels {
             DungeonModel[] array = intersection.toArray(new DungeonModel[0]);
             map.put(hash, array);
 
-            DungeonCrawl.LOGGER.debug("Intersection of {} is {}", Arrays.toString(categories), Arrays.toString(array));
+//            DungeonCrawl.LOGGER.debug("Intersection of {} is {}", Arrays.toString(categories), Arrays.toString(array));
 
             return array;
         }

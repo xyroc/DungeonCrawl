@@ -20,39 +20,48 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootFunction;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
+import xiroc.dungeoncrawl.theme.Theme;
 
-public class Shield extends LootFunction {
+public class SpecialItem extends LootFunction {
 
-    private final int lootLevel;
+    public int lootLevel;
 
-    public Shield(ILootCondition[] conditionsIn, int lootLevel) {
+    protected SpecialItem(ILootCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
         this.lootLevel = Math.max(0, lootLevel);
     }
 
     @Override
-    public ItemStack doApply(ItemStack stack, LootContext context) {
-        return RandomItems.createShield(context.getRandom(), lootLevel);
+    protected ItemStack doApply(ItemStack stack, LootContext context) {
+        return RandomItems.generateSpecialItem(context.getWorld(), context.getRandom(),
+                Theme.BIOME_TO_THEME_MAP.getOrDefault(
+                        context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(),
+                        0), lootLevel);
     }
 
-    public static class Serializer extends LootFunction.Serializer<Shield> {
+    public static class Serializer extends LootFunction.Serializer<SpecialItem> {
 
         public Serializer() {
-            super(DungeonCrawl.locate("shield"), Shield.class);
+            super(DungeonCrawl.locate("special_item"), SpecialItem.class);
         }
 
         @Override
-        public Shield deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                  ILootCondition[] conditionsIn) {
-            return new Shield(conditionsIn, object.has("loot_level") ? object.get("loot_level").getAsInt() - 1 : 0);
+        public void serialize(JsonObject object, SpecialItem functionClazz, JsonSerializationContext serializationContext) {
+            object.add("loot_level", DungeonCrawl.GSON.toJsonTree(functionClazz.lootLevel));
         }
 
+        @Override
+        public SpecialItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn) {
+            return new SpecialItem(conditionsIn, object.get("loot_level").getAsInt() - 1);
+        }
     }
 
 }

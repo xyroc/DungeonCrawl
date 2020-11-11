@@ -45,6 +45,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.model.ModelHandler;
 
 import java.util.HashMap;
@@ -67,38 +68,6 @@ public class Tools {
                 return false;
             }
         }).then(Commands.argument("name", StringArgumentType.string()).executes((command) -> {
-            UUID uuid = command.getSource().asPlayer().getUniqueID();
-
-            if (!POSITIONS.containsKey(uuid)) {
-                command.getSource().sendFeedback(
-                        new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
-                        true);
-                return 1;
-            }
-
-            Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
-
-            BlockPos p1 = positions.getA(), p2 = positions.getB();
-
-            if (p1 != null && p2 != null) {
-                BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
-                        Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
-                        pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
-                                Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
-                ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
-                        command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
-                        pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1,
-                        0, 0);
-                command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
-                return 0;
-            } else {
-                command.getSource().sendFeedback(
-                        new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
-                        true);
-                return 1;
-            }
-        }).then(Commands.argument("spawnerType", IntegerArgumentType.integer(0, 2))
-                .then(Commands.argument("chestType", IntegerArgumentType.integer(0, 3)).executes((command) -> {
                     UUID uuid = command.getSource().asPlayer().getUniqueID();
 
                     if (!POSITIONS.containsKey(uuid)) {
@@ -117,11 +86,9 @@ public class Tools {
                                 Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
                                 pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
                                         Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
-                        ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
+                        ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"), ModelBlockDefinition.DEFAULT_DEFINITION,
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
-                                pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1,
-                                command.getArgument("spawnerType", int.class),
-                                command.getArgument("chestType", int.class));
+                                pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
                         command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
                         return 0;
                     } else {
@@ -130,7 +97,45 @@ public class Tools {
                                 true);
                         return 1;
                     }
-                })))));
+                }).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                    UUID uuid = command.getSource().asPlayer().getUniqueID();
+
+                    if (!POSITIONS.containsKey(uuid)) {
+                        command.getSource().sendFeedback(
+                                new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                true);
+                        return 1;
+                    }
+
+                    Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
+
+                    BlockPos p1 = positions.getA(), p2 = positions.getB();
+
+                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                    if (!ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
+                        command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition path \"" + blockDefinition + "\""), true);
+                        return 1;
+                    }
+
+                    if (p1 != null && p2 != null) {
+                        BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
+                                Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
+                                pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
+                                        Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
+                        ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
+                                ModelBlockDefinition.DEFINITIONS.get(blockDefinition),
+                                command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
+                                pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
+                        command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
+                        return 0;
+                    } else {
+                        command.getSource().sendFeedback(
+                                new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                true);
+                        return 1;
+                    }
+                }))
+        ));
 
         event.getCommandDispatcher().register(Commands.literal("buildmodel").requires((a) -> a.hasPermissionLevel(2))
                 .then(Commands.argument("id", IntegerArgumentType.integer()).executes((command) -> {
@@ -138,7 +143,7 @@ public class Tools {
                     DungeonModel model = DungeonModels.MODELS.get(id);
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
-                        buildModel(model, command.getSource().asPlayer().world, pos);
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
                         return 1;
@@ -149,18 +154,52 @@ public class Tools {
                     DungeonModel model = DungeonModels.MODELS.get(id);
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                        buildModel(model, command.getSource().asPlayer().world, pos);
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
                         return 1;
                     }
                     return 0;
-                }))).then(Commands.argument("key", StringArgumentType.string()).executes((command) -> {
+                })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                    int id = command.getArgument("id", int.class);
+                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    String key = StringArgumentType.getString(command, "block definition");
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
+                            BlockPos pos = command.getSource().asPlayer().getPosition();
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + key), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
+                        return 1;
+                    }
+                    return 0;
+                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+                    int id = command.getArgument("id", int.class);
+                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    String key = StringArgumentType.getString(command, "block definition");
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
+                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + key), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
+                        return 1;
+                    }
+                    return 0;
+                })))).then(Commands.argument("key", StringArgumentType.string()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
                     DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
-                        buildModel(model, command.getSource().asPlayer().world, pos);
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
                         return 1;
@@ -171,88 +210,47 @@ public class Tools {
                     DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                        buildModel(model, command.getSource().asPlayer().world, pos);
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
                         return 1;
                     }
                     return 0;
-                }))));
-
-//        event.getCommandDispatcher().register(Commands.literal("multiparttest")
-//                .requires((a) -> a.hasPermissionLevel(4))
-//                .then(Commands.argument("position", Vec3Argument.vec3())
-//                        .then(Commands.argument("parent_size", Vec2Argument.vec2())
-//                                .then(Commands.argument("multipart_size", Vec2Argument.vec2())
-//                                        .then(Commands.argument("multipart_offset", Vec2Argument.vec2())
-//                                                .then(Commands.argument("rotation", EnumArgument.enumArgument(Rotation.class))
-//                                                        .executes((command) -> {
-//                                                            BlockPos pos = Vec3Argument.getLocation(command, "position").getBlockPos(command.getSource());
-//                                                            Vec2f parentSize = Vec2Argument.getVec2f(command, "parent_size");
-//                                                            Vec2f multipartSize = Vec2Argument.getVec2f(command, "multipart_size");
-//                                                            Vec2f multipartOffset = Vec2Argument.getVec2f(command, "multipart_offset");
-//                                                            Rotation rotation = command.getArgument("rotation", Rotation.class);
-//
-//                                                            ServerWorld world = command.getSource().getWorld();
-//
-//                                                            Vec2f vec = Orientation.rotatedMultipartOffset(parentSize, multipartSize, multipartOffset, rotation);
-//
-//                                                            int offsetX = (int) multipartOffset.x, offsetZ = (int) multipartOffset.y;
-//
-//                                                            command.getSource().sendFeedback(new StringTextComponent("Parent Size: " + (int) parentSize.x + "x" + (int) parentSize.y), false);
-//                                                            command.getSource().sendFeedback(new StringTextComponent("Multipart Size: " + (int) multipartSize.x + "x" + (int) multipartSize.y), false);
-//                                                            command.getSource().sendFeedback(new StringTextComponent("Multipart Offset: " + offsetX + "/" + offsetZ), false);
-//                                                            command.getSource().sendFeedback(new StringTextComponent("Rotation: " + rotation.name()), false);
-//                                                            command.getSource().sendFeedback(new StringTextComponent("Multipart Pos: " + (int) vec.x + "/" + (int) vec.y), false);
-//
-//
-//                                                            switch (rotation) {
-//                                                                case NONE:
-//                                                                    for (int x = 0; x < parentSize.x; x++) {
-//                                                                        for (int z = 0; z < parentSize.y; z++) {
-//                                                                            if (x == offsetX && z == offsetZ) {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + (int) vec.x, pos.getY(), pos.getZ() + (int) vec.y), Blocks.OAK_PLANKS.getDefaultState());
-//                                                                            } else {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + x, pos.getY(), pos.getZ() + z), Blocks.BIRCH_PLANKS.getDefaultState());
-//                                                                            }
-//                                                                        }
-//                                                                    }
-//                                                                    break;
-//                                                                case CLOCKWISE_90:
-//                                                                    for (int x = 0; x < parentSize.x; x++) {
-//                                                                        for (int z = 0; z < parentSize.y; z++) {
-//                                                                            if (x == offsetX && z == offsetZ) {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + (int) vec.x, pos.getY(), pos.getZ() + (int) vec.y), Blocks.OAK_PLANKS.getDefaultState());
-//                                                                            } else {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + parentSize.y - z - 1, pos.getY(), pos.getZ() + x), Blocks.BIRCH_PLANKS.getDefaultState());
-//                                                                            }
-//                                                                        }
-//                                                                    }
-//                                                                    break;
-//                                                                case CLOCKWISE_180:
-//                                                                    for (int x = 0; x < parentSize.x; x++) {
-//                                                                        for (int z = 0; z < parentSize.y; z++) {
-//                                                                            if (x == offsetX && z == offsetZ) {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + (int) vec.x, pos.getY(), pos.getZ() + (int) vec.y), Blocks.OAK_PLANKS.getDefaultState());
-//                                                                            } else {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + parentSize.x - x - 1, pos.getY(), pos.getZ() + parentSize.y - z - 1), Blocks.BIRCH_PLANKS.getDefaultState());
-//                                                                            }
-//                                                                        }
-//                                                                    }
-//                                                                    break;
-//                                                                case COUNTERCLOCKWISE_90:
-//                                                                    for (int x = 0; x < parentSize.x; x++) {
-//                                                                        for (int z = 0; z < parentSize.y; z++) {
-//                                                                            if (x == offsetX && z == offsetZ) {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + (int) vec.x, pos.getY(), pos.getZ() + (int) vec.y), Blocks.OAK_PLANKS.getDefaultState());
-//                                                                            } else {
-//                                                                                world.setBlockState(new BlockPos(pos.getX() + z, pos.getY(), pos.getZ() + parentSize.x + z - 1), Blocks.BIRCH_PLANKS.getDefaultState());
-//                                                                            }
-//                                                                        }
-//                                                                    }
-//                                                            }
-//                                                            return 0;
-//                                                        })))))));
+                })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                    String key = StringArgumentType.getString(command, "key");
+                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
+                            BlockPos pos = command.getSource().asPlayer().getPosition();
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + blockDefinition), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
+                        return 1;
+                    }
+                    return 0;
+                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+                    String key = StringArgumentType.getString(command, "key");
+                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
+                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + blockDefinition), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
+                        return 1;
+                    }
+                    return 0;
+                })))));
     }
 
     @SubscribeEvent
@@ -327,7 +325,7 @@ public class Tools {
 //        }
 //    }
 
-    public static void buildModel(DungeonModel model, IWorld world, BlockPos pos) {
+    public static void buildModel(DungeonModel model, IWorld world, BlockPos pos, ModelBlockDefinition definition) {
         for (int y = 0; y < model.height; y++) {
             for (int x = 0; x < model.width; x++) {
                 for (int z = 0; z < model.length; z++) {
@@ -335,10 +333,10 @@ public class Tools {
                     if (model.model[x][y][z] == null) {
                         world.setBlockState(placePos, AIR, 2);
                     } else {
-                        Block block = model.model[x][y][z].type.getBaseBlock(model.model[x][y][z]);
+                        Block block = definition.getBlock(model.model[x][y][z]);
                         if (block == null)
-                            continue;
-                        world.setBlockState(placePos, model.model[x][y][z].create(block.getDefaultState(), world, placePos, Rotation.NONE).getA(), 3);
+                            block = Blocks.AIR;
+                        world.setBlockState(placePos, model.model[x][y][z].create(block.getDefaultState(), Rotation.NONE).getA(), 3);
                         world.notifyNeighbors(placePos, world.getBlockState(placePos).getBlock());
                     }
                 }

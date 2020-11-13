@@ -64,7 +64,7 @@ public class DungeonCrawl {
 
     public static final String MODID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
-    public static final String VERSION = "2.2.0";
+    public static final String VERSION = "2.2.1";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 

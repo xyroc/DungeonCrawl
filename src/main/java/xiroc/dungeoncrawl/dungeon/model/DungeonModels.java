@@ -26,7 +26,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3i;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.Metadata;
 import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 import xiroc.dungeoncrawl.util.WeightedRandomInteger;
@@ -284,9 +283,9 @@ public class DungeonModels {
                 Metadata data = DungeonCrawl.GSON.fromJson(
                         new InputStreamReader(resourceManager.getResource(metadata).getInputStream()), Metadata.class);
                 model.loadMetadata(data);
-                if (Config.ENABLE_TOOLS.get()) {
-                    PATH_TO_MODEL.put(directory.substring("models/dungeon/".length()) + file, model);
-                }
+//                if (Config.ENABLE_TOOLS.get()) {
+//                    PATH_TO_MODEL.put(directory.substring("models/dungeon/".length()) + file, model);
+//                }
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load metadata for {}", file);
                 e.printStackTrace();
@@ -305,13 +304,12 @@ public class DungeonModels {
             CompoundNBT nbt = CompoundNBT.TYPE.readNBT(input, 16, NBTSizeTracker.INFINITE);
             ResourceLocation resource = DungeonCrawl.locate(path);
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
-            if (Config.ENABLE_TOOLS.get()) {
-                String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
-                PATH_TO_MODEL.put(key, model);
-                // DungeonCrawl.LOGGER.debug("Model key: {}", key);
-            }
+
+            String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
+            PATH_TO_MODEL.put(key, model);
+            DungeonCrawl.LOGGER.debug("Model {} has key: {}", path, key);
+
             model.setLocation(resource);
-//            ModelHandler.writeModelToFile(model, "models/converted/" + path);
             return model;
         } catch (IOException e) {
             e.printStackTrace();
@@ -327,12 +325,12 @@ public class DungeonModels {
             DataInputStream input = new DataInputStream(resourceManager.getResource(resource).getInputStream());
             CompoundNBT nbt = CompoundNBT.TYPE.readNBT(input, 16, NBTSizeTracker.INFINITE);
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
-            if (Config.ENABLE_TOOLS.get()) {
-                String path = resource.getPath();
-                String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
-                PATH_TO_MODEL.put(key, model);
-                // DungeonCrawl.LOGGER.debug("Model key (2): {}", key);
-            }
+
+            String path = resource.getPath();
+            String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
+            PATH_TO_MODEL.put(key, model);
+            DungeonCrawl.LOGGER.debug("Model {} has key (2): {}", path, key);
+
             model.setLocation(resource);
             return model;
         } catch (IOException e) {

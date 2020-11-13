@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.2.0'
+version = '2.2.1'
 group = 'xiroc.dungeoncrawl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'DungeonCrawl-1.16.3'
 

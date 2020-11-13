@@ -29,12 +29,6 @@
           "offset": {
             "x": 3
           },
-          "model_key": "corridor/multipart/corridor_crops"
-        },
-        {
-          "offset": {
-            "x": 3
-          },
           "model_key": "corridor/multipart/corridor_bookshelf"
         },
         {
@@ -75,14 +69,6 @@
           },
           "rotation": "clockwise_180",
           "model_key": "corridor/multipart/corridor_variant_2"
-        },
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
-          },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_crops"
         },
         {
           "offset": {

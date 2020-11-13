@@ -6,8 +6,8 @@
 		"type": "turn",
 		"feature": {
 			"type": "catacomb",
-			"min": 6,
-			"max": 12
+			"min": 4,
+			"max": 5
 		},
 		"stages": [ 3, 4 ],
 		"weights": [ 0, 0, 10, 10, 0 ]

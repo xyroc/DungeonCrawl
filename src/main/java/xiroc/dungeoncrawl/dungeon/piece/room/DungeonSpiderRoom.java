@@ -32,6 +32,7 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonSpiderRoom extends DungeonPiece {
@@ -89,8 +90,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
-        return 0;
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
     }
 
     @Override

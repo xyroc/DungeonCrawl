@@ -82,15 +82,4 @@ public class Banner {
         return banner;
     }
 
-    /**
-     * Creates a shield item stack with random patterns.
-     */
-    public static ItemStack createShield(Random rand) {
-        ItemStack shield = new ItemStack(Items.SHIELD);
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.put("BlockEntityTag", createPatterns(rand));
-        shield.setTag(nbt);
-        return shield;
-    }
-
 }

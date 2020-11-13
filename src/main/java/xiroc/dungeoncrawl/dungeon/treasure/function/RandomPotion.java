@@ -33,14 +33,14 @@ public class RandomPotion extends LootFunction {
 
     public int lootLevel;
 
-    public RandomPotion(ILootCondition[] conditionsIn, int stage) {
+    public RandomPotion(ILootCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
-        this.lootLevel = stage;
+        this.lootLevel = Math.max(0, lootLevel);
     }
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        return TreasureItems.getRandomSpecialPotion(context.getRandom(), lootLevel - 1);
+        return TreasureItems.getRandomSpecialPotion(context.getRandom(), lootLevel);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class RandomPotion extends LootFunction {
         @Override
         public RandomPotion deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                         ILootCondition[] conditionsIn) {
-            return new RandomPotion(conditionsIn, object.get("loot_level").getAsInt());
+            return new RandomPotion(conditionsIn, object.get("loot_level").getAsInt() - 1);
         }
 
     }

@@ -44,6 +44,8 @@ public interface IBlockPlacementHandler {
         PLACEMENT_HANDLERS.put(Blocks.TRIPWIRE_HOOK, ((world, state, pos, rand, treasureType, theme, lootLevel) -> {
             if (pos.getX() % 16 != 0 && pos.getZ() % 16 != 0) {
                 world.setBlockState(pos, state, 2);
+            } else {
+                world.setBlockState(pos, DungeonBlocks.CAVE_AIR, 0);
             }
         }));
 

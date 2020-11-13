@@ -76,7 +76,8 @@ public class Node {
 
     /**
      * @return A rotation with which this node can fit into the given one, or null
-     * if there is none.
+     * if there is none. "Fit into the given node" means that wherever the given node does have an exit,
+     * the current one needs to have one as well.
      */
     public Rotation compare(Node node) {
         return Node.compare(node, this, Rotation.NONE, 0);

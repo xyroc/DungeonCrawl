@@ -25,18 +25,21 @@ import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.conditions.ILootCondition;
-import xiroc.dungeoncrawl.dungeon.misc.Banner;
+import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
 public class Shield extends LootFunction {
 
-    public Shield(ILootCondition[] conditionsIn) {
+    private final int lootLevel;
+
+    public Shield(ILootCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
+        this.lootLevel = Math.max(0, lootLevel);
     }
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        return Banner.createShield(context.getRandom());
+        return RandomItems.createShield(context.getRandom(), lootLevel);
     }
 
     @Override
@@ -53,7 +56,7 @@ public class Shield extends LootFunction {
         @Override
         public Shield deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                   ILootCondition[] conditionsIn) {
-            return new Shield(conditionsIn);
+            return new Shield(conditionsIn, object.has("loot_level") ? object.get("loot_level").getAsInt() - 1 : 0);
         }
 
     }

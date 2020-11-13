@@ -34,11 +34,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
+import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -103,21 +103,25 @@ public class Spawner implements IBlockPlacementHandler {
             ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
             ListNBT armorList = new ListNBT();
             for (ItemStack stack : armor) {
-                if (stack != ItemStack.EMPTY)
-                    armorList.add(stack.write(new CompoundNBT()));
+                armorList.add(stack.write(new CompoundNBT()));
             }
-            if (armorList.size() > 0)
+            if (armorList.size() > 0) {
                 spawnData.put("ArmorItems", armorList);
-            ListNBT handItems = new ListNBT();
+            }
 
+            ListNBT handItems = new ListNBT();
             ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
                     ? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
                     : RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
-            if (mainHand != ItemStack.EMPTY)
+
+            if (mainHand != ItemStack.EMPTY) {
                 handItems.add(mainHand.write(new CompoundNBT()));
+            }
+
             handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
-                    ? Banner.createShield(rand).write(new CompoundNBT())
+                    ? RandomItems.createShield(rand, stage).write(new CompoundNBT())
                     : ItemStack.EMPTY.write(new CompoundNBT()));
+
             spawnData.put("HandItems", handItems);
 
             if (!Config.NATURAL_DESPAWN.get()) {
@@ -150,7 +154,7 @@ public class Spawner implements IBlockPlacementHandler {
             entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, mainHand);
 
             if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())
-                entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, Banner.createShield(rand));
+                entity.setItemStackToSlot(EquipmentSlotType.OFFHAND, RandomItems.createShield(rand, stage));
 
             RandomPotionEffect.applyPotionEffects(entity, rand, stage);
 

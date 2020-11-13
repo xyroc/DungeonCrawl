@@ -1,8 +1,8 @@
 {
   "level_1": {
     "delay": {
-      "min": 200,
-      "max": 180
+      "min": 220,
+      "max": 200
     },
     "amount": {
       "min": 1,
@@ -11,7 +11,7 @@
   },
   "level_2": {
     "delay": {
-      "min": 180,
+      "min": 200,
       "max": 160
     },
     "amount": {
@@ -21,7 +21,7 @@
   },
   "level_3": {
     "delay": {
-      "min": 180,
+      "min": 200,
       "max": 160
     },
     "amount": {

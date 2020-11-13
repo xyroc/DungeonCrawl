@@ -29,13 +29,10 @@ import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.treasure.RandomSpecialItem;
+import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -43,9 +40,9 @@ public class RandomItem extends LootFunction {
 
     public int lootLevel;
 
-    public RandomItem(ILootCondition[] conditionsIn, int stage) {
+    public RandomItem(ILootCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
-        this.lootLevel = stage;
+        this.lootLevel = Math.max(0, lootLevel);
     }
 
     @Override
@@ -54,11 +51,11 @@ public class RandomItem extends LootFunction {
         ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
 
         if (biomeName != null) {
-            return RandomSpecialItem.generate(context.getWorld(), context.getRandom(),
+            return RandomItems.generate(context.getWorld(), context.getRandom(),
                     Theme.BIOME_TO_THEME_MAP.getOrDefault(biomeName.toString(), 0), lootLevel - 1);
         } else {
             DungeonCrawl.LOGGER.warn("RandomItem: Couldn't find a registry name for biome {} - Proceeding with the default theme.", biome.toString());
-            return RandomSpecialItem.generate(context.getWorld(), context.getRandom(), 0, lootLevel- 1);
+            return RandomItems.generate(context.getWorld(), context.getRandom(), 0, lootLevel - 1);
         }
     }
 
@@ -82,7 +79,7 @@ public class RandomItem extends LootFunction {
         @Override
         public RandomItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                       ILootCondition[] conditionsIn) {
-            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt());
+            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt() - 1);
         }
 
     }

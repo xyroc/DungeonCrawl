@@ -46,6 +46,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.model.ModelHandler;
 
 import java.util.HashMap;
@@ -67,56 +68,190 @@ public class Tools {
                 a.sendErrorMessage(new StringTextComponent("You must be a player!"));
                 return false;
             }
-        }).then(Commands.argument("name", StringArgumentType.string())
-                .then(Commands.argument("spawnerType", IntegerArgumentType.integer(0, 2))
-                        .then(Commands.argument("chestType", IntegerArgumentType.integer(0, 3)).executes((command) -> {
-                            UUID uuid = command.getSource().asPlayer().getUniqueID();
+        }).then(Commands.argument("name", StringArgumentType.string()).executes((command) -> {
+                    UUID uuid = command.getSource().asPlayer().getUniqueID();
 
-                            if (!POSITIONS.containsKey(uuid)) {
-                                command.getSource().sendFeedback(
-                                        new StringTextComponent(TextFormatting.RED + "Please select two positions."),
-                                        true);
-                                return 0;
-                            }
+                    if (!POSITIONS.containsKey(uuid)) {
+                        command.getSource().sendFeedback(
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                true);
+                        return 1;
+                    }
 
-                            Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
+                    Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
 
-                            BlockPos p1 = positions.getA(), p2 = positions.getB();
+                    BlockPos p1 = positions.getA(), p2 = positions.getB();
 
-                            if (p1 != null && p2 != null) {
-                                BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
-                                        Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
-                                        pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
-                                                Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
-                                ModelHandler.readAndSaveModelToFile(command.getArgument("name", String.class),
-                                        command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
-                                        pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1,
-                                        command.getArgument("spawnerType", int.class),
-                                        command.getArgument("chestType", int.class));
-                                command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
-                                return 1;
-                            } else {
-                                command.getSource().sendFeedback(
-                                        new StringTextComponent(TextFormatting.RED + "Please select two positions."),
-                                        true);
-                                return 0;
-                            }
-                        })))));
+                    if (p1 != null && p2 != null) {
+                        BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
+                                Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
+                                pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
+                                        Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
+                        ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"), ModelBlockDefinition.DEFAULT_DEFINITION,
+                                command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
+                                pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
+                        command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
+                        return 0;
+                    } else {
+                        command.getSource().sendFeedback(
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                true);
+                        return 1;
+                    }
+                }).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                    UUID uuid = command.getSource().asPlayer().getUniqueID();
 
-        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("buildmodel").requires((a) -> {
-            return a.hasPermissionLevel(2);
-        }).then(Commands.argument("id", IntegerArgumentType.integer()).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-            int id = command.getArgument("id", int.class);
-            DungeonModel model = DungeonModels.MODELS.get(id);
-            if (model != null) {
-                BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                buildModel(model, command.getSource().asPlayer().world, pos);
-            } else {
-                command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
-                return 1;
-            }
-            return 0;
-        }))));
+                    if (!POSITIONS.containsKey(uuid)) {
+                        command.getSource().sendFeedback(
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                true);
+                        return 1;
+                    }
+
+                    Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
+
+                    BlockPos p1 = positions.getA(), p2 = positions.getB();
+
+                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                    if (!ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
+                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition path \"" + blockDefinition + "\""), true);
+                        return 1;
+                    }
+
+                    if (p1 != null && p2 != null) {
+                        BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
+                                Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
+                                pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
+                                        Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
+                        ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
+                                ModelBlockDefinition.DEFINITIONS.get(blockDefinition),
+                                command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
+                                pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
+                        command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
+                        return 0;
+                    } else {
+                        command.getSource().sendFeedback(
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                true);
+                        return 1;
+                    }
+                }))
+        ));
+
+        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("buildmodel").requires((a) -> a.hasPermissionLevel(2))
+                .then(Commands.argument("id", IntegerArgumentType.integer()).executes((command) -> {
+                    int id = command.getArgument("id", int.class);
+                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    if (model != null) {
+                        BlockPos pos = command.getSource().asPlayer().getPosition();
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
+                        return 1;
+                    }
+                    return 0;
+                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+                    int id = command.getArgument("id", int.class);
+                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    if (model != null) {
+                        BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
+                        return 1;
+                    }
+                    return 0;
+                })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                    int id = command.getArgument("id", int.class);
+                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    String key = StringArgumentType.getString(command, "block definition");
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
+                            BlockPos pos = command.getSource().asPlayer().getPosition();
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + key), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
+                        return 1;
+                    }
+                    return 0;
+                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+                    int id = command.getArgument("id", int.class);
+                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    String key = StringArgumentType.getString(command, "block definition");
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
+                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + key), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
+                        return 1;
+                    }
+                    return 0;
+                })))).then(Commands.argument("key", StringArgumentType.string()).executes((command) -> {
+                    String key = StringArgumentType.getString(command, "key");
+                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    if (model != null) {
+                        BlockPos pos = command.getSource().asPlayer().getPosition();
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
+                        return 1;
+                    }
+                    return 0;
+                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+                    String key = StringArgumentType.getString(command, "key");
+                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    if (model != null) {
+                        BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
+                        return 1;
+                    }
+                    return 0;
+                })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                    String key = StringArgumentType.getString(command, "key");
+                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
+                            BlockPos pos = command.getSource().asPlayer().getPosition();
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
+                        return 1;
+                    }
+                    return 0;
+                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
+                    String key = StringArgumentType.getString(command, "key");
+                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    if (model != null) {
+                        if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
+                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
+                        } else {
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
+                            return 1;
+                        }
+                    } else {
+                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
+                        return 1;
+                    }
+                    return 0;
+                })))));
     }
 
     @SubscribeEvent
@@ -163,7 +298,37 @@ public class Tools {
         }
     }
 
-    public static void buildModel(DungeonModel model, IWorld world, BlockPos pos) {
+
+//    @SubscribeEvent
+//    public void onClickEntity(final PlayerInteractEvent.EntityInteract event) {
+//        if (!event.getWorld().isRemote && event.getPlayer().getHeldItem(Hand.MAIN_HAND).getItem() == Items.DEBUG_STICK && event.getTarget() instanceof LivingEntity) {
+//            LivingEntity livingEntity = (LivingEntity) event.getTarget();
+//            if (event.getPlayer().isCreative() && (livingEntity instanceof VillagerEntity || livingEntity instanceof ZombieVillagerEntity)) {
+//                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
+//                event.getPlayer().sendMessage(new StringTextComponent("Villager NBT of " + livingEntity.toString()));
+//                CompoundNBT nbt = new CompoundNBT();
+//                livingEntity.writeAdditional(nbt);
+//                event.getPlayer().sendMessage(new StringTextComponent("Inventory: " + (nbtToString(nbt.get("Inventory")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("VillagerData: " + (nbtToString(nbt.get("VillagerData")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("RestocksToday: " + (nbtToString(nbt.get("RestocksToday")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("LastRestock: " + (nbtToString(nbt.get("LastRestock")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("Gossips: " + (nbtToString(nbt.get("Gossips")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("Xp: " + (nbtToString(nbt.get("Xp")))));
+//                event.getPlayer().sendMessage(new StringTextComponent("Offers: " + (nbtToString(nbt.get("Offers")))));
+//
+//                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
+//            } else {
+//                event.getPlayer().sendMessage(new StringTextComponent("Active Potion effects of " + livingEntity.toString()));
+//                livingEntity.getActivePotionEffects().forEach((effectInstance) -> {
+//                    event.getPlayer().sendMessage(new StringTextComponent(effectInstance.toString()));
+//                });
+//                event.getPlayer().sendMessage(new StringTextComponent("---"));
+//            }
+//            event.setResult(Event.Result.ALLOW);
+//        }
+//    }
+
+    public static void buildModel(DungeonModel model, IWorld world, BlockPos pos, ModelBlockDefinition definition) {
         for (int y = 0; y < model.height; y++) {
             for (int x = 0; x < model.width; x++) {
                 for (int z = 0; z < model.length; z++) {
@@ -171,10 +336,10 @@ public class Tools {
                     if (model.model[x][y][z] == null) {
                         world.setBlockState(placePos, AIR, 3);
                     } else {
-                        Block block = model.model[x][y][z].type.getBaseBlock(model.model[x][y][z]);
+                        Block block = definition.getBlock(model.model[x][y][z]);
                         if (block == null)
-                            continue;
-                        world.setBlockState(placePos, model.model[x][y][z].create(block.getDefaultState(), world, placePos, Rotation.NONE).getA(), 3);
+                            block = Blocks.AIR;
+                        world.setBlockState(placePos, model.model[x][y][z].create(definition.getBlock(model.model[x][y][z]).getDefaultState(), world, pos, Rotation.NONE).getA(), 3);
                         world.func_230547_a_(placePos, world.getBlockState(placePos).getBlock());
                     }
                 }

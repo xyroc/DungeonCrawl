@@ -42,6 +42,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonSecretRoom extends DungeonPiece {
@@ -59,7 +60,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                 stage, rotation, false);
 
         buildRotatedFull(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
-                Treasure.MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT), stage, rotation, false);
+                Treasure.getModelTreasureType(modelID), stage, rotation, false);
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
         return true;
     }
@@ -70,8 +71,8 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
-        return DungeonModels.SECRET_ROOM.id;
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelID = DungeonModels.SECRET_ROOM.id;
     }
 
     @Override
@@ -126,7 +127,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                     && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                     && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+                                buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
                             }
                         }
                     }
@@ -163,7 +164,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                     && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                     && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+                                buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
                             }
                         }
                     }
@@ -200,8 +201,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -235,8 +235,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -269,8 +268,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -318,8 +316,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -354,8 +351,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -390,8 +386,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }

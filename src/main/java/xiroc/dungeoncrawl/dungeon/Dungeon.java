@@ -75,7 +75,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
     @Override
     protected boolean func_230363_a_(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-        for (Biome biome : p_230363_2_.getBiomes(p_230363_6_ * 16, p_230363_1_.func_230356_f_(), p_230363_7_ * 16, 32)) {
+        for (Biome biome : p_230363_2_.getBiomes(p_230363_6_ * 16, p_230363_1_.func_230356_f_(), p_230363_7_ * 16, 64)) {
             if (!biome.getGenerationSettings().hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
                 return false;
             }
@@ -111,8 +111,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
                 DungeonBuilder builder = new DungeonBuilder(dynamicRegistries, chunkGenerator, chunkpos, rand);
                 this.components.addAll(builder.build());
                 this.recalculateStructureSize();
-                DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
-                        (System.currentTimeMillis() - now), this.components.size());
+//                DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
+//                        (System.currentTimeMillis() - now), this.components.size());
             } else {
                 DungeonCrawl.LOGGER.warn("The current world seems to have biomes of overworld-like categories, but is not eligible for dungeon generation.");
             }

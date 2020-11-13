@@ -48,8 +48,6 @@ public class RandomPotionEffect {
 
     /**
      * Loads all potion effect files.
-     *
-     * @param resourceManager
      */
     public static void loadJson(IResourceManager resourceManager) {
         CHANCES = new float[5];
@@ -72,11 +70,6 @@ public class RandomPotionEffect {
 
     /**
      * Convenience method to load a single potion effect file.
-     *
-     * @param resourceManager
-     * @param file
-     * @param parser
-     * @param stage
      */
     private static void loadFile(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
@@ -131,10 +124,6 @@ public class RandomPotionEffect {
 
     /**
      * Applies random potion effects to the given monster entity.
-     *
-     * @param entity
-     * @param rand
-     * @param stage
      */
     public static void applyPotionEffects(MonsterEntity entity, Random rand, int stage) {
         if (stage > 4)
@@ -166,8 +155,6 @@ public class RandomPotionEffect {
     }
 
     /**
-     * @param rand
-     * @param stage
      * @return An NBT list of potion effects or null.
      */
     @Nullable
@@ -210,10 +197,6 @@ public class RandomPotionEffect {
 
     /**
      * Creates an NBT-representation of the given effect.
-     *
-     * @param effect
-     * @param duration
-     * @param amplifier
      */
     private static CompoundNBT toNBT(Effect effect, int duration, int amplifier) {
         CompoundNBT nbt = new CompoundNBT();

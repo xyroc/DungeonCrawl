@@ -20,7 +20,9 @@ package xiroc.dungeoncrawl.util;
 
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 
 public class Orientation {
 
@@ -41,6 +43,47 @@ public class Orientation {
             Direction.EAST};
     public static final Direction[] NORTH_SOUTH_WEST = new Direction[]{Direction.NORTH, Direction.SOUTH,
             Direction.WEST};
+
+    public static Vector3i rotatedMultipartOffset(int pWidth, int pLength, int mWidth, int mLength, Vector3i offset, Rotation rotation) {
+        switch (rotation) {
+            case CLOCKWISE_90:
+                return new Vector3i(pLength - offset.getZ() - mLength, offset.getY(), offset.getX());
+            case CLOCKWISE_180:
+                return new Vector3i(pWidth - offset.getX() - mWidth, offset.getY(), pLength - offset.getZ() - mLength);
+            case COUNTERCLOCKWISE_90:
+                return new Vector3i(offset.getZ(), offset.getY(), pWidth - offset.getX() - mWidth);
+            default:
+                return offset;
+        }
+    }
+
+    public static Vector3i rotatedMultipartOffset(DungeonModel parent, DungeonModel multipart, Vector3i offset, Rotation rotation) {
+        switch (rotation) {
+            case CLOCKWISE_90:
+                return new Vector3i(parent.length - offset.getZ() - multipart.length , offset.getY(), offset.getX());
+            case CLOCKWISE_180:
+                return new Vector3i(parent.width - offset.getX() - multipart.width, offset.getY(), parent.length - offset.getZ() - multipart.length);
+            case COUNTERCLOCKWISE_90:
+                return new Vector3i(offset.getZ(), offset.getY(), parent.width - offset.getX() - multipart.width);
+            default:
+                return offset;
+        }
+    }
+
+    /*
+     public static Vec3i rotatedMultipartOffset(DungeonModel parent, DungeonModel multipart, Vec3i offset, Rotation rotation) {
+        switch (rotation) {
+            case CLOCKWISE_90:
+                return new Vec3i(parent.width - offset.getZ() - multipart.length , offset.getY(), offset.getX());
+            case CLOCKWISE_180:
+                return new Vec3i(parent.width - offset.getX() - multipart.width, offset.getY(), parent.length - offset.getZ() - multipart.length);
+            case COUNTERCLOCKWISE_90:
+                return new Vec3i(offset.getZ(), offset.getY(), parent.length - offset.getX() - multipart.width);
+            default:
+                return offset;
+        }
+    }
+     */
 
     public static Direction horizontalOpposite(Direction direction) {
         switch (direction) {

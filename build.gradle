@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.1.1'
+version = '2.2.0'
 group = 'xiroc.dungeoncrawl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'DungeonCrawl-1.16.3'
 
@@ -25,7 +25,7 @@ minecraft {
     // snapshot_YYYYMMDD   Snapshot are built nightly.
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
+    // Simply re-run your setup task after changing the mappings to update your workspace.<<<<<<< HEAD
     mappings channel: 'snapshot', version: '20200916-1.16.2'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')

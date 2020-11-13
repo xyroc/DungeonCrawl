@@ -16,19 +16,21 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon;
+package xiroc.dungeoncrawl.util;
 
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Unit;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
-import xiroc.dungeoncrawl.dungeon.treasure.RandomSpecialItem;
+import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.concurrent.CompletableFuture;
@@ -39,13 +41,17 @@ public class DataReloadListener implements IFutureReloadListener {
     public void reload(IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.info("Loading data...");
         DungeonModels.load(resourceManager);
-        ChildPieceHandler.load();
         Theme.loadJson(resourceManager);
         SpawnRates.loadJson(resourceManager);
-        RandomSpecialItem.loadJson(resourceManager);
+        RandomItems.loadJson(resourceManager);
         RandomMonster.loadJson(resourceManager);
         RandomEquipment.loadJson(resourceManager);
         RandomPotionEffect.loadJson(resourceManager);
+
+        if (Config.ENABLE_TOOLS.get()) {
+            ModelBlockDefinition.loadJson(resourceManager);
+        }
+
         DungeonCrawl.LOGGER.info("Finished data loading.");
     }
 

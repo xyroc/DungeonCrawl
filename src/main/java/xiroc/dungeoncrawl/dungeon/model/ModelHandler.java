@@ -21,7 +21,6 @@ package xiroc.dungeoncrawl.dungeon.model;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.JigsawBlock;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -40,8 +39,7 @@ import java.util.Locale;
 
 public class ModelHandler {
 
-    public static void readAndSaveModelToFile(String name, World world, BlockPos pos, int width, int height, int length,
-                                              int spawnerType, int chestType) {
+    public static void readAndSaveModelToFile(String name, ModelBlockDefinition definition, World world, BlockPos pos, int width, int height, int length) {
         DungeonCrawl.LOGGER.info("Reading and saving {} to disk. Size: {}, {}, {}", name, width, height, length);
         DungeonModelBlock[][][] model = new DungeonModelBlock[width][height][length];
 
@@ -56,18 +54,15 @@ public class ModelHandler {
                         model[x][y][z] = null;
                         continue;
                     } else if (state.getBlock() == Blocks.JIGSAW) {
-                        featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.ORIENTATION).func_239642_b_()));
+                        featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.FACING)));
                         continue;
                     }
-                    model[x][y][z] = new DungeonModelBlock(
-                            DungeonModelBlockType.get(state.getBlock(), spawnerType, chestType)).loadDataFromState(state);
+                    model[x][y][z] = new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock(), definition)).loadDataFromState(state);
                 }
             }
         }
         writeModelToFile(
-                new DungeonModel(model,
-                        featurePositions.isEmpty() ? null
-                                : featurePositions.toArray(new FeaturePosition[0])),
+                new DungeonModel(model, featurePositions.isEmpty() ? null : featurePositions.toArray(new FeaturePosition[0])),
                 ((ServerWorld) world).getServer().getDataDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
 
     }

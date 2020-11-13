@@ -64,7 +64,7 @@ public class Config {
                 .defineInRange("mob_spawn_rate", 0.05, 0.001, 1.0);
         SPAWNER_ENTITIES = BUILDER.comment(
                 "The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
-                .defineInRange("spawner_entities", 4, 1, 128);
+                .defineInRange("spawner_entities", 6, 1, 128);
         IGNORE_OVERWORLD_BLACKLIST = BUILDER.comment(
                 "If set to true, the dungeon generation will ignore the biome blacklist and generate dungeons in any overworld biome.")
                 .define("ignore_overworld_blacklist", false);
@@ -74,7 +74,6 @@ public class Config {
                 "Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
                 .define("use_vanilla_spawners", false);
         NATURAL_DESPAWN = BUILDER.comment("Whether mobs from spawners should despawn naturally or not.").define("natural_despawn", true);
-//		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
 
         BUILDER.pop();
 
@@ -83,7 +82,7 @@ public class Config {
                 .defineInRange("dungeon_probability", 0.22, 0.0001, 1.0);
         IGNORE_DIMENSION = BUILDER.comment(
                 "If this is set to false, no dungeons can be generated outside the overworld.")
-                .define("ignore_dimension", true);
+                .define("ignore_dimension", false);
         SOLID = BUILDER.comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.").define("solid", false);
         BUILDER.pop();
 
@@ -97,8 +96,6 @@ public class Config {
                 .writingMode(WritingMode.REPLACE).build();
         config.load();
         CONFIG.setConfig(config);
-
-//		Dungeon.SIZE = SIZE.get();
     }
 
 }

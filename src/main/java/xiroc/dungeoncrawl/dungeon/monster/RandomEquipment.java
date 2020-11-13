@@ -32,11 +32,12 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.util.WeightedRandomItem;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Hashtable;
 import java.util.Random;
 
 public class RandomEquipment {
@@ -46,18 +47,18 @@ public class RandomEquipment {
     public static final int[] ARMOR_COLORS = new int[]{11546150, 16701501, 3949738, 6192150, 16351261, 16383998,
             15961002, 1908001, 8439583, 4673362, 1481884, 8991416, 3847130};
 
-    public static WeightedRandomItem[] HELMET, CHESTPLATE, LEGGINGS, BOOTS, MELEE_WEAPON, RANGED_WEAPON;
+    public static Hashtable<Integer, WeightedRandom<Item>> HELMET, CHESTPLATE, LEGGINGS, BOOTS, MELEE_WEAPON, RANGED_WEAPON;
 
     /**
      * Initializes all WeightedRandomItems from the datapack.
      */
     public static void loadJson(IResourceManager resourceManager) {
-        HELMET = new WeightedRandomItem[5];
-        CHESTPLATE = new WeightedRandomItem[5];
-        LEGGINGS = new WeightedRandomItem[5];
-        BOOTS = new WeightedRandomItem[5];
-        MELEE_WEAPON = new WeightedRandomItem[5];
-        RANGED_WEAPON = new WeightedRandomItem[5];
+        HELMET = new Hashtable<>(5);
+        CHESTPLATE = new Hashtable<>(5);
+        LEGGINGS = new Hashtable<>(5);
+        BOOTS = new Hashtable<>(5);
+        MELEE_WEAPON = new Hashtable<>(5);
+        RANGED_WEAPON = new Hashtable<>(5);
 
         JsonParser parser = new JsonParser();
 
@@ -80,11 +81,6 @@ public class RandomEquipment {
 
     /**
      * Convenience method to load an armor file from json.
-     *
-     * @param resourceManager
-     * @param file
-     * @param parser
-     * @param stage
      */
     private static void loadArmorFromJson(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
@@ -92,31 +88,31 @@ public class RandomEquipment {
                 DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
                 JsonObject object = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
                 if (object.has("helmet")) {
-                    HELMET[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("helmet"));
+                    HELMET.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("helmet")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'helmet' in {}", file.toString());
                 }
 
                 if (object.has("chestplate")) {
-                    CHESTPLATE[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("chestplate"));
+                    CHESTPLATE.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("chestplate")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'chestplate' in {}", file.toString());
                 }
 
                 if (object.has("leggings")) {
-                    LEGGINGS[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("leggings"));
+                    LEGGINGS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("leggings")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'leggings' in {}", file.toString());
                 }
 
                 if (object.has("boots")) {
-                    BOOTS[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("boots"));
+                    BOOTS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("boots")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'boots' in {}", file.toString());
                 }
 
             } catch (Exception e) {
-                DungeonCrawl.LOGGER.error("Failed to load {}" + file.toString());
+                DungeonCrawl.LOGGER.error("Failed to load {}", file.toString());
                 e.printStackTrace();
             }
         } else {
@@ -126,11 +122,6 @@ public class RandomEquipment {
 
     /**
      * Convenience method to load a weapon file from json.
-     *
-     * @param resourceManager
-     * @param file
-     * @param parser
-     * @param stage
      */
     private static void loadWeaponsFromJson(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
@@ -138,13 +129,13 @@ public class RandomEquipment {
             JsonObject object = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
 
             if (object.has("melee")) {
-                MELEE_WEAPON[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("melee"));
+                MELEE_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("melee")));
             } else {
                 DungeonCrawl.LOGGER.error("Missing entry 'melee' in {}", file.toString());
             }
 
             if (object.has("ranged")) {
-                RANGED_WEAPON[stage] = WeightedRandomItem.fromJson(object.getAsJsonArray("ranged"));
+                RANGED_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("ranged")));
             } else {
                 DungeonCrawl.LOGGER.error("Missing entry 'ranged' in {}", file.toString());
             }
@@ -153,17 +144,16 @@ public class RandomEquipment {
         }
     }
 
-
     public static ItemStack[] createArmor(Random rand, int stage) {
-        if (stage > 4)
-            stage = 4;
+        if (stage > HIGHEST_STAGE)
+            stage = HIGHEST_STAGE;
 
         ItemStack[] items = new ItemStack[4];
         float chance = 0.4F + 0.15F * stage;
 
-        if (HELMET[stage] != null) {
+        if (HELMET.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
-                Item item = HELMET[stage].roll(rand);
+                Item item = HELMET.get(stage).roll(rand);
                 items[3] = createItemStack(rand, item, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[3], getRandomColor(rand));
@@ -176,9 +166,9 @@ public class RandomEquipment {
             items[3] = ItemStack.EMPTY;
         }
 
-        if (CHESTPLATE[stage] != null) {
+        if (CHESTPLATE.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
-                Item item = CHESTPLATE[stage].roll(rand);
+                Item item = CHESTPLATE.get(stage).roll(rand);
                 items[2] = createItemStack(rand, item, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[2], getRandomColor(rand));
@@ -191,9 +181,9 @@ public class RandomEquipment {
             items[2] = ItemStack.EMPTY;
         }
 
-        if (LEGGINGS[stage] != null) {
+        if (LEGGINGS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
-                Item item = LEGGINGS[stage].roll(rand);
+                Item item = LEGGINGS.get(stage).roll(rand);
                 items[1] = createItemStack(rand, item, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[1], getRandomColor(rand));
@@ -206,9 +196,9 @@ public class RandomEquipment {
             items[1] = ItemStack.EMPTY;
         }
 
-        if (BOOTS[stage] != null) {
+        if (BOOTS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
-                Item item = BOOTS[stage].roll(rand);
+                Item item = BOOTS.get(stage).roll(rand);
                 items[0] = createItemStack(rand, item, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[0], getRandomColor(rand));
@@ -234,7 +224,7 @@ public class RandomEquipment {
 
     public static void applyDamage(ItemStack item, Random rand) {
         if (item.isDamageable())
-            item.setDamage(rand.nextInt(item.getMaxDamage()));
+            item.setDamage(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
     }
 
     public static void enchantItem(ItemStack item, Enchantment enchantment, double multiplier) {
@@ -261,10 +251,10 @@ public class RandomEquipment {
     }
 
     public static ItemStack getMeleeWeapon(Random rand, int stage) {
-        if (stage > 4)
-            stage = 4;
-        if (MELEE_WEAPON[stage] != null) {
-            return createItemStack(rand, MELEE_WEAPON[stage].roll(rand), stage);
+        if (stage > HIGHEST_STAGE)
+            stage = HIGHEST_STAGE;
+        if (MELEE_WEAPON.containsKey(stage)) {
+            return createItemStack(rand, MELEE_WEAPON.get(stage).roll(rand), stage);
         } else {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;
@@ -272,10 +262,10 @@ public class RandomEquipment {
     }
 
     public static ItemStack getRangedWeapon(Random rand, int stage) {
-        if (stage > 4)
-            stage = 4;
-        if (RANGED_WEAPON[stage] != null) {
-            return createItemStack(rand, RANGED_WEAPON[stage].roll(rand), stage);
+        if (stage > HIGHEST_STAGE)
+            stage = HIGHEST_STAGE;
+        if (RANGED_WEAPON.containsKey(stage)) {
+            return createItemStack(rand, RANGED_WEAPON.get(stage).roll(rand), stage);
         } else {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;
@@ -283,9 +273,9 @@ public class RandomEquipment {
     }
 
     public static double getStageMultiplier(int stage) {
-        if (stage > 2)
+        if (stage > HIGHEST_STAGE)
             return 1.0D;
-        return 1D * Math.pow(0.5, HIGHEST_STAGE - stage);
+        return 1D / (HIGHEST_STAGE - stage + 1);
     }
 
     public static int getRandomColor(Random rand) {

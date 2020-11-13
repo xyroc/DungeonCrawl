@@ -554,6 +554,17 @@
         {
           "type": "item",
           "name": "minecraft:air",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "dungeoncrawl:special_item",
+              "loot_level": 1
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "minecraft:air",
           "weight": 4,
           "functions": [
             {
@@ -564,10 +575,11 @@
         {
           "type": "item",
           "name": "minecraft:shield",
-          "weight": 4,
+          "weight": 6,
           "functions": [
             {
-              "function": "dungeoncrawl:shield"
+              "function": "dungeoncrawl:shield",
+              "loot_level": 3
             }
           ]
         }

@@ -45,7 +45,6 @@ public interface IDungeonDecoration {
                     IBlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        //JsonObject block = object.getAsJsonObject("block");
                         blockStateProvider = JsonThemeHandler.deserialize(object, "block");
                         if (blockStateProvider != null) {
                             return new ScatteredDecoration(blockStateProvider, chance);
@@ -60,10 +59,23 @@ public interface IDungeonDecoration {
                     IBlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        //JsonObject block = object.getAsJsonObject("block");
                         blockStateProvider = JsonThemeHandler.deserialize(object, "block");
                         if (blockStateProvider != null) {
                             return new FloorDecoration(blockStateProvider, chance);
+                        }
+                    } else {
+                        DungeonCrawl.LOGGER.warn("Missing entry 'block'");
+                        return null;
+                    }
+                }
+                case "floor_next_to_solid": {
+                    float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.5F;
+                    IBlockStateProvider blockStateProvider;
+
+                    if (object.has("block")) {
+                        blockStateProvider = JsonThemeHandler.deserialize(object, "block");
+                        if (blockStateProvider != null) {
+                            return new FloorDecoration.NextToSolid(blockStateProvider, chance);
                         }
                     } else {
                         DungeonCrawl.LOGGER.warn("Missing entry 'block'");

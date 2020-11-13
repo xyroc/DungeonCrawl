@@ -33,9 +33,12 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonCorridor extends DungeonPiece {
@@ -53,11 +56,13 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (connectedSides == 2 && isStraight()) {
-            return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, layerCategory).roll(rand);
+
+            this.modelID = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, layerCategory).roll(rand);
+        } else {
+            this.modelID = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand);
         }
-        return DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand);
     }
 
 //    @Override
@@ -87,7 +92,6 @@ public class DungeonCorridor extends DungeonPiece {
 //    }
 
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-
         DungeonModel model = DungeonModels.MODELS.get(modelID);
 
         boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
@@ -95,7 +99,7 @@ public class DungeonCorridor extends DungeonPiece {
         int x = ew ? this.x : this.x + (9 - model.length) / 2;
         int z = ew ? this.z + (9 - model.length) / 2 : this.z;
 
-        if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id) {
+        if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id || modelID == 7) {
             switch (rotation) {
                 case NONE:
                     z--;
@@ -115,13 +119,6 @@ public class DungeonCorridor extends DungeonPiece {
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
 
-//        if (connectedSides < 3 && corridorFeatures != null && featurePositions != null) {
-//            for (int i = 0; i < featurePositions.length; i++) {
-//                DungeonCorridorFeature.FEATURES.get(corridorFeatures[i]).build(this, worldIn, featurePositions[i],
-//                        structureBoundingBoxIn, Theme.get(theme), Theme.getSub(subTheme), stage);
-//            }
-//        }
-
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
@@ -135,6 +132,37 @@ public class DungeonCorridor extends DungeonPiece {
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{1});
         return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
+        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        if (model != null && model.multipartData != null) {
+            boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
+
+            int x = ew ? this.x : this.x + (9 - model.length) / 2;
+            int z = ew ? this.z + (9 - model.length) / 2 : this.z;
+            if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id || modelID == 7) {
+                switch (rotation) {
+                    case NONE:
+                        z--;
+                        break;
+                    case CLOCKWISE_90:
+                        x++;
+                        break;
+                    case CLOCKWISE_180:
+                        z++;
+                        break;
+                    case COUNTERCLOCKWISE_90:
+                        x--;
+                        break;
+                }
+            }
+            for (WeightedRandom<?> randomData : model.multipartData) {
+                pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, rotation, x, y, z));
+            }
+        }
     }
 
     @Override

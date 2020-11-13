@@ -68,7 +68,7 @@ public class SpawnRates {
             JsonObject amount = data.getAsJsonObject("amount");
 
             DELAY[level] = new RandomValueRange(delay.get("min").getAsInt(), delay.get("max").getAsInt());
-            AMOUNT[level] = new RandomValueRange(amount.get("min").getAsInt(), delay.get("max").getAsInt());
+            AMOUNT[level] = new RandomValueRange(amount.get("min").getAsInt(), amount.get("max").getAsInt());
         } else {
             DungeonCrawl.LOGGER.warn("Missing entry {} in {}", entry, resource.toString());
             // Fallback to default values

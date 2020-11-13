@@ -30,7 +30,7 @@ public class DungeonGeneratorSettings {
 
     public static final DungeonGeneratorSettings DEFAULT = new DungeonGeneratorSettings(
             (rand, layer) -> 3 + layer, (rand, layer) -> 4 + (int) (1.5 * layer),
-            5, 1, 2, 5, 1, 3, 1, 5, 2, true);
+            5, 2, 4, 5, 1, 3, 1, 5, 2, true);
 
     public static final DungeonGeneratorSettings LARGE = new DungeonGeneratorSettings(
             (rand, layer) -> 5 + layer / 2, (rand, layer) -> 6 + layer,
@@ -97,8 +97,8 @@ public class DungeonGeneratorSettings {
         this.gridSize = DEFAULT_GRID_SIZE;
 
         this.maxLayers = maxLayers;
-        this.maxDistance = maxDistance;
         this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
         this.maxDepth = maxDepth;
         this.minNodeDepth = minNodeDepth;
         this.maxNodeDepth = maxNodeDepth;

@@ -44,6 +44,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonEntrance extends DungeonPiece {
@@ -57,12 +58,13 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (DungeonModels.ModelCategory.ENTRANCE.members.isEmpty()) {
-            DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the roguelike entrance.");
-            return DungeonModels.ENTRANCE.id;
+            DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the RLD default entrance.");
+            this.modelID = DungeonModels.ENTRANCE.id;
+        } else {
+            this.modelID = DungeonModels.ModelCategory.ENTRANCE.members.get(rand.nextInt(DungeonModels.ModelCategory.ENTRANCE.members.size())).id;
         }
-        return DungeonModels.ModelCategory.ENTRANCE.members.get(rand.nextInt(DungeonModels.ModelCategory.ENTRANCE.members.size())).id;
     }
 
     @Override
@@ -95,7 +97,9 @@ public class DungeonEntrance extends DungeonPiece {
             entrance.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, entrance);
+        //Passing over a custom boundingbox because the cursor height is unknown during #setupBoundingBox.
+        decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn,
+                new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + entrance.width, pos.getY() + entrance.height, pos.getZ() + entrance.length), entrance);
         return true;
     }
 
@@ -148,7 +152,7 @@ public class DungeonEntrance extends DungeonPiece {
 
                         if (y == 0 && world.isAirBlock(position.down())
                                 && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                            DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
+                            buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                         }
                     }
                 }
@@ -182,7 +186,7 @@ public class DungeonEntrance extends DungeonPiece {
 
                             if (y == 0 && world.isAirBlock(position.down())
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                                DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
+                                buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                             }
                         }
                     }

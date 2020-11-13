@@ -39,6 +39,7 @@ public class StructurePieceTypes {
     public static IStructurePieceType PRISONER_CELL;
     public static IStructurePieceType SECRET_ROOM;
     public static IStructurePieceType SPIDER_ROOM;
+    public static IStructurePieceType MULTIPART_MODEL_PIECE;
 
     public static IStructurePieceType DUMMY;
 
@@ -58,6 +59,7 @@ public class StructurePieceTypes {
         PRISONER_CELL = IStructurePieceType.register(DungeonPrisonCell::new, createKey("prison_cell"));
         SECRET_ROOM = IStructurePieceType.register(DungeonSecretRoom::new, createKey("secret_room"));
         SPIDER_ROOM = IStructurePieceType.register(DungeonSpiderRoom::new, createKey("spider_room"));
+        MULTIPART_MODEL_PIECE = IStructurePieceType.register(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));
 
         if (Config.ENABLE_DUMMY_PIECES.get()) {
             DungeonCrawl.LOGGER.info("Registering Dummy Structure Pieces");

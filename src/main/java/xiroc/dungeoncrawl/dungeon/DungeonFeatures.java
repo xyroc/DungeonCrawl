@@ -23,7 +23,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
@@ -31,7 +30,6 @@ import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.Triple;
 import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -110,7 +108,7 @@ public class DungeonFeatures {
                     sideRoom.setRotation(sideRoomData.getB());
                     sideRoom.stage = stage;
 
-                    layer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).withFlag(PlaceHolder.Flag.FIXED_MODEL);
+                    layer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).addFlag(PlaceHolder.Flag.FIXED_MODEL);
                     layer.segments[x][z].reference.openSide(dir.getOpposite());
                     layer.map.markPositionAsOccupied(sideRoomData.getA());
                     layer.rotatePiece(layer.segments[x][z]);

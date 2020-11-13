@@ -22,10 +22,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -72,7 +70,7 @@ public class DungeonBuilder {
         this.chunkGenerator = chunkGenerator;
         this.rand = rand;
 
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getGroundHeight() - 16,
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.func_230356_f_() - 16,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
         int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
@@ -88,8 +86,9 @@ public class DungeonBuilder {
 
         DungeonCrawl.EVENT_BUS.post(startEvent);
 
-        DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
-                + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
+//        DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
+//                + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
+
     }
 
     public DungeonBuilder(ServerWorld world, ChunkPos pos) {
@@ -119,8 +118,8 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
-        List<DungeonPiece> list = Lists.newArrayList();
-        
+        List<DungeonPiece> pieces = Lists.newArrayList();
+
         int startCoordinate = DEFAULT_GENERATOR.settings.gridSize.apply(0) / 2;
 
         this.start = new Position2D(startCoordinate, startCoordinate);
@@ -144,7 +143,7 @@ public class DungeonBuilder {
         entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
-        entrance.modelID = entrance.determineModel(this, null, rand);
+        entrance.setupModel(this, null, pieces, rand);
         entrance.setupBoundingBox();
 
         this.startBiome = chunkGenerator.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGenerator.func_230356_f_() >> 2, entrance.z >> 2);
@@ -186,11 +185,11 @@ public class DungeonBuilder {
         entrance.theme = theme;
         entrance.subTheme = subTheme;
 
-        list.add(entrance);
+        pieces.add(entrance);
 
-        postProcessDungeon(list, rand);
+        postProcessDungeon(pieces, rand);
 
-        return list;
+        return pieces;
     }
 
 //    public List<DungeonPiece> build(int theme, int subTheme) {
@@ -270,7 +269,7 @@ public class DungeonBuilder {
         }
     }
 
-    public void postProcessDungeon(List<DungeonPiece> list, Random rand) {
+    public void postProcessDungeon(List<DungeonPiece> pieces, Random rand) {
         boolean mossArea = layers.length > 3;
 
         for (int i = 0; i < layers.length; i++) {
@@ -291,7 +290,7 @@ public class DungeonBuilder {
                         }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
-                            layer.segments[x][z].reference.modelID = layer.segments[x][z].reference.determineModel(this, layerCategory, rand);
+                            layer.segments[x][z].reference.setupModel(this, layerCategory, pieces, rand);
                         }
 
                         if (!layer.segments[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
@@ -302,7 +301,7 @@ public class DungeonBuilder {
                         layer.segments[x][z].reference.setupBoundingBox();
 
                         if (layer.segments[x][z].reference.hasChildPieces()) {
-                            layer.segments[x][z].reference.addChildPieces(list, this, layerCategory, i, rand);
+                            layer.segments[x][z].reference.addChildPieces(pieces, this, layerCategory, i, rand);
                         }
 
                         if (layer.segments[x][z].reference.getType() == 10) {
@@ -311,21 +310,11 @@ public class DungeonBuilder {
 
                         layer.segments[x][z].reference.customSetup(rand);
 
-                        list.add(layer.segments[x][z].reference);
+                        pieces.add(layer.segments[x][z].reference);
                     }
                 }
         }
 
-    }
-
-    /**
-     * Builds a 1x1 pillar to the ground
-     */
-    public static void buildPillar(IWorld world, Theme theme, int x, int y, int z, MutableBoundingBox bounds) {
-        int height = DungeonPiece.getGroundHeightFrom(world, x, z, y - 1);
-        for (int y0 = y - 1; y0 > height; y0--) {
-            DungeonPiece.setBlockState(world, theme.solid.get(), x, y0, z, bounds, true);
-        }
     }
 
 }

@@ -40,12 +40,12 @@ public class PlaceHolder {
         this.flags = Lists.newArrayList();
     }
 
-    public PlaceHolder withFlag(Flag flag) {
+    public PlaceHolder addFlag(Flag flag) {
         flags.add(flag);
         return this;
     }
 
-    public PlaceHolder withFlags(Flag... flags) {
+    public PlaceHolder addFlags(Flag... flags) {
         this.flags.addAll(Arrays.asList(flags));
         return this;
     }

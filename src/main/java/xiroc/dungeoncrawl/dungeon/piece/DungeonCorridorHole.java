@@ -30,6 +30,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 
+import java.util.List;
 import java.util.Random;
 
 public class DungeonCorridorHole extends DungeonPiece {
@@ -39,18 +40,11 @@ public class DungeonCorridorHole extends DungeonPiece {
     }
 
     @Override
-    public int determineModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, Random rand) {
-        return 0;
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
     }
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-
-//        build(DungeonModels.CORRIDOR, worldIn,
-//                structureBoundingBoxIn, new BlockPos(x, y - 15, z), Theme.get(theme), Theme.getSub(subTheme),
-//                Treasure.Type.DEFAULT, stage, true);
-//        addWalls(this, worldIn, structureBoundingBoxIn, theme);
-
         return true;
     }
 

@@ -68,7 +68,7 @@ public class DungeonBuilder {
         this.chunkGen = world;
 
         this.rand = rand;
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getGroundHeight() - 16,
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getSeaLevel() - 15,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
         int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
@@ -84,8 +84,8 @@ public class DungeonBuilder {
 
         DungeonCrawl.EVENT_BUS.post(startEvent);
 
-        DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
-                + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
+//        DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
+//                + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
 
     }
 
@@ -305,16 +305,6 @@ public class DungeonBuilder {
                 }
         }
 
-    }
-
-    /**
-     * Builds a 1x1 pillar to the ground
-     */
-    public static void buildPillar(IWorld world, Theme theme, int x, int y, int z, MutableBoundingBox bounds) {
-        int height = DungeonPiece.getGroundHeightFrom(world, x, z, y - 1);
-        for (int y0 = y - 1; y0 > height; y0--) {
-            DungeonPiece.setBlockState(world, theme.solid.get(), x, y0, z, bounds, true);
-        }
     }
 
 }

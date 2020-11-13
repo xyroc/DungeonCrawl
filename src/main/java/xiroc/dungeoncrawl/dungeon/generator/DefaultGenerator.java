@@ -84,7 +84,7 @@ public class DefaultGenerator extends DungeonGenerator {
     public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D startPosition) {
         DungeonStairs s = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom();
         s.setPosition(startPosition.x, startPosition.z);
-        dungeonLayer.segments[s.posX][s.posZ] = new PlaceHolder(s).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+        dungeonLayer.segments[s.posX][s.posZ] = new PlaceHolder(s).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
         dungeonLayer.stairsPlaced = false;
         dungeonLayer.start = startPosition;
@@ -107,7 +107,7 @@ public class DefaultGenerator extends DungeonGenerator {
         DungeonCrawl.LOGGER.debug("Finished basic generation of layer {}: Generated {}/{} nodes and {}/{} rooms.", layer, nodes[layer],
                 nodes[layer] + nodesLeft[layer], rooms[layer], rooms[layer] + roomsLeft[layer]);
 
-        DungeonCrawl.LOGGER.debug("There are {} distant nodes", dungeonLayer.distantNodes.size());
+//        DungeonCrawl.LOGGER.debug("There are {} distant nodes", dungeonLayer.distantNodes.size());
 
         if (layer == 0) {
             createStarterRoom(dungeonBuilder, dungeonLayer, rand, layer);
@@ -162,7 +162,7 @@ public class DefaultGenerator extends DungeonGenerator {
             DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
             stairs.openSide(toLast);
             stairs.setPosition(dungeonLayer.end.x, dungeonLayer.end.z);
-            dungeonLayer.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).withFlag(PlaceHolder.Flag.FIXED_ROTATION);
+            dungeonLayer.segments[stairs.posX][stairs.posZ] = new PlaceHolder(stairs).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
             dungeonLayer.stairsPlaced = true;
 
@@ -295,7 +295,7 @@ public class DefaultGenerator extends DungeonGenerator {
         DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
         nodeRoom.setPosition(center.x, center.z);
 
-        PlaceHolder placeHolder = new PlaceHolder(nodeRoom).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+        PlaceHolder placeHolder = new PlaceHolder(nodeRoom).addFlag(PlaceHolder.Flag.PLACEHOLDER);
         for (int x = -1; x < 2; x++)
             for (int z = -1; z < 2; z++)
                 if (x != 0 || z != 0)
@@ -318,7 +318,7 @@ public class DefaultGenerator extends DungeonGenerator {
             room.stage = layer;
 
             dungeonLayer.map.markPositionAsOccupied(sideRoomData.getA());
-            dungeonLayer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(room).withFlag(PlaceHolder.Flag.FIXED_MODEL);
+            dungeonLayer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.FIXED_MODEL);
 
             Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
             if (dungeonLayer.segments[connectedSegment.x][connectedSegment.z] != null) {

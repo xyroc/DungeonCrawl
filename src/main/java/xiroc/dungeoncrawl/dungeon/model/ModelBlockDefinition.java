@@ -106,6 +106,10 @@ public class ModelBlockDefinition {
         if (invertedDefinition.containsKey(block.type)) {
             return invertedDefinition.get(block.type);
         }
+        // No recursion here
+        if (fallback != null && fallback.invertedDefinition.containsKey(block.type)) {
+            return fallback.invertedDefinition.get(block.type);
+        }
         return null;
     }
 
@@ -128,6 +132,7 @@ public class ModelBlockDefinition {
      * Convenience method to load a single model block definition file.
      */
     private static void loadDefinition(IResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, String>> referencesToUpdate) {
+        DungeonCrawl.LOGGER.debug("Loading {}", resourceLocation);
         JsonParser parser = new JsonParser();
         HashMap<Block, DungeonModelBlockType> definition = new HashMap<>();
         try {
@@ -153,7 +158,8 @@ public class ModelBlockDefinition {
                 referencesToUpdate.add(new Tuple<>(blockDefinition, object.get("fallback").getAsString()));
             }
 
-            DEFINITIONS.put(resourceLocation.getPath().substring(PATH.length()), blockDefinition);
+            String key = resourceLocation.getPath().substring(PATH.length() + 1, resourceLocation.getPath().length() - ".json".length());
+            DEFINITIONS.put(key, blockDefinition);
         } catch (IOException e) {
             e.printStackTrace();
         }

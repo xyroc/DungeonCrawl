@@ -27,13 +27,9 @@ import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -367,10 +363,10 @@ public class DungeonLayer {
                 room.setRotation(Orientation.getRotationFromFacing(direction));
                 segments[x][z] = new PlaceHolder(room);
                 Position2D other = getOther(x, z, direction);
-                segments[other.x][other.z] = new PlaceHolder(room).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+                segments[other.x][other.z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.PLACEHOLDER);
                 corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
                 corridor.modelID = DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id;
-                segments[position.x][position.z].withFlag(PlaceHolder.Flag.FIXED_MODEL);
+                segments[position.x][position.z].addFlag(PlaceHolder.Flag.FIXED_MODEL);
                 return true;
             }
         }
@@ -385,10 +381,10 @@ public class DungeonLayer {
                 room.setRotation(Orientation.getRotationFromFacing(direction));
                 segments[x][z] = new PlaceHolder(room);
                 Position2D other = getOther(x, z, direction);
-                segments[other.x][other.z] = new PlaceHolder(room).withFlag(PlaceHolder.Flag.PLACEHOLDER);
+                segments[other.x][other.z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.PLACEHOLDER);
                 corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
                 corridor.modelID = DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id;
-                segments[position.x][position.z].withFlag(PlaceHolder.Flag.FIXED_MODEL);
+                segments[position.x][position.z].addFlag(PlaceHolder.Flag.FIXED_MODEL);
                 return true;
             }
         }

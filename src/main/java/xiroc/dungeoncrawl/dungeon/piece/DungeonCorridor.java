@@ -27,7 +27,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
@@ -74,7 +73,7 @@ public class DungeonCorridor extends DungeonPiece {
         int x = ew ? this.x : this.x + (9 - model.length) / 2;
         int z = ew ? this.z + (9 - model.length) / 2 : this.z;
 
-        if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id) {
+        if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id || modelID == 7) {
             switch (rotation) {
                 case NONE:
                     z--;
@@ -118,8 +117,24 @@ public class DungeonCorridor extends DungeonPiece {
 
             int x = ew ? this.x : this.x + (9 - model.length) / 2;
             int z = ew ? this.z + (9 - model.length) / 2 : this.z;
+            if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id || modelID == 7) {
+                switch (rotation) {
+                    case NONE:
+                        z--;
+                        break;
+                    case CLOCKWISE_90:
+                        x++;
+                        break;
+                    case CLOCKWISE_180:
+                        z++;
+                        break;
+                    case COUNTERCLOCKWISE_90:
+                        x--;
+                        break;
+                }
+            }
             for (WeightedRandom<?> randomData : model.multipartData) {
-                pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, rotation, x, y ,z));
+                pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, rotation, x, y, z));
             }
         }
     }

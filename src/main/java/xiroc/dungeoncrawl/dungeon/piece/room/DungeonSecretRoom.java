@@ -122,7 +122,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                     && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                     && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+                                buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
                             }
                         }
                     }
@@ -159,7 +159,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                     && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                     && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+                                buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
                             }
                         }
                     }
@@ -196,8 +196,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -231,8 +230,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -265,8 +263,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -314,8 +311,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -350,8 +346,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -386,8 +381,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }

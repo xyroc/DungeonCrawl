@@ -74,7 +74,6 @@ public class Config {
                 "Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
                 .define("use_vanilla_spawners", false);
         NATURAL_DESPAWN = BUILDER.comment("Whether mobs from spawners should despawn naturally or not.").define("natural_despawn", true);
-//		SIZE = BUILDER.comment("The size of the dungeons. (1 unit = 8 blocks)").defineInRange("size", 16, 4, 16);
 
         BUILDER.pop();
 
@@ -83,7 +82,7 @@ public class Config {
                 .defineInRange("dungeon_probability", 0.35, 0.0001, 1.0);
         IGNORE_DIMENSION = BUILDER.comment(
                 "If this is set to false, no dungeons can be generated outside the overworld.")
-                .define("ignore_dimension", true);
+                .define("ignore_dimension", false);
         SOLID = BUILDER.comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.").define("solid", false);
         BUILDER.pop();
 
@@ -97,8 +96,6 @@ public class Config {
                 .writingMode(WritingMode.REPLACE).build();
         config.load();
         CONFIG.setConfig(config);
-
-//		Dungeon.SIZE = SIZE.get();
     }
 
 }

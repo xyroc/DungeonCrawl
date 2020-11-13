@@ -150,7 +150,7 @@ public class DungeonEntrance extends DungeonPiece {
 
                         if (y == 0 && world.isAirBlock(position.down())
                                 && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                            DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
+                            buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                         }
                     }
                 }
@@ -184,7 +184,7 @@ public class DungeonEntrance extends DungeonPiece {
 
                             if (y == 0 && world.isAirBlock(position.down())
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                                DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
+                                buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                             }
                         }
                     }

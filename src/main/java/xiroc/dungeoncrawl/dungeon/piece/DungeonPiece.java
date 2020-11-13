@@ -553,7 +553,7 @@ public abstract class DungeonPiece extends StructurePiece {
                                     && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                     && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                     && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                DungeonBuilder.buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
+                                buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
                             }
                         }
                     }
@@ -808,8 +808,7 @@ public abstract class DungeonPiece extends StructurePiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -845,8 +844,7 @@ public abstract class DungeonPiece extends StructurePiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -881,8 +879,7 @@ public abstract class DungeonPiece extends StructurePiece {
                                             && world.isAirBlock(position.down()) && model.model[x][1][z] != null
                                             && model.model[x][0][z].type == DungeonModelBlockType.SOLID
                                             && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        DungeonBuilder.buildPillar(world, theme, position.getX(), position.getY(), position.getZ(),
-                                                boundsIn);
+                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
                                     }
                                 }
                             }
@@ -899,6 +896,16 @@ public abstract class DungeonPiece extends StructurePiece {
                 break;
         }
 
+    }
+
+    /**
+     * Builds a 1x1 pillar to the ground
+     */
+    public void buildPillar(IWorld world, Theme theme, int x, int y, int z, MutableBoundingBox bounds) {
+        int height = DungeonPiece.getGroundHeightFrom(world, x, z, y - 1);
+        for (int y0 = y - 1; y0 > height; y0--) {
+            DungeonPiece.setBlockState(world, theme.solid.get(), x, y0, z, bounds, true);
+        }
     }
 
     public void entrances(IWorld world, MutableBoundingBox bounds, DungeonModel model) {

@@ -29,9 +29,3 @@ www.github.com/XYROC/DungeonCrawl/wiki/'''
     versionRange="[1.15,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.dungeoncrawl]]
-    modId="biomesoplenty"
-    mandatory=false
-    versionRange="[10.0.0,)"
-    ordering="NONE"
-    side="BOTH"

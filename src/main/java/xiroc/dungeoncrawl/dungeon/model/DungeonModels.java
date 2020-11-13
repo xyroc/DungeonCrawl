@@ -81,7 +81,7 @@ public class DungeonModels {
 
         OLD_LOOT_ROOM = loadModel("models/dungeon/old_loot_room.nbt", resourceManager).setId(35);
 
-        CORRIDOR_SECRET_ROOM_ENTRANCE = loadModel("models/dungeon/corridor/corridor_secret_room_entrance.nbt", resourceManager).setId(7);
+        loadModel("models/dungeon/corridor/old_corridor_secret_room_entrance.nbt", resourceManager).setId(7);
 
         PRISON_CELL = loadModel("models/dungeon/prison_cell.nbt", resourceManager).setId(64);
 
@@ -109,6 +109,8 @@ public class DungeonModels {
         load("models/dungeon/corridor/", "corridor_fire", resourceManager);
         load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
         load("models/dungeon/corridor/", "corridor_light", resourceManager);
+
+        CORRIDOR_SECRET_ROOM_ENTRANCE = load("models/dungeon/corridor/", "corridor_secret_room_entrance", resourceManager);
 
         load("models/dungeon/corridor/dark/", "corridor", resourceManager);
         load("models/dungeon/corridor/dark/", "corridor_2", resourceManager);
@@ -196,15 +198,15 @@ public class DungeonModels {
 
         // -End of Model loading- //
 
-        DungeonCrawl.LOGGER.debug("Dumping all registered models below:");
-        MODELS.entrySet().stream().sorted((first, second) -> {
-            if (first.getKey() > second.getKey()) {
-                return 1;
-            } else if (first.getKey() < second.getKey()) {
-                return -1;
-            }
-            return 0;
-        }).forEach((entry) -> DungeonCrawl.LOGGER.debug("{}  {}", entry.getKey(), entry.getValue().location));
+//        DungeonCrawl.LOGGER.debug("Dumping all registered models below:");
+//        MODELS.entrySet().stream().sorted((first, second) -> {
+//            if (first.getKey() > second.getKey()) {
+//                return 1;
+//            } else if (first.getKey() < second.getKey()) {
+//                return -1;
+//            }
+//            return 0;
+//        }).forEach((entry) -> DungeonCrawl.LOGGER.debug("{}  {}", entry.getKey(), entry.getValue().location));
 
         REFERENCES_TO_UPDATE.forEach(MultipartModelData::updateReference);
 

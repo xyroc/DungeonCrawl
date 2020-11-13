@@ -83,8 +83,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public boolean canBeGenerated(BiomeManager p_225558_1_, ChunkGenerator<?> chunkGen, Random rand, int chunkX, int chunkZ, Biome p_225558_6_) {
         ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkX, chunkZ, 0, 0);
         if (chunkX == chunkpos.x && chunkZ == chunkpos.z && p_225558_6_.hasStructure(Dungeon.DUNGEON)) {
-            for (Biome biome : chunkGen.getBiomeProvider().getBiomes(chunkX * 16, chunkGen.getSeaLevel(), chunkZ * 16, 32)) {
-                if (!chunkGen.hasStructure(biome, DUNGEON) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
+            for (Biome biome : chunkGen.getBiomeProvider().getBiomes(chunkX * 16 + 9, chunkGen.getSeaLevel(), chunkZ * 16 + 9, 64)) {
+                if (!biome.hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
                     return false;
                 }
             }
@@ -128,8 +128,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
                 DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
                 this.components.addAll(builder.build());
                 this.recalculateStructureSize();
-                DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
-                        (System.currentTimeMillis() - now), this.components.size());
+//                DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
+//                        (System.currentTimeMillis() - now), this.components.size());
             } else {
                 DungeonCrawl.LOGGER.warn("The current world seems to have biomes of overworld-like categories, but is not eligible for dungeon generation.");
             }

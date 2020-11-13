@@ -26,6 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3i;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.Metadata;
 import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 import xiroc.dungeoncrawl.util.WeightedRandomInteger;

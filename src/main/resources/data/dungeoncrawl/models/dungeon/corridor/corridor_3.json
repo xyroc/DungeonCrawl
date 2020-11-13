@@ -35,13 +35,6 @@
             "x": 1,
             "z": -1
           },
-          "model_key": "corridor/multipart/corridor_crops"
-        },
-        {
-          "offset": {
-            "x": 1,
-            "z": -1
-          },
           "model_key": "corridor/multipart/corridor_bookshelf"
         },
         {
@@ -83,13 +76,6 @@
           },
           "model_key": "corridor/multipart/corridor_variant_2",
           "weight": 2
-        },
-        {
-          "offset": {
-            "x": 5,
-            "z": -1
-          },
-          "model_key": "corridor/multipart/corridor_crops"
         },
         {
           "offset": {
@@ -147,14 +133,6 @@
             "z": 4
           },
           "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_crops"
-        },
-        {
-          "offset": {
-            "x": 1,
-            "z": 4
-          },
-          "rotation": "clockwise_180",
           "model_key": "corridor/multipart/corridor_bookshelf"
         },
         {
@@ -201,14 +179,6 @@
           "rotation": "clockwise_180",
           "model_key": "corridor/multipart/corridor_variant_2",
           "weight": 2
-        },
-        {
-          "offset": {
-            "x": 5,
-            "z": 4
-          },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_crops"
         },
         {
           "offset": {

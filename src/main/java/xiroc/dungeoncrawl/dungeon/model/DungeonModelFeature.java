@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.storage.loot.RandomValueRange;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -63,6 +64,9 @@ public interface DungeonModelFeature {
     };
 
     DungeonModelFeature SPAWNERS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
+        if (Config.NO_SPAWNERS.get()) {
+            return;
+        }
         for (DirectionalBlockPos position : positions) {
             if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER,
@@ -77,6 +81,9 @@ public interface DungeonModelFeature {
             if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
                         position.position, rand, Treasure.Type.CATACOMB, theme, stage);
+            }
+            if (Config.NO_SPAWNERS.get()) {
+                return;
             }
             BlockPos spawner = position.position.offset(position.direction);
             if (bounds.isVecInside(spawner) && world.getBlockState(spawner.down()).isSolid()) {

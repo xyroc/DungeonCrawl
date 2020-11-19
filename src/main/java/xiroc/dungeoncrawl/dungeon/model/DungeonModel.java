@@ -349,9 +349,9 @@ public class DungeonModel {
                     return null;
                 }
                 try {
-                    return ModelCategory.valueOf(name.toUpperCase());
+                    return ModelCategory.valueOf(name.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException e) {
-                    DungeonCrawl.LOGGER.warn("Unknown model type: {}", name);
+                    DungeonCrawl.LOGGER.warn("Unknown model type: {} ({})", name, name.toUpperCase(Locale.ROOT));
                     return null;
                 }
             }

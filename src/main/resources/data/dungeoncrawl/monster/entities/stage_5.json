@@ -11,7 +11,8 @@
       "weight": 2
     },
     {
-      "entity": "minecraft:wither_skeleton"
+      "entity": "minecraft:wither_skeleton",
+      "weight": 2
     }
   ],
   "rare": [
@@ -20,9 +21,6 @@
     },
     {
       "entity": "minecraft:enderman"
-    },
-    {
-      "entity": "minecraft:silverfish"
     }
   ]
 }

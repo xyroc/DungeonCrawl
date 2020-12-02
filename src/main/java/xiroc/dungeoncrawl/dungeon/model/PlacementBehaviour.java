@@ -25,10 +25,11 @@ import java.util.Random;
 
 public enum PlacementBehaviour {
 
-    NON_SOLID((world, pos, rand, rx, ry, rz) -> false), RANDOM_IF_SOLID_NEARBY((world, pos, rand, rx, ry, rz) -> {
-        if (world.getBlockState(pos.north()).isSolid() || world.getBlockState(pos.east()).isSolid()
-                || world.getBlockState(pos.south()).isSolid() || world.getBlockState(pos.west()).isSolid()) {
-            return rand.nextFloat() < 0.5;
+    NON_SOLID((world, pos, rand, rx, ry, rz) -> false),
+    RANDOM_IF_SOLID_NEARBY((world, pos, rand, rx, ry, rz)
+            -> {
+        if (isSolid(world, pos.north()) || isSolid(world, pos.east()) || isSolid(world, pos.south()) || isSolid(world, pos.west())) {
+            return rand.nextFloat() < 0.6F;
         } else {
             return false;
         }
@@ -38,6 +39,14 @@ public enum PlacementBehaviour {
 
     PlacementBehaviour(PlacementFunction function) {
         this.function = function;
+    }
+
+    private static boolean isSolid(IWorld world, BlockPos pos) {
+        if (world.chunkExists(pos.getX() >> 4, pos.getZ() >> 4)) {
+            return world.getBlockState(pos).isSolid() || world.getBlockState(pos.down()).isSolid();
+        } else {
+            return false;
+        }
     }
 
     public interface PlacementFunction {

@@ -84,6 +84,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
                 spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
                 spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).generateInt(rand));
+                spawnerNBT.putShort("RequiredPlayerRange", (short) 8);
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {
@@ -98,6 +99,7 @@ public class Spawner implements IBlockPlacementHandler {
             type = getRandomEntityType(rand);
         if (spawnData == null)
             spawnData = new CompoundNBT();
+
         spawnData.putString("id", type.getRegistryName().toString());
         if (INVENTORY_ENTITIES.contains(type)) {
             ItemStack[] armor = RandomEquipment.createArmor(rand, stage);

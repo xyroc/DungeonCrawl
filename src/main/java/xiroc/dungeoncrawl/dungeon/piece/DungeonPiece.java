@@ -530,7 +530,7 @@ public abstract class DungeonPiece extends StructurePiece {
                           SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
 
         for (int x = 0; x < model.width; x++) {
-            for (int y = 0; y < model.height; y++) {
+            for (int y = model.height - 1; y >= 0; y--) {
                 for (int z = 0; z < model.length; z++) {
                     BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (boundsIn.isVecInside(position)) {
@@ -783,7 +783,7 @@ public abstract class DungeonPiece extends StructurePiece {
         switch (rotation) {
             case CLOCKWISE_90: {
                 for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
+                    for (int y = model.height - 1; y >= 0; y--) {
                         for (int z = 0; z < model.length; z++) {
                             BlockPos position = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
                             if (boundsIn.isVecInside(position)) {
@@ -819,7 +819,7 @@ public abstract class DungeonPiece extends StructurePiece {
             }
             case COUNTERCLOCKWISE_90: {
                 for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
+                    for (int y = model.height - 1; y >= 0; y--) {
                         for (int z = 0; z < model.length; z++) {
                             BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
                             if (boundsIn.isVecInside(position)) {
@@ -855,7 +855,7 @@ public abstract class DungeonPiece extends StructurePiece {
             }
             case CLOCKWISE_180: {
                 for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
+                    for (int y = model.height - 1; y >= 0; y--) {
                         for (int z = 0; z < model.length; z++) {
                             BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
                             if (boundsIn.isVecInside(position)) {

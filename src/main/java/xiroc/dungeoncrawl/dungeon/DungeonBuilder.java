@@ -84,9 +84,8 @@ public class DungeonBuilder {
 
         DungeonCrawl.EVENT_BUS.post(startEvent);
 
-//        DungeonCrawl.LOGGER.info("Building a Dungeon at (" + startPos.getX() + " / " + startPos.getY() + " / "
-//                + startPos.getZ() + "), " + layerCount + " layers, Theme: {}, {}", theme, subTheme);
-
+        DungeonCrawl.LOGGER.debug("Creating the layout for a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
+                + startPos.getZ() + ") with " + layerCount + " layers. Theme: {} Sub-Theme: {}", theme, subTheme);
     }
 
     public DungeonBuilder(ServerWorld world, ChunkPos pos) {
@@ -260,7 +259,7 @@ public class DungeonBuilder {
     }
 
     public void postProcessDungeon(List<DungeonPiece> pieces, Random rand) {
-        boolean mossArea = layers.length > 3;
+        boolean catacombs = layers.length > 3;
 
         for (int i = 0; i < layers.length; i++) {
             DungeonLayer layer = layers[i];
@@ -271,7 +270,7 @@ public class DungeonBuilder {
                         if (i == layers.length - 1) {
                             layer.segments[x][z].reference.theme = bottomTheme;
                             layer.segments[x][z].reference.subTheme = bottomSubTheme;
-                        } else if (mossArea && layers.length - i < 4) {
+                        } else if (catacombs && layers.length - i < 4) {
                             layer.segments[x][z].reference.theme = lowerTheme;
                             layer.segments[x][z].reference.subTheme = lowerSubTheme;
                         } else {

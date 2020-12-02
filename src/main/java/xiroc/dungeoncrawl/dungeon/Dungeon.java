@@ -124,12 +124,10 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn) {
             if (DungeonBuilder.isWorldEligible(generator)) {
                 ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
-                long now = System.currentTimeMillis();
                 DungeonBuilder builder = new DungeonBuilder(generator, chunkpos, rand);
                 this.components.addAll(builder.build());
                 this.recalculateStructureSize();
-//                DungeonCrawl.LOGGER.info("Created the dungeon layout for [{}, {}] ({} ms) ({} pieces).", chunkX, chunkZ,
-//                        (System.currentTimeMillis() - now), this.components.size());
+                DungeonCrawl.LOGGER.debug("Created the dungeon layout for [{}, {}] with a total of {} pieces.", chunkX, chunkZ, this.components.size());
             } else {
                 DungeonCrawl.LOGGER.warn("The current world seems to have biomes of overworld-like categories, but is not eligible for dungeon generation.");
             }

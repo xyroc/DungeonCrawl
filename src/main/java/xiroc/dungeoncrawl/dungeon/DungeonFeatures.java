@@ -37,8 +37,7 @@ import java.util.Random;
 public class DungeonFeatures {
 
     public static final HashMap<Integer, Triple<Integer, Integer, Integer>> OFFSET_DATA;
-    public static final Triple<Integer, Integer, Integer> DEFAULT_OFFSET = new Triple<Integer, Integer, Integer>(0, 0,
-            0);
+
     public static final List<CorridorFeature> CORRIDOR_FEATURES;
 
     static {

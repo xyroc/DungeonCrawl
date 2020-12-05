@@ -61,14 +61,11 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         super(p_i51427_1_);
     }
 
-    public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z,
-                                                int spacingOffsetsX, int spacingOffsetsZ) {
-        int i = 15;
-        int j = i - 5;
-        int k = x + i * spacingOffsetsX;
-        int l = z + i * spacingOffsetsZ;
-        int i1 = k < 0 ? k - i + 1 : k;
-        int j1 = l < 0 ? l - i + 1 : l;
+    public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z) {
+        int i = 30; // Distance
+        int j = 10; // Separation
+        int i1 = x < 0 ? x - i + 1 : x;
+        int j1 = z < 0 ? z - i + 1 : z;
         int k1 = i1 / i;
         int l1 = j1 / i;
         ((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), k1, l1, 10387319);
@@ -81,18 +78,18 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
     @Override
     public boolean canBeGenerated(BiomeManager p_225558_1_, ChunkGenerator<?> chunkGen, Random rand, int chunkX, int chunkZ, Biome p_225558_6_) {
-        ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkX, chunkZ, 0, 0);
+        ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkX, chunkZ);
         if (chunkX == chunkpos.x && chunkZ == chunkpos.z && p_225558_6_.hasStructure(Dungeon.DUNGEON)) {
-            for (Biome biome : chunkGen.getBiomeProvider().getBiomes(chunkX * 16 + 9, chunkGen.getSeaLevel(), chunkZ * 16 + 9, 64)) {
+            for (Biome biome : chunkGen.getBiomeProvider().getBiomes((chunkX << 4) + 9, chunkGen.getSeaLevel(), (chunkZ << 4) + 9, 64)) {
                 if (!biome.hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
                     return false;
                 }
             }
             if (DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(chunkGen,
-                    chunkGen.getBiomeProvider().getNoiseBiome(chunkX * 16, chunkGen.getSeaLevel(), chunkZ * 16), chunkX, chunkZ))) {
+                    chunkGen.getBiomeProvider().getNoiseBiome(chunkX << 4, chunkGen.getSeaLevel(), chunkZ << 4), chunkX, chunkZ))) {
                 return false;
             }
-            return rand.nextFloat() < Config.DUNGEON_PROBABLILITY.get();
+            return rand.nextFloat() < Config.DUNGEON_PROBABILITY.get();
         } else {
             return false;
         }
@@ -141,7 +138,16 @@ public class Dungeon extends Structure<NoFeatureConfig> {
                         worldIn.getDimension().getType());
                 return;
             }
+
+            if (Config.EXTENDED_DEBUG.get()) {
+                DungeonCrawl.LOGGER.debug("Starting dungeon generation in chunk [{},{}]", pos.x, pos.z);
+            }
+
             super.generateStructure(worldIn, chunkGen, rand, structurebb, pos);
+
+            if (Config.EXTENDED_DEBUG.get()) {
+                DungeonCrawl.LOGGER.debug("Finished dungeon generation in chunk [{},{}]", pos.x, pos.z);
+            }
         }
 
     }

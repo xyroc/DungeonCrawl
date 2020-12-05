@@ -23,6 +23,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -51,32 +53,12 @@ public class ScatteredDecoration implements IDungeonDecoration {
             for (int y = 0; y < height; y++) {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (world.isAirBlock(currentPos) && worldGenBounds.isVecInside(currentPos) && structureBounds.isVecInside(currentPos) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                    if (worldGenBounds.isVecInside(currentPos) && structureBounds.isVecInside(currentPos) && world.isAirBlock(currentPos) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                         BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
                         BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
                         BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                         BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
-
-//                        if (worldGenBounds.isVecInside(north) && structureBounds.isVecInside(north) && world.isAirBlock(north) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-//                            world.setBlockState(north, blockStateProvider.get(), 2);
-//                        }
-//
-//                        if (worldGenBounds.isVecInside(east) && structureBounds.isVecInside(east) && world.isAirBlock(east) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-//                            world.setBlockState(east, blockStateProvider.get(), 2);
-//                        }
-//
-//                        if (worldGenBounds.isVecInside(south) && structureBounds.isVecInside(south) && world.isAirBlock(south) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-//                            world.setBlockState(south, blockStateProvider.get(), 2);
-//                        }
-//
-//                        if (worldGenBounds.isVecInside(west) && structureBounds.isVecInside(west) && world.isAirBlock(west) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-//                            world.setBlockState(west, blockStateProvider.get(), 2);
-//                        }
-//
-//                        if (worldGenBounds.isVecInside(down) && structureBounds.isVecInside(down) && world.isAirBlock(down) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-//                            world.setBlockState(down, blockStateProvider.get(), 2);
-//                        }
 
                         boolean _north = worldGenBounds.isVecInside(north) && structureBounds.isVecInside(north) && world.getBlockState(north).isSolid();
                         boolean _east = worldGenBounds.isVecInside(east) && structureBounds.isVecInside(east) && world.getBlockState(east).isSolid();

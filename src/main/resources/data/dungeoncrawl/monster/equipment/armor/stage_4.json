@@ -14,10 +14,6 @@
   ],
   "chestplate": [
     {
-      "item": "minecraft:diamond_chestplate",
-      "weight": 2
-    },
-    {
       "item": "minecraft:golden_chestplate"
     },
     {
@@ -26,10 +22,6 @@
     }
   ],
   "leggings": [
-    {
-      "item": "minecraft:diamond_leggings",
-      "weight": 2
-    },
     {
       "item": "minecraft:golden_leggings"
     },

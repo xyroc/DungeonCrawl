@@ -39,16 +39,17 @@ public class Config {
 
     public static final IntValue SPAWNER_ENTITIES;
 
-    public static final DoubleValue DUNGEON_PROBABLILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
+    public static final DoubleValue DUNGEON_PROBABILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
-            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN;
+            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN, EXTENDED_DEBUG;
 
     static {
         BUILDER.comment("General Settings").push(CONFIG_GENERAL);
 
         ENABLE_TOOLS = BUILDER.comment("Enables the dungeon crawl tools.").define("enable_tools", false);
         ENABLE_DUMMY_PIECES = BUILDER.comment("This option will make pre-2.0.0 worlds playable with version 2.0.0 and later.").define("enable_dummy_pieces", false);
+        EXTENDED_DEBUG = BUILDER.comment("Enables extended debug logging to help detecting potential errors. This is enabled by default.").define("extended_debug", true);
 
         BUILDER.pop();
 
@@ -78,7 +79,7 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.comment("World Generation Settings").push(CONFIG_WORLDGEN);
-        DUNGEON_PROBABLILITY = BUILDER.comment("The probability of a dungeon getting generated on each fitting chunk.")
+        DUNGEON_PROBABILITY = BUILDER.comment("The probability of a dungeon getting generated on each fitting chunk.")
                 .defineInRange("dungeon_probability", 0.22, 0.0001, 1.0);
         IGNORE_DIMENSION = BUILDER.comment(
                 "If this is set to false, no dungeons can be generated outside the overworld.")

@@ -154,7 +154,7 @@ public class DefaultGenerator extends DungeonGenerator {
         }
 
         if (depth >= minStairsDepth && !dungeonLayer.stairsPlaced && layer != 4) {
-            DungeonCrawl.LOGGER.debug("Placing exit stairs in layer {}", layer);
+//            DungeonCrawl.LOGGER.debug("Placing exit stairs in layer {}", layer);
             Direction toLast = currentPosition.directionTo(lastPosition);
 
             dungeonLayer.end = currentPosition;

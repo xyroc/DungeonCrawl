@@ -45,8 +45,9 @@ public class FloorDecoration implements IDungeonDecoration {
             for (int z = 0; z < model.length; z++) {
                 for (int y = 0; y < model.height; y++) {
                     if (model.model[x][y][z] != null && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1
+                            && world.chunkExists(pos.getX() >> 4, pos.getZ() >> 4)
                             && world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z))
-                            && world.getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z)).isSolid()
+                            && checkSolid(world, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), worldGenBounds, structureBounds)
                             && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
                         piece.setBlockState(blockStateProvider.get(), world, worldGenBounds, null,
                                 IDungeonDecoration.getRotatedBlockPos(x, y + 1, z, pos, model, piece.rotation),
@@ -55,6 +56,10 @@ public class FloorDecoration implements IDungeonDecoration {
                 }
             }
         }
+    }
+
+    private static boolean checkSolid(IWorld world, BlockPos pos, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds) {
+        return worldGenBounds.isVecInside(pos) && structureBounds.isVecInside(pos) && world.getBlockState(pos).isSolid();
     }
 
     public static class NextToSolid implements IDungeonDecoration {
@@ -74,23 +79,25 @@ public class FloorDecoration implements IDungeonDecoration {
                 for (int z = 0; z < model.length; z++) {
                     for (int y = 0; y < model.height; y++) {
                         if (model.model[x][y][z] != null && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1) {
+
                             BlockPos p = new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z);
-                            if (world.isAirBlock(p) && world.getBlockState(p.down()).isSolid() &&
-                                    (checkSolid(world, p.north(), worldGenBounds, structureBounds) || checkSolid(world, p.east(), worldGenBounds, structureBounds)
-                                            || checkSolid(world, p.south(), worldGenBounds, structureBounds) || checkSolid(world, p.west(), worldGenBounds, structureBounds))
-                                    && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-                                piece.setBlockState(blockStateProvider.get(), world, worldGenBounds, null,
-                                        IDungeonDecoration.getRotatedBlockPos(x, y + 1, z, pos, model, piece.rotation),
-                                        0, 0, PlacementBehaviour.SOLID);
+                            if (world.chunkExists(p.getX() >> 4, p.getZ() >> 4)) {
+                                if (world.isAirBlock(p) && world.getBlockState(p.down()).isSolid() &&
+                                        (checkSolid(world, p.north(), worldGenBounds, structureBounds) || checkSolid(world, p.east(), worldGenBounds, structureBounds)
+                                                || checkSolid(world, p.south(), worldGenBounds, structureBounds) || checkSolid(world, p.west(), worldGenBounds, structureBounds))
+                                        && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                                    piece.setBlockState(blockStateProvider.get(), world, worldGenBounds, null,
+                                            IDungeonDecoration.getRotatedBlockPos(x, y + 1, z, pos, model, piece.rotation),
+                                            0, 0, PlacementBehaviour.SOLID);
+                                }
                             }
+
                         }
                     }
                 }
             }
         }
 
-        private boolean checkSolid(IWorld world, BlockPos pos, MutableBoundingBox worlGenBounds, MutableBoundingBox structureBounds) {
-            return worlGenBounds.isVecInside(pos) && structureBounds.isVecInside(pos) && world.getBlockState(pos).isSolid();
-        }
+
     }
 }

@@ -529,9 +529,12 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public void buildFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
                           SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
+        }
 
         for (int x = 0; x < model.width; x++) {
-            for (int y = 0; y < model.height; y++) {
+            for (int y = model.height - 1; y >= 0; y--) {
                 for (int z = 0; z < model.length; z++) {
                     BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (boundsIn.isVecInside(position)) {
@@ -560,6 +563,9 @@ public abstract class DungeonPiece extends StructurePiece {
                     }
                 }
             }
+        }
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Finished building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 
@@ -781,10 +787,14 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public void buildRotatedFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
                                  SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Building {} with model id {} and rotation {} at ({} | {} | {})", model.location, model.id, rotation, pos.getX(), pos.getY(), pos.getZ());
+        }
+
         switch (rotation) {
             case CLOCKWISE_90: {
                 for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
+                    for (int y = model.height - 1; y >= 0; y--) {
                         for (int z = 0; z < model.length; z++) {
                             BlockPos position = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
                             if (boundsIn.isVecInside(position)) {
@@ -820,7 +830,7 @@ public abstract class DungeonPiece extends StructurePiece {
             }
             case COUNTERCLOCKWISE_90: {
                 for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
+                    for (int y = model.height - 1; y >= 0; y--) {
                         for (int z = 0; z < model.length; z++) {
                             BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
                             if (boundsIn.isVecInside(position)) {
@@ -856,7 +866,7 @@ public abstract class DungeonPiece extends StructurePiece {
             }
             case CLOCKWISE_180: {
                 for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
+                    for (int y = model.height - 1; y >= 0; y--) {
                         for (int z = 0; z < model.length; z++) {
                             BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
                             if (boundsIn.isVecInside(position)) {
@@ -897,6 +907,9 @@ public abstract class DungeonPiece extends StructurePiece {
                 break;
         }
 
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Finished building {} with model id {} and rotation {} at ({} | {} | {})", model.location, model.id, rotation, pos.getX(), pos.getY(), pos.getZ());
+        }
     }
 
     /**
@@ -938,7 +951,15 @@ public abstract class DungeonPiece extends StructurePiece {
     public void decorate(IWorld world, BlockPos pos, int width, int height, int length, Theme theme, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonModel model) {
         if (theme.decorations != null) {
             for (IDungeonDecoration decoration : theme.decorations) {
+                if (Config.EXTENDED_DEBUG.get()) {
+                    DungeonCrawl.LOGGER.debug("Running decoration {} of {} ({}) at ({} | {} | {})", decoration.toString(), model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
+                }
+
                 decoration.decorate(model, world, pos, width, height, length, worldGenBounds, structureBounds, this, stage);
+
+                if (Config.EXTENDED_DEBUG.get()) {
+                    DungeonCrawl.LOGGER.debug("Finished decoration {} of {} ({}) at ({} | {} | {})", decoration.toString(), model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
+                }
             }
         }
     }

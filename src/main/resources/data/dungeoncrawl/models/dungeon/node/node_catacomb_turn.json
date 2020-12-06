@@ -7,7 +7,7 @@
 		"feature": {
 			"type": "catacomb",
 			"min": 4,
-			"max": 5
+			"max": 6
 		},
 		"stages": [ 3, 4 ],
 		"weights": [ 0, 0, 10, 10, 0 ]

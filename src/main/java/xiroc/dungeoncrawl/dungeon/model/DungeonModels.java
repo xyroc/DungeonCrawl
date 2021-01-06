@@ -150,7 +150,7 @@ public class DungeonModels {
         load("models/dungeon/node/connector/", "node_connector_4", resourceManager);
         load("models/dungeon/node/connector/", "node_connector_5", resourceManager);
         load("models/dungeon/node/connector/", "node_connector_catacomb", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_trap", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_basic", resourceManager);
 
         load("models/dungeon/room/", "spawner_room", resourceManager);
         load("models/dungeon/room/", "spawner_room_2", resourceManager);

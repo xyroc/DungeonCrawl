@@ -81,8 +81,7 @@ public class DungeonCrawl {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
 
-        ForgeRegistries.FEATURES
-                .register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
+        ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
         Treasure.init();
         DungeonModelFeature.init();
         DungeonModelBlockType.buildNameTable();

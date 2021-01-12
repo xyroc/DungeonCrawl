@@ -22,10 +22,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
@@ -41,7 +39,7 @@ public class WeightedRandom<T> implements IRandom<T> {
         WeightedRandom.Builder<Item> builder = new WeightedRandom.Builder<>();
         array.forEach((element) -> {
             JsonObject object = element.getAsJsonObject();
-            int weight = object.has("weight") ? object.get("weight").getAsInt() : 1;
+            int weight = JSONUtils.getWeightOrDefault(object);
             builder.add(RandomEquipment.getItem(new ResourceLocation(object.get("item").getAsString())), weight);
         });
         return builder.build();
@@ -51,7 +49,7 @@ public class WeightedRandom<T> implements IRandom<T> {
         WeightedRandom.Builder<IDungeonDecoration> builder = new WeightedRandom.Builder<>();
         array.forEach((element) -> {
             JsonObject object = element.getAsJsonObject();
-            int weight = object.has("weight") ? object.get("weight").getAsInt() : 1;
+            int weight = JSONUtils.getWeightOrDefault(object);
             IDungeonDecoration decoration = IDungeonDecoration.fromJson(object);
             if (decoration != null) {
                 builder.entries.add(new Tuple<>(weight, decoration));

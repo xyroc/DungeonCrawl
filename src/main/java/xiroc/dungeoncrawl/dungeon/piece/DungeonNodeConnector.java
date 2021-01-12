@@ -88,7 +88,7 @@ public class DungeonNodeConnector extends DungeonPiece {
                     y + model.height - 1, z + 4);
         }
 
-        setRealPosition(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
+        setWorldPosition(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
     }
 
     @Override

@@ -71,16 +71,16 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
-    public void setRealPosition(int x, int y, int z) {
+    public void setWorldPosition(int x, int y, int z) {
         switch (rotation) {
             case NONE:
-                super.setRealPosition(x + 1, y, z);
+                super.setWorldPosition(x + 1, y, z);
                 break;
             case CLOCKWISE_90:
-                super.setRealPosition(x, y, z + 1);
+                super.setWorldPosition(x, y, z + 1);
                 break;
             default:
-                super.setRealPosition(x, y, z);
+                super.setWorldPosition(x, y, z);
                 break;
         }
     }

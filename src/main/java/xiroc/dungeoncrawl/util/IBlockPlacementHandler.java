@@ -40,16 +40,6 @@ public interface IBlockPlacementHandler {
     };
 
     static void init() {
-        // A temporary fix that prevents tripwire hooks from getting placed next to chunk borders.
-        PLACEMENT_HANDLERS.put(Blocks.TRIPWIRE_HOOK, ((world, state, pos, rand, treasureType, theme, lootLevel) -> {
-            int x = pos.getX() & 15, z = pos.getZ() & 15;
-            if (x == 0 || z == 0 || x == 15 || z == 15) {
-                world.setBlockState(pos, state, 2);
-            } else {
-                world.setBlockState(pos, DungeonBlocks.CAVE_AIR, 0);
-            }
-        }));
-
         PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);
         PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, TRAPPED_CHEST);
         PLACEMENT_HANDLERS.put(Blocks.BARREL, CHEST);

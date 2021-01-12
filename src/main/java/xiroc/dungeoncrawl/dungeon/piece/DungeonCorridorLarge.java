@@ -48,8 +48,8 @@ public class DungeonCorridorLarge extends DungeonPiece {
         this.connectedSides = corridor.connectedSides;
         this.rotation = corridor.rotation;
         this.stage = corridor.stage;
-        this.posX = corridor.posX;
-        this.posZ = corridor.posZ;
+        this.gridX = corridor.gridX;
+        this.gridZ = corridor.gridZ;
         this.type = type;
     }
 

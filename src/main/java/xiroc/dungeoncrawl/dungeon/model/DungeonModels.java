@@ -150,7 +150,7 @@ public class DungeonModels {
         load("models/dungeon/node/connector/", "node_connector_4", resourceManager);
         load("models/dungeon/node/connector/", "node_connector_5", resourceManager);
         load("models/dungeon/node/connector/", "node_connector_catacomb", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_trap", resourceManager);
+        load("models/dungeon/node/connector/", "node_connector_basic", resourceManager);
 
         load("models/dungeon/room/", "spawner_room", resourceManager);
         load("models/dungeon/room/", "spawner_room_2", resourceManager);
@@ -267,23 +267,23 @@ public class DungeonModels {
             createWeightedRandomIntegers(tempMap, ModelCategory.ROOM, stage, i);
         }
 
-        ModelCategory.CORRIDOR.requirePresentModels(0, 1, 2, 3, 4);
-        ModelCategory.CORRIDOR_LINKER.requirePresentModels(0, 1, 2, 3, 4);
-        ModelCategory.NODE_CONNECTOR.requirePresentModels(0, 1, 2, 3, 4);
+        ModelCategory.CORRIDOR.verifyModelPresence(0, 1, 2, 3, 4);
+        ModelCategory.CORRIDOR_LINKER.verifyModelPresence(0, 1, 2, 3, 4);
+        ModelCategory.NODE_CONNECTOR.verifyModelPresence(0, 1, 2, 3, 4);
         // ModelCategory.SIDE_ROOM.requirePresentModels(0, 1, 2, 3, 4, 5);
-        ModelCategory.ROOM.requirePresentModels(0, 1, 2, 3, 4);
+        ModelCategory.ROOM.verifyModelPresence(0, 1, 2, 3, 4);
 
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_FULL, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_FORK, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_STRAIGHT, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_TURN, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_DEAD_END, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_FULL, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_FORK, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_STRAIGHT, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_TURN, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_DEAD_END, 0, 1, 2, 3, 4);
 
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_FULL, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_FORK, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_STRAIGHT, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_TURN, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_DEAD_END, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_FULL, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_FORK, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_STRAIGHT, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_TURN, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_DEAD_END, 2, 3, 4);
     }
 
     public static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
@@ -391,7 +391,7 @@ public class DungeonModels {
             members = Lists.newArrayList();
         }
 
-        public void requirePresentModels(int... stages) {
+        public void verifyModelPresence(int... stages) {
             for (int stage : stages) {
                 int hashCode = 1;
                 hashCode = 31 * hashCode + hashCode();
@@ -403,7 +403,7 @@ public class DungeonModels {
             }
         }
 
-        public void requirePresentModels(ModelCategory secondaryCategory, int... stages) {
+        public void verifyModelPresence(ModelCategory secondaryCategory, int... stages) {
             for (int stage : stages) {
                 int hashCode = 1;
                 hashCode = 31 * hashCode + hashCode();

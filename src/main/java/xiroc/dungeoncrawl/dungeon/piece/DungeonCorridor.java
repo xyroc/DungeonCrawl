@@ -42,16 +42,12 @@ import java.util.Random;
 
 public class DungeonCorridor extends DungeonPiece {
 
-    public byte[] corridorFeatures;
-
-    public int specialType;
+    public DungeonCorridor() {
+        this(null, DEFAULT_NBT);
+    }
 
     public DungeonCorridor(TemplateManager manager, CompoundNBT p_i51343_2_) {
         super(StructurePieceTypes.CORRIDOR, p_i51343_2_);
-        specialType = p_i51343_2_.getInt("specialType");
-        if (p_i51343_2_.contains("corridorFeatures")) {
-            corridorFeatures = p_i51343_2_.getByteArray("corridorFeatures");
-        }
     }
 
     @Override
@@ -97,7 +93,7 @@ public class DungeonCorridor extends DungeonPiece {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        if (connectedSides > 2) {
+        if (connectedSides != 2 || !isStraight()) {
             entrances(worldIn, structureBoundingBoxIn, model);
         }
 
@@ -157,10 +153,6 @@ public class DungeonCorridor extends DungeonPiece {
     @Override
     public void readAdditional(CompoundNBT tagCompound) {
         super.readAdditional(tagCompound);
-        tagCompound.putInt("specialType", specialType);
-        if (corridorFeatures != null) {
-            tagCompound.putByteArray("corridorFeatures", corridorFeatures);
-        }
     }
 
     public boolean isStraight() {

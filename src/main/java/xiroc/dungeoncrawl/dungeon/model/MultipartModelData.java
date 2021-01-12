@@ -64,7 +64,7 @@ public class MultipartModelData {
         if (model != null) {
             DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece(null, DungeonPiece.DEFAULT_NBT);
             Vec3i pos = Orientation.rotatedMultipartOffset(parent, model, offset, rotation);
-            piece.setRealPosition(x + pos.getX(), y + pos.getY(), z + pos.getZ());
+            piece.setWorldPosition(x + pos.getX(), y + pos.getY(), z + pos.getZ());
             piece.modelID = model.id;
             piece.rotation = this.rotation.add(rotation);
             piece.stage = parentPiece.stage;

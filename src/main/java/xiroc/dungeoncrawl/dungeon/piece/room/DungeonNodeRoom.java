@@ -126,11 +126,11 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void setRealPosition(int x, int y, int z) {
+    public void setWorldPosition(int x, int y, int z) {
         if (large)
-            super.setRealPosition(x - 9, y, z - 9);
+            super.setWorldPosition(x - 9, y, z - 9);
         else
-            super.setRealPosition(x - 4, y, z - 4);
+            super.setWorldPosition(x - 4, y, z - 4);
     }
 
     @Override
@@ -214,7 +214,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x + 7, y, z - 5);
+            connector.setWorldPosition(x + 7, y, z - 5);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
@@ -226,7 +226,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x + 17, y, z + 7);
+            connector.setWorldPosition(x + 17, y, z + 7);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
@@ -238,7 +238,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x + 7, y, z + 17);
+            connector.setWorldPosition(x + 7, y, z + 17);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
@@ -250,7 +250,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x - 5, y, z + 7);
+            connector.setWorldPosition(x - 5, y, z + 7);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
@@ -263,7 +263,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             throw new RuntimeException("The current Position needs to provide a facing.");
         }
 
-        Position2D center = new Position2D(posX, posZ);
+        Position2D center = new Position2D(gridX, gridZ);
 
         return new Tuple<>(center.shift(node.findClosest(current.facing), 1),
                 center.shift(findExitToPosition(end), 1));
@@ -279,24 +279,24 @@ public class DungeonNodeRoom extends DungeonPiece {
         if (pos.hasFacing())
             return node.findClosest(pos.facing);
 
-        if (pos.x > posX) {
-            if (pos.z > posZ)
+        if (pos.x > gridX) {
+            if (pos.z > gridZ)
                 return Direction.SOUTH;
-            else if (pos.z < posZ)
+            else if (pos.z < gridZ)
                 return Direction.NORTH;
             else
                 return Direction.EAST;
-        } else if (pos.x < posX) {
-            if (pos.z > posZ)
+        } else if (pos.x < gridX) {
+            if (pos.z > gridZ)
                 return Direction.SOUTH;
-            else if (pos.z < posZ)
+            else if (pos.z < gridZ)
                 return Direction.NORTH;
             else
                 return Direction.WEST;
         } else {
-            if (pos.z > posZ)
+            if (pos.z > gridZ)
                 return Direction.SOUTH;
-            else if (pos.z < posZ)
+            else if (pos.z < gridZ)
                 return Direction.NORTH;
             else {
                 DungeonCrawl.LOGGER.error("Invalid Position: {},{}", pos.x, pos.z);

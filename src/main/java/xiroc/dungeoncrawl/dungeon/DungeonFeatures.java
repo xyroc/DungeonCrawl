@@ -36,14 +36,7 @@ import java.util.Random;
 
 public class DungeonFeatures {
 
-    public static final HashMap<Integer, Triple<Integer, Integer, Integer>> OFFSET_DATA;
-
     public static final List<CorridorFeature> CORRIDOR_FEATURES;
-
-    static {
-        OFFSET_DATA = new HashMap<>();
-        OFFSET_DATA.put(34, new Triple<>(0, -1, 0));
-    }
 
     static {
         CORRIDOR_FEATURES = Lists.newArrayList();
@@ -90,7 +83,7 @@ public class DungeonFeatures {
 //        });
 
         CORRIDOR_FEATURES.add(((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-            if (layer.segments[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.075) {
+            if (layer.grid[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.075) {
                 Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z));
                 if (sideRoomData != null) {
                     DungeonSideRoom sideRoom = new DungeonSideRoom();
@@ -103,14 +96,14 @@ public class DungeonFeatures {
 
                     Direction dir = sideRoomData.getB().rotate(Direction.WEST);
                     sideRoom.openSide(dir);
-                    sideRoom.setPosition(sideRoomData.getA());
+                    sideRoom.setGridPosition(sideRoomData.getA());
                     sideRoom.setRotation(sideRoomData.getB());
                     sideRoom.stage = stage;
 
-                    layer.segments[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).addFlag(PlaceHolder.Flag.FIXED_MODEL);
-                    layer.segments[x][z].reference.openSide(dir.getOpposite());
+                    layer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).addFlag(PlaceHolder.Flag.FIXED_MODEL);
+                    layer.grid[x][z].reference.openSide(dir.getOpposite());
                     layer.map.markPositionAsOccupied(sideRoomData.getA());
-                    layer.rotatePiece(layer.segments[x][z]);
+                    layer.rotatePiece(layer.grid[x][z], rand);
                     return true;
                 }
             }
@@ -242,103 +235,6 @@ public class DungeonFeatures {
         for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
             if (corridorFeature.process(builder, layer, x, z, rand, lyr, stage, startPos))
                 return;
-    }
-
-    /**
-     * Checks if a piece can be placed at the given position.
-     *
-     * @return true if the piece can be placed, false if not
-     */
-    public static boolean canPlacePiece(DungeonLayer layer, int x, int z, int width, int length,
-                                        boolean ignoreStartPosition) {
-        if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
-            return false;
-
-        for (int x0 = 0; x0 < width; x0++) {
-            for (int z0 = 0; z0 < length; z0++) {
-                if (!(ignoreStartPosition && x0 == 0 && z0 == 0)
-                        && (layer.segments[x + x0][z + z0] != null || !layer.map.isPositionFree(x + x0, z + z0))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks if a piece can be placed at the given position and layer. This does
-     * also check if there are pieces on other layers (height variable) to avoid
-     * collisions. For example, a piece that goes 1 to 9 blocks below the height of
-     * its layer would have a height value of -1 (minus, because it goes down; 1
-     * layer = 9 blocks).
-     *
-     * @return true if the piece can be placed, false if not
-     */
-    public static boolean canPlacePieceWithHeight(DungeonBuilder builder, int layer, int x, int z, int width,
-                                                  int length, int layerHeight, boolean ignoreStartPosition) {
-        /*
-         * x + width - 1 > Dungeon.SIZE -1 <=> x + width > Dungeon.SIZE
-         * (same for z of course)
-         */
-        if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
-            return false;
-
-        int layers = builder.layers.length, lh = layer - layerHeight;
-        if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
-            return false;
-
-        boolean up = layerHeight > 0;
-        int c = up ? -1 : 1, k = lh + c;
-
-        for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
-            if (layers - lyr == 0)
-                continue;
-            else if (layers - lyr < 0)
-                return false;
-
-            for (int x0 = 0; x0 < width; x0++) {
-                for (int z0 = 0; z0 < length; z0++) {
-                    if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0)
-                            && (builder.layers[lyr].segments[x + x0][z + z0] != null
-                            || !builder.maps[lyr].isPositionFree(x + x0, z + z0))) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Marks the given area of the dungeon as occupied to prevent collision between
-     * multiple dungeon features. The given coordinates and size values are assumed
-     * to be correct. All parameters are the same as in #canPlacePiece.
-     */
-    public static void mark(DungeonLayer layer, int x, int z, int width, int length) {
-        for (int x0 = 0; x0 < width; x0++) {
-            for (int z0 = 0; z0 < length; z0++) {
-                layer.map.map[x][z] = true;
-            }
-        }
-    }
-
-    /**
-     * Marks the given area of the dungeon as occupied to prevent collision between
-     * multiple dungeon features. The given coordinates and size values are assumed
-     * to be correct. All parameters are the same as in #canPlacePieceWithHeight.
-     */
-    public static void mark(DungeonBuilder builder, int layer, int x, int z, int width, int length, int layerHeight) {
-        int layers = builder.layers.length;
-        boolean up = layerHeight > 0;
-        int c = up ? -1 : 1, k = layer - layerHeight + c;
-
-        for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
-            if (layers - lyr == 0)
-                continue;
-            for (int x0 = 0; x0 < width; x0++)
-                for (int z0 = 0; z0 < length; z0++)
-                    builder.maps[lyr].markPositionAsOccupied(new Position2D(x + x0, z + z0));
-        }
     }
 
     @FunctionalInterface

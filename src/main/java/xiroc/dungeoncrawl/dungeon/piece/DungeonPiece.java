@@ -59,23 +59,23 @@ import java.util.Set;
 
 public abstract class DungeonPiece extends StructurePiece {
 
-    // 0 corridor
-    // 1 stairs
-    // 2 corridor hole
-    // 3 corridor trap
-    // 4 corridor room
-    // 5 part
-    // 6 entrance builder
-    // 7 large corridor
-    // 8 room
-    // 9 side room
-    // 10 node room
-    // 11 node connector
-    // 12 prisoner cell
-    // 13 staircase
-    // 14 secret room
-    // 15 spider room
-    // 16 multipart model piece
+    // 0    corridor
+    // 1    stairs
+    // 2    (unused) corridor hole
+    // 3    (unused) corridor trap
+    // 4    corridor room
+    // 5    <removed>
+    // 6    entrance builder
+    // 7    (unused) large corridor
+    // 8    room
+    // 9    side room
+    // 10   node room
+    // 11   node connector
+    // 12   (unused) prisoner cell
+    // 13   staircase
+    // 14   secret room
+    // 15   (unused) spider room
+    // 16   multipart model piece
 
     public static final CompoundNBT DEFAULT_NBT;
 
@@ -96,7 +96,7 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public Rotation rotation;
-    public int connectedSides, posX, posZ, theme, subTheme, x, y, z, stage, modelID;
+    public int connectedSides, gridX, gridZ, theme, subTheme, x, y, z, stage, modelID;
     public boolean[] sides; // N-E-S-W-U-D
     public DirectionalBlockPos[] featurePositions;
     public byte[] variation;
@@ -115,8 +115,8 @@ public abstract class DungeonPiece extends StructurePiece {
         sides[2] = p_i51343_2_.getBoolean("south");
         sides[3] = p_i51343_2_.getBoolean("west");
         connectedSides = p_i51343_2_.getInt("connectedSides");
-        posX = p_i51343_2_.getInt("posX");
-        posZ = p_i51343_2_.getInt("posZ");
+        gridX = p_i51343_2_.getInt("posX");
+        gridZ = p_i51343_2_.getInt("posZ");
         x = p_i51343_2_.getInt("x");
         y = p_i51343_2_.getInt("y");
         z = p_i51343_2_.getInt("z");
@@ -195,17 +195,17 @@ public abstract class DungeonPiece extends StructurePiece {
         return this.rotation;
     }
 
-    public void setPosition(int x, int z) {
-        this.posX = x;
-        this.posZ = z;
+    public void setGridPosition(int x, int z) {
+        this.gridX = x;
+        this.gridZ = z;
     }
 
-    public void setPosition(Position2D position) {
-        this.posX = position.x;
-        this.posZ = position.z;
+    public void setGridPosition(Position2D position) {
+        this.gridX = position.x;
+        this.gridZ = position.z;
     }
 
-    public void setRealPosition(int x, int y, int z) {
+    public void setWorldPosition(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -218,8 +218,8 @@ public abstract class DungeonPiece extends StructurePiece {
         tagCompound.putBoolean("south", sides[2]);
         tagCompound.putBoolean("west", sides[3]);
         tagCompound.putInt("connectedSides", connectedSides);
-        tagCompound.putInt("posX", posX);
-        tagCompound.putInt("posZ", posZ);
+        tagCompound.putInt("posX", gridX);
+        tagCompound.putInt("posZ", gridZ);
         tagCompound.putInt("x", x);
         tagCompound.putInt("y", y);
         tagCompound.putInt("z", z);
@@ -378,7 +378,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
         //if (boundingboxIn.isVecInside(blockPos)) {
 
-        worldIn.setBlockState(blockPos, blockstateIn, 3);
+        worldIn.setBlockState(blockPos, blockstateIn, 2);
 
 //			IFluidState ifluidstate = worldIn.getFluidState(blockPos);
 //			if (!ifluidstate.isEmpty()) {
@@ -401,7 +401,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
         if (boundingboxIn.isVecInside(blockPos)) {
 
-            worldIn.setBlockState(blockPos, blockstateIn, 3);
+            worldIn.setBlockState(blockPos, blockstateIn, 2);
 
 //			IFluidState ifluidstate = worldIn.getFluidState(blockPos);
 //			if (!ifluidstate.isEmpty()) {
@@ -1162,10 +1162,7 @@ public abstract class DungeonPiece extends StructurePiece {
             if (piece.sides[i] && c++ == n)
                 return getDirectionFromInt(i);
         }
-        DungeonCrawl.LOGGER.error("getOpenSide(" + piece + ", " + n
-                + ") malfunctioned. This error did most likely occur due to an error in the mod and might result in wrongly formed dungeons. ("
-                + piece.connectedSides + " open sides)");
-        return Direction.NORTH;
+        throw new IllegalStateException(piece + " does not have " + n + "or more open sides.");
     }
 
     public static Direction getDirectionFromInt(int dir) {

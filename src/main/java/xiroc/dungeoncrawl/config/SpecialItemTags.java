@@ -60,7 +60,7 @@ public class SpecialItemTags implements IJsonConfigurable {
             PREFIX_TOOL, PREFIX_SWORD, PREFIX_RANGED_WEAPON;
 
     static {
-        TAG_PROCESSORS = new HashMap<String, TagProcessor>();
+        TAG_PROCESSORS = new HashMap<>();
         TAG_PROCESSORS.put(EFFECT_ENCHANT, (item, tag, data, rand, stage) -> {
             for (ResourceLocation enchantment : tag.enchantmentResources) {
                 Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(enchantment);

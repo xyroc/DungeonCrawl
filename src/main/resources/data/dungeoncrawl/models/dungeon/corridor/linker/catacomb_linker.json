@@ -1,0 +1,68 @@
+{
+  "type": "corridor_linker",
+  "data": {
+    "stages": [ 3, 4 ],
+    "weights": [ 0, 0, 2, 2, 0 ]
+  },
+  "multipart": [
+    {
+      "conditions": {
+        "side_1": true
+      },
+      "models": [
+        {
+          "model": "multipart/catacomb/connector",
+          "offset": {
+            "x": 1,
+            "z": 1
+          }
+        }
+      ],
+      "else": [
+
+      ]
+    },
+    {
+      "conditions": {
+        "side_2": true
+      },
+      "models": [
+        {
+          "model": "multipart/catacomb/connector",
+          "offset": {
+            "x": 1,
+            "z": 1
+          }
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "side_3": true
+      },
+      "models": [
+        {
+          "model": "multipart/catacomb/connector",
+          "offset": {
+            "x": 1,
+            "z": 1
+          }
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "side_4": true
+      },
+      "models": [
+        {
+          "model": "multipart/catacomb/connector",
+          "offset": {
+            "x": 1,
+            "z": 1
+          }
+        }
+      ]
+    }
+  ]
+}

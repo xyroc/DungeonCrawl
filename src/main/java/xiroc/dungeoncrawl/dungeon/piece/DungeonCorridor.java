@@ -27,6 +27,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
@@ -35,7 +36,6 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.util.List;
 import java.util.Random;
@@ -104,7 +104,6 @@ public class DungeonCorridor extends DungeonPiece {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
@@ -129,8 +128,14 @@ public class DungeonCorridor extends DungeonPiece {
                         break;
                 }
             }
-            for (WeightedRandom<?> randomData : model.multipartData) {
-                pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, rotation, x, y, z));
+
+            for (MultipartModelData data : model.multipartData) {
+                if (data.checkConditions(this)) {
+                    DungeonCrawl.LOGGER.info("Adding a piece");
+                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, x, this.y, z));
+                } else if (data.alternatives != null) {
+                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, x, this.y, z));
+                }
             }
         }
     }

@@ -97,7 +97,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public Rotation rotation;
     public int connectedSides, gridX, gridZ, theme, subTheme, x, y, z, stage, modelID;
-    public boolean[] sides; // N-E-S-W-U-D
+    public boolean[] sides; // N-E-S-W
     public DirectionalBlockPos[] featurePositions;
     public byte[] variation;
 
@@ -420,12 +420,15 @@ public abstract class DungeonPiece extends StructurePiece {
         return model != null && model.multipartData != null;
     }
 
-    @SuppressWarnings("unchecked")
     public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
         DungeonModel model = DungeonModels.MODELS.get(modelID);
         if (model != null && model.multipartData != null) {
-            for (WeightedRandom<?> randomData : model.multipartData) {
-                pieces.add(((WeightedRandom<MultipartModelData>) randomData).roll(rand).createMultipartPiece(this, model, this.rotation, this.x, this.y, this.z));
+            for (MultipartModelData data : model.multipartData) {
+                if (data.checkConditions(this)) {
+                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, this.x, this.y, this.z));
+                } else if (data.alternatives != null) {
+                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, this.x, this.y, this.z));
+                }
             }
         }
     }

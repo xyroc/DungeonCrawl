@@ -19,6 +19,8 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.resources.IResourceManager;
@@ -49,7 +51,7 @@ public class DungeonModels {
     /*
      * A list of all MultipartModelData instances to update their "forward references" after all models have been loaded.
      */
-    public static final ArrayList<MultipartModelData> REFERENCES_TO_UPDATE = new ArrayList<>();
+    public static final ArrayList<MultipartModelData.Instance> REFERENCES_TO_UPDATE = new ArrayList<>();
 
     public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
 
@@ -159,41 +161,25 @@ public class DungeonModels {
 
         load("models/dungeon/room/dark/", "spawner_room", resourceManager);
 
-        load("models/dungeon/corridor/multipart/", "corridor_default", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_variant", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_variant_2", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_crops", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_chest", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_spawner", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_light", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_light_switch", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_bookshelf", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_default", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_variant", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_variant_2", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_crops", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_chest", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_spawner", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_light", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_light_switch", resourceManager);
+//        load("models/dungeon/corridor/multipart/", "corridor_bookshelf", resourceManager);
 
         // -Additional Models- //
 
         //DungeonCrawl.LOGGER.info("Loading additional models");
 
-        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional").getPath(), (s) -> s.endsWith(".nbt")).forEach((resource) -> {
-            DungeonCrawl.LOGGER.debug("Additional resource: {}", resource.toString());
-            DungeonModel model = loadModel(resource, resourceManager);
-            ResourceLocation metadata = new ResourceLocation(resource.getNamespace(),
-                    resource.getPath().substring(0, resource.getPath().indexOf(".nbt")) + ".json");
-            DungeonCrawl.LOGGER.debug("Looking for metadata file {}", metadata.toString());
-            if (resourceManager.hasResource(metadata)) {
-                DungeonCrawl.LOGGER.debug("Loading metadata for {}", resource.getPath());
 
-                try {
-                    Metadata data = DungeonCrawl.GSON.fromJson(
-                            new InputStreamReader(resourceManager.getResource(metadata).getInputStream()), Metadata.class);
-                    model.loadMetadata(data);
-                } catch (Exception e) {
-                    DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
-                    e.printStackTrace();
-                }
-            } else {
-                DungeonCrawl.LOGGER.warn("Missing metadata for {}", resource.getPath());
-            }
-        });
+        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/multipart").getPath(), (s) -> s.endsWith(".nbt"))
+                .forEach((resource) -> load(resource, resourceManager));
+        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional").getPath(), (s) -> s.endsWith(".nbt"))
+                .forEach((resource) -> load(resource, resourceManager));
 
         // -End of Model loading- //
 
@@ -207,7 +193,7 @@ public class DungeonModels {
 //            return 0;
 //        }).forEach((entry) -> DungeonCrawl.LOGGER.debug("{}  {}", entry.getKey(), entry.getValue().location));
 
-        REFERENCES_TO_UPDATE.forEach(MultipartModelData::updateReference);
+        REFERENCES_TO_UPDATE.forEach(MultipartModelData.Instance::updateReference);
 
         HashMap<Integer, DungeonModel[]> tempMap = new HashMap<>();
 
@@ -286,7 +272,26 @@ public class DungeonModels {
         ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_DEAD_END, 2, 3, 4);
     }
 
-    public static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
+    private static void load(ResourceLocation resource, IResourceManager resourceManager) {
+        DungeonModel model = loadModel(resource, resourceManager);
+        ResourceLocation metadata = new ResourceLocation(resource.getNamespace(),
+                resource.getPath().substring(0, resource.getPath().indexOf(".nbt")) + ".json");
+
+        if (resourceManager.hasResource(metadata)) {
+            DungeonCrawl.LOGGER.debug("Loading metadata for {}", resource.getPath());
+            try {
+                Metadata data = Metadata.fromJson(new JsonParser().parse(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
+                model.loadMetadata(data);
+            } catch (Exception e) {
+                DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
+                e.printStackTrace();
+            }
+        } else {
+            DungeonCrawl.LOGGER.warn("Missing metadata for {}", resource.getPath());
+        }
+    }
+
+    private static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
         DungeonModel model = loadModel(directory + file + ".nbt", resourceManager);
 
         ResourceLocation metadata = DungeonCrawl.locate(directory + file + ".json");
@@ -295,8 +300,7 @@ public class DungeonModels {
             // DungeonCrawl.LOGGER.debug("Loading metadata for {}", file);
 
             try {
-                Metadata data = DungeonCrawl.GSON.fromJson(
-                        new InputStreamReader(resourceManager.getResource(metadata).getInputStream()), Metadata.class);
+                Metadata data = Metadata.fromJson(new JsonParser().parse(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
                 model.loadMetadata(data);
 //                if (Config.ENABLE_TOOLS.get()) {
 //                    PATH_TO_MODEL.put(directory.substring("models/dungeon/".length()) + file, model);
@@ -311,7 +315,7 @@ public class DungeonModels {
         return model;
     }
 
-    public static DungeonModel loadModel(String path, IResourceManager resourceManager) {
+    private static DungeonModel loadModel(String path, IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", path);
 
         try {
@@ -320,9 +324,9 @@ public class DungeonModels {
             CompoundNBT nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
 
-            String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
+            String key = path.substring(15, path.indexOf(".nbt"));
             PATH_TO_MODEL.put(key, model);
-            DungeonCrawl.LOGGER.debug("Model {} has key: {}", path, key);
+            DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 
             model.setLocation(resource);
             return model;
@@ -333,7 +337,7 @@ public class DungeonModels {
         throw new RuntimeException("Failed to load " + path);
     }
 
-    public static DungeonModel loadModel(ResourceLocation resource, IResourceManager resourceManager) {
+    private static DungeonModel loadModel(ResourceLocation resource, IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", resource.getPath());
 
         try {
@@ -342,9 +346,9 @@ public class DungeonModels {
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
 
             String path = resource.getPath();
-            String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
+            String key = path.substring(15, path.indexOf(".nbt"));
             PATH_TO_MODEL.put(key, model);
-            DungeonCrawl.LOGGER.debug("Model {} has key (2): {}", path, key);
+            DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 
             model.setLocation(resource);
             return model;

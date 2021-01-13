@@ -84,7 +84,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
                 spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
                 spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).generateInt(rand));
-                spawnerNBT.putShort("RequiredPlayerRange", (short) 8);
+                spawnerNBT.putShort("RequiredPlayerRange", (short) 10);
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {

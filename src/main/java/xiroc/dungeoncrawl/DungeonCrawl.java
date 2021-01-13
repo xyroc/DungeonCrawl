@@ -69,7 +69,6 @@ public class DungeonCrawl {
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(DungeonModel.Metadata.class, new DungeonModel.Metadata.Deserializer())
             .registerTypeAdapter(WeightedThemeRandomizer.class, new WeightedThemeRandomizer.Deserializer())
             .registerTypeAdapter(WeightedIntegerEntry.class, new WeightedIntegerEntry.Deserializer())
             .setPrettyPrinting().create();

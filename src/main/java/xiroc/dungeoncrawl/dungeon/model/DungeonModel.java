@@ -53,7 +53,7 @@ public class DungeonModel {
     public FeaturePosition[] featurePositions;
 
     @Nullable
-    public List<WeightedRandom<MultipartModelData>> multipartData;
+    public List<MultipartModelData> multipartData;
 
     @Nullable
     public Metadata metadata;
@@ -221,7 +221,7 @@ public class DungeonModel {
 
         public Treasure.Type treasureType;
 
-        public List<WeightedRandom<MultipartModelData>> multipartData;
+        public List<MultipartModelData> multipartData;
 
         public boolean variation;
 
@@ -230,7 +230,7 @@ public class DungeonModel {
         public int[] stages, weights;
 
         private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata,
-                         Vec3i offset, Treasure.Type treasureType, List<WeightedRandom<MultipartModelData>> multipartData,
+                         Vec3i offset, Treasure.Type treasureType, List<MultipartModelData> multipartData,
                          boolean variation, int[] stages, int[] weights) {
             this.type = type;
             this.size = size;
@@ -245,118 +245,102 @@ public class DungeonModel {
             this.weights = weights;
         }
 
-        public static class Deserializer implements JsonDeserializer<Metadata> {
+        public static Metadata fromJson(JsonObject object, ResourceLocation file) throws JsonParseException {
 
-            @Override
-            public Metadata deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                    throws JsonParseException {
+            String modelType = object.get("type").getAsString();
 
-                JsonObject object = json.getAsJsonObject();
-                String modelType = object.get("type").getAsString();
+            int id = object.get("id").getAsInt();
 
-                int id = object.get("id").getAsInt();
+            DungeonModelFeature feature = null;
+            DungeonModelFeature.Metadata featureMetadata = null;
 
-                DungeonModelFeature feature = null;
-                DungeonModelFeature.Metadata featureMetadata = null;
+            int[] stages = null, weights = null;
 
-                int[] stages = null, weights = null;
+            Vec3i offset = null;
 
-                Vec3i offset = null;
+            boolean variation = false;
 
-                boolean variation = false;
+            JsonObject data = null;
 
-                JsonObject data = null;
+            Treasure.Type treasureType = null;
 
-                Treasure.Type treasureType = null;
+            List<MultipartModelData> multipartData = null;
 
-                List<WeightedRandom<MultipartModelData>> multipartData = null;
+            if (object.has("data")) {
+                data = object.getAsJsonObject("data");
 
-                if (object.has("data")) {
-                    data = object.getAsJsonObject("data");
+                stages = data.has("stages") ? DungeonCrawl.GSON.fromJson(data.get("stages"), int[].class) : null;
+                weights = data.has("weights") ? DungeonCrawl.GSON.fromJson(data.get("weights"), int[].class) : null;
 
-                    stages = data.has("stages") ? DungeonCrawl.GSON.fromJson(data.get("stages"), int[].class) : null;
-                    weights = data.has("weights") ? DungeonCrawl.GSON.fromJson(data.get("weights"), int[].class) : null;
+                offset = data.has("offset") ? JSONUtils.getOffset(data.getAsJsonObject("offset")) : null;
 
-                    offset = data.has("offset") ? JSONUtils.getOffset(data.getAsJsonObject("offset")) : null;
+                if (data.has("feature")) {
+                    JsonObject featureData = data.getAsJsonObject("feature");
+                    feature = DungeonModelFeature.getFromName(featureData.get("type").getAsString());
+                    featureMetadata = new DungeonModelFeature.Metadata(featureData);
+                }
 
-                    if (data.has("feature")) {
-                        JsonObject featureData = data.getAsJsonObject("feature");
-                        feature = DungeonModelFeature.getFromName(featureData.get("type").getAsString());
-                        featureMetadata = new DungeonModelFeature.Metadata(featureData);
+                if (data.has("variation")) {
+                    variation = data.get("variation").getAsBoolean();
+                }
+
+                if (data.has("treasure_type")) {
+                    try {
+                        treasureType = Treasure.Type.valueOf(data.get("treasure_type").getAsString().toUpperCase(Locale.ROOT));
+                    } catch (IllegalArgumentException e) {
+                        DungeonCrawl.LOGGER.error("Invalid treasure type {} for model {}", data.get("treasure_type"), id);
+                        e.printStackTrace();
                     }
+                }
 
-                    if (data.has("variation")) {
-                        variation = data.get("variation").getAsBoolean();
-                    }
-
-                    if (data.has("treasure_type")) {
-                        try {
-                            treasureType = Treasure.Type.valueOf(data.get("treasure_type").getAsString().toUpperCase(Locale.ROOT));
-                        } catch (IllegalArgumentException e) {
-                            DungeonCrawl.LOGGER.error("Invalid treasure type {} for model {}", data.get("treasure_type"), id);
-                            e.printStackTrace();
-                        }
-                    }
-
-                    if (data.has("multipart")) {
-                        JsonArray array = data.getAsJsonArray("multipart");
-                        int size = array.size();
-                        if (size > 0) {
-                            multipartData = new ArrayList<>();
-
-                            for (int i = 0; i < size; i++) {
-                                JsonArray array1 = array.get(i).getAsJsonArray();
-                                WeightedRandom.Builder<MultipartModelData> builder = new WeightedRandom.Builder<>();
-
-                                array1.forEach((element1) -> {
-                                    JsonObject object1 = element1.getAsJsonObject();
-                                    MultipartModelData multipartModelData = MultipartModelData.fromJson(object1);
-                                    builder.add(multipartModelData, JSONUtils.getWeightOrDefault(object1));
-                                    if (multipartModelData != MultipartModelData.EMPTY) {
-                                        DungeonModels.REFERENCES_TO_UPDATE.add(multipartModelData);
-                                    }
-                                });
-
-                                multipartData.add(builder.build());
+                if (data.has("multipart")) {
+                    JsonArray array = data.getAsJsonArray("multipart");
+                    int size = array.size();
+                    if (size > 0) {
+                        multipartData = new ArrayList<>();
+                        for (JsonElement element : array) {
+                            MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
+                            if (multipartModelData != null) {
+                                multipartData.add(multipartModelData);
                             }
                         }
                     }
                 }
+            }
 
-                if (modelType.equalsIgnoreCase("node")) {
-                    ModelCategory size;
-                    if (data != null) {
-                        String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
-                        if (sizeString.equals("large")) {
-                            size = ModelCategory.LARGE_NODE;
-                        } else if (sizeString.equals("normal")) {
-                            size = ModelCategory.NORMAL_NODE;
-                        } else {
-                            throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
-                        }
-                        return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
+            if (modelType.equalsIgnoreCase("node")) {
+                ModelCategory size;
+                if (data != null) {
+                    String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
+                    if (sizeString.equals("large")) {
+                        size = ModelCategory.LARGE_NODE;
+                    } else if (sizeString.equals("normal")) {
+                        size = ModelCategory.NORMAL_NODE;
                     } else {
-                        throw new RuntimeException("Missing metadata for a node model. (ID: " + id + ")");
+                        throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
                     }
+                    return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
                 } else {
-                    return new Metadata(getModelCategory(modelType), null, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
+                    throw new RuntimeException("Missing metadata for a node model. (ID: " + id + ")");
                 }
+            } else {
+                return new Metadata(getModelCategory(modelType), null, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
             }
-
-            @Nullable
-            private static ModelCategory getModelCategory(String name) {
-                if (name.toLowerCase().equals("normal")) {
-                    return null;
-                }
-                try {
-                    return ModelCategory.valueOf(name.toUpperCase(Locale.ROOT));
-                } catch (IllegalArgumentException e) {
-                    DungeonCrawl.LOGGER.warn("Unknown model type: {} ({})", name, name.toUpperCase(Locale.ROOT));
-                    return null;
-                }
-            }
-
         }
+
+        @Nullable
+        private static ModelCategory getModelCategory(String name) {
+            if (name.toLowerCase().equals("normal")) {
+                return null;
+            }
+            try {
+                return ModelCategory.valueOf(name.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                DungeonCrawl.LOGGER.warn("Unknown model type: {} ({})", name, name.toUpperCase(Locale.ROOT));
+                return null;
+            }
+        }
+
 
     }
 

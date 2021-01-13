@@ -5,84 +5,90 @@
     "stages": [ 1, 2, 3 ],
     "weights": [ 1, 1, 2, 0, 0],
     "multipart": [
-      [
-        {
-          "offset": {
-            "x": 3,
-            "y": 5,
-            "z": 2
+      {
+        "models": [
+          {
+            "offset": {
+              "x": 3,
+              "y": 5,
+              "z": 2
+            },
+            "model_key": "multipart/corridor/light"
+          }
+        ]
+      },
+      {
+        "models": [
+          {
+            "offset": {
+              "x": 3,
+              "z": -1
+            },
+            "model_key": "multipart/corridor/light_switch"
+          }
+        ]
+      },
+      {
+        "models": [
+          {
+            "offset": {
+              "x": 3,
+              "z": 5
+            },
+            "rotation": "clockwise_180",
+            "model_key": "multipart/corridor/light_switch",
+            "weight": 5
           },
-          "model_key": "corridor/multipart/corridor_light"
-        }
-      ],
-      [
-        {
-          "offset": {
-            "x": 3,
-            "z": -1
+          {
+            "offset": {
+              "x": 3,
+              "z": 5
+            },
+            "rotation": "clockwise_180",
+            "model_key": "multipart/corridor/default"
           },
-          "model_key": "corridor/multipart/corridor_light_switch"
-        }
-      ],
-      [
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
+          {
+            "offset": {
+              "x": 3,
+              "z": 5
+            },
+            "rotation": "clockwise_180",
+            "model_key": "multipart/corridor/variant"
           },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_light_switch",
-          "weight": 5
-        },
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
+          {
+            "offset": {
+              "x": 3,
+              "z": 5
+            },
+            "rotation": "clockwise_180",
+            "model_key": "multipart/corridor/variant_2"
           },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_default"
-        },
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
+          {
+            "offset": {
+              "x": 3,
+              "z": 5
+            },
+            "rotation": "clockwise_180",
+            "model_key": "multipart/corridor/bookshelf"
           },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_variant"
-        },
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
+          {
+            "offset": {
+              "x": 3,
+              "z": 5
+            },
+            "rotation": "clockwise_180",
+            "model_key": "multipart/corridor/chest"
           },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_variant_2"
-        },
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
-          },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_bookshelf"
-        },
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
-          },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_chest"
-        },
-        {
-          "offset": {
-            "x": 3,
-            "z": 5
-          },
-          "rotation": "clockwise_180",
-          "model_key": "corridor/multipart/corridor_spawner"
-        }
-      ]
+          {
+            "offset": {
+              "x": 3,
+              "z": 5
+            },
+            "rotation": "clockwise_180",
+            "model_key": "multipart/corridor/spawner"
+          }
+        ]
+      }
     ]
   }
 }

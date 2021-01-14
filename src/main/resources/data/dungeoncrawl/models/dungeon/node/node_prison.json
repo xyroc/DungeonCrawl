@@ -1,15 +1,15 @@
 {
   "type": "node",
   "id": 48,
-  "data": {
+  "node": {
     "size": "normal",
-    "type": "full",
-    "feature": {
-      "type": "spawners",
-      "min": 1,
-      "max": 4
-    },
-    "stages": [ 3, 4 ],
-    "weights": [ 0, 0, 5, 5, 0 ]
-  }
+    "type": "full"
+  },
+  "feature": {
+    "type": "spawners",
+    "min": 1,
+    "max": 4
+  },
+  "stages": [3, 4],
+  "weights": [0, 0, 5, 5, 0]
 }

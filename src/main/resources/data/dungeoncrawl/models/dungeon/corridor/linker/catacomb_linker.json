@@ -1,9 +1,7 @@
 {
   "type": "corridor_linker",
-  "data": {
-    "stages": [ 3, 4 ],
-    "weights": [ 0, 0, 2, 2, 0 ]
-  },
+  "stages": [3, 4],
+  "weights": [0, 0, 2, 2, 0],
   "multipart": [
     {
       "conditions": {
@@ -19,7 +17,6 @@
         }
       ],
       "else": [
-
       ]
     },
     {

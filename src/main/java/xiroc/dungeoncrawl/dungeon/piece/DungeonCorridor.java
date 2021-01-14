@@ -131,7 +131,6 @@ public class DungeonCorridor extends DungeonPiece {
 
             for (MultipartModelData data : model.multipartData) {
                 if (data.checkConditions(this)) {
-                    DungeonCrawl.LOGGER.info("Adding a piece");
                     pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, x, this.y, z));
                 } else if (data.alternatives != null) {
                     pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, x, this.y, z));

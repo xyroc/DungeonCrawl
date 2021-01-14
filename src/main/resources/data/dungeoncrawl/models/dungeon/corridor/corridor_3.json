@@ -1,218 +1,216 @@
 {
   "type": "corridor",
   "id": 162,
-  "data": {
-    "stages": [ 1, 2 ],
-    "weights": [ 4, 4, 0, 0, 0 ],
-    "multipart": [
-      {
-        "models": [
-          {
-            "offset": {
-              "x": 1,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/default",
-            "weight": 12
+  "stages": [1, 2],
+  "weights": [4, 4, 0, 0, 0],
+  "multipart": [
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 1,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/variant",
-            "weight": 2
+          "model_key": "multipart/corridor/default",
+          "weight": 12
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/variant_2",
-            "weight": 2
+          "model_key": "multipart/corridor/variant",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/bookshelf"
+          "model_key": "multipart/corridor/variant_2",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/chest"
+          "model_key": "multipart/corridor/bookshelf"
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/spawner"
-          }
-        ]
-      },
-      {
-        "models": [
-          {
-            "offset": {
-              "x": 5,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/default",
-            "weight": 12
+          "model_key": "multipart/corridor/chest"
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/variant",
-            "weight": 2
+          "model_key": "multipart/corridor/spawner"
+        }
+      ]
+    },
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 5,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/variant_2",
-            "weight": 2
+          "model_key": "multipart/corridor/default",
+          "weight": 12
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/bookshelf"
+          "model_key": "multipart/corridor/variant",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/chest"
+          "model_key": "multipart/corridor/variant_2",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": -1
-            },
-            "model_key": "multipart/corridor/spawner"
-          }
-        ]
-      },
-      {
-        "models": [
-          {
-            "offset": {
-              "x": 1,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/default",
-            "weight": 12
+          "model_key": "multipart/corridor/bookshelf"
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/variant",
-            "weight": 2
+          "model_key": "multipart/corridor/chest"
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": -1
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/variant_2",
-            "weight": 2
+          "model_key": "multipart/corridor/spawner"
+        }
+      ]
+    },
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 1,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/bookshelf"
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/default",
+          "weight": 12
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/chest"
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/variant",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 1,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/spawner"
-          }
-        ]
-      },
-      {
-        "models": [
-          {
-            "offset": {
-              "x": 5,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/default",
-            "weight": 12
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/variant_2",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/variant",
-            "weight": 2
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/bookshelf"
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/variant_2",
-            "weight": 2
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/chest"
+        },
+        {
+          "offset": {
+            "x": 1,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/bookshelf"
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/spawner"
+        }
+      ]
+    },
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 5,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/chest"
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/default",
+          "weight": 12
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": 4
           },
-          {
-            "offset": {
-              "x": 5,
-              "z": 4
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/spawner"
-          }
-        ]
-      }
-    ]
-  }
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/variant",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": 4
+          },
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/variant_2",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": 4
+          },
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/bookshelf"
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": 4
+          },
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/chest"
+        },
+        {
+          "offset": {
+            "x": 5,
+            "z": 4
+          },
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/spawner"
+        }
+      ]
+    }
+  ]
 }

@@ -1,104 +1,102 @@
 {
   "type": "corridor",
   "id": 160,
-  "data": {
-    "stages": [ 1, 2 ],
-    "weights": [ 4, 4, 0, 0, 0 ],
-    "multipart": [
-      {
-        "models": [
-          {
-            "offset": {
-              "x": 3
-            },
-            "model_key": "multipart/corridor/default",
-            "weight": 3
+  "stages": [1, 2],
+  "weights": [4, 4, 0, 0, 0],
+  "multipart": [
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 3
           },
-          {
-            "offset": {
-              "x": 3
-            },
-            "model_key": "multipart/corridor/variant"
+          "model_key": "multipart/corridor/default",
+          "weight": 3
+        },
+        {
+          "offset": {
+            "x": 3
           },
-          {
-            "offset": {
-              "x": 3
-            },
-            "model_key": "multipart/corridor/variant_2"
+          "model_key": "multipart/corridor/variant"
+        },
+        {
+          "offset": {
+            "x": 3
           },
-          {
-            "offset": {
-              "x": 3
-            },
-            "model_key": "multipart/corridor/bookshelf"
+          "model_key": "multipart/corridor/variant_2"
+        },
+        {
+          "offset": {
+            "x": 3
           },
-          {
-            "offset": {
-              "x": 3
-            },
-            "model_key": "multipart/corridor/chest"
+          "model_key": "multipart/corridor/bookshelf"
+        },
+        {
+          "offset": {
+            "x": 3
           },
-          {
-            "offset": {
-              "x": 3
-            },
-            "model_key": "multipart/corridor/spawner"
-          }
-        ]
-      },
-      {
-        "models": [
-          {
-            "offset": {
-              "x": 3,
-              "z": 5
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/default",
-            "weight": 3
+          "model_key": "multipart/corridor/chest"
+        },
+        {
+          "offset": {
+            "x": 3
           },
-          {
-            "offset": {
-              "x": 3,
-              "z": 5
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/variant"
+          "model_key": "multipart/corridor/spawner"
+        }
+      ]
+    },
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
           },
-          {
-            "offset": {
-              "x": 3,
-              "z": 5
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/variant_2"
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/default",
+          "weight": 3
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
           },
-          {
-            "offset": {
-              "x": 3,
-              "z": 5
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/bookshelf"
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/variant"
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
           },
-          {
-            "offset": {
-              "x": 3,
-              "z": 5
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/chest"
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/variant_2"
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
           },
-          {
-            "offset": {
-              "x": 3,
-              "z": 5
-            },
-            "rotation": "clockwise_180",
-            "model_key": "multipart/corridor/spawner"
-          }
-        ]
-      }
-    ]
-  }
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/bookshelf"
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/chest"
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model_key": "multipart/corridor/spawner"
+        }
+      ]
+    }
+  ]
 }

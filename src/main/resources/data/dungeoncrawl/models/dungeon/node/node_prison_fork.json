@@ -1,15 +1,15 @@
 {
   "type": "node",
   "id": 47,
-  "data": {
+  "node": {
     "size": "normal",
-    "type": "fork",
-    "feature": {
-      "type": "chests",
-      "min": 1,
-      "max": 2
-    },
-    "stages": [ 3, 4 ],
-    "weights": [ 0, 0, 4, 6, 0 ]
-  }
+    "type": "fork"
+  },
+  "feature": {
+    "type": "chests",
+    "min": 1,
+    "max": 2
+  },
+  "stages": [3, 4],
+  "weights": [0, 0, 4, 6, 0]
 }

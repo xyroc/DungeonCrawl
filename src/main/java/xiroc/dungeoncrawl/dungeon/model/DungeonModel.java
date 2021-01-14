@@ -254,64 +254,59 @@ public class DungeonModel {
             DungeonModelFeature feature = null;
             DungeonModelFeature.Metadata featureMetadata = null;
 
-            int[] stages = null, weights = null;
+            int[] stages, weights;
 
-            Vec3i offset = null;
+            Vec3i offset;
 
             boolean variation = false;
-
-            JsonObject data = null;
 
             Treasure.Type treasureType = null;
 
             List<MultipartModelData> multipartData = null;
 
-            if (object.has("data")) {
-                data = object.getAsJsonObject("data");
+            stages = object.has("stages") ? DungeonCrawl.GSON.fromJson(object.get("stages"), int[].class) : null;
+            weights = object.has("weights") ? DungeonCrawl.GSON.fromJson(object.get("weights"), int[].class) : null;
 
-                stages = data.has("stages") ? DungeonCrawl.GSON.fromJson(data.get("stages"), int[].class) : null;
-                weights = data.has("weights") ? DungeonCrawl.GSON.fromJson(data.get("weights"), int[].class) : null;
+            offset = object.has("offset") ? JSONUtils.getOffset(object.getAsJsonObject("offset")) : null;
 
-                offset = data.has("offset") ? JSONUtils.getOffset(data.getAsJsonObject("offset")) : null;
+            if (object.has("feature")) {
+                JsonObject featureData = object.getAsJsonObject("feature");
+                feature = DungeonModelFeature.getFromName(featureData.get("type").getAsString());
+                featureMetadata = new DungeonModelFeature.Metadata(featureData);
+            }
 
-                if (data.has("feature")) {
-                    JsonObject featureData = data.getAsJsonObject("feature");
-                    feature = DungeonModelFeature.getFromName(featureData.get("type").getAsString());
-                    featureMetadata = new DungeonModelFeature.Metadata(featureData);
+            if (object.has("variation")) {
+                variation = object.get("variation").getAsBoolean();
+            }
+
+            if (object.has("treasure_type")) {
+                try {
+                    treasureType = Treasure.Type.valueOf(object.get("treasure_type").getAsString().toUpperCase(Locale.ROOT));
+                } catch (IllegalArgumentException e) {
+                    DungeonCrawl.LOGGER.error("Invalid treasure type {} for model {}", object.get("treasure_type"), id);
+                    e.printStackTrace();
                 }
+            }
 
-                if (data.has("variation")) {
-                    variation = data.get("variation").getAsBoolean();
-                }
-
-                if (data.has("treasure_type")) {
-                    try {
-                        treasureType = Treasure.Type.valueOf(data.get("treasure_type").getAsString().toUpperCase(Locale.ROOT));
-                    } catch (IllegalArgumentException e) {
-                        DungeonCrawl.LOGGER.error("Invalid treasure type {} for model {}", data.get("treasure_type"), id);
-                        e.printStackTrace();
-                    }
-                }
-
-                if (data.has("multipart")) {
-                    JsonArray array = data.getAsJsonArray("multipart");
-                    int size = array.size();
-                    if (size > 0) {
-                        multipartData = new ArrayList<>();
-                        for (JsonElement element : array) {
-                            MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
-                            if (multipartModelData != null) {
-                                multipartData.add(multipartModelData);
-                            }
+            if (object.has("multipart")) {
+                JsonArray array = object.getAsJsonArray("multipart");
+                int size = array.size();
+                if (size > 0) {
+                    multipartData = new ArrayList<>();
+                    for (JsonElement element : array) {
+                        MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
+                        if (multipartModelData != null) {
+                            multipartData.add(multipartModelData);
                         }
                     }
                 }
             }
 
             if (modelType.equalsIgnoreCase("node")) {
-                ModelCategory size;
-                if (data != null) {
-                    String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
+                if (object.has("node")) {
+                    JsonObject nodeData = object.getAsJsonObject("node");
+                    ModelCategory size;
+                    String sizeString = nodeData.get("size").getAsString(), typeString = nodeData.get("type").getAsString();
                     if (sizeString.equals("large")) {
                         size = ModelCategory.LARGE_NODE;
                     } else if (sizeString.equals("normal")) {
@@ -321,7 +316,7 @@ public class DungeonModel {
                     }
                     return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
                 } else {
-                    throw new RuntimeException("Missing metadata for a node model. (ID: " + id + ")");
+                    throw new JsonParseException("Missing node data in node model metadata file " + file.toString());
                 }
             } else {
                 return new Metadata(getModelCategory(modelType), null, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
@@ -330,7 +325,7 @@ public class DungeonModel {
 
         @Nullable
         private static ModelCategory getModelCategory(String name) {
-            if (name.toLowerCase().equals("normal")) {
+            if (name.equalsIgnoreCase("normal")) {
                 return null;
             }
             try {

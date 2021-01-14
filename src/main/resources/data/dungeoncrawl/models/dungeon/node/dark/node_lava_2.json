@@ -1,13 +1,13 @@
 {
   "type": "node",
   "id": 51,
-  "data": {
+  "node": {
     "size": "normal",
-    "type": "full",
-    "offset": {
-      "y": -1
-    },
-    "stages": [ 5 ],
-    "weights": [ 0, 0, 0, 0, 1 ]
-  }
+    "type": "full"
+  },
+  "offset": {
+    "y": -1
+  },
+  "stages": [5],
+  "weights": [0, 0, 0, 0, 1]
 }

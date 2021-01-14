@@ -1,0 +1,17 @@
+{
+  "generator": {
+    "type": "default",
+    "settings": {
+
+    }
+  },
+  "biomes": [
+    "forest",
+    "river"
+  ],
+  "models": [
+    {
+      "key": "mossy_mine/"
+    }
+  ]
+}

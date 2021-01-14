@@ -1,10 +1,10 @@
 {
-	"type": "node",
-	"id": 36,
-	"data": {
-		"size": "normal",
-		"type": "full",
-		"stages": [ 1 ],
-		"weights": [ 2, 0, 0, 0, 0 ]
-	}
+  "type": "node",
+  "id": 36,
+  "node": {
+    "size": "normal",
+    "type": "full"
+  },
+  "stages": [1],
+  "weights": [2, 0, 0, 0, 0]
 }

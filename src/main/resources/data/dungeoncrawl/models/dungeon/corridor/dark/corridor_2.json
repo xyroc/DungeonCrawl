@@ -1,8 +1,6 @@
 {
   "type": "corridor",
   "id": 11,
-  "data": {
-    "stages": [ 5 ],
-    "weights": [ 0, 0, 0, 0, 1 ]
-  }
+  "stages": [5],
+  "weights": [0, 0, 0, 0, 1]
 }

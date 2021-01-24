@@ -29,7 +29,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.INBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
@@ -42,7 +41,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
@@ -140,7 +138,7 @@ public class Tools {
         event.getCommandDispatcher().register(Commands.literal("buildmodel").requires((a) -> a.hasPermissionLevel(2))
                 .then(Commands.argument("id", IntegerArgumentType.integer()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -151,7 +149,7 @@ public class Tools {
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -162,7 +160,7 @@ public class Tools {
                     return 0;
                 })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
                     String key = StringArgumentType.getString(command, "block definition");
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
@@ -179,7 +177,7 @@ public class Tools {
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.MODELS.get(id);
+                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
                     String key = StringArgumentType.getString(command, "block definition");
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
@@ -196,7 +194,7 @@ public class Tools {
                     return 0;
                 })))).then(Commands.argument("key", StringArgumentType.string()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
-                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    DungeonModel model = DungeonModels.MODELS.get(key);
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -207,7 +205,7 @@ public class Tools {
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
-                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    DungeonModel model = DungeonModels.MODELS.get(key);
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -219,7 +217,7 @@ public class Tools {
                 })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
                     String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    DungeonModel model = DungeonModels.MODELS.get(key);
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
                             BlockPos pos = command.getSource().asPlayer().getPosition();
@@ -236,7 +234,7 @@ public class Tools {
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
                     String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    DungeonModel model = DungeonModels.PATH_TO_MODEL.get(key);
+                    DungeonModel model = DungeonModels.MODELS.get(key);
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
                             BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
@@ -296,35 +294,6 @@ public class Tools {
         }
     }
 
-//    @SubscribeEvent
-//    public void onClickEntity(final PlayerInteractEvent.EntityInteract event) {
-//        if (!event.getWorld().isRemote && event.getPlayer().getHeldItem(Hand.MAIN_HAND).getItem() == Items.DEBUG_STICK && event.getTarget() instanceof LivingEntity) {
-//            LivingEntity livingEntity = (LivingEntity) event.getTarget();
-//            if (event.getPlayer().isCreative() && (livingEntity instanceof VillagerEntity || livingEntity instanceof ZombieVillagerEntity)) {
-//                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
-//                event.getPlayer().sendMessage(new StringTextComponent("Villager NBT of " + livingEntity.toString()));
-//                CompoundNBT nbt = new CompoundNBT();
-//                livingEntity.writeAdditional(nbt);
-//                event.getPlayer().sendMessage(new StringTextComponent("Inventory: " + (nbtToString(nbt.get("Inventory")))));
-//                event.getPlayer().sendMessage(new StringTextComponent("VillagerData: " + (nbtToString(nbt.get("VillagerData")))));
-//                event.getPlayer().sendMessage(new StringTextComponent("RestocksToday: " + (nbtToString(nbt.get("RestocksToday")))));
-//                event.getPlayer().sendMessage(new StringTextComponent("LastRestock: " + (nbtToString(nbt.get("LastRestock")))));
-//                event.getPlayer().sendMessage(new StringTextComponent("Gossips: " + (nbtToString(nbt.get("Gossips")))));
-//                event.getPlayer().sendMessage(new StringTextComponent("Xp: " + (nbtToString(nbt.get("Xp")))));
-//                event.getPlayer().sendMessage(new StringTextComponent("Offers: " + (nbtToString(nbt.get("Offers")))));
-//
-//                event.getPlayer().sendMessage(new StringTextComponent("======================================"));
-//            } else {
-//                event.getPlayer().sendMessage(new StringTextComponent("Active Potion effects of " + livingEntity.toString()));
-//                livingEntity.getActivePotionEffects().forEach((effectInstance) -> {
-//                    event.getPlayer().sendMessage(new StringTextComponent(effectInstance.toString()));
-//                });
-//                event.getPlayer().sendMessage(new StringTextComponent("---"));
-//            }
-//            event.setResult(Event.Result.ALLOW);
-//        }
-//    }
-
     public static void buildModel(DungeonModel model, IWorld world, BlockPos pos, ModelBlockDefinition definition) {
         for (int y = 0; y < model.height; y++) {
             for (int x = 0; x < model.width; x++) {
@@ -348,123 +317,6 @@ public class Tools {
                 DirectionalBlockPos blockPos = featurePosition.directionalBlockPos(pos.getX(), pos.getY(), pos.getZ());
                 world.setBlockState(blockPos.position, Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, blockPos.direction), 3);
             }
-        }
-    }
-
-    public void debugModel(DungeonModel model, IWorld world, BlockPos pos) {
-        for (int x = 0; x < model.width; x++) {
-            for (int y = 0; y < model.height; y++) {
-                for (int z = 0; z < model.length; z++) {
-                    if (model.model[x][y][z] == null) {
-                        world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z),
-                                DungeonBlocks.CAVE_AIR, 2);
-                    } else {
-                        world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z),
-                                Blocks.SLIME_BLOCK.getDefaultState(), 3);
-                    }
-                }
-            }
-            if (model.featurePositions != null) {
-                for (DungeonModel.FeaturePosition f : model.featurePositions) {
-                    world.setBlockState(new BlockPos(pos.getX() + f.position.getX(), pos.getY() + f.position.getY(), pos.getZ() + f.position.getZ()),
-                            Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing), 3);
-                }
-            }
-        }
-
-        //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
-        //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.BIRCH_FENCE);
-    }
-
-    public void debugModelRotated(DungeonModel model, IWorld world, BlockPos pos, Rotation rotation) {
-        //DungeonCrawl.LOGGER.debug("BuildRotated: {} {} {}, {} {}, {} {}, {} {}", pos.getX(), pos.getY(), pos.getZ(), xStart, zStart, width, length, model.width, model.length);
-        switch (rotation) {
-            case CLOCKWISE_90: {
-                for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
-                        for (int z = 0; z < model.length; z++) {
-                            if (model.model[x][y][z] == null) {
-                                world.setBlockState(new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x),
-                                        DungeonBlocks.CAVE_AIR, 2);
-                            } else {
-                                world.setBlockState(new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x),
-                                        Blocks.SLIME_BLOCK.getDefaultState(), 3);
-                            }
-                        }
-                    }
-                }
-                if (model.featurePositions != null) {
-                    for (DungeonModel.FeaturePosition f : model.featurePositions) {
-                        world.setBlockState(new BlockPos(pos.getX() + model.length - f.position.getZ() - 1,
-                                        pos.getY() + f.position.getY(), pos.getZ() + f.position.getX()),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing.rotateY()), 3);
-                    }
-                }
-                //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
-                //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.ACACIA_FENCE);
-                break;
-            }
-            case COUNTERCLOCKWISE_90: {
-                for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
-                        for (int z = 0; z < model.length; z++) {
-                            if (model.model[x][y][z] == null) {
-                                world.setBlockState(new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1),
-                                        DungeonBlocks.CAVE_AIR, 2);
-                            } else {
-                                world.setBlockState(new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1),
-                                        Blocks.SLIME_BLOCK.getDefaultState(), 2);
-                            }
-                        }
-                    }
-                }
-                if (model.featurePositions != null) {
-                    for (DungeonModel.FeaturePosition f : model.featurePositions) {
-                        world.setBlockState(new BlockPos(pos.getX() + f.position.getZ(),
-                                        pos.getY() + f.position.getY(), pos.getZ() + model.width - f.position.getX() - 1),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing.rotateYCCW()), 3);
-                    }
-                }
-                //buildBoundingBox(world, new MutableBoundingBox(pos.getX() + xStart, pos.getY(), pos.getZ() + zStart,
-                //        pos.getX() + xStart + width - 1, pos.getY() + 8, pos.getZ() + zStart + length - 1), Blocks.ACACIA_FENCE);
-                break;
-            }
-            case CLOCKWISE_180: {
-                for (int x = 0; x < model.width; x++) {
-                    for (int y = 0; y < model.height; y++) {
-                        for (int z = 0; z < model.length; z++) {
-                            if (model.model[x][y][z] == null) {
-                                world.setBlockState(new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1), DungeonBlocks.CAVE_AIR, 2);
-                            } else {
-                                world.setBlockState(new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1), Blocks.SLIME_BLOCK.getDefaultState(), 2);
-                            }
-                        }
-                    }
-                }
-                if (model.featurePositions != null) {
-                    for (DungeonModel.FeaturePosition f : model.featurePositions) {
-                        world.setBlockState(new BlockPos(pos.getX() + model.width - f.position.getX() - 1,
-                                        pos.getY() + f.position.getY(), pos.getZ() + model.length - f.position.getZ() - 1),
-                                Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.FACING, f.facing.getOpposite()), 3);
-                    }
-                }
-                break;
-            }
-            case NONE:
-                debugModel(model, world, pos);
-                break;
-            default:
-                DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unsupported rotation " + rotation);
-                break;
-        }
-
-    }
-
-    private static String nbtToString(INBT nbt) {
-        if (nbt != null) {
-            return nbt.toString();
-        } else {
-            return "N/A";
         }
     }
 

@@ -51,11 +51,15 @@ public class DungeonSecretRoom extends DungeonPiece {
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
         BlockPos pos = new BlockPos(x, y, z);
 
         buildRotatedFull(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
-                Treasure.getModelTreasureType(modelID), stage, rotation, false);
+                model.getTreasureType(), stage, rotation, false);
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
         return true;
     }
@@ -103,7 +107,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                     BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (boundsIn.isVecInside(position)) {
                         if (model.model[x][y][z] == null) {
-                            setBlockState(CAVE_AIR, world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+                            setBlockState(CAVE_AIR, world, treasureType, position.getX(), position.getY(), position.getZ(),
                                     this.theme, lootLevel, DungeonModelBlockType.SOLID);
                         } else {
                             Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
@@ -111,7 +115,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                     WeightedRandomBlock.RANDOM, variation, lootLevel);
                             if (result == null)
                                 continue;
-                            setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+                            setBlockState(result.getA(), world, treasureType, position.getX(), position.getY(), position.getZ(),
                                     this.theme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                             if (result.getB()) {
@@ -141,14 +145,14 @@ public class DungeonSecretRoom extends DungeonPiece {
                     BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (boundsIn.isVecInside(position)) {
                         if (model.model[x][y][z] == null) {
-                            setBlockState(CAVE_AIR, world, boundsIn, treasureType, position,
+                            setBlockState(CAVE_AIR, world, treasureType, position,
                                     this.theme, lootLevel, DungeonModelBlockType.SOLID);
                         } else {
                             Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                     Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                             if (result == null)
                                 continue;
-                            setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
+                            setBlockState(result.getA(), world, treasureType, position, this.theme, lootLevel,
                                     fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                             if (result.getB()) {
@@ -178,26 +182,14 @@ public class DungeonSecretRoom extends DungeonPiece {
                             BlockPos position = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position,
+                                    setBlockState(CAVE_AIR, world, treasureType, position,
                                             this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                             Rotation.CLOCKWISE_90, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
-                                    setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                            fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
-
-                                    if (result.getB()) {
-                                        world.getChunk(position).markBlockForPostprocessing(position);
-                                    }
-
-                                    if (y == 0 && model.height > 1
-                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                                    }
+                                    placeBlock(model, world, boundsIn, theme, treasureType, lootLevel, fillAir, x, y, z, position, result);
                                 }
                             }
                         }
@@ -212,26 +204,14 @@ public class DungeonSecretRoom extends DungeonPiece {
                             BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, DungeonModelBlockType.SOLID);
+                                    setBlockState(CAVE_AIR, world, treasureType, position, this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                             Rotation.COUNTERCLOCKWISE_90, world, position, theme, subTheme,
                                             WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
-                                    setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                            fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
-
-                                    if (result.getB()) {
-                                        world.getChunk(position).markBlockForPostprocessing(position);
-                                    }
-
-                                    if (y == 0 && model.height > 1
-                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                                    }
+                                    placeBlock(model, world, boundsIn, theme, treasureType, lootLevel, fillAir, x, y, z, position, result);
                                 }
                             }
                         }
@@ -246,25 +226,13 @@ public class DungeonSecretRoom extends DungeonPiece {
                             BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position, this.theme, lootLevel, DungeonModelBlockType.SOLID);
+                                    setBlockState(CAVE_AIR, world, treasureType, position, this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
                                             position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
-                                    setBlockState(result.getA(), world, boundsIn, treasureType, position, this.theme, lootLevel,
-                                            fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
-
-                                    if (result.getB()) {
-                                        world.getChunk(position).markBlockForPostprocessing(position);
-                                    }
-
-                                    if (y == 0 && model.height > 1
-                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                                    }
+                                    placeBlock(model, world, boundsIn, theme, treasureType, lootLevel, fillAir, x, y, z, position, result);
                                 }
                             }
                         }
@@ -292,7 +260,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                             BlockPos position = new BlockPos(pos.getX() + model.length - z - 1, pos.getY() + y, pos.getZ() + x);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+                                    setBlockState(CAVE_AIR, world, treasureType, position.getX(), position.getY(), position.getZ(),
                                             this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_90, world,
@@ -300,19 +268,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
-                                    setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
-                                            this.theme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
-
-                                    if (result.getB()) {
-                                        world.getChunk(position).markBlockForPostprocessing(position);
-                                    }
-
-                                    if (y == 0 && model.height > 1
-                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                                    }
+                                    placeBlock(model, world, boundsIn, theme, treasureType, lootLevel, fillAir, x, y, z, position, result);
                                 }
                             }
                         }
@@ -327,7 +283,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                             BlockPos position = new BlockPos(pos.getX() + z, pos.getY() + y, pos.getZ() + model.width - x - 1);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+                                    setBlockState(CAVE_AIR, world, treasureType, position.getX(), position.getY(), position.getZ(),
                                             this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
@@ -335,19 +291,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
-                                    setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
-                                            this.theme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
-
-                                    if (result.getB()) {
-                                        world.getChunk(position).markBlockForPostprocessing(position);
-                                    }
-
-                                    if (y == 0 && model.height > 1
-                                            && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-                                            && model.model[x][0][z].type == DungeonModelBlockType.SOLID
-                                            && model.model[x][1][z].type == DungeonModelBlockType.SOLID) {
-                                        buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                                    }
+                                    placeBlock(model, world, boundsIn, theme, treasureType, lootLevel, fillAir, x, y, z, position, result);
                                 }
                             }
                         }
@@ -362,7 +306,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                             BlockPos position = new BlockPos(pos.getX() + model.width - x - 1, pos.getY() + y, pos.getZ() + model.length - z - 1);
                             if (boundsIn.isVecInside(position)) {
                                 if (model.model[x][y][z] == null) {
-                                    setBlockState(CAVE_AIR, world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+                                    setBlockState(CAVE_AIR, world, treasureType, position.getX(), position.getY(), position.getZ(),
                                             this.theme, lootLevel, DungeonModelBlockType.SOLID);
                                 } else {
                                     Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.CLOCKWISE_180, world,
@@ -370,7 +314,7 @@ public class DungeonSecretRoom extends DungeonPiece {
                                             WeightedRandomBlock.RANDOM, variation, lootLevel);
                                     if (result == null)
                                         continue;
-                                    setBlockState(result.getA(), world, boundsIn, treasureType, position.getX(), position.getY(), position.getZ(),
+                                    setBlockState(result.getA(), world, treasureType, position.getX(), position.getY(), position.getZ(),
                                             this.theme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                                     if (result.getB()) {

@@ -28,6 +28,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -53,10 +54,10 @@ public class DungeonStairs extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         switch (stairType) {
             case 0:
-                this.modelID = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2.id : DungeonModels.STAIRS_BOTTOM.id;
+                this.modelKey = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2.key : DungeonModels.STAIRS_BOTTOM.key;
                 return;
             case 1:
-                this.modelID = DungeonModels.STAIRS_TOP.id;
+                this.modelKey = DungeonModels.STAIRS_TOP.key;
         }
     }
 
@@ -64,11 +65,15 @@ public class DungeonStairs extends DungeonPiece {
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos p_74875_4_) {
         BlockPos pos = new BlockPos(x, y, z);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
         switch (stairType) {
             case 0: {
-                DungeonModel model = DungeonModels.MODELS.get(modelID);
                 build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                        Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
+                        Theme.getSub(subTheme), model.getTreasureType(), stage, false);
                 ironBars(worldIn, structureBoundingBoxIn, model);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
@@ -79,9 +84,8 @@ public class DungeonStairs extends DungeonPiece {
                 return true;
             }
             case 1: {
-                DungeonModel model = DungeonModels.MODELS.get(modelID);
                 build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                        Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, false);
+                        Theme.getSub(subTheme), model.getTreasureType(), stage, false);
                 entrances(worldIn, structureBoundingBoxIn, model);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {

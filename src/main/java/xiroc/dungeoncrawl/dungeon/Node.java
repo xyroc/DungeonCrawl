@@ -21,6 +21,8 @@ package xiroc.dungeoncrawl.dungeon;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 
+import java.util.Random;
+
 public class Node {
 
     /**
@@ -79,17 +81,17 @@ public class Node {
      * if there is none. "Fit into the given node" means that wherever the given node does have an exit,
      * this one needs to have one as well.
      */
-    public Rotation compare(Node node) {
-        return Node.compare(node, this, Rotation.NONE, 0);
+    public Rotation compare(Node node, Random rand) {
+        return Node.compare(node, this, Rotation.NONE, rand.nextBoolean() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90, 0);
     }
 
-    private static Rotation compare(Node node, Node rotatedNode, Rotation currentRotation, int depth) {
+    private static Rotation compare(Node node, Node rotatedNode, Rotation currentRotation, Rotation step, int depth) {
         if (depth > 3)
             return null;
         for (int i = 0; i < node.sides.length; i++) {
             if (node.sides[i] && !rotatedNode.sides[i]) {
-                return compare(node, rotatedNode.rotate(Rotation.CLOCKWISE_90),
-                        currentRotation.add(Rotation.CLOCKWISE_90), ++depth);
+                return compare(node, rotatedNode.rotate(step),
+                        currentRotation.add(step), step, ++depth);
             }
         }
         return currentRotation;

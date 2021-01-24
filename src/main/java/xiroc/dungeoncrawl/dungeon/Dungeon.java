@@ -85,11 +85,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
                     return false;
                 }
             }
-            if (DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(chunkGen,
-                    chunkGen.getBiomeProvider().getNoiseBiome(chunkX << 4, chunkGen.getSeaLevel(), chunkZ << 4), chunkX, chunkZ))) {
-                return false;
-            }
-            return rand.nextFloat() < Config.DUNGEON_PROBABILITY.get();
+            return !DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(chunkGen,
+                    chunkGen.getBiomeProvider().getNoiseBiome(chunkX << 4, chunkGen.getSeaLevel(), chunkZ << 4), chunkX, chunkZ));
         } else {
             return false;
         }

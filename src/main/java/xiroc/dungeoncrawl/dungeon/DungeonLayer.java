@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
-import javafx.geometry.Pos;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
@@ -53,19 +52,11 @@ public class DungeonLayer {
      */
     public List<Position2D> distantNodes;
 
-    /*
-     * Tracking values for recursive layer generation
-     */
-    public int nodes, rooms, nodesLeft, roomsLeft;
     public boolean stairsPlaced;
 
     public LayerStatTracker statTracker;
 
     public DungeonLayerMap map;
-
-    public DungeonLayer() {
-        this(16, 16);
-    }
 
     public DungeonLayer(int width, int length) {
         this.width = width;
@@ -286,7 +277,6 @@ public class DungeonLayer {
     /**
      * Convenience method to build a straight connection from the start position to the end position.
      * No pieces will be placed at the start and end positions themselves, only in the space between them.
-     * If there is no space between them, no connection will be built.
      * The start position and the end position need to have either the same x-coordinate or the same
      * z-coordinate. If this is not the case, an IllegalArgumentException will be thrown.
      *
@@ -357,7 +347,7 @@ public class DungeonLayer {
                 if (current.isValid(Dungeon.SIZE) && grid[current.x][current.z] != null
                         && grid[current.x][current.z].reference.getType() == 0
                         && grid[current.x][current.z].reference.connectedSides < 4) {
-                    Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(current.x, current.z));
+                    Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(current.x, current.z), rand);
                     if (data != null) {
                         return data;
                     }
@@ -367,28 +357,42 @@ public class DungeonLayer {
         return null;
     }
 
-    public Tuple<Position2D, Rotation> findSideRoomData(Position2D base) {
+    public Tuple<Position2D, Rotation> findSideRoomData(Position2D base, Random rand) {
         Position2D north = base.shift(Direction.NORTH, 1), east = base.shift(Direction.EAST, 1),
                 south = base.shift(Direction.SOUTH, 1), west = base.shift(Direction.WEST, 1);
 
-        if (north.isValid(width, length) && grid[north.x][north.z] == null)
-            return new Tuple<Position2D, Rotation>(north, Rotation.COUNTERCLOCKWISE_90);
+        if (rand.nextBoolean()) {
+            if (north.isValid(width, length) && isTileFree(north))
+                return new Tuple<>(north, Rotation.COUNTERCLOCKWISE_90);
 
-        if (east.isValid(width, length) && grid[east.x][east.z] == null)
-            return new Tuple<Position2D, Rotation>(east, Rotation.NONE);
+            if (east.isValid(width, length) && isTileFree(east))
+                return new Tuple<>(east, Rotation.NONE);
 
-        if (south.isValid(width, length) && grid[south.x][south.z] == null)
-            return new Tuple<Position2D, Rotation>(south, Rotation.CLOCKWISE_90);
+            if (south.isValid(width, length) && isTileFree(south))
+                return new Tuple<>(south, Rotation.CLOCKWISE_90);
 
-        if (west.isValid(width, length) && grid[west.x][west.z] == null)
-            return new Tuple<Position2D, Rotation>(west, Rotation.CLOCKWISE_180);
+            if (west.isValid(width, length) && isTileFree(west))
+                return new Tuple<>(west, Rotation.CLOCKWISE_180);
+        } else {
+            if (west.isValid(width, length) && isTileFree(west))
+                return new Tuple<>(west, Rotation.CLOCKWISE_180);
+
+            if (south.isValid(width, length) && isTileFree(south))
+                return new Tuple<>(south, Rotation.CLOCKWISE_90);
+
+            if (east.isValid(width, length) && isTileFree(east))
+                return new Tuple<>(east, Rotation.NONE);
+
+            if (north.isValid(width, length) && isTileFree(north))
+                return new Tuple<>(north, Rotation.COUNTERCLOCKWISE_90);
+        }
 
         return null;
     }
 
     /**
      * Convenience method to rotate a dungeon piece so that it matches its connections.
-     * This is necessary to ensure that the model for this piece, which is usually unknown at this point,
+     * This is necessary to ensure that the model for this piece, which should be unknown at this point,
      * matches the pieces' connections.
      *
      * @param placeHolder the place holder of the piece
@@ -422,27 +426,26 @@ public class DungeonLayer {
         }
     }
 
-    public void rotateNode(PlaceHolder placeHolder) {
+    /**
+     * Convenience method to rotate a node piece so that it matches its connections.
+     * This is necessary to ensure that the model for this piece, which should be unknown at this point,
+     * matches the pieces' connections.
+     *
+     * @param placeHolder the place holder of the node
+     * @param rand        an instance of Random which will be used to choose in which direction (clockwise or counterclockwise)
+     *                    the algorithm rotates the node until it matches to create more randomness.
+     */
+    public void rotateNode(PlaceHolder placeHolder, Random rand) {
         if (placeHolder.hasFlag(PlaceHolder.Flag.FIXED_ROTATION))
             return;
         DungeonNodeRoom node = (DungeonNodeRoom) placeHolder.reference;
-        Rotation rotation = node.node.compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]));
+        Rotation rotation = node.node.compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
         if (rotation != null) {
             node.rotation = rotation;
         } else {
             DungeonCrawl.LOGGER.error("Could not find a proper rotation for [{} {} {} {}].", node.sides[0],
                     node.sides[1], node.sides[2], node.sides[3]);
         }
-
-    }
-
-    public Direction findNext(DungeonPiece piece, Direction base) {
-        if (piece.connectedSides >= 4)
-            return null;
-        if (piece.sides[(base.getHorizontalIndex() + 2) % 4])
-            return findNext(piece, base.rotateY());
-        else
-            return base;
     }
 
     public boolean placeSecretRoom(DungeonCorridor corridor, Position2D position, Random rand) {
@@ -515,64 +518,6 @@ public class DungeonLayer {
      */
     public boolean exists(Position2D position) {
         return position.isValid(width, length) && grid[position.x][position.z] != null;
-    }
-
-    public boolean canPutDoubleRoom(Position2D pos, Direction direction) {
-        if (!pos.isValid(width, length) || grid[pos.x][pos.z] != null && map.isPositionFree(pos.x, pos.z))
-            return false;
-        switch (direction) {
-            case NORTH:
-                return pos.z > 0 && this.grid[pos.x][pos.z - 1] == null && map.isPositionFree(pos.x, pos.z - 1);
-            case EAST:
-                return pos.x < width - 1 && this.grid[pos.x + 1][pos.z] == null && map.isPositionFree(pos.x + 1, pos.z);
-            case SOUTH:
-                return pos.z < length - 1 && this.grid[pos.x][pos.z + 1] == null
-                        && map.isPositionFree(pos.x, pos.z + 1);
-            case WEST:
-                return pos.x > 0 && this.grid[pos.x - 1][pos.z] == null && map.isPositionFree(pos.x - 1, pos.z);
-            default:
-                return false;
-        }
-    }
-
-    public Position2D getLargeRoomPos(Position2D pos) {
-        int a = Dungeon.SIZE - 1, x = pos.x, z = pos.z;
-
-        if (x < a && z < a && get(x + 1, z) == null && get(x + 1, z + 1) == null && get(x, z + 1) == null)
-            return pos;
-
-        if (x < a && z > 0 && get(x + 1, z) == null && get(x + 1, z - 1) == null && get(x, z - 1) == null)
-            return new Position2D(x, z - 1);
-
-        if (x > 0 && z < a && get(x - 1, z) == null && get(x - 1, z + 1) == null && get(x, z + 1) == null)
-            return new Position2D(x - 1, z);
-
-        if (x > 0 && z > 0 && get(x - 1, z) == null && get(x - 1, z - 1) == null && get(x, z - 1) == null)
-            return new Position2D(x - 1, z - 1);
-
-        return null;
-    }
-
-    public static Position2D getLargeRoomPos(DungeonLayer layer, Position2D pos) {
-        int a = Dungeon.SIZE - 1, x = pos.x, z = pos.z;
-
-        if (x < a && z < a && layer.get(x + 1, z) == null && layer.get(x + 1, z + 1) == null
-                && layer.get(x, z + 1) == null)
-            return pos;
-
-        if (x < a && z > 0 && layer.get(x + 1, z) == null && layer.get(x + 1, z - 1) == null
-                && layer.get(x, z - 1) == null)
-            return new Position2D(x, z - 1);
-
-        if (x > 0 && z < a && layer.get(x - 1, z) == null && layer.get(x - 1, z + 1) == null
-                && layer.get(x, z + 1) == null)
-            return new Position2D(x - 1, z);
-
-        if (x > 0 && z > 0 && layer.get(x - 1, z) == null && layer.get(x - 1, z - 1) == null
-                && layer.get(x, z - 1) == null)
-            return new Position2D(x - 1, z - 1);
-
-        return null;
     }
 
     public DungeonPiece get(int x, int z) {

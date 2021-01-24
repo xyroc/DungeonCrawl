@@ -89,6 +89,10 @@ public class WeightedRandom<T> implements IRandom<T> {
         return null;
     }
 
+    public int size() {
+        return entries.size();
+    }
+
     public static class Builder<T> {
 
         public List<Tuple<Integer, T>> entries;

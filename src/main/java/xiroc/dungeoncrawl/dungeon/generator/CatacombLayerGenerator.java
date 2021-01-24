@@ -127,7 +127,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
                     dungeonLayer.openSideIfExistent(cursor.shift(direction.getOpposite(), 1), direction);
                     tile.reference.openSide(direction.getOpposite());
                     if (tile.reference.getType() == 10) {
-                        dungeonLayer.rotateNode(tile);
+                        dungeonLayer.rotateNode(tile, rand);
                     } else {
                         dungeonLayer.rotatePiece(tile, rand);
                     }

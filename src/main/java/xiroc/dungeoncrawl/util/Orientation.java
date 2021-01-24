@@ -248,7 +248,7 @@ public class Orientation {
         }
     }
 
-    public static int getInt(Rotation rotation) {
+    public static int rotationAsInt(Rotation rotation) {
         switch (rotation) {
             case CLOCKWISE_180:
                 return 2;
@@ -256,8 +256,6 @@ public class Orientation {
                 return 1;
             case COUNTERCLOCKWISE_90:
                 return 3;
-            case NONE:
-                return 0;
             default:
                 return 0;
         }

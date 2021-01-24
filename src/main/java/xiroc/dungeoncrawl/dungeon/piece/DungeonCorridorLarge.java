@@ -25,6 +25,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -99,14 +100,18 @@ public class DungeonCorridorLarge extends DungeonPiece {
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos chunkPosIn) {
+                          ChunkPos chunkPosIn) {
 
         //DungeonCrawl.LOGGER.debug("x: {}, y: {}, z: {}, rotation: {}", x, y, z, rotation);
 
         BlockPos pos = new BlockPos(x, y, z);
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
-                Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
+                Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
 //        ChildPieceSpot[] spots = getSpots();
 //

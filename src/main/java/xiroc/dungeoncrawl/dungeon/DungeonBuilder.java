@@ -293,7 +293,7 @@ public class DungeonBuilder {
                         }
 
                         if (layer.grid[x][z].reference.getType() == 10) {
-                            layer.rotateNode(layer.grid[x][z]);
+                            layer.rotateNode(layer.grid[x][z], rand);
                         }
 
                         layer.grid[x][z].reference.customSetup(rand);

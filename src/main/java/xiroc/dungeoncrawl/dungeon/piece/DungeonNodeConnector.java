@@ -27,6 +27,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -49,13 +50,16 @@ public class DungeonNodeConnector extends DungeonPiece {
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos chunkPosIn) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-
-        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
+                          ChunkPos chunkPosIn) {
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
+        BlockPos pos = new BlockPos(x, y + model.getOffset().getY(), z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
+                Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
@@ -71,12 +75,15 @@ public class DungeonNodeConnector extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces,  Random rand) {
-        this.modelID = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand);
+    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelKey = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand).key;
     }
 
     public void adjustPositionAndBounds() {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            return;
+        }
 
         if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
             int minZ = z - (model.length - 3) / 2;
@@ -93,9 +100,11 @@ public class DungeonNodeConnector extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-        Vec3i offset = DungeonModels.getOffset(modelID);
-
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            return;
+        }
+        Vec3i offset = model.getOffset();
         if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
             this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 4, y + offset.getY() + model.height - 1,
                     z + model.length - 1);
@@ -103,7 +112,6 @@ public class DungeonNodeConnector extends DungeonPiece {
             this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + model.length - 1,
                     y + offset.getY() + model.height - 1, z + 4);
         }
-
     }
 
 }

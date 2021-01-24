@@ -12,7 +12,7 @@
             "y": 5,
             "z": 2
           },
-          "model_key": "multipart/corridor/light"
+          "model": "multipart/corridor/light"
         }
       ]
     },
@@ -23,7 +23,7 @@
             "x": 3,
             "z": -1
           },
-          "model_key": "multipart/corridor/light_switch"
+          "model": "multipart/corridor/light_switch"
         }
       ]
     },
@@ -35,7 +35,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/light_switch",
+          "model": "multipart/corridor/light_switch",
           "weight": 5
         },
         {
@@ -44,7 +44,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/default"
+          "model": "multipart/corridor/default"
         },
         {
           "offset": {
@@ -52,7 +52,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/variant"
+          "model": "multipart/corridor/variant"
         },
         {
           "offset": {
@@ -60,7 +60,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/variant_2"
+          "model": "multipart/corridor/variant_2"
         },
         {
           "offset": {
@@ -68,7 +68,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/bookshelf"
+          "model": "multipart/corridor/bookshelf"
         },
         {
           "offset": {
@@ -76,7 +76,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/chest"
+          "model": "multipart/corridor/chest"
         },
         {
           "offset": {
@@ -84,7 +84,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/spawner"
+          "model": "multipart/corridor/spawner"
         }
       ]
     }

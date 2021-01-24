@@ -28,23 +28,8 @@ import java.util.HashMap;
 public class Treasure {
 
     public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES = new HashMap<>();
-    public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES = new HashMap<>();
-
-    public static Treasure.Type getModelTreasureType(int modelID) {
-        return MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT);
-    }
 
     public static void init() {
-//        MODEL_TREASURE_TYPES.put(24, Type.FOOD);
-//
-//        MODEL_TREASURE_TYPES.put(32, Type.FORGE);
-//        MODEL_TREASURE_TYPES.put(34, Type.LIBRARY);
-//        MODEL_TREASURE_TYPES.put(35, Type.TREASURE);
-//
-//        MODEL_TREASURE_TYPES.put(70, Type.SECRET_ROOM);
-//
-//        MODEL_TREASURE_TYPES.put(76, Type.SUPPLY);
-
         SPECIAL_LOOT_TABLES.put(Type.SUPPLY, Loot.SUPPLY_CHEST);
         SPECIAL_LOOT_TABLES.put(Type.FOOD, Loot.FOOD);
         SPECIAL_LOOT_TABLES.put(Type.TREASURE, Loot.TREASURE_ROOM);

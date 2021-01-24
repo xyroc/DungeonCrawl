@@ -13,7 +13,6 @@ import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +65,8 @@ public class MultipartModelData {
             return null;
         }
 
-        if (object.has("alternative")) {
-            multipartModelData.alternatives = getInstancesFromJson(object.getAsJsonArray("alternative"), file);
+        if (object.has("alternatives")) {
+            multipartModelData.alternatives = getInstancesFromJson(object.getAsJsonArray("alternatives"), file);
             if (multipartModelData.conditions == null) {
                 DungeonCrawl.LOGGER.warn("Multipart metadata has an alternative model set but no conditions");
             }
@@ -107,12 +106,12 @@ public class MultipartModelData {
 
     public static class Instance {
 
-        public static final Instance EMPTY = new Instance(null, -1, DungeonModels.NO_OFFSET, Rotation.NONE);
+        public static final Instance EMPTY = new Instance(null, null, DungeonModels.NO_OFFSET, Rotation.NONE);
 
         public final Vec3i offset;
         public final Rotation rotation;
 
-        private ResourceLocation file;
+        private final ResourceLocation file;
 
         /**
          * This will be null for EMPTY.
@@ -120,19 +119,11 @@ public class MultipartModelData {
         @Nullable
         public DungeonModel model;
 
-        @Nullable
-        private String key;
-        @Nullable
-        private Integer id;
+        private final String key;
 
-        public Instance(ResourceLocation file, @Nonnull String key, Vec3i offset, Rotation rotation) {
+        public Instance(ResourceLocation file, String key, Vec3i offset, Rotation rotation) {
+            this.file = file;
             this.key = key;
-            this.offset = offset;
-            this.rotation = rotation;
-        }
-
-        public Instance(ResourceLocation file, int id, Vec3i offset, Rotation rotation) {
-            this.id = id;
             this.offset = offset;
             this.rotation = rotation;
         }
@@ -142,7 +133,7 @@ public class MultipartModelData {
                 DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece(null, DungeonPiece.DEFAULT_NBT);
                 Vec3i pos = Orientation.rotatedMultipartOffset(parent, model, offset, rotation);
                 piece.setWorldPosition(x + pos.getX(), y + pos.getY(), z + pos.getZ());
-                piece.modelID = model.id;
+                piece.modelKey = model.key;
                 piece.rotation = this.rotation.add(rotation);
                 piece.stage = parentPiece.stage;
                 piece.theme = parentPiece.theme;
@@ -150,7 +141,7 @@ public class MultipartModelData {
                 piece.setupBoundingBox();
                 return piece;
             } else {
-                throw new RuntimeException("Can't create a multipart piece without a model.");
+                throw new RuntimeException("Can't create a multipart piece without a model. Metadata file: " + file.toString());
             }
         }
 
@@ -158,29 +149,19 @@ public class MultipartModelData {
             if (this == EMPTY) {
                 return;
             }
-            if (key != null) {
-                this.model = DungeonModels.PATH_TO_MODEL.get(key);
-            } else if (id != null) {
-                this.model = DungeonModels.MODELS.get(id);
-            }
+            this.model = DungeonModels.MODELS.get(key);
             if (model == null) {
-                throw new RuntimeException("A multipart model data instance does neither have a valid model key nor a valid model id. Model key: " + key + ", Model id: " + id);
+                throw new RuntimeException("Missing model " + key + " in " + file.toString());
             }
         }
 
         public static Instance fromJson(JsonObject object, ResourceLocation file) {
-            if (object.has("model_key")) {
+            if (object.has("model")) {
                 Vec3i offset = object.has("offset") ? JSONUtils.getOffset(object.getAsJsonObject("offset")) : DungeonModels.NO_OFFSET;
 
                 Rotation rotation = object.has("rotation") ? Rotation.valueOf(object.get("rotation").getAsString().toUpperCase(Locale.ROOT)) : Rotation.NONE;
 
-                return new Instance(file, object.get("model_key").getAsString(), offset, rotation);
-            } else if (object.has("model_id")) {
-                Vec3i offset = object.has("offset") ? JSONUtils.getOffset(object.getAsJsonObject("offset")) : DungeonModels.NO_OFFSET;
-
-                Rotation rotation = object.has("rotation") ? Rotation.valueOf(object.get("rotation").getAsString().toUpperCase(Locale.ROOT)) : Rotation.NONE;
-
-                return new Instance(file, object.get("model_id").getAsInt(), offset, rotation);
+                return new Instance(file, object.get("model").getAsString(), offset, rotation);
             } else {
                 return EMPTY;
             }
@@ -201,14 +182,22 @@ public class MultipartModelData {
         @Nullable
         public static Condition<?> fromJson(JsonElement element, String name) {
             switch (name) {
-                case "side_1":
-                    return new Condition<>(Property.SIDE_1, element.getAsBoolean());
-                case "side_2":
-                    return new Condition<>(Property.SIDE_2, element.getAsBoolean());
-                case "side_3":
-                    return new Condition<>(Property.SIDE_3, element.getAsBoolean());
-                case "side_4":
-                    return new Condition<>(Property.SIDE_4, element.getAsBoolean());
+                case "north":
+                    return new Condition<>(Property.NORTH, element.getAsBoolean());
+                case "east":
+                    return new Condition<>(Property.EAST, element.getAsBoolean());
+                case "south":
+                    return new Condition<>(Property.SOUTH, element.getAsBoolean());
+                case "west":
+                    return new Condition<>(Property.WEST, element.getAsBoolean());
+                case "rotated_north":
+                    return new Condition<>(Property.ROTATED_NORTH, element.getAsBoolean());
+                case "rotated_east":
+                    return new Condition<>(Property.ROTATED_EAST, element.getAsBoolean());
+                case "rotated_south":
+                    return new Condition<>(Property.ROTATED_SOUTH, element.getAsBoolean());
+                case "rotated_west":
+                    return new Condition<>(Property.ROTATED_WEST, element.getAsBoolean());
                 case "straight":
                     return new Condition<>(Property.STRAIGHT, element.getAsBoolean());
                 case "connections":
@@ -230,10 +219,15 @@ public class MultipartModelData {
     @FunctionalInterface
     public interface Property<T> {
 
-        Property<Boolean> SIDE_1 = (piece) -> piece.sides[0];
-        Property<Boolean> SIDE_2 = (piece) -> piece.sides[1];
-        Property<Boolean> SIDE_3 = (piece) -> piece.sides[2];
-        Property<Boolean> SIDE_4 = (piece) -> piece.sides[3];
+        Property<Boolean> NORTH = (piece) -> piece.sides[0];
+        Property<Boolean> EAST = (piece) -> piece.sides[1];
+        Property<Boolean> SOUTH = (piece) -> piece.sides[2];
+        Property<Boolean> WEST = (piece) -> piece.sides[3];
+
+        Property<Boolean> ROTATED_NORTH = (piece) -> piece.sides[Orientation.rotationAsInt(piece.rotation)];
+        Property<Boolean> ROTATED_EAST = (piece) -> piece.sides[(1 + Orientation.rotationAsInt(piece.rotation)) % 4];
+        Property<Boolean> ROTATED_SOUTH = (piece) -> piece.sides[(2 + Orientation.rotationAsInt(piece.rotation)) % 4];
+        Property<Boolean> ROTATED_WEST = (piece) -> piece.sides[(3 + Orientation.rotationAsInt(piece.rotation)) % 4];
 
         Property<Boolean> STRAIGHT = (piece) -> (piece.sides[0] && piece.sides[2]) || (piece.sides[1] && piece.sides[3]);
 

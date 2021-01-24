@@ -43,6 +43,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (lootRoom) {
             node = Node.ALL;
-            this.modelID = DungeonModels.LOOT_ROOM.id;
+            this.modelKey = DungeonModels.LOOT_ROOM.key;
             return;
         }
 
@@ -101,28 +102,11 @@ public class DungeonNodeRoom extends DungeonPiece {
                 break;
         }
 
-        WeightedRandomInteger provider = large
+        WeightedRandom<DungeonModel> provider = large
                 ? ModelCategory.get(ModelCategory.LARGE_NODE, layerCategory, base)
                 : ModelCategory.get(ModelCategory.NORMAL_NODE, layerCategory, base);
 
-        if (provider == null) {
-            DungeonCrawl.LOGGER.error("Didnt find a model provider for {} in stage {}. Connected Sides: {}, Base: {}",
-                    this, stage, connectedSides, base);
-
-            this.modelID = large ? 33 : 38;
-            return;
-        }
-
-        Integer id = provider.roll(rand);
-
-        if (id == null) {
-            DungeonCrawl.LOGGER.error("Empty model provider for {} in stage {}. Connected Sides: {}, Base: {}",
-                    this, stage, connectedSides, base);
-            this.modelID = large ? 33 : 38;
-            return;
-        }
-
-        this.modelID = id;
+        this.modelKey = provider.roll(rand).key;
     }
 
     @Override
@@ -135,8 +119,10 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public void customSetup(Random rand) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-        if (model.metadata != null) {
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            return;
+        }        if (model.metadata != null) {
             if (model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
                 DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata, x, y, z);
             }
@@ -152,13 +138,16 @@ public class DungeonNodeRoom extends DungeonPiece {
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                                   ChunkPos chunkPosIn) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
 
-        Vec3i offset = DungeonModels.getOffset(modelID);
+        Vec3i offset = model.getOffset();
         BlockPos pos = new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ());
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
-                Treasure.getModelTreasureType(modelID), stage, rotation, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
@@ -168,11 +157,6 @@ public class DungeonNodeRoom extends DungeonPiece {
 
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
-//        if (large) {
-//            buildBoundingBox(worldIn, new MutableBoundingBox(structureBoundingBoxIn.minX, y, structureBoundingBoxIn.minZ,
-//                    structureBoundingBoxIn.maxX, y + 8, structureBoundingBoxIn.maxZ), Blocks.COBWEB);
-//        }
-
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
         return true;
@@ -180,7 +164,11 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        Vec3i offset = DungeonModels.getOffset(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            return;
+        }
+        Vec3i offset = model.getOffset();
         this.boundingBox = large ? new MutableBoundingBox(x, y + offset.getY(), z, x + 26, y + offset.getY() + 8, z + 26)
                 : new MutableBoundingBox(x, y + offset.getY(), z, x + 16, y + offset.getY() + 8, z + 16);
     }
@@ -254,56 +242,6 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
-    }
-
-    @Override
-    public Tuple<Position2D, Position2D> getAlternativePath(Position2D current, Position2D end) {
-
-        if (!current.hasFacing()) {
-            throw new RuntimeException("The current Position needs to provide a facing.");
-        }
-
-        Position2D center = new Position2D(gridX, gridZ);
-
-        return new Tuple<>(center.shift(node.findClosest(current.facing), 1),
-                center.shift(findExitToPosition(end), 1));
-    }
-
-    @Override
-    public boolean hasAlternativePath() {
-        return true;
-    }
-
-    private Direction findExitToPosition(Position2D pos) {
-
-        if (pos.hasFacing())
-            return node.findClosest(pos.facing);
-
-        if (pos.x > gridX) {
-            if (pos.z > gridZ)
-                return Direction.SOUTH;
-            else if (pos.z < gridZ)
-                return Direction.NORTH;
-            else
-                return Direction.EAST;
-        } else if (pos.x < gridX) {
-            if (pos.z > gridZ)
-                return Direction.SOUTH;
-            else if (pos.z < gridZ)
-                return Direction.NORTH;
-            else
-                return Direction.WEST;
-        } else {
-            if (pos.z > gridZ)
-                return Direction.SOUTH;
-            else if (pos.z < gridZ)
-                return Direction.NORTH;
-            else {
-                DungeonCrawl.LOGGER.error("Invalid Position: {},{}", pos.x, pos.z);
-                throw new RuntimeException("Invalid position: (" + pos.x + "/" + pos.z + ")");
-            }
-        }
-
     }
 
     @Override

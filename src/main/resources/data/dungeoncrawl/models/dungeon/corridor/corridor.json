@@ -10,38 +10,38 @@
           "offset": {
             "x": 3
           },
-          "model_key": "multipart/corridor/default",
+          "model": "multipart/corridor/default",
           "weight": 3
         },
         {
           "offset": {
             "x": 3
           },
-          "model_key": "multipart/corridor/variant"
+          "model": "multipart/corridor/variant"
         },
         {
           "offset": {
             "x": 3
           },
-          "model_key": "multipart/corridor/variant_2"
+          "model": "multipart/corridor/variant_2"
         },
         {
           "offset": {
             "x": 3
           },
-          "model_key": "multipart/corridor/bookshelf"
+          "model": "multipart/corridor/bookshelf"
         },
         {
           "offset": {
             "x": 3
           },
-          "model_key": "multipart/corridor/chest"
+          "model": "multipart/corridor/chest"
         },
         {
           "offset": {
             "x": 3
           },
-          "model_key": "multipart/corridor/spawner"
+          "model": "multipart/corridor/spawner"
         }
       ]
     },
@@ -53,7 +53,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/default",
+          "model": "multipart/corridor/default",
           "weight": 3
         },
         {
@@ -62,7 +62,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/variant"
+          "model": "multipart/corridor/variant"
         },
         {
           "offset": {
@@ -70,7 +70,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/variant_2"
+          "model": "multipart/corridor/variant_2"
         },
         {
           "offset": {
@@ -78,7 +78,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/bookshelf"
+          "model": "multipart/corridor/bookshelf"
         },
         {
           "offset": {
@@ -86,7 +86,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/chest"
+          "model": "multipart/corridor/chest"
         },
         {
           "offset": {
@@ -94,7 +94,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model_key": "multipart/corridor/spawner"
+          "model": "multipart/corridor/spawner"
         }
       ]
     }

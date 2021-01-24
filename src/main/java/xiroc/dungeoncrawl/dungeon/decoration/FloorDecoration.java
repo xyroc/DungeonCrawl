@@ -49,7 +49,7 @@ public class FloorDecoration implements IDungeonDecoration {
                             && worldGenBounds.isVecInside(blockPos) && structureBounds.isVecInside(blockPos) && world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z))
                             && checkSolid(world, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), worldGenBounds, structureBounds)
                             && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-                        piece.setBlockState(blockStateProvider.get(), world, worldGenBounds, null, blockPos,
+                        piece.setBlockState(blockStateProvider.get(), world, null, blockPos,
                                 0, 0, PlacementBehaviour.SOLID);
                     }
                 }
@@ -85,7 +85,7 @@ public class FloorDecoration implements IDungeonDecoration {
                                     (checkSolid(world, p.north(), worldGenBounds, structureBounds) || checkSolid(world, p.east(), worldGenBounds, structureBounds)
                                             || checkSolid(world, p.south(), worldGenBounds, structureBounds) || checkSolid(world, p.west(), worldGenBounds, structureBounds))
                                     && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-                                piece.setBlockState(blockStateProvider.get(), world, worldGenBounds, null, blockPos, 0, 0, PlacementBehaviour.SOLID);
+                                piece.setBlockState(blockStateProvider.get(), world, null, blockPos, 0, 0, PlacementBehaviour.SOLID);
 
                             }
                         }

@@ -26,15 +26,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,8 @@ public class DungeonModel {
 
     public ResourceLocation location;
 
-    public Integer id;
+    public String key;
+    public Integer id; // ID's are no longer the main way to identify models. Kept only for backwards compatibility.
     public int width, height, length;
 
     public DungeonModelBlock[][][] model;
@@ -71,7 +71,7 @@ public class DungeonModel {
     }
 
     public DungeonModel setId(int id) {
-        DungeonModels.MODELS.put(id, this);
+        DungeonModels.LEGACY_MODELS.put(id, this);
         this.id = id;
         return this;
     }
@@ -79,20 +79,13 @@ public class DungeonModel {
     public void loadMetadata(Metadata metadata) {
         this.metadata = metadata;
 
-        this.id = metadata.id;
-
-        DungeonModels.MODELS.put(id, this);
+        if (metadata.id != null) {
+            this.id = metadata.id;
+            DungeonModels.LEGACY_MODELS.put(id, this);
+        }
 
         if (metadata.type != null) {
             metadata.type.members.add(this);
-        }
-
-        if (metadata.offset != null) {
-            DungeonModels.OFFSETS.put(id, metadata.offset);
-        }
-
-        if (metadata.treasureType != null) {
-            Treasure.MODEL_TREASURE_TYPES.put(id, metadata.treasureType);
         }
 
         if (metadata.size != null) {
@@ -136,6 +129,20 @@ public class DungeonModel {
                 DungeonCrawl.LOGGER.warn("Unknown rotation: {}", rotation);
                 return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width, origin.getY() + height, origin.getZ() + length);
         }
+    }
+
+    public Treasure.Type getTreasureType() {
+        if (metadata != null && metadata.treasureType != null) {
+            return metadata.treasureType;
+        }
+        return Treasure.Type.DEFAULT;
+    }
+
+    public Vec3i getOffset() {
+        if (metadata != null && metadata.offset != null) {
+            return metadata.offset;
+        }
+        return DungeonModels.NO_OFFSET;
     }
 
     @Override
@@ -249,7 +256,7 @@ public class DungeonModel {
 
             String modelType = object.get("type").getAsString();
 
-            int id = object.get("id").getAsInt();
+            Integer id = object.has("id") ? object.get("id").getAsInt() : null;
 
             DungeonModelFeature feature = null;
             DungeonModelFeature.Metadata featureMetadata = null;
@@ -325,7 +332,7 @@ public class DungeonModel {
 
         @Nullable
         private static ModelCategory getModelCategory(String name) {
-            if (name.equalsIgnoreCase("normal")) {
+            if (name.equalsIgnoreCase("generic")) {
                 return null;
             }
             try {

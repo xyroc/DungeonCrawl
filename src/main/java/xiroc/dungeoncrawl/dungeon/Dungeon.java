@@ -36,6 +36,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
@@ -52,18 +53,19 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final Set<Biome.Category> OVERWORLD_CATEGORIES = ImmutableSet.<Biome.Category>builder()
             .addAll(ALLOWED_CATEGORIES).add(Biome.Category.MUSHROOM).add(Biome.Category.OCEAN).build();
 
-    public static final String NAME = DungeonCrawl.MODID + ":dungeon";
+    public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
     public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
 
     public static final int SIZE = 15;
+    public static int spacing, separation;
 
     public Dungeon(Function<Dynamic<?>, ? extends NoFeatureConfig> p_i51427_1_) {
         super(p_i51427_1_);
     }
 
     public ChunkPos getStartPositionForPosition(ChunkGenerator<?> chunkGenerator, Random random, int x, int z) {
-        int i = 30; // Distance
-        int j = 10; // Separation
+        int i = spacing;
+        int j = separation;
         int i1 = x < 0 ? x - i + 1 : x;
         int j1 = z < 0 ? z - i + 1 : z;
         int k1 = i1 / i;

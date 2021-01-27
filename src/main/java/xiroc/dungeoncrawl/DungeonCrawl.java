@@ -58,10 +58,10 @@ import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Mod(DungeonCrawl.MODID)
+@Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
 
-    public static final String MODID = "dungeoncrawl";
+    public static final String MOD_ID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
     public static final String VERSION = "2.2.4";
 
@@ -91,6 +91,15 @@ public class DungeonCrawl {
         LOGGER.info("Common Setup");
         ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
+
+        if (Config.SPACING.get() > Config.SEPARATION.get()) {
+            Dungeon.spacing = Config.SPACING.get();
+            Dungeon.separation = Config.SEPARATION.get();
+        } else {
+            LOGGER.warn("Invalid separation/spacing setting in the config. Using default values.");
+            Dungeon.spacing = 20;
+            Dungeon.separation = 10;
+        }
 
         StructurePieceTypes.registerAll();
 
@@ -133,7 +142,7 @@ public class DungeonCrawl {
     }
 
     public static ResourceLocation locate(String path) {
-        return new ResourceLocation(MODID, path);
+        return new ResourceLocation(MOD_ID, path);
     }
 
 }

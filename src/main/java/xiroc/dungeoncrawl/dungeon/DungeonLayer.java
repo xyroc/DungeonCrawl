@@ -93,7 +93,7 @@ public class DungeonLayer {
      *
      * @param a Position a
      * @param b Position b
-     * @return the distance value. A higher value means a higher distance.
+     * @return the distance value. The higher the value the higher the distance.
      */
     public int distance(Position2D a, Position2D b) {
         return Math.abs(a.x - b.x) + Math.abs(a.z - b.z);

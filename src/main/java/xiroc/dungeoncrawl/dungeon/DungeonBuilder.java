@@ -180,68 +180,6 @@ public class DungeonBuilder {
         return pieces;
     }
 
-//    public List<DungeonPiece> build(int theme, int subTheme) {
-//        List<DungeonPiece> list = Lists.newArrayList();
-//
-//        for (int i = 0; i < layers.length; i++) {
-//            this.maps[i] = new DungeonLayerMap(Dungeon.SIZE, Dungeon.SIZE);
-//            this.layers[i] = new DungeonLayer(Dungeon.SIZE, Dungeon.SIZE);
-//            this.layers[i].map = maps[i];
-//        }
-//
-//        for (int i = 0; i < layers.length; i++) {
-//            DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
-//        }
-//
-//        for (int i = 0; i < layers.length; i++) {
-//            processCorridors(layers[i], i);
-//        }
-//
-//        DungeonPiece entrance = new DungeonEntrance();
-//        entrance.setRealPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
-//                startPos.getZ() + layers[0].start.z * 9);
-//        entrance.stage = 0;
-//        entrance.modelID = entrance.determineModel(this, rand);
-//        entrance.setupBoundingBox();
-//
-//        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
-//
-//        //String biome = startBiome.getRegistryName().toString();
-//
-//        this.theme = theme;
-//
-//        if (Theme.get(theme).subTheme != null) {
-//            this.subTheme = Theme.randomizeSubTheme(Theme.get(theme).subTheme, rand);
-//        } else {
-//            this.subTheme = subTheme;
-//        }
-//
-//        this.lowerTheme = Theme.randomizeTheme(80, rand);
-//
-//        if (Theme.get(lowerTheme).subTheme != null) {
-//            this.lowerSubTheme = Theme.randomizeSubTheme(Theme.get(lowerTheme).subTheme, rand);
-//        } else {
-//            this.lowerSubTheme = this.subTheme;
-//        }
-//
-//        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.randomizeTheme(81, rand) : Theme.randomizeTheme(1, rand);
-//
-//        if (Theme.get(bottomTheme).subTheme != null) {
-//            this.bottomSubTheme = Theme.randomizeSubTheme(Theme.get(bottomTheme).subTheme, rand);
-//        } else {
-//            this.bottomSubTheme = this.subTheme;
-//        }
-//
-//        entrance.theme = theme;
-//        entrance.subTheme = subTheme;
-//
-//        list.add(entrance);
-//
-//        postProcessDungeon(list, rand);
-//
-//        return list;
-//    }
-
     public void processCorridors(DungeonLayer layer, int lyr) {
         int stage = Math.min(lyr, 4);
         for (int x = 0; x < layer.width; x++) {

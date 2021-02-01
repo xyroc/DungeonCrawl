@@ -24,6 +24,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -99,9 +100,11 @@ public class Spawner implements IBlockPlacementHandler {
         if (INVENTORY_ENTITIES.contains(type)) {
             ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
             ListNBT armorList = new ListNBT();
+
             for (ItemStack stack : armor) {
                 armorList.add(stack.write(new CompoundNBT()));
             }
+
             if (armorList.size() > 0) {
                 spawnData.put("ArmorItems", armorList);
             }

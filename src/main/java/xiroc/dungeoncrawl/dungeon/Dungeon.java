@@ -41,7 +41,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 
-
 public class Dungeon extends Structure<NoFeatureConfig> {
 
     public static final Set<Biome.Category> ALLOWED_CATEGORIES = ImmutableSet.<Biome.Category>builder()

@@ -33,7 +33,6 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -63,13 +62,13 @@ public class DungeonStairs extends DungeonPiece {
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos p_74875_4_) {
-        BlockPos pos = new BlockPos(x, y, z);
+                          ChunkPos p_74875_4_) {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
             return true;
         }
+        BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
         switch (stairType) {
             case 0: {
                 build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
@@ -129,7 +128,10 @@ public class DungeonStairs extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+        }
     }
 
     @Override

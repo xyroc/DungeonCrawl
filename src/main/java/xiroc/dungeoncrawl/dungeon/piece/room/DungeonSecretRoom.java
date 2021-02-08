@@ -56,7 +56,8 @@ public class DungeonSecretRoom extends DungeonPiece {
             DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
             return true;
         }
-        BlockPos pos = new BlockPos(x, y, z);
+
+        BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
 
         buildRotatedFull(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
                 model.getTreasureType(), stage, rotation, false);
@@ -74,27 +75,26 @@ public class DungeonSecretRoom extends DungeonPiece {
         this.modelID = DungeonModels.SECRET_ROOM.id;
     }
 
-    @Override
-    public void setWorldPosition(int x, int y, int z) {
-        switch (rotation) {
-            case NONE:
-                super.setWorldPosition(x + 1, y, z);
-                break;
-            case CLOCKWISE_90:
-                super.setWorldPosition(x, y, z + 1);
-                break;
-            default:
-                super.setWorldPosition(x, y, z);
-                break;
-        }
-    }
+//    @Override
+//    public void setWorldPosition(int x, int y, int z) {
+//        switch (rotation) {
+//            case NONE:
+//                super.setWorldPosition(x + 1, y, z);
+//                break;
+//            case CLOCKWISE_90:
+//                super.setWorldPosition(x, y, z + 1);
+//                break;
+//            default:
+//                super.setWorldPosition(x, y, z);
+//                break;
+//        }
+//    }
 
     @Override
     public void setupBoundingBox() {
-        if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + 16, y + 8, z + 8);
-        } else {
-            this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 16);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
     }
 

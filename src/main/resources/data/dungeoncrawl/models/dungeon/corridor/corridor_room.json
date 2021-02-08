@@ -2,5 +2,9 @@
   "type": "corridor",
   "id": 8,
   "stages": [1, 2],
-  "weights": [1, 1]
+  "weights": [1, 1],
+  "offset": {
+    "z": 1,
+    "rotate": "true"
+  }
 }

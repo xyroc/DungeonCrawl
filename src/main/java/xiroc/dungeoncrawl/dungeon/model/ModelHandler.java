@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,7 +34,6 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel.FeaturePosition;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 

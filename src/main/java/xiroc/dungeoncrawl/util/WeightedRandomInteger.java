@@ -20,10 +20,8 @@ package xiroc.dungeoncrawl.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.util.Tuple;
-import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 

@@ -19,10 +19,8 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.util.ItemProcessor;
 
 import java.util.Random;

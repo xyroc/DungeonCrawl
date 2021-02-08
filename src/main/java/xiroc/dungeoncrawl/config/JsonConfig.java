@@ -28,7 +28,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
-import xiroc.dungeoncrawl.util.BossEntry;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 import java.io.File;

@@ -22,7 +22,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -33,7 +32,6 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -61,7 +59,7 @@ public class DungeonSideRoom extends DungeonPiece {
             DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
             return true;
         }
-        BlockPos pos = new BlockPos(x, y + model.getOffset().getY(), z);
+        BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, true);
@@ -80,11 +78,9 @@ public class DungeonSideRoom extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model == null) {
-            return;
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
-        Vec3i offset = model.getOffset();
-        this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
     }
 
     @Override

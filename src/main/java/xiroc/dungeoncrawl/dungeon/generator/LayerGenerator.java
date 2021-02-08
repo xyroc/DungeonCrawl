@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import net.minecraft.util.math.ChunkPos;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;

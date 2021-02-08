@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.util;
 
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;

@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -34,7 +33,6 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -68,29 +66,8 @@ public class DungeonCorridor extends DungeonPiece {
             return true;
         }
 
-        boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
-
-        int x = ew ? this.x : this.x + (9 - model.length) / 2;
-        int z = ew ? this.z + (9 - model.length) / 2 : this.z;
-
-//        if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id || modelID == 7) {
-//            switch (rotation) {
-//                case NONE:
-//                    z--;
-//                    break;
-//                case CLOCKWISE_90:
-//                    x++;
-//                    break;
-//                case CLOCKWISE_180:
-//                    z++;
-//                    break;
-//                case COUNTERCLOCKWISE_90:
-//                    x--;
-//                    break;
-//            }
-//        }
-
-        BlockPos pos = new BlockPos(x, y + model.getOffset().getY(), z);
+        Vec3i offset = model.getOffset(rotation);
+        BlockPos pos = new BlockPos(x, y, z).add(offset);
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
                 Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
@@ -105,7 +82,7 @@ public class DungeonCorridor extends DungeonPiece {
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
-            spawnMobs(worldIn, this, model.width, model.length, new int[]{1});
+            spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
         return true;
     }
 
@@ -116,33 +93,12 @@ public class DungeonCorridor extends DungeonPiece {
             return;
         }
         if (model.multipartData != null) {
-            boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
-
-            int x = ew ? this.x : this.x + (9 - model.length) / 2;
-            int z = ew ? this.z + (9 - model.length) / 2 : this.z;
-
-//            if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id || modelID == 7) {
-//                switch (rotation) {
-//                    case NONE:
-//                        z--;
-//                        break;
-//                    case CLOCKWISE_90:
-//                        x++;
-//                        break;
-//                    case CLOCKWISE_180:
-//                        z++;
-//                        break;
-//                    case COUNTERCLOCKWISE_90:
-//                        x--;
-//                        break;
-//                }
-//            }
-
+            BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
             for (MultipartModelData data : model.multipartData) {
                 if (data.checkConditions(this)) {
-                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, x, this.y, z));
+                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
                 } else if (data.alternatives != null) {
-                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, x, this.y, z));
+                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
                 }
             }
         }
@@ -151,14 +107,8 @@ public class DungeonCorridor extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model == null) {
-            return;
-        }
-        Vec3i offset = model.getOffset();
-        if (modelID == DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id) {
-            this.boundingBox = new MutableBoundingBox(x - 1, y + offset.getY(), z - 1, x + 10, y + offset.getY() + 8, z + 10);
-        } else {
-            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
     }
 

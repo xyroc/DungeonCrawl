@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -39,12 +38,9 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.Position2D;
 import xiroc.dungeoncrawl.util.WeightedRandom;
-import xiroc.dungeoncrawl.util.WeightedRandomInteger;
 
 import java.util.List;
 import java.util.Random;
@@ -144,8 +140,8 @@ public class DungeonNodeRoom extends DungeonPiece {
             return true;
         }
 
-        Vec3i offset = model.getOffset();
-        BlockPos pos = new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ());
+        Vec3i offset = model.getOffset(rotation);
+        BlockPos pos = new BlockPos(x, y, z).add(offset);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
@@ -165,12 +161,9 @@ public class DungeonNodeRoom extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model == null) {
-            return;
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
-        Vec3i offset = model.getOffset();
-        this.boundingBox = large ? new MutableBoundingBox(x, y + offset.getY(), z, x + 26, y + offset.getY() + 8, z + 26)
-                : new MutableBoundingBox(x, y + offset.getY(), z, x + 16, y + offset.getY() + 8, z + 16);
     }
 
     @Override

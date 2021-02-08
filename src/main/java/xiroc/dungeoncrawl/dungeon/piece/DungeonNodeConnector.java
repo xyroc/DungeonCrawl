@@ -23,7 +23,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
@@ -32,7 +31,6 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -56,7 +54,7 @@ public class DungeonNodeConnector extends DungeonPiece {
             DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
             return true;
         }
-        BlockPos pos = new BlockPos(x, y + model.getOffset().getY(), z);
+        BlockPos pos = new BlockPos(x, y + model.getOffset(rotation).getY(), z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
@@ -101,16 +99,8 @@ public class DungeonNodeConnector extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model == null) {
-            return;
-        }
-        Vec3i offset = model.getOffset();
-        if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
-            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 4, y + offset.getY() + model.height - 1,
-                    z + model.length - 1);
-        } else {
-            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + model.length - 1,
-                    y + offset.getY() + model.height - 1, z + 4);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
     }
 

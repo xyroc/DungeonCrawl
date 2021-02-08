@@ -29,8 +29,6 @@ import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.Half;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
@@ -52,9 +50,11 @@ import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
-import xiroc.dungeoncrawl.util.*;
+import xiroc.dungeoncrawl.util.DirectionalBlockPos;
+import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.util.Position2D;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -259,7 +259,7 @@ public abstract class DungeonPiece extends StructurePiece {
             return;
         }
         if (model.metadata != null && model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
-            Vec3i offset = model.getOffset();
+            Vec3i offset = model.getOffset(rotation);
             DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata,
                     x + offset.getX(), y + offset.getY(), z + offset.getZ());
         }
@@ -529,6 +529,7 @@ public abstract class DungeonPiece extends StructurePiece {
     public void buildRotated(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
                              SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
         buildRotatedFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, rotation, fillAir);
+
 //        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
 //                width = Math.min(model.width, boundsIn.maxX - pos.getX() + 1);
 //        int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),

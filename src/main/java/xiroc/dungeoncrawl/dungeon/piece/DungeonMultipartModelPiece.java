@@ -51,16 +51,6 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model != null) {
-            this.boundingBox = model.createBoundingBox(x, y, z, rotation);
-        } else {
-            this.boundingBox = new MutableBoundingBox();
-        }
-    }
-
-    @Override
     public boolean create(IWorld p_225577_1_, ChunkGenerator<?> p_225577_2_, Random p_225577_3_, MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
@@ -69,5 +59,13 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
         }
         buildRotated(model, p_225577_1_, p_225577_4_, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
         return true;
+    }
+
+    @Override
+    public void setupBoundingBox() {
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBox(x, y, z, rotation);
+        }
     }
 }

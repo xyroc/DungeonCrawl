@@ -87,9 +87,12 @@ public class DungeonEntrance extends DungeonPiece {
             DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
             return true;
         }
-        Vec3i offset = entrance.getOffset();
+        Vec3i offset = entrance.getOffset(rotation);
 
-        BlockPos pos = new BlockPos(x + offset.getX(), cursorHeight + offset.getY(), z + offset.getZ());
+        BlockPos pos = new BlockPos(x, cursorHeight, z).add(offset);
+
+        // Creating a custom bounding box because the cursor height was unknown during #setupBoundingBox.
+        this.boundingBox = new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + entrance.width - 1, pos.getY() + entrance.height - 1, pos.getZ() + entrance.length - 1);
 
         buildFull(entrance, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
                 Theme.getSub(subTheme), entrance.getTreasureType(), stage, true);
@@ -98,21 +101,17 @@ public class DungeonEntrance extends DungeonPiece {
             entrance.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        //Passing over a custom boundingbox because the cursor height is unknown during #setupBoundingBox.
         decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn,
-                new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + entrance.width, pos.getY() + entrance.height, pos.getZ() + entrance.length), entrance);
+                boundingBox, entrance);
         return true;
     }
 
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model == null) {
-            return;
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
-        Vec3i offset = model.getOffset();
-        this.boundingBox = new MutableBoundingBox(x + offset.getX(), y + offset.getY(), z + offset.getZ(),
-                x + offset.getX() + model.width - 1, y + offset.getY() + model.height - 1, z + offset.getZ() + model.length - 1);
     }
 
     @Override

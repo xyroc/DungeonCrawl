@@ -33,7 +33,6 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -52,7 +51,7 @@ public class DungeonRoom extends DungeonPiece {
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos p_74875_4_) {
+                          ChunkPos p_74875_4_) {
 
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
@@ -60,7 +59,8 @@ public class DungeonRoom extends DungeonPiece {
             return true;
         }
 
-        BlockPos pos = new BlockPos(x, y + model.getOffset().getY(), z);
+        Vec3i offset = model.getOffset(rotation);
+        BlockPos pos = new BlockPos(x, y, z).add(offset);
 
         build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
                 model.getTreasureType(), stage, false);
@@ -73,22 +73,8 @@ public class DungeonRoom extends DungeonPiece {
 
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
-//        if (featurePositions != null) {
-//            DungeonCrawl.LOGGER.info("SPAWNER ROOM {} {} {} ({}) BOUNDS: [{} {} {} {} {} {}]", x, y, z, featurePositions.length,
-//                    structureBoundingBoxIn.minX, structureBoundingBoxIn.minY, structureBoundingBoxIn.minZ,
-//                    structureBoundingBoxIn.maxX, structureBoundingBoxIn.maxY, structureBoundingBoxIn.maxZ);
-//            for (DirectionalBlockPos pos : featurePositions) {
-//                DungeonCrawl.LOGGER.info("VEC ({} {} {}) INSIDE: {}", pos.position.getX(), pos.position.getY(), pos.position.getZ(), structureBoundingBoxIn.isVecInside(pos.position));
-//                if (structureBoundingBoxIn.isVecInside(pos.position)) {
-//                    IBlockPlacementHandler.getHandler(Blocks.CHEST).placeBlock(worldIn,
-//                            Blocks.CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING, pos.direction),
-//                            pos.position, randomIn, Treasure.Type.DEFAULT, theme, stage);
-//                }
-//            }
-//        }
-
         if (Config.NO_SPAWNERS.get())
-            spawnMobs(worldIn, this, model.width, model.length, new int[]{0});
+            spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
         return true;
     }
 
@@ -100,11 +86,9 @@ public class DungeonRoom extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model == null) {
-            return;
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
-        Vec3i offset = model.getOffset();
-        this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 8, y + offset.getY() + 8, z + 8);
     }
 
     @Override

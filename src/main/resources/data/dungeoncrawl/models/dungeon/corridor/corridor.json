@@ -3,6 +3,10 @@
   "id": 160,
   "stages": [1, 2],
   "weights": [4, 4, 0, 0, 0],
+  "offset": {
+    "z": 1,
+    "rotate": "true"
+  },
   "multipart": [
     {
       "models": [

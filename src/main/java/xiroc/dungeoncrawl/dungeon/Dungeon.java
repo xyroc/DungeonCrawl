@@ -36,7 +36,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;

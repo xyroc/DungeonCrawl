@@ -18,8 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import java.util.Random;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.IItemProvider;
@@ -28,6 +26,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.loot.LootFunction;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.util.ItemProcessor;
+
+import java.util.Random;
 
 public class TreasureEntry {
 

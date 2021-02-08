@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
@@ -28,8 +27,6 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
 import java.util.Random;

@@ -32,10 +32,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.*;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -71,7 +68,7 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         this.modelID = DungeonModels.SECRET_ROOM.id;
     }
 

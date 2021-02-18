@@ -20,7 +20,7 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import net.minecraft.util.math.ChunkPos;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 
 import java.util.Random;
 
@@ -53,6 +53,6 @@ public abstract class DungeonGenerator extends LayerGenerator {
     /**
      * @return the model category for the given layer
      */
-    public abstract DungeonModels.ModelCategory getCategoryForLayer(int layer);
+    public abstract ModelCategory getCategoryForLayer(int layer);
 
 }

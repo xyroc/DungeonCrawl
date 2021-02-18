@@ -30,6 +30,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
     }
 
     @Override

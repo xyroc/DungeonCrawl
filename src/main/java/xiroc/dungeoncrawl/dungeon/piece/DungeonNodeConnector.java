@@ -31,6 +31,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -73,8 +74,8 @@ public class DungeonNodeConnector extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.modelKey = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand).key;
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelKey = ModelCategory.get(ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand).key;
     }
 
     public void adjustPositionAndBounds() {

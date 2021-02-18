@@ -28,6 +28,7 @@ import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
@@ -80,8 +81,8 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
     }
 
     @Override
-    public DungeonModels.ModelCategory getCategoryForLayer(int layer) {
-        return DungeonModels.ModelCategory.getCategoryForStage(layer);
+    public ModelCategory getCategoryForLayer(int layer) {
+        return ModelCategory.getCategoryForStage(layer);
     }
 
     @Override

@@ -150,7 +150,7 @@ public abstract class DungeonPiece extends StructurePiece {
      * Called during the dungeon-post-processing to determine the model that will be
      * used to build this piece.
      */
-    public abstract void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand);
+    public abstract void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand);
 
     public abstract void setupBoundingBox();
 
@@ -398,7 +398,7 @@ public abstract class DungeonPiece extends StructurePiece {
         return model != null && model.multipartData != null;
     }
 
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelCategory layerCategory, int layer, Random rand) {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null && model.multipartData != null) {
             BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));

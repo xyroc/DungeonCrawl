@@ -24,7 +24,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
@@ -45,7 +45,7 @@ public class DungeonFeatures {
                 Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z), rand);
                 if (sideRoomData != null) {
                     DungeonSideRoom sideRoom = new DungeonSideRoom();
-                    WeightedRandom<DungeonModel> randomModel = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.SIDE_ROOM, DungeonModels.ModelCategory.getCategoryForStage(stage));
+                    WeightedRandom<DungeonModel> randomModel = ModelCategory.get(ModelCategory.SIDE_ROOM, ModelCategory.getCategoryForStage(stage));
                     if (randomModel != null && randomModel.size() > 0) {
                         sideRoom.modelKey = randomModel.roll(rand).key;
                     } else {

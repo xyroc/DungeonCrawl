@@ -88,20 +88,20 @@ public class Position2D {
     }
 
     /**
-     * Returns true if x and z are greater than -1, x smaller than xBound and z
-     * smaller than zBound. Used for DungeonLayer calculations.
+     * Returns true if x and z are greater than or equals zero, x smaller than xBound and z
+     * smaller than zBound.
      */
     public static boolean isValid(int x, int z, int xBound, int zBound) {
-        return x > -1 && z > -1 && x < xBound && z < zBound;
+        return x >= 0 && z >= 0 && x < xBound && z < zBound;
     }
 
     public static boolean isValid(int x, int z, int bound) {
-        return x > -1 && z > -1 && x < bound && z < bound;
+        return x >= 0 && z >= 0 && x < bound && z < bound;
     }
 
     /**
      * Creates a new position instance that is shifted by the given amount into the
-     * given direction. Used for DungeonLayer calculations.
+     * given direction.
      */
     public Position2D shift(Direction direction, int amount) {
         switch (direction) {
@@ -120,7 +120,7 @@ public class Position2D {
 
     /**
      * Creates a new position instance that is shifted by the given amount into the
-     * given direction. Used for DungeonLayer calculations.
+     * given direction.
      */
     public static Position2D shift(int x, int z, Direction direction, int amount) {
         switch (direction) {

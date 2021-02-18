@@ -28,7 +28,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 import java.util.List;
@@ -89,7 +89,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
     }
 
     @Override

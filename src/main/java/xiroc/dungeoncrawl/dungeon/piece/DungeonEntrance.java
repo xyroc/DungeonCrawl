@@ -34,10 +34,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.*;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
@@ -56,12 +53,12 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        if (DungeonModels.ModelCategory.ENTRANCE.members.isEmpty()) {
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        if (ModelCategory.ENTRANCE.members.isEmpty()) {
             DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the RLD default entrance.");
             this.modelID = DungeonModels.ENTRANCE.id;
         } else {
-            this.modelID = DungeonModels.ModelCategory.ENTRANCE.members.get(rand.nextInt(DungeonModels.ModelCategory.ENTRANCE.members.size())).id;
+            this.modelID = ModelCategory.ENTRANCE.members.get(rand.nextInt(ModelCategory.ENTRANCE.members.size())).id;
         }
     }
 

@@ -32,7 +32,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.generator.DefaultDungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
@@ -200,7 +200,7 @@ public class DungeonBuilder {
 
         for (int i = 0; i < layers.length; i++) {
             DungeonLayer layer = layers[i];
-            DungeonModels.ModelCategory layerCategory = DEFAULT_GENERATOR.getCategoryForLayer(i);
+            ModelCategory layerCategory = DEFAULT_GENERATOR.getCategoryForLayer(i);
             for (int x = 0; x < layer.width; x++)
                 for (int z = 0; z < layer.length; z++) {
                     if (layer.grid[x][z] != null && !layer.grid[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {

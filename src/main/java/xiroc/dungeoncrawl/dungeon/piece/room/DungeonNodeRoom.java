@@ -35,7 +35,7 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.Theme;

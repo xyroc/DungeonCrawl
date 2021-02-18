@@ -32,7 +32,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -49,11 +49,11 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (connectedSides == 2 && isStraight()) {
-            this.modelKey = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR, layerCategory).roll(rand).key;
+            this.modelKey = ModelCategory.get(ModelCategory.CORRIDOR, layerCategory).roll(rand).key;
         } else {
-            this.modelKey = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand).key;
+            this.modelKey = ModelCategory.get(ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand).key;
         }
     }
 

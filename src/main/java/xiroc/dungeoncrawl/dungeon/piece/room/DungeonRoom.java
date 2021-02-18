@@ -32,6 +32,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -45,8 +46,8 @@ public class DungeonRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.modelKey = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.ROOM, layerCategory).roll(rand).key;
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelKey = ModelCategory.get(ModelCategory.ROOM, layerCategory).roll(rand).key;
     }
 
     @Override

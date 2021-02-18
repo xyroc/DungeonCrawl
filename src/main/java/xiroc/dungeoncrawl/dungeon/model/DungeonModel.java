@@ -29,7 +29,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -317,8 +316,7 @@ public class DungeonModel {
 
             if (object.has("multipart")) {
                 JsonArray array = object.getAsJsonArray("multipart");
-                int size = array.size();
-                if (size > 0) {
+                if (array.size() > 0) {
                     ArrayList<MultipartModelData> multipartData = new ArrayList<>();
                     for (JsonElement element : array) {
                         MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);

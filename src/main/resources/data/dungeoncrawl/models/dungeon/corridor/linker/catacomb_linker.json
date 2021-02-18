@@ -3,93 +3,22 @@
   "id": 204,
   "stages": [3, 4],
   "weights": [0, 0, 2, 2, 0],
+  "offset": {
+    "x": 2,
+    "z": 2
+  },
   "multipart": [
     {
       "conditions": {
-        "north": true
+        "rotated_north": true
       },
       "models": [
         {
           "model": "multipart/catacomb/connector",
           "offset": {
-            "x": 2,
-            "z": 0
+            "z": -2
           },
           "rotation": "counterclockwise_90"
-        }
-      ],
-      "alternatives": [
-        {
-          "model": "multipart/catacomb/wall",
-          "offset": {
-            "x": 3,
-            "z": 1
-          },
-          "rotation": "counterclockwise_90"
-        }
-      ]
-    },
-    {
-      "conditions": {
-        "east": true
-      },
-      "models": [
-        {
-          "model": "multipart/catacomb/connector",
-          "offset": {
-            "x": 7,
-            "z": 2
-          },
-          "rotation": "clockwise_180"
-        }
-      ],
-      "alternatives": [
-        {
-          "model": "multipart/catacomb/wall",
-          "offset": {
-            "x": 7,
-            "z": 3
-          },
-          "rotation": "clockwise_180"
-        }
-      ]
-    },
-    {
-      "conditions": {
-        "south": true
-      },
-      "models": [
-        {
-          "model": "multipart/catacomb/connector",
-          "offset": {
-            "x": 2,
-            "z": 7
-          },
-          "rotation": "clockwise_90"
-        }
-      ],
-      "alternatives": [
-        {
-          "model": "multipart/catacomb/wall",
-          "offset": {
-            "x": 3,
-            "z": 7
-          },
-          "rotation": "clockwise_90"
-        }
-      ]
-    },
-    {
-      "conditions": {
-        "west": true
-      },
-      "models": [
-        {
-          "model": "multipart/catacomb/connector",
-          "offset": {
-            "x": 0,
-            "z": 2
-          }
         }
       ],
       "alternatives": [
@@ -97,8 +26,79 @@
           "model": "multipart/catacomb/wall",
           "offset": {
             "x": 1,
-            "z": 3
+            "z": -1
+          },
+          "rotation": "counterclockwise_90"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_east": true
+      },
+      "models": [
+        {
+          "model": "multipart/catacomb/connector",
+          "offset": {
+            "x": 5
           }
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "multipart/catacomb/wall",
+          "offset": {
+            "x": 5,
+            "z": 1
+          }
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_west": true
+      },
+      "models": [
+        {
+          "model": "multipart/catacomb/connector",
+          "offset": {
+            "x": -2
+          },
+          "rotation": "clockwise_180"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "multipart/catacomb/wall",
+          "offset": {
+            "x": -1,
+            "z": 1
+          },
+          "rotation": "clockwise_180"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_south": true
+      },
+      "models": [
+        {
+          "model": "multipart/catacomb/connector",
+          "offset": {
+            "z": 5
+          },
+          "rotation": "clockwise_90"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "multipart/catacomb/wall",
+          "offset": {
+            "x": 1,
+            "z": 5
+          },
+          "rotation": "clockwise_90"
         }
       ]
     }

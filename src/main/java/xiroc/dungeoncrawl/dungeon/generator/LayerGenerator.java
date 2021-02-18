@@ -16,11 +16,6 @@ public abstract class LayerGenerator {
     public DungeonGeneratorSettings settings;
 
     /**
-     * The highest allowed amount of nodes and rooms for each layer.
-     */
-    public int[] maxNodes, maxRooms;
-
-    /**
      * The maximum allowed amount of layers.
      */
     public int maxLayers;
@@ -58,9 +53,6 @@ public abstract class LayerGenerator {
     }
 
     public void loadSettings(DungeonGeneratorSettings settings) {
-        this.maxNodes = new int[settings.maxLayers];
-        this.maxRooms = new int[settings.maxLayers];
-
         this.minDistance = settings.minDistance;
         this.maxDistance = settings.maxDistance;
         this.maxLayers = settings.maxLayers;

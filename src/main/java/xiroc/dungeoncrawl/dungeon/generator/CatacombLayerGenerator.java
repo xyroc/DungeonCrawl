@@ -29,6 +29,9 @@ import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class CatacombLayerGenerator extends LayerGenerator {
@@ -37,6 +40,8 @@ public class CatacombLayerGenerator extends LayerGenerator {
 
     private int nodesLeft;
     private int roomsLeft;
+
+    private int maxNodes, maxRooms;
 
     private Position2D farthestRoom;
 
@@ -47,7 +52,10 @@ public class CatacombLayerGenerator extends LayerGenerator {
     @Override
     public void initializeLayer(DungeonBuilder dungeonBuilder, Random rand, int layer) {
         this.stairsPlaced = false;
-        this.nodesLeft = settings.maxRooms.apply(rand, layer);
+        this.maxNodes = settings.maxNodes.apply(rand, layer);
+        this.maxRooms = settings.maxRooms.apply(rand, layer);
+        this.nodesLeft = maxNodes;
+        this.roomsLeft = maxRooms;
     }
 
     @Override
@@ -65,6 +73,52 @@ public class CatacombLayerGenerator extends LayerGenerator {
         Position2D pos2 = createCorridors(dungeonBuilder, dungeonLayer, rand, dungeonLayer.end, layer);
 
         dungeonLayer.buildConnection(pos1, pos2, rand);
+    }
+
+    private List<Position2D> placeNodes(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, Random rand, Position2D origin, int layer) {
+        int maxSpawnAttempts = nodesLeft * 2; // TODO: generator settings
+        return null;
+    }
+
+    /**
+     * Convenience method to search for a single node position by applying randomized offsets to the origin.
+     * Returns null if the resulting Position is not suitable for a node.
+     *
+     * @return the center of the node or null if there is none
+     */
+    @Nullable
+    private static Position2D findNodePosition(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, Random rand, Position2D origin) {
+        int steps = 2 + rand.nextInt(3); // TODO: generator settings
+        Direction lastDirection = null;
+        Position2D position = origin;
+
+        for (int i = 0; i < steps; i++) {
+            lastDirection = lastDirection != null ? Orientation.getHorizontalFacingsWithout(lastDirection.getOpposite())[rand.nextInt(3)]
+                    : Orientation.RANDOM_HORIZONTAL_FACING.roll(rand);
+            position = position.shift(lastDirection, 2 + rand.nextInt(4)); // TODO: generator settings
+        }
+
+        // Verify that the position is suitable for a node
+        for (int x = -1; x < 2; x++) {
+            for (int z = -1; z < 2; z++) {
+                // If we are at the center of the node, require the position of the center to be within the grid bounds and require the position to be free in the grid.
+                // For the eight other positions, require the position to be free in the grid if it is within the grid bounds. Positions outside of the grid bounds are always valid.
+                Position2D currentPos = new Position2D(position.x + x, position.z + z);
+                if (x == 0 && z == 0) {
+                    if (!currentPos.isValid(dungeonLayer.width, dungeonLayer.length)) {
+                        return null;
+                    } else if (!dungeonLayer.isTileFree(currentPos)) {
+                        return null;
+                    }
+                } else {
+                    if (currentPos.isValid(dungeonLayer.width, dungeonLayer.length) && !dungeonLayer.isTileFree(currentPos)) {
+                        return null;
+                    }
+                }
+            }
+        }
+
+        return position;
     }
 
     /**

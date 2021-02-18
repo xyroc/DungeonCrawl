@@ -131,10 +131,12 @@ public class MultipartModelData {
         public DungeonMultipartModelPiece createMultipartPiece(DungeonPiece parentPiece, DungeonModel parent, Rotation rotation, int x, int y, int z) {
             if (model != null) {
                 DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece(null, DungeonPiece.DEFAULT_NBT);
-                Vec3i pos = Orientation.rotatedMultipartOffset(parent, model, offset, rotation);
-                piece.setWorldPosition(x + pos.getX(), y + pos.getY(), z + pos.getZ());
+                Rotation fullRotation = this.rotation.add(rotation);
+                Vec3i rotatedOffset = Orientation.rotatedMultipartOffset(parent, model, offset, rotation, fullRotation);
+
+                piece.setWorldPosition(x + rotatedOffset.getX(), y + rotatedOffset.getY(), z + rotatedOffset.getZ());
                 piece.modelKey = model.key;
-                piece.rotation = this.rotation.add(rotation);
+                piece.rotation = fullRotation;
                 piece.stage = parentPiece.stage;
                 piece.theme = parentPiece.theme;
                 piece.subTheme = parentPiece.subTheme;

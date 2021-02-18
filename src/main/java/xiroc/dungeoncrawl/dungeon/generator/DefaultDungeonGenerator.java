@@ -174,7 +174,7 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
 
             dungeonLayer.buildConnection(lastPosition, currentPosition, rand);
 
-            Direction[] directions = Orientation.getFlatFacingsWithout(toLast);
+            Direction[] directions = Orientation.getHorizontalFacingsWithout(toLast);
 
             int maxDirections = depth < 3 ? 1 + rand.nextInt(3) : rand.nextInt(3);
             int counter = 0;
@@ -205,7 +205,7 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
 
                 dungeonLayer.buildConnection(lastPosition, currentPosition, rand);
 
-                Direction[] directions = Orientation.getFlatFacingsWithout(currentPosition.directionTo(lastPosition));
+                Direction[] directions = Orientation.getHorizontalFacingsWithout(currentPosition.directionTo(lastPosition));
 
                 int maxDirections = depth < 3 ? 1 + rand.nextInt(3) : rand.nextInt(3);
                 int counter = 0;
@@ -234,7 +234,7 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
 
             dungeonLayer.buildConnection(lastPosition, currentPosition, rand);
 
-            Direction[] directions = Orientation.getFlatFacingsWithout(currentPosition.directionTo(lastPosition));
+            Direction[] directions = Orientation.getHorizontalFacingsWithout(currentPosition.directionTo(lastPosition));
 
             int maxDirections = depth < 3 ? 1 + rand.nextInt(3) : rand.nextInt(3);
             int counter = 0;

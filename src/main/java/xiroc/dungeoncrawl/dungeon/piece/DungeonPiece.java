@@ -373,6 +373,16 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
+    public static void setBlockState(IWorld worldIn, BlockState state, int x, int y, int z,
+                                     MutableBoundingBox worldGenBounds, boolean fillAir) {
+        BlockPos blockPos = new BlockPos(x, y, z);
+
+        if (!fillAir && worldIn.isAirBlock(blockPos))
+            return;
+
+        setBlockState(worldIn, state, worldGenBounds, blockPos);
+    }
+
     public void replaceBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
                                   MutableBoundingBox boundingboxIn) {
         BlockPos blockPos = new BlockPos(x, y, z);
@@ -391,24 +401,15 @@ public abstract class DungeonPiece extends StructurePiece {
     public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null && model.multipartData != null) {
+            BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
             for (MultipartModelData data : model.multipartData) {
                 if (data.checkConditions(this)) {
-                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, this.x, this.y, this.z));
+                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
                 } else if (data.alternatives != null) {
-                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, this.x, this.y, this.z));
+                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
                 }
             }
         }
-    }
-
-    public static void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
-                                     MutableBoundingBox boundingboxIn, boolean fillAir) {
-        BlockPos blockPos = new BlockPos(x, y, z);
-
-        if (!fillAir && worldIn.isAirBlock(blockPos))
-            return;
-
-        setBlockState(worldIn, blockstateIn, boundingboxIn, blockPos);
     }
 
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
@@ -862,26 +863,27 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public void entrances(IWorld world, MutableBoundingBox bounds, DungeonModel model) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
+        BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
 
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, x + x0, y + y0, z, bounds);
+                    setBlockState(world, CAVE_AIR, pos.getX() + x0, pos.getY() + y0, pos.getZ(), bounds);
         }
         if (sides[1]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, x + model.width - 1, y + y0, z + z0, bounds);
+                    setBlockState(world, CAVE_AIR, pos.getX() + model.width - 1, pos.getY() + y0, pos.getZ() + z0, bounds);
         }
         if (sides[2]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, x + x0, y + y0, z + model.length - 1, bounds);
+                    setBlockState(world, CAVE_AIR, pos.getX() + x0, pos.getY() + y0, pos.getZ() + model.length - 1, bounds);
         }
         if (sides[3]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, x, y + y0, z + z0, bounds);
+                    setBlockState(world, CAVE_AIR, pos.getX(), pos.getY() + y0, pos.getZ() + z0, bounds);
         }
 
     }

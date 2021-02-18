@@ -87,24 +87,6 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, int layer, Random rand) {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
-        if (model == null) {
-            return;
-        }
-        if (model.multipartData != null) {
-            BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
-            for (MultipartModelData data : model.multipartData) {
-                if (data.checkConditions(this)) {
-                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
-                } else if (data.alternatives != null) {
-                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
-                }
-            }
-        }
-    }
-
-    @Override
     public void setupBoundingBox() {
         DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {

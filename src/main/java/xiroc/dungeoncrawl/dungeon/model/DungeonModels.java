@@ -20,7 +20,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.JsonParser;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -31,7 +31,6 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel.Metadata;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import javax.annotation.Nullable;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -287,8 +286,7 @@ public class DungeonModels {
 
         try {
             ResourceLocation resource = DungeonCrawl.locate(path);
-            DataInputStream input = new DataInputStream(resourceManager.getResource(resource).getInputStream());
-            CompoundNBT nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
+            CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
 
             String key = path.substring(15, path.indexOf(".nbt"));
@@ -309,8 +307,7 @@ public class DungeonModels {
         DungeonCrawl.LOGGER.debug("Loading {}", resource.getPath());
 
         try {
-            DataInputStream input = new DataInputStream(resourceManager.getResource(resource).getInputStream());
-            CompoundNBT nbt = CompoundNBT.TYPE.func_225649_b_(input, 16, NBTSizeTracker.INFINITE);
+            CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
 
             String path = resource.getPath();

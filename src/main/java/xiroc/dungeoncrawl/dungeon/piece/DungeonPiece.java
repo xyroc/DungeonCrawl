@@ -863,7 +863,8 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public void entrances(IWorld world, MutableBoundingBox bounds, DungeonModel model) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
-        BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
+        Vec3i offset = model.getOffset(rotation);
+        BlockPos pos = new BlockPos(x + offset.getX(), y, z + offset.getZ()); // Ignore the y offset
 
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)

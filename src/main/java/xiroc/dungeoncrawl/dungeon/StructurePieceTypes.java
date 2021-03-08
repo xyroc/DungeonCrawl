@@ -36,7 +36,6 @@ public class StructurePieceTypes {
     public static IStructurePieceType SIDE_ROOM;
     public static IStructurePieceType NODE_ROOM;
     public static IStructurePieceType NODE_CONNECTOR;
-    public static IStructurePieceType PRISONER_CELL;
     public static IStructurePieceType SECRET_ROOM;
     public static IStructurePieceType SPIDER_ROOM;
     public static IStructurePieceType MULTIPART_MODEL_PIECE;
@@ -56,7 +55,6 @@ public class StructurePieceTypes {
         SIDE_ROOM = IStructurePieceType.register(DungeonSideRoom::new, createKey("side_room"));
         NODE_ROOM = IStructurePieceType.register(DungeonNodeRoom::new, createKey("node_room"));
         NODE_CONNECTOR = IStructurePieceType.register(DungeonNodeConnector::new, createKey("node_connector"));
-        PRISONER_CELL = IStructurePieceType.register(DungeonPrisonCell::new, createKey("prison_cell"));
         SECRET_ROOM = IStructurePieceType.register(DungeonSecretRoom::new, createKey("secret_room"));
         SPIDER_ROOM = IStructurePieceType.register(DungeonSpiderRoom::new, createKey("spider_room"));
         MULTIPART_MODEL_PIECE = IStructurePieceType.register(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));

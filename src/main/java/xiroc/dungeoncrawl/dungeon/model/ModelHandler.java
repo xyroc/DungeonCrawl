@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
@@ -31,9 +32,9 @@ import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.FeaturePosition;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Locale;
 
@@ -67,16 +68,14 @@ public class ModelHandler {
 
     }
 
-    public static void writeModelToFile(DungeonModel model, String file) {
+    public static void writeModelToFile(DungeonModel model, String path) {
         try {
-            DungeonCrawl.LOGGER.info("Writing a model to disk at {}. ", file);
-            if (model.featurePositions != null)
-                DungeonCrawl.LOGGER.info("There are {} feature positions.", model.featurePositions.length);
-            File f = new File(file);
-            if (!f.getParentFile().exists()) {
-                f.getParentFile().mkdirs();
-            }
-            convertModelToNBT(model).write(new DataOutputStream(new FileOutputStream(file)));
+            DungeonCrawl.LOGGER.info("Writing a model to disk at {}. ", path);
+            File file = new File(path);
+            Files.createDirectories(file.getParentFile().toPath());
+            Files.deleteIfExists(file.toPath());
+            Files.createFile(file.toPath());
+            CompressedStreamTools.writeCompressed(convertModelToNBT(model), new FileOutputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
         }

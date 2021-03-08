@@ -18,34 +18,31 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
-import com.google.common.collect.Lists;
+import com.google.gson.JsonParser;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.Tuple;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.Metadata;
-import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
-import xiroc.dungeoncrawl.util.WeightedRandomInteger;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 
-import java.io.DataInputStream;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class DungeonModels {
 
-    public static final HashMap<Integer, DungeonModel> MODELS = new HashMap<>();
-    public static final HashMap<String, DungeonModel> PATH_TO_MODEL = new HashMap<>();
 
-    public static final HashMap<Integer, WeightedRandomInteger> WEIGHTED_MODELS = new HashMap<>();
+    public static final HashMap<Integer, DungeonModel> LEGACY_MODELS = new HashMap<>();
+    public static final HashMap<String, DungeonModel> MODELS = new HashMap<>();
 
-    public static final HashMap<String, DungeonModel> NAME_TO_MODEL = Config.ENABLE_TOOLS.get() ? new HashMap<>() : null;
+    public static final HashMap<Integer, WeightedRandom<DungeonModel>> WEIGHTED_MODELS = new HashMap<>();
 
     public static final HashMap<Integer, Vector3i> OFFSETS = new HashMap<>();
 
@@ -53,7 +50,7 @@ public class DungeonModels {
     /*
      * A list of all MultipartModelData instances to update their "forward references" after all models have been loaded.
      */
-    public static final ArrayList<MultipartModelData> REFERENCES_TO_UPDATE = new ArrayList<>();
+    public static final ArrayList<MultipartModelData.Instance> REFERENCES_TO_UPDATE = new ArrayList<>(128);
 
 
     public static DungeonModel CORRIDOR, CORRIDOR_2, CORRIDOR_3, CORRIDOR_STONE, CORRIDOR_ROOM, CORRIDOR_SECRET_ROOM_ENTRANCE;
@@ -67,12 +64,19 @@ public class DungeonModels {
     public static DungeonModel STAIRCASE, STAIRS_BOTTOM, STAIRS_BOTTOM_2, STAIRS_TOP;
     public static DungeonModel STARTER_ROOM;
 
+    @Nullable
+    public static DungeonModel getModel(String key, Integer legacyID) {
+        if (legacyID != null) {
+            return LEGACY_MODELS.get(legacyID);
+        }
+        return MODELS.get(key);
+    }
+
     public static synchronized void load(IResourceManager resourceManager) {
         REFERENCES_TO_UPDATE.clear();
+        LEGACY_MODELS.clear();
         MODELS.clear();
-        PATH_TO_MODEL.clear();
         WEIGHTED_MODELS.clear();
-        OFFSETS.clear();
 
         ModelCategory.clear();
 
@@ -127,6 +131,7 @@ public class DungeonModels {
         load("models/dungeon/corridor/linker/", "corridor_linker_3", resourceManager);
         load("models/dungeon/corridor/linker/", "corridor_linker_4", resourceManager);
         load("models/dungeon/corridor/linker/", "corridor_linker_5", resourceManager);
+        load("models/dungeon/corridor/linker/", "catacomb_linker", resourceManager);
 
         load("models/dungeon/node/", "forge", resourceManager);
         load("models/dungeon/node/", "node", resourceManager);
@@ -163,55 +168,16 @@ public class DungeonModels {
 
         load("models/dungeon/room/dark/", "spawner_room", resourceManager);
 
-        load("models/dungeon/corridor/multipart/", "corridor_default", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_variant", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_variant_2", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_crops", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_chest", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_spawner", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_light", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_light_switch", resourceManager);
-        load("models/dungeon/corridor/multipart/", "corridor_bookshelf", resourceManager);
-
         // -Additional Models- //
 
-        //DungeonCrawl.LOGGER.info("Loading additional models");
-
-        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional").getPath(), (s) -> s.endsWith(".nbt")).forEach((resource) -> {
-            DungeonCrawl.LOGGER.debug("Additional resource: {}", resource.toString());
-            DungeonModel model = loadModel(resource, resourceManager);
-            ResourceLocation metadata = new ResourceLocation(resource.getNamespace(),
-                    resource.getPath().substring(0, resource.getPath().indexOf(".nbt")) + ".json");
-            DungeonCrawl.LOGGER.debug("Looking for metadata file {}", metadata.toString());
-            if (resourceManager.hasResource(metadata)) {
-                DungeonCrawl.LOGGER.debug("Loading metadata for {}", resource.getPath());
-
-                try {
-                    Metadata data = DungeonCrawl.GSON.fromJson(
-                            new InputStreamReader(resourceManager.getResource(metadata).getInputStream()), Metadata.class);
-                    model.loadMetadata(data);
-                } catch (Exception e) {
-                    DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
-                    e.printStackTrace();
-                }
-            } else {
-                DungeonCrawl.LOGGER.warn("Missing metadata for {}", resource.getPath());
-            }
-        });
+        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/multipart").getPath(), (s) -> s.endsWith(".nbt"))
+                .forEach((resource) -> load(resource, resourceManager));
+        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional").getPath(), (s) -> s.endsWith(".nbt"))
+                .forEach((resource) -> load(resource, resourceManager));
 
         // -End of Model loading- //
 
-//        DungeonCrawl.LOGGER.debug("Dumping all registered models below:");
-//        MODELS.entrySet().stream().sorted((first, second) -> {
-//            if (first.getKey() > second.getKey()) {
-//                return 1;
-//            } else if (first.getKey() < second.getKey()) {
-//                return -1;
-//            }
-//            return 0;
-//        }).forEach((entry) -> DungeonCrawl.LOGGER.debug("{}  {}", entry.getKey(), entry.getValue().location));
-
-        REFERENCES_TO_UPDATE.forEach(MultipartModelData::updateReference);
+        REFERENCES_TO_UPDATE.forEach(MultipartModelData.Instance::updateReference);
 
         HashMap<Integer, DungeonModel[]> tempMap = new HashMap<>();
 
@@ -219,23 +185,18 @@ public class DungeonModels {
             ModelCategory stage = ModelCategory.STAGES[i];
             for (ModelCategory nodeType : ModelCategory.NODE_TYPES) {
 
-//                DungeonCrawl.LOGGER.debug("Node type: {}, {}", i, nodeType);
-
                 // Nodes
                 {
-                    WeightedRandomInteger.Builder builder = new WeightedRandomInteger.Builder();
+                    WeightedRandom.Builder<DungeonModel> builder = new WeightedRandom.Builder<>();
                     ModelCategory[] category = new ModelCategory[]{ModelCategory.NORMAL_NODE, stage, nodeType};
 
                     for (DungeonModel model : ModelCategory.getIntersection(tempMap, category)) {
-//                        DungeonCrawl.LOGGER.debug("adding primary node entry ({} {})", stage, nodeType);
-                        builder.entries.add(new WeightedIntegerEntry(model.metadata.weights[i], model.id));
+                        builder.entries.add(new Tuple<>(model.metadata.weights[i], model));
                     }
 
                     for (ModelCategory secondaryType : ModelCategory.getSecondaryNodeCategories(nodeType)) {
-                        for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.NORMAL_NODE,
-                                stage, secondaryType)) {
-//                            DungeonCrawl.LOGGER.debug("adding secondary node entry: {}, {}", stage, model.id);
-                            builder.entries.add(new WeightedIntegerEntry(1, model.id));
+                        for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.NORMAL_NODE, stage, secondaryType)) {
+                            builder.entries.add(new Tuple<>(1, model));
                         }
                     }
 
@@ -244,67 +205,75 @@ public class DungeonModels {
 
                 // Large Nodes
                 {
-                    WeightedRandomInteger.Builder builder = new WeightedRandomInteger.Builder();
+                    WeightedRandom.Builder<DungeonModel> builder = new WeightedRandom.Builder<>();
                     ModelCategory[] category = new ModelCategory[]{ModelCategory.LARGE_NODE, stage, nodeType};
 
                     for (DungeonModel model : ModelCategory.getIntersection(tempMap, category)) {
-//                        DungeonCrawl.LOGGER.debug("adding primary node entry ({} {})", stage, nodeType);
-                        builder.entries.add(
-                                new WeightedIntegerEntry(model.metadata.weights[i], model.id));
+                        builder.entries.add(new Tuple<>(model.metadata.weights[i], model));
                     }
 
                     for (ModelCategory secondaryType : ModelCategory.getSecondaryNodeCategories(nodeType)) {
-                        for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.LARGE_NODE,
-                                stage, secondaryType)) {
-//                            DungeonCrawl.LOGGER.debug("adding secondary node entry: {}, {}", stage, model.id);
-                            builder.entries.add(new WeightedIntegerEntry(1, model.id));
+                        for (DungeonModel model : ModelCategory.getIntersection(tempMap, ModelCategory.LARGE_NODE, stage, secondaryType)) {
+                            builder.entries.add(new Tuple<>(1, model));
                         }
                     }
 
                     WEIGHTED_MODELS.put(Arrays.hashCode(category), builder.build());
                 }
             }
-            createWeightedRandomIntegers(tempMap, ModelCategory.CORRIDOR, stage, i);
-            createWeightedRandomIntegers(tempMap, ModelCategory.CORRIDOR_LINKER, stage, i);
-            createWeightedRandomIntegers(tempMap, ModelCategory.NODE_CONNECTOR, stage, i);
-            createWeightedRandomIntegers(tempMap, ModelCategory.SIDE_ROOM, stage, i);
-            createWeightedRandomIntegers(tempMap, ModelCategory.ROOM, stage, i);
+            createWeightedRandomModels(tempMap, ModelCategory.CORRIDOR, stage, i);
+            createWeightedRandomModels(tempMap, ModelCategory.CORRIDOR_LINKER, stage, i);
+            createWeightedRandomModels(tempMap, ModelCategory.NODE_CONNECTOR, stage, i);
+            createWeightedRandomModels(tempMap, ModelCategory.SIDE_ROOM, stage, i);
+            createWeightedRandomModels(tempMap, ModelCategory.ROOM, stage, i);
         }
 
-        ModelCategory.CORRIDOR.requirePresentModels(0, 1, 2, 3, 4);
-        ModelCategory.CORRIDOR_LINKER.requirePresentModels(0, 1, 2, 3, 4);
-        ModelCategory.NODE_CONNECTOR.requirePresentModels(0, 1, 2, 3, 4);
-        // ModelCategory.SIDE_ROOM.requirePresentModels(0, 1, 2, 3, 4, 5);
-        ModelCategory.ROOM.requirePresentModels(0, 1, 2, 3, 4);
+        ModelCategory.CORRIDOR.verifyModelPresence(0, 1, 2, 3, 4);
+        ModelCategory.CORRIDOR_LINKER.verifyModelPresence(0, 1, 2, 3, 4);
+        ModelCategory.NODE_CONNECTOR.verifyModelPresence(0, 1, 2, 3, 4);
+        ModelCategory.ROOM.verifyModelPresence(0, 1, 2, 3, 4);
 
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_FULL, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_FORK, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_STRAIGHT, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_TURN, 0, 1, 2, 3, 4);
-        ModelCategory.NORMAL_NODE.requirePresentModels(ModelCategory.NODE_DEAD_END, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_FULL, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_FORK, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_STRAIGHT, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_TURN, 0, 1, 2, 3, 4);
+        ModelCategory.NORMAL_NODE.verifyModelPresence(ModelCategory.NODE_DEAD_END, 0, 1, 2, 3, 4);
 
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_FULL, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_FORK, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_STRAIGHT, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_TURN, 2, 3, 4);
-        ModelCategory.LARGE_NODE.requirePresentModels(ModelCategory.NODE_DEAD_END, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_FULL, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_FORK, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_STRAIGHT, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_TURN, 2, 3, 4);
+        ModelCategory.LARGE_NODE.verifyModelPresence(ModelCategory.NODE_DEAD_END, 2, 3, 4);
     }
 
-    public static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
+    private static void load(ResourceLocation resource, IResourceManager resourceManager) {
+        DungeonModel model = loadModel(resource, resourceManager);
+        ResourceLocation metadata = new ResourceLocation(resource.getNamespace(),
+                resource.getPath().substring(0, resource.getPath().indexOf(".nbt")) + ".json");
+
+        if (resourceManager.hasResource(metadata)) {
+            DungeonCrawl.LOGGER.debug("Loading metadata for {}", resource.getPath());
+            try {
+                Metadata data = Metadata.fromJson(new JsonParser().parse(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
+                model.loadMetadata(data);
+            } catch (Exception e) {
+                DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
+                e.printStackTrace();
+            }
+        } else {
+            DungeonCrawl.LOGGER.warn("Missing metadata for {}", resource.getPath());
+        }
+    }
+
+    private static DungeonModel load(String directory, String file, IResourceManager resourceManager) {
         DungeonModel model = loadModel(directory + file + ".nbt", resourceManager);
 
         ResourceLocation metadata = DungeonCrawl.locate(directory + file + ".json");
 
         if (resourceManager.hasResource(metadata)) {
-            // DungeonCrawl.LOGGER.debug("Loading metadata for {}", file);
-
             try {
-                Metadata data = DungeonCrawl.GSON.fromJson(
-                        new InputStreamReader(resourceManager.getResource(metadata).getInputStream()), Metadata.class);
+                Metadata data = Metadata.fromJson(new JsonParser().parse(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
                 model.loadMetadata(data);
-//                if (Config.ENABLE_TOOLS.get()) {
-//                    PATH_TO_MODEL.put(directory.substring("models/dungeon/".length()) + file, model);
-//                }
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load metadata for {}", file);
                 e.printStackTrace();
@@ -315,18 +284,18 @@ public class DungeonModels {
         return model;
     }
 
-    public static DungeonModel loadModel(String path, IResourceManager resourceManager) {
+    private static DungeonModel loadModel(String path, IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", path);
 
         try {
-            DataInputStream input = new DataInputStream(resourceManager.getResource(DungeonCrawl.locate(path)).getInputStream());
-            CompoundNBT nbt = CompoundNBT.TYPE.readNBT(input, 16, NBTSizeTracker.INFINITE);
             ResourceLocation resource = DungeonCrawl.locate(path);
+            CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
 
-            String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
-            PATH_TO_MODEL.put(key, model);
-            DungeonCrawl.LOGGER.debug("Model {} has key: {}", path, key);
+            String key = path.substring(15, path.indexOf(".nbt"));
+            model.key = key;
+            MODELS.put(key, model);
+            DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 
             model.setLocation(resource);
             return model;
@@ -337,18 +306,18 @@ public class DungeonModels {
         throw new RuntimeException("Failed to load " + path);
     }
 
-    public static DungeonModel loadModel(ResourceLocation resource, IResourceManager resourceManager) {
+    private static DungeonModel loadModel(ResourceLocation resource, IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", resource.getPath());
 
         try {
-            DataInputStream input = new DataInputStream(resourceManager.getResource(resource).getInputStream());
-            CompoundNBT nbt = CompoundNBT.TYPE.readNBT(input, 16, NBTSizeTracker.INFINITE);
+            CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
 
             String path = resource.getPath();
-            String key = path.substring("models/dungeon/".length(), path.indexOf(".nbt"));
-            PATH_TO_MODEL.put(key, model);
-            DungeonCrawl.LOGGER.debug("Model {} has key (2): {}", path, key);
+            String key = path.substring(15, path.indexOf(".nbt"));
+            model.key = key;
+            MODELS.put(key, model);
+            DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 
             model.setLocation(resource);
             return model;
@@ -359,129 +328,17 @@ public class DungeonModels {
         throw new RuntimeException("Failed to load " + resource.getPath());
     }
 
-    private static void createWeightedRandomIntegers(HashMap<Integer, DungeonModel[]> tempMap, ModelCategory baseCategory, ModelCategory stageCategory, int stage) {
-        WeightedRandomInteger.Builder builder = new WeightedRandomInteger.Builder();
+    private static void createWeightedRandomModels(HashMap<Integer, DungeonModel[]> tempMap, ModelCategory baseCategory, ModelCategory stageCategory, int stage) {
+        WeightedRandom.Builder<DungeonModel> builder = new WeightedRandom.Builder<>();
         ModelCategory[] categories = new ModelCategory[]{baseCategory, stageCategory};
         for (DungeonModel model : ModelCategory.getIntersection(tempMap, categories)) {
-            builder.entries.add(new WeightedIntegerEntry(model.metadata.weights[stage], model.id));
+            builder.entries.add(new Tuple<>(model.metadata.weights[stage], model));
         }
         WEIGHTED_MODELS.put(Arrays.hashCode(categories), builder.build());
     }
 
     public static Vector3i getOffset(int model) {
         return OFFSETS.getOrDefault(model, NO_OFFSET);
-    }
-
-    public enum ModelCategory {
-
-        STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5,
-        NODE_DEAD_END, NODE_STRAIGHT, NODE_TURN, NODE_FORK, NODE_FULL,
-        NORMAL_NODE, LARGE_NODE,
-        CORRIDOR, CORRIDOR_LINKER, NODE_CONNECTOR,
-        ENTRANCE,
-        SIDE_ROOM, ROOM;
-
-        public static final ModelCategory[] STAGES = {STAGE_1, STAGE_2, STAGE_3, STAGE_4,
-                STAGE_5};
-
-        public static final ModelCategory[] NODE_TYPES = {NODE_FULL, NODE_FORK, NODE_STRAIGHT,
-                NODE_TURN, NODE_DEAD_END};
-
-        public static final ModelCategory[] EMPTY = new ModelCategory[0];
-
-        public final List<DungeonModel> members;
-
-        ModelCategory() {
-            members = Lists.newArrayList();
-        }
-
-        public void requirePresentModels(int... stages) {
-            for (int stage : stages) {
-                int hashCode = 1;
-                hashCode = 31 * hashCode + hashCode();
-                hashCode = 31 * hashCode + getCategoryForStage(stage).hashCode();
-
-                if (!WEIGHTED_MODELS.containsKey(hashCode) || WEIGHTED_MODELS.get(hashCode).integers.length == 0) {
-                    throw new RuntimeException("There is no present " + this + " model for stage " + (stage + 1));
-                }
-            }
-        }
-
-        public void requirePresentModels(ModelCategory secondaryCategory, int... stages) {
-            for (int stage : stages) {
-                int hashCode = 1;
-                hashCode = 31 * hashCode + hashCode();
-                hashCode = 31 * hashCode + getCategoryForStage(stage).hashCode();
-                hashCode = 31 * hashCode + secondaryCategory.hashCode();
-
-                if (!WEIGHTED_MODELS.containsKey(hashCode) || WEIGHTED_MODELS.get(hashCode).integers.length == 0) {
-                    throw new RuntimeException("There is no present " + this + "(" + secondaryCategory + ")" + " model for stage " + (stage + 1));
-                }
-            }
-        }
-
-        public static void clear() {
-            for (ModelCategory category : values()) {
-                category.members.clear();
-            }
-        }
-
-        public static WeightedRandomInteger get(ModelCategory... categories) {
-            int hash = Arrays.hashCode(categories);
-
-            return WEIGHTED_MODELS.get(hash);
-        }
-
-        public static DungeonModel[] getIntersection(HashMap<Integer, DungeonModel[]> map,
-                                                     ModelCategory... categories) {
-            int hash = Arrays.hashCode(categories);
-
-            if (map.containsKey(hash)) {
-                return map.get(hash);
-            }
-
-            List<DungeonModel> intersection = Lists.newArrayList();
-
-            mainLoop:
-            for (DungeonModel model : categories[0].members) {
-                for (int i = 1; i < categories.length; i++) {
-                    if (!categories[i].members.contains(model)) {
-                        continue mainLoop;
-                    }
-                }
-                intersection.add(model);
-            }
-
-            DungeonModel[] array = intersection.toArray(new DungeonModel[0]);
-            map.put(hash, array);
-
-//            DungeonCrawl.LOGGER.debug("Intersection of {} is {}", Arrays.toString(categories), Arrays.toString(array));
-
-            return array;
-        }
-
-        public static ModelCategory[] getSecondaryNodeCategories(ModelCategory primeCategory) {
-            switch (primeCategory) {
-                case NODE_DEAD_END:
-                    return new ModelCategory[]{NODE_TURN, NODE_STRAIGHT, NODE_FORK, NODE_FULL};
-                case NODE_FORK:
-                    return new ModelCategory[]{NODE_FULL};
-                case NODE_STRAIGHT:
-                case NODE_TURN:
-                    return new ModelCategory[]{NODE_FULL, NODE_FORK};
-                default:
-                    return EMPTY;
-            }
-        }
-
-        public static ModelCategory getCategoryForStage(int stage) {
-            if (stage < 0)
-                return STAGE_1;
-            if (stage > 4)
-                return STAGE_5;
-            return STAGES[stage];
-        }
-
     }
 
 }

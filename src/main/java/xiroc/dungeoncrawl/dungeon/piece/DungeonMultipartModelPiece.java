@@ -31,7 +31,7 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -49,27 +49,25 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-    }
-
-    @Override
-    public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-        if (model != null) {
-            this.boundingBox = model.createBoundingBox(x, y, z, rotation);
-        } else {
-            this.boundingBox = new MutableBoundingBox();
-            DungeonCrawl.LOGGER.warn("The multipart model piece {} does not have a valid model: {}", this, modelID);
-        }
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
     }
 
     @Override
     public boolean func_230383_a_(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-        if (model != null) {
-            buildRotated(model, world, p_230383_5_, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme), Treasure.getModelTreasureType(modelID), stage, rotation, false);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
         }
+        buildRotated(model, world, p_230383_5_, new BlockPos(x, y, z), Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
         return true;
+    }
+
+    public void setupBoundingBox() {
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBox(x, y, z, rotation);
+        }
     }
 
 }

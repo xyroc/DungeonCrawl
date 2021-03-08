@@ -1,10 +1,8 @@
 {
-  "type": "normal",
+  "type": "generic",
   "id": 127,
-  "data": {
-    "treasure_type": "treasure",
-    "offset": {
-      "y": -1
-    }
+  "treasure_type": "treasure",
+  "offset": {
+    "y": -1
   }
 }

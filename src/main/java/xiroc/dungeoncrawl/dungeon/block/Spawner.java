@@ -48,11 +48,6 @@ import java.util.Set;
 
 public class Spawner implements IBlockPlacementHandler {
 
-    public static final EntityType<?>[] ENTITIES = new EntityType<?>[]{EntityType.ZOMBIE, EntityType.SKELETON,
-            EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.HUSK};
-    public static final EntityType<?>[] ENTITIES_RARE = new EntityType<?>[]{EntityType.SILVERFISH, EntityType.CREEPER,
-            EntityType.STRAY, EntityType.ENDERMAN};
-
     public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
             .add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.HUSK).add(EntityType.STRAY).add(EntityType.WITHER_SKELETON).build();
     public static final Set<EntityType<?>> RANGED_INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
@@ -84,7 +79,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
                 spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
                 spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).generateInt(rand));
-                spawnerNBT.putShort("RequiredPlayerRange", (short) 8);
+                spawnerNBT.putShort("RequiredPlayerRange", (short) 10);
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {
@@ -96,7 +91,7 @@ public class Spawner implements IBlockPlacementHandler {
     public static CompoundNBT createSpawnData(@Nullable EntityType<?> type, @Nullable CompoundNBT spawnData,
                                               Random rand, int stage) {
         if (type == null)
-            type = getRandomEntityType(rand);
+            type = RandomMonster.randomMonster(rand, stage);
         if (spawnData == null)
             spawnData = new CompoundNBT();
 
@@ -104,9 +99,11 @@ public class Spawner implements IBlockPlacementHandler {
         if (INVENTORY_ENTITIES.contains(type)) {
             ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
             ListNBT armorList = new ListNBT();
+
             for (ItemStack stack : armor) {
                 armorList.add(stack.write(new CompoundNBT()));
             }
+
             if (armorList.size() > 0) {
                 spawnData.put("ArmorItems", armorList);
             }
@@ -171,11 +168,6 @@ public class Spawner implements IBlockPlacementHandler {
                 entity.readAdditional(nbt);
             }
         }
-    }
-
-    public static EntityType<?> getRandomEntityType(Random rand) {
-        return rand.nextFloat() < 0.04 ? ENTITIES_RARE[rand.nextInt(ENTITIES_RARE.length)]
-                : ENTITIES[rand.nextInt(ENTITIES.length)];
     }
 
 }

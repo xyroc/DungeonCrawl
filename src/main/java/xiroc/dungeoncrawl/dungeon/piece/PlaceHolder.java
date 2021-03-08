@@ -27,7 +27,7 @@ import java.util.List;
  * Used for objects that contain data for the dungeon layout generation process.
  * The point of this is to properly separate data that is only used during the
  *  layout generation (especially dummy placeholders for node rooms) from
- *  data that actually needs to be saved to nbt.
+ *  data that actually needs to be stored in the pieces themselves (eg. the piece's rotation).
  */
 
 public class PlaceHolder {

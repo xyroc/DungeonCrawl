@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -46,7 +45,6 @@ import xiroc.dungeoncrawl.config.Config;
 import java.util.Random;
 import java.util.Set;
 
-
 public class Dungeon extends Structure<NoFeatureConfig> {
 
     public static final Set<Biome.Category> ALLOWED_CATEGORIES = ImmutableSet.<Biome.Category>builder()
@@ -55,7 +53,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
             .add(Biome.Category.PLAINS).add(Biome.Category.RIVER).add(Biome.Category.SAVANNA).add(Biome.Category.SWAMP)
             .add(Biome.Category.TAIGA).add(Biome.Category.RIVER).build();
 
-    public static final String NAME = DungeonCrawl.MODID + ":dungeon";
+    public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
 
     public static final Structure<NoFeatureConfig> DUNGEON = new Dungeon();
     public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> FEATURE =
@@ -64,6 +62,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final StructureSeparationSettings SEPARATION_SETTINGS = new StructureSeparationSettings(30, 10, 10387313);
 
     public static final int SIZE = 15;
+    public static int spacing, separation;
 
     public Dungeon() {
         super(NoFeatureConfig.field_236558_a_);
@@ -89,7 +88,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         if (DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(p_230363_1_, p_230363_8_, p_230363_6_, p_230363_7_))) {
             return false;
         }
-        return p_230363_5_.nextDouble() < Config.DUNGEON_PROBABILITY.get();
+        return true;
     }
 
     @Override

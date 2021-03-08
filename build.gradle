@@ -25,7 +25,7 @@ minecraft {
     // snapshot_YYYYMMDD   Snapshot are built nightly.
     // stable_#            Stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.<<<<<<< HEAD
+    // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: 'snapshot', version: '20200916-1.16.2'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
@@ -92,6 +92,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+
     minecraft 'net.minecraftforge:forge:1.16.5-36.0.43'
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
@@ -118,12 +119,12 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "DungeonCrawl",
-            "Specification-Vendor": "XIROC1337",
+            "Specification-Title": "Dungeon Crawl",
+            "Specification-Vendor": "xiroc",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"XIROC1337",
+            "Implementation-Vendor" :"xiroc",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

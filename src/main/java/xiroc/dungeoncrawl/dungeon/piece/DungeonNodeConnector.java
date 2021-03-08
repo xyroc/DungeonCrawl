@@ -23,16 +23,16 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -50,12 +50,16 @@ public class DungeonNodeConnector extends DungeonPiece {
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
 
-        BlockPos pos = new BlockPos(x, y + DungeonModels.getOffset(modelID).getY(), z);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
+        BlockPos pos = new BlockPos(x, y + model.getOffset(rotation).getY(), z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
+                Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
@@ -71,12 +75,15 @@ public class DungeonNodeConnector extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.modelID = DungeonModels.ModelCategory.get(DungeonModels.ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand);
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelKey = ModelCategory.get(ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand).key;
     }
 
     public void adjustPositionAndBounds() {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            return;
+        }
 
         if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
             int minZ = z - (model.length - 3) / 2;
@@ -88,22 +95,15 @@ public class DungeonNodeConnector extends DungeonPiece {
                     y + model.height - 1, z + 4);
         }
 
-        setRealPosition(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
+        setWorldPosition(this.boundingBox.minX, this.boundingBox.minY, this.boundingBox.minZ);
     }
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
-        Vector3i offset = DungeonModels.getOffset(modelID);
-
-        if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
-            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + 4, y + offset.getY() + model.height - 1,
-                    z + model.length - 1);
-        } else {
-            this.boundingBox = new MutableBoundingBox(x, y + offset.getY(), z, x + model.length - 1,
-                    y + offset.getY() + model.height - 1, z + 4);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
-
     }
 
 }

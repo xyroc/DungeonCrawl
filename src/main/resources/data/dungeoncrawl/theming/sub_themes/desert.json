@@ -42,7 +42,7 @@
           "block": "minecraft:sandstone_stairs"
         },
         {
-          "block": "minecraft:cut_sandstone_stairs"
+          "block": "minecraft:smooth_sandstone_stairs"
         }
       ]
     },

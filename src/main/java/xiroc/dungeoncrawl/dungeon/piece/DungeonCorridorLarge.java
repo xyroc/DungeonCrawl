@@ -26,11 +26,12 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -49,8 +50,8 @@ public class DungeonCorridorLarge extends DungeonPiece {
         this.connectedSides = corridor.connectedSides;
         this.rotation = corridor.rotation;
         this.stage = corridor.stage;
-        this.posX = corridor.posX;
-        this.posZ = corridor.posZ;
+        this.gridX = corridor.gridX;
+        this.gridZ = corridor.gridZ;
         this.type = type;
     }
 
@@ -66,7 +67,7 @@ public class DungeonCorridorLarge extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (type == 0) {
 //            this.maxCellCount = getMaxCellCount();
 //            this.cells = new int[maxCellCount];
@@ -100,11 +101,14 @@ public class DungeonCorridorLarge extends DungeonPiece {
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-
         BlockPos pos = new BlockPos(x, y, z);
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
         buildRotated(model, worldIn, structureBoundingBoxIn, pos,
-                Theme.get(theme), Theme.getSub(subTheme), Treasure.Type.DEFAULT, stage, rotation, false);
+                Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
 //        ChildPieceSpot[] spots = getSpots();
 //

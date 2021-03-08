@@ -94,10 +94,6 @@ public class DungeonModelBlock {
         if (!nbt.contains("type"))
             return null;
         String type = nbt.getString("type");
-//        if (type.equals("WALL"))
-//            type = "NORMAL";
-//        if (type.equals("WALL_2"))
-//            type = "NORMAL_2";
         if (!DungeonModelBlockType.NAME_TO_TYPE.containsKey(type)) {
             DungeonCrawl.LOGGER.warn("Unknown model block type: {}", type);
             return null;

@@ -79,6 +79,7 @@ public class RandomMonster {
             nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.toString());
             nbt.putLong("DeathLootTableSeed", rand.nextInt());
         });
+
         NBT_PATCHERS.put(EntityType.ZOMBIE_VILLAGER, (nbt, rand, stage) -> {
             nbt.put("Offers", VILLAGER_OFFERS.copy());
             nbt.putInt("Xp", 1);

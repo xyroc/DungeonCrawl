@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -37,14 +36,12 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.Position2D;
-import xiroc.dungeoncrawl.util.WeightedRandomInteger;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.util.List;
 import java.util.Random;
@@ -70,7 +67,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (lootRoom) {
             node = Node.ALL;
-            this.modelID = DungeonModels.LOOT_ROOM.id;
+            this.modelKey = DungeonModels.LOOT_ROOM.key;
             return;
         }
 
@@ -102,41 +99,27 @@ public class DungeonNodeRoom extends DungeonPiece {
                 break;
         }
 
-        WeightedRandomInteger provider = large
+        WeightedRandom<DungeonModel> provider = large
                 ? ModelCategory.get(ModelCategory.LARGE_NODE, layerCategory, base)
                 : ModelCategory.get(ModelCategory.NORMAL_NODE, layerCategory, base);
 
-        if (provider == null) {
-            DungeonCrawl.LOGGER.error("Didnt find a model provider for {} in stage {}. Connected Sides: {}, Base: {}",
-                    this, stage, connectedSides, base);
-
-            this.modelID = large ? 33 : 38;
-            return;
-        }
-
-        Integer id = provider.roll(rand);
-
-        if (id == null) {
-            DungeonCrawl.LOGGER.error("Empty model provider for {} in stage {}. Connected Sides: {}, Base: {}",
-                    this, stage, connectedSides, base);
-            this.modelID = large ? 33 : 38;
-            return;
-        }
-
-        this.modelID = id;
+        this.modelKey = provider.roll(rand).key;
     }
 
     @Override
-    public void setRealPosition(int x, int y, int z) {
+    public void setWorldPosition(int x, int y, int z) {
         if (large)
-            super.setRealPosition(x - 9, y, z - 9);
+            super.setWorldPosition(x - 9, y, z - 9);
         else
-            super.setRealPosition(x - 4, y, z - 4);
+            super.setWorldPosition(x - 4, y, z - 4);
     }
 
     @Override
     public void customSetup(Random rand) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            return;
+        }
         if (model.metadata != null) {
             if (model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
                 DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata, x, y, z);
@@ -152,13 +135,17 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-        DungeonModel model = DungeonModels.MODELS.get(modelID);
 
-        Vector3i offset = DungeonModels.getOffset(modelID);
-        BlockPos pos = new BlockPos(x + offset.getX(), y + offset.getY(), z + offset.getZ());
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
-                Treasure.getModelTreasureType(modelID), stage, rotation, false);
+        Vector3i offset = model.getOffset(rotation);
+        BlockPos pos = new BlockPos(x, y, z).add(offset);
+
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
@@ -168,11 +155,6 @@ public class DungeonNodeRoom extends DungeonPiece {
 
         decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
 
-//        if (large) {
-//            buildBoundingBox(worldIn, new MutableBoundingBox(structureBoundingBoxIn.minX, y, structureBoundingBoxIn.minZ,
-//                    structureBoundingBoxIn.maxX, y + 8, structureBoundingBoxIn.maxZ), Blocks.COBWEB);
-//        }
-
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
         return true;
@@ -180,9 +162,10 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        Vector3i offset = DungeonModels.getOffset(modelID);
-        this.boundingBox = large ? new MutableBoundingBox(x, y + offset.getY(), z, x + 26, y + offset.getY() + 8, z + 26)
-                : new MutableBoundingBox(x, y + offset.getY(), z, x + 16, y + offset.getY() + 8, z + 16);
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+        }
     }
 
     @Override
@@ -214,7 +197,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x + 7, y, z - 5);
+            connector.setWorldPosition(x + 7, y, z - 5);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
@@ -226,7 +209,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x + 17, y, z + 7);
+            connector.setWorldPosition(x + 17, y, z + 7);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
@@ -238,7 +221,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x + 7, y, z + 17);
+            connector.setWorldPosition(x + 7, y, z + 17);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
@@ -250,60 +233,10 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.subTheme = subTheme;
             connector.stage = stage;
             connector.setupModel(builder, layerCategory, pieces, rand);
-            connector.setRealPosition(x - 5, y, z + 7);
+            connector.setWorldPosition(x - 5, y, z + 7);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
         }
-    }
-
-    @Override
-    public Tuple<Position2D, Position2D> getAlternativePath(Position2D current, Position2D end) {
-
-        if (!current.hasFacing()) {
-            throw new RuntimeException("The current Position needs to provide a facing.");
-        }
-
-        Position2D center = new Position2D(posX, posZ);
-
-        return new Tuple<>(center.shift(node.findClosest(current.facing), 1),
-                center.shift(findExitToPosition(end), 1));
-    }
-
-    @Override
-    public boolean hasAlternativePath() {
-        return true;
-    }
-
-    private Direction findExitToPosition(Position2D pos) {
-
-        if (pos.hasFacing())
-            return node.findClosest(pos.facing);
-
-        if (pos.x > posX) {
-            if (pos.z > posZ)
-                return Direction.SOUTH;
-            else if (pos.z < posZ)
-                return Direction.NORTH;
-            else
-                return Direction.EAST;
-        } else if (pos.x < posX) {
-            if (pos.z > posZ)
-                return Direction.SOUTH;
-            else if (pos.z < posZ)
-                return Direction.NORTH;
-            else
-                return Direction.WEST;
-        } else {
-            if (pos.z > posZ)
-                return Direction.SOUTH;
-            else if (pos.z < posZ)
-                return Direction.NORTH;
-            else {
-                DungeonCrawl.LOGGER.error("Invalid Position: {},{}", pos.x, pos.z);
-                throw new RuntimeException("Invalid position: (" + pos.x + "/" + pos.z + ")");
-            }
-        }
-
     }
 
     @Override

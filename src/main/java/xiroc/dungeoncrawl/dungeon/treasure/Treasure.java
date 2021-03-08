@@ -21,7 +21,6 @@ package xiroc.dungeoncrawl.dungeon.treasure;
 import net.minecraft.loot.ILootSerializer;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.loot.functions.LootFunctionManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
@@ -30,7 +29,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.*;
 import java.util.HashMap;
 
 public class Treasure {
-
 
     public static final LootFunctionType ENCHANTED_BOOK = func_237451_a_("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
     public static final LootFunctionType MATERIAL_BLOCKS = func_237451_a_("dungeoncrawl:material_blocks", new MaterialBlocks.Serializer());
@@ -41,11 +39,6 @@ public class Treasure {
     public static final LootFunctionType SUSPICIOUS_STEW = func_237451_a_("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());
 
     public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES = new HashMap<>();
-    public static final HashMap<Integer, Treasure.Type> MODEL_TREASURE_TYPES = new HashMap<>();
-
-    public static Treasure.Type getModelTreasureType(int modelID) {
-        return MODEL_TREASURE_TYPES.getOrDefault(modelID, Treasure.Type.DEFAULT);
-    }
 
     public static void init() {
         SPECIAL_LOOT_TABLES.put(Type.SUPPLY, Loot.SUPPLY_CHEST);

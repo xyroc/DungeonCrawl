@@ -26,16 +26,20 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
 import java.util.Random;
 
+/**
+ * TODO: UNUSED
+ */
 public class DungeonStaircase extends DungeonPiece {
 
     public DungeonStaircase(TemplateManager manager, CompoundNBT p_i51343_2_) {
@@ -43,8 +47,8 @@ public class DungeonStaircase extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, DungeonModels.ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.modelID = DungeonModels.STAIRCASE.id;
+    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+        this.modelKey = DungeonModels.STAIRCASE.key;
     }
 
     @Override
@@ -54,13 +58,17 @@ public class DungeonStaircase extends DungeonPiece {
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            return true;
+        }
 
-        DungeonModel model = DungeonModels.STAIRCASE;
         Theme buildTheme = Theme.get(theme);
         BlockPos pos = new BlockPos(x, y, z);
 
         build(model, worldIn, structureBoundingBoxIn, pos, buildTheme, Theme.getSub(subTheme),
-                Treasure.Type.DEFAULT, stage, true);
+                model.getTreasureType(), stage, true);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);

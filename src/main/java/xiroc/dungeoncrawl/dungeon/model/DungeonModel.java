@@ -18,7 +18,10 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -26,15 +29,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +44,8 @@ public class DungeonModel {
 
     public ResourceLocation location;
 
-    public Integer id;
+    public String key;
+    public Integer id; // ID's are no longer the main way to identify models. Kept only for backwards compatibility.
     public int width, height, length;
 
     public DungeonModelBlock[][][] model;
@@ -53,12 +54,12 @@ public class DungeonModel {
     public FeaturePosition[] featurePositions;
 
     @Nullable
-    public List<WeightedRandom<MultipartModelData>> multipartData;
+    public List<MultipartModelData> multipartData;
 
     @Nullable
     public Metadata metadata;
 
-    public DungeonModel(DungeonModelBlock[][][] model, FeaturePosition[] featurePositions) {
+    public DungeonModel(DungeonModelBlock[][][] model, @Nullable FeaturePosition[] featurePositions) {
         this.model = model;
         this.width = model.length;
         this.height = model[0].length;
@@ -71,7 +72,7 @@ public class DungeonModel {
     }
 
     public DungeonModel setId(int id) {
-        DungeonModels.MODELS.put(id, this);
+        DungeonModels.LEGACY_MODELS.put(id, this);
         this.id = id;
         return this;
     }
@@ -79,20 +80,13 @@ public class DungeonModel {
     public void loadMetadata(Metadata metadata) {
         this.metadata = metadata;
 
-        this.id = metadata.id;
-
-        DungeonModels.MODELS.put(id, this);
+        if (metadata.id != null) {
+            this.id = metadata.id;
+            DungeonModels.LEGACY_MODELS.put(id, this);
+        }
 
         if (metadata.type != null) {
             metadata.type.members.add(this);
-        }
-
-        if (metadata.offset != null) {
-            DungeonModels.OFFSETS.put(id, metadata.offset);
-        }
-
-        if (metadata.treasureType != null) {
-            Treasure.MODEL_TREASURE_TYPES.put(id, metadata.treasureType);
         }
 
         if (metadata.size != null) {
@@ -114,33 +108,56 @@ public class DungeonModel {
         switch (rotation) {
             case NONE:
             case CLOCKWISE_180:
-                return new MutableBoundingBox(x, y, z, x + width, y + height, z + length);
+                return new MutableBoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
             case CLOCKWISE_90:
             case COUNTERCLOCKWISE_90:
-                return new MutableBoundingBox(x, y, z, x + length, y + height, z + width);
+                return new MutableBoundingBox(x, y, z, x + length - 1, y + height - 1, z + width - 1);
             default:
                 DungeonCrawl.LOGGER.warn("Unknown rotation: {}", rotation);
-                return new MutableBoundingBox(x, y, z, x + width, y + height, z + length);
+                return new MutableBoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
         }
+    }
+
+    public MutableBoundingBox createBoundingBoxWithOffset(int x, int y, int z, Rotation rotation) {
+        Vector3i offset = getOffset(rotation);
+        return createBoundingBox(x + offset.getX(), y + offset.getY(), z + offset.getZ(), rotation);
     }
 
     public MutableBoundingBox createBoundingBox(BlockPos origin, Rotation rotation) {
         switch (rotation) {
             case NONE:
             case CLOCKWISE_180:
-                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width, origin.getY() + height, origin.getZ() + length);
+                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width - 1, origin.getY() + height - 1, origin.getZ() + length - 1);
             case CLOCKWISE_90:
             case COUNTERCLOCKWISE_90:
-                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + length, origin.getY() + height, origin.getZ() + width);
+                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + length - 1, origin.getY() + height - 1, origin.getZ() + width - 1);
             default:
                 DungeonCrawl.LOGGER.warn("Unknown rotation: {}", rotation);
-                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width, origin.getY() + height, origin.getZ() + length);
+                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width - 1, origin.getY() + height - 1, origin.getZ() + length - 1);
         }
+    }
+
+    public Treasure.Type getTreasureType() {
+        if (metadata != null && metadata.treasureType != null) {
+            return metadata.treasureType;
+        }
+        return Treasure.Type.DEFAULT;
+    }
+
+    public Vector3i getOffset(Rotation rotation) {
+        if (metadata != null && metadata.offset != null) {
+            if (metadata.rotatedOffset != null && ((rotation.ordinal()) & 1) == 1) {
+                return metadata.rotatedOffset;
+            } else {
+                return metadata.offset;
+            }
+        }
+        return DungeonModels.NO_OFFSET;
     }
 
     @Override
     public String toString() {
-        return "{" + id + (metadata != null ? ", " + ((metadata.type != null ? metadata.type.toString() : "-") + (metadata.stages != null ? ", " + Arrays.toString(metadata.stages) : "")) + "}" : "}");
+        return "{" + id + (metadata != null ? ", " + ((metadata.type != null ? metadata.type.toString() : "generic") + (metadata.stages != null ? ", " + Arrays.toString(metadata.stages) : "[]")) + "}" : "}");
     }
 
     public static class FeaturePosition {
@@ -221,139 +238,150 @@ public class DungeonModel {
 
         public Treasure.Type treasureType;
 
-        public List<WeightedRandom<MultipartModelData>> multipartData;
+        public List<MultipartModelData> multipartData;
 
         public boolean variation;
 
-        public Vector3i offset;
+        public Vector3i offset, rotatedOffset;
 
         public int[] stages, weights;
 
-        private Metadata(ModelCategory type, ModelCategory size, Integer id, DungeonModelFeature feature, DungeonModelFeature.Metadata featureMetadata,
-                         Vector3i offset, Treasure.Type treasureType, List<WeightedRandom<MultipartModelData>> multipartData,
-                         boolean variation, int[] stages, int[] weights) {
+        private Metadata(ModelCategory type) {
             this.type = type;
-            this.size = size;
-            this.id = id;
-            this.feature = feature;
-            this.featureMetadata = featureMetadata;
-            this.offset = offset;
-            this.multipartData = multipartData;
-            this.treasureType = treasureType;
-            this.variation = variation;
-            this.stages = stages;
-            this.weights = weights;
         }
 
-        public static class Deserializer implements JsonDeserializer<Metadata> {
+        public static Metadata fromJson(JsonObject object, ResourceLocation file) throws JsonParseException {
+            String modelType = object.get("type").getAsString();
 
-            @Override
-            public Metadata deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                    throws JsonParseException {
+            Metadata metadata;
 
-                JsonObject object = json.getAsJsonObject();
-                String modelType = object.get("type").getAsString();
-
-                int id = object.get("id").getAsInt();
-
-                DungeonModelFeature feature = null;
-                DungeonModelFeature.Metadata featureMetadata = null;
-
-                int[] stages = null, weights = null;
-
-                Vector3i offset = null;
-
-                boolean variation = false;
-
-                JsonObject data = null;
-
-                Treasure.Type treasureType = null;
-
-                List<WeightedRandom<MultipartModelData>> multipartData = null;
-
-                if (object.has("data")) {
-                    data = object.getAsJsonObject("data");
-
-                    stages = data.has("stages") ? DungeonCrawl.GSON.fromJson(data.get("stages"), int[].class) : null;
-                    weights = data.has("weights") ? DungeonCrawl.GSON.fromJson(data.get("weights"), int[].class) : null;
-
-                    offset = data.has("offset") ? JSONUtils.getOffset(data.getAsJsonObject("offset")) : null;
-
-                    if (data.has("feature")) {
-                        JsonObject featureData = data.getAsJsonObject("feature");
-                        feature = DungeonModelFeature.getFromName(featureData.get("type").getAsString());
-                        featureMetadata = new DungeonModelFeature.Metadata(featureData);
-                    }
-
-                    if (data.has("variation")) {
-                        variation = data.get("variation").getAsBoolean();
-                    }
-
-                    if (data.has("treasure_type")) {
-                        try {
-                            treasureType = Treasure.Type.valueOf(data.get("treasure_type").getAsString().toUpperCase(Locale.ROOT));
-                        } catch (IllegalArgumentException e) {
-                            DungeonCrawl.LOGGER.error("Invalid treasure type {} for model {}", data.get("treasure_type"), id);
-                            e.printStackTrace();
-                        }
-                    }
-
-                    if (data.has("multipart")) {
-                        JsonArray array = data.getAsJsonArray("multipart");
-                        int size = array.size();
-                        if (size > 0) {
-                            multipartData = new ArrayList<>();
-
-                            for (int i = 0; i < size; i++) {
-                                JsonArray array1 = array.get(i).getAsJsonArray();
-                                WeightedRandom.Builder<MultipartModelData> builder = new WeightedRandom.Builder<>();
-
-                                array1.forEach((element1) -> {
-                                    JsonObject object1 = element1.getAsJsonObject();
-                                    MultipartModelData multipartModelData = MultipartModelData.fromJson(object1);
-                                    builder.add(multipartModelData, JSONUtils.getWeightOrDefault(object1));
-                                    if (multipartModelData != MultipartModelData.EMPTY) {
-                                        DungeonModels.REFERENCES_TO_UPDATE.add(multipartModelData);
-                                    }
-                                });
-
-                                multipartData.add(builder.build());
-                            }
-                        }
-                    }
-                }
-
-                if (modelType.equalsIgnoreCase("node")) {
+            if (modelType.equalsIgnoreCase("node")) {
+                if (object.has("node")) {
+                    JsonObject nodeData = object.getAsJsonObject("node");
                     ModelCategory size;
-                    if (data != null) {
-                        String sizeString = data.get("size").getAsString(), typeString = data.get("type").getAsString();
-                        if (sizeString.equals("large")) {
-                            size = ModelCategory.LARGE_NODE;
-                        } else if (sizeString.equals("normal")) {
-                            size = ModelCategory.NORMAL_NODE;
-                        } else {
-                            throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
-                        }
-                        return new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)), size, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
+                    String sizeString = nodeData.get("size").getAsString(), typeString = nodeData.get("type").getAsString();
+
+                    if (sizeString.equals("large")) {
+                        size = ModelCategory.LARGE_NODE;
+                    } else if (sizeString.equals("normal")) {
+                        size = ModelCategory.NORMAL_NODE;
                     } else {
-                        throw new RuntimeException("Missing metadata for a node model. (ID: " + id + ")");
+                        throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
                     }
+
+                    metadata = new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)));
+                    metadata.setSize(size);
                 } else {
-                    return new Metadata(getModelCategory(modelType), null, id, feature, featureMetadata, offset, treasureType, multipartData, variation, stages, weights);
+                    throw new JsonParseException("Missing node data in node model metadata file " + file.toString());
+                }
+            } else {
+                metadata = new Metadata(getModelCategory(modelType));
+            }
+
+            if (object.has("id")) {
+                metadata.setId(object.get("id").getAsInt());
+            }
+
+            if (object.has("stages")) {
+                metadata.setStages(DungeonCrawl.GSON.fromJson(object.get("stages"), int[].class));
+            }
+
+            if (object.has("weights")) {
+                metadata.setWeights(DungeonCrawl.GSON.fromJson(object.get("weights"), int[].class));
+            }
+
+            if (object.has("offset")) {
+                JsonObject offset = object.getAsJsonObject("offset");
+                metadata.setOffset(JSONUtils.getOffset(offset), offset.has("rotate") && offset.get("rotate").getAsBoolean());
+            }
+
+            if (object.has("feature")) {
+                JsonObject featureData = object.getAsJsonObject("feature");
+                metadata.setFeature(DungeonModelFeature.getFromName(featureData.get("type").getAsString()));
+                metadata.setFeatureMetadata(new DungeonModelFeature.Metadata(featureData));
+            }
+
+            if (object.has("variation")) {
+                metadata.setVariation(object.get("variation").getAsBoolean());
+            }
+
+            if (object.has("treasure_type")) {
+                try {
+                    metadata.setLoot(Treasure.Type.valueOf(object.get("treasure_type").getAsString().toUpperCase(Locale.ROOT)));
+                } catch (IllegalArgumentException e) {
+                    DungeonCrawl.LOGGER.error("Invalid treasure type {} in metadata file {}", object.get("treasure_type"), file.toString());
+                    e.printStackTrace();
                 }
             }
 
-            @Nullable
-            private static ModelCategory getModelCategory(String name) {
-                if (name.toLowerCase().equals("normal")) {
-                    return null;
+            if (object.has("multipart")) {
+                JsonArray array = object.getAsJsonArray("multipart");
+                if (array.size() > 0) {
+                    ArrayList<MultipartModelData> multipartData = new ArrayList<>();
+                    for (JsonElement element : array) {
+                        MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
+                        if (multipartModelData != null) {
+                            multipartData.add(multipartModelData);
+                        }
+                    }
+                    metadata.setMultipartData(multipartData);
                 }
-                try {
-                    return ModelCategory.valueOf(name.toUpperCase(Locale.ROOT));
-                } catch (IllegalArgumentException e) {
-                    DungeonCrawl.LOGGER.warn("Unknown model type: {} ({})", name, name.toUpperCase(Locale.ROOT));
-                    return null;
-                }
+            }
+
+            return metadata;
+        }
+
+        private void setSize(ModelCategory size) {
+            this.size = size;
+        }
+
+        private void setId(Integer id) {
+            this.id = id;
+        }
+
+        private void setStages(int[] stages) {
+            this.stages = stages;
+        }
+
+        private void setWeights(int[] weights) {
+            this.weights = weights;
+        }
+
+        private void setFeature(DungeonModelFeature feature) {
+            this.feature = feature;
+        }
+
+        private void setFeatureMetadata(DungeonModelFeature.Metadata featureMetadata) {
+            this.featureMetadata = featureMetadata;
+        }
+
+        private void setOffset(Vector3i offset, boolean rotatable) {
+            this.offset = offset;
+            this.rotatedOffset = rotatable ? new Vector3i(offset.getZ(), offset.getY(), offset.getX()) : null;
+        }
+
+        private void setLoot(Treasure.Type treasureType) {
+            this.treasureType = treasureType;
+        }
+
+        private void setMultipartData(List<MultipartModelData> multipartData) {
+            this.multipartData = multipartData;
+        }
+
+        private void setVariation(boolean variation) {
+            this.variation = variation;
+        }
+
+        @Nullable
+        private static ModelCategory getModelCategory(String name) {
+            if (name.equalsIgnoreCase("generic")) {
+                return null;
+            }
+            try {
+                return ModelCategory.valueOf(name.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                DungeonCrawl.LOGGER.warn("Unknown model type: {} ({})", name, name.toUpperCase(Locale.ROOT));
+                return null;
             }
         }
     }

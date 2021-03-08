@@ -29,31 +29,46 @@ import java.nio.file.Path;
 
 public class Config {
 
-    public static final String CONFIG_GENERAL = "general";
-    public static final String CONFIG_DUNGEON = "dungeon";
-    public static final String CONFIG_WORLDGEN = "world_generation";
+    public static final String GENERAL = "general";
+    public static final String DUNGEON = "dungeon";
+    public static final String WORLD_GENERATION = "world generation";
+    public static final String ADVANCED_WORLD_GENERATION = "advanced world generation";
 
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
     public static final ForgeConfigSpec CONFIG;
 
-    public static final IntValue SPAWNER_ENTITIES;
+    public static final IntValue SPAWNER_ENTITIES, SPACING, SEPARATION;
 
-    public static final DoubleValue DUNGEON_PROBABILITY, SHIELD_PROBABILITY, MOB_SPAWN_RATE;
+    public static final DoubleValue SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
             NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN, EXTENDED_DEBUG;
 
     static {
-        BUILDER.comment("General Settings").push(CONFIG_GENERAL);
+        BUILDER.comment("General Settings").push(GENERAL);
 
-        ENABLE_TOOLS = BUILDER.comment("Enables the dungeon crawl tools.").define("enable_tools", false);
+        ENABLE_TOOLS = BUILDER.comment("Enables the dungeon crawl developer tools.").define("enable_tools", false);
         ENABLE_DUMMY_PIECES = BUILDER.comment("This option will make pre-2.0.0 worlds playable with version 2.0.0 and later.").define("enable_dummy_pieces", false);
         EXTENDED_DEBUG = BUILDER.comment("Enables extended debug logging to help detecting potential errors. This is enabled by default.").define("extended_debug", true);
 
         BUILDER.pop();
 
-        BUILDER.comment("Dungeon Settings").push(CONFIG_DUNGEON);
+        BUILDER.comment("World Generation Settings").push(WORLD_GENERATION);
+        IGNORE_DIMENSION = BUILDER.comment(
+                "If this is set to false, no dungeons can be generated outside the overworld.")
+                .define("ignore_dimension", false);
+        SOLID = BUILDER.comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.").define("solid", false);
+        BUILDER.pop();
+
+        BUILDER.comment("Advanced World Generation Settings").push(ADVANCED_WORLD_GENERATION);
+        SPACING = BUILDER.comment("The average distance between the dungeons. This has to be higher than the separation!")
+                .defineInRange("spacing", 20, 8, 8192);
+        SEPARATION = BUILDER.comment("The minimum distance between the dungeons. This has to be lower than the spacing!")
+                .defineInRange("separation", 10, 8, 8192);
+        BUILDER.pop();
+
+        BUILDER.comment("Dungeon Settings").push(DUNGEON);
         NO_SPAWNERS = BUILDER.comment(
                 "If you dont like the fact that the dungeons contain lots of mob spawners, set this to true! Mobs will get spawned manually during the dungeon generation then. Note that this is a lot more performance demanding than enabling spawners. (Which also depends on the mob spawn rate)")
                 .define("no_spawners", false);
@@ -62,7 +77,7 @@ public class Config {
                 .define("no_nether_stuff", false);
         MOB_SPAWN_RATE = BUILDER.comment(
                 "This value defines how many mobs do get spawned manually during the generation. (if no_spawners = true, there is no effect otherwise)")
-                .defineInRange("mob_spawn_rate", 0.05, 0.001, 1.0);
+                .defineInRange("mob_spawn_rate", 0.05, 0.0, 1.0);
         SPAWNER_ENTITIES = BUILDER.comment(
                 "The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
                 .defineInRange("spawner_entities", 6, 1, 128);
@@ -77,17 +92,6 @@ public class Config {
         NATURAL_DESPAWN = BUILDER.comment("Whether mobs from spawners should despawn naturally or not.").define("natural_despawn", true);
 
         BUILDER.pop();
-
-        BUILDER.comment("World Generation Settings").push(CONFIG_WORLDGEN);
-        DUNGEON_PROBABILITY = BUILDER.comment("The probability of a dungeon getting generated on each fitting chunk.")
-                .defineInRange("dungeon_probability", 0.22, 0.0001, 1.0);
-        IGNORE_DIMENSION = BUILDER.comment(
-                "If this is set to false, no dungeons can be generated outside the overworld.")
-                .define("ignore_dimension", false);
-        SOLID = BUILDER.comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.").define("solid", false);
-        BUILDER.pop();
-
-        BUILDER.comment("There are a lot more other config options in config/DungeonCrawl.").push("Information");
 
         CONFIG = BUILDER.build();
     }

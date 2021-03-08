@@ -54,7 +54,7 @@ public interface DungeonModelFeature {
         for (DirectionalBlockPos position : positions) {
             if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, Blocks.TRAPPED_CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
-                        Orientation.RANDOM_FACING_FLAT.roll(rand)),
+                        Orientation.RANDOM_HORIZONTAL_FACING.roll(rand)),
                         position.position, rand, Treasure.Type.DEFAULT, theme, stage);
                 if (!world.isAirBlock(position.position.down(2))) {
                     world.setBlockState(position.position.down(2), Blocks.TNT.getDefaultState(), 2);

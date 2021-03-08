@@ -21,7 +21,6 @@ package xiroc.dungeoncrawl.util;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.vector.Vector3i;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 
 public class Orientation {
@@ -30,7 +29,7 @@ public class Orientation {
             Direction.WEST, Direction.DOWN, Direction.UP};
 
     public static final IRandom<Direction> RANDOM_FACING = (rand) -> FACINGS[rand.nextInt(FACINGS.length)];
-    public static final IRandom<Direction> RANDOM_FACING_FLAT = (rand) -> FACINGS[rand.nextInt(4)];
+    public static final IRandom<Direction> RANDOM_HORIZONTAL_FACING = (rand) -> FACINGS[rand.nextInt(4)];
 
     public static final Direction[] FLAT_FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH,
             Direction.WEST};
@@ -44,46 +43,26 @@ public class Orientation {
     public static final Direction[] NORTH_SOUTH_WEST = new Direction[]{Direction.NORTH, Direction.SOUTH,
             Direction.WEST};
 
-    public static Vector3i rotatedMultipartOffset(int pWidth, int pLength, int mWidth, int mLength, Vector3i offset, Rotation rotation) {
-        switch (rotation) {
-            case CLOCKWISE_90:
-                return new Vector3i(pLength - offset.getZ() - mLength, offset.getY(), offset.getX());
-            case CLOCKWISE_180:
-                return new Vector3i(pWidth - offset.getX() - mWidth, offset.getY(), pLength - offset.getZ() - mLength);
-            case COUNTERCLOCKWISE_90:
-                return new Vector3i(offset.getZ(), offset.getY(), pWidth - offset.getX() - mWidth);
+    public static Vector3i rotatedMultipartOffset(DungeonModel parent, DungeonModel multipart, Vector3i offset, Rotation parentRotation, Rotation fullRotation) {
+        int ordinalBit = fullRotation.ordinal() & 1;
+        switch (parentRotation) {
+            case CLOCKWISE_90: {
+                int multipartLength = ordinalBit == 0 ? multipart.width : multipart.length;
+                return new Vector3i(parent.length - offset.getZ() - multipartLength, offset.getY(), offset.getX());
+            }
+            case CLOCKWISE_180: {
+                int multipartWidth = ordinalBit == 1 ? multipart.length : multipart.width;
+                int multipartLength = ordinalBit == 1 ? multipart.width : multipart.length;
+                return new Vector3i(parent.width - offset.getX() - multipartWidth, offset.getY(), parent.length - offset.getZ() - multipartLength);
+            }
+            case COUNTERCLOCKWISE_90: {
+                int multipartWidth = ordinalBit == 0 ? multipart.length : multipart.width;
+                return new Vector3i(offset.getZ(), offset.getY(), parent.width - offset.getX() - multipartWidth);
+            }
             default:
                 return offset;
         }
     }
-
-    public static Vector3i rotatedMultipartOffset(DungeonModel parent, DungeonModel multipart, Vector3i offset, Rotation rotation) {
-        switch (rotation) {
-            case CLOCKWISE_90:
-                return new Vector3i(parent.length - offset.getZ() - multipart.length , offset.getY(), offset.getX());
-            case CLOCKWISE_180:
-                return new Vector3i(parent.width - offset.getX() - multipart.width, offset.getY(), parent.length - offset.getZ() - multipart.length);
-            case COUNTERCLOCKWISE_90:
-                return new Vector3i(offset.getZ(), offset.getY(), parent.width - offset.getX() - multipart.width);
-            default:
-                return offset;
-        }
-    }
-
-    /*
-     public static Vec3i rotatedMultipartOffset(DungeonModel parent, DungeonModel multipart, Vec3i offset, Rotation rotation) {
-        switch (rotation) {
-            case CLOCKWISE_90:
-                return new Vec3i(parent.width - offset.getZ() - multipart.length , offset.getY(), offset.getX());
-            case CLOCKWISE_180:
-                return new Vec3i(parent.width - offset.getX() - multipart.width, offset.getY(), parent.length - offset.getZ() - multipart.length);
-            case COUNTERCLOCKWISE_90:
-                return new Vec3i(offset.getZ(), offset.getY(), parent.length - offset.getX() - multipart.width);
-            default:
-                return offset;
-        }
-    }
-     */
 
     public static Direction horizontalOpposite(Direction direction) {
         switch (direction) {
@@ -130,7 +109,7 @@ public class Orientation {
         }
     }
 
-    public static Direction[] getFlatFacingsWithout(Direction excludedDirection) {
+    public static Direction[] getHorizontalFacingsWithout(Direction excludedDirection) {
         switch (excludedDirection) {
             case NORTH:
                 return EAST_SOUTH_WEST;
@@ -141,8 +120,7 @@ public class Orientation {
             case WEST:
                 return NORTH_SOUTH_EAST;
             default:
-                DungeonCrawl.LOGGER.error("{} is not a flat direction", excludedDirection);
-                return null;
+                throw new IllegalArgumentException(excludedDirection.name() + " is not a horizontal Direction.");
         }
     }
 
@@ -247,7 +225,7 @@ public class Orientation {
         }
     }
 
-    public static int getInt(Rotation rotation) {
+    public static int rotationAsInt(Rotation rotation) {
         switch (rotation) {
             case CLOCKWISE_180:
                 return 2;
@@ -255,8 +233,6 @@ public class Orientation {
                 return 1;
             case COUNTERCLOCKWISE_90:
                 return 3;
-            case NONE:
-                return 0;
             default:
                 return 0;
         }

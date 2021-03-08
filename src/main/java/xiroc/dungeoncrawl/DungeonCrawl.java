@@ -45,17 +45,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
-import xiroc.dungeoncrawl.util.DataReloadListener;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
+import xiroc.dungeoncrawl.util.DataReloadListener;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Tools;
 import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
@@ -64,17 +63,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-@Mod(DungeonCrawl.MODID)
+@Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
 
-    public static final String MODID = "dungeoncrawl";
+    public static final String MOD_ID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
     public static final String VERSION = "2.2.4";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(DungeonModel.Metadata.class, new DungeonModel.Metadata.Deserializer())
             .registerTypeAdapter(WeightedThemeRandomizer.class, new WeightedThemeRandomizer.Deserializer())
             .registerTypeAdapter(WeightedIntegerEntry.class, new WeightedIntegerEntry.Deserializer())
             .setPrettyPrinting().create();
@@ -86,12 +84,16 @@ public class DungeonCrawl {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
 
+<<<<<<< HEAD
         Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT)));
         ForgeRegistries.STRUCTURE_FEATURES.register(Dungeon.DUNGEON);
         Structure.field_236365_a_.put(Dungeon.DUNGEON.getRegistryName().toString().toLowerCase(Locale.ROOT), Dungeon.DUNGEON);
         LOGGER.info(Dungeon.FEATURE);
         LOGGER.info(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE.getKey(Dungeon.FEATURE));
 
+=======
+        ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
+>>>>>>> origin/1.15
         Treasure.init();
         DungeonModelFeature.init();
         DungeonModelBlockType.buildNameTable();
@@ -103,6 +105,15 @@ public class DungeonCrawl {
         LOGGER.info("Common Setup");
         //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
+
+        if (Config.SPACING.get() > Config.SEPARATION.get()) {
+            Dungeon.spacing = Config.SPACING.get();
+            Dungeon.separation = Config.SEPARATION.get();
+        } else {
+            LOGGER.warn("Invalid separation/spacing setting in the config. Using default values.");
+            Dungeon.spacing = 20;
+            Dungeon.separation = 10;
+        }
 
         StructurePieceTypes.registerAll();
 
@@ -148,7 +159,7 @@ public class DungeonCrawl {
     }
 
     public static ResourceLocation locate(String path) {
-        return new ResourceLocation(MODID, path);
+        return new ResourceLocation(MOD_ID, path);
     }
 
 }

@@ -54,8 +54,6 @@ public class TreasureItems {
     public static ItemStack[] POTIONS;
     public static ItemStack[] SPECIAL_POTIONS;
 
-    public static final TreasureItem RANDOM_SPECIAL_ITEM;
-
     static {
         {
             CompoundNBT nbt = new CompoundNBT();
@@ -203,27 +201,23 @@ public class TreasureItems {
             nbt.put("display", display);
             LUMA = new ItemStack(Items.POTION);
             LUMA.setTag(nbt);
-
-
-            RANDOM_SPECIAL_ITEM = new TreasureItem("minecraft:air");
-
-            POTION_HEALING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:healing"));
-            POTION_HEALING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_healing"));
-
-            POTION_REGENERATION = createItemWithNbt(Items.POTION, createPotionTag("minecraft:regeneration"));
-            POTION_REGENERATION_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_regeneration"));
-            POTION_REGENERATION_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_regeneration"));
-
-            SPLASH_POISON = createItemWithNbt(Items.POTION, createPotionTag("minecraft:poison"));
-            SPLASH_POISON_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_poison"));
-            SPLASH_HARMING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:harming"));
-            SPLASH_HARMING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_harming"));
-
-            POTIONS = new ItemStack[]{POTION_HEALING, POTION_HEALING_II, POTION_REGENERATION, POTION_REGENERATION_LONG,
-                    POTION_REGENERATION_II, SPLASH_HARMING, SPLASH_HARMING_II, SPLASH_POISON, SPLASH_POISON_LONG};
-            SPECIAL_POTIONS = new ItemStack[]{LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS};
-
         }
+
+        POTION_HEALING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:healing"));
+        POTION_HEALING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_healing"));
+
+        POTION_REGENERATION = createItemWithNbt(Items.POTION, createPotionTag("minecraft:regeneration"));
+        POTION_REGENERATION_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_regeneration"));
+        POTION_REGENERATION_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_regeneration"));
+
+        SPLASH_POISON = createItemWithNbt(Items.POTION, createPotionTag("minecraft:poison"));
+        SPLASH_POISON_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_poison"));
+        SPLASH_HARMING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:harming"));
+        SPLASH_HARMING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_harming"));
+
+        POTIONS = new ItemStack[]{POTION_HEALING, POTION_HEALING_II, POTION_REGENERATION, POTION_REGENERATION_LONG,
+                POTION_REGENERATION_II, SPLASH_HARMING, SPLASH_HARMING_II, SPLASH_POISON, SPLASH_POISON_LONG};
+        SPECIAL_POTIONS = new ItemStack[]{LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS};
     }
 
     public static CompoundNBT createDisplayTag(String name, String... loreEntries) {

@@ -71,7 +71,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
     @Override
     public GenerationStage.Decoration func_236396_f_() {
-        return GenerationStage.Decoration.UNDERGROUND_DECORATION;
+        return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
     @Override

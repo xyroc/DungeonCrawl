@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 
 version = '2.2.4'
 group = 'xiroc.dungeoncrawl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'DungeonCrawl-1.16.3'
+archivesBaseName = 'DungeonCrawl-1.16.5'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -92,7 +92,7 @@ dependencies {
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.16.3-34.1.0'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.0.43'
 
     // You may put jars on which you depend on in ./libs or you may define them like so..
     // compile "some.group:artifact:version:classifier"

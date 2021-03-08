@@ -33,10 +33,8 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -84,16 +82,12 @@ public class DungeonCrawl {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.register(this);
 
-<<<<<<< HEAD
         Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT)));
         ForgeRegistries.STRUCTURE_FEATURES.register(Dungeon.DUNGEON);
         Structure.field_236365_a_.put(Dungeon.DUNGEON.getRegistryName().toString().toLowerCase(Locale.ROOT), Dungeon.DUNGEON);
         LOGGER.info(Dungeon.FEATURE);
         LOGGER.info(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE.getKey(Dungeon.FEATURE));
 
-=======
-        ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
->>>>>>> origin/1.15
         Treasure.init();
         DungeonModelFeature.init();
         DungeonModelBlockType.buildNameTable();

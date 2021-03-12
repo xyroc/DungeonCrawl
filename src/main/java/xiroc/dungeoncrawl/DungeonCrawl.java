@@ -49,7 +49,6 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
-import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
 import xiroc.dungeoncrawl.util.DataReloadListener;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Tools;
@@ -68,7 +67,6 @@ public class DungeonCrawl {
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(WeightedThemeRandomizer.class, new WeightedThemeRandomizer.Deserializer())
             .registerTypeAdapter(WeightedIntegerEntry.class, new WeightedIntegerEntry.Deserializer())
             .setPrettyPrinting().create();
 
@@ -116,7 +114,7 @@ public class DungeonCrawl {
         for (Biome biome : ForgeRegistries.BIOMES) {
             if (Dungeon.OVERWORLD_CATEGORIES.contains(biome.getCategory())) {
                 biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, new ConfiguredFeature<>(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));
-                if (!JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())
+                if (biome.getRegistryName() == null || !JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())
                         && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
                     DungeonCrawl.LOGGER.info("Generation Biome: " + biome.getRegistryName());
                     biome.addStructure(new ConfiguredFeature<>(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));

@@ -42,10 +42,13 @@ import java.util.Locale;
 
 public class DungeonModel {
 
+//    public static final DungeonModel EMPTY = new DungeonModel(new DungeonModelBlock[0][0][0], null);
+
     public ResourceLocation location;
 
-    public String key;
+    private String key;
     public Integer id; // ID's are no longer the main way to identify models. Kept only for backwards compatibility.
+
     public int width, height, length;
 
     public DungeonModelBlock[][][] model;
@@ -75,6 +78,14 @@ public class DungeonModel {
         DungeonModels.LEGACY_MODELS.put(id, this);
         this.id = id;
         return this;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     public void loadMetadata(Metadata metadata) {

@@ -26,6 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.ArrayList;
 import java.util.List;

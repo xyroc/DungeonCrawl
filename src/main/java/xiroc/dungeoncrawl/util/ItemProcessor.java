@@ -21,8 +21,8 @@ package xiroc.dungeoncrawl.util;
 import net.minecraft.item.ItemStack;
 
 @FunctionalInterface
-public interface ItemProcessor<W, F, S, T> {
+public interface ItemProcessor<W, R, L> {
 
-    ItemStack generate(W w, F f, S s, T t);
+    ItemStack generate(W w, R r, L l);
 
 }

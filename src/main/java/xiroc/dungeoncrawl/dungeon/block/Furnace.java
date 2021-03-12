@@ -30,6 +30,7 @@ import net.minecraft.world.storage.loot.RandomValueRange;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure.Type;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 import java.util.Random;
@@ -43,7 +44,7 @@ public class Furnace implements IBlockPlacementHandler {
 
     @Override
     public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
-                           int theme, int lootLevel) {
+                           Theme theme, Theme.SubTheme subTheme, int lootLevel) {
         world.setBlockState(pos, state, 3);
         if (world.getTileEntity(pos) instanceof FurnaceTileEntity) {
             FurnaceTileEntity tile = (FurnaceTileEntity) world.getTileEntity(pos);
@@ -56,8 +57,8 @@ public class Furnace implements IBlockPlacementHandler {
     public static class Smoker implements IBlockPlacementHandler {
 
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
-                               int lootLevel) {
+        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, Theme theme,
+                               Theme.SubTheme subTheme, int lootLevel) {
             world.setBlockState(pos, state, 3);
             if (world.getTileEntity(pos) instanceof SmokerTileEntity) {
                 SmokerTileEntity tile = (SmokerTileEntity) world.getTileEntity(pos);

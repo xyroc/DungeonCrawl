@@ -15,6 +15,12 @@
         },
         {
           "block": "minecraft:cracked_stone_bricks"
+        },
+        {
+          "block": "minecraft:gravel"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone"
         }
       ]
     },
@@ -30,8 +36,17 @@
           "weight": 4
         },
         {
+          "block": "minecraft:mossy_stone_bricks"
+        },
+        {
           "block": "minecraft:cracked_stone_bricks",
           "weight": 2
+        },
+        {
+          "block": "minecraft:gravel"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone"
         }
       ]
     },
@@ -40,10 +55,17 @@
       "blocks": [
         {
           "block": "minecraft:stone_bricks",
+          "weight": 4
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks",
           "weight": 2
         },
         {
-          "block": "minecraft:cracked_stone_bricks"
+          "block": "minecraft:gravel"
+        },
+        {
+          "block": "minecraft:mossy_stone_bricks"
         }
       ]
     },

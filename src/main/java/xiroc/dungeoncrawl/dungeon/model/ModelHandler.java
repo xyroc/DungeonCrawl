@@ -32,7 +32,6 @@ import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.FeaturePosition;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
@@ -134,7 +133,9 @@ public class ModelHandler {
     }
 
     public static DungeonModel getModelFromNBT(CompoundNBT nbt) {
+//        nbt.keySet().forEach(key -> DungeonCrawl.LOGGER.info("{} {}", key, nbt.get(key).getId()));
         int width = nbt.getInt("width"), height = nbt.getInt("height"), length = nbt.getInt("length");
+//        DungeonCrawl.LOGGER.info("width {} height {} length {}", width, height, length);
 
         ListNBT blocks = nbt.getList("model", 9);
 
@@ -169,6 +170,10 @@ public class ModelHandler {
         }
 
         return new DungeonModel(model, featurePositions);
+    }
+
+    public static DungeonModel getModelFromJigsawNBT(CompoundNBT nbt) {
+        return null;
     }
 
 }

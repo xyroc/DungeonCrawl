@@ -1,0 +1,10 @@
+{
+  "type": "entrance",
+  "offset": {
+    "z": -4
+  },
+  "variation": true,
+  "__feature": {
+    "type": "house_stairs"
+  }
+}

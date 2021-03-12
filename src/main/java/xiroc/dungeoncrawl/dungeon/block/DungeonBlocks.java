@@ -26,10 +26,10 @@ import net.minecraft.util.Tuple;
 
 public class DungeonBlocks {
 
-    public static final Block[] CARPET = new Block[]{Blocks.WHITE_CARPET, Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
-            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET, Blocks.GRAY_CARPET,
-            Blocks.LIGHT_GRAY_CARPET, Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
-            Blocks.BROWN_CARPET, Blocks.RED_CARPET, Blocks.BLACK_CARPET};
+    public static final Block[] CARPET = new Block[]{Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
+            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET,
+            Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
+            Blocks.BROWN_CARPET, Blocks.RED_CARPET};
 
     public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.getDefaultState();
     public static final BlockState SPAWNER = Blocks.SPAWNER.getDefaultState();

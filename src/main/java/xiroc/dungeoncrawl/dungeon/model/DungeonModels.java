@@ -30,58 +30,36 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel.Metadata;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 public class DungeonModels {
 
-
-    public static final HashMap<Integer, DungeonModel> LEGACY_MODELS = new HashMap<>();
     public static final HashMap<String, DungeonModel> MODELS = new HashMap<>();
 
-    public static final HashMap<Integer, WeightedRandom<DungeonModel>> WEIGHTED_MODELS = new HashMap<>();
+    public static final HashMap<Integer, DungeonModel> LEGACY_MODELS = new HashMap<>();
 
-    /*
-     * A list of all MultipartModelData instances to update their "forward references" after all models have been loaded.
-     */
-    public static final ArrayList<MultipartModelData.Instance> REFERENCES_TO_UPDATE = new ArrayList<>(128);
+    public static final HashMap<Integer, WeightedRandom<DungeonModel>> WEIGHTED_MODELS = new HashMap<>();
 
     public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
 
     public static DungeonModel CORRIDOR, CORRIDOR_2, CORRIDOR_3, CORRIDOR_STONE, CORRIDOR_ROOM, CORRIDOR_SECRET_ROOM_ENTRANCE;
 
-    public static DungeonModel ENTRANCE;
+    public static DungeonModel DEFAULT_TOWER;
     public static DungeonModel FOOD_SIDE_ROOM;
-    public static DungeonModel LARGE_CORRIDOR_START, LARGE_CORRIDOR_STRAIGHT, LARGE_CORRIDOR_OPEN, LARGE_CORRIDOR_TURN;
     public static DungeonModel LOOT_ROOM, OLD_LOOT_ROOM;
     public static DungeonModel PRISON_CELL;
     public static DungeonModel SECRET_ROOM;
     public static DungeonModel STAIRCASE, STAIRS_BOTTOM, STAIRS_BOTTOM_2, STAIRS_TOP;
     public static DungeonModel STARTER_ROOM;
 
-    @Nullable
-    public static DungeonModel getModel(String key, Integer legacyID) {
-        if (legacyID != null) {
-            return LEGACY_MODELS.get(legacyID);
-        }
-        return MODELS.get(key);
-    }
-
     public static synchronized void load(IResourceManager resourceManager) {
-        REFERENCES_TO_UPDATE.clear();
         LEGACY_MODELS.clear();
         MODELS.clear();
         WEIGHTED_MODELS.clear();
 
         ModelCategory.clear();
-
-        LARGE_CORRIDOR_START = loadModel("models/dungeon/corridor/large_corridor_start.nbt", resourceManager).setId(28);
-        LARGE_CORRIDOR_STRAIGHT = loadModel("models/dungeon/corridor/large_corridor_straight.nbt", resourceManager).setId(29);
-        LARGE_CORRIDOR_TURN = loadModel("models/dungeon/corridor/large_corridor_turn.nbt", resourceManager).setId(30);
-        LARGE_CORRIDOR_OPEN = loadModel("models/dungeon/corridor/large_corridor_open.nbt", resourceManager).setId(31);
 
         OLD_LOOT_ROOM = loadModel("models/dungeon/old_loot_room.nbt", resourceManager).setId(35);
 
@@ -96,10 +74,12 @@ public class DungeonModels {
 
         // Models with metadata
         FOOD_SIDE_ROOM = load("models/dungeon/room/", "food_side_room", resourceManager);
-        ENTRANCE = load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
+        DEFAULT_TOWER = load("models/dungeon/entrance/", "roguelike_tower", resourceManager);
         LOOT_ROOM = load("models/dungeon/", "loot_room", resourceManager);
         SECRET_ROOM = load("models/dungeon/room/", "secret_room", resourceManager);
         STARTER_ROOM = load("models/dungeon/room/", "starter_room", resourceManager);
+
+        load("models/dungeon/entrance/", "roguelike_house", resourceManager);
 
         load("models/dungeon/room/", "tnt_trap_side_room", resourceManager);
 
@@ -173,8 +153,6 @@ public class DungeonModels {
                 .forEach((resource) -> load(resource, resourceManager));
 
         // -End of Model loading- //
-
-        REFERENCES_TO_UPDATE.forEach(MultipartModelData.Instance::updateReference);
 
         HashMap<Integer, DungeonModel[]> tempMap = new HashMap<>();
 
@@ -290,7 +268,7 @@ public class DungeonModels {
             DungeonModel model = ModelHandler.getModelFromNBT(nbt);
 
             String key = path.substring(15, path.indexOf(".nbt"));
-            model.key = key;
+            model.setKey(key);
             MODELS.put(key, model);
             DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 
@@ -312,7 +290,7 @@ public class DungeonModels {
 
             String path = resource.getPath();
             String key = path.substring(15, path.indexOf(".nbt"));
-            model.key = key;
+            model.setKey(key);
             MODELS.put(key, model);
             DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 

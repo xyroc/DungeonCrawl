@@ -41,10 +41,7 @@ public class RandomItem extends LootFunction {
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        return RandomItems.generate(context.getWorld(), context.getRandom(),
-                Theme.BIOME_TO_THEME_MAP.getOrDefault(
-                        context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(),
-                        0), lootLevel);
+        return RandomItems.generate(context.getWorld(), context.getRandom(), lootLevel);
     }
 
     public static class Serializer extends LootFunction.Serializer<RandomItem> {

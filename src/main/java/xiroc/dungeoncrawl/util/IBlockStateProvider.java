@@ -19,9 +19,10 @@
 package xiroc.dungeoncrawl.util;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
 
 public interface IBlockStateProvider {
 
-    BlockState get();
+    BlockState get(BlockPos pos);
 
 }

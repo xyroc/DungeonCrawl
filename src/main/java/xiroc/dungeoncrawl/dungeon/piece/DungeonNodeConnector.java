@@ -29,10 +29,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
-import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
 import java.util.Random;
@@ -50,21 +47,19 @@ public class DungeonNodeConnector extends DungeonPiece {
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                           ChunkPos chunkPosIn) {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
         BlockPos pos = new BlockPos(x, y + model.getOffset(rotation).getY(), z);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, rotation, false);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 
@@ -75,11 +70,10 @@ public class DungeonNodeConnector extends DungeonPiece {
 
     @Override
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.modelKey = ModelCategory.get(ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand).key;
+        this.model = ModelCategory.get(ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand);
     }
 
     public void adjustPositionAndBounds() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
             return;
         }
@@ -99,7 +93,6 @@ public class DungeonNodeConnector extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }

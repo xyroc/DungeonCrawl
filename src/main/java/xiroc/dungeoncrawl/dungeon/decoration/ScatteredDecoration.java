@@ -18,7 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -32,10 +31,6 @@ public class ScatteredDecoration implements IDungeonDecoration {
 
     private final IBlockStateProvider blockStateProvider;
     private final float chance;
-
-    public ScatteredDecoration(BlockState state, float chance) {
-        this(() -> state, chance);
-    }
 
     public ScatteredDecoration(IBlockStateProvider blockStateProvider, float chance) {
         this.blockStateProvider = blockStateProvider;
@@ -65,7 +60,7 @@ public class ScatteredDecoration implements IDungeonDecoration {
                         boolean _up = worldGenBounds.isVecInside(up) && structureBounds.isVecInside(up) && world.getBlockState(up).isSolid();
 
                         if (_north || _east || _south || _west || _up) {
-                            world.setBlockState(currentPos, blockStateProvider.get(), 2);
+                            world.setBlockState(currentPos, blockStateProvider.get(currentPos), 2);
                         }
 
                     }

@@ -52,7 +52,7 @@
         {
           "type": "item",
           "name": "minecraft:arrow",
-          "weight": 4,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -177,34 +177,6 @@
         },
         {
           "type": "item",
-          "name": "minecraft:brown_mushroom",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 1,
-                "max": 4
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:red_mushroom",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 1,
-                "max": 4
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
           "name": "minecraft:lapis_lazuli",
           "weight": 4,
           "functions": [
@@ -279,48 +251,6 @@
               "function": "set_count",
               "count": {
                 "min": 4,
-                "max": 8
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:feather",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 3,
-                "max": 7
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:gold_nugget",
-          "weight": 4,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 6,
-                "max": 9
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:iron_nugget",
-          "weight": 4,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 5,
                 "max": 8
               }
             }
@@ -420,34 +350,6 @@
               "count": {
                 "min": 1,
                 "max": 3
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:dead_bush",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 2,
-                "max": 4
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:egg",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 3,
-                "max": 7
               }
             }
           ]

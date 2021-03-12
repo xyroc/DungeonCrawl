@@ -26,6 +26,7 @@ import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure.Type;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 import java.util.Random;
@@ -38,21 +39,10 @@ public class Plants {
                 Blocks.BEETROOTS, Blocks.MELON_STEM, Blocks.PUMPKIN_STEM, Blocks.CAVE_AIR};
 
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
-                               int lootLevel) {
+        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType,
+                               Theme theme, Theme.SubTheme subTheme, int lootLevel) {
 
             BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
-            if (theme == 1) {
-                state = Blocks.SOUL_SAND.getDefaultState();
-                world.setBlockState(pos, state, 3);
-
-                BlockState netherWart = Blocks.NETHER_WART.getDefaultState();
-                if (netherWart.has(BlockStateProperties.AGE_0_3))
-                    netherWart = netherWart.with(BlockStateProperties.AGE_0_3, rand.nextInt(3));
-                world.setBlockState(cropPos, netherWart, 3);
-
-                return;
-            }
             state = state.with(BlockStateProperties.MOISTURE_0_7, 7);
             world.setBlockState(pos, state, 3);
             BlockState crop = CROPS[rand.nextInt(CROPS.length)].getDefaultState();
@@ -73,8 +63,8 @@ public class Plants {
                 Blocks.POTTED_WHITE_TULIP};
 
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
-                               int lootLevel) {
+        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType,
+                               Theme theme, Theme.SubTheme subTheme, int lootLevel) {
             world.setBlockState(pos, POTTED_FLOWERS[rand.nextInt(POTTED_FLOWERS.length)].getDefaultState(), 3);
         }
 
@@ -85,7 +75,8 @@ public class Plants {
         public static final Block[] LARGE_FLOWERS = new Block[]{Blocks.LILAC, Blocks.ROSE_BUSH, Blocks.LARGE_FERN, Blocks.PEONY};
 
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme, int lootLevel) {
+        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType,
+                               Theme theme, Theme.SubTheme subTheme, int lootLevel) {
             world.setBlockState(pos, state, 2);
             BlockState flower = LARGE_FLOWERS[rand.nextInt(LARGE_FLOWERS.length)].getDefaultState();
             world.setBlockState(pos.up(), DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);

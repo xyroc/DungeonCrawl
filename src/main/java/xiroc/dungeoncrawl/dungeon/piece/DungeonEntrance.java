@@ -56,56 +56,49 @@ public class DungeonEntrance extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (ModelCategory.ENTRANCE.members.isEmpty()) {
             DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the RLD default entrance.");
-            this.modelID = DungeonModels.ENTRANCE.id;
+            this.model = DungeonModels.DEFAULT_TOWER;
         } else {
-            this.modelID = ModelCategory.ENTRANCE.members.get(rand.nextInt(ModelCategory.ENTRANCE.members.size())).id;
+            this.model = ModelCategory.ENTRANCE.members.get(rand.nextInt(ModelCategory.ENTRANCE.members.size()));
         }
     }
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                           ChunkPos p_74875_4_) {
-        int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model for {}", this);
+            return true;
+        }
 
-        Theme buildTheme = Theme.get(theme);
-        SubTheme sub = Theme.getSub(subTheme);
+        int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
         int cursorHeight = y;
 
         while (cursorHeight < height) {
             if (height - cursorHeight <= 4)
                 break;
             super.build(DungeonModels.STAIRCASE, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), buildTheme, sub, Treasure.Type.DEFAULT, stage, true);
+                    new BlockPos(x + 2, cursorHeight, z + 2), theme, subTheme, Treasure.Type.DEFAULT, stage, true);
             cursorHeight += 8;
         }
 
-        DungeonModel entrance = DungeonModels.getModel(modelKey, modelID);
-        if (entrance == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
-            return true;
-        }
-        Vec3i offset = entrance.getOffset(rotation);
-
+        Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, cursorHeight, z).add(offset);
 
         // Creating a custom bounding box because the cursor height was unknown during #setupBoundingBox.
-        this.boundingBox = new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + entrance.width - 1, pos.getY() + entrance.height - 1, pos.getZ() + entrance.length - 1);
+        this.boundingBox = new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + model.width - 1, pos.getY() + model.height - 1, pos.getZ() + model.length - 1);
 
-        buildFull(entrance, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                Theme.getSub(subTheme), entrance.getTreasureType(), stage, true);
+        buildFull(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, true);
 
-        if (entrance.metadata != null && entrance.metadata.feature != null && featurePositions != null) {
-            entrance.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn,
-                boundingBox, entrance);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
@@ -134,8 +127,8 @@ public class DungeonEntrance extends DungeonPiece {
             for (int y = 0; y < model.height; y++) {
                 for (int z = zStart; z < length; z++) {
                     if (model.model[x][y][z] == null) {
-                        setBlockState(CAVE_AIR, world, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
-                                this.theme, lootLevel, DungeonModelBlockType.SOLID);
+                        setBlockState(CAVE_AIR, world, treasureType, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z),
+                                theme, subTheme, lootLevel, DungeonModelBlockType.SOLID);
                     } else {
                         BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                         Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
@@ -143,8 +136,8 @@ public class DungeonEntrance extends DungeonPiece {
                                 WeightedRandomBlock.RANDOM, variation, lootLevel);
                         if (result == null)
                             continue;
-                        setBlockState(result.getA(), world, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
-                                this.theme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
+                        setBlockState(result.getA(), world, treasureType, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z),
+                                theme, subTheme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                         if (result.getB()) {
                             world.getChunk(position).markBlockForPostprocessing(position);
@@ -170,14 +163,13 @@ public class DungeonEntrance extends DungeonPiece {
                     BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (boundsIn.isVecInside(position)) {
                         if (model.model[x][y][z] == null) {
-                            setBlockState(CAVE_AIR, world, treasureType, position,
-                                    this.theme, lootLevel, DungeonModelBlockType.SOLID);
+                            setBlockState(CAVE_AIR, world, treasureType, position, theme, subTheme, lootLevel, DungeonModelBlockType.SOLID);
                         } else {
                             Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
                                     Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
                             if (result == null)
                                 continue;
-                            setBlockState(result.getA(), world, treasureType, position, this.theme, lootLevel,
+                            setBlockState(result.getA(), world, treasureType, position, theme, subTheme, lootLevel,
                                     fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
 
                             if (result.getB()) {

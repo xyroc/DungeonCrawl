@@ -24,11 +24,9 @@ import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
-import xiroc.dungeoncrawl.theme.Theme;
 
 public class SpecialItem extends LootFunction {
 
@@ -41,10 +39,7 @@ public class SpecialItem extends LootFunction {
 
     @Override
     protected ItemStack doApply(ItemStack stack, LootContext context) {
-        return RandomItems.generateSpecialItem(context.getWorld(), context.getRandom(),
-                Theme.BIOME_TO_THEME_MAP.getOrDefault(
-                        context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName().toString(),
-                        0), lootLevel);
+        return RandomItems.generateSpecialItem(context.getWorld(), context.getRandom(), lootLevel);
     }
 
     public static class Serializer extends LootFunction.Serializer<SpecialItem> {

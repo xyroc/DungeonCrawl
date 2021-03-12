@@ -66,7 +66,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (lootRoom) {
             node = Node.ALL;
-            this.modelKey = DungeonModels.LOOT_ROOM.key;
+            this.model = DungeonModels.LOOT_ROOM;
             return;
         }
 
@@ -102,7 +102,7 @@ public class DungeonNodeRoom extends DungeonPiece {
                 ? ModelCategory.get(ModelCategory.LARGE_NODE, layerCategory, base)
                 : ModelCategory.get(ModelCategory.NORMAL_NODE, layerCategory, base);
 
-        this.modelKey = provider.roll(rand).key;
+        this.model = provider.roll(rand);
     }
 
     @Override
@@ -115,10 +115,10 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public void customSetup(Random rand) {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
             return;
-        }        if (model.metadata != null) {
+        }
+        if (model.metadata != null) {
             if (model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
                 DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata, x, y, z);
             }
@@ -133,17 +133,16 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
-                                  ChunkPos chunkPosIn) {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
+                          ChunkPos chunkPosIn) {
         if (model == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
             return true;
         }
 
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).add(offset);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, rotation, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
@@ -151,7 +150,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
@@ -160,7 +159,6 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
@@ -172,8 +170,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean canConnect(Direction side) {
-        return node.canConnect(side);
+    public boolean canConnect(Direction side, int x, int z) {
+        return x == this.gridX || z == this.gridZ;
     }
 
     @Override

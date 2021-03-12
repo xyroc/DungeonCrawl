@@ -1,0 +1,41 @@
+{
+  "default": [{"key": "oak"}],
+  "mapping": {
+    "minecraft:jungle": [{"key": "jungle"}],
+    "minecraft:jungle_edge": [{"key": "jungle"}],
+    "minecraft:jungle_hills": [{"key": "jungle"}],
+    "minecraft:modified_jungle": [{"key": "jungle"}],
+    "minecraft:modified_jungle_edge": [{"key": "jungle"}],
+    "minecraft:bamboo_jungle": [{"key": "jungle"}],
+    "minecraft:bamboo_jungle_hills": [{"key": "jungle"}],
+
+    "minecraft:birch_forest": [{"key": "birch"}],
+    "minecraft:birch_forest_hills": [{"key": "birch"}],
+    "minecraft:tall_birch_forest": [{"key": "birch"}],
+    "minecraft:flower_forest": [{"key": "birch"}],
+
+    "minecraft:savanna": [{"key": "acacia"}],
+    "minecraft:savanna_plateau": [{"key": "acacia"}],
+    "minecraft:shattered_savanna": [{"key": "acacia"}],
+    "minecraft:shattered_savanna_plateau": [{"key": "acacia"}],
+
+    "minecraft:dark_forest": [{"key": "dark_oak"}],
+    "minecraft:dark_forest_hills": [{"key": "dark_oak"}],
+
+    "minecraft:taiga": [{"key": "spruce"}],
+    "minecraft:taiga_hills": [{"key": "spruce"}],
+    "minecraft:snowy_tundra": [{"key": "spruce"}],
+    "minecraft:snowy_taiga": [{"key": "spruce"}],
+    "minecraft:snowy_taiga_hills": [{"key": "spruce"}],
+    "minecraft:giant_tree_taiga": [{"key": "spruce"}],
+    "minecraft:giant_tree_taiga_hills": [{"key": "spruce"}],
+    "minecraft:taiga_mountains": [{"key": "spruce"}],
+    "minecraft:snowy_taiga_mountains": [{"key": "spruce"}],
+    "minecraft:giant_spruce_taiga": [{"key": "spruce"}],
+    "minecraft:giant_spruce_taiga_hills": [{"key": "spruce"}],
+
+    "minecraft:desert": [{"key": "desert"}],
+    "minecraft:desert_hills": [{"key": "desert"}],
+    "minecraft:desert_lakes": [{"key": "desert"}]
+  }
+}

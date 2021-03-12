@@ -77,8 +77,8 @@ public class ModelBlockDefinition {
         DEFAULT.put(Blocks.COBBLESTONE_SLAB, DungeonModelBlockType.SLAB);
 
         DEFAULT.put(Blocks.SPAWNER, DungeonModelBlockType.SPAWNER);
-        DEFAULT.put(Blocks.CHEST, DungeonModelBlockType.CHEST);
-        DEFAULT.put(Blocks.BARREL, DungeonModelBlockType.BARREL);
+//        DEFAULT.put(Blocks.CHEST, DungeonModelBlockType.CHEST);
+//        DEFAULT.put(Blocks.BARREL, DungeonModelBlockType.BARREL);
         DEFAULT.put(Blocks.SKELETON_SKULL, DungeonModelBlockType.SKULL);
 
         DEFAULT_DEFINITION = new ModelBlockDefinition(DEFAULT);

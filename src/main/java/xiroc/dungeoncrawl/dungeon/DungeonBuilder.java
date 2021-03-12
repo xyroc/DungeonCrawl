@@ -35,7 +35,6 @@ import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -59,7 +58,8 @@ public class DungeonBuilder {
     public ChunkGenerator<?> chunkGen;
     public Biome startBiome;
 
-    public int theme, subTheme, lowerTheme, lowerSubTheme, bottomTheme, bottomSubTheme;
+    public Theme theme, lowerTheme, bottomTheme;
+    public Theme.SubTheme subTheme, lowerSubTheme, bottomSubTheme;
 
     public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
         this.chunkGen = world;
@@ -68,7 +68,7 @@ public class DungeonBuilder {
         this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getSeaLevel() - 15,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-        int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
+        int layerCount = DEFAULT_GENERATOR.layerCount(rand, startPos.getY());
 
         this.layers = new DungeonLayer[layerCount];
         this.maps = new DungeonLayerMap[layerCount];
@@ -91,7 +91,7 @@ public class DungeonBuilder {
         this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, 100 - 16,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-        int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
+        int layerCount = DEFAULT_GENERATOR.layerCount(rand, startPos.getY());
 
         this.chunkGen = world.getChunkProvider().generator;
 
@@ -128,7 +128,6 @@ public class DungeonBuilder {
         for (int i = 0; i < layers.length; i++) {
             DEFAULT_GENERATOR.initializeLayer(this, rand, i);
             DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
-            DungeonCrawl.LOGGER.debug("Finished generation of layer {}", i + 1);
         }
 
         for (int i = 0; i < layers.length; i++) {
@@ -146,26 +145,26 @@ public class DungeonBuilder {
 
         ResourceLocation registryName = startBiome.getRegistryName();
 
-        this.theme = registryName != null ? Theme.getTheme(registryName.toString(), rand) : Theme.randomizeTheme(0, rand);
+        this.theme = registryName != null ? Theme.randomTheme(registryName.toString(), rand) : Theme.getDefaultTheme();
 
-        if (Theme.get(theme).subTheme != null) {
-            this.subTheme = Theme.randomizeSubTheme(Theme.get(theme).subTheme, rand);
+        if (theme.subTheme != null) {
+            this.subTheme = theme.subTheme.roll(rand);
         } else {
-            this.subTheme = registryName != null ? Theme.getSubTheme(registryName.toString(), rand) : Theme.randomizeSubTheme(0, rand);
+            this.subTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
         }
 
-        this.lowerTheme = Theme.randomizeTheme(80, rand);
+        this.lowerTheme = Theme.getTheme("catacombs/default");
 
-        if (Theme.get(lowerTheme).subTheme != null) {
-            this.lowerSubTheme = Theme.randomizeSubTheme(Theme.get(lowerTheme).subTheme, rand);
+        if (lowerTheme.subTheme != null) {
+            this.lowerSubTheme = lowerTheme.subTheme.roll(rand);
         } else {
             this.lowerSubTheme = this.subTheme;
         }
 
-        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.randomizeTheme(81, rand) : Theme.randomizeTheme(1, rand);
+        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("mossy_obsidian") : Theme.getTheme("nether");
 
-        if (Theme.get(bottomTheme).subTheme != null) {
-            this.bottomSubTheme = Theme.randomizeSubTheme(Theme.get(bottomTheme).subTheme, rand);
+        if (bottomTheme.subTheme != null) {
+            this.bottomSubTheme = bottomTheme.subTheme.roll(rand);
         } else {
             this.bottomSubTheme = this.subTheme;
         }
@@ -204,6 +203,7 @@ public class DungeonBuilder {
             for (int x = 0; x < layer.width; x++)
                 for (int z = 0; z < layer.length; z++) {
                     if (layer.grid[x][z] != null && !layer.grid[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
+
                         if (i == layers.length - 1) {
                             layer.grid[x][z].reference.theme = bottomTheme;
                             layer.grid[x][z].reference.subTheme = bottomSubTheme;
@@ -273,7 +273,7 @@ public class DungeonBuilder {
      * @return true if the piece can be placed, false if not
      */
     public boolean canPlacePieceWithHeight(int layer, int x, int z, int width,
-                                                  int length, int layerHeight, boolean ignoreStartPosition) {
+                                           int length, int layerHeight, boolean ignoreStartPosition) {
         /*
          * x + width - 1 > Dungeon.SIZE -1 <=> x + width > Dungeon.SIZE
          * (same for z of course)

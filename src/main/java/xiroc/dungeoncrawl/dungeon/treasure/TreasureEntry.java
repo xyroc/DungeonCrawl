@@ -42,7 +42,7 @@ public class TreasureEntry {
 
 	public LootFunction[] functions;
 
-	private ItemProcessor<ServerWorld, Random, Integer, Integer> itemProcessor;
+	private ItemProcessor<ServerWorld, Random, Integer> itemProcessor;
 
 	public TreasureEntry(String resourceName, int weight) {
 		this(resourceName, 1, 1, weight, null, null);
@@ -67,7 +67,7 @@ public class TreasureEntry {
 	}
 
 	public TreasureEntry(String resourceName, int min, int max, int weight, CompoundNBT nbt,
-			ItemEnchantment[] enchantments, ItemProcessor<ServerWorld, Random, Integer, Integer> itemProcessor) {
+			ItemEnchantment[] enchantments, ItemProcessor<ServerWorld, Random, Integer> itemProcessor) {
 		this(resourceName, min, max, weight, nbt, enchantments);
 		this.itemProcessor = itemProcessor;
 	}
@@ -82,7 +82,7 @@ public class TreasureEntry {
 				this.itemProcessor);
 	}
 
-	public TreasureEntry withProcessor(ItemProcessor<ServerWorld, Random, Integer, Integer> itemProcessor) {
+	public TreasureEntry withProcessor(ItemProcessor<ServerWorld, Random, Integer> itemProcessor) {
 		return new TreasureEntry(this.resourceName, this.min, this.max, this.weight, this.nbt, this.enchantments,
 				itemProcessor);
 	}
@@ -97,9 +97,9 @@ public class TreasureEntry {
 		return this;
 	}
 
-	public ItemStack generate(ServerWorld world, Random rand, int theme, int lootLevel) {
+	public ItemStack generate(ServerWorld world, Random rand, int lootLevel) {
 		if (itemProcessor != null)
-			return itemProcessor.generate(world, rand, theme, lootLevel);
+			return itemProcessor.generate(world, rand, lootLevel);
 		IItemProvider itemIn = ForgeRegistries.ITEMS.getValue(item), blockIn = ForgeRegistries.BLOCKS.getValue(item);
 		ItemStack stack = new ItemStack(itemIn == null ? blockIn : itemIn);
 		stack.setTag(nbt);

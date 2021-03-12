@@ -16,9 +16,10 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon.piece;
+package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
  * Used for objects that contain data for the dungeon layout generation process.
  * The point of this is to properly separate data that is only used during the
  *  layout generation (especially dummy placeholders for node rooms) from
- *  data that actually needs to be stored in the pieces themselves (eg. the piece's rotation).
+ *  data that actually needs to be stored in the pieces themselves.
  */
 
 public class PlaceHolder {
@@ -56,7 +57,7 @@ public class PlaceHolder {
 
     public enum Flag {
 
-        PLACEHOLDER, FIXED_POSITION, FIXED_ROTATION, FIXED_MODEL;
+        PLACEHOLDER, FIXED_POSITION, FIXED_ROTATION, FIXED_MODEL
 
     }
 

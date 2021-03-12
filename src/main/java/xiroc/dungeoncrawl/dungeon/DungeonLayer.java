@@ -27,12 +27,12 @@ import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -99,242 +99,26 @@ public class DungeonLayer {
         return Math.abs(a.x - b.x) + Math.abs(a.z - b.z);
     }
 
-    public void buildConnection(Position2D start, Position2D end, Random rand) {
-        int startX = start.x;
-        int startZ = start.z;
-        int endX = end.x;
-        int endZ = end.z;
-
-        if (startX == endX && startZ == endZ)
-            return;
-
-        if (startX > endX) {
-            openSideIfExistent(start, Direction.WEST);
-            for (int x = startX; x > (startZ == endZ ? endX + 1 : endX); x--) {
-                final Direction side = (x - 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.WEST;
-                if (this.grid[x - 1][startZ] != null) {
-                    this.grid[x - 1][startZ].reference.openSide(
-                            side);
-                    this.grid[x - 1][startZ].reference.openSide(Direction.EAST);
-                    this.rotatePiece(this.grid[x - 1][startZ], rand);
-                    continue;
-                }
-                DungeonPiece corridor = new DungeonCorridor();
-                corridor.setGridPosition(x - 1, startZ);
-                corridor.setRotation(
-                        (x - 1) == endX
-                                ? Orientation.getRotationFromCW90DoubleFacing(
-                                startZ > endZ ? Direction.NORTH : Direction.SOUTH, Direction.EAST)
-                                : Orientation.getRotationFromFacing(Direction.WEST));
-                corridor.openSide(side);
-                corridor.openSide(Direction.EAST);
-                this.grid[x - 1][startZ] = new PlaceHolder(corridor);
-            }
-            if (startZ > endZ) {
-                openSideIfExistent(end, Direction.SOUTH);
-                for (int z = startZ; z > endZ + 1; z--) {
-                    if (this.grid[endX][z - 1] != null) {
-                        this.grid[endX][z - 1].reference.openSide(Direction.SOUTH);
-                        this.grid[endX][z - 1].reference
-                                .openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH);
-                        this.rotatePiece(this.grid[endX][z - 1], rand);
-                        continue;
+    public boolean canPlaceNode(Position2D center) {
+        for (int x = -1; x < 2; x++) {
+            for (int z = -1; z < 2; z++) {
+                // If we are at the center of the node, require the position of the center to be within the grid bounds and require the position to be free in the grid.
+                // For the eight other positions, require the position to be free in the grid if it is within the grid bounds. Positions outside of the grid bounds are always valid.
+                Position2D currentPos = new Position2D(center.x + x, center.z + z);
+                if (x == 0 && z == 0) {
+                    if (!currentPos.isValid(width, length)) {
+                        return false;
+                    } else if (!isTileFree(currentPos)) {
+                        return false;
                     }
-                    DungeonPiece corridor = new DungeonCorridor();
-                    corridor.setGridPosition(endX, z - 1);
-                    corridor.setRotation((z - 1) == endZ
-                            ? Orientation.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-                            : Orientation.getRotationFromFacing(Direction.NORTH));
-                    corridor.openSide(Direction.SOUTH);
-                    corridor.openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH);
-                    this.grid[endX][z - 1] = new PlaceHolder(corridor);
-                }
-            } else if (startZ < endZ) {
-                openSideIfExistent(end, Direction.NORTH);
-                for (int z = startZ; z < endZ - 1; z++) {
-                    if (this.grid[endX][z + 1] != null) {
-                        this.grid[endX][z + 1].reference
-                                .openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
-                        this.grid[endX][z + 1].reference.openSide(Direction.NORTH);
-                        this.rotatePiece(this.grid[endX][z + 1], rand);
-                        continue;
+                } else {
+                    if (currentPos.isValid(width, length) && !isTileFree(currentPos)) {
+                        return false;
                     }
-                    DungeonPiece corridor = new DungeonCorridor();
-                    corridor.setGridPosition(endX, z + 1);
-                    corridor.setRotation((z + 1) == endZ
-                            ? Orientation.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-                            : Orientation.getRotationFromFacing(Direction.SOUTH));
-                    corridor.openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
-                    corridor.openSide(Direction.NORTH);
-                    this.grid[endX][z + 1] = new PlaceHolder(corridor);
-                }
-            } else {
-                openSideIfExistent(end, Direction.EAST);
-            }
-        } else if (startX < endX) {
-            openSideIfExistent(start, Direction.EAST);
-            for (int x = startX; x < (startZ == endZ ? endX - 1 : endX); x++) {
-                final Direction side = (x + 1) == endX ? startZ < endZ ? Direction.SOUTH : Direction.NORTH : Direction.EAST;
-                if (this.grid[x + 1][startZ] != null) {
-                    this.grid[x + 1][startZ].reference.openSide(
-                            side);
-                    this.grid[x + 1][startZ].reference.openSide(Direction.WEST);
-                    this.rotatePiece(this.grid[x + 1][startZ], rand);
-                    continue;
-                }
-                DungeonPiece corridor = new DungeonCorridor();
-                corridor.setGridPosition(x + 1, startZ);
-                corridor.setRotation(
-                        (x + 1) == endX
-                                ? Orientation.getRotationFromCW90DoubleFacing(
-                                startZ > endZ ? Direction.NORTH : Direction.SOUTH, Direction.WEST)
-                                : Orientation.getRotationFromFacing(Direction.EAST));
-                corridor.openSide(side);
-                corridor.openSide(Direction.WEST);
-                this.grid[x + 1][startZ] = new PlaceHolder(corridor);
-            }
-            if (startZ > endZ) {
-                openSideIfExistent(end, Direction.SOUTH);
-                for (int z = startZ; z > endZ + 1; z--) {
-                    if (this.grid[endX][z - 1] != null) {
-                        this.grid[endX][z - 1].reference.openSide(Direction.SOUTH);
-                        this.grid[endX][z - 1].reference
-                                .openSide((z - 1) == endZ ? Direction.EAST : Direction.NORTH);
-                        this.rotatePiece(this.grid[endX][z - 1], rand);
-                        continue;
-                    }
-                    DungeonPiece corridor = new DungeonCorridor();
-                    corridor.setGridPosition(endX, z - 1);
-                    corridor.setRotation((z - 1) == endZ
-                            ? Orientation.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-                            : Orientation.getRotationFromFacing(Direction.NORTH));
-                    corridor.openSide(Direction.SOUTH);
-                    corridor.openSide((z - 1) == endZ ? Direction.WEST : Direction.NORTH);
-                    this.grid[endX][z - 1] = new PlaceHolder(corridor);
-                }
-            } else if (startZ < endZ) {
-                openSideIfExistent(end, Direction.NORTH);
-                for (int z = startZ; z < endZ - 1; z++) {
-                    if (this.grid[endX][z + 1] != null) {
-                        this.grid[endX][z + 1].reference
-                                .openSide((z + 1) == endZ ? Direction.EAST : Direction.SOUTH);
-                        this.grid[endX][z + 1].reference.openSide(Direction.NORTH);
-                        this.rotatePiece(this.grid[endX][z + 1], rand);
-                        continue;
-                    }
-                    DungeonPiece corridor = new DungeonCorridor();
-                    corridor.setGridPosition(endX, z + 1);
-                    corridor.setRotation((z + 1) == endZ
-                            ? Orientation.getRotationFromCW90DoubleFacing(Direction.NORTH, Direction.WEST)
-                            : Orientation.getRotationFromFacing(Direction.SOUTH));
-                    corridor.openSide((z + 1) == endZ ? Direction.WEST : Direction.SOUTH);
-                    corridor.openSide(Direction.NORTH);
-                    this.grid[endX][z + 1] = new PlaceHolder(corridor);
-                }
-            } else {
-                openSideIfExistent(end, Direction.WEST);
-            }
-        } else {
-            if (startZ > endZ) {
-                openSideIfExistent(start, Direction.NORTH);
-                openSideIfExistent(end, Direction.SOUTH);
-                for (int z = startZ; z > endZ + 1; z--) {
-                    if (this.grid[endX][z - 1] != null) {
-                        this.grid[endX][z - 1].reference.openSide(Direction.NORTH);
-                        this.grid[endX][z - 1].reference.openSide(Direction.SOUTH);
-                        this.rotatePiece(this.grid[endX][z - 1], rand);
-                        continue;
-                    }
-                    DungeonPiece corridor = new DungeonCorridor();
-                    corridor.setGridPosition(endX, z - 1);
-                    corridor.setRotation(Orientation.getRotationFromFacing(Direction.NORTH));
-                    corridor.openSide(Direction.SOUTH);
-                    corridor.openSide(Direction.NORTH);
-                    this.grid[endX][z - 1] = new PlaceHolder(corridor);
-                }
-            } else {
-                openSideIfExistent(start, Direction.SOUTH);
-                openSideIfExistent(end, Direction.NORTH);
-                for (int z = startZ; z < endZ - 1; z++) {
-                    if (this.grid[endX][z + 1] != null) {
-                        this.grid[endX][z + 1].reference.openSide(Direction.SOUTH);
-                        this.grid[endX][z + 1].reference.openSide(Direction.NORTH);
-                        this.rotatePiece(this.grid[endX][z + 1], rand);
-                        continue;
-                    }
-                    this.grid[endX][endZ].reference.openSide(Direction.NORTH);
-                    DungeonPiece corridor = new DungeonCorridor();
-                    corridor.setGridPosition(endX, z + 1);
-                    corridor.setRotation(Orientation.getRotationFromFacing(Direction.SOUTH));
-                    corridor.openSide(Direction.SOUTH);
-                    corridor.openSide(Direction.NORTH);
-                    this.grid[endX][z + 1] = new PlaceHolder(corridor);
                 }
             }
         }
-    }
-
-    /**
-     * Convenience method to build a straight connection from the start position to the end position.
-     * No pieces will be placed at the start and end positions themselves, only in the space between them.
-     * The start position and the end position need to have either the same x-coordinate or the same
-     * z-coordinate. If this is not the case, an IllegalArgumentException will be thrown.
-     *
-     * @param start the start position
-     * @param end   the end position
-     */
-    public void buildStraightConnection(Position2D start, Position2D end) {
-        if (start.x != end.x || start.z != end.z) {
-            if (start.x == end.x) {
-                if (start.z > end.z) {
-                    for (int z = end.z; z < start.z - 1; z++) {
-                        DungeonCorridor corridor = new DungeonCorridor();
-                        corridor.setGridPosition(start.x, z);
-                        // The corridor goes north from the start position (negative z)
-                        corridor.openSide(Direction.NORTH);
-                        corridor.openSide(Direction.SOUTH);
-                        corridor.setRotation(Orientation.getRotationFromFacing(Direction.NORTH));
-                        this.grid[corridor.gridX][corridor.gridZ] = new PlaceHolder(corridor);
-                    }
-                } else {
-                    for (int z = start.z; z < end.z - 1; z++) {
-                        DungeonCorridor corridor = new DungeonCorridor();
-                        corridor.setGridPosition(start.x, z);
-                        // The corridor goes south from the start position (positive z)
-                        corridor.openSide(Direction.SOUTH);
-                        corridor.openSide(Direction.NORTH);
-                        corridor.setRotation(Orientation.getRotationFromFacing(Direction.SOUTH));
-                        this.grid[corridor.gridX][corridor.gridZ] = new PlaceHolder(corridor);
-                    }
-                }
-            } else if (start.z == end.z) {
-                if (start.x > end.x) {
-                    for (int x = end.x; x < start.x - 1; x++) {
-                        DungeonCorridor corridor = new DungeonCorridor();
-                        corridor.setGridPosition(x, start.z);
-                        // The corridor goes west from the start position (negative x)
-                        corridor.openSide(Direction.WEST);
-                        corridor.openSide(Direction.EAST);
-                        corridor.setRotation(Orientation.getRotationFromFacing(Direction.WEST));
-                        this.grid[corridor.gridX][corridor.gridZ] = new PlaceHolder(corridor);
-                    }
-                } else {
-                    for (int x = start.x; x < end.x - 1; x++) {
-                        DungeonCorridor corridor = new DungeonCorridor();
-                        corridor.setGridPosition(x, start.z);
-                        // The corridor goes east from the start position (positive x)
-                        corridor.openSide(Direction.EAST);
-                        corridor.openSide(Direction.WEST);
-                        corridor.setRotation(Orientation.getRotationFromFacing(Direction.EAST));
-                        this.grid[corridor.gridX][corridor.gridZ] = new PlaceHolder(corridor);
-                    }
-                }
-            } else {
-                throw new IllegalArgumentException("The start and end positions of a straight connection must have either the same x-coordinate or the same z-coordinate");
-            }
-        } else {
-            throw new IllegalArgumentException("The start and end positions of a straight connection must not be the same.");
-        }
+        return true;
     }
 
     public Tuple<Position2D, Rotation> findStarterRoomData(Position2D start, Random rand) {
@@ -474,7 +258,7 @@ public class DungeonLayer {
                 Position2D other = getOther(x, z, direction);
                 grid[other.x][other.z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.PLACEHOLDER);
                 corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
-                corridor.modelID = DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE.id;
+                corridor.model = DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE;
                 grid[corridorPos.x][corridorPos.z].addFlag(PlaceHolder.Flag.FIXED_MODEL);
                 return true;
             }
@@ -503,7 +287,7 @@ public class DungeonLayer {
      * @param position the grid position of the piece
      * @param side     the side to open
      */
-    public void openSideIfExistent(Position2D position, Direction side) {
+    public void openSideIfPresent(Position2D position, Direction side) {
         if (position.isValid(width, length) && grid[position.x][position.z] != null) {
             grid[position.x][position.z].reference.openSide(side);
         }
@@ -520,6 +304,7 @@ public class DungeonLayer {
         return position.isValid(width, length) && grid[position.x][position.z] != null;
     }
 
+    @Nullable
     public DungeonPiece get(int x, int z) {
         return grid[x][z] == null ? null : grid[x][z].reference;
     }

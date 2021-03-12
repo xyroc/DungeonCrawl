@@ -30,11 +30,13 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Orientation;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 public interface DungeonModelFeature {
@@ -45,7 +47,7 @@ public interface DungeonModelFeature {
         for (DirectionalBlockPos position : positions) {
             if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
-                        position.position, rand, Treasure.Type.DEFAULT, theme, stage);
+                        position.position, rand, Treasure.Type.DEFAULT, theme, subTheme, stage);
             }
         }
     };
@@ -55,7 +57,7 @@ public interface DungeonModelFeature {
             if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, Blocks.TRAPPED_CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
                         Orientation.RANDOM_HORIZONTAL_FACING.roll(rand)),
-                        position.position, rand, Treasure.Type.DEFAULT, theme, stage);
+                        position.position, rand, Treasure.Type.DEFAULT, theme, subTheme, stage);
                 if (!world.isAirBlock(position.position.down(2))) {
                     world.setBlockState(position.position.down(2), Blocks.TNT.getDefaultState(), 2);
                 }
@@ -70,7 +72,7 @@ public interface DungeonModelFeature {
         for (DirectionalBlockPos position : positions) {
             if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER,
-                        position.position, rand, null, theme, stage);
+                        position.position, rand, null, theme, subTheme, stage);
             }
         }
     };
@@ -80,19 +82,19 @@ public interface DungeonModelFeature {
         for (DirectionalBlockPos position : positions) {
             if (bounds.isVecInside(position.position) && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
-                        position.position, rand, Treasure.Type.CATACOMB, theme, stage);
+                        position.position, rand, Treasure.Type.CATACOMB, theme, subTheme, stage);
             }
             if (Config.NO_SPAWNERS.get()) {
                 return;
             }
             BlockPos spawner = position.position.offset(position.direction);
             if (bounds.isVecInside(spawner) && world.getBlockState(spawner.down()).isSolid()) {
-                IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER, spawner, rand, null, theme, stage);
+                IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER, spawner, rand, null, theme, subTheme, stage);
             }
         }
     };
 
-    void build(IWorld world, Random rand, BlockPos pos, DirectionalBlockPos[] positions, MutableBoundingBox bounds, int theme, int subTheme, int stage);
+    void build(IWorld world, Random rand, BlockPos pos, DirectionalBlockPos[] positions, MutableBoundingBox bounds, Theme theme, Theme.SubTheme subTheme, int stage);
 
     /**
      * An improvised way to generate an array with a predetermined amount of random feature positions while iterating through
@@ -105,6 +107,7 @@ public interface DungeonModelFeature {
      * in the checkArray at the position of the final unique number gets increased by one and wrapped around the checkArray
      * size if necessary.
      */
+    // TODO: just use a list ;)
     static void setup(DungeonPiece piece, DungeonModel model, DungeonModel.FeaturePosition[] featurePositions, Rotation rotation, Random rand, Metadata metadata, int x, int y, int z) {
         piece.featurePositions = new DirectionalBlockPos[new RandomValueRange(metadata.min, Math.min(metadata.max, featurePositions.length))
                 .generateInt(rand)];
@@ -121,9 +124,6 @@ public interface DungeonModelFeature {
             checkArray[a] = (a + 1) % checkArray.length;
 
             piece.featurePositions[i] = featurePositions[a].directionalBlockPos(x, y, z, rotation, model);
-//            if (rotation != Rotation.NONE) {
-//                DungeonCrawl.LOGGER.debug(piece.featurePositions[i].toString());
-//            }
         }
     }
 
@@ -135,7 +135,7 @@ public interface DungeonModelFeature {
     }
 
     static DungeonModelFeature getFromName(String name) {
-        DungeonModelFeature feature = FEATURES.get(name.toLowerCase());
+        DungeonModelFeature feature = FEATURES.get(name.toLowerCase(Locale.ROOT));
         if (feature != null) {
             return feature;
         }

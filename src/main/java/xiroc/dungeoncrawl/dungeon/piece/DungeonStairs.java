@@ -34,7 +34,6 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
-import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
 import java.util.Random;
@@ -54,45 +53,42 @@ public class DungeonStairs extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         switch (stairType) {
             case 0:
-                this.modelKey = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2.key : DungeonModels.STAIRS_BOTTOM.key;
+                this.model = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2 : DungeonModels.STAIRS_BOTTOM;
                 return;
             case 1:
-                this.modelKey = DungeonModels.STAIRS_TOP.key;
+                this.model = DungeonModels.STAIRS_TOP;
         }
     }
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                           ChunkPos p_74875_4_) {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
         BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
         switch (stairType) {
             case 0: {
-                build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                        Theme.getSub(subTheme), model.getTreasureType(), stage, false);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, false);
                 ironBars(worldIn, structureBoundingBoxIn, model);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
                     model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
                 }
 
-                decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
+                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             case 1: {
-                build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                        Theme.getSub(subTheme), model.getTreasureType(), stage, false);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, false);
                 entrances(worldIn, structureBoundingBoxIn, model);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
                     model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
                 }
 
-                decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
+                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             default:
@@ -129,14 +125,13 @@ public class DungeonStairs extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
     }
 
     @Override
-    public boolean canConnect(Direction side) {
+    public boolean canConnect(Direction side, int x, int z) {
         return true;
     }
 

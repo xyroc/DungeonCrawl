@@ -39,16 +39,9 @@ public abstract class DungeonGenerator extends LayerGenerator {
     public abstract void initializeDungeon(DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand);
 
     /**
-     * @return whether the given layer contains a secret room or not.
-     */
-    public boolean doesLayerHaveSecretRoom(int layer) {
-        return false;
-    }
-
-    /**
      * @return the amount of layers the dungeon will have.
      */
-    public abstract int calculateLayerCount(Random rand, int height);
+    public abstract int layerCount(Random rand, int height);
 
     /**
      * @return the model category for the given layer

@@ -30,25 +30,25 @@ public class TreasureItem {
     public ResourceLocation item;
     public String resourceName;
 
-    private ItemProcessor<IWorld, Random, Integer, Integer> itemProcessor;
+    private ItemProcessor<IWorld, Random, Integer> itemProcessor;
 
     public TreasureItem(String resourceName) {
         this.resourceName = resourceName;
     }
 
-    public TreasureItem(String resourceName, ItemProcessor<IWorld, Random, Integer, Integer> itemProcessor) {
+    public TreasureItem(String resourceName, ItemProcessor<IWorld, Random, Integer> itemProcessor) {
         this.resourceName = resourceName;
         this.itemProcessor = itemProcessor;
     }
 
-    public TreasureItem setProcessor(ItemProcessor<IWorld, Random, Integer, Integer> itemProcessor) {
+    public TreasureItem setProcessor(ItemProcessor<IWorld, Random, Integer> itemProcessor) {
         this.itemProcessor = itemProcessor;
         return this;
     }
 
-    public ItemStack createItem(IWorld world, Random rand, int theme, int lootLevel) {
+    public ItemStack createItem(IWorld world, Random rand, int lootLevel) {
         if (itemProcessor != null)
-            return itemProcessor.generate(world, rand, theme, lootLevel);
+            return itemProcessor.generate(world, rand,lootLevel);
         return ItemStack.EMPTY;
     }
 

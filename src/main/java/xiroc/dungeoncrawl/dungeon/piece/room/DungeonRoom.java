@@ -47,24 +47,21 @@ public class DungeonRoom extends DungeonPiece {
 
     @Override
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.modelKey = ModelCategory.get(ModelCategory.ROOM, layerCategory).roll(rand).key;
+        this.model = ModelCategory.get(ModelCategory.ROOM, layerCategory).roll(rand);
     }
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                           ChunkPos p_74875_4_) {
-
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
 
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).add(offset);
 
-        build(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme),
-                model.getTreasureType(), stage, false);
+        build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
@@ -72,7 +69,7 @@ public class DungeonRoom extends DungeonPiece {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
@@ -86,7 +83,6 @@ public class DungeonRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }

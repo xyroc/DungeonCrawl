@@ -25,6 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.block.*;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -35,9 +36,7 @@ public interface IBlockPlacementHandler {
 
     HashMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new HashMap<>();
 
-    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, treasureType, theme, lootLevel) -> {
-        world.setBlockState(pos, state, 2);
-    };
+    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, treasureType, theme, subTheme, lootLevel) -> world.setBlockState(pos, state, 2);
 
     static void init() {
         PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);
@@ -53,7 +52,7 @@ public interface IBlockPlacementHandler {
     }
 
     void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand,
-                    Treasure.Type treasureType, int theme, int lootLevel);
+                    Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel);
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

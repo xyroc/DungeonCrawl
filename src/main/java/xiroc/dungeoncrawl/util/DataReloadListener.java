@@ -33,13 +33,21 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.theme.Theme;
 
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class DataReloadListener implements IFutureReloadListener {
 
+    /**
+     * A list of all objects that need updating after the data pack files were loaded.
+     */
+    public static final ArrayList<Updateable> UPDATEABLES = new ArrayList<>(128);
+
     public void reload(IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.info("Loading data...");
+        UPDATEABLES.clear();
+
         DungeonModels.load(resourceManager);
         Theme.loadJson(resourceManager);
         SpawnRates.loadJson(resourceManager);
@@ -52,14 +60,15 @@ public class DataReloadListener implements IFutureReloadListener {
             ModelBlockDefinition.loadJson(resourceManager);
         }
 
-        DungeonCrawl.LOGGER.info("Finished data loading.");
+        UPDATEABLES.forEach(Updateable::update);
+        UPDATEABLES.clear();
+
+        DungeonCrawl.LOGGER.info("Done.");
     }
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-        return stage.markCompleteAwaitingOthers(Unit.INSTANCE).thenRunAsync(() -> {
-            this.reload(resourceManager);
-        }, gameExecutor);
+        return stage.markCompleteAwaitingOthers(Unit.INSTANCE).thenRunAsync(() -> this.reload(resourceManager), gameExecutor);
     }
 
 }

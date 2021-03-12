@@ -30,8 +30,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -51,25 +49,23 @@ public class DungeonCorridor extends DungeonPiece {
     @Override
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (connectedSides == 2 && isStraight()) {
-            this.modelKey = ModelCategory.get(ModelCategory.CORRIDOR, layerCategory).roll(rand).key;
+            this.model = ModelCategory.get(ModelCategory.CORRIDOR, layerCategory).roll(rand);
         } else {
-            this.modelKey = ModelCategory.get(ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand).key;
+            this.model = ModelCategory.get(ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand);
         }
     }
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGen, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
                           ChunkPos p_74875_4_) {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
 
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).add(offset);
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos,
-                Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, rotation, false);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
@@ -79,7 +75,7 @@ public class DungeonCorridor extends DungeonPiece {
             entrances(worldIn, structureBoundingBoxIn, model);
         }
 
-        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
@@ -88,7 +84,6 @@ public class DungeonCorridor extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }

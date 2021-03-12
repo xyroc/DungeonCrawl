@@ -2,7 +2,7 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
-import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
+import xiroc.dungeoncrawl.dungeon.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -70,7 +70,8 @@ public abstract class LayerGenerator {
 
     /**
      * Creates a node room at the given position in the specified layer.
-     * @param center the position of the center of the node room
+     *
+     * @param center       the position of the center of the node room
      * @param dungeonLayer the layer to place the node room in
      */
     public static void createNodeRoom(Position2D center, DungeonLayer dungeonLayer) {
@@ -80,7 +81,7 @@ public abstract class LayerGenerator {
         PlaceHolder placeHolder = new PlaceHolder(nodeRoom).addFlag(PlaceHolder.Flag.PLACEHOLDER);
         for (int x = -1; x < 2; x++)
             for (int z = -1; z < 2; z++)
-                if (x != 0 || z != 0)
+                if ((x != 0 || z != 0) && Position2D.isValid(center.x + x, center.z + z, dungeonLayer.width, dungeonLayer.length))
                     dungeonLayer.grid[center.x + x][center.z + z] = placeHolder;
 
         dungeonLayer.grid[center.x][center.z] = new PlaceHolder(nodeRoom);
@@ -95,15 +96,5 @@ public abstract class LayerGenerator {
      * Generates a specific layer
      */
     public abstract void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start);
-
-    /**
-     * @return whether this generator supports mutation or not.
-     */
-    public abstract boolean supportsMutation();
-
-    /**
-     * Used to mutate this generator after its initialization, if supported.
-     */
-    public abstract void mutate(Random rand);
 
 }

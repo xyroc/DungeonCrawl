@@ -9,9 +9,7 @@ import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -84,7 +82,7 @@ public class MultipartModelData {
             MultipartModelData.Instance data = MultipartModelData.Instance.fromJson(object1, file);
             builder.add(data, JSONUtils.getWeightOrDefault(object1));
             if (data != MultipartModelData.Instance.EMPTY) {
-                DungeonModels.REFERENCES_TO_UPDATE.add(data); // Enqueue reference update
+                DataReloadListener.UPDATEABLES.add(data); // Enqueue reference update
             }
         });
         if (builder.entries.isEmpty()) {
@@ -104,7 +102,7 @@ public class MultipartModelData {
         return true;
     }
 
-    public static class Instance {
+    public static class Instance implements Updateable  {
 
         public static final Instance EMPTY = new Instance(null, null, DungeonModels.NO_OFFSET, Rotation.NONE);
 
@@ -135,7 +133,7 @@ public class MultipartModelData {
                 Vec3i rotatedOffset = Orientation.rotatedMultipartOffset(parent, model, offset, rotation, fullRotation);
 
                 piece.setWorldPosition(x + rotatedOffset.getX(), y + rotatedOffset.getY(), z + rotatedOffset.getZ());
-                piece.modelKey = model.key;
+                piece.model = model;
                 piece.rotation = fullRotation;
                 piece.stage = parentPiece.stage;
                 piece.theme = parentPiece.theme;
@@ -147,7 +145,7 @@ public class MultipartModelData {
             }
         }
 
-        public void updateReference() {
+        public void update() {
             if (this == EMPTY) {
                 return;
             }

@@ -18,7 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -30,6 +32,7 @@ import net.minecraft.world.ISeedReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -37,11 +40,14 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
@@ -56,16 +62,33 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
 
     public static final Structure<NoFeatureConfig> DUNGEON = new Dungeon();
-    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> FEATURE =
-            WorldGenRegistries.register(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE, "dungeoncrawl:dungeon", DUNGEON.func_236391_a_(NoFeatureConfig.field_236559_b_));
-
-    public static final StructureSeparationSettings SEPARATION_SETTINGS = new StructureSeparationSettings(30, 10, 10387313);
+    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = DUNGEON.func_236391_a_(NoFeatureConfig.field_236559_b_);
 
     public static final int SIZE = 15;
     public static int spacing, separation;
 
     public Dungeon() {
         super(NoFeatureConfig.field_236558_a_);
+    }
+
+    public static void register() {
+        ResourceLocation registryName = new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT));
+
+        DUNGEON.setRegistryName(registryName);
+        Structure.field_236365_a_.put(registryName.toString().toLowerCase(Locale.ROOT), DUNGEON);
+
+        ForgeRegistries.STRUCTURE_FEATURES.register(DUNGEON);
+
+        DimensionStructuresSettings.field_236191_b_ =
+                ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
+                        .putAll(DimensionStructuresSettings.field_236191_b_)
+                        .put(DUNGEON, new StructureSeparationSettings(separation, separation, 10387313))
+                        .build();
+
+        Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
+        Registry.register(registry, registryName, CONFIGURED_DUNGEON);
+
+        FlatGenerationSettings.STRUCTURES.put(DUNGEON, CONFIGURED_DUNGEON);
     }
 
     @Override

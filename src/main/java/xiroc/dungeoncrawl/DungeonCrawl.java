@@ -18,27 +18,27 @@
 
 package xiroc.dungeoncrawl;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.DimensionSettings;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.FlatChunkGenerator;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
@@ -59,7 +59,8 @@ import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
@@ -79,14 +80,15 @@ public class DungeonCrawl {
 
     public DungeonCrawl() {
         LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        MinecraftForge.EVENT_BUS.register(this);
 
-        Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT)));
-        ForgeRegistries.STRUCTURE_FEATURES.register(Dungeon.DUNGEON);
-        Structure.field_236365_a_.put(Dungeon.DUNGEON.getRegistryName().toString().toLowerCase(Locale.ROOT), Dungeon.DUNGEON);
-        LOGGER.info(Dungeon.FEATURE);
-        LOGGER.info(WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE.getKey(Dungeon.FEATURE));
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addGenericListener(Structure.class, this::onRegisterStructures);
+
+        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+        forgeEventBus.addListener(this::onAddReloadListener);
+        forgeEventBus.addListener(this::onWorldLoad);
+        forgeEventBus.addListener(EventPriority.HIGH, this::onBiomeLoad);
 
         Treasure.init();
         DungeonModelFeature.init();
@@ -104,7 +106,7 @@ public class DungeonCrawl {
             Dungeon.spacing = Config.SPACING.get();
             Dungeon.separation = Config.SEPARATION.get();
         } else {
-            LOGGER.warn("Invalid separation/spacing setting in the config. Using default values.");
+            LOGGER.error("Invalid separation/spacing setting in the config. Using default values.");
             Dungeon.spacing = 20;
             Dungeon.separation = 10;
         }
@@ -118,35 +120,40 @@ public class DungeonCrawl {
         DungeonModelBlock.init();
         IBlockPlacementHandler.init();
         DungeonBlocks.init();
-
-        DimensionStructuresSettings.field_236191_b_ = ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
-                .putAll(DimensionStructuresSettings.field_236191_b_)
-                .put(Dungeon.DUNGEON, Dungeon.SEPARATION_SETTINGS)
-                .build();
-
-        DimensionSettings.field_242740_q.getStructures().func_236195_a_().put(Dungeon.DUNGEON, Dungeon.SEPARATION_SETTINGS);
-
         Modules.load();
     }
 
-    @SubscribeEvent
-    public void addReloadListener(AddReloadListenerEvent event) {
-        DungeonCrawl.LOGGER.info("Adding datapack reload listener");
+    private void onAddReloadListener(final AddReloadListenerEvent event) {
         event.addListener(new DataReloadListener());
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onBiomeLoad(BiomeLoadingEvent event) {
-        if (!JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(event.getName().toString()) && Dungeon.ALLOWED_CATEGORIES.contains(event.getCategory())) {
+    private void onRegisterStructures(final RegistryEvent.Register<Structure<?>> event) {
+        Dungeon.register();
+    }
+
+    private void onBiomeLoad(final BiomeLoadingEvent event) {
+        if (event.getName() == null || !JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(event.getName().toString()) && Dungeon.ALLOWED_CATEGORIES.contains(event.getCategory())) {
             LOGGER.debug("Generation Biome: {}", event.getName());
-            event.getGeneration().withStructure(Dungeon.FEATURE);
+            event.getGeneration().withStructure(Dungeon.CONFIGURED_DUNGEON);
         }
     }
 
-//    @SubscribeEvent
-//    public void onServerStart(FMLServerStartingEvent event) {
-//        SpawnDungeonCommand.register(event.getCommandDispatcher());
-//    }
+    private void onWorldLoad(final WorldEvent.Load event) {
+        if (event.getWorld() instanceof ServerWorld) {
+
+            ServerWorld serverWorld = (ServerWorld) event.getWorld();
+            if (serverWorld.getChunkProvider().getChunkGenerator() instanceof FlatChunkGenerator &&
+                    serverWorld.getDimensionKey().equals(World.OVERWORLD)) {
+                return;
+            }
+
+            Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkProvider().generator.func_235957_b_().func_236195_a_());
+            tempMap.putIfAbsent(Dungeon.DUNGEON, DimensionStructuresSettings.field_236191_b_.get(Dungeon.DUNGEON));
+            serverWorld.getChunkProvider().generator.func_235957_b_().field_236193_d_ = tempMap;
+        } else {
+            LOGGER.info("Skipping world {}", event.getWorld().getClass());
+        }
+    }
 
     public static String getDate() {
         return new SimpleDateFormat().format(new Date());

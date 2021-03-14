@@ -19,9 +19,12 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.BlockState;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -261,6 +264,11 @@ public class DungeonBuilder {
             }
         }
         return true;
+    }
+
+    public static boolean isBlockProtected(IWorld world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        return state.getBlockHardness(world, pos) < 0 || BlockTags.PORTALS.contains(state.getBlock());
     }
 
     /**

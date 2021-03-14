@@ -22,6 +22,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -46,7 +47,12 @@ public class ScatteredDecoration implements IDungeonDecoration {
             for (int y = 0; y < height; y++) {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (worldGenBounds.isVecInside(currentPos) && structureBounds.isVecInside(currentPos) && world.isAirBlock(currentPos) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                    if (!DungeonBuilder.isBlockProtected(world, currentPos)
+                            && worldGenBounds.isVecInside(currentPos)
+                            && structureBounds.isVecInside(currentPos)
+                            && world.isAirBlock(currentPos)
+                            && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                         BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
                         BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);

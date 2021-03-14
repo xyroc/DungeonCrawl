@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.decoration;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
@@ -45,8 +46,12 @@ public class FloorDecoration implements IDungeonDecoration {
             for (int z = 0; z < model.length; z++) {
                 for (int y = 0; y < model.height; y++) {
                     BlockPos blockPos = IDungeonDecoration.getRotatedBlockPos(x, y + 1, z, pos, model, piece.rotation);
-                    if (model.model[x][y][z] != null && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1
-                            && worldGenBounds.isVecInside(blockPos) && structureBounds.isVecInside(blockPos) && world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z))
+                    if (!DungeonBuilder.isBlockProtected(world, pos)
+                            && model.model[x][y][z] != null
+                            && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1
+                            && worldGenBounds.isVecInside(blockPos)
+                            && structureBounds.isVecInside(blockPos)
+                            && world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z))
                             && checkSolid(world, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), worldGenBounds, structureBounds)
                             && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
                         world.setBlockState(blockPos, blockStateProvider.get(blockPos), 2);

@@ -281,12 +281,29 @@ public abstract class DungeonPiece extends StructurePiece {
         this.rotation = piece.rotation;
     }
 
+    public boolean hasChildPieces() {
+        return model != null && model.multipartData != null;
+    }
+
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelCategory layerCategory, int layer, Random rand) {
+        if (model != null && model.multipartData != null) {
+            BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
+            for (MultipartModelData data : model.multipartData) {
+                if (data.checkConditions(this)) {
+                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
+                } else if (data.alternatives != null) {
+                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
+                }
+            }
+        }
+    }
+
     public void setBlockState(BlockState state, IWorld world, Treasure.Type treasureType,
                               BlockPos pos, Theme theme, SubTheme subTheme, int lootLevel, DungeonModelBlockType type) {
         if (state == null)
             return;
 
-        if (isBlockProtected(world, state, pos)
+        if (DungeonBuilder.isBlockProtected(world, pos)
                 || world.isAirBlock(pos) && !type.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
@@ -309,7 +326,7 @@ public abstract class DungeonPiece extends StructurePiece {
         if (state == null)
             return;
 
-        if (isBlockProtected(world, state, pos)
+        if (DungeonBuilder.isBlockProtected(world, pos)
                 || world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
@@ -332,7 +349,7 @@ public abstract class DungeonPiece extends StructurePiece {
                               MutableBoundingBox boundingboxIn) {
         BlockPos blockPos = new BlockPos(x, y, z);
 
-        if (isBlockProtected(worldIn, blockstateIn, blockPos))
+        if (DungeonBuilder.isBlockProtected(worldIn, blockPos))
             return;
 
         setBlockState(worldIn, blockstateIn, boundingboxIn, blockPos);
@@ -369,27 +386,10 @@ public abstract class DungeonPiece extends StructurePiece {
                                   MutableBoundingBox boundingboxIn) {
         BlockPos blockPos = new BlockPos(x, y, z);
 
-        if (isBlockProtected(worldIn, blockstateIn, blockPos) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
+        if (DungeonBuilder.isBlockProtected(worldIn, blockPos) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
             return;
 
         setBlockState(worldIn, blockstateIn, boundingboxIn, blockPos);
-    }
-
-    public boolean hasChildPieces() {
-        return model != null && model.multipartData != null;
-    }
-
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelCategory layerCategory, int layer, Random rand) {
-        if (model != null && model.multipartData != null) {
-            BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
-            for (MultipartModelData data : model.multipartData) {
-                if (data.checkConditions(this)) {
-                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
-                } else if (data.alternatives != null) {
-                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
-                }
-            }
-        }
     }
 
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
@@ -1013,10 +1013,6 @@ public abstract class DungeonPiece extends StructurePiece {
             if (world.getBlockState(new BlockPos(x, y, z)).isSolid())
                 return y;
         return 0;
-    }
-
-    public static boolean isBlockProtected(IWorld world, BlockState state, BlockPos pos) {
-        return state.getBlockHardness(world, pos) < 0 || BlockTags.PORTALS.contains(state.getBlock());
     }
 
 }

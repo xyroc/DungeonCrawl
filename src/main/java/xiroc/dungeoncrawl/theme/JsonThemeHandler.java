@@ -35,7 +35,6 @@ import xiroc.dungeoncrawl.dungeon.block.pattern.CheckedPattern;
 import xiroc.dungeoncrawl.dungeon.block.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
-import xiroc.dungeoncrawl.util.DataReloadListener;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -43,6 +42,7 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class JsonThemeHandler {
 
@@ -54,7 +54,7 @@ public class JsonThemeHandler {
      * @param object the json object
      * @return the resulting theme
      */
-    public static Theme deserializeTheme(JsonObject object) {
+    public static Theme deserializeTheme(JsonObject object, ResourceLocation file) {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
         IBlockStateProvider generic = JsonThemeHandler.deserialize(themeObject, "normal");
@@ -86,6 +86,17 @@ public class JsonThemeHandler {
 
         if (object.has("sub_theme")) {
             // TODO: random sub theme
+            WeightedRandom.Builder<SubTheme> builder = new WeightedRandom.Builder<>();
+            object.getAsJsonArray("sub_theme").forEach((element) -> {
+                JsonObject instance = element.getAsJsonObject();
+                String key = instance.get("key").getAsString();
+                if (Theme.KEY_TO_SUB_THEME.containsKey(key)) {
+                    builder.add(Theme.KEY_TO_SUB_THEME.get(key), JSONUtils.getWeightOrDefault(instance));
+                } else {
+                    throw new NoSuchElementException("Unknown sub-theme key " + key + " in " + file.toString());
+                }
+            });
+            theme.subTheme = builder.build();
         }
 
         if (object.has("id")) {

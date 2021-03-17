@@ -49,8 +49,8 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
-import xiroc.dungeoncrawl.util.DataReloadListener;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.Tools;
 import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 
@@ -127,7 +127,7 @@ public class DungeonCrawl {
 
     @SubscribeEvent
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener(new DataReloadListener());
+        event.getServer().getResourceManager().addReloadListener(new ResourceReloadHandler());
     }
 
 //    @SubscribeEvent

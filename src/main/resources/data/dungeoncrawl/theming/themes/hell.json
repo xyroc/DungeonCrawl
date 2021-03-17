@@ -1,7 +1,7 @@
 {
   "type": "theme",
   "id": 1,
-  "sub_theme": 8,
+  "sub_theme": [{"key": "hell"}],
   "theme": {
     "normal": {
       "type": "random_block",

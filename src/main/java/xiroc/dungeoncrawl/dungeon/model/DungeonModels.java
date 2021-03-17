@@ -109,6 +109,7 @@ public class DungeonModels {
         load("models/dungeon/corridor/linker/", "corridor_linker_4", resourceManager);
         load("models/dungeon/corridor/linker/", "corridor_linker_5", resourceManager);
         load("models/dungeon/corridor/linker/", "catacomb_linker", resourceManager);
+        load("models/dungeon/corridor/linker/", "catacomb_linker_hole", resourceManager);
 
         load("models/dungeon/node/", "forge", resourceManager);
         load("models/dungeon/node/", "node", resourceManager);
@@ -235,8 +236,6 @@ public class DungeonModels {
                 DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
                 e.printStackTrace();
             }
-        } else {
-            DungeonCrawl.LOGGER.warn("Missing metadata for {}", resource.getPath());
         }
     }
 
@@ -253,7 +252,6 @@ public class DungeonModels {
                 DungeonCrawl.LOGGER.error("Failed to load metadata for {}", file);
                 e.printStackTrace();
             }
-
         }
 
         return model;

@@ -82,7 +82,7 @@ public class MultipartModelData {
             MultipartModelData.Instance data = MultipartModelData.Instance.fromJson(object1, file);
             builder.add(data, JSONUtils.getWeightOrDefault(object1));
             if (data != MultipartModelData.Instance.EMPTY) {
-                DataReloadListener.UPDATEABLES.add(data); // Enqueue reference update
+                ResourceReloadHandler.UPDATEABLES.add(data); // Enqueue reference update
             }
         });
         if (builder.entries.isEmpty()) {

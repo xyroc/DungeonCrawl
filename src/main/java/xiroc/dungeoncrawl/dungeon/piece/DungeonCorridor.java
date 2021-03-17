@@ -31,7 +31,6 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
-import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
 import java.util.Random;

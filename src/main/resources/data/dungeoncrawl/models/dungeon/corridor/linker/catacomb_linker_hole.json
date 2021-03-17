@@ -43,21 +43,21 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacomb/large_connector",
           "offset": {
             "z": -2
           },
-          "rotation": "counterclockwise_90"
+          "rotation": "clockwise_180"
         }
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacomb/hidden_piston",
           "offset": {
             "x": 1,
-            "z": -1
+            "z": -2
           },
-          "rotation": "counterclockwise_90"
+          "rotation": "clockwise_180"
         }
       ]
     },
@@ -67,19 +67,21 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacomb/large_connector",
           "offset": {
-            "x": 5
-          }
+            "x": 4
+          },
+          "rotation": "counterclockwise_90"
         }
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacomb/hidden_piston",
           "offset": {
-            "x": 5,
+            "x": 4,
             "z": 1
-          }
+          },
+          "rotation": "counterclockwise_90"
         }
       ]
     },
@@ -89,21 +91,21 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacomb/large_connector",
           "offset": {
             "x": -2
           },
-          "rotation": "clockwise_180"
+          "rotation": "clockwise_90"
         }
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacomb/hidden_piston",
           "offset": {
-            "x": -1,
+            "x": -2,
             "z": 1
           },
-          "rotation": "clockwise_180"
+          "rotation": "clockwise_90"
         }
       ]
     },
@@ -113,21 +115,19 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacomb/large_connector",
           "offset": {
-            "z": 5
-          },
-          "rotation": "clockwise_90"
+            "z": 4
+          }
         }
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacomb/hidden_piston",
           "offset": {
             "x": 1,
-            "z": 5
-          },
-          "rotation": "clockwise_90"
+            "z": 4
+          }
         }
       ]
     }

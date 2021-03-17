@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class DataReloadListener implements IFutureReloadListener {
+public class ResourceReloadHandler implements IFutureReloadListener {
 
     /**
      * A list of all objects that need updating after the data pack files were loaded.

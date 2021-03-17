@@ -38,7 +38,6 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 

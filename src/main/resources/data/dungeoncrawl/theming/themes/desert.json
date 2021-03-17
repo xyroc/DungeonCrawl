@@ -1,7 +1,7 @@
 {
   "type": "theme",
   "id": 16,
-  "sub_theme": 6,
+  "sub_theme": [{"key": "desert"}],
   "theme": {
     "normal": {
       "type": "random_block",

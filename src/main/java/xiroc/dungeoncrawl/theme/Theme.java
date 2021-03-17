@@ -74,6 +74,7 @@ public class Theme {
             (pos) -> Blocks.OAK_PRESSURE_PLATE.getDefaultState());
 
     public final IBlockStateProvider ceiling, solid, generic, generic2, floor, solidStairs, stairs, material, vanillaWall, column, slab, solidSlab;
+
     public IRandom<SubTheme> subTheme;
 
     private String key;
@@ -145,21 +146,6 @@ public class Theme {
     public static void loadJson(IResourceManager resourceManager) {
         JsonParser parser = new JsonParser();
 
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate("theming/themes").getPath(), (s) -> s.endsWith(".json"))) {
-            DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
-            try {
-                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                String key = resource.getPath().substring(15, resource.getPath().length() - 5); // cut off "theming/themes/" and the file ending from the path
-                Theme theme = JsonThemeHandler.deserializeTheme(parser.parse(reader).getAsJsonObject());
-                theme.key = key;
-                KEY_TO_THEME.put(key, theme);
-                DungeonCrawl.LOGGER.info("Theme {} has key {}", resource.toString(), key);
-            } catch (Exception e) {
-                DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
-                e.printStackTrace();
-            }
-        }
-
         for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate("theming/sub_themes").getPath(), (s) -> s.endsWith(".json"))) {
             DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
             try {
@@ -168,14 +154,27 @@ public class Theme {
                 SubTheme theme = JsonThemeHandler.deserializeSubTheme(parser.parse(reader).getAsJsonObject());
                 theme.key = key;
                 KEY_TO_SUB_THEME.put(key, theme);
-                DungeonCrawl.LOGGER.info("Sub Theme {} has key {}", resource.toString(), key);
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
                 e.printStackTrace();
             }
         }
 
-        ResourceLocation themeMapping = DungeonCrawl.locate("theming/theme_mapping.json");
+        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate("theming/themes").getPath(), (s) -> s.endsWith(".json"))) {
+            DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
+            try {
+                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
+                String key = resource.getPath().substring(15, resource.getPath().length() - 5); // cut off "theming/themes/" and the file ending from the path
+                Theme theme = JsonThemeHandler.deserializeTheme(parser.parse(reader).getAsJsonObject(), resource);
+                theme.key = key;
+                KEY_TO_THEME.put(key, theme);
+            } catch (Exception e) {
+                DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
+                e.printStackTrace();
+            }
+        }
+
+        ResourceLocation themeMapping = DungeonCrawl.locate("theming/mappings/themes.json");
         try {
             JsonThemeHandler.deserializeThemeMapping(
                     parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(themeMapping).getInputStream()))).getAsJsonObject(),
@@ -185,7 +184,7 @@ public class Theme {
             e.printStackTrace();
         }
 
-        ResourceLocation subThemeMapping = DungeonCrawl.locate("theming/sub_theme_mapping.json");
+        ResourceLocation subThemeMapping = DungeonCrawl.locate("theming/mappings/sub_themes.json");
         try {
             JsonThemeHandler.deserializeSubThemeMapping(
                     parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(subThemeMapping).getInputStream()))).getAsJsonObject(),

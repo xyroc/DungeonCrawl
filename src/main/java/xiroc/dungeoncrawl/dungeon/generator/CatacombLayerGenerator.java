@@ -52,19 +52,6 @@ public class CatacombLayerGenerator extends LayerGenerator {
         bottomStairs.setGridPosition(start.x, start.z);
         dungeonLayer.grid[bottomStairs.gridX][bottomStairs.gridZ] = new PlaceHolder(bottomStairs).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
-//        dungeonLayer.end = findEndPosition(dungeonLayer, start);
-//        DungeonStairs topStairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
-//        topStairs.setGridPosition(dungeonLayer.end);
-//        dungeonLayer.grid[topStairs.gridX][topStairs.gridZ] = new PlaceHolder(topStairs).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
-
-
-//        List<Position2D> nodes = placeNodes(dungeonLayer, rand, start, layer);
-//
-//        DungeonCrawl.LOGGER.info("Placed {} of {} nodes.", nodes.size(), maxNodes);
-//
-//        Position2D pos1 = createCorridors(dungeonLayer, rand, start);
-//        Position2D pos2 = createCorridors(dungeonLayer, rand, dungeonLayer.end);
-
         dungeonLayer.end = createCorridors(dungeonLayer, rand, start);
         DungeonStairs topStairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
         topStairs.setGridPosition(dungeonLayer.end);
@@ -72,88 +59,8 @@ public class CatacombLayerGenerator extends LayerGenerator {
         dungeonLayer.grid[topStairs.gridX][topStairs.gridZ] = new PlaceHolder(topStairs).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
         createCorridors(dungeonLayer, rand, dungeonLayer.end);
-
-//        dungeonLayer.buildConnection(pos1, pos2, rand);
     }
 
-//    private List<Position2D> placeNodes(DungeonLayer dungeonLayer, Random rand, Position2D origin, int layer) {
-//        int maxSpawnAttempts = nodesLeft * 4; // TODO: generator settings
-//        ArrayList<Position2D> nodes = new ArrayList<>();
-//
-//        for (int i = 0; i < maxSpawnAttempts && nodesLeft > 0; i++) {
-//            Position2D pos = findNodePosition(dungeonLayer, rand, origin);
-//            if (pos != null) {
-//                createNodeRoom(pos, dungeonLayer);
-//
-//                int directions = 1 + rand.nextInt(3) + rand.nextInt(2);
-//                int attempts = 8;
-//                for (int j = 0; j < directions && attempts > 0; attempts--) {
-//                    Direction direction = Orientation.RANDOM_HORIZONTAL_FACING.roll(rand);
-//                    Position2D corridorStart = pos.shift(direction, 1);
-//                    if (catacombCorridor(dungeonLayer, rand, corridorStart, direction, 0).getB() != 0) {
-//                        j++;
-//                    }
-//                }
-//
-//                nodes.add(pos);
-//                nodesLeft--;
-//            }
-//        }
-//
-//        return nodes;
-//    }
-
-    /**
-     * Convenience method to search for a single node position by applying randomized offsets to the origin.
-     * Returns null if the resulting Position is not suitable for a node.
-     *
-     * @return the center of the node or null if there is none
-     */
-//    @Nullable
-//    private static Position2D findNodePosition(DungeonLayer dungeonLayer, Random rand, Position2D origin) {
-//        int steps = 2 + rand.nextInt(3); // TODO: generator settings
-//        Direction lastDirection = null;
-//        Position2D position = origin;
-//
-//        for (int i = 0; i < steps; i++) {
-//            lastDirection = lastDirection != null ? Orientation.getHorizontalFacingsWithout(lastDirection.getOpposite())[rand.nextInt(3)]
-//                    : Orientation.RANDOM_HORIZONTAL_FACING.roll(rand);
-//            position = position.shift(lastDirection, 2 + rand.nextInt(4)); // TODO: generator settings
-//        }
-//
-//        // Verify that the position is suitable for a node
-//        for (int x = -1; x < 2; x++) {
-//            for (int z = -1; z < 2; z++) {
-//                // If we are at the center of the node, require the position of the center to be within the grid bounds and require the position to be free in the grid.
-//                // For the eight other positions, require the position to be free in the grid if it is within the grid bounds. Positions outside of the grid bounds are always valid.
-//                Position2D currentPos = new Position2D(position.x + x, position.z + z);
-//                if (x == 0 && z == 0) {
-//                    if (!currentPos.isValid(dungeonLayer.width, dungeonLayer.length)) {
-//                        return null;
-//                    } else if (!dungeonLayer.isTileFree(currentPos)) {
-//                        return null;
-//                    }
-//                } else {
-//                    if (currentPos.isValid(dungeonLayer.width, dungeonLayer.length) && !dungeonLayer.isTileFree(currentPos)) {
-//                        return null;
-//                    }
-//                }
-//            }
-//        }
-//
-//        return position;
-//    }
-
-//    public void createLayout(DungeonLayer dungeonLayer, Position2D origin, Random rand) {
-//        int directions = 2 + rand.nextInt(3); // TODO: Generator Settings
-//        Direction currentDirection = Orientation.RANDOM_HORIZONTAL_FACING.roll(rand);
-//
-//        for (int i = 0; i < directions; i++) {
-//
-//
-//            currentDirection = currentDirection.rotateY();
-//        }
-//    }
 
     /**
      * Creates catacomb corridors in random directions
@@ -208,7 +115,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
                     tile.reference.openSide(direction.getOpposite());
                     dungeonLayer.openSideIfPresent(cursor.shift(direction.getOpposite(), 1), direction);
 
-                    if (depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.3) {
+                    if (currentLength > 1 && depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.6) {
                         createNode(dungeonLayer, cursor.shift(direction, 2), cursor, rand);
                         break;
                     }
@@ -226,7 +133,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
                 dungeonLayer.rotatePiece(placeHolder, rand);
                 dungeonLayer.grid[cursor.x][cursor.z] = placeHolder;
 
-                if (depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.3) {
+                if (currentLength > 1 && depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.6) {
                     createNode(dungeonLayer, cursor.shift(direction, 2), cursor, rand);
                     break;
                 }
@@ -237,7 +144,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
                     farthestPos = cursor;
                 }
 
-                if (depth < maxDepth && rand.nextFloat() < (0.5F - depth * 0.1F)) {
+                if (depth < maxDepth && rand.nextFloat() < (0.4F - depth * 0.15F)) {
                     Tuple<Position2D, Integer> pos = catacombCorridor(dungeonLayer, rand, cursor, rand.nextBoolean() ? direction.rotateY() : direction.rotateYCCW(), depth + 1);
                     if (pos.getB() > highestDistance) {
                         highestDistance = pos.getB();
@@ -257,18 +164,17 @@ public class CatacombLayerGenerator extends LayerGenerator {
         createNodeRoom(center, dungeonLayer);
         Direction toCorridor = center.directionTo(corridor);
         connectStraight(dungeonLayer, corridor, center.shift(toCorridor, 1));
-//        dungeonLayer.buildConnection(corridor, center.shift(toCorridor, 1), rand);
 
-//        int corridors = rand.nextInt(4);
-//        int offset = rand.nextInt(3);
-//        Direction[] directions = Orientation.getHorizontalFacingsWithout(toCorridor);
-//        for (int i = 0; i < directions.length && corridors > 0; i++) {
-//            Direction direction = directions[(offset + i) % 3];
-//            Position2D p = center.shift(direction, 2);
-//            if (p.isValid(dungeonLayer.width, dungeonLayer.length) && dungeonLayer.isTileFree(p)) {
-//                catacombCorridor(dungeonLayer, rand, center.shift(direction, 1), direction, 0);
-//            }
-//        }
+        int corridors = rand.nextInt(4);
+        int offset = rand.nextInt(3);
+        Direction[] directions = Orientation.getHorizontalFacingsWithout(toCorridor);
+        for (int i = 0; i < directions.length && corridors > 0; i++) {
+            Direction direction = directions[(offset + i) % 3];
+            Position2D p = center.shift(direction, 2);
+            if (p.isValid(dungeonLayer.width, dungeonLayer.length) && dungeonLayer.isTileFree(p)) {
+                catacombCorridor(dungeonLayer, rand, center.shift(direction, 1), direction, 0);
+            }
+        }
 
         nodesLeft--;
     }
@@ -374,13 +280,6 @@ public class CatacombLayerGenerator extends LayerGenerator {
         } else {
             throw new IllegalArgumentException("The start and end positions of a straight connection must not be the same.");
         }
-    }
-
-
-    private Position2D findEndPosition(DungeonLayer dungeonLayer, Position2D start) {
-        int w = dungeonLayer.width / 2;
-        int l = dungeonLayer.length / 2;
-        return start.shift(start.x > w ? Direction.WEST : Direction.EAST, w).shift(start.z > l ? Direction.NORTH : Direction.SOUTH, l);
     }
 
 }

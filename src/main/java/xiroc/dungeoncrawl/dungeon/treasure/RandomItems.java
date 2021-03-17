@@ -296,7 +296,7 @@ public class RandomItems {
         ItemStack shield = new ItemStack(Items.SHIELD);
         lootLevel = Math.min(4, lootLevel);
         float f = rand.nextFloat();
-        if (f < 0.2f + lootLevel * 0.2f) {
+        if (f < 0.12f + lootLevel * 0.02f) {
             shield.addEnchantment(Enchantments.UNBREAKING, UNBREAKING_LEVELS[lootLevel].generateInt(rand));
             if (f < 0.04 + lootLevel * 0.01) {
                 shield.addEnchantment(Enchantments.MENDING, 1);

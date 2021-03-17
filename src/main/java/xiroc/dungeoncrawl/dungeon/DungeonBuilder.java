@@ -61,8 +61,8 @@ public class DungeonBuilder {
     public ChunkGenerator<?> chunkGen;
     public Biome startBiome;
 
-    public Theme theme, lowerTheme, bottomTheme;
-    public Theme.SubTheme subTheme, lowerSubTheme, bottomSubTheme;
+    public Theme entranceTheme, theme, lowerTheme, bottomTheme;
+    public Theme.SubTheme entranceSubTheme, subTheme, lowerSubTheme, bottomSubTheme;
 
     public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
         this.chunkGen = world;
@@ -148,12 +148,24 @@ public class DungeonBuilder {
 
         ResourceLocation registryName = startBiome.getRegistryName();
 
-        this.theme = registryName != null ? Theme.randomTheme(registryName.toString(), rand) : Theme.getDefaultTheme();
+        if (registryName != null) {
+            this.entranceTheme = Theme.randomTheme(registryName.toString(), rand);
+            this.theme = Theme.randomTheme(registryName.toString(), rand);
+        } else {
+            this.entranceTheme = Theme.getDefaultTheme();
+            this.theme = Theme.getDefaultTheme();
+        }
 
         if (theme.subTheme != null) {
             this.subTheme = theme.subTheme.roll(rand);
         } else {
             this.subTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
+        }
+
+        if (entranceTheme.subTheme != null) {
+            this.entranceSubTheme = entranceTheme.subTheme.roll(rand);
+        } else {
+            this.entranceSubTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
         }
 
         this.lowerTheme = Theme.getTheme("catacombs/default");
@@ -164,7 +176,7 @@ public class DungeonBuilder {
             this.lowerSubTheme = this.subTheme;
         }
 
-        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("mossy_obsidian") : Theme.getTheme("nether");
+        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("mossy_obsidian") : Theme.getTheme("hell");
 
         if (bottomTheme.subTheme != null) {
             this.bottomSubTheme = bottomTheme.subTheme.roll(rand);

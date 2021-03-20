@@ -1,7 +1,8 @@
 {
   "type": "entrance",
   "offset": {
-    "z": -4
+    "x": -4,
+    "z": -8
   },
   "variation": true,
   "__feature": {

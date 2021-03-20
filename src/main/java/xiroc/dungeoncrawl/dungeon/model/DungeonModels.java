@@ -74,12 +74,13 @@ public class DungeonModels {
 
         // Models with metadata
         FOOD_SIDE_ROOM = load("models/dungeon/room/", "food_side_room", resourceManager);
-        DEFAULT_TOWER = load("models/dungeon/entrance/", "roguelike_tower", resourceManager);
         LOOT_ROOM = load("models/dungeon/", "loot_room", resourceManager);
         SECRET_ROOM = load("models/dungeon/room/", "secret_room", resourceManager);
         STARTER_ROOM = load("models/dungeon/room/", "starter_room", resourceManager);
 
+        DEFAULT_TOWER = load("models/dungeon/entrance/", "roguelike_tower", resourceManager);
         load("models/dungeon/entrance/", "roguelike_house", resourceManager);
+        load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
 
         load("models/dungeon/room/", "tnt_trap_side_room", resourceManager);
 

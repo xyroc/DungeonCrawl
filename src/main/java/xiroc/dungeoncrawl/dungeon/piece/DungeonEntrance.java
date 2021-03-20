@@ -55,7 +55,6 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (ModelCategory.ENTRANCE.members.isEmpty()) {
-            DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the RLD default entrance.");
             this.model = DungeonModels.DEFAULT_TOWER;
         } else {
             this.model = ModelCategory.ENTRANCE.members.get(rand.nextInt(ModelCategory.ENTRANCE.members.size()));
@@ -82,7 +81,7 @@ public class DungeonEntrance extends DungeonPiece {
         }
 
         Vec3i offset = model.getOffset(rotation);
-        BlockPos pos = new BlockPos(x, cursorHeight, z).add(offset);
+        BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).add(offset);
 
         // Creating a custom bounding box because the cursor height was unknown during #setupBoundingBox.
         this.boundingBox = new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + model.width - 1, pos.getY() + model.height - 1, pos.getZ() + model.length - 1);

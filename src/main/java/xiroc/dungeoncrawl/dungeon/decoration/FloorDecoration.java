@@ -40,24 +40,19 @@ public class FloorDecoration implements IDungeonDecoration {
     }
 
     @Override
-    public void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
-        for (int x = 0; x < model.width; x++) {
-            for (int z = 0; z < model.length; z++) {
-                for (int y = 0; y < model.height; y++) {
-                    BlockPos blockPos = IDungeonDecoration.getRotatedBlockPos(x, y + 1, z, pos, model, piece.rotation);
-                    if (!DungeonBuilder.isBlockProtected(world, pos)
-                            && model.model[x][y][z] != null
-                            && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1
-                            && worldGenBounds.isVecInside(blockPos)
-                            && structureBounds.isVecInside(blockPos)
-                            && world.isAirBlock(new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z))
-                            && checkSolid(world, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), worldGenBounds, structureBounds)
-                            && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-                        world.setBlockState(blockPos, blockStateProvider.get(blockPos), 2);
-                    }
-                }
+    public void decorate(DungeonModel model, IWorld world, BlockPos origin, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+        model.blocks.forEach((block) -> {
+            BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
+            if (!DungeonBuilder.isBlockProtected(world, origin)
+                    && block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
+                    && worldGenBounds.isVecInside(pos)
+                    && structureBounds.isVecInside(pos)
+                    && world.isAirBlock(origin.add(block.position).up())
+                    && checkSolid(world, origin.add(block.position), worldGenBounds, structureBounds)
+                    && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                world.setBlockState(pos, blockStateProvider.get(pos), 2);
             }
-        }
+        });
     }
 
     private static boolean checkSolid(IWorld world, BlockPos pos, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds) {
@@ -76,24 +71,23 @@ public class FloorDecoration implements IDungeonDecoration {
         }
 
         @Override
-        public void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
-            for (int x = 0; x < model.width; x++) {
-                for (int z = 0; z < model.length; z++) {
-                    for (int y = 0; y < model.height; y++) {
-                        if (model.model[x][y][z] != null && model.model[x][y][z].type == DungeonModelBlockType.FLOOR && y < model.height - 1) {
-                            BlockPos p = new BlockPos(pos.getX() + x, pos.getY() + y + 1, pos.getZ() + z);
-                            BlockPos blockPos = IDungeonDecoration.getRotatedBlockPos(x, y + 1, z, pos, model, piece.rotation);
+        public void decorate(DungeonModel model, IWorld world, BlockPos origin, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+            model.blocks.forEach((block) -> {
+                if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1) {
+                    BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
 
-                            if (worldGenBounds.isVecInside(blockPos) && structureBounds.isVecInside(blockPos) && world.isAirBlock(p) && world.getBlockState(p.down()).isSolid() &&
-                                    (checkSolid(world, p.north(), worldGenBounds, structureBounds) || checkSolid(world, p.east(), worldGenBounds, structureBounds)
-                                            || checkSolid(world, p.south(), worldGenBounds, structureBounds) || checkSolid(world, p.west(), worldGenBounds, structureBounds))
-                                    && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
-                                world.setBlockState(blockPos, blockStateProvider.get(blockPos), 2);
-                            }
-                        }
+                    if (worldGenBounds.isVecInside(pos)
+                            && structureBounds.isVecInside(pos) && world.isAirBlock(pos)
+                            && world.getBlockState(pos.down()).isSolid()
+                            && (checkSolid(world, pos.north(), worldGenBounds, structureBounds)
+                            || checkSolid(world, pos.east(), worldGenBounds, structureBounds)
+                            || checkSolid(world, pos.south(), worldGenBounds, structureBounds)
+                            || checkSolid(world, pos.west(), worldGenBounds, structureBounds))
+                            && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                        world.setBlockState(pos, blockStateProvider.get(pos), 2);
                     }
                 }
-            }
+            });
         }
 
     }

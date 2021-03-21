@@ -264,7 +264,8 @@ public class DungeonModels {
         try {
             ResourceLocation resource = DungeonCrawl.locate(path);
             CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
-            DungeonModel model = ModelHandler.getModelFromNBT(nbt);
+            DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource);
+//            ModelHandler.writeModelToFile(model, "converted/" + resource.getPath());
 
             String key = path.substring(15, path.indexOf(".nbt"));
             model.setKey(key);
@@ -285,7 +286,8 @@ public class DungeonModels {
 
         try {
             CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
-            DungeonModel model = ModelHandler.getModelFromNBT(nbt);
+            DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource);
+//            ModelHandler.writeModelToFile(model, "converted/" + resource.getPath());
 
             String path = resource.getPath();
             String key = path.substring(15, path.indexOf(".nbt"));

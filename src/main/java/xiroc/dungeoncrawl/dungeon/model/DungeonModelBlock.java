@@ -30,10 +30,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
@@ -48,14 +48,17 @@ public class DungeonModelBlock {
 
     public final DungeonModelBlockType type;
 
+    public Vec3i position;
+
     private PropertyHolder[] properties;
 
     public Integer variation;
 
     public ResourceLocation resource;
 
-    public DungeonModelBlock(DungeonModelBlockType type) {
+    public DungeonModelBlock(DungeonModelBlockType type, Vec3i position) {
         this.type = type;
+        this.position = position;
     }
 
     /**
@@ -64,9 +67,15 @@ public class DungeonModelBlock {
      *
      * @return The CompoundNBT
      */
-    public CompoundNBT getAsNBT() {
+    public CompoundNBT toNBT() {
         CompoundNBT tag = new CompoundNBT();
         tag.putString("type", type.toString());
+
+        CompoundNBT position = new CompoundNBT();
+        position.putInt("x", this.position.getX());
+        position.putInt("y", this.position.getY());
+        position.putInt("z", this.position.getZ());
+        tag.put("position", position);
 
         if (resource != null)
             tag.putString("resourceName", resource.toString());
@@ -75,8 +84,8 @@ public class DungeonModelBlock {
             ListNBT properties = new ListNBT();
             for (PropertyHolder holder : this.properties) {
                 CompoundNBT nbt = new CompoundNBT();
-                nbt.putString("property", holder.property.getName());
-                nbt.putString("value", holder.value.toString().toLowerCase(Locale.ROOT));
+                nbt.putString("property", holder.propertyName);
+                nbt.putString("value", holder.valueName);
                 properties.add(nbt);
             }
             if (properties.size() > 0)
@@ -91,14 +100,20 @@ public class DungeonModelBlock {
     }
 
     public static DungeonModelBlock fromNBT(CompoundNBT nbt) {
-        if (!nbt.contains("type"))
-            return null;
+        if (!nbt.contains("type")) { // backwards compatibility
+            return new DungeonModelBlock(DungeonModelBlockType.AIR, null);
+        }
+
         String type = nbt.getString("type");
         if (!DungeonModelBlockType.NAME_TO_TYPE.containsKey(type)) {
             DungeonCrawl.LOGGER.warn("Unknown model block type: {}", type);
             return null;
         }
-        DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.NAME_TO_TYPE.get(type));
+
+        CompoundNBT pos  = nbt.getCompound("position");
+        Vec3i position = new Vec3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+
+        DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.NAME_TO_TYPE.get(type), position);
 
         if (nbt.contains("resourceName"))
             block.resource = new ResourceLocation(nbt.getString("resourceName"));
@@ -171,7 +186,7 @@ public class DungeonModelBlock {
      * Creates all BlockState providers.
      */
     public static void init() {
-        PROVIDERS.put(DungeonModelBlockType.NONE, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> null);
+        PROVIDERS.put(DungeonModelBlockType.AIR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> tuple(DungeonBlocks.CAVE_AIR, false));
         PROVIDERS.put(DungeonModelBlockType.CARPET, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
             Block b = block.variation != null && variation != null ?
                     DungeonBlocks.CARPET[(block.variation + variation[block.variation]) % DungeonBlocks.CARPET.length]
@@ -181,15 +196,13 @@ public class DungeonModelBlock {
             }
             return block.create(b.getDefaultState());
         });
-        PROVIDERS.put(DungeonModelBlockType.BARREL, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
-                .create(Blocks.BARREL.getDefaultState(), rotation));
         PROVIDERS.put(DungeonModelBlockType.MATERIAL, (block, rotation, world, pos, theme, subTheme, rand, variation,
                                                        stage) -> block.create(subTheme.material.get(pos), rotation));
         PROVIDERS.put(DungeonModelBlockType.SOLID,
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.solid.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.NORMAL,
+        PROVIDERS.put(DungeonModelBlockType.GENERIC,
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.generic.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.NORMAL_2,
+        PROVIDERS.put(DungeonModelBlockType.GENERIC_SECONDARY,
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.generic2.get(pos), rotation));
         PROVIDERS.put(DungeonModelBlockType.STAIRS, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
                 .create(theme.stairs.get(pos), rotation));
@@ -230,8 +243,6 @@ public class DungeonModelBlock {
             }
             return skull;
         });
-        PROVIDERS.put(DungeonModelBlockType.CHEST, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
-                .create(DungeonBlocks.CHEST, rotation));
         PROVIDERS.put(DungeonModelBlockType.FLOOR,
                 (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.floor.get(pos), rotation));
 
@@ -250,12 +261,6 @@ public class DungeonModelBlock {
                 return CAVE_AIR;
             }
         });
-
-        if (Config.NO_SPAWNERS.get()) {
-            PROVIDERS.put(DungeonModelBlockType.SPAWNER, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> CAVE_AIR);
-        } else {
-            PROVIDERS.put(DungeonModelBlockType.SPAWNER, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> tuple(DungeonBlocks.SPAWNER, false));
-        }
     }
 
     /**

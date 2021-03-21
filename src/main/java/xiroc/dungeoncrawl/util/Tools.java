@@ -298,19 +298,22 @@ public class Tools {
         for (int y = 0; y < model.height; y++) {
             for (int x = 0; x < model.width; x++) {
                 for (int z = 0; z < model.length; z++) {
-                    BlockPos placePos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (model.model[x][y][z] == null) {
-                        world.setBlockState(placePos, AIR, 2);
-                    } else {
-                        Block block = definition.getBlock(model.model[x][y][z]);
-                        if (block == null)
-                            block = Blocks.AIR;
-                        world.setBlockState(placePos, model.model[x][y][z].create(block.getDefaultState(), Rotation.NONE).getA(), 3);
-                        world.notifyNeighbors(placePos, world.getBlockState(placePos).getBlock());
-                    }
+                    world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), Blocks.BARRIER.getDefaultState(), 2);
                 }
             }
         }
+
+        model.blocks.forEach((modelBlock) -> {
+            BlockPos placePos = pos.add(modelBlock.position);
+            Block block = definition.getBlock(modelBlock);
+
+            if (block == null)
+                block = Blocks.AIR;
+
+            world.setBlockState(placePos, modelBlock.create(block.getDefaultState(), Rotation.NONE).getA(), 3);
+            world.notifyNeighbors(placePos, world.getBlockState(placePos).getBlock());
+
+        });
 
         if (model.featurePositions != null) {
             for (DungeonModel.FeaturePosition featurePosition : model.featurePositions) {

@@ -31,6 +31,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
@@ -113,76 +114,38 @@ public class DungeonEntrance extends DungeonPiece {
         super.readAdditional(tagCompound);
     }
 
-    @Override
-    public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                      SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
-
-        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
-                width = Math.min(model.width, boundsIn.maxX - pos.getX() - xStart + 1);
-        int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
-                length = Math.min(model.length, boundsIn.maxZ - pos.getZ() - zStart + 1);
-
-        for (int x = xStart; x < width; x++) {
-            for (int y = 0; y < model.height; y++) {
-                for (int z = zStart; z < length; z++) {
-                    if (model.model[x][y][z] == null) {
-                        setBlockState(CAVE_AIR, world, treasureType, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z),
-                                theme, subTheme, lootLevel, DungeonModelBlockType.SOLID);
-                    } else {
-                        BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                        Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
-                                position, theme, subTheme,
-                                WeightedRandomBlock.RANDOM, variation, lootLevel);
-                        if (result == null)
-                            continue;
-                        setBlockState(result.getA(), world, treasureType, new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z),
-                                theme, subTheme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
-
-                        if (result.getB()) {
-                            world.getChunk(position).markBlockForPostprocessing(position);
-                        }
-
-                        if (y == 0 && world.isAirBlock(position.down())
-                                && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                            buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     public void buildFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
                           SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
+        }
 
-        for (int x = 0; x < model.width; x++) {
-            for (int y = 0; y < model.height; y++) {
-                for (int z = 0; z < model.length; z++) {
-                    BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (boundsIn.isVecInside(position)) {
-                        if (model.model[x][y][z] == null) {
-                            setBlockState(CAVE_AIR, world, treasureType, position, theme, subTheme, lootLevel, DungeonModelBlockType.SOLID);
-                        } else {
-                            Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
-                                    Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
-                            if (result == null)
-                                continue;
-                            setBlockState(result.getA(), world, treasureType, position, theme, subTheme, lootLevel,
-                                    fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
+        model.blocks.forEach((block) -> {
+            BlockPos position = pos.add(block.position);
+            if (boundsIn.isVecInside(position)) {
+                Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
+                        Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+                if (state == null)
+                    return;
 
-                            if (result.getB()) {
-                                world.getChunk(position).markBlockForPostprocessing(position);
-                            }
+                setBlockState(state.getA(), world, treasureType, position, theme, subTheme, lootLevel,
+                        fillAir ? DungeonModelBlockType.SOLID : block.type);
 
-                            if (y == 0 && world.isAirBlock(position.down())
-                                    && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                                buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                            }
-                        }
-                    }
+                if (state.getB()) {
+                    world.getChunk(position).markBlockForPostprocessing(position);
+                }
+
+                if (block.position.getY() == 0
+                        && model.height > 1
+                        && world.isAirBlock(position.down())
+                        && block.type == DungeonModelBlockType.SOLID) {
+                    buildPillar(world, theme, pos.getX() + block.position.getX(), pos.getY(), pos.getZ() + block.position.getZ(), boundsIn);
                 }
             }
+        });
+
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Finished building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 

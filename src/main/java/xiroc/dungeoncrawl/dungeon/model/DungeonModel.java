@@ -51,7 +51,8 @@ public class DungeonModel {
 
     public int width, height, length;
 
-    public DungeonModelBlock[][][] model;
+    public final List<DungeonModelBlock> blocks;
+//    public DungeonModelBlock[][][] model;
 
     @Nullable
     public FeaturePosition[] featurePositions;
@@ -62,12 +63,16 @@ public class DungeonModel {
     @Nullable
     public Metadata metadata;
 
-    public DungeonModel(DungeonModelBlock[][][] model, @Nullable FeaturePosition[] featurePositions) {
-        this.model = model;
-        this.width = model.length;
-        this.height = model[0].length;
-        this.length = model[0][0].length;
+    public DungeonModel(List<DungeonModelBlock> blocks, @Nullable FeaturePosition[] featurePositions, int width, int height, int length) {
+        this.blocks = blocks;
         this.featurePositions = featurePositions;
+        this.width = width;
+        this.height = height;
+        this.length = length;
+    }
+
+    public List<DungeonModelBlock> getBlocks() {
+        return blocks;
     }
 
     public void setLocation(ResourceLocation location) {

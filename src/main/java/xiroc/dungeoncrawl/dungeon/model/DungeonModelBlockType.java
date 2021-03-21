@@ -29,28 +29,25 @@ import java.util.Random;
 
 public enum DungeonModelBlockType {
 
-    NONE,
+    AIR,
     SOLID_STAIRS(PlacementBehaviour.SOLID),
     SOLID(PlacementBehaviour.SOLID),
-    NORMAL,
-    NORMAL_2(PlacementBehaviour.SOLID),
+    GENERIC,
+    GENERIC_SECONDARY(PlacementBehaviour.SOLID),
     PILLAR,
     FLOOR(PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
     MATERIAL_STAIRS,
     STAIRS,
-    SPAWNER,
-    CHEST,
     TRAPDOOR,
     SLAB,
     SOLID_SLAB(PlacementBehaviour.SOLID),
-    BARREL,
     DOOR,
     FENCE,
     FENCE_GATE,
     WOODEN_SLAB,
     WOODEN_BUTTON,
     WOODEN_PRESSURE_PLATE,
-    VANILLA_WALL,
+    WALL,
     MATERIAL,
     SKULL,
     CARPET,
@@ -63,6 +60,7 @@ public enum DungeonModelBlockType {
      * as the key to allow looking up whether there is an existing type for a given name or not.
      */
     public static final Hashtable<String, DungeonModelBlockType> NAME_TO_TYPE = new Hashtable<>();
+
 
     DungeonModelBlockType() {
         this(PlacementBehaviour.NON_SOLID);
@@ -91,6 +89,16 @@ public enum DungeonModelBlockType {
         for (DungeonModelBlockType type : values()) {
             NAME_TO_TYPE.put(type.name(), type);
         }
+        // Renamed types
+        NAME_TO_TYPE.put("NORMAL", GENERIC);
+        NAME_TO_TYPE.put("NORMAL_2", GENERIC_SECONDARY);
+        NAME_TO_TYPE.put("VANILLA_WALL", WALL);
+
+        // Removed types
+        NAME_TO_TYPE.put("SPAWNER", AIR);
+        NAME_TO_TYPE.put("CHEST", AIR);
+        NAME_TO_TYPE.put("BARREL", AIR);
+
     }
 
 }

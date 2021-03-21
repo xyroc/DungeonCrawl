@@ -52,14 +52,14 @@ public class ModelBlockDefinition {
     public static final ModelBlockDefinition DEFAULT_DEFINITION;
 
     static {
-        DEFAULT.put(Blocks.AIR, null);
-        DEFAULT.put(Blocks.BARRIER, DungeonModelBlockType.NONE);
+        DEFAULT.put(Blocks.AIR, DungeonModelBlockType.AIR);
+        DEFAULT.put(Blocks.CAVE_AIR, DungeonModelBlockType.AIR);
 
         DEFAULT.put(Blocks.STONE_BRICK_STAIRS, DungeonModelBlockType.SOLID_STAIRS);
-        DEFAULT.put(Blocks.COBBLESTONE, DungeonModelBlockType.NORMAL);
-        DEFAULT.put(Blocks.OBSIDIAN, DungeonModelBlockType.NORMAL_2);
+        DEFAULT.put(Blocks.COBBLESTONE, DungeonModelBlockType.GENERIC);
+        DEFAULT.put(Blocks.OBSIDIAN, DungeonModelBlockType.GENERIC_SECONDARY);
         DEFAULT.put(Blocks.STONE_BRICKS, DungeonModelBlockType.SOLID);
-        DEFAULT.put(Blocks.STONE_BRICK_WALL, DungeonModelBlockType.VANILLA_WALL);
+        DEFAULT.put(Blocks.STONE_BRICK_WALL, DungeonModelBlockType.WALL);
 
         DEFAULT.put(Blocks.OAK_PLANKS, DungeonModelBlockType.MATERIAL);
         DEFAULT.put(Blocks.OAK_LOG, DungeonModelBlockType.PILLAR);
@@ -76,9 +76,6 @@ public class ModelBlockDefinition {
         DEFAULT.put(Blocks.COBBLESTONE_STAIRS, DungeonModelBlockType.STAIRS);
         DEFAULT.put(Blocks.COBBLESTONE_SLAB, DungeonModelBlockType.SLAB);
 
-        DEFAULT.put(Blocks.SPAWNER, DungeonModelBlockType.SPAWNER);
-//        DEFAULT.put(Blocks.CHEST, DungeonModelBlockType.CHEST);
-//        DEFAULT.put(Blocks.BARREL, DungeonModelBlockType.BARREL);
         DEFAULT.put(Blocks.SKELETON_SKULL, DungeonModelBlockType.SKULL);
 
         DEFAULT_DEFINITION = new ModelBlockDefinition(DEFAULT);
@@ -143,7 +140,7 @@ public class ModelBlockDefinition {
                 if (block != null) {
                     String value = entry.getValue().getAsString().toUpperCase();
                     if (DungeonModelBlockType.NAME_TO_TYPE.containsKey(value)) {
-                        definition.put(block, DungeonModelBlockType.valueOf(value));
+                        definition.put(block, DungeonModelBlockType.NAME_TO_TYPE.get(value));
                     } else {
                         DungeonCrawl.LOGGER.warn("Unknown model block type: {}", value);
                     }

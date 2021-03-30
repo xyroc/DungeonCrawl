@@ -63,7 +63,7 @@ public class DungeonSecretRoom extends DungeonPiece {
 
     @Override
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.model = DungeonModels.SECRET_ROOM;
+        this.model = DungeonModels.KEY_TO_MODEL.get("room/secret_room");
     }
 
 //    @Override
@@ -85,6 +85,8 @@ public class DungeonSecretRoom extends DungeonPiece {
     public void setupBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+        }else {
+            DungeonCrawl.LOGGER.info("SECRET ROOM MODEL IS NULL");
         }
     }
 

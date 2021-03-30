@@ -65,7 +65,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (lootRoom) {
             node = Node.ALL;
-            this.model = DungeonModels.LOOT_ROOM;
+            this.model = DungeonModels.KEY_TO_MODEL.get("loot_room");
             return;
         }
 
@@ -160,6 +160,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     public void setupBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+        } else {
+            DungeonCrawl.LOGGER.info("NODE MODEL IS NULL");
         }
     }
 

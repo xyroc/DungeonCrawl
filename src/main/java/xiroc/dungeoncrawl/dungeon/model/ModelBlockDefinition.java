@@ -54,6 +54,7 @@ public class ModelBlockDefinition {
     static {
         DEFAULT.put(Blocks.AIR, DungeonModelBlockType.AIR);
         DEFAULT.put(Blocks.CAVE_AIR, DungeonModelBlockType.AIR);
+        DEFAULT.put(Blocks.CHEST, DungeonModelBlockType.CHEST);
 
         DEFAULT.put(Blocks.STONE_BRICK_STAIRS, DungeonModelBlockType.SOLID_STAIRS);
         DEFAULT.put(Blocks.COBBLESTONE, DungeonModelBlockType.GENERIC);

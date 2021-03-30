@@ -53,10 +53,10 @@ public class DungeonStairs extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         switch (stairType) {
             case 0:
-                this.model = stage > 0 ? DungeonModels.STAIRS_BOTTOM_2 : DungeonModels.STAIRS_BOTTOM;
+                this.model = stage > 0 ? DungeonModels.KEY_TO_MODEL.get("stairs_bottom_2") : DungeonModels.KEY_TO_MODEL.get("stairs_bottom");
                 return;
             case 1:
-                this.model = DungeonModels.STAIRS_TOP;
+                this.model = DungeonModels.KEY_TO_MODEL.get("stairs_top");
         }
     }
 
@@ -127,6 +127,8 @@ public class DungeonStairs extends DungeonPiece {
     public void setupBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+        }else {
+            DungeonCrawl.LOGGER.info("STAIRS MODEL IS NULL");
         }
     }
 

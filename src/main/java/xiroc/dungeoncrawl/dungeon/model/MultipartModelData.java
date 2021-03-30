@@ -149,7 +149,7 @@ public class MultipartModelData {
             if (this == EMPTY) {
                 return;
             }
-            this.model = DungeonModels.MODELS.get(key);
+            this.model = DungeonModels.KEY_TO_MODEL.get(key);
             if (model == null) {
                 throw new RuntimeException("Missing model " + key + " in " + file.toString());
             }

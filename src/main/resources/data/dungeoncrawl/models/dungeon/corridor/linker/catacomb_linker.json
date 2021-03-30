@@ -11,7 +11,7 @@
     {
       "models": [
         {
-          "model": "multipart/catacomb/ceiling",
+          "model": "multipart/catacombs/ceiling",
           "offset": {
             "x": 1,
             "y": 5,
@@ -20,7 +20,7 @@
           "weight": 4
         },
         {
-          "model": "multipart/catacomb/ceiling_glowstone",
+          "model": "multipart/catacombs/ceiling_glowstone",
           "offset": {
             "x": 1,
             "y": 5,
@@ -28,7 +28,7 @@
           }
         },
         {
-          "model": "multipart/catacomb/ceiling_lamp",
+          "model": "multipart/catacombs/ceiling_lamp",
           "offset": {
             "x": 1,
             "y": 5,
@@ -43,7 +43,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacombs/connector",
           "offset": {
             "z": -2
           },
@@ -52,7 +52,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacombs/wall",
           "offset": {
             "x": 1,
             "z": -1
@@ -67,7 +67,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacombs/connector",
           "offset": {
             "x": 5
           }
@@ -75,7 +75,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacombs/wall",
           "offset": {
             "x": 5,
             "z": 1
@@ -89,7 +89,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacombs/connector",
           "offset": {
             "x": -2
           },
@@ -98,7 +98,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacombs/wall",
           "offset": {
             "x": -1,
             "z": 1
@@ -113,7 +113,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/connector",
+          "model": "multipart/catacombs/connector",
           "offset": {
             "z": 5
           },
@@ -122,7 +122,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/wall",
+          "model": "multipart/catacombs/wall",
           "offset": {
             "x": 1,
             "z": 5

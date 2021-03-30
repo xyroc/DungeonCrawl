@@ -53,15 +53,10 @@ public class DefaultLayerGenerator extends LayerGenerator {
 
         int maxDirections = 3 + rand.nextInt(2);
         int startDirection = rand.nextInt(4);
-        int counter = 0;
 
         for (int i = 0; i < 4; i++) {
-            if (counter < maxDirections) {
-                Direction direction = directions[(i + startDirection) % 4];
-                if (findPositionAndContinue(dungeonLayer, start, direction, rand, minDistance, maxDistance, layer, 1)) {
-                    counter++;
-                }
-            }
+            Direction direction = directions[(i + startDirection) % 4];
+            findPositionAndContinue(dungeonLayer, start, direction, rand, 2, Math.max(2, maxDistance), layer, 1);
         }
 
         if (layer == 0) {
@@ -92,8 +87,8 @@ public class DefaultLayerGenerator extends LayerGenerator {
     /**
      * Recursive layer generation
      */
-    public void layerGenerationStep(DungeonLayer dungeonLayer, Position2D currentPosition, Position2D lastPosition,
-                                    Random rand, int layer, int depth) {
+    private void layerGenerationStep(DungeonLayer dungeonLayer, Position2D currentPosition, Position2D lastPosition,
+                                     Random rand, int layer, int depth) {
         if (depth > maxDepth || (nodesLeft == 0 && roomsLeft == 0)) {
             return;
         }
@@ -129,7 +124,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
             return;
         }
 
-        if (depth <= maxNodeDepth && depth >= minNodeDepth && nodesLeft > 0) {
+        if (rand.nextFloat() < 0.5 && depth <= maxNodeDepth && depth >= minNodeDepth && nodesLeft > 0) {
             Position2D center = currentPosition.shift(lastPosition.directionTo(currentPosition), 1);
 
             if (DungeonBuilder.canPlacePiece(dungeonLayer, center.x - 1, center.z - 1, 3, 3, false)) {
@@ -144,18 +139,13 @@ public class DefaultLayerGenerator extends LayerGenerator {
 
                 Direction[] directions = Orientation.getHorizontalFacingsWithout(currentPosition.directionTo(lastPosition));
 
-                int maxDirections = depth < 3 ? 1 + rand.nextInt(3) : rand.nextInt(3);
-                int counter = 0;
+                int maxDirections = depth < 5 ? 2 + rand.nextInt(2) : rand.nextInt(3);
                 int start = rand.nextInt(3);
 
-                for (int i = 0; i < 3; i++) {
-                    if (counter < maxDirections) {
-                        Direction direction = directions[(i + start) % 3];
-                        if (findPositionAndContinue(dungeonLayer, center.shift(direction, 1),
-                                direction, rand, minDistance, maxDistance, layer, ++depth)) {
-                            counter++;
-                        }
-                    }
+                for (int i = 0; i < maxDirections; i++) {
+                    Direction direction = directions[(i + start) % 3];
+                    findPositionAndContinue(dungeonLayer, center.shift(direction, 1),
+                            direction, rand, minDistance, maxDistance, layer, ++depth);
                 }
                 return;
             }
@@ -171,23 +161,19 @@ public class DefaultLayerGenerator extends LayerGenerator {
 
             Direction[] directions = Orientation.getHorizontalFacingsWithout(currentPosition.directionTo(lastPosition));
 
-            int maxDirections = depth < 3 ? 1 + rand.nextInt(3) : rand.nextInt(3);
-            int counter = 0;
+            int maxDirections = depth < 5 ? 2 + rand.nextInt(2) : rand.nextInt(3);
             int start = rand.nextInt(3);
 
-            for (int i = 0; i < 3; i++) {
-                if (counter < maxDirections) {
-                    Direction direction = directions[(i + start) % 3];
-                    if (findPositionAndContinue(dungeonLayer, currentPosition, direction, rand, minDistance, maxDistance, layer, ++depth)) {
-                        counter++;
-                    }
-                }
+            for (int i = 0; i < maxDirections; i++) {
+                Direction direction = directions[(i + start) % 3];
+                findPositionAndContinue(dungeonLayer, currentPosition,
+                        direction, rand, minDistance, maxDistance, layer, ++depth);
             }
         }
     }
 
-    public boolean findPositionAndContinue(DungeonLayer dungeonLayer, Position2D origin, Direction direction, Random rand,
-                                           int min, int max, int layer, int depth) {
+    private boolean findPositionAndContinue(DungeonLayer dungeonLayer, Position2D origin, Direction direction, Random rand,
+                                            int min, int max, int layer, int depth) {
         switch (direction) {
             case NORTH:
                 if (origin.z > min) {
@@ -232,7 +218,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
         }
     }
 
-    public void createStarterRoom(DungeonLayer dungeonLayer, Random rand, int layer) {
+    private void createStarterRoom(DungeonLayer dungeonLayer, Random rand, int layer) {
         Tuple<Position2D, Rotation> sideRoomData = dungeonLayer.findStarterRoomData(dungeonLayer.start, rand);
         if (sideRoomData != null) {
             DungeonSideRoom room = new DungeonSideRoom();
@@ -241,7 +227,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
             room.openSide(dir);
             room.setGridPosition(sideRoomData.getA().x, sideRoomData.getA().z);
             room.setRotation(sideRoomData.getB());
-            room.model = DungeonModels.STARTER_ROOM;
+            room.model = DungeonModels.KEY_TO_MODEL.get("room/starter_room");
             room.stage = layer;
 
             dungeonLayer.map.markPositionAsOccupied(sideRoomData.getA());
@@ -264,7 +250,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
      * @param start the start position
      * @param end   the end position
      */
-    public void connectStraight(DungeonLayer dungeonLayer, Position2D start, Position2D end, Random rand, int layer) {
+    private void connectStraight(DungeonLayer dungeonLayer, Position2D start, Position2D end, Random rand, int layer) {
         if (start.x != end.x || start.z != end.z) {
             if (start.x == end.x) {
                 if (start.z > end.z) {

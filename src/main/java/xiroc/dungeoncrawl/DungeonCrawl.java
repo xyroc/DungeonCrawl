@@ -107,7 +107,6 @@ public class DungeonCrawl {
 
         DungeonModelBlock.init();
         IBlockPlacementHandler.init();
-        DungeonBlocks.init();
 
         DungeonCrawl.LOGGER.info("Adding features and structures");
 
@@ -117,7 +116,7 @@ public class DungeonCrawl {
                 if (biome.getRegistryName() == null || !JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())
                         && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
                     DungeonCrawl.LOGGER.info("Generation Biome: " + biome.getRegistryName());
-                    biome.addStructure(new ConfiguredFeature<>(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));
+                    biome.addStructure(Dungeon.CONFIGURED_DUNGEON);
                 }
             }
         }

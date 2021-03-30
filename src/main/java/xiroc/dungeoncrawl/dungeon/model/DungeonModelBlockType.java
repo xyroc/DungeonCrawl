@@ -30,6 +30,7 @@ import java.util.Random;
 public enum DungeonModelBlockType {
 
     AIR,
+    CHEST,
     SOLID_STAIRS(PlacementBehaviour.SOLID),
     SOLID(PlacementBehaviour.SOLID),
     GENERIC,
@@ -96,7 +97,6 @@ public enum DungeonModelBlockType {
 
         // Removed types
         NAME_TO_TYPE.put("SPAWNER", AIR);
-        NAME_TO_TYPE.put("CHEST", AIR);
         NAME_TO_TYPE.put("BARREL", AIR);
 
     }

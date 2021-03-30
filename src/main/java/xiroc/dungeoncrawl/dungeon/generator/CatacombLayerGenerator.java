@@ -42,7 +42,8 @@ public class CatacombLayerGenerator extends LayerGenerator {
 
     @Override
     public void initializeLayer(DungeonBuilder dungeonBuilder, Random rand, int layer) {
-        this.nodesLeft = settings.maxNodes.apply(rand, layer);
+//        this.nodesLeft = settings.maxNodes.apply(rand, layer);
+        this.nodesLeft = 12;
         this.roomsLeft = settings.maxRooms.apply(rand, layer);
     }
 
@@ -52,7 +53,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
         bottomStairs.setGridPosition(start.x, start.z);
         dungeonLayer.grid[bottomStairs.gridX][bottomStairs.gridZ] = new PlaceHolder(bottomStairs).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
 
-        dungeonLayer.end = createCorridors(dungeonLayer, rand, start);
+        dungeonLayer.end = createCorridors(dungeonLayer, rand, createCorridors(dungeonLayer, rand, start));
         DungeonStairs topStairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
         topStairs.setGridPosition(dungeonLayer.end);
         topStairs.takeOverProperties(dungeonLayer.grid[dungeonLayer.end.x][dungeonLayer.end.z].reference);
@@ -115,7 +116,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
                     tile.reference.openSide(direction.getOpposite());
                     dungeonLayer.openSideIfPresent(cursor.shift(direction.getOpposite(), 1), direction);
 
-                    if (currentLength > 1 && depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.6) {
+                    if (currentLength > 1 && depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.75) {
                         createNode(dungeonLayer, cursor.shift(direction, 2), cursor, rand);
                         break;
                     }
@@ -133,7 +134,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
                 dungeonLayer.rotatePiece(placeHolder, rand);
                 dungeonLayer.grid[cursor.x][cursor.z] = placeHolder;
 
-                if (currentLength > 1 && depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.6) {
+                if (currentLength > 1 && depth > 0 && nodesLeft > 0 && dungeonLayer.canPlaceNode(cursor.shift(direction, 2)) && rand.nextFloat() < 0.75) {
                     createNode(dungeonLayer, cursor.shift(direction, 2), cursor, rand);
                     break;
                 }
@@ -144,7 +145,7 @@ public class CatacombLayerGenerator extends LayerGenerator {
                     farthestPos = cursor;
                 }
 
-                if (depth < maxDepth && rand.nextFloat() < (0.4F - depth * 0.15F)) {
+                if (depth < maxDepth && currentLength > 3 && rand.nextFloat() < (0.4F - depth * 0.15F)) {
                     Tuple<Position2D, Integer> pos = catacombCorridor(dungeonLayer, rand, cursor, rand.nextBoolean() ? direction.rotateY() : direction.rotateYCCW(), depth + 1);
                     if (pos.getB() > highestDistance) {
                         highestDistance = pos.getB();

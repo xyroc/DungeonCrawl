@@ -138,7 +138,7 @@ public class Tools {
         event.getCommandDispatcher().register(Commands.literal("buildmodel").requires((a) -> a.hasPermissionLevel(2))
                 .then(Commands.argument("id", IntegerArgumentType.integer()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
+                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -149,7 +149,7 @@ public class Tools {
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
+                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -160,7 +160,7 @@ public class Tools {
                     return 0;
                 })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
+                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
                     String key = StringArgumentType.getString(command, "block definition");
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
@@ -177,7 +177,7 @@ public class Tools {
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.LEGACY_MODELS.get(id);
+                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
                     String key = StringArgumentType.getString(command, "block definition");
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
@@ -194,7 +194,7 @@ public class Tools {
                     return 0;
                 })))).then(Commands.argument("key", StringArgumentType.string()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
-                    DungeonModel model = DungeonModels.MODELS.get(key);
+                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -205,7 +205,7 @@ public class Tools {
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
-                    DungeonModel model = DungeonModels.MODELS.get(key);
+                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
@@ -217,7 +217,7 @@ public class Tools {
                 })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
                     String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    DungeonModel model = DungeonModels.MODELS.get(key);
+                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
                             BlockPos pos = command.getSource().asPlayer().getPosition();
@@ -234,7 +234,7 @@ public class Tools {
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     String key = StringArgumentType.getString(command, "key");
                     String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    DungeonModel model = DungeonModels.MODELS.get(key);
+                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
                     if (model != null) {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
                             BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());

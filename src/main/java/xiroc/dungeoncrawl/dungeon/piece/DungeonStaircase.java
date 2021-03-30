@@ -45,7 +45,7 @@ public class DungeonStaircase extends DungeonPiece {
 
     @Override
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.model = DungeonModels.STAIRCASE;
+        this.model = DungeonModels.KEY_TO_MODEL.get("staircase");
     }
 
     @Override

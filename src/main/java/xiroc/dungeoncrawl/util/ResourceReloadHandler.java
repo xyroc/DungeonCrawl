@@ -60,6 +60,7 @@ public class ResourceReloadHandler implements IFutureReloadListener {
             ModelBlockDefinition.loadJson(resourceManager);
         }
 
+        DungeonCrawl.LOGGER.debug("Finishing...");
         UPDATEABLES.forEach(Updateable::update);
         UPDATEABLES.clear();
 

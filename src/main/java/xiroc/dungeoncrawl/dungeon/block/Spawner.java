@@ -58,7 +58,10 @@ public class Spawner implements IBlockPlacementHandler {
     @Override
     public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
                            Theme theme, Theme.SubTheme subTheme, int stage) {
-        world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 3);
+        if (world.isAirBlock(pos.down())) {
+            return;
+        }
+        world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 2);
         TileEntity tileentity = world.getTileEntity(pos);
         if (tileentity instanceof MobSpawnerTileEntity) {
             MobSpawnerTileEntity tile = (MobSpawnerTileEntity) tileentity;
@@ -81,7 +84,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
                 spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
                 spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).generateInt(rand));
-                spawnerNBT.putShort("RequiredPlayerRange", (short) 10);
+                spawnerNBT.putShort("RequiredPlayerRange", (short) 12);
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {

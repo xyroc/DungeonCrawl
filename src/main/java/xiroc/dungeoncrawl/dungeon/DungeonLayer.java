@@ -258,7 +258,7 @@ public class DungeonLayer {
                 Position2D other = getOther(x, z, direction);
                 grid[other.x][other.z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.PLACEHOLDER);
                 corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
-                corridor.model = DungeonModels.CORRIDOR_SECRET_ROOM_ENTRANCE;
+                corridor.model = DungeonModels.KEY_TO_MODEL.get("corridor/corridor_secret_room_entrance");
                 grid[corridorPos.x][corridorPos.z].addFlag(PlaceHolder.Flag.FIXED_MODEL);
                 return true;
             }

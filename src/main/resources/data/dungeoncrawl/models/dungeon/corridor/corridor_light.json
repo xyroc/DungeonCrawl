@@ -48,7 +48,8 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model": "multipart/corridor/default"
+          "model": "multipart/corridor/default",
+          "weight": 2
         },
         {
           "offset": {
@@ -56,7 +57,8 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model": "multipart/corridor/variant"
+          "model": "multipart/corridor/variant",
+          "weight": 2
         },
         {
           "offset": {
@@ -64,7 +66,8 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model": "multipart/corridor/variant_2"
+          "model": "multipart/corridor/variant_2",
+          "weight": 2
         },
         {
           "offset": {
@@ -72,7 +75,8 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model": "multipart/corridor/bookshelf"
+          "model": "multipart/corridor/bookshelf",
+          "weight": 2
         },
         {
           "offset": {
@@ -80,7 +84,8 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model": "multipart/corridor/chest"
+          "model": "multipart/corridor/chest",
+          "weight": 2
         },
         {
           "offset": {
@@ -88,7 +93,36 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model": "multipart/corridor/spawner"
+          "model": "multipart/corridor/spawner",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": -4
+          },
+          "model": "multipart/corridor/empty_room"
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": -4
+          },
+          "model": "multipart/corridor/empty_room_2"
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": -4
+          },
+          "model": "multipart/corridor/empty_room_3"
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": -4
+          },
+          "model": "multipart/corridor/empty_room_4"
         }
       ]
     }

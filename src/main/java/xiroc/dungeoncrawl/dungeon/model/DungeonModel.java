@@ -80,7 +80,7 @@ public class DungeonModel {
     }
 
     public DungeonModel setId(int id) {
-        DungeonModels.LEGACY_MODELS.put(id, this);
+        DungeonModels.ID_TO_MODEL.put(id, this);
         this.id = id;
         return this;
     }
@@ -98,7 +98,7 @@ public class DungeonModel {
 
         if (metadata.id != null) {
             this.id = metadata.id;
-            DungeonModels.LEGACY_MODELS.put(id, this);
+            DungeonModels.ID_TO_MODEL.put(id, this);
         }
 
         if (metadata.type != null) {

@@ -21,8 +21,11 @@ package xiroc.dungeoncrawl.util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.*;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -36,7 +39,14 @@ public interface IBlockPlacementHandler {
 
     HashMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new HashMap<>();
 
-    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, treasureType, theme, subTheme, lootLevel) -> world.setBlockState(pos, state, 2);
+    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, treasureType, theme, subTheme, lootLevel) -> {
+        if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
+            world.setBlockState(pos, state, 2);
+            world.getChunk(pos).getBlocksToBeTicked().scheduleTick(pos, state.getBlock(), 1);
+        } else {
+            world.setBlockState(pos, state, 2);
+        }
+    };
 
     static void init() {
         PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);

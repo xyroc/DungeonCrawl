@@ -1,11 +1,9 @@
 {
-  "type": "room",
+  "type": "generic",
   "id": 79,
   "feature": {
     "type": "chests",
     "min": 1,
     "max": 2
-  },
-  "stages": [1, 2],
-  "weights": [1, 1, 0, 0, 0]
+  }
 }

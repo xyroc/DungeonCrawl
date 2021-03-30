@@ -106,11 +106,16 @@ public class DungeonModelBlock {
 
         String type = nbt.getString("type");
         if (!DungeonModelBlockType.NAME_TO_TYPE.containsKey(type)) {
+            if (type.equals("SPAWNER")) {
+                DungeonModelBlock spawner = new DungeonModelBlock(DungeonModelBlockType.OTHER, null);
+                spawner.resource = new ResourceLocation("spawner");
+                return spawner;
+            }
             DungeonCrawl.LOGGER.warn("Unknown model block type: {}", type);
             return null;
         }
 
-        CompoundNBT pos  = nbt.getCompound("position");
+        CompoundNBT pos = nbt.getCompound("position");
         Vec3i position = new Vec3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
 
         DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.NAME_TO_TYPE.get(type), position);
@@ -187,6 +192,8 @@ public class DungeonModelBlock {
      */
     public static void init() {
         PROVIDERS.put(DungeonModelBlockType.AIR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> tuple(DungeonBlocks.CAVE_AIR, false));
+        PROVIDERS.put(DungeonModelBlockType.CHEST, (block, rotation, world, pos, theme, subTheme, rand, variation,
+                                                       stage) -> block.create(Blocks.CHEST.getDefaultState(), rotation));
         PROVIDERS.put(DungeonModelBlockType.CARPET, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
             Block b = block.variation != null && variation != null ?
                     DungeonBlocks.CARPET[(block.variation + variation[block.variation]) % DungeonBlocks.CARPET.length]
@@ -305,7 +312,9 @@ public class DungeonModelBlock {
 
         public PropertyHolder(IProperty<?> property, Object value) {
             this.property = property;
+            this.propertyName = property.getName();
             this.value = value;
+            this.valueName = value.toString().toLowerCase(Locale.ROOT);
         }
 
         @SuppressWarnings("unchecked")

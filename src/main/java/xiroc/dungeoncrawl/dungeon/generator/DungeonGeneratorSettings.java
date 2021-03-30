@@ -29,8 +29,8 @@ public class DungeonGeneratorSettings {
     private static final Function<Integer, Integer> DEFAULT_GRID_SIZE = (layer) -> Dungeon.SIZE;
 
     public static final DungeonGeneratorSettings DEFAULT = new DungeonGeneratorSettings(
-            (rand, layer) -> 3 + layer, (rand, layer) -> 4 + (int) (1.5 * layer),
-            5, 2, 4, 5, 1, 4, 2, 6, 2, true);
+            (rand, layer) -> 6, (rand, layer) -> 8,
+            5, 1, 3, 5, 1, 5, 1, 6, 4, true);
 
     public static final DungeonGeneratorSettings LARGE = new DungeonGeneratorSettings(
             (rand, layer) -> 5 + layer / 2, (rand, layer) -> 6 + layer,

@@ -56,7 +56,7 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
         if (ModelCategory.ENTRANCE.members.isEmpty()) {
-            this.model = DungeonModels.DEFAULT_TOWER;
+            this.model = DungeonModels.KEY_TO_MODEL.get("entrance/roguelike_tower");
         } else {
             this.model = ModelCategory.ENTRANCE.members.get(rand.nextInt(ModelCategory.ENTRANCE.members.size()));
         }
@@ -73,10 +73,12 @@ public class DungeonEntrance extends DungeonPiece {
         int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
         int cursorHeight = y;
 
+        DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get("staircase");
+
         while (cursorHeight < height) {
             if (height - cursorHeight <= 4)
                 break;
-            super.build(DungeonModels.STAIRCASE, worldIn, structureBoundingBoxIn,
+            super.build(staircase, worldIn, structureBoundingBoxIn,
                     new BlockPos(x + 2, cursorHeight, z + 2), theme, subTheme, Treasure.Type.DEFAULT, stage, true);
             cursorHeight += 8;
         }
@@ -101,6 +103,9 @@ public class DungeonEntrance extends DungeonPiece {
     public void setupBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+        }
+        else {
+            DungeonCrawl.LOGGER.info("ENTRANCE MODEL IS NULL");
         }
     }
 

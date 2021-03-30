@@ -25,7 +25,6 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.IRandom;
@@ -47,15 +46,15 @@ public class Theme {
     public static Hashtable<Integer, SubTheme> ID_TO_SUB_THEME = new Hashtable<>();
 
     public static final Theme DEFAULT_THEME = new Theme(
-            (pos) -> DungeonBlocks.STONE_BRICKS,
-            DungeonBlocks.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE,
-            DungeonBlocks.STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE,
-            DungeonBlocks.STONE_BRICK_FLOOR,
-            DungeonBlocks.STAIRS_STONE_COBBLESTONE,
-            DungeonBlocks.STAIRS_STONE_COBBLESTONE,
-            DungeonBlocks.STONE_BRICKS_GRAVEL_COBBLESTONE,
-            DungeonBlocks.STONE_WALL,
-            DungeonBlocks.STONE_BRICK_FLOOR,
+            (pos) -> Blocks.STONE_BRICKS.getDefaultState(),
+            (pos) -> Blocks.STONE_BRICKS.getDefaultState(),
+            (pos) -> Blocks.COBBLESTONE.getDefaultState(),
+            (pos) -> Blocks.GRAVEL.getDefaultState(),
+            (pos) -> Blocks.STONE_BRICK_STAIRS.getDefaultState(),
+            (pos) -> Blocks.COBBLESTONE_STAIRS.getDefaultState(),
+            (pos) -> Blocks.COBBLESTONE.getDefaultState(),
+            (pos) -> Blocks.COBBLESTONE_WALL.getDefaultState(),
+            (pos) -> Blocks.GRAVEL.getDefaultState(),
             (pos) -> Blocks.OBSIDIAN.getDefaultState(),
             (pos) -> Blocks.COBBLESTONE_SLAB.getDefaultState(),
             (pos) -> Blocks.STONE_BRICK_SLAB.getDefaultState());
@@ -73,7 +72,14 @@ public class Theme {
             (pos) -> Blocks.OAK_BUTTON.getDefaultState(),
             (pos) -> Blocks.OAK_PRESSURE_PLATE.getDefaultState());
 
-    public final IBlockStateProvider ceiling, solid, generic, generic2, floor, solidStairs, stairs, material, vanillaWall, column, slab, solidSlab;
+    static {
+        DEFAULT_THEME.key = "builtin:default";
+        DEFAULT_SUB_THEME.key = "builtin:default";
+        KEY_TO_THEME.put(DEFAULT_THEME.key, DEFAULT_THEME);
+        KEY_TO_SUB_THEME.put(DEFAULT_SUB_THEME.key, DEFAULT_SUB_THEME);
+    }
+
+    public final IBlockStateProvider ceiling, solid, generic, generic2, floor, solidStairs, stairs, material, wall, column, slab, solidSlab;
 
     public IRandom<SubTheme> subTheme;
 
@@ -83,18 +89,18 @@ public class Theme {
 
     public Theme(IBlockStateProvider ceiling, IBlockStateProvider solid, IBlockStateProvider generic,
                  IBlockStateProvider floor, IBlockStateProvider solidStairs, IBlockStateProvider stairs,
-                 IBlockStateProvider material, IBlockStateProvider vanillaWall, IBlockStateProvider column,
+                 IBlockStateProvider material, IBlockStateProvider wall, IBlockStateProvider column,
                  IBlockStateProvider generic2, IBlockStateProvider slab, IBlockStateProvider solidSlab) {
         this.ceiling = ceiling;
         this.solid = solid;
         this.generic = generic;
+        this.generic2 = generic2;
         this.floor = floor;
         this.solidStairs = solidStairs;
         this.stairs = stairs;
         this.material = material;
-        this.vanillaWall = vanillaWall;
+        this.wall = wall;
         this.column = column;
-        this.generic2 = generic2;
         this.slab = slab;
         this.solidSlab = solidSlab;
     }
@@ -206,24 +212,24 @@ public class Theme {
 
     public static Theme randomTheme(String biome, Random rand) {
         return BIOME_TO_THEME.computeIfAbsent(biome, (key) -> {
-            Theme theme = KEY_TO_THEME.getOrDefault("default", DEFAULT_THEME);
+            Theme theme = KEY_TO_THEME.getOrDefault("vanilla/default", DEFAULT_THEME);
             return (random) -> theme;
         }).roll(rand);
     }
 
     public static SubTheme randomSubTheme(String biome, Random rand) {
         return BIOME_TO_SUB_THEME.computeIfAbsent(biome, (key) -> {
-            SubTheme theme = KEY_TO_SUB_THEME.getOrDefault("default", DEFAULT_SUB_THEME);
+            SubTheme theme = KEY_TO_SUB_THEME.getOrDefault("vanilla/default", DEFAULT_SUB_THEME);
             return (random) -> theme;
         }).roll(rand);
     }
 
     public static Theme getTheme(String key) {
-        return KEY_TO_THEME.getOrDefault(key, KEY_TO_THEME.getOrDefault("default", DEFAULT_THEME));
+        return KEY_TO_THEME.getOrDefault(key, KEY_TO_THEME.getOrDefault("vanilla/default", DEFAULT_THEME));
     }
 
     public static SubTheme getSubTheme(String key) {
-        return KEY_TO_SUB_THEME.getOrDefault(key, KEY_TO_SUB_THEME.getOrDefault("default", DEFAULT_SUB_THEME));
+        return KEY_TO_SUB_THEME.getOrDefault(key, KEY_TO_SUB_THEME.getOrDefault("vanilla/default", DEFAULT_SUB_THEME));
     }
 
     public static Theme getThemeByID(int theme) {

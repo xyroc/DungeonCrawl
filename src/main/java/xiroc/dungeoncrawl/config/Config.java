@@ -43,7 +43,7 @@ public class Config {
     public static final DoubleValue SHIELD_PROBABILITY, MOB_SPAWN_RATE;
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
-            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN, EXTENDED_DEBUG;
+            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN, EXTENDED_DEBUG, TICK_FALLING_BLOCKS;
 
     static {
         BUILDER.comment("General Settings").push(GENERAL);
@@ -59,6 +59,8 @@ public class Config {
                 "If this is set to false, no dungeons can be generated outside the overworld.")
                 .define("ignore_dimension", false);
         SOLID = BUILDER.comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.").define("solid", false);
+        TICK_FALLING_BLOCKS = BUILDER.comment("Whether falling blocks like sand or gravel should drop down after being placed during dungeon generation.")
+                .define("tick_falling_blocks", true);
         BUILDER.pop();
 
         BUILDER.comment("Advanced World Generation Settings").push(ADVANCED_WORLD_GENERATION);

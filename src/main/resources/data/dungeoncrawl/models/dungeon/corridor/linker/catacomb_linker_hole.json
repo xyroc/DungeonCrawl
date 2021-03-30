@@ -11,7 +11,7 @@
     {
       "models": [
         {
-          "model": "multipart/catacomb/ceiling",
+          "model": "multipart/catacombs/ceiling",
           "offset": {
             "x": 1,
             "y": 5,
@@ -20,7 +20,7 @@
           "weight": 4
         },
         {
-          "model": "multipart/catacomb/ceiling_glowstone",
+          "model": "multipart/catacombs/ceiling_glowstone",
           "offset": {
             "x": 1,
             "y": 5,
@@ -28,7 +28,7 @@
           }
         },
         {
-          "model": "multipart/catacomb/ceiling_lamp",
+          "model": "multipart/catacombs/ceiling_lamp",
           "offset": {
             "x": 1,
             "y": 5,
@@ -43,7 +43,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/large_connector",
+          "model": "multipart/catacombs/large_connector",
           "offset": {
             "z": -2
           },
@@ -52,7 +52,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/hidden_piston",
+          "model": "multipart/catacombs/hidden_piston",
           "offset": {
             "x": 1,
             "z": -2
@@ -67,7 +67,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/large_connector",
+          "model": "multipart/catacombs/large_connector",
           "offset": {
             "x": 4
           },
@@ -76,7 +76,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/hidden_piston",
+          "model": "multipart/catacombs/hidden_piston",
           "offset": {
             "x": 4,
             "z": 1
@@ -91,7 +91,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/large_connector",
+          "model": "multipart/catacombs/large_connector",
           "offset": {
             "x": -2
           },
@@ -100,7 +100,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/hidden_piston",
+          "model": "multipart/catacombs/hidden_piston",
           "offset": {
             "x": -2,
             "z": 1
@@ -115,7 +115,7 @@
       },
       "models": [
         {
-          "model": "multipart/catacomb/large_connector",
+          "model": "multipart/catacombs/large_connector",
           "offset": {
             "z": 4
           }
@@ -123,7 +123,7 @@
       ],
       "alternatives": [
         {
-          "model": "multipart/catacomb/hidden_piston",
+          "model": "multipart/catacombs/hidden_piston",
           "offset": {
             "x": 1,
             "z": 4

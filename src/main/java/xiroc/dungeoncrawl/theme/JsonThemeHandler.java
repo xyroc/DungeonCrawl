@@ -57,10 +57,10 @@ public class JsonThemeHandler {
     public static Theme deserializeTheme(JsonObject object, ResourceLocation file) {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider generic = JsonThemeHandler.deserialize(themeObject, "normal");
         IBlockStateProvider solid = JsonThemeHandler.deserialize(themeObject, "solid");
 
-        IBlockStateProvider generic2 = JsonThemeHandler.deserialize(themeObject, "normal_2");
+        IBlockStateProvider generic = JsonThemeHandler.deserialize(themeObject, "generic");
+        IBlockStateProvider generic2 = JsonThemeHandler.deserialize(themeObject, "secondary_generic");
 
         IBlockStateProvider floor = JsonThemeHandler.deserialize(themeObject, "floor");
 
@@ -85,7 +85,6 @@ public class JsonThemeHandler {
         }
 
         if (object.has("sub_theme")) {
-            // TODO: random sub theme
             WeightedRandom.Builder<SubTheme> builder = new WeightedRandom.Builder<>();
             object.getAsJsonArray("sub_theme").forEach((element) -> {
                 JsonObject instance = element.getAsJsonObject();

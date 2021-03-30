@@ -35,43 +35,6 @@ public class DungeonBlocks {
     public static final BlockState SPAWNER = Blocks.SPAWNER.getDefaultState();
     public static final BlockState CHEST = Blocks.CHEST.getDefaultState();
 
-    public static final BlockState STONE_BRICKS = Blocks.STONE_BRICKS.getDefaultState();
-
-    public static WeightedRandomBlock STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE;
-    public static WeightedRandomBlock STONE_BRICK_FLOOR;
-    public static WeightedRandomBlock STONE_BRICKS_GRAVEL_COBBLESTONE;
-    public static WeightedRandomBlock STAIRS_STONE_COBBLESTONE;
-
-    public static WeightedRandomBlock STONE_WALL;
-
-    /*
-     * Calculate the WeightedRandomBlocks
-     */
-    public static void init() {
-        STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[]{
-                new TupleIntBlock(5, STONE_BRICKS), new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
-                new TupleIntBlock(2, Blocks.COBBLESTONE.getDefaultState()), new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState())});
-
-        STONE_BRICK_FLOOR = new WeightedRandomBlock(
-                new TupleIntBlock[]{new TupleIntBlock(8, Blocks.STONE_BRICKS.getDefaultState()),
-                        new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
-                        new TupleIntBlock(2, Blocks.COBBLESTONE.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState())});
-
-        STONE_BRICKS_GRAVEL_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[]{new TupleIntBlock(2, STONE_BRICKS),
-                new TupleIntBlock(1, Blocks.GRAVEL.getDefaultState()),
-                new TupleIntBlock(1, Blocks.COBBLESTONE.getDefaultState()), new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
-                new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState())});
-
-        STONE_WALL = new WeightedRandomBlock(
-                new TupleIntBlock[]{new TupleIntBlock(1, Blocks.STONE_BRICK_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.ANDESITE_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.DIORITE_WALL.getDefaultState())});
-    }
-
     public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, IProperty<T> property, V value) {
         if (state.has(property)) {
             return state.with(property, value);

@@ -58,6 +58,7 @@ public class ModelHandler {
                         continue;
                     } else if (state.getBlock() == Blocks.JIGSAW) {
                         featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.FACING)));
+                        blocks.add(new DungeonModelBlock(DungeonModelBlockType.AIR, new Vec3i(x, y, z)));
                         continue;
                     }
                     blocks.add(new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock(), definition), new Vec3i(x, y, z)).loadDataFromState(state));

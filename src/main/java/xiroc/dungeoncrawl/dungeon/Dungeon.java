@@ -28,6 +28,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
@@ -53,6 +56,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
     public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
     public static final Dungeon DUNGEON = new Dungeon(NoFeatureConfig::deserialize);
+    public static final ConfiguredFeature<NoFeatureConfig, Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = new ConfiguredFeature<>(DUNGEON, IFeatureConfig.NO_FEATURE_CONFIG);
 
     public static final int SIZE = 15;
     public static int spacing, separation;

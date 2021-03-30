@@ -168,7 +168,7 @@ public class DungeonBuilder {
             this.entranceSubTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
         }
 
-        this.lowerTheme = Theme.getTheme("catacombs/default");
+        this.lowerTheme = Theme.getTheme("vanilla/catacombs/default");
 
         if (lowerTheme.subTheme != null) {
             this.lowerSubTheme = lowerTheme.subTheme.roll(rand);
@@ -176,7 +176,7 @@ public class DungeonBuilder {
             this.lowerSubTheme = this.subTheme;
         }
 
-        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("mossy_obsidian") : Theme.getTheme("hell");
+        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("vanilla/hell/mossy_obsidian") : Theme.getTheme("vanilla/hell/hell");
 
         if (bottomTheme.subTheme != null) {
             this.bottomSubTheme = bottomTheme.subTheme.roll(rand);

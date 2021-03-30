@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -36,7 +37,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -142,9 +142,9 @@ public abstract class DungeonPiece extends StructurePiece {
         }
 
         if (p_i51343_2_.contains("model", 99)) {
-            model = DungeonModels.LEGACY_MODELS.get(p_i51343_2_.getInt("model"));
+            model = DungeonModels.ID_TO_MODEL.get(p_i51343_2_.getInt("model"));
         } else {
-            model = DungeonModels.MODELS.get(p_i51343_2_.getString("model"));
+            model = DungeonModels.KEY_TO_MODEL.get(p_i51343_2_.getString("model"));
         }
 
         if (p_i51343_2_.contains("featurePositions", 9)) {
@@ -171,11 +171,16 @@ public abstract class DungeonPiece extends StructurePiece {
         tagCompound.putInt("y", y);
         tagCompound.putInt("z", z);
         tagCompound.putInt("stage", stage);
-        tagCompound.putString("model", model.getKey());
         tagCompound.putInt("rotation", Orientation.rotationAsInt(this.rotation));
-        tagCompound.putString("theme", theme.getKey());
-        tagCompound.putString("subTheme", subTheme.getKey());
-
+        if (model != null) {
+            tagCompound.putString("model", model.getKey());
+        }
+        if (theme != null) {
+            tagCompound.putString("theme", theme.getKey());
+        }
+        if (subTheme != null) {
+            tagCompound.putString("subTheme", subTheme.getKey());
+        }
         if (featurePositions != null) {
             ListNBT list = new ListNBT();
             writeAllPositions(featurePositions, list);
@@ -321,29 +326,6 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public void setBlockState(BlockState state, IWorld world, Treasure.Type treasureType,
-                              BlockPos pos, Theme theme, SubTheme subTheme, int lootLevel, PlacementBehaviour placementBehaviour) {
-        if (state == null)
-            return;
-
-        if (DungeonBuilder.isBlockProtected(world, pos)
-                || world.isAirBlock(pos) && !placementBehaviour.function.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
-            return;
-        }
-
-        IBlockPlacementHandler.getHandler(state.getBlock()).placeBlock(world, state, pos, world.getRandom(),
-                treasureType, theme, subTheme, lootLevel);
-
-        IFluidState ifluidstate = world.getFluidState(pos);
-        if (ifluidstate.isSource()) {
-            world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
-        }
-
-        if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
-            world.getChunk(pos).markBlockForPostprocessing(pos);
-        }
-    }
-
     @Override
     public void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
                               MutableBoundingBox boundingboxIn) {
@@ -358,7 +340,11 @@ public abstract class DungeonPiece extends StructurePiece {
     public static void setBlockState(IWorld worldIn, BlockState blockstateIn, MutableBoundingBox boundingboxIn, BlockPos blockPos) {
         if (boundingboxIn.isVecInside(blockPos)) {
 
-            worldIn.setBlockState(blockPos, blockstateIn, 2);
+            if (blockstateIn.getBlock() instanceof FallingBlock) {
+                worldIn.setBlockState(blockPos, blockstateIn, 3);
+            } else {
+                worldIn.setBlockState(blockPos, blockstateIn, 2);
+            }
 
             IFluidState ifluidstate = worldIn.getFluidState(blockPos);
             if (ifluidstate.isSource()) {
@@ -472,14 +458,14 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.width - block.position.getX() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(block,
+                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
                                 Rotation.COUNTERCLOCKWISE_90, world, position, theme, subTheme,
                                 WeightedRandomBlock.RANDOM, variation, lootLevel);
 
-                        if (result == null)
+                        if (state == null)
                             return;
 
-                        placeBlock(block, model, world, boundsIn, theme, subTheme, treasureType, lootLevel, fillAir, position, result);
+                        placeBlock(block, model, world, boundsIn, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
 
                     }
                 });
@@ -493,13 +479,13 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.length - block.position.getZ() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(block, Rotation.CLOCKWISE_180, world,
+                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block, Rotation.CLOCKWISE_180, world,
                                 position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
 
-                        if (result == null)
+                        if (state == null)
                             return;
 
-                        placeBlock(block, model, world, boundsIn, theme, subTheme, treasureType, lootLevel, fillAir, position, result);
+                        placeBlock(block, model, world, boundsIn, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
 
                     }
                 });

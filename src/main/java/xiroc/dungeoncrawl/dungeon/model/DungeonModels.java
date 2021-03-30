@@ -33,126 +33,122 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 
 public class DungeonModels {
 
-    public static final HashMap<String, DungeonModel> MODELS = new HashMap<>();
+    public static final Hashtable<String, DungeonModel> KEY_TO_MODEL = new Hashtable<>();
+    public static final Hashtable<Integer, DungeonModel> ID_TO_MODEL = new Hashtable<>();
 
-    public static final HashMap<Integer, DungeonModel> LEGACY_MODELS = new HashMap<>();
-
-    public static final HashMap<Integer, WeightedRandom<DungeonModel>> WEIGHTED_MODELS = new HashMap<>();
+    public static final Hashtable<Integer, WeightedRandom<DungeonModel>> WEIGHTED_MODELS = new Hashtable<>();
 
     public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
 
-    public static DungeonModel CORRIDOR, CORRIDOR_2, CORRIDOR_3, CORRIDOR_STONE, CORRIDOR_ROOM, CORRIDOR_SECRET_ROOM_ENTRANCE;
-
-    public static DungeonModel DEFAULT_TOWER;
-    public static DungeonModel FOOD_SIDE_ROOM;
-    public static DungeonModel LOOT_ROOM, OLD_LOOT_ROOM;
-    public static DungeonModel PRISON_CELL;
-    public static DungeonModel SECRET_ROOM;
-    public static DungeonModel STAIRCASE, STAIRS_BOTTOM, STAIRS_BOTTOM_2, STAIRS_TOP;
-    public static DungeonModel STARTER_ROOM;
-
     public static synchronized void load(IResourceManager resourceManager) {
-        LEGACY_MODELS.clear();
-        MODELS.clear();
+        ID_TO_MODEL.clear();
+        KEY_TO_MODEL.clear();
         WEIGHTED_MODELS.clear();
 
         ModelCategory.clear();
 
-        OLD_LOOT_ROOM = loadModel("models/dungeon/old_loot_room.nbt", resourceManager).setId(35);
+//        OLD_LOOT_ROOM = loadModel("models/dungeon/old_loot_room.nbt", resourceManager).setId(35);
+//
+//        loadModel("models/dungeon/corridor/old_corridor_secret_room_entrance.nbt", resourceManager).setId(7);
+//
+//        PRISON_CELL = loadModel("models/dungeon/prison_cell.nbt", resourceManager).setId(64);
+//
+//        STAIRCASE = loadModel("models/dungeon/staircase.nbt", resourceManager).setId(72);
+//        STAIRS_TOP = loadModel("models/dungeon/stairs_top.nbt", resourceManager).setId(73);
+//        STAIRS_BOTTOM = loadModel("models/dungeon/stairs_bottom.nbt", resourceManager).setId(74);
+//        STAIRS_BOTTOM_2 = loadModel("models/dungeon/stairs_bottom_2.nbt", resourceManager).setId(75);
+//
+//        // Models with metadata
+//        FOOD_SIDE_ROOM = load("models/dungeon/room/", "food_side_room", resourceManager);
+//        LOOT_ROOM = load("models/dungeon/", "loot_room", resourceManager);
+//        SECRET_ROOM = load("models/dungeon/room/", "secret_room", resourceManager);
+//        STARTER_ROOM = load("models/dungeon/room/", "starter_room", resourceManager);
+//
+//        DEFAULT_TOWER = load("models/dungeon/entrance/", "roguelike_tower", resourceManager);
+//        load("models/dungeon/entrance/", "roguelike_house", resourceManager);
+//        load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
+//
+//        load("models/dungeon/room/", "tnt_trap_side_room", resourceManager);
+//
+//        load("models/dungeon/corridor/", "corridor", resourceManager);
+//        load("models/dungeon/corridor/", "corridor_2", resourceManager);
+//        load("models/dungeon/corridor/", "corridor_3", resourceManager);
+//        load("models/dungeon/corridor/", "old_corridor", resourceManager);
+//        load("models/dungeon/corridor/", "old_corridor_3", resourceManager);
+//        load("models/dungeon/corridor/", "stone_corridor", resourceManager);
+//        load("models/dungeon/corridor/", "corridor_room", resourceManager);
+//        load("models/dungeon/corridor/", "corridor_fire", resourceManager);
+//        load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
+//        load("models/dungeon/corridor/", "corridor_light", resourceManager);
+//
+//        load("models/dungeon/corridor/", "corridor_secret_room_entrance", resourceManager);
+//
+//        load("models/dungeon/corridor/hell/", "corridor", resourceManager);
+//        load("models/dungeon/corridor/hell/", "corridor_2", resourceManager);
+//        load("models/dungeon/corridor/hell/", "corridor_3", resourceManager);
+//        load("models/dungeon/corridor/hell/", "corridor_4", resourceManager);
+//        load("models/dungeon/corridor/hell/", "corridor_spawner", resourceManager);
+//
+//        load("models/dungeon/corridor/linker/", "cake_room", resourceManager);
+//        load("models/dungeon/corridor/linker/", "corridor_linker", resourceManager);
+//        load("models/dungeon/corridor/linker/", "corridor_linker_2", resourceManager);
+//        load("models/dungeon/corridor/linker/", "corridor_linker_3", resourceManager);
+//        load("models/dungeon/corridor/linker/", "corridor_linker_4", resourceManager);
+//        load("models/dungeon/corridor/linker/", "corridor_linker_5", resourceManager);
+//        load("models/dungeon/corridor/linker/", "catacomb_linker", resourceManager);
+//        load("models/dungeon/corridor/linker/", "catacomb_linker_hole", resourceManager);
+//        load("models/dungeon/corridor/linker/", "corridor", resourceManager);
+//
+//        load("models/dungeon/node/", "forge", resourceManager);
+//        load("models/dungeon/node/", "node", resourceManager);
+//        load("models/dungeon/node/", "node_jukebox", resourceManager);
+//        load("models/dungeon/node/", "node_fork", resourceManager);
+//        load("models/dungeon/node/", "node_catacomb_dead_end", resourceManager);
+//        load("models/dungeon/node/", "node_catacomb_turn", resourceManager);
+//        load("models/dungeon/node/", "node_turn", resourceManager);
+//        load("models/dungeon/node/", "node_water", resourceManager);
+//        load("models/dungeon/node/", "node_water_2", resourceManager);
+//        load("models/dungeon/node/", "node_water_dead_end", resourceManager);
+//        load("models/dungeon/node/", "node_water_fork", resourceManager);
+//        load("models/dungeon/node/", "node_water_straight", resourceManager);
+//        load("models/dungeon/node/", "node_prison_fork", resourceManager);
+//        load("models/dungeon/node/", "node_prison", resourceManager);
+//        load("models/dungeon/node/", "large_node", resourceManager);
+//        load("models/dungeon/node/", "large_node_library", resourceManager);
+//
+//        load("models/dungeon/node/hell/", "node_lava", resourceManager);
+//        load("models/dungeon/node/hell/", "node_lava_2", resourceManager);
+//
+//        load("models/dungeon/node/connector/", "node_connector", resourceManager);
+//        load("models/dungeon/node/connector/", "node_connector_2", resourceManager);
+//        load("models/dungeon/node/connector/", "node_connector_3", resourceManager);
+//        load("models/dungeon/node/connector/", "node_connector_4", resourceManager);
+//        load("models/dungeon/node/connector/", "node_connector_5", resourceManager);
+//        load("models/dungeon/node/connector/", "node_connector_catacomb", resourceManager);
+//        load("models/dungeon/node/connector/", "node_connector_basic", resourceManager);
+//
+//        load("models/dungeon/room/", "spawner_room", resourceManager);
+//        load("models/dungeon/room/", "spawner_room_2", resourceManager);
+//        load("models/dungeon/room/", "spawner_room_material", resourceManager);
+//        load("models/dungeon/room/", "spawner_room_material_2", resourceManager);
+//        load("models/dungeon/room/catacombs/", "spawner_room", resourceManager);
+//
+//        load("models/dungeon/room/hell/", "spawner_room", resourceManager);
 
-        loadModel("models/dungeon/corridor/old_corridor_secret_room_entrance.nbt", resourceManager).setId(7);
-
-        PRISON_CELL = loadModel("models/dungeon/prison_cell.nbt", resourceManager).setId(64);
-
-        STAIRCASE = loadModel("models/dungeon/staircase.nbt", resourceManager).setId(72);
-        STAIRS_TOP = loadModel("models/dungeon/stairs_top.nbt", resourceManager).setId(73);
-        STAIRS_BOTTOM = loadModel("models/dungeon/stairs_bottom.nbt", resourceManager).setId(74);
-        STAIRS_BOTTOM_2 = loadModel("models/dungeon/stairs_bottom_2.nbt", resourceManager).setId(75);
-
-        // Models with metadata
-        FOOD_SIDE_ROOM = load("models/dungeon/room/", "food_side_room", resourceManager);
-        LOOT_ROOM = load("models/dungeon/", "loot_room", resourceManager);
-        SECRET_ROOM = load("models/dungeon/room/", "secret_room", resourceManager);
-        STARTER_ROOM = load("models/dungeon/room/", "starter_room", resourceManager);
-
-        DEFAULT_TOWER = load("models/dungeon/entrance/", "roguelike_tower", resourceManager);
-        load("models/dungeon/entrance/", "roguelike_house", resourceManager);
-        load("models/dungeon/entrance/", "roguelike_entrance", resourceManager);
-
-        load("models/dungeon/room/", "tnt_trap_side_room", resourceManager);
-
-        load("models/dungeon/corridor/", "corridor", resourceManager);
-        load("models/dungeon/corridor/", "corridor_2", resourceManager);
-        load("models/dungeon/corridor/", "corridor_3", resourceManager);
-        load("models/dungeon/corridor/", "old_corridor", resourceManager);
-        load("models/dungeon/corridor/", "old_corridor_3", resourceManager);
-        load("models/dungeon/corridor/", "stone_corridor", resourceManager);
-        load("models/dungeon/corridor/", "corridor_room", resourceManager);
-        load("models/dungeon/corridor/", "corridor_fire", resourceManager);
-        load("models/dungeon/corridor/", "corridor_spawner", resourceManager);
-        load("models/dungeon/corridor/", "corridor_light", resourceManager);
-
-        CORRIDOR_SECRET_ROOM_ENTRANCE = load("models/dungeon/corridor/", "corridor_secret_room_entrance", resourceManager);
-
-        load("models/dungeon/corridor/dark/", "corridor", resourceManager);
-        load("models/dungeon/corridor/dark/", "corridor_2", resourceManager);
-        load("models/dungeon/corridor/dark/", "corridor_3", resourceManager);
-        load("models/dungeon/corridor/dark/", "corridor_4", resourceManager);
-        load("models/dungeon/corridor/dark/", "corridor_spawner", resourceManager);
-
-        load("models/dungeon/corridor/linker/", "cake_room", resourceManager);
-        load("models/dungeon/corridor/linker/", "corridor_linker", resourceManager);
-        load("models/dungeon/corridor/linker/", "corridor_linker_2", resourceManager);
-        load("models/dungeon/corridor/linker/", "corridor_linker_3", resourceManager);
-        load("models/dungeon/corridor/linker/", "corridor_linker_4", resourceManager);
-        load("models/dungeon/corridor/linker/", "corridor_linker_5", resourceManager);
-        load("models/dungeon/corridor/linker/", "catacomb_linker", resourceManager);
-        load("models/dungeon/corridor/linker/", "catacomb_linker_hole", resourceManager);
-
-        load("models/dungeon/node/", "forge", resourceManager);
-        load("models/dungeon/node/", "node", resourceManager);
-        load("models/dungeon/node/", "node_jukebox", resourceManager);
-        load("models/dungeon/node/", "node_fork", resourceManager);
-        load("models/dungeon/node/", "node_catacomb_dead_end", resourceManager);
-        load("models/dungeon/node/", "node_catacomb_turn", resourceManager);
-        load("models/dungeon/node/", "node_turn", resourceManager);
-        load("models/dungeon/node/", "node_water", resourceManager);
-        load("models/dungeon/node/", "node_water_2", resourceManager);
-        load("models/dungeon/node/", "node_water_dead_end", resourceManager);
-        load("models/dungeon/node/", "node_water_fork", resourceManager);
-        load("models/dungeon/node/", "node_water_straight", resourceManager);
-        load("models/dungeon/node/", "node_prison_fork", resourceManager);
-        load("models/dungeon/node/", "node_prison", resourceManager);
-        load("models/dungeon/node/", "large_node", resourceManager);
-        load("models/dungeon/node/", "large_node_library", resourceManager);
-
-        load("models/dungeon/node/dark/", "node_lava", resourceManager);
-        load("models/dungeon/node/dark/", "node_lava_2", resourceManager);
-
-        load("models/dungeon/node/connector/", "node_connector", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_2", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_3", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_4", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_5", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_catacomb", resourceManager);
-        load("models/dungeon/node/connector/", "node_connector_basic", resourceManager);
-
-        load("models/dungeon/room/", "spawner_room", resourceManager);
-        load("models/dungeon/room/", "spawner_room_2", resourceManager);
-        load("models/dungeon/room/", "spawner_room_material", resourceManager);
-        load("models/dungeon/room/", "spawner_room_material_2", resourceManager);
-
-        load("models/dungeon/room/dark/", "spawner_room", resourceManager);
 
         // -Additional Models- //
 
-        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/multipart").getPath(), (s) -> s.endsWith(".nbt"))
+        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon").getPath(), (s) -> s.endsWith(".nbt"))
                 .forEach((resource) -> load(resource, resourceManager));
-        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional").getPath(), (s) -> s.endsWith(".nbt"))
-                .forEach((resource) -> load(resource, resourceManager));
+
+//        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/multipart").getPath(), (s) -> s.endsWith(".nbt"))
+//                .forEach((resource) -> load(resource, resourceManager));
+//        resourceManager.getAllResourceLocations(DungeonCrawl.locate("models/dungeon/additional").getPath(), (s) -> s.endsWith(".nbt"))
+//                .forEach((resource) -> load(resource, resourceManager));
 
         // -End of Model loading- //
 
@@ -269,7 +265,7 @@ public class DungeonModels {
 
             String key = path.substring(15, path.indexOf(".nbt"));
             model.setKey(key);
-            MODELS.put(key, model);
+            KEY_TO_MODEL.put(key, model);
             DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 
             model.setLocation(resource);
@@ -292,7 +288,7 @@ public class DungeonModels {
             String path = resource.getPath();
             String key = path.substring(15, path.indexOf(".nbt"));
             model.setKey(key);
-            MODELS.put(key, model);
+            KEY_TO_MODEL.put(key, model);
             DungeonCrawl.LOGGER.debug("Model {} has key {}", path, key);
 
             model.setLocation(resource);

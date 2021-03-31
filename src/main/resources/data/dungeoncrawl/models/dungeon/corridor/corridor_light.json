@@ -99,29 +99,33 @@
         {
           "offset": {
             "x": 2,
-            "z": -4
+            "z": 5
           },
+          "rotation": "clockwise_180",
           "model": "multipart/corridor/empty_room"
         },
         {
           "offset": {
             "x": 2,
-            "z": -4
+            "z": 5
           },
+          "rotation": "clockwise_180",
           "model": "multipart/corridor/empty_room_2"
         },
         {
           "offset": {
             "x": 2,
-            "z": -4
+            "z": 5
           },
+          "rotation": "clockwise_180",
           "model": "multipart/corridor/empty_room_3"
         },
         {
           "offset": {
             "x": 2,
-            "z": -4
+            "z": 5
           },
+          "rotation": "clockwise_180",
           "model": "multipart/corridor/empty_room_4"
         }
       ]

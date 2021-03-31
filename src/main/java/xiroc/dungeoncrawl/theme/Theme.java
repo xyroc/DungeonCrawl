@@ -54,15 +54,12 @@ public class Theme {
             (pos) -> Blocks.COBBLESTONE_STAIRS.getDefaultState(),
             (pos) -> Blocks.COBBLESTONE.getDefaultState(),
             (pos) -> Blocks.COBBLESTONE_WALL.getDefaultState(),
-            (pos) -> Blocks.GRAVEL.getDefaultState(),
-            (pos) -> Blocks.OBSIDIAN.getDefaultState(),
             (pos) -> Blocks.COBBLESTONE_SLAB.getDefaultState(),
             (pos) -> Blocks.STONE_BRICK_SLAB.getDefaultState());
 
     public static final SubTheme DEFAULT_SUB_THEME = new SubTheme(
             (pos) -> Blocks.OAK_LOG.getDefaultState(),
             (pos) -> Blocks.OAK_TRAPDOOR.getDefaultState(),
-            (pos) -> Blocks.REDSTONE_WALL_TORCH.getDefaultState(),
             (pos) -> Blocks.OAK_DOOR.getDefaultState(),
             (pos) -> Blocks.OAK_PLANKS.getDefaultState(),
             (pos) -> Blocks.OAK_STAIRS.getDefaultState(),
@@ -79,7 +76,7 @@ public class Theme {
         KEY_TO_SUB_THEME.put(DEFAULT_SUB_THEME.key, DEFAULT_SUB_THEME);
     }
 
-    public final IBlockStateProvider ceiling, solid, generic, generic2, floor, solidStairs, stairs, material, wall, column, slab, solidSlab;
+    public final IBlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab;
 
     public IRandom<SubTheme> subTheme;
 
@@ -87,22 +84,26 @@ public class Theme {
 
     private IDungeonDecoration[] decorations;
 
-    public Theme(IBlockStateProvider ceiling, IBlockStateProvider solid, IBlockStateProvider generic,
-                 IBlockStateProvider floor, IBlockStateProvider solidStairs, IBlockStateProvider stairs,
-                 IBlockStateProvider material, IBlockStateProvider wall, IBlockStateProvider column,
-                 IBlockStateProvider generic2, IBlockStateProvider slab, IBlockStateProvider solidSlab) {
-        this.ceiling = ceiling;
+    public Theme(IBlockStateProvider pillar,
+                 IBlockStateProvider solid,
+                 IBlockStateProvider generic,
+                 IBlockStateProvider floor,
+                 IBlockStateProvider solidStairs,
+                 IBlockStateProvider stairs,
+                 IBlockStateProvider material,
+                 IBlockStateProvider wall,
+                 IBlockStateProvider slab,
+                 IBlockStateProvider solidSlab) {
         this.solid = solid;
-        this.generic = generic;
-        this.generic2 = generic2;
-        this.floor = floor;
-        this.solidStairs = solidStairs;
-        this.stairs = stairs;
         this.material = material;
-        this.wall = wall;
-        this.column = column;
+        this.generic = generic;
+        this.pillar = pillar;
+        this.floor = floor;
+        this.stairs = stairs;
+        this.solidStairs = solidStairs;
         this.slab = slab;
         this.solidSlab = solidSlab;
+        this.wall = wall;
     }
 
     public void setDecorations(IDungeonDecoration[] decorations) {
@@ -121,18 +122,64 @@ public class Theme {
         return decorations;
     }
 
+    public IBlockStateProvider getPillar() {
+        return pillar;
+    }
+
+    public IBlockStateProvider getSolid() {
+        return solid;
+    }
+
+    public IBlockStateProvider getGeneric() {
+        return generic;
+    }
+
+    public IBlockStateProvider getFloor() {
+        return floor;
+    }
+
+    public IBlockStateProvider getSolidStairs() {
+        return solidStairs;
+    }
+
+    public IBlockStateProvider getStairs() {
+        return stairs;
+    }
+
+    public IBlockStateProvider getMaterial() {
+        return material;
+    }
+
+    public IBlockStateProvider getWall() {
+        return wall;
+    }
+
+    public IBlockStateProvider getSlab() {
+        return slab;
+    }
+
+    public IBlockStateProvider getSolidSlab() {
+        return solidSlab;
+    }
+
     public static class SubTheme {
 
-        public final IBlockStateProvider wallLog, trapDoor, torchDark, door, material, stairs, slab, fence, fenceGate, button, pressurePlate;
+        public final IBlockStateProvider pillar, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate;
 
         private String key;
 
-        public SubTheme(IBlockStateProvider wallLog, IBlockStateProvider trapDoor, IBlockStateProvider torchDark,
-                        IBlockStateProvider door, IBlockStateProvider material, IBlockStateProvider stairs, IBlockStateProvider slab,
-                        IBlockStateProvider fence, IBlockStateProvider fenceGate, IBlockStateProvider button, IBlockStateProvider pressurePlate) {
-            this.wallLog = wallLog;
+        public SubTheme(IBlockStateProvider pillar,
+                        IBlockStateProvider trapDoor,
+                        IBlockStateProvider door,
+                        IBlockStateProvider material,
+                        IBlockStateProvider stairs,
+                        IBlockStateProvider slab,
+                        IBlockStateProvider fence,
+                        IBlockStateProvider fenceGate,
+                        IBlockStateProvider button,
+                        IBlockStateProvider pressurePlate) {
+            this.pillar = pillar;
             this.trapDoor = trapDoor;
-            this.torchDark = torchDark;
             this.door = door;
             this.material = material;
             this.stairs = stairs;
@@ -147,6 +194,46 @@ public class Theme {
             return key;
         }
 
+        public IBlockStateProvider getPillar() {
+            return pillar;
+        }
+
+        public IBlockStateProvider getTrapDoor() {
+            return trapDoor;
+        }
+
+        public IBlockStateProvider getDoor() {
+            return door;
+        }
+
+        public IBlockStateProvider getMaterial() {
+            return material;
+        }
+
+        public IBlockStateProvider getStairs() {
+            return stairs;
+        }
+
+        public IBlockStateProvider getSlab() {
+            return slab;
+        }
+
+        public IBlockStateProvider getFence() {
+            return fence;
+        }
+
+        public IBlockStateProvider getFenceGate() {
+            return fenceGate;
+        }
+
+        public IBlockStateProvider getButton() {
+            return button;
+        }
+
+        public IBlockStateProvider getPressurePlate() {
+            return pressurePlate;
+        }
+
     }
 
     public static void loadJson(IResourceManager resourceManager) {
@@ -157,7 +244,7 @@ public class Theme {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 String key = resource.getPath().substring(19, resource.getPath().length() - 5); // cut off "theming/sub_themes/" and the file ending from the path
-                SubTheme theme = JsonThemeHandler.deserializeSubTheme(parser.parse(reader).getAsJsonObject());
+                SubTheme theme = JsonThemeHandler.deserializeSubTheme(parser.parse(reader).getAsJsonObject(), resource);
                 theme.key = key;
                 KEY_TO_SUB_THEME.put(key, theme);
             } catch (Exception e) {

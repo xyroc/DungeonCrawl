@@ -42,10 +42,6 @@ import java.util.*;
 
 public class DungeonModelBlock {
 
-    private static final Tuple<BlockState, Boolean> CAVE_AIR = tuple(DungeonBlocks.CAVE_AIR, false);
-
-    public static final Hashtable<DungeonModelBlockType, DungeonModelBlockStateProvider> PROVIDERS = new Hashtable<>();
-
     public final DungeonModelBlockType type;
 
     public Vec3i position;
@@ -104,6 +100,9 @@ public class DungeonModelBlock {
             return new DungeonModelBlock(DungeonModelBlockType.AIR, null);
         }
 
+        CompoundNBT pos = nbt.getCompound("position");
+        Vec3i position = new Vec3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+
         String type = nbt.getString("type");
         if (!DungeonModelBlockType.NAME_TO_TYPE.containsKey(type)) {
             if (type.equals("SPAWNER")) {
@@ -112,11 +111,8 @@ public class DungeonModelBlock {
                 return spawner;
             }
             DungeonCrawl.LOGGER.warn("Unknown model block type: {}", type);
-            return null;
+            return new DungeonModelBlock(DungeonModelBlockType.AIR, position);
         }
-
-        CompoundNBT pos = nbt.getCompound("position");
-        Vec3i position = new Vec3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
 
         DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.NAME_TO_TYPE.get(type), position);
 
@@ -188,113 +184,16 @@ public class DungeonModelBlock {
     }
 
     /**
-     * Creates all BlockState providers.
-     */
-    public static void init() {
-        PROVIDERS.put(DungeonModelBlockType.AIR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> tuple(DungeonBlocks.CAVE_AIR, false));
-        PROVIDERS.put(DungeonModelBlockType.CHEST, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                       stage) -> block.create(Blocks.CHEST.getDefaultState(), rotation));
-        PROVIDERS.put(DungeonModelBlockType.CARPET, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-            Block b = block.variation != null && variation != null ?
-                    DungeonBlocks.CARPET[(block.variation + variation[block.variation]) % DungeonBlocks.CARPET.length]
-                    : ForgeRegistries.BLOCKS.getValue(block.resource);
-            if (b == null) {
-                b = DungeonBlocks.CARPET[rand.nextInt(DungeonBlocks.CARPET.length)];
-            }
-            return block.create(b.getDefaultState());
-        });
-        PROVIDERS.put(DungeonModelBlockType.MATERIAL, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                       stage) -> block.create(subTheme.material.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.SOLID,
-                (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.solid.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.GENERIC,
-                (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.generic.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.GENERIC_SECONDARY,
-                (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.generic2.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.STAIRS, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
-                .create(theme.stairs.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.SOLID_STAIRS, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                           stage) -> block.create(theme.solidStairs.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.MATERIAL_STAIRS, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                              stage) -> block.create(subTheme.stairs.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.SLAB, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                   stage) -> block.create(theme.slab.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.SOLID_SLAB, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                         stage) -> block.create(theme.solidSlab.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.WOODEN_SLAB, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                          stage) -> block.create(subTheme.slab.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.WOODEN_PRESSURE_PLATE, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                                    stage) -> block.create(subTheme.pressurePlate.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.FENCE, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                    stage) -> block.create(subTheme.fence.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.FENCE_GATE, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                         stage) -> block.create(subTheme.fenceGate.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.WOODEN_BUTTON, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                            stage) -> block.create(subTheme.button.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.SKULL, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                    stage) -> {
-            Tuple<BlockState, Boolean> skull = block.create(Blocks.SKELETON_SKULL.getDefaultState(), rotation);
-            BlockState state = skull.getA();
-            if (state.has(BlockStateProperties.ROTATION_0_15)) {
-                int r = state.get(BlockStateProperties.ROTATION_0_15);
-                int add = rand.nextInt(3);
-                if (rand.nextBoolean()) {
-                    r -= add;
-                    if (r < 0)
-                        r += 16;
-                } else {
-                    r = (r + add) % 16;
-                }
-                state = state.with(BlockStateProperties.ROTATION_0_15, r);
-                return new Tuple<>(state, skull.getB());
-            }
-            return skull;
-        });
-        PROVIDERS.put(DungeonModelBlockType.FLOOR,
-                (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(theme.floor.get(pos), rotation));
-
-        PROVIDERS.put(DungeonModelBlockType.TRAPDOOR, (block, rotation, world, pos, theme, subTheme, rand, variation,
-                                                       stage) -> block.create(subTheme.trapDoor.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.PILLAR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage)
-                -> block.create(subTheme.wallLog.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.DOOR, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block
-                .create(subTheme.door.get(pos), rotation));
-        PROVIDERS.put(DungeonModelBlockType.OTHER, (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-            Block b = ForgeRegistries.BLOCKS.getValue(block.resource);
-            if (b != null) {
-                return block.create(b.getDefaultState(), rotation);
-            } else {
-                DungeonCrawl.LOGGER.warn("Unknown block {}", block.resource.toString());
-                return CAVE_AIR;
-            }
-        });
-    }
-
-    /**
-     * Creates a BlockState from a DungeonModelBlock using a
-     * DungeonBlockStateProvider from the provider-map.
+     * Creates a BlockState from a DungeonModelBlock using its type's
+     * block factory.
      */
     public static Tuple<BlockState, Boolean> getBlockState(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos,
                                                            Theme theme, SubTheme subTheme, Random rand, byte[] variation, int stage) {
-        DungeonModelBlockStateProvider provider = PROVIDERS.get(block.type);
-        if (provider == null)
-            return tuple(Blocks.CAVE_AIR.getDefaultState(), false);
-        return provider.get(block, rotation, world, pos, theme, subTheme, rand, variation, stage);
+        return block.type.blockFactory.get(block, rotation, world, pos, theme, subTheme, rand, variation, stage);
     }
 
-    /**
-     * A functional interface used to generate a BlockState from a
-     * DungeonModelBlock.
-     */
-    @FunctionalInterface
-    public interface DungeonModelBlockStateProvider {
 
-        Tuple<BlockState, Boolean> get(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos, Theme theme,
-                                       SubTheme subTheme, Random rand, byte[] variation, int stage);
-
-    }
-
-    private static Tuple<BlockState, Boolean> tuple(BlockState state, boolean postProcessing) {
+    public static Tuple<BlockState, Boolean> tuple(BlockState state, boolean postProcessing) {
         return new Tuple<>(state, postProcessing);
     }
 

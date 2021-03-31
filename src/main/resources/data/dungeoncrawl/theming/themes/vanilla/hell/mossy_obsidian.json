@@ -25,10 +25,6 @@
         }
       ]
     },
-    "secondary_generic": {
-      "type": "block",
-      "block": "minecraft:obsidian"
-    },
     "solid": {
       "type": "random_block",
       "blocks": [
@@ -44,6 +40,21 @@
         },
         {
           "block": "minecraft:mossy_cobblestone"
+        }
+      ]
+    },
+    "pillar": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:mossy_stone_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks"
+        },
+        {
+          "block": "minecraft:chiseled_stone_bricks"
         }
       ]
     },

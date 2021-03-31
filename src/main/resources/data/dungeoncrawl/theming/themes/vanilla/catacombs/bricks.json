@@ -21,11 +21,11 @@
         }
       ]
     },
-    "secondary_generic": {
-      "type": "block",
-      "block": "minecraft:obsidian"
-    },
     "solid": {
+      "type": "block",
+      "block": "minecraft:bricks"
+    },
+    "pillar": {
       "type": "block",
       "block": "minecraft:bricks"
     },

@@ -44,20 +44,7 @@ public class WeightedRandom<T> implements IRandom<T> {
         });
         return builder.build();
     };
-
-    public static final WeightedRandom.JsonReader<IDungeonDecoration> DECORATION = (array) -> {
-        WeightedRandom.Builder<IDungeonDecoration> builder = new WeightedRandom.Builder<>();
-        array.forEach((element) -> {
-            JsonObject object = element.getAsJsonObject();
-            int weight = JSONUtils.getWeightOrDefault(object);
-            IDungeonDecoration decoration = IDungeonDecoration.fromJson(object);
-            if (decoration != null) {
-                builder.entries.add(new Tuple<>(weight, decoration));
-            }
-        });
-        return builder.build();
-    };
-
+    
     private final int totalWeight;
     private final List<Tuple<Integer, T>> entries;
 

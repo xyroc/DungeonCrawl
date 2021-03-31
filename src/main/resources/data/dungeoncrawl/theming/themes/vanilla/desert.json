@@ -14,10 +14,6 @@
         }
       ]
     },
-    "secondary_generic": {
-      "type": "block",
-      "block": "minecraft:obsidian"
-    },
     "solid": {
       "type": "random_block",
       "blocks": [
@@ -30,6 +26,18 @@
         },
         {
           "block": "minecraft:chiseled_sandstone"
+        }
+      ]
+    },
+    "pillar": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cut_sandstone"
+        },
+        {
+          "block": "minecraft:chiseled_sandstone",
+          "weight": 2
         }
       ]
     },

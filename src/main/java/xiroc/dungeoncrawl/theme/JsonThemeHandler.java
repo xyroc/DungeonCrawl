@@ -57,29 +57,30 @@ public class JsonThemeHandler {
     public static Theme deserializeTheme(JsonObject object, ResourceLocation file) {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider solid = JsonThemeHandler.deserialize(themeObject, "solid");
+        IBlockStateProvider solid = JsonThemeHandler.deserialize(themeObject, "solid", file);
 
-        IBlockStateProvider generic = JsonThemeHandler.deserialize(themeObject, "generic");
-        IBlockStateProvider generic2 = JsonThemeHandler.deserialize(themeObject, "secondary_generic");
+        IBlockStateProvider generic = JsonThemeHandler.deserialize(themeObject, "generic", file);
 
-        IBlockStateProvider floor = JsonThemeHandler.deserialize(themeObject, "floor");
+        IBlockStateProvider pillar = JsonThemeHandler.deserialize(themeObject, "pillar", file);
 
-        IBlockStateProvider stairs = JsonThemeHandler.deserialize(themeObject, "stairs");
-        IBlockStateProvider solidStairs = JsonThemeHandler.deserialize(themeObject, "solid_stairs");
+        IBlockStateProvider floor = JsonThemeHandler.deserialize(themeObject, "floor", file);
 
-        IBlockStateProvider slab = JsonThemeHandler.deserialize(themeObject, "slab");
-        IBlockStateProvider solidSlab = JsonThemeHandler.deserialize(themeObject, "solid_slab");
+        IBlockStateProvider stairs = JsonThemeHandler.deserialize(themeObject, "stairs", file);
+        IBlockStateProvider solidStairs = JsonThemeHandler.deserialize(themeObject, "solid_stairs", file);
 
-        IBlockStateProvider material = JsonThemeHandler.deserialize(themeObject, "material");
-        IBlockStateProvider vanillaWall = JsonThemeHandler.deserialize(themeObject, "wall");
+        IBlockStateProvider slab = JsonThemeHandler.deserialize(themeObject, "slab", file);
+        IBlockStateProvider solidSlab = JsonThemeHandler.deserialize(themeObject, "solid_slab", file);
 
-        Theme theme = new Theme(null, solid, generic, floor, solidStairs, stairs, material, vanillaWall, null, generic2, slab, solidSlab);
+        IBlockStateProvider material = JsonThemeHandler.deserialize(themeObject, "material", file);
+        IBlockStateProvider vanillaWall = JsonThemeHandler.deserialize(themeObject, "wall", file);
+
+        Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, vanillaWall, slab, solidSlab);
 
         if (object.has("decorations")) {
             JsonArray array = object.getAsJsonArray("decorations");
             IDungeonDecoration[] decorations = new IDungeonDecoration[array.size()];
             for (int i = 0; i < decorations.length; i++) {
-                decorations[i] = IDungeonDecoration.fromJson(array.get(i).getAsJsonObject());
+                decorations[i] = IDungeonDecoration.fromJson(array.get(i).getAsJsonObject(), file);
             }
             theme.setDecorations(decorations);
         }
@@ -111,22 +112,22 @@ public class JsonThemeHandler {
      * @param object the json object
      * @return the resulting sub-theme
      */
-    public static SubTheme deserializeSubTheme(JsonObject object) {
+    public static SubTheme deserializeSubTheme(JsonObject object, ResourceLocation file) {
 
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider wallLog = JsonThemeHandler.deserialize(themeObject, "pillar");
-        IBlockStateProvider trapDoor = JsonThemeHandler.deserialize(themeObject, "trapdoor");
-        IBlockStateProvider door = JsonThemeHandler.deserialize(themeObject, "door");
-        IBlockStateProvider material = JsonThemeHandler.deserialize(themeObject, "material");
-        IBlockStateProvider stairs = JsonThemeHandler.deserialize(themeObject, "stairs");
-        IBlockStateProvider slab = JsonThemeHandler.deserialize(themeObject, "slab");
-        IBlockStateProvider fence = JsonThemeHandler.deserialize(themeObject, "fence");
-        IBlockStateProvider fenceGate = JsonThemeHandler.deserialize(themeObject, "fence_gate");
-        IBlockStateProvider button = JsonThemeHandler.deserialize(themeObject, "button");
-        IBlockStateProvider pressurePlate = JsonThemeHandler.deserialize(themeObject, "pressure_plate");
+        IBlockStateProvider wallLog = JsonThemeHandler.deserialize(themeObject, "pillar", file);
+        IBlockStateProvider trapDoor = JsonThemeHandler.deserialize(themeObject, "trapdoor", file);
+        IBlockStateProvider door = JsonThemeHandler.deserialize(themeObject, "door", file);
+        IBlockStateProvider material = JsonThemeHandler.deserialize(themeObject, "material", file);
+        IBlockStateProvider stairs = JsonThemeHandler.deserialize(themeObject, "stairs", file);
+        IBlockStateProvider slab = JsonThemeHandler.deserialize(themeObject, "slab", file);
+        IBlockStateProvider fence = JsonThemeHandler.deserialize(themeObject, "fence", file);
+        IBlockStateProvider fenceGate = JsonThemeHandler.deserialize(themeObject, "fence_gate", file);
+        IBlockStateProvider button = JsonThemeHandler.deserialize(themeObject, "button", file);
+        IBlockStateProvider pressurePlate = JsonThemeHandler.deserialize(themeObject, "pressure_plate", file);
 
-        SubTheme subTheme = new SubTheme(wallLog, trapDoor, null, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
+        SubTheme subTheme = new SubTheme(wallLog, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
 
         if (object.has("id")) {
             Theme.ID_TO_SUB_THEME.put(object.get("id").getAsInt(), subTheme);
@@ -191,9 +192,9 @@ public class JsonThemeHandler {
         return entries;
     }
 
-    public static IBlockStateProvider deserialize(JsonObject base, String name) {
+    public static IBlockStateProvider deserialize(JsonObject base, String name, ResourceLocation file) {
         if (!base.has(name)) {
-            LOGGER.warn("Missing BlockState Provider \"{}\"", name);
+            LOGGER.warn("Missing BlockState Provider \"{}\" in {}", name, file.toString());
             return null;
         }
         JsonObject object = (JsonObject) base.get(name);
@@ -229,7 +230,7 @@ public class JsonThemeHandler {
             } else if (type.equalsIgnoreCase("pattern")) {
                 switch (object.get("pattern_type").getAsString().toLowerCase(Locale.ROOT)) {
                     case "checked":
-                        return new CheckedPattern(deserialize(object, "block_1"), deserialize(object, "block_2"));
+                        return new CheckedPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
                     case "terracotta":
                         ResourceLocation block = new ResourceLocation(object.get("block").getAsString());
                         if (ForgeRegistries.BLOCKS.containsKey(block)) {

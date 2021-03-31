@@ -17,10 +17,6 @@
         }
       ]
     },
-    "secondary_generic": {
-      "type": "block",
-      "block": "minecraft:obsidian"
-    },
     "solid": {
       "type": "random_block",
       "blocks": [
@@ -32,6 +28,10 @@
           "block": "minecraft:polished_granite"
         }
       ]
+    },
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:bricks"
     },
     "floor": {
       "type": "random_block",

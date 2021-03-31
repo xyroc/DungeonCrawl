@@ -20,17 +20,6 @@
         }
       ]
     },
-    "secondary_generic": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "create:andesite_bricks"
-        },
-        {
-          "block": "create:fancy_andesite_bricks"
-        }
-      ]
-    },
     "solid": {
       "type": "random_block",
       "blocks": [

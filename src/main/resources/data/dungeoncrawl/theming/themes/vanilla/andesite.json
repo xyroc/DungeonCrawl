@@ -17,11 +17,22 @@
         }
       ]
     },
-    "secondary_generic": {
-      "type": "block",
-      "block": "minecraft:obsidian"
-    },
     "solid": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:stone_bricks"
+        },
+        {
+          "block": "minecraft:polished_andesite",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks"
+        }
+      ]
+    },
+    "pillar": {
       "type": "random_block",
       "blocks": [
         {

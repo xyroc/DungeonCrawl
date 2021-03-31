@@ -58,12 +58,12 @@ public class ModelBlockDefinition {
 
         DEFAULT.put(Blocks.STONE_BRICK_STAIRS, DungeonModelBlockType.SOLID_STAIRS);
         DEFAULT.put(Blocks.COBBLESTONE, DungeonModelBlockType.GENERIC);
-        DEFAULT.put(Blocks.OBSIDIAN, DungeonModelBlockType.GENERIC_SECONDARY);
         DEFAULT.put(Blocks.STONE_BRICKS, DungeonModelBlockType.SOLID);
         DEFAULT.put(Blocks.STONE_BRICK_WALL, DungeonModelBlockType.WALL);
+        DEFAULT.put(Blocks.PURPUR_PILLAR, DungeonModelBlockType.SOLID_PILLAR);
 
-        DEFAULT.put(Blocks.OAK_PLANKS, DungeonModelBlockType.MATERIAL);
         DEFAULT.put(Blocks.OAK_LOG, DungeonModelBlockType.PILLAR);
+        DEFAULT.put(Blocks.OAK_PLANKS, DungeonModelBlockType.MATERIAL);
         DEFAULT.put(Blocks.OAK_DOOR, DungeonModelBlockType.DOOR);
         DEFAULT.put(Blocks.OAK_STAIRS, DungeonModelBlockType.MATERIAL_STAIRS);
         DEFAULT.put(Blocks.OAK_SLAB, DungeonModelBlockType.WOODEN_SLAB);
@@ -74,6 +74,7 @@ public class ModelBlockDefinition {
         DEFAULT.put(Blocks.OAK_TRAPDOOR, DungeonModelBlockType.TRAPDOOR);
 
         DEFAULT.put(Blocks.GRAVEL, DungeonModelBlockType.FLOOR);
+        DEFAULT.put(Blocks.CRACKED_STONE_BRICKS, DungeonModelBlockType.SOLID_FLOOR);
         DEFAULT.put(Blocks.COBBLESTONE_STAIRS, DungeonModelBlockType.STAIRS);
         DEFAULT.put(Blocks.COBBLESTONE_SLAB, DungeonModelBlockType.SLAB);
 

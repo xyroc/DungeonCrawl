@@ -15,13 +15,20 @@
         }
       ]
     },
-    "secondary_generic": {
-      "type": "block",
-      "block": "minecraft:obsidian"
-    },
     "solid": {
       "type": "block",
       "block": "minecraft:magma_block"
+    },
+    "pillar": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_bricks"
+        },
+        {
+          "block": "minecraft:red_nether_bricks"
+        }
+      ]
     },
     "floor": {
       "type": "random_block",

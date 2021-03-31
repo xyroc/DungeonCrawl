@@ -43,8 +43,6 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -105,7 +103,6 @@ public class DungeonCrawl {
             MinecraftForge.EVENT_BUS.register(new Tools());
         }
 
-        DungeonModelBlock.init();
         IBlockPlacementHandler.init();
 
         DungeonCrawl.LOGGER.info("Adding features and structures");

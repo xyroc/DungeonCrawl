@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.decoration;
 
 import com.google.gson.JsonObject;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -34,7 +35,7 @@ public interface IDungeonDecoration {
 
     void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage);
 
-    static IDungeonDecoration fromJson(JsonObject object) {
+    static IDungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
         if (object.has("type")) {
             String type = object.get("type").getAsString().toLowerCase();
             switch (type) {
@@ -45,7 +46,7 @@ public interface IDungeonDecoration {
                     IBlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        blockStateProvider = JsonThemeHandler.deserialize(object, "block");
+                        blockStateProvider = JsonThemeHandler.deserialize(object, "block", file);
                         if (blockStateProvider != null) {
                             return new ScatteredDecoration(blockStateProvider, chance);
                         }
@@ -59,7 +60,7 @@ public interface IDungeonDecoration {
                     IBlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        blockStateProvider = JsonThemeHandler.deserialize(object, "block");
+                        blockStateProvider = JsonThemeHandler.deserialize(object, "block", file);
                         if (blockStateProvider != null) {
                             return new FloorDecoration(blockStateProvider, chance);
                         }
@@ -73,7 +74,7 @@ public interface IDungeonDecoration {
                     IBlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        blockStateProvider = JsonThemeHandler.deserialize(object, "block");
+                        blockStateProvider = JsonThemeHandler.deserialize(object, "block", file);
                         if (blockStateProvider != null) {
                             return new FloorDecoration.NextToSolid(blockStateProvider, chance);
                         }

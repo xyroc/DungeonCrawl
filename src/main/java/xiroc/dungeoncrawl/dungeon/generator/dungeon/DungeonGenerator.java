@@ -16,10 +16,11 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon.generator;
+package xiroc.dungeoncrawl.dungeon.generator.dungeon;
 
 import net.minecraft.util.math.ChunkPos;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.generator.LayerGenerator;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 
 import java.util.Random;

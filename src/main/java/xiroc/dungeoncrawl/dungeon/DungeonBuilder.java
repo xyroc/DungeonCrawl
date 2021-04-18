@@ -27,14 +27,12 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.api.event.DungeonBuilderStartEvent;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.generator.DefaultDungeonGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
+import xiroc.dungeoncrawl.dungeon.generator.dungeon.DefaultDungeonGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.dungeon.DungeonGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.dungeon.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -56,58 +54,45 @@ public class DungeonBuilder {
 
     public DungeonStatTracker statTracker;
 
+    public ChunkPos chunkPos;
     public BlockPos startPos;
 
-    public ChunkGenerator<?> chunkGen;
-    public Biome startBiome;
+    public ChunkGenerator<?> chunkGenerator;
+
+    public Biome biome;
 
     public Theme entranceTheme, theme, lowerTheme, bottomTheme;
     public Theme.SubTheme entranceSubTheme, subTheme, lowerSubTheme, bottomSubTheme;
 
-    public DungeonBuilder(ChunkGenerator<?> world, ChunkPos pos, Random rand) {
-        this.chunkGen = world;
-
+    /**
+     * Instantiates a Dungeon Builder for usage during world gen.
+     */
+    public DungeonBuilder(ChunkGenerator<?> chunkGenerator, ChunkPos pos, Random rand) {
+        this.chunkGenerator = chunkGenerator;
         this.rand = rand;
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, world.getSeaLevel() - 15,
+
+        this.chunkPos = pos;
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getSeaLevel() - 15,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
-        int layerCount = DEFAULT_GENERATOR.layerCount(rand, startPos.getY());
-
-        this.layers = new DungeonLayer[layerCount];
-        this.maps = new DungeonLayerMap[layerCount];
-
-        this.statTracker = new DungeonStatTracker(layerCount);
-
-        DEFAULT_GENERATOR.initializeDungeon(this, pos, rand);
-
-        DungeonBuilderStartEvent startEvent = new DungeonBuilderStartEvent(world, startPos, statTracker, layers.length);
-
-        DungeonCrawl.EVENT_BUS.post(startEvent);
 
         DungeonCrawl.LOGGER.debug("Creating the layout for a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
-                + startPos.getZ() + ") with " + layerCount + " layers. Theme: {} Sub-Theme: {}", theme, subTheme);
+                + startPos.getZ() + ").");
     }
 
-    public DungeonBuilder(ServerWorld world, ChunkPos pos) {
-        this.rand = new Random();
-        this.start = new Position2D(7, 7);
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, 100 - 16,
-                pos.z * 16 - Dungeon.SIZE / 2 * 9);
+    /**
+     * Instantiates a Dungeon Builder for post world gen usage like a manual dungeon spawn by command.
+     */
+    public DungeonBuilder(ServerWorld world, BlockPos pos, Random rand) {
+        this.chunkGenerator = world.getChunkProvider().getChunkGenerator();
+        this.rand = rand;
 
-        int layerCount = DEFAULT_GENERATOR.layerCount(rand, startPos.getY());
+        this.chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
+        this.startPos = new BlockPos(pos.getX() - Dungeon.SIZE / 2 * 9, world.getSeaLevel() - 15,
+                pos.getZ() - Dungeon.SIZE / 2 * 9);
 
-        this.chunkGen = world.getChunkProvider().generator;
-
-        this.layers = new DungeonLayer[layerCount];
-        this.maps = new DungeonLayerMap[layerCount];
-
-        this.statTracker = new DungeonStatTracker(layerCount);
-
-        DEFAULT_GENERATOR.initializeDungeon(this, pos, rand);
-    }
-
-    public static boolean isWorldEligible(ServerWorld world, BlockPos pos) {
-        return world.getHeight(Heightmap.Type.WORLD_SURFACE_WG, pos.getX(), pos.getZ()) > 32;
+        DungeonCrawl.LOGGER.debug("Creating the layout for a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
+                + startPos.getZ() + ").");
     }
 
     public static boolean isWorldEligible(ChunkGenerator<?> chunkGenerator) {
@@ -115,28 +100,9 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
+        generateLayout(DEFAULT_GENERATOR);
+
         List<DungeonPiece> pieces = Lists.newArrayList();
-
-        int startCoordinate = DEFAULT_GENERATOR.settings.gridSize.apply(0) / 2;
-
-        this.start = new Position2D(startCoordinate, startCoordinate);
-
-        for (int i = 0; i < layers.length; i++) {
-            int size = DEFAULT_GENERATOR.settings.gridSize.apply(i);
-            this.maps[i] = new DungeonLayerMap(size, size);
-            this.layers[i] = new DungeonLayer(size, size);
-            this.layers[i].map = maps[i];
-        }
-
-        for (int i = 0; i < layers.length; i++) {
-            DEFAULT_GENERATOR.initializeLayer(this, rand, i);
-            DEFAULT_GENERATOR.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
-        }
-
-        for (int i = 0; i < layers.length; i++) {
-            processCorridors(layers[i], i);
-        }
-
         DungeonPiece entrance = new DungeonEntrance();
         entrance.setWorldPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
@@ -144,48 +110,12 @@ public class DungeonBuilder {
         entrance.setupModel(this, null, pieces, rand);
         entrance.setupBoundingBox();
 
-        this.startBiome = chunkGen.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGen.getSeaLevel() >> 2, entrance.z >> 2);
+        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGenerator.getSeaLevel() >> 2, entrance.z >> 2);
 
-        ResourceLocation registryName = startBiome.getRegistryName();
+        determineThemes();
 
-        if (registryName != null) {
-            this.entranceTheme = Theme.randomTheme(registryName.toString(), rand);
-            this.theme = Theme.randomTheme(registryName.toString(), rand);
-        } else {
-            this.entranceTheme = Theme.getDefaultTheme();
-            this.theme = Theme.getDefaultTheme();
-        }
-
-        if (theme.subTheme != null) {
-            this.subTheme = theme.subTheme.roll(rand);
-        } else {
-            this.subTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
-        }
-
-        if (entranceTheme.subTheme != null) {
-            this.entranceSubTheme = entranceTheme.subTheme.roll(rand);
-        } else {
-            this.entranceSubTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
-        }
-
-        this.lowerTheme = Theme.getTheme("vanilla/catacombs/default");
-
-        if (lowerTheme.subTheme != null) {
-            this.lowerSubTheme = lowerTheme.subTheme.roll(rand);
-        } else {
-            this.lowerSubTheme = this.subTheme;
-        }
-
-        this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("vanilla/hell/mossy_obsidian") : Theme.getTheme("vanilla/hell/hell");
-
-        if (bottomTheme.subTheme != null) {
-            this.bottomSubTheme = bottomTheme.subTheme.roll(rand);
-        } else {
-            this.bottomSubTheme = this.subTheme;
-        }
-
-        entrance.theme = theme;
-        entrance.subTheme = subTheme;
+        entrance.theme = this.theme;
+        entrance.subTheme = this.subTheme;
 
         pieces.add(entrance);
 
@@ -194,7 +124,36 @@ public class DungeonBuilder {
         return pieces;
     }
 
-    public void processCorridors(DungeonLayer layer, int lyr) {
+    private void generateLayout(DungeonGenerator generator) {
+        generator.initializeDungeon(this, chunkPos, rand);
+
+        int startCoordinate = generator.settings.gridSize.apply(0) / 2;
+
+        this.start = new Position2D(startCoordinate, startCoordinate);
+
+        int layerCount = generator.layerCount(rand, startPos.getY());
+
+        this.layers = new DungeonLayer[layerCount];
+        this.maps = new DungeonLayerMap[layerCount];
+
+        for (int i = 0; i < layers.length; i++) {
+            int size = generator.settings.gridSize.apply(i);
+            this.maps[i] = new DungeonLayerMap(size, size);
+            this.layers[i] = new DungeonLayer(size, size);
+            this.layers[i].map = maps[i];
+        }
+
+        for (int i = 0; i < layers.length; i++) {
+            generator.initializeLayer(this, rand, i);
+            generator.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
+        }
+
+        for (int i = 0; i < layers.length; i++) {
+            processCorridors(layers[i], i);
+        }
+    }
+
+    private void processCorridors(DungeonLayer layer, int lyr) {
         int stage = Math.min(lyr, 4);
         for (int x = 0; x < layer.width; x++) {
             for (int z = 0; z < layer.length; z++) {
@@ -209,7 +168,55 @@ public class DungeonBuilder {
         }
     }
 
-    public void postProcessDungeon(List<DungeonPiece> pieces, Random rand) {
+    private void determineThemes() {
+        ResourceLocation registryName = biome.getRegistryName();
+
+        if (registryName != null) {
+            if (this.entranceTheme == null) this.entranceTheme = Theme.randomTheme(registryName.toString(), rand);
+            if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), rand);
+        } else {
+            if (this.entranceTheme == null) this.entranceTheme = Theme.getDefaultTheme();
+            if (this.theme == null) this.theme = Theme.getDefaultTheme();
+        }
+
+        if (subTheme == null) {
+            if (theme.subTheme != null) {
+                this.subTheme = theme.subTheme.roll(rand);
+            } else {
+                this.subTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
+            }
+        }
+
+        if (entranceSubTheme == null) {
+            if (entranceTheme.subTheme != null) {
+                this.entranceSubTheme = entranceTheme.subTheme.roll(rand);
+            } else {
+                this.entranceSubTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
+            }
+        }
+
+        if (this.lowerTheme == null)
+            this.lowerTheme = Theme.getTheme("vanilla/catacombs/default");
+
+        if (lowerSubTheme == null) {
+            if (lowerTheme.subTheme != null) {
+                this.lowerSubTheme = lowerTheme.subTheme.roll(rand);
+            } else {
+                this.lowerSubTheme = this.subTheme;
+            }
+        }
+
+        if (this.bottomTheme == null)
+            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("vanilla/hell/mossy_obsidian") : Theme.getTheme("vanilla/hell/hell");
+
+        if (bottomTheme.subTheme != null && this.bottomSubTheme == null) {
+            this.bottomSubTheme = bottomTheme.subTheme.roll(rand);
+        } else {
+            this.bottomSubTheme = this.subTheme;
+        }
+    }
+
+    private void postProcessDungeon(List<DungeonPiece> pieces, Random rand) {
         boolean catacombs = layers.length > 3;
 
         for (int i = 0; i < layers.length; i++) {
@@ -278,85 +285,9 @@ public class DungeonBuilder {
         return true;
     }
 
-    public static boolean isBlockProtected(IWorld world, BlockPos pos) {
+    public static boolean isBlockProtected(IWorld world, BlockPos pos, PlacementContext context) {
         BlockState state = world.getBlockState(pos);
-        return state.getBlockHardness(world, pos) < 0 || BlockTags.PORTALS.contains(state.getBlock());
-    }
-
-    /**
-     * Checks if a piece can be placed at the given position and layer. This does
-     * also check if there are pieces on other layers (height variable) to avoid
-     * collisions. For example, a piece that goes 1 to 9 blocks below the height of
-     * its layer would have a height value of -1 (minus, because it goes down; 1
-     * layer = 9 blocks).
-     *
-     * @return true if the piece can be placed, false if not
-     */
-    public boolean canPlacePieceWithHeight(int layer, int x, int z, int width,
-                                           int length, int layerHeight, boolean ignoreStartPosition) {
-        /*
-         * x + width - 1 > Dungeon.SIZE -1 <=> x + width > Dungeon.SIZE
-         * (same for z of course)
-         */
-        if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
-            return false;
-
-        int layers = this.layers.length, lh = layer - layerHeight;
-        if (layer > layers - 1 || layer < 0 || lh > layers || lh < 0)
-            return false;
-
-        boolean up = layerHeight > 0;
-        int c = up ? -1 : 1, k = lh + c;
-
-        for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
-            if (layers - lyr == 0)
-                continue;
-            else if (layers - lyr < 0)
-                return false;
-
-            for (int x0 = 0; x0 < width; x0++) {
-                for (int z0 = 0; z0 < length; z0++) {
-                    if (!(ignoreStartPosition && lyr == layer && x0 == 0 && z0 == 0)
-                            && (this.layers[lyr].grid[x + x0][z + z0] != null
-                            || !this.maps[lyr].isPositionFree(x + x0, z + z0))) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Marks the given area of the dungeon as occupied to prevent collision between
-     * multiple dungeon features. The given coordinates and size values are assumed
-     * to be correct. All parameters are the same as in #canPlacePiece.
-     */
-    public static void mark(DungeonLayer layer, int x, int z, int width, int length) {
-        for (int x0 = 0; x0 < width; x0++) {
-            for (int z0 = 0; z0 < length; z0++) {
-                layer.map.map[x][z] = true;
-            }
-        }
-    }
-
-    /**
-     * Marks the given area of the dungeon as occupied to prevent collision between
-     * multiple dungeon features. The given coordinates and size values are assumed
-     * to be correct. All parameters are the same as in #canPlacePieceWithHeight.
-     */
-    public void mark(int layer, int x, int z, int width, int length, int layerHeight) {
-        int layers = this.layers.length;
-        boolean up = layerHeight > 0;
-        int c = up ? -1 : 1, k = layer - layerHeight + c;
-
-        for (int lyr = layer; up ? lyr > k : lyr < k; lyr += c) {
-            if (layers - lyr == 0)
-                continue;
-            for (int x0 = 0; x0 < width; x0++)
-                for (int z0 = 0; z0 < length; z0++)
-                    this.maps[lyr].markPositionAsOccupied(new Position2D(x + x0, z + z0));
-        }
+        return state.getBlockHardness(world, pos) < 0 || context.protectedBlocks.contains(pos) || BlockTags.PORTALS.contains(state.getBlock());
     }
 
 }

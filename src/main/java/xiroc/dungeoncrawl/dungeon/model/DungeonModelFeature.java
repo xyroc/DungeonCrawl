@@ -28,6 +28,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
@@ -44,70 +45,70 @@ public interface DungeonModelFeature {
 
     HashMap<String, DungeonModelFeature> FEATURES = new HashMap<>();
 
-    DungeonModelFeature CHESTS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
+    DungeonModelFeature CHESTS = (world, context, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position)
+            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
                     && bounds.isVecInside(position.position)
                     && world.getBlockState(position.position.down()).isSolid()) {
-                IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
-                        position.position, rand, Treasure.Type.DEFAULT, theme, subTheme, stage);
+                IBlockPlacementHandler.CHEST.place(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
+                        position.position, rand, context, Treasure.Type.DEFAULT, theme, subTheme, stage);
             }
         }
     };
 
-    DungeonModelFeature TNT_CHESTS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
+    DungeonModelFeature TNT_CHESTS = (world, context, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position)
+            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
                     && bounds.isVecInside(position.position)
                     && world.getBlockState(position.position.down()).isSolid()) {
-                IBlockPlacementHandler.CHEST.placeBlock(world, Blocks.TRAPPED_CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
+                IBlockPlacementHandler.CHEST.place(world, Blocks.TRAPPED_CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
                         Orientation.RANDOM_HORIZONTAL_FACING.roll(rand)),
-                        position.position, rand, Treasure.Type.DEFAULT, theme, subTheme, stage);
+                        position.position, rand, context, Treasure.Type.DEFAULT, theme, subTheme, stage);
                 BlockPos down = position.position.down(2);
-                if (!DungeonBuilder.isBlockProtected(world, down) && !world.isAirBlock(down)) {
+                if (!DungeonBuilder.isBlockProtected(world, down, context) && !world.isAirBlock(down)) {
                     world.setBlockState(position.position.down(2), Blocks.TNT.getDefaultState(), 2);
                 }
             }
         }
     };
 
-    DungeonModelFeature SPAWNERS = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
+    DungeonModelFeature SPAWNERS = (world, context, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         if (Config.NO_SPAWNERS.get()) {
             return;
         }
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position)
+            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
                     && bounds.isVecInside(position.position)
                     && world.getBlockState(position.position.down()).isSolid()) {
-                IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER,
-                        position.position, rand, null, theme, subTheme, stage);
+                IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER,
+                        position.position, rand, context, null, theme, subTheme, stage);
             }
         }
     };
 
-    DungeonModelFeature CATACOMB = (world, rand, pos, positions, bounds, theme, subTheme, stage) -> {
+    DungeonModelFeature CATACOMB = (world, context, rand, pos, positions, bounds, theme, subTheme, stage) -> {
 
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position)
+            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
                     && bounds.isVecInside(position.position)
                     && world.getBlockState(position.position.down()).isSolid()) {
-                IBlockPlacementHandler.CHEST.placeBlock(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
-                        position.position, rand, Treasure.Type.CATACOMB, theme, subTheme, stage);
+                IBlockPlacementHandler.CHEST.place(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
+                        position.position, rand, context, Treasure.Type.CATACOMB, theme, subTheme, stage);
             }
             if (Config.NO_SPAWNERS.get()) {
                 return;
             }
 
             BlockPos spawner = position.position.offset(position.direction);
-            if (!DungeonBuilder.isBlockProtected(world, spawner)
+            if (!DungeonBuilder.isBlockProtected(world, spawner, context)
                     && bounds.isVecInside(spawner)
                     && world.getBlockState(spawner.down()).isSolid()) {
-                IBlockPlacementHandler.SPAWNER.placeBlock(world, DungeonBlocks.SPAWNER, spawner, rand, null, theme, subTheme, stage);
+                IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, spawner, rand, context, null, theme, subTheme, stage);
             }
         }
     };
 
-    void build(IWorld world, Random rand, BlockPos pos, DirectionalBlockPos[] positions, MutableBoundingBox bounds, Theme theme, Theme.SubTheme subTheme, int stage);
+    void build(IWorld world, PlacementContext context, Random rand, BlockPos pos, DirectionalBlockPos[] positions, MutableBoundingBox bounds, Theme theme, Theme.SubTheme subTheme, int stage);
 
     /**
      * An improvised way to generate an array with a predetermined amount of random feature positions while iterating through

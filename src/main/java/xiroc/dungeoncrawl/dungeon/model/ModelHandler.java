@@ -19,12 +19,15 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FarmlandBlock;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -53,13 +56,17 @@ public class ModelHandler {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < length; z++) {
-                    BlockState state = world.getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z));
-                    if (state.getBlock() == Blocks.BARRIER) {
+                    BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+                    BlockState state = world.getBlockState(position);
+                    Block block = state.getBlock();
+                    if (block == Blocks.BARRIER) {
                         continue;
-                    } else if (state.getBlock() == Blocks.JIGSAW) {
+                    } else if (block == Blocks.JIGSAW) {
                         featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.FACING)));
                         blocks.add(new DungeonModelBlock(DungeonModelBlockType.AIR, new Vec3i(x, y, z)));
                         continue;
+                    } else if (BlockTags.CARPETS.contains(block)) {
+                        // TODO: carpets
                     }
                     blocks.add(new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock(), definition), new Vec3i(x, y, z)).loadDataFromState(state));
                 }

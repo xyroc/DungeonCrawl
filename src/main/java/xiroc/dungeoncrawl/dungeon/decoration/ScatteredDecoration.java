@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -39,7 +40,7 @@ public class ScatteredDecoration implements IDungeonDecoration {
     }
 
     @Override
-    public void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+    public void decorate(DungeonModel model, IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
         int maxX = ew ? width : length;
         int maxZ = ew ? length : width;
@@ -47,7 +48,7 @@ public class ScatteredDecoration implements IDungeonDecoration {
             for (int y = 0; y < height; y++) {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (!DungeonBuilder.isBlockProtected(world, currentPos)
+                    if (!DungeonBuilder.isBlockProtected(world, currentPos, context)
                             && worldGenBounds.isVecInside(currentPos)
                             && structureBounds.isVecInside(currentPos)
                             && world.isAirBlock(currentPos)

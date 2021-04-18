@@ -33,19 +33,19 @@
   },
   {
     "item": "minecraft:wooden_pickaxe",
-    "weight": 3
+    "weight": 2
   },
   {
     "item": "minecraft:wooden_axe",
-    "weight": 2
+    "weight": 1
   },
   {
     "item": "minecraft:wooden_hoe",
-    "weight": 2
+    "weight": 1
   },
   {
     "item": "minecraft:stone_pickaxe",
-    "weight": 4
+    "weight": 2
   },
   {
     "item": "minecraft:iron_shovel",
@@ -53,7 +53,7 @@
   },
   {
     "item": "minecraft:stone_hoe",
-    "weight": 2
+    "weight": 1
   },
   {
     "item": "minecraft:stone_axe",

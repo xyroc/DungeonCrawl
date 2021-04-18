@@ -34,13 +34,13 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Random;
 import java.util.UUID;
 
 public class RandomMonster {
 
-    public static final HashMap<EntityType<?>, MobNBTPatcher> NBT_PATCHERS = new HashMap<>();
+    public static final Hashtable<EntityType<?>, MobNBTPatcher> NBT_PATCHERS = new Hashtable<>();
 
     public static WeightedRandomEntity[] COMMON, RARE;
 

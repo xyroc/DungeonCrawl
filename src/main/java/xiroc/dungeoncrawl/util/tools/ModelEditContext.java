@@ -16,29 +16,16 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.api.event;
+package xiroc.dungeoncrawl.util.tools;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraft.util.math.BlockPos;
 
-/**
- * Cancel this event to prevent the dungeon from getting placed.
- */
+public class ModelEditContext {
 
-@Cancelable
-public class DungeonPlacementCheckEvent extends Event {
+    public BlockPos origin, pos1, pos2;
 
-    public final ChunkGenerator<?> chunkGenerator;
-    public final Biome biome;
-    public final int chunkX, chunkZ;
-
-    public DungeonPlacementCheckEvent(ChunkGenerator<?> chunkGenerator, Biome biome, int chunkX, int chunkZ) {
-        this.chunkGenerator = chunkGenerator;
-        this.biome = biome;
-        this.chunkX = chunkX;
-        this.chunkZ = chunkZ;
+    public boolean arePositionsSet() {
+        return pos1 != null && pos2 != null;
     }
 
 }

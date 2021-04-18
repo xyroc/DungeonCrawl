@@ -23,6 +23,7 @@ import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.PlaceHolder;
+import xiroc.dungeoncrawl.dungeon.generator.dungeon.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;

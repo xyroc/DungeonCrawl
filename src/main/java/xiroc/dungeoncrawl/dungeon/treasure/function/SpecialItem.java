@@ -55,7 +55,7 @@ public class SpecialItem extends LootFunction {
 
         @Override
         public SpecialItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn) {
-            return new SpecialItem(conditionsIn, object.get("loot_level").getAsInt() - 1);
+            return new SpecialItem(conditionsIn, object.get("loot_level").getAsInt());
         }
     }
 

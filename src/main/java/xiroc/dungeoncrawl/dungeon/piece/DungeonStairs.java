@@ -30,6 +30,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -70,25 +71,25 @@ public class DungeonStairs extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
         switch (stairType) {
             case 0: {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, false);
-                ironBars(worldIn, structureBoundingBoxIn, model);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, false);
+                ironBars(worldIn, structureBoundingBoxIn, model, context);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-                    model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
                 }
 
-                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+                decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             case 1: {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, false);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, false);
                 entrances(worldIn, structureBoundingBoxIn, model);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-                    model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
                 }
 
-                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+                decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             default:
@@ -97,28 +98,28 @@ public class DungeonStairs extends DungeonPiece {
 
     }
 
-    public void ironBars(IWorld world, MutableBoundingBox bounds, DungeonModel model) {
+    public void ironBars(IWorld world, MutableBoundingBox bounds, DungeonModel model, PlacementContext context) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
 
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, IRON_BARS, x + x0, y + y0, z, bounds);
+                    replaceBlockState(world, IRON_BARS,x + x0, y + y0, z, bounds, context);
         }
         if (sides[1]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, IRON_BARS, x + model.width - 1, y + y0, z + z0, bounds);
+                    replaceBlockState(world, IRON_BARS, x + model.width - 1, y + y0, z + z0, bounds, context);
         }
         if (sides[2]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, IRON_BARS, x + x0, y + y0, z + model.length - 1, bounds);
+                    replaceBlockState(world, IRON_BARS, x + x0, y + y0, z + model.length - 1, bounds, context);
         }
         if (sides[3]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, IRON_BARS, x, y + y0, z + z0, bounds);
+                    replaceBlockState(world, IRON_BARS, x, y + y0, z + z0, bounds, context);
         }
 
     }
@@ -127,8 +128,6 @@ public class DungeonStairs extends DungeonPiece {
     public void setupBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
-        }else {
-            DungeonCrawl.LOGGER.info("STAIRS MODEL IS NULL");
         }
     }
 

@@ -50,15 +50,7 @@ public class JsonConfig implements IJsonConfigurable {
 
     public static List<?> BIOME_BLACKLIST, BIOME_OVERWORLD_BLACKLIST;
 
-    public static Set<?> COLORED_ARMOR = ImmutableSet.<String>builder().add("minecraft:leather_boots")
-            .add("minecraft:leather_pants").add("minecraft:leather_chestplate").add("minecraft:leather_helmet").build();
-
-    public static ResourceLocation[] BOWS, SWORDS, SWORDS_RARE, PICKAXES, AXES, BOW_ENCHANTMENTS, SWORD_ENCHANTMENTS,
-            PICKAXE_ENCHANTMENTS, AXE_ENCHANTMENTS, ARMOR_ENCHANTMENTS;
-
-    public static ArmorSet[] ARMOR_SETS_1, ARMOR_SETS_2, ARMOR_SETS_3, ARMOR_SETS_RARE;
-
-    static {
+    public static void load() {
         load(new JsonConfig());
         load(new SpecialItemTags());
     }

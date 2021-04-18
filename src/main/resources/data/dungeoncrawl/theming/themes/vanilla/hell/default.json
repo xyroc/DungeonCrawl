@@ -16,8 +16,15 @@
       ]
     },
     "solid": {
-      "type": "block",
-      "block": "minecraft:magma_block"
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_bricks"
+        },
+        {
+          "block": "minecraft:red_nether_bricks"
+        }
+      ]
     },
     "pillar": {
       "type": "random_block",

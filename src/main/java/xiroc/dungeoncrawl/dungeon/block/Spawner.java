@@ -35,6 +35,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
@@ -56,8 +57,8 @@ public class Spawner implements IBlockPlacementHandler {
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
     @Override
-    public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
-                           Theme theme, Theme.SubTheme subTheme, int stage) {
+    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                      Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int stage) {
         if (world.isAirBlock(pos.down())) {
             return;
         }
@@ -84,7 +85,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
                 spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
                 spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).generateInt(rand));
-                spawnerNBT.putShort("RequiredPlayerRange", (short) 12);
+                spawnerNBT.putShort("RequiredPlayerRange", Config.SPAWNER_RANGE.get().shortValue());
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {
@@ -144,7 +145,7 @@ public class Spawner implements IBlockPlacementHandler {
             }
         }
 
-        if (RandomMonster.NBT_PATCHERS.containsKey(type)) {
+        if (Config.OVERWRITE_ENTITY_LOOT_TABLES.get() && RandomMonster.NBT_PATCHERS.containsKey(type)) {
             RandomMonster.NBT_PATCHERS.get(type).patch(spawnData, rand, stage);
         }
         return spawnData;

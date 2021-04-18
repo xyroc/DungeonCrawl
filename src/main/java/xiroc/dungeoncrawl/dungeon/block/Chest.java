@@ -27,9 +27,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.storage.loot.LootTables;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure.Type;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Orientation;
@@ -39,8 +39,8 @@ import java.util.Random;
 public class Chest implements IBlockPlacementHandler {
 
     @Override
-    public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
-                           Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                      Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
         world.setBlockState(pos, state, 3);
         if (world.getTileEntity(pos) instanceof LockableLootTileEntity) {
             setLootTable(world, pos, rand, treasureType, theme, subTheme, lootLevel);
@@ -66,7 +66,8 @@ public class Chest implements IBlockPlacementHandler {
         }
     }
 
-    private static void setLootTable(IWorld world, BlockPos pos, Random rand, Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+    private static void setLootTable(IWorld world, BlockPos pos, Random rand, Treasure.Type treasureType,
+                                     Theme theme, Theme.SubTheme subTheme, int lootLevel) {
         ResourceLocation lootTable = Treasure.SPECIAL_LOOT_TABLES.get(treasureType);
         LockableLootTileEntity.setLootTable(world, world.getRandom(), pos,
                 lootTable == null ? getLootTable(lootLevel, rand) : lootTable);
@@ -81,8 +82,9 @@ public class Chest implements IBlockPlacementHandler {
     public static class TrappedChest implements IBlockPlacementHandler {
 
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, Theme theme,
-                               Theme.SubTheme subTheme, int lootLevel) {
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                          Treasure.Type treasureType, Theme theme,
+                          Theme.SubTheme subTheme, int lootLevel) {
             if (state.has(BlockStateProperties.HORIZONTAL_FACING))
                 state = state.with(BlockStateProperties.HORIZONTAL_FACING, Orientation.RANDOM_HORIZONTAL_FACING.roll(rand));
             world.setBlockState(pos, state, 3);

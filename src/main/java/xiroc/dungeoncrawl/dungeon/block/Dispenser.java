@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -35,8 +36,9 @@ import java.util.Random;
 public class Dispenser implements IBlockPlacementHandler {
 
     @Override
-    public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
-                           Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                      Treasure.Type treasureType,
+                      Theme theme, Theme.SubTheme subTheme, int lootLevel) {
         world.setBlockState(pos, state, 3);
         if (world.getTileEntity(pos) instanceof DispenserTileEntity) {
             LockableLootTileEntity.setLootTable(world, world.getRandom(), pos, getLootTable(lootLevel));

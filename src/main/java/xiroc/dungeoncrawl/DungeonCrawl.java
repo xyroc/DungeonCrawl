@@ -26,19 +26,19 @@ import net.minecraft.world.gen.GenerationStage.Decoration;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
@@ -49,7 +49,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
-import xiroc.dungeoncrawl.util.Tools;
+import xiroc.dungeoncrawl.util.tools.Tools;
 import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
 
 import java.text.SimpleDateFormat;
@@ -68,8 +68,6 @@ public class DungeonCrawl {
             .registerTypeAdapter(WeightedIntegerEntry.class, new WeightedIntegerEntry.Deserializer())
             .setPrettyPrinting().create();
 
-    public static IEventBus EVENT_BUS;
-
     public DungeonCrawl() {
         LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
@@ -79,14 +77,13 @@ public class DungeonCrawl {
         Treasure.init();
         DungeonModelFeature.init();
         DungeonModelBlockType.buildNameTable();
-
-        EVENT_BUS = Bus.MOD.bus().get();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("Common Setup");
         ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
+        JsonConfig.load();
 
         if (Config.SPACING.get() > Config.SEPARATION.get()) {
             Dungeon.spacing = Config.SPACING.get();
@@ -107,12 +104,13 @@ public class DungeonCrawl {
 
         DungeonCrawl.LOGGER.info("Adding features and structures");
 
+        DungeonCrawl.LOGGER.info("Dungeons will generate in the following biomes:");
         for (Biome biome : ForgeRegistries.BIOMES) {
             if (Dungeon.OVERWORLD_CATEGORIES.contains(biome.getCategory())) {
                 biome.addFeature(Decoration.UNDERGROUND_STRUCTURES, new ConfiguredFeature<>(Dungeon.DUNGEON, NoFeatureConfig.NO_FEATURE_CONFIG));
                 if (biome.getRegistryName() == null || !JsonConfig.BIOME_OVERWORLD_BLACKLIST.contains(biome.getRegistryName().toString())
                         && Dungeon.ALLOWED_CATEGORIES.contains(biome.getCategory())) {
-                    DungeonCrawl.LOGGER.info("Generation Biome: " + biome.getRegistryName());
+                    DungeonCrawl.LOGGER.info(biome.getRegistryName());
                     biome.addStructure(Dungeon.CONFIGURED_DUNGEON);
                 }
             }
@@ -126,10 +124,10 @@ public class DungeonCrawl {
         event.getServer().getResourceManager().addReloadListener(new ResourceReloadHandler());
     }
 
-//    @SubscribeEvent
-//    public void onServerStart(FMLServerStartingEvent event) {
-//        SpawnDungeonCommand.register(event.getCommandDispatcher());
-//    }
+    @SubscribeEvent
+    public void onServerStart(FMLServerStartingEvent event) {
+        SpawnDungeonCommand.register(event.getCommandDispatcher());
+    }
 
     public static String getDate() {
         return new SimpleDateFormat().format(new Date());

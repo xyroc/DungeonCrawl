@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.*;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -39,13 +40,11 @@ public interface IBlockPlacementHandler {
 
     HashMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new HashMap<>();
 
-    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, treasureType, theme, subTheme, lootLevel) -> {
+    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, context, treasureType, theme, subTheme, lootLevel) -> {
         if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
-            world.setBlockState(pos, state, 2);
             world.getChunk(pos).getBlocksToBeTicked().scheduleTick(pos, state.getBlock(), 1);
-        } else {
-            world.setBlockState(pos, state, 2);
         }
+        world.setBlockState(pos, state, 2);
     };
 
     static void init() {
@@ -61,8 +60,8 @@ public interface IBlockPlacementHandler {
         PLACEMENT_HANDLERS.put(Blocks.PODZOL, new Plants.Podzol());
     }
 
-    void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand,
-                    Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel);
+    void place(IWorld world, BlockState state, BlockPos pos, Random rand,
+               PlacementContext context, Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel);
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

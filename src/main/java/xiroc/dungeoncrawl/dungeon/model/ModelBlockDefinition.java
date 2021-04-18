@@ -33,7 +33,6 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class ModelBlockDefinition {
 
     public static final Hashtable<String, ModelBlockDefinition> DEFINITIONS = new Hashtable<>();
 
-    private static final HashMap<Block, DungeonModelBlockType> DEFAULT = new HashMap<>();
+    private static final Hashtable<Block, DungeonModelBlockType> DEFAULT = new Hashtable<>();
 
     public static final ModelBlockDefinition DEFAULT_DEFINITION;
 
@@ -86,12 +85,12 @@ public class ModelBlockDefinition {
     }
 
     public ModelBlockDefinition fallback;
-    public HashMap<Block, DungeonModelBlockType> definition;
-    public HashMap<DungeonModelBlockType, Block> invertedDefinition;
+    public Hashtable<Block, DungeonModelBlockType> definition;
+    public Hashtable<DungeonModelBlockType, Block> invertedDefinition;
 
-    public ModelBlockDefinition(HashMap<Block, DungeonModelBlockType> definition) {
+    public ModelBlockDefinition(Hashtable<Block, DungeonModelBlockType> definition) {
         this.definition = definition;
-        this.invertedDefinition = new HashMap<>();
+        this.invertedDefinition = new Hashtable<>();
         this.definition.forEach((block, type) -> this.invertedDefinition.put(type, block));
     }
 
@@ -133,7 +132,7 @@ public class ModelBlockDefinition {
     private static void loadDefinition(IResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, String>> referencesToUpdate) {
         DungeonCrawl.LOGGER.debug("Loading {}", resourceLocation);
         JsonParser parser = new JsonParser();
-        HashMap<Block, DungeonModelBlockType> definition = new HashMap<>();
+        Hashtable<Block, DungeonModelBlockType> definition = new Hashtable<>();
         try {
             JsonObject object = parser.parse(new InputStreamReader(resourceManager.getResource(resourceLocation).getInputStream())).getAsJsonObject();
             object.getAsJsonObject("definition").entrySet().forEach((entry) -> {

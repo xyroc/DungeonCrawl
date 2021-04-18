@@ -57,7 +57,7 @@ public class RandomPotion extends LootFunction {
         @Override
         public RandomPotion deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                         ILootCondition[] conditionsIn) {
-            return new RandomPotion(conditionsIn, object.get("loot_level").getAsInt() - 1);
+            return new RandomPotion(conditionsIn, object.get("loot_level").getAsInt());
         }
 
     }

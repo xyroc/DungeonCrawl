@@ -16,7 +16,7 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon.generator;
+package xiroc.dungeoncrawl.dungeon.generator.dungeon;
 
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 
@@ -30,7 +30,7 @@ public class DungeonGeneratorSettings {
 
     public static final DungeonGeneratorSettings DEFAULT = new DungeonGeneratorSettings(
             (rand, layer) -> 6, (rand, layer) -> 8,
-            5, 1, 3, 5, 1, 5, 1, 6, 4, true);
+            5, 1, 3, 5, 1, 5, 1, 6, 3, true);
 
     public static final DungeonGeneratorSettings LARGE = new DungeonGeneratorSettings(
             (rand, layer) -> 5 + layer / 2, (rand, layer) -> 6 + layer,

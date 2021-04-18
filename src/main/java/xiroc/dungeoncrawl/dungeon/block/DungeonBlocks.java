@@ -44,14 +44,6 @@ public class DungeonBlocks {
         return state;
     }
 
-    public static final class TupleIntBlock extends Tuple<Integer, BlockState> {
-
-        public TupleIntBlock(Integer aIn, BlockState bIn) {
-            super(aIn, bIn);
-        }
-
-    }
-
     public static final class TupleFloatBlock extends Tuple<Float, BlockState> {
 
         public TupleFloatBlock(Float aIn, BlockState bIn) {

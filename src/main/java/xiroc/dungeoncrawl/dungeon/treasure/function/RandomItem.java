@@ -57,7 +57,7 @@ public class RandomItem extends LootFunction {
         @Override
         public RandomItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                       ILootCondition[] conditionsIn) {
-            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt() - 1);
+            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt());
         }
 
     }

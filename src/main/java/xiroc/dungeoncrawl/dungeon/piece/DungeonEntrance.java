@@ -33,6 +33,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.*;
@@ -70,7 +71,7 @@ public class DungeonEntrance extends DungeonPiece {
             return true;
         }
 
-        int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
+        int height = worldIn.getHeight(context.heightmapType, x + 4, z + 4);
         int cursorHeight = y;
 
         DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get("staircase");
@@ -79,7 +80,7 @@ public class DungeonEntrance extends DungeonPiece {
             if (height - cursorHeight <= 4)
                 break;
             super.build(staircase, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), theme, subTheme, Treasure.Type.DEFAULT, stage, true);
+                    new BlockPos(x + 2, cursorHeight, z + 2), theme, subTheme, Treasure.Type.DEFAULT, stage, context, true);
             cursorHeight += 8;
         }
 
@@ -89,13 +90,13 @@ public class DungeonEntrance extends DungeonPiece {
         // Creating a custom bounding box because the cursor height was unknown during #setupBoundingBox.
         this.boundingBox = new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + model.width - 1, pos.getY() + model.height - 1, pos.getZ() + model.length - 1);
 
-        buildFull(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, true);
+        build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, true);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 
@@ -103,9 +104,6 @@ public class DungeonEntrance extends DungeonPiece {
     public void setupBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
-        }
-        else {
-            DungeonCrawl.LOGGER.info("ENTRANCE MODEL IS NULL");
         }
     }
 
@@ -119,8 +117,8 @@ public class DungeonEntrance extends DungeonPiece {
         super.readAdditional(tagCompound);
     }
 
-    public void buildFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                          SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
+    public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
+                      SubTheme subTheme, Treasure.Type treasureType, int lootLevel, PlacementContext context, boolean fillAir) {
         if (Config.EXTENDED_DEBUG.get()) {
             DungeonCrawl.LOGGER.debug("Building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -133,12 +131,7 @@ public class DungeonEntrance extends DungeonPiece {
                 if (state == null)
                     return;
 
-                setBlockState(state.getA(), world, treasureType, position, theme, subTheme, lootLevel,
-                        fillAir ? DungeonModelBlockType.SOLID : block.type);
-
-                if (state.getB()) {
-                    world.getChunk(position).markBlockForPostprocessing(position);
-                }
+                placeBlock(block, world, context, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
 
                 if (block.position.getY() == 0
                         && model.height > 1

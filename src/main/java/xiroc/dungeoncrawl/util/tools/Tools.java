@@ -16,28 +16,29 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.util.tools;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Items;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -45,15 +46,14 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.model.ModelHandler;
+import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.UUID;
 
 public class Tools {
 
-    private static final HashMap<UUID, Tuple<BlockPos, BlockPos>> POSITIONS = new HashMap<>();
-
-    private static final BlockState AIR = Blocks.AIR.getDefaultState();
+    private static final Hashtable<UUID, ModelEditContext> CONTEXT_TABLE = new Hashtable<>();
 
     @SubscribeEvent
     public void onServerStart(FMLServerStartingEvent event) {
@@ -68,58 +68,61 @@ public class Tools {
         }).then(Commands.argument("name", StringArgumentType.string()).executes((command) -> {
                     UUID uuid = command.getSource().asPlayer().getUniqueID();
 
-                    if (!POSITIONS.containsKey(uuid)) {
+                    if (!CONTEXT_TABLE.containsKey(uuid)) {
                         command.getSource().sendFeedback(
-                                new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
 
-                    Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
+                    ModelEditContext context = CONTEXT_TABLE.get(uuid);
 
-                    BlockPos p1 = positions.getA(), p2 = positions.getB();
-
-                    if (p1 != null && p2 != null) {
-                        BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
-                                Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
-                                pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
-                                        Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
-                        ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"), ModelBlockDefinition.DEFAULT_DEFINITION,
+                    if (context.arePositionsSet()) {
+                        String name = StringArgumentType.getString(command, "name");
+                        command.getSource().sendFeedback(new StringTextComponent("Saving as " + name), true);
+                        BlockPos pos1 = new BlockPos(Math.min(context.pos1.getX(), context.pos2.getX()),
+                                Math.min(context.pos1.getY(), context.pos2.getY()),
+                                Math.min(context.pos1.getZ(), context.pos2.getZ()));
+                        BlockPos pos2 = new BlockPos(Math.max(context.pos1.getX(), context.pos2.getX()),
+                                Math.max(context.pos1.getY(), context.pos2.getY()),
+                                Math.max(context.pos1.getZ(), context.pos2.getZ()));
+                        ModelHandler.readAndSaveModelToFile(name,
+                                ModelBlockDefinition.DEFAULT_DEFINITION,
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
+                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Done."), true);
                         return 0;
                     } else {
                         command.getSource().sendFeedback(
-                                new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
                 }).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
                     UUID uuid = command.getSource().asPlayer().getUniqueID();
 
-                    if (!POSITIONS.containsKey(uuid)) {
+                    if (!CONTEXT_TABLE.containsKey(uuid)) {
                         command.getSource().sendFeedback(
-                                new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
 
-                    Tuple<BlockPos, BlockPos> positions = POSITIONS.get(uuid);
-
-                    BlockPos p1 = positions.getA(), p2 = positions.getB();
-
                     String blockDefinition = StringArgumentType.getString(command, "block definition");
                     if (!ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
-                        command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition path \"" + blockDefinition + "\""), true);
+                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition path \"" + blockDefinition + "\""), true);
                         return 1;
                     }
 
-                    if (p1 != null && p2 != null) {
-                        BlockPos pos1 = new BlockPos(Math.min(p1.getX(), p2.getX()),
-                                Math.min(p1.getY(), p2.getY()), Math.min(p1.getZ(), p2.getZ())),
-                                pos2 = new BlockPos(Math.max(p1.getX(), p2.getX()),
-                                        Math.max(p1.getY(), p2.getY()), Math.max(p1.getZ(), p2.getZ()));
+                    ModelEditContext context = CONTEXT_TABLE.get(uuid);
+
+                    if (context.arePositionsSet()) {
+                        BlockPos pos1 = new BlockPos(Math.min(context.pos1.getX(), context.pos2.getX()),
+                                Math.min(context.pos1.getY(), context.pos2.getY()),
+                                Math.min(context.pos1.getZ(), context.pos2.getZ()));
+                        BlockPos pos2 = new BlockPos(Math.max(context.pos1.getX(), context.pos2.getX()),
+                                Math.max(context.pos1.getY(), context.pos2.getY()),
+                                Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
                                 ModelBlockDefinition.DEFINITIONS.get(blockDefinition),
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
@@ -128,7 +131,7 @@ public class Tools {
                         return 0;
                     } else {
                         command.getSource().sendFeedback(
-                                new StringTextComponent(ChatFormatting.RED + "Please select two positions."),
+                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
@@ -142,6 +145,7 @@ public class Tools {
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                        setOrigin(command.getSource(), pos);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
                         return 1;
@@ -153,6 +157,7 @@ public class Tools {
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                        setOrigin(command.getSource(), pos);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
                         return 1;
@@ -166,8 +171,9 @@ public class Tools {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
                             BlockPos pos = command.getSource().asPlayer().getPosition();
                             buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
+                            setOrigin(command.getSource(), pos);
                         } else {
-                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + key), true);
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + key), true);
                             return 1;
                         }
                     } else {
@@ -183,8 +189,9 @@ public class Tools {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
                             BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                             buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
+                            setOrigin(command.getSource(), pos);
                         } else {
-                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + key), true);
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + key), true);
                             return 1;
                         }
                     } else {
@@ -198,6 +205,7 @@ public class Tools {
                     if (model != null) {
                         BlockPos pos = command.getSource().asPlayer().getPosition();
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                        setOrigin(command.getSource(), pos);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
                         return 1;
@@ -209,6 +217,7 @@ public class Tools {
                     if (model != null) {
                         BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                         buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                        setOrigin(command.getSource(), pos);
                     } else {
                         command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
                         return 1;
@@ -222,8 +231,9 @@ public class Tools {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
                             BlockPos pos = command.getSource().asPlayer().getPosition();
                             buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
+                            setOrigin(command.getSource(), pos);
                         } else {
-                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + blockDefinition), true);
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
                             return 1;
                         }
                     } else {
@@ -239,8 +249,9 @@ public class Tools {
                         if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
                             BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                             buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
+                            setOrigin(command.getSource(), pos);
                         } else {
-                            command.getSource().sendFeedback(new StringTextComponent(ChatFormatting.RED + "Unknown block definition: " + blockDefinition), true);
+                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
                             return 1;
                         }
                     } else {
@@ -249,9 +260,37 @@ public class Tools {
                     }
                     return 0;
                 })))));
+
+        event.getCommandDispatcher().register(Commands.literal("origin").requires((source) -> source.hasPermissionLevel(2))
+                .executes((command) -> {
+                    UUID uuid = command.getSource().asPlayer().getUniqueID();
+                    if (!CONTEXT_TABLE.containsKey(uuid)) {
+                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Please set your origin with "
+                                + TextFormatting.BOLD + "/origin ~ ~ ~"
+                                + TextFormatting.RED + " first."), true);
+                        return 1;
+                    } else {
+                        ModelEditContext context = CONTEXT_TABLE.get(uuid);
+                        BlockPos pos = new BlockPos(command.getSource().asPlayer());
+                        command.getSource().sendFeedback(new StringTextComponent("The origin is (x: "
+                                + context.origin.getX() + " y: "
+                                + context.origin.getY() + " z: "
+                                + context.origin.getZ() + ")."), true);
+                        command.getSource().sendFeedback(new StringTextComponent("Your coordinates relative to the origin are (x: "
+                                + (pos.getX() - context.origin.getX()) + " y: "
+                                + (pos.getY() - context.origin.getY()) + " z: "
+                                + (pos.getZ() - context.origin.getZ() + ").")), true);
+                        return 0;
+                    }
+                }).then(Commands.argument("location", Vec3Argument.vec3())
+                        .executes((command) -> {
+                            BlockPos location = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                            setOrigin(command.getSource(), location);
+                            return 0;
+                        })));
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         if (!event.getWorld().isRemote() && event.getPlayer().isCreative()
                 && event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == Items.DIAMOND_AXE) {
@@ -259,39 +298,36 @@ public class Tools {
             BlockPos pos = event.getPos();
 
             UUID uuid = event.getPlayer().getGameProfile().getId();
-            if (POSITIONS.containsKey(uuid)) {
-                BlockPos position2 = POSITIONS.get(uuid).getB();
-                POSITIONS.put(uuid, new Tuple<>(pos, position2));
-            } else {
-                POSITIONS.put(uuid, new Tuple<>(pos, null));
-            }
+            CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos1 = pos;
 
             event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE + "Position 1 set to ("
                     + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
         IWorld world = event.getPlayer().world;
-        if (!world.isRemote() && event.getPlayer().isCreative()) {
-            if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
-                event.setCanceled(true);
+        if (!world.isRemote() && event.getPlayer().isCreative() && event.getItemStack().getItem() == Items.DIAMOND_AXE) {
+            event.setCanceled(true);
 
-                BlockPos pos = event.getPos();
+            BlockPos pos = event.getPos();
 
-                UUID uuid = event.getPlayer().getGameProfile().getId();
-                if (POSITIONS.containsKey(uuid)) {
-                    BlockPos position1 = POSITIONS.get(uuid).getA();
-                    POSITIONS.put(uuid, new Tuple<>(position1, pos));
-                } else {
-                    POSITIONS.put(uuid, new Tuple<>(null, pos));
-                }
+            UUID uuid = event.getPlayer().getGameProfile().getId();
+            CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
 
-                event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
-                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
-            }
+            event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
+                    + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
         }
+    }
+
+    private static void setOrigin(CommandSource source, BlockPos pos) throws CommandSyntaxException {
+        ModelEditContext context = CONTEXT_TABLE.computeIfAbsent(source.asPlayer().getUniqueID(), (id) -> new ModelEditContext());
+        context.origin = pos;
+        source.sendFeedback(new StringTextComponent("Origin set to (x: "
+                + context.origin.getX() + " y: "
+                + context.origin.getY() + " z: "
+                + context.origin.getZ() + ")."), true);
     }
 
     public static void buildModel(DungeonModel model, IWorld world, BlockPos pos, ModelBlockDefinition definition) {

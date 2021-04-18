@@ -29,14 +29,12 @@ import net.minecraft.world.biome.BiomeManager;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.IFeatureConfig;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 
 import java.util.Random;
@@ -89,8 +87,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
                     return false;
                 }
             }
-            return !DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(chunkGen,
-                    chunkGen.getBiomeProvider().getNoiseBiome(chunkX << 4, chunkGen.getSeaLevel(), chunkZ << 4), chunkX, chunkZ));
+            return true;
         } else {
             return false;
         }

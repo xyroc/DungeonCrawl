@@ -15,41 +15,48 @@
             "x": 3
           },
           "model": "multipart/corridor/default",
-          "weight": 5
+          "weight": 6
         },
         {
           "offset": {
             "x": 3
           },
           "model": "multipart/corridor/variant",
-          "weight": 2
+          "weight": 6
         },
         {
           "offset": {
             "x": 3
           },
           "model": "multipart/corridor/variant_2",
-          "weight": 2
+          "weight": 6
         },
         {
           "offset": {
             "x": 3
           },
           "model": "multipart/corridor/bookshelf",
-          "weight": 2
+          "weight": 5
         },
         {
           "offset": {
             "x": 3
           },
           "model": "multipart/corridor/chest",
-          "weight": 2
+          "weight": 3
         },
         {
           "offset": {
             "x": 3
           },
           "model": "multipart/corridor/spawner",
+          "weight": 3
+        },
+        {
+          "offset": {
+            "x": 3
+          },
+          "model": "multipart/corridor/crops",
           "weight": 2
         },
         {
@@ -91,7 +98,7 @@
           },
           "rotation": "clockwise_180",
           "model": "multipart/corridor/default",
-          "weight": 5
+          "weight": 6
         },
         {
           "offset": {
@@ -100,7 +107,7 @@
           },
           "rotation": "clockwise_180",
           "model": "multipart/corridor/variant",
-          "weight": 2
+          "weight": 6
         },
         {
           "offset": {
@@ -109,7 +116,7 @@
           },
           "rotation": "clockwise_180",
           "model": "multipart/corridor/variant_2",
-          "weight": 2
+          "weight": 6
         },
         {
           "offset": {
@@ -118,7 +125,7 @@
           },
           "rotation": "clockwise_180",
           "model": "multipart/corridor/bookshelf",
-          "weight": 2
+          "weight": 5
         },
         {
           "offset": {
@@ -127,7 +134,7 @@
           },
           "rotation": "clockwise_180",
           "model": "multipart/corridor/chest",
-          "weight": 2
+          "weight": 3
         },
         {
           "offset": {
@@ -136,6 +143,15 @@
           },
           "rotation": "clockwise_180",
           "model": "multipart/corridor/spawner",
+          "weight": 3
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "multipart/corridor/crops",
           "weight": 2
         },
         {

@@ -16,26 +16,25 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.api.event;
+package xiroc.dungeoncrawl.dungeon;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraftforge.eventbus.api.Event;
-import xiroc.dungeoncrawl.dungeon.DungeonStatTracker;
+import net.minecraft.world.gen.Heightmap;
 
-public class DungeonBuilderStartEvent extends Event {
+import java.util.ArrayList;
 
-    public final ChunkGenerator<?> chunkGen;
-    public final int layers;
-    public final BlockPos startPos;
-    public int theme, subTheme;
-    public DungeonStatTracker statTracker;
+public class PlacementContext {
 
-    public DungeonBuilderStartEvent(ChunkGenerator<?> chunkGen, BlockPos startPos, DungeonStatTracker statTracker, int layers) {
-        this.chunkGen = chunkGen;
-        this.startPos = startPos;
-        this.statTracker = statTracker;
-        this.layers = layers;
+    public final ArrayList<BlockPos> protectedBlocks;
+
+    public Heightmap.Type heightmapType;
+
+    public boolean postProcessing;
+
+    public PlacementContext() {
+        this.protectedBlocks = new ArrayList<>(3);
+        this.heightmapType = Heightmap.Type.WORLD_SURFACE_WG;
+        this.postProcessing = true;
     }
 
 }

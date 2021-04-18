@@ -50,7 +50,7 @@ public class Shield extends LootFunction {
         @Override
         public Shield deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                   ILootCondition[] conditionsIn) {
-            return new Shield(conditionsIn, object.has("loot_level") ? object.get("loot_level").getAsInt() - 1 : 0);
+            return new Shield(conditionsIn, object.has("loot_level") ? object.get("loot_level").getAsInt(): 0);
         }
 
     }

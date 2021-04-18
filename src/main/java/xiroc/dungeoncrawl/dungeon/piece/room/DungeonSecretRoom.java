@@ -27,6 +27,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
@@ -50,9 +51,9 @@ public class DungeonSecretRoom extends DungeonPiece {
 
         BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
 
-        buildRotatedFull(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme,
-                model.getTreasureType(), stage, rotation, false);
-        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme,
+                model.getTreasureType(), stage, rotation, context, false);
+        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 
@@ -85,8 +86,6 @@ public class DungeonSecretRoom extends DungeonPiece {
     public void setupBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
-        }else {
-            DungeonCrawl.LOGGER.info("SECRET ROOM MODEL IS NULL");
         }
     }
 

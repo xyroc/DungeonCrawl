@@ -22,6 +22,12 @@
     "minecraft:dark_forest": [{"key": "vanilla/dark_oak"}],
     "minecraft:dark_forest_hills": [{"key": "vanilla/dark_oak"}],
 
+    "minecraft:mountains": [{"key": "vanilla/spruce"}],
+    "minecraft:snowy_mountains": [{"key": "vanilla/spruce"}],
+    "minecraft:gravelly_mountains": [{"key": "vanilla/spruce"}],
+    "minecraft:modified_gravelly_mountains": [{"key": "vanilla/spruce"}],
+    "minecraft:wooded_mountains": [{"key": "vanilla/spruce"}],
+    "minecraft:mountain_edge": [{"key": "vanilla/spruce"}],
     "minecraft:taiga": [{"key": "vanilla/spruce"}],
     "minecraft:taiga_hills": [{"key": "vanilla/spruce"}],
     "minecraft:snowy_tundra": [{"key": "vanilla/spruce"}],

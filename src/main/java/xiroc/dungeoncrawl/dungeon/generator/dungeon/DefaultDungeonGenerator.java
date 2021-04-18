@@ -16,12 +16,15 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon.generator;
+package xiroc.dungeoncrawl.dungeon.generator.dungeon;
 
 import net.minecraft.util.math.ChunkPos;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
+import xiroc.dungeoncrawl.dungeon.generator.CatacombLayerGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.DefaultLayerGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.LayerGenerator;
 import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -70,8 +73,8 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
         // TODO: Generator settings
         if (layer >= 4) {
             hellGenerator.generateLayer(dungeonBuilder, dungeonLayer, layer, rand, start);
-        } else if (layer >= 2) {
-            catacombGenerator.generateLayer(dungeonBuilder, dungeonLayer, layer, rand, start);
+//        } else if (layer >= 2) {
+//            catacombGenerator.generateLayer(dungeonBuilder, dungeonLayer, layer, rand, start);
         } else {
             defaultGenerator.setSecretRoom(layer == secretRoomLayer);
             defaultGenerator.generateLayer(dungeonBuilder, dungeonLayer, layer, rand, start);

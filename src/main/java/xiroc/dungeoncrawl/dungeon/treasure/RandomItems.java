@@ -301,14 +301,11 @@ public class RandomItems {
             if (f < 0.04 + lootLevel * 0.01) {
                 shield.addEnchantment(Enchantments.MENDING, 1);
             }
-//            if (rand.nextFloat() < 0.1) {
-            shield.addEnchantment(Enchantments.VANISHING_CURSE, 1);
-//            }
-        } else {
-            CompoundNBT nbt = new CompoundNBT();
-            nbt.put("BlockEntityTag", Banner.createPatterns(rand));
-            shield.setTag(nbt);
+            if (rand.nextFloat() < 0.75) {
+                shield.addEnchantment(Enchantments.VANISHING_CURSE, 1);
+            }
         }
+        shield.getOrCreateTag().put("BlockEntityTag", Banner.createPatterns(rand));
         return shield;
     }
 

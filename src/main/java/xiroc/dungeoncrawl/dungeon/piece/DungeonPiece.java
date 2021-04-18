@@ -18,11 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon.piece;
 
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FallingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -42,6 +39,7 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.Spawner;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
@@ -57,7 +55,6 @@ import xiroc.dungeoncrawl.util.Position2D;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public abstract class DungeonPiece extends StructurePiece {
 
@@ -81,7 +78,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public static final CompoundNBT DEFAULT_NBT;
 
-    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.IRON_BARS).build();
+//    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.IRON_BARS).build();
 
     static {
         DEFAULT_NBT = new CompoundNBT();
@@ -107,10 +104,14 @@ public abstract class DungeonPiece extends StructurePiece {
     public Theme theme;
     public SubTheme subTheme;
 
+    public final PlacementContext context;
+
     public DungeonPiece(IStructurePieceType p_i51343_1_) {
         super(p_i51343_1_, DEFAULT_NBT);
         sides = new boolean[4];
         rotation = Rotation.NONE;
+
+        this.context = new PlacementContext();
     }
 
     public DungeonPiece(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
@@ -154,6 +155,8 @@ public abstract class DungeonPiece extends StructurePiece {
         if (p_i51343_2_.contains("variation")) {
             variation = p_i51343_2_.getByteArray("variation");
         }
+
+        this.context = new PlacementContext();
 
         setupBoundingBox();
     }
@@ -304,57 +307,42 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public void setBlockState(BlockState state, IWorld world, Treasure.Type treasureType,
-                              BlockPos pos, Theme theme, SubTheme subTheme, int lootLevel, DungeonModelBlockType type) {
+                              BlockPos pos, Theme theme, SubTheme subTheme, int lootLevel,
+                              DungeonModelBlockType type, PlacementContext context) {
         if (state == null)
             return;
 
-        if (DungeonBuilder.isBlockProtected(world, pos)
+        if (DungeonBuilder.isBlockProtected(world, pos, context)
                 || world.isAirBlock(pos) && !type.isSolid(world, pos, WeightedRandomBlock.RANDOM, 0, 0, 0)) {
             return;
         }
 
-        IBlockPlacementHandler.getHandler(state.getBlock()).placeBlock(world, state, pos, world.getRandom(),
-                treasureType, theme, subTheme, lootLevel);
+        IBlockPlacementHandler.getHandler(state.getBlock()).place(world, state, pos, world.getRandom(),
+                context, treasureType, theme, subTheme, lootLevel);
 
         IFluidState ifluidstate = world.getFluidState(pos);
         if (ifluidstate.isSource()) {
             world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
         }
 
-        if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
-            world.getChunk(pos).markBlockForPostprocessing(pos);
-        }
-    }
-
-    @Override
-    public void setBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
-                              MutableBoundingBox boundingboxIn) {
-        BlockPos blockPos = new BlockPos(x, y, z);
-
-        if (DungeonBuilder.isBlockProtected(worldIn, blockPos))
-            return;
-
-        setBlockState(worldIn, blockstateIn, boundingboxIn, blockPos);
+//        if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+//            world.getChunk(pos).markBlockForPostprocessing(pos);
+//        }
     }
 
     public static void setBlockState(IWorld worldIn, BlockState blockstateIn, MutableBoundingBox boundingboxIn, BlockPos blockPos) {
         if (boundingboxIn.isVecInside(blockPos)) {
 
-            if (blockstateIn.getBlock() instanceof FallingBlock) {
-                worldIn.setBlockState(blockPos, blockstateIn, 3);
-            } else {
-                worldIn.setBlockState(blockPos, blockstateIn, 2);
-            }
+            worldIn.setBlockState(blockPos, blockstateIn, 2);
 
             IFluidState ifluidstate = worldIn.getFluidState(blockPos);
             if (ifluidstate.isSource()) {
                 worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
             }
 
-            if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
-                worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
-            }
-
+//            if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
+//                worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+//            }
         }
     }
 
@@ -369,23 +357,17 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public void replaceBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
-                                  MutableBoundingBox boundingboxIn) {
+                                  MutableBoundingBox boundingboxIn, PlacementContext context) {
         BlockPos blockPos = new BlockPos(x, y, z);
 
-        if (DungeonBuilder.isBlockProtected(worldIn, blockPos) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
+        if (DungeonBuilder.isBlockProtected(worldIn, blockPos, context) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
             return;
 
         setBlockState(worldIn, blockstateIn, boundingboxIn, blockPos);
     }
 
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                      SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
-
-        buildFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, fillAir);
-    }
-
-    public void buildFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                          SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
+                      SubTheme subTheme, Treasure.Type treasureType, int lootLevel, PlacementContext context, boolean fillAir) {
         if (Config.EXTENDED_DEBUG.get()) {
             DungeonCrawl.LOGGER.debug("Building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -398,19 +380,7 @@ public abstract class DungeonPiece extends StructurePiece {
                 if (state == null)
                     return;
 
-                setBlockState(state.getA(), world, treasureType, position, theme, subTheme, lootLevel,
-                        fillAir ? DungeonModelBlockType.SOLID : block.type);
-
-                if (state.getB()) {
-                    world.getChunk(position).markBlockForPostprocessing(position);
-                }
-
-//                if (block.position.getY() == 0 && model.height > 1
-//                        && world.isAirBlock(position.down()) && model.model[x][1][z] != null
-//                        && block.type == DungeonModelBlockType.SOLID
-//                        && (position.getX() & 1) + (position.getZ() & 1) == 1) {
-//                    buildPillar(world, theme, pos.getX() + x, pos.getY(), pos.getZ() + z, boundsIn);
-//                }
+                placeBlock(block, world, context, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
             }
         });
 
@@ -420,12 +390,8 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public void buildRotated(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                             SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
-        buildRotatedFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, rotation, fillAir);
-    }
-
-    public void buildRotatedFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                                 SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, boolean fillAir) {
+                             SubTheme subTheme, Treasure.Type treasureType, int lootLevel, Rotation rotation, PlacementContext context,
+                             boolean fillAir) {
         if (Config.EXTENDED_DEBUG.get()) {
             DungeonCrawl.LOGGER.debug("Building {} with model id {} and rotation {} at ({} | {} | {})", model.location, model.id, rotation, pos.getX(), pos.getY(), pos.getZ());
         }
@@ -445,7 +411,7 @@ public abstract class DungeonPiece extends StructurePiece {
                         if (state == null)
                             return;
 
-                        placeBlock(block, model, world, boundsIn, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
+                        placeBlock(block, world, context, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
                     }
                 });
                 break;
@@ -465,7 +431,7 @@ public abstract class DungeonPiece extends StructurePiece {
                         if (state == null)
                             return;
 
-                        placeBlock(block, model, world, boundsIn, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
+                        placeBlock(block, world, context, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
 
                     }
                 });
@@ -485,14 +451,14 @@ public abstract class DungeonPiece extends StructurePiece {
                         if (state == null)
                             return;
 
-                        placeBlock(block, model, world, boundsIn, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
+                        placeBlock(block, world, context, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
 
                     }
                 });
                 break;
             }
             case NONE:
-                buildFull(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, fillAir);
+                build(model, world, boundsIn, pos, theme, subTheme, treasureType, lootLevel, context, fillAir);
                 break;
             default:
                 DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unsupported rotation " + rotation);
@@ -504,11 +470,12 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public void placeBlock(DungeonModelBlock block, DungeonModel model, IWorld world, MutableBoundingBox boundsIn, Theme theme, SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir, BlockPos position, Tuple<BlockState, Boolean> result) {
-        setBlockState(result.getA(), world, treasureType, position, theme, subTheme, lootLevel,
-                fillAir ? DungeonModelBlockType.SOLID : block.type);
+    public void placeBlock(DungeonModelBlock block, IWorld world, PlacementContext context, Theme theme, SubTheme subTheme,
+                           Treasure.Type treasureType, int lootLevel, boolean fillAir, BlockPos position, Tuple<BlockState, Boolean> state) {
+        setBlockState(state.getA(), world, treasureType, position, theme, subTheme, lootLevel,
+                fillAir ? DungeonModelBlockType.SOLID : block.type, context);
 
-        if (result.getB()) {
+        if (state.getB() && context.postProcessing) {
             world.getChunk(position).markBlockForPostprocessing(position);
         }
 
@@ -546,37 +513,37 @@ public abstract class DungeonPiece extends StructurePiece {
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, pos.getX() + x0, pos.getY() + y0, pos.getZ(), bounds);
+                    replaceBlockState(world, CAVE_AIR, pos.getX() + x0, pos.getY() + y0, pos.getZ(), bounds, context);
         }
         if (sides[1]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, pos.getX() + model.width - 1, pos.getY() + y0, pos.getZ() + z0, bounds);
+                    replaceBlockState(world, CAVE_AIR, pos.getX() + model.width - 1, pos.getY() + y0, pos.getZ() + z0, bounds, context);
         }
         if (sides[2]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, pos.getX() + x0, pos.getY() + y0, pos.getZ() + model.length - 1, bounds);
+                    replaceBlockState(world, CAVE_AIR, pos.getX() + x0, pos.getY() + y0, pos.getZ() + model.length - 1, bounds, context);
         }
         if (sides[3]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    setBlockState(world, CAVE_AIR, pos.getX(), pos.getY() + y0, pos.getZ() + z0, bounds);
+                    replaceBlockState(world, CAVE_AIR, pos.getX(), pos.getY() + y0, pos.getZ() + z0, bounds, context);
         }
 
     }
 
-    public void decorate(IWorld world, BlockPos pos, int width, int height, int length, Theme theme, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonModel model) {
+    public void decorate(IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, Theme theme, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonModel model) {
         if (theme.hasDecorations()) {
             for (IDungeonDecoration decoration : theme.getDecorations()) {
                 if (Config.EXTENDED_DEBUG.get()) {
-                    DungeonCrawl.LOGGER.debug("Running decoration {} of {} ({}) at ({} | {} | {})", decoration.toString(), model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
+                    DungeonCrawl.LOGGER.debug("Running decoration {} for {} ({}) at ({} | {} | {})", decoration.toString(), model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
                 }
 
-                decoration.decorate(model, world, pos, width, height, length, worldGenBounds, structureBounds, this, stage);
+                decoration.decorate(model, world, pos, context, width, height, length, worldGenBounds, structureBounds, this, stage);
 
                 if (Config.EXTENDED_DEBUG.get()) {
-                    DungeonCrawl.LOGGER.debug("Finished decoration {} of {} ({}) at ({} | {} | {})", decoration.toString(), model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
+                    DungeonCrawl.LOGGER.debug("Finished decoration {} for {} ({}) at ({} | {} | {})", decoration.toString(), model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
                 }
             }
         }

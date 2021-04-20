@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
-import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
 import java.util.ArrayList;
@@ -49,20 +48,13 @@ public class WeightedRandom<T> implements IRandom<T> {
     private final List<Tuple<Integer, T>> entries;
 
     public WeightedRandom(List<Tuple<Integer, T>> entries) {
-        int weight = 0;
-        for (Tuple<Integer, T> entry : entries)
-            weight += entry.getA();
-        this.totalWeight = weight;
         this.entries = new ArrayList<>();
-        this.assign(entries);
-    }
-
-    private void assign(List<Tuple<Integer, T>> values) {
-        int currentWeight = 0;
-        for (Tuple<Integer, T> entry : values) {
-            currentWeight += entry.getA();
-            this.entries.add(new Tuple<>(currentWeight, entry.getB()));
+        int weight = 0;
+        for (Tuple<Integer, T> entry : entries) {
+            weight += entry.getA();
+            this.entries.add(new Tuple<>(weight, entry.getB()));
         }
+        this.totalWeight = weight;
     }
 
     @Override

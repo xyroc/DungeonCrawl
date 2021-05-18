@@ -309,7 +309,7 @@ public class Tools {
                         if (block == null)
                             block = Blocks.AIR;
                         world.setBlockState(placePos, model.model[x][y][z].create(definition.getBlock(model.model[x][y][z]).getDefaultState(), world, pos, Rotation.NONE).getA(), 3);
-                        world.func_230547_a_(placePos, world.getBlockState(placePos).getBlock());
+                        world.updateBlock(placePos, world.getBlockState(placePos).getBlock());
                     }
                 }
             }

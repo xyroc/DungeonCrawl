@@ -70,7 +70,7 @@ public class DungeonBuilder {
         this.chunkGenerator = chunkGenerator;
         this.rand = rand;
 
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.func_230356_f_() - 16,
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getGroundHeight() - 16,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
         int layerCount = DEFAULT_GENERATOR.calculateLayerCount(rand, startPos.getY());
@@ -113,7 +113,7 @@ public class DungeonBuilder {
     }
 
     public static boolean isWorldEligible(ChunkGenerator chunkGenerator) {
-        return chunkGenerator.func_230356_f_() > 32;
+        return chunkGenerator.getSeaLevel() > 32;
     }
 
     public List<DungeonPiece> build() {
@@ -147,7 +147,7 @@ public class DungeonBuilder {
         entrance.setupModel(this, null, pieces, rand);
         entrance.setupBoundingBox();
 
-        this.startBiome = chunkGenerator.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGenerator.func_230356_f_() >> 2, entrance.z >> 2);
+        this.startBiome = chunkGenerator.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGenerator.getGroundHeight() >> 2, entrance.z >> 2);
 
         ResourceLocation biomeName = dynamicRegistries.getRegistry(Registry.BIOME_KEY).getKey(startBiome);
         String biome;

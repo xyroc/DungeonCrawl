@@ -47,15 +47,19 @@ public class RandomItem extends LootFunction {
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.field_237457_g_)));
-        ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
+        if (context.has(LootParameters.ORIGIN)) {
+            Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.ORIGIN)));
+            ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
 
-        if (biomeName != null) {
-            return RandomItems.generate(context.getWorld(), context.getRandom(),
-                    Theme.BIOME_TO_THEME_MAP.getOrDefault(biomeName.toString(), 0), lootLevel - 1);
+            if (biomeName != null) {
+                return RandomItems.generate(context.getWorld(), context.getRandom(),
+                        Theme.BIOME_TO_THEME_MAP.getOrDefault(biomeName.toString(), 0), lootLevel - 1);
+            } else {
+                DungeonCrawl.LOGGER.warn("RandomItem: Couldn't find a registry name for biome {} - Proceeding with the default theme.", biome.toString());
+                return RandomItems.generate(context.getWorld(), context.getRandom(), 0, lootLevel - 1);
+            }
         } else {
-            DungeonCrawl.LOGGER.warn("RandomItem: Couldn't find a registry name for biome {} - Proceeding with the default theme.", biome.toString());
-            return RandomItems.generate(context.getWorld(), context.getRandom(), 0, lootLevel - 1);
+            return ItemStack.EMPTY;
         }
     }
 

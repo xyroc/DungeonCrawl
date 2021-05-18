@@ -28,9 +28,7 @@ import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -46,21 +44,24 @@ public class MaterialBlocks extends LootFunction {
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
-        Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.field_237457_g_)));
-        ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
+        if (context.has(LootParameters.ORIGIN)) {
+            Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.ORIGIN)));
+            ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
 
-        if (biomeName != null) {
-            return new ItemStack(
-                    ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(biomeName.toString(), 0),
-                            Theme.BIOME_TO_SUBTHEME_MAP.getOrDefault(biomeName.toString(), 0))),
-                    16 + context.getRandom().nextInt(17));
+            if (biomeName != null) {
+                return new ItemStack(
+                        ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(Theme.BIOME_TO_THEME_MAP.getOrDefault(biomeName.toString(), 0),
+                                Theme.BIOME_TO_SUBTHEME_MAP.getOrDefault(biomeName.toString(), 0))),
+                        16 + context.getRandom().nextInt(17));
+            } else {
+                DungeonCrawl.LOGGER.warn("MaterialBlocks: Couldn't find a registry name for biome {} - Proceeding with the default theme.", biome.toString());
+                return new ItemStack(
+                        ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(0, 0)),
+                        16 + context.getRandom().nextInt(17));
+            }
         } else {
-            DungeonCrawl.LOGGER.warn("MaterialBlocks: Couldn't find a registry name for biome {} - Proceeding with the default theme.", biome.toString());
-            return new ItemStack(
-                    ForgeRegistries.BLOCKS.getValue(ThemeItems.getMaterial(0, 0)),
-                    16 + context.getRandom().nextInt(17));
+            return ItemStack.EMPTY;
         }
-
     }
 
     @Override

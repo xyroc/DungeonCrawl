@@ -62,20 +62,20 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
 
     public static final Structure<NoFeatureConfig> DUNGEON = new Dungeon();
-    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = DUNGEON.func_236391_a_(NoFeatureConfig.field_236559_b_);
+    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = DUNGEON.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG);
 
     public static final int SIZE = 15;
     public static int spacing, separation;
 
     public Dungeon() {
-        super(NoFeatureConfig.field_236558_a_);
+        super(NoFeatureConfig.CODEC);
     }
 
     public static void register() {
         ResourceLocation registryName = new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT));
 
         DUNGEON.setRegistryName(registryName);
-        Structure.field_236365_a_.put(registryName.toString().toLowerCase(Locale.ROOT), DUNGEON);
+        Structure.NAME_STRUCTURE_BIMAP.put(registryName.toString().toLowerCase(Locale.ROOT), DUNGEON);
 
         ForgeRegistries.STRUCTURE_FEATURES.register(DUNGEON);
 
@@ -92,7 +92,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    public GenerationStage.Decoration func_236396_f_() {
+    public GenerationStage.Decoration getDecorationStage() {
         return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
@@ -103,7 +103,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
     @Override
     protected boolean func_230363_a_(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-        for (Biome biome : p_230363_2_.getBiomes(p_230363_6_ * 16, p_230363_1_.func_230356_f_(), p_230363_7_ * 16, 64)) {
+        for (Biome biome : p_230363_2_.getBiomes(p_230363_6_ * 16, p_230363_1_.getGroundHeight(), p_230363_7_ * 16, 64)) {
             if (!biome.getGenerationSettings().hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
                 return false;
             }

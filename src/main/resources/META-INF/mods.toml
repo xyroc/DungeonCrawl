@@ -3,15 +3,14 @@ loaderVersion="[26,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
-version="2.2.4" #mandatory
+version="2.3.0-dev" #mandatory
 displayName="Dungeon Crawl" #mandatory
 #updateJSONURL="URL" #optional
 #displayURL="URL" #optional
 #logoFile="logo.png" #optional
 credits="Original Mod by Greymerk (Roguelike Dungeons)" #optional
 authors="XIROC" #optional
-description='''Dungeon Crawl, a spiritual successor to Roguelike Dungeons.
-www.github.com/XYROC/DungeonCrawl/wiki/'''
+description='''Dungeon Crawl, a spiritual successor to Roguelike Dungeons.'''
 [[dependencies.dungeoncrawl]]
     # the modid of the dependency
     modId="forge" #mandatory

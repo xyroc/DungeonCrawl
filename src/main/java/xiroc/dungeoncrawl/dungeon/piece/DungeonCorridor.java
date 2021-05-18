@@ -29,9 +29,8 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
 import java.util.List;
 import java.util.Random;
@@ -47,11 +46,11 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
         if (connectedSides == 2 && isStraight()) {
-            this.model = ModelCategory.get(ModelCategory.CORRIDOR, layerCategory).roll(rand);
+            this.model = modelSelector.corridors.roll(rand);
         } else {
-            this.model = ModelCategory.get(ModelCategory.CORRIDOR_LINKER, layerCategory).roll(rand);
+            this.model = modelSelector.corridorLinkers.roll(rand);
         }
     }
 

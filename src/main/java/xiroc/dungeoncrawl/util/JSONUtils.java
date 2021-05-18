@@ -65,7 +65,7 @@ public class JSONUtils {
     }
 
     /**
-     * Applies the property value to the state. It is required that the given state does have that property.
+     * Applies the property value to the BlockState. It is required that the BlockState supports that property.
      *
      * @return the resulting block state
      */

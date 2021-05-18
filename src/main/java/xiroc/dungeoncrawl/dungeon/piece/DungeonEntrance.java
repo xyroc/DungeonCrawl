@@ -28,7 +28,6 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
@@ -55,12 +54,9 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        if (ModelCategory.ENTRANCE.members.isEmpty()) {
-            this.model = DungeonModels.KEY_TO_MODEL.get("entrance/roguelike_tower");
-        } else {
-            this.model = ModelCategory.ENTRANCE.members.get(rand.nextInt(ModelCategory.ENTRANCE.members.size()));
-        }
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+        // TODO: use model selector
+        this.model = DungeonModels.KEY_TO_MODEL.get("default/entrance/roguelike_tower");
     }
 
     @Override
@@ -74,7 +70,7 @@ public class DungeonEntrance extends DungeonPiece {
         int height = worldIn.getHeight(context.heightmapType, x + 4, z + 4);
         int cursorHeight = y;
 
-        DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get("staircase");
+        DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get("default/staircase");
 
         while (cursorHeight < height) {
             if (height - cursorHeight <= 4)
@@ -87,23 +83,41 @@ public class DungeonEntrance extends DungeonPiece {
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).add(offset);
 
-        // Creating a custom bounding box because the cursor height was unknown during #setupBoundingBox.
-        this.boundingBox = new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + model.width - 1, pos.getY() + model.height - 1, pos.getZ() + model.length - 1);
-
         build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, true);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
             model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+        // A custom bounding box for decorations (eg. vines placement).
+        // The original bounding box of this piece goes from the bottom to the top of the world,
+        //  since the ground height is unknown up the point of actual generation.
+        // And because we dont want the decorations to decorate everything from top to bottom,
+        //  we use a custom bounding box for them.
+        MutableBoundingBox populationBox = model.createBoundingBox(pos, rotation);
+        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model);
         return true;
     }
 
     @Override
     public void setupBoundingBox() {
         if (model != null) {
-            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+            Vec3i offset = model.getOffset(rotation);
+            int x = this.x + 4 + offset.getX();
+            int z = this.z + 4 + offset.getZ();
+            switch (rotation) {
+                case NONE:
+                case CLOCKWISE_180:
+                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
+                    break;
+                case CLOCKWISE_90:
+                case COUNTERCLOCKWISE_90:
+                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.length - 1, 256, z + model.width - 1);
+                    break;
+                default:
+                    DungeonCrawl.LOGGER.warn("Unknown entrance rotation: {}", rotation);
+                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
+            }
         }
     }
 

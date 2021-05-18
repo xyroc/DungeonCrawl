@@ -28,7 +28,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
 import java.util.List;
 import java.util.Random;
@@ -45,7 +45,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
     }
 
     @Override
@@ -65,4 +65,5 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
             this.boundingBox = model.createBoundingBox(x, y, z, rotation);
         }
     }
+
 }

@@ -22,12 +22,7 @@ import net.minecraft.util.Direction;
 
 public class Position2D {
 
-    /**
-     * A facing that can be brought together with the position.
-     */
-    public Direction facing;
-
-    public int x, z;
+    public final int x, z;
 
     public Position2D(int x, int z) {
         this.x = x;
@@ -135,10 +130,6 @@ public class Position2D {
             default:
                 return new Position2D(x, z);
         }
-    }
-
-    public boolean hasFacing() {
-        return facing != null;
     }
 
 }

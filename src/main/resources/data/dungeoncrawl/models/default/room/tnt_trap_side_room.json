@@ -1,0 +1,11 @@
+{
+  "id": 25,
+  "feature": {
+    "type": "tnt_chests",
+    "min": 1,
+    "max": 2
+  },
+  "offset": {
+    "y": -1
+  }
+}

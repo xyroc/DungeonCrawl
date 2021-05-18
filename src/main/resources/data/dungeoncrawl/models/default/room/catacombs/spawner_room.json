@@ -1,0 +1,7 @@
+{
+  "feature": {
+    "type": "chests",
+    "min": 1,
+    "max": 2
+  }
+}

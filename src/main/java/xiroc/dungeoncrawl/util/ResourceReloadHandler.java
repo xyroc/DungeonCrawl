@@ -24,8 +24,10 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Unit;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
+import xiroc.dungeoncrawl.dungeon.model.ModelPools;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
@@ -49,6 +51,9 @@ public class ResourceReloadHandler implements IFutureReloadListener {
         UPDATEABLES.clear();
 
         DungeonModels.load(resourceManager);
+        ModelPools.load(resourceManager);
+        DungeonType.load(resourceManager);
+
         Theme.loadJson(resourceManager);
         SpawnRates.loadJson(resourceManager);
         RandomItems.loadJson(resourceManager);

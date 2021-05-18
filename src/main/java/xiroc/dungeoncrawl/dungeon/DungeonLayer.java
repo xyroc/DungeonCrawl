@@ -32,7 +32,6 @@ import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -58,22 +57,17 @@ public class DungeonLayer {
 
     public DungeonLayerMap map;
 
+    public DungeonLayer(int size) {
+        this(size, size);
+    }
+
     public DungeonLayer(int width, int length) {
         this.width = width;
         this.length = length;
         this.statTracker = new LayerStatTracker();
         this.grid = new PlaceHolder[this.width][this.length];
         this.distantNodes = Lists.newArrayList();
-    }
-
-    /**
-     * Returns whether the tile at the given position in the layout grid is free or not.
-     * The given position is expected to be within the grid bounds.
-     *
-     * @return True if the selected tile in the layout grid is free, false if not.
-     */
-    public boolean isTileFree(int x, int z) {
-        return grid[x][z] == null && map.isPositionFree(x, z);
+        this.map = new DungeonLayerMap(width, length);
     }
 
     /**
@@ -89,7 +83,8 @@ public class DungeonLayer {
     /**
      * Calculates a distance value for the two positions by adding
      * the absolute values of the differences of their coordinates
-     * together. ( Math.abs(a.x - b.x) + Math.abs(a.z - b.z) )
+     * together. The result is the amount of tiles you have to move
+     * to get from position a to position b (or the other way around).
      *
      * @param a Position a
      * @param b Position b
@@ -99,6 +94,12 @@ public class DungeonLayer {
         return Math.abs(a.x - b.x) + Math.abs(a.z - b.z);
     }
 
+    /**
+     * Determines whether a node centered at the given position can be placed.
+     *
+     * @param center the center of the node.
+     * @return whether such a node can be placed or not.
+     */
     public boolean canPlaceNode(Position2D center) {
         for (int x = -1; x < 2; x++) {
             for (int z = -1; z < 2; z++) {
@@ -127,7 +128,7 @@ public class DungeonLayer {
         for (int i = 0; i < 4; i++) {
             index = (index + i) % 4;
             for (int j = 0; j < 2; j++) {
-                Position2D current = start.shift(Orientation.FLAT_FACINGS[index], j + 1);
+                Position2D current = start.shift(Orientation.HORIZONTAL_FACINGS[index], j + 1);
                 if (current.isValid(Dungeon.SIZE) && grid[current.x][current.z] != null
                         && grid[current.x][current.z].reference.getType() == 0
                         && grid[current.x][current.z].reference.connectedSides < 4) {
@@ -175,9 +176,22 @@ public class DungeonLayer {
     }
 
     /**
-     * Convenience method to rotate a dungeon piece so that it matches its connections.
-     * This is necessary to ensure that the model for this piece, which should be unknown at this point,
-     * matches the pieces' connections.
+     * Opens a side of the piece at the given position if there is one. Before the grid is accessed,
+     * the given position will be verified, hence positions outside of the grid bounds
+     * and positions of empty tiles are legal arguments.
+     *
+     * @param position the grid position of the piece
+     * @param side     the side to open
+     */
+    public void openSideIfPresent(Position2D position, Direction side) {
+        if (position.isValid(width, length) && grid[position.x][position.z] != null) {
+            grid[position.x][position.z].reference.openSide(side);
+        }
+    }
+
+    /**
+     * Rotates a dungeon piece according to its connections.
+     * This is necessary to ensure that the model for this piece matches its connections.
      *
      * @param placeHolder the place holder of the piece
      * @param rand        an instance of Random which will be used to choose a random one of the valid rotations, should there be more than one
@@ -211,9 +225,8 @@ public class DungeonLayer {
     }
 
     /**
-     * Convenience method to rotate a node piece so that it matches its connections.
-     * This is necessary to ensure that the model for this piece, which should be unknown at this point,
-     * matches the pieces' connections.
+     * Rotates a node piece according to its connections.
+     * This is necessary to ensure that the model for this piece matches its connections.
      *
      * @param placeHolder the place holder of the node
      * @param rand        an instance of Random which will be used to choose in which direction (clockwise or counterclockwise)
@@ -223,11 +236,11 @@ public class DungeonLayer {
         if (placeHolder.hasFlag(PlaceHolder.Flag.FIXED_ROTATION))
             return;
         DungeonNodeRoom node = (DungeonNodeRoom) placeHolder.reference;
-        Rotation rotation = node.node.compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
+        Rotation rotation = Node.getForNodeRoom(node).compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
         if (rotation != null) {
             node.rotation = rotation;
         } else {
-            DungeonCrawl.LOGGER.error("Could not find a proper rotation for [{} {} {} {}].", node.sides[0],
+            DungeonCrawl.LOGGER.error("Could not find a proper node rotation for [{} {} {} {}].", node.sides[0],
                     node.sides[1], node.sides[2], node.sides[3]);
         }
     }
@@ -258,7 +271,7 @@ public class DungeonLayer {
                 Position2D other = getOther(x, z, direction);
                 grid[other.x][other.z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.PLACEHOLDER);
                 corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
-                corridor.model = DungeonModels.KEY_TO_MODEL.get("corridor/corridor_secret_room_entrance");
+                corridor.model = DungeonModels.KEY_TO_MODEL.get("default/corridor/corridor_secret_room_entrance");
                 grid[corridorPos.x][corridorPos.z].addFlag(PlaceHolder.Flag.FIXED_MODEL);
                 return true;
             }
@@ -275,38 +288,8 @@ public class DungeonLayer {
             case NORTH:
                 return new Position2D(x, z + 1);
             default:
-                throw new UnsupportedOperationException("Can't get other position from direction " + direction.toString());
+                throw new UnsupportedOperationException("Can't get other position from direction " + direction);
         }
-    }
-
-    /**
-     * Convenience method to open a side of a piece at the given position. Before the grid is accessed,
-     * the given position will be verified, hence positions outside of the grid bounds
-     * and positions of empty tiles are legal arguments.
-     *
-     * @param position the grid position of the piece
-     * @param side     the side to open
-     */
-    public void openSideIfPresent(Position2D position, Direction side) {
-        if (position.isValid(width, length) && grid[position.x][position.z] != null) {
-            grid[position.x][position.z].reference.openSide(side);
-        }
-    }
-
-    /**
-     * Convenience method to check if the layer grid contains a piece at the given position. Before the grid is accessed,
-     * the given position will be verified, hence positions outside of the grid bounds are legal arguments.
-     *
-     * @param position the grid position to check
-     * @return true if the position is valid and the tile at that position is not empty, false otherwise.
-     */
-    public boolean exists(Position2D position) {
-        return position.isValid(width, length) && grid[position.x][position.z] != null;
-    }
-
-    @Nullable
-    public DungeonPiece get(int x, int z) {
-        return grid[x][z] == null ? null : grid[x][z].reference;
     }
 
 }

@@ -1,0 +1,140 @@
+{
+  "id": 161,
+  "offset": {
+    "z": 1,
+    "rotate": "true"
+  },
+  "multipart": [
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 3,
+            "y": 5,
+            "z": 2
+          },
+          "model": "default/multipart/corridor/light"
+        }
+      ]
+    },
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 3,
+            "z": -1
+          },
+          "model": "default/multipart/corridor/light_switch"
+        }
+      ]
+    },
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/light_switch",
+          "weight": 6
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/default",
+          "weight": 5
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/variant",
+          "weight": 5
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/variant_2",
+          "weight": 5
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/bookshelf",
+          "weight": 5
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/chest",
+          "weight": 3
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/spawner",
+          "weight": 3
+        },
+        {
+          "offset": {
+            "x": 3,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/crops",
+          "weight": 2
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/empty_room"
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/empty_room_2"
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/empty_room_3"
+        },
+        {
+          "offset": {
+            "x": 2,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "default/multipart/corridor/empty_room_4"
+        }
+      ]
+    }
+  ]
+}

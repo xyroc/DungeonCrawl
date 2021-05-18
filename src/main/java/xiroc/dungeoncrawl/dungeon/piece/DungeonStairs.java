@@ -34,7 +34,7 @@ import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
 import java.util.List;
 import java.util.Random;
@@ -45,19 +45,23 @@ public class DungeonStairs extends DungeonPiece {
 
     public int stairType; // 0: bottom stairs, 1: top stairs
 
+    public DungeonStairs() {
+        this(null, DEFAULT_NBT);
+    }
+
     public DungeonStairs(TemplateManager manager, CompoundNBT p_i51343_2_) {
         super(StructurePieceTypes.STAIRS, p_i51343_2_);
         this.stairType = p_i51343_2_.getInt("stairType");
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
         switch (stairType) {
             case 0:
-                this.model = stage > 0 ? DungeonModels.KEY_TO_MODEL.get("stairs_bottom_2") : DungeonModels.KEY_TO_MODEL.get("stairs_bottom");
+                this.model = stage > 0 ? DungeonModels.KEY_TO_MODEL.get("default/stairs_bottom_2") : DungeonModels.KEY_TO_MODEL.get("default/stairs_bottom");
                 return;
             case 1:
-                this.model = DungeonModels.KEY_TO_MODEL.get("stairs_top");
+                this.model = DungeonModels.KEY_TO_MODEL.get("default/stairs_top");
         }
     }
 
@@ -104,7 +108,7 @@ public class DungeonStairs extends DungeonPiece {
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, IRON_BARS,x + x0, y + y0, z, bounds, context);
+                    replaceBlockState(world, IRON_BARS, x + x0, y + y0, z, bounds, context);
         }
         if (sides[1]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)

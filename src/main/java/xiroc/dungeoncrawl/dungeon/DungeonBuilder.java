@@ -30,10 +30,9 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.generator.dungeon.DefaultDungeonGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.dungeon.DungeonGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.dungeon.DungeonGeneratorSettings;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.generator.DefaultDungeonGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
+import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -44,15 +43,12 @@ import java.util.Random;
 
 public class DungeonBuilder {
 
-    public static final DungeonGenerator DEFAULT_GENERATOR = new DefaultDungeonGenerator(DungeonGeneratorSettings.DEFAULT);
+    public static final DungeonGenerator DEFAULT_GENERATOR = new DefaultDungeonGenerator();
 
     public Random rand;
     public Position2D start;
 
     public DungeonLayer[] layers;
-    public DungeonLayerMap[] maps;
-
-    public DungeonStatTracker statTracker;
 
     public ChunkPos chunkPos;
     public BlockPos startPos;
@@ -76,7 +72,7 @@ public class DungeonBuilder {
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
 
-        DungeonCrawl.LOGGER.debug("Creating the layout for a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
+        DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");
     }
 
@@ -91,7 +87,7 @@ public class DungeonBuilder {
         this.startPos = new BlockPos(pos.getX() - Dungeon.SIZE / 2 * 9, world.getSeaLevel() - 15,
                 pos.getZ() - Dungeon.SIZE / 2 * 9);
 
-        DungeonCrawl.LOGGER.debug("Creating the layout for a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
+        DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");
     }
 
@@ -100,7 +96,9 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
-        generateLayout(DEFAULT_GENERATOR);
+        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome((chunkPos.x + 4) << 2, chunkGenerator.getSeaLevel() >> 4, (chunkPos.z + 4) << 2);
+        DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
+        generateLayout(type, DEFAULT_GENERATOR);
 
         List<DungeonPiece> pieces = Lists.newArrayList();
         DungeonPiece entrance = new DungeonEntrance();
@@ -110,46 +108,43 @@ public class DungeonBuilder {
         entrance.setupModel(this, null, pieces, rand);
         entrance.setupBoundingBox();
 
-        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome(entrance.x >> 2, chunkGenerator.getSeaLevel() >> 2, entrance.z >> 2);
-
         determineThemes();
 
-        entrance.theme = this.theme;
-        entrance.subTheme = this.subTheme;
+        entrance.theme = this.entranceTheme;
+        entrance.subTheme = this.entranceSubTheme;
 
         pieces.add(entrance);
 
-        postProcessDungeon(pieces, rand);
+        postProcessDungeon(pieces, type, rand);
+
+//        pieces.forEach((piece) -> DungeonCrawl.LOGGER.info("{} ({}) : {}", piece, piece.model, piece.getBoundingBox()));
 
         return pieces;
     }
 
-    private void generateLayout(DungeonGenerator generator) {
-        generator.initializeDungeon(this, chunkPos, rand);
+    private void generateLayout(DungeonType type, DungeonGenerator generator) {
+        generator.initializeDungeon(type, this, this.chunkPos, this.rand);
+        int gridSize = 17;
 
-        int startCoordinate = generator.settings.gridSize.apply(0) / 2;
+        int startCoordinate = gridSize / 2;
 
         this.start = new Position2D(startCoordinate, startCoordinate);
 
         int layerCount = generator.layerCount(rand, startPos.getY());
 
         this.layers = new DungeonLayer[layerCount];
-        this.maps = new DungeonLayerMap[layerCount];
 
-        for (int i = 0; i < layers.length; i++) {
-            int size = generator.settings.gridSize.apply(i);
-            this.maps[i] = new DungeonLayerMap(size, size);
-            this.layers[i] = new DungeonLayer(size, size);
-            this.layers[i].map = maps[i];
+        for (int layer = 0; layer < layers.length; layer++) {
+            this.layers[layer] = new DungeonLayer(gridSize);
         }
 
-        for (int i = 0; i < layers.length; i++) {
-            generator.initializeLayer(this, rand, i);
-            generator.generateLayer(this, layers[i], i, rand, (i == 0) ? this.start : layers[i - 1].end);
+        for (int layer = 0; layer < layers.length; layer++) {
+            generator.initializeLayer(type.getLayer(layer).settings, this, rand, layer);
+            generator.generateLayer(this, layers[layer], layer, rand, (layer == 0) ? this.start : layers[layer - 1].end);
         }
 
-        for (int i = 0; i < layers.length; i++) {
-            processCorridors(layers[i], i);
+        for (int layer = 0; layer < layers.length; layer++) {
+            processCorridors(layers[layer], layer);
         }
     }
 
@@ -216,12 +211,12 @@ public class DungeonBuilder {
         }
     }
 
-    private void postProcessDungeon(List<DungeonPiece> pieces, Random rand) {
+    private void postProcessDungeon(List<DungeonPiece> pieces, DungeonType type, Random rand) {
         boolean catacombs = layers.length > 3;
 
         for (int i = 0; i < layers.length; i++) {
             DungeonLayer layer = layers[i];
-            ModelCategory layerCategory = DEFAULT_GENERATOR.getCategoryForLayer(i);
+            ModelSelector modelSelector = type.getLayer(i).modelSelector;
             for (int x = 0; x < layer.width; x++)
                 for (int z = 0; z < layer.length; z++) {
                     if (layer.grid[x][z] != null && !layer.grid[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
@@ -238,7 +233,7 @@ public class DungeonBuilder {
                         }
 
                         if (!layer.grid[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
-                            layer.grid[x][z].reference.setupModel(this, layerCategory, pieces, rand);
+                            layer.grid[x][z].reference.setupModel(this, modelSelector, pieces, rand);
                         }
 
                         if (!layer.grid[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
@@ -249,7 +244,7 @@ public class DungeonBuilder {
                         layer.grid[x][z].reference.setupBoundingBox();
 
                         if (layer.grid[x][z].reference.hasChildPieces()) {
-                            layer.grid[x][z].reference.addChildPieces(pieces, this, layerCategory, i, rand);
+                            layer.grid[x][z].reference.addChildPieces(pieces, this, modelSelector, i, rand);
                         }
 
                         if (layer.grid[x][z].reference.getType() == 10) {

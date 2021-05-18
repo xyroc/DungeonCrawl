@@ -1,0 +1,8 @@
+{
+  "id": 80,
+  "feature": {
+    "type": "chests",
+    "min": 2,
+    "max": 2
+  }
+}

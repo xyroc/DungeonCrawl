@@ -32,11 +32,9 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.Orientation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,20 +99,6 @@ public class DungeonModel {
             DungeonModels.ID_TO_MODEL.put(id, this);
         }
 
-        if (metadata.type != null) {
-            metadata.type.members.add(this);
-        }
-
-        if (metadata.size != null) {
-            metadata.size.members.add(this);
-        }
-
-        if (metadata.stages != null) {
-            for (int stage : metadata.stages) {
-                ModelCategory.getCategoryForStage(stage - 1).members.add(this);
-            }
-        }
-
         if (metadata.multipartData != null) {
             this.multipartData = metadata.multipartData;
         }
@@ -129,7 +113,7 @@ public class DungeonModel {
             case COUNTERCLOCKWISE_90:
                 return new MutableBoundingBox(x, y, z, x + length - 1, y + height - 1, z + width - 1);
             default:
-                DungeonCrawl.LOGGER.warn("Unknown rotation: {}", rotation);
+                DungeonCrawl.LOGGER.warn("Unknown piece rotation: {}", rotation);
                 return new MutableBoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
         }
     }
@@ -148,7 +132,7 @@ public class DungeonModel {
             case COUNTERCLOCKWISE_90:
                 return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + length - 1, origin.getY() + height - 1, origin.getZ() + width - 1);
             default:
-                DungeonCrawl.LOGGER.warn("Unknown rotation: {}", rotation);
+                DungeonCrawl.LOGGER.warn("Unknown piece rotation: {}", rotation);
                 return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width - 1, origin.getY() + height - 1, origin.getZ() + length - 1);
         }
     }
@@ -173,7 +157,7 @@ public class DungeonModel {
 
     @Override
     public String toString() {
-        return "{" + id + (metadata != null ? ", " + ((metadata.type != null ? metadata.type.toString() : "generic") + (metadata.stages != null ? ", " + Arrays.toString(metadata.stages) : "[]")) + "}" : "}");
+        return "{key=" + key + "}";
     }
 
     public static class FeaturePosition {
@@ -193,11 +177,14 @@ public class DungeonModel {
         public FeaturePosition rotate(Rotation rotation, DungeonModel model) {
             switch (rotation) {
                 case CLOCKWISE_90:
-                    return new FeaturePosition(model.length - position.getZ() - 1, position.getY(), position.getX(), Orientation.rotateY(facing));
+                    return new FeaturePosition(model.length - position.getZ() - 1, position.getY(), position.getX(),
+                            facing.getAxis() != Direction.Axis.Y ? facing.rotateY() : facing);
                 case CLOCKWISE_180:
-                    return new FeaturePosition(model.width - position.getX() - 1, position.getY(), model.length - position.getZ() - 1, Orientation.horizontalOpposite(facing));
+                    return new FeaturePosition(model.width - position.getX() - 1, position.getY(), model.length - position.getZ() - 1,
+                            facing.getAxis() != Direction.Axis.Y ? facing.getOpposite() : facing);
                 case COUNTERCLOCKWISE_90:
-                    return new FeaturePosition(position.getZ(), position.getY(), model.width - position.getX() - 1, Orientation.rotateYCCW(facing));
+                    return new FeaturePosition(position.getZ(), position.getY(), model.width - position.getX() - 1,
+                            facing.getAxis() != Direction.Axis.Y ? facing.rotateYCCW() : facing);
                 default:
                     return this;
             }
@@ -223,11 +210,14 @@ public class DungeonModel {
         public DirectionalBlockPos directionalBlockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
             switch (rotation) {
                 case CLOCKWISE_90:
-                    return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(), Orientation.rotateY(facing));
+                    return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(),
+                            facing.getAxis() != Direction.Axis.Y ? facing.rotateY() : facing);
                 case CLOCKWISE_180:
-                    return new DirectionalBlockPos(x + model.width - position.getX() - 1, y + position.getY(), z + model.length - position.getZ() - 1, Orientation.horizontalOpposite(facing));
+                    return new DirectionalBlockPos(x + model.width - position.getX() - 1, y + position.getY(), z + model.length - position.getZ() - 1,
+                            facing.getAxis() != Direction.Axis.Y ? facing.getOpposite() : facing);
                 case COUNTERCLOCKWISE_90:
-                    return new DirectionalBlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1, Orientation.rotateYCCW(facing));
+                    return new DirectionalBlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1,
+                            facing.getAxis() != Direction.Axis.Y ? facing.rotateYCCW() : facing);
                 default:
                     return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
             }
@@ -245,7 +235,6 @@ public class DungeonModel {
 
     public static class Metadata {
 
-        public ModelCategory type, size;
 
         public Integer id;
 
@@ -262,48 +251,14 @@ public class DungeonModel {
 
         public int[] stages, weights;
 
-        private Metadata(ModelCategory type) {
-            this.type = type;
+        private Metadata() {
         }
 
         public static Metadata fromJson(JsonObject object, ResourceLocation file) throws JsonParseException {
-            String modelType = object.get("type").getAsString();
-
-            Metadata metadata;
-
-            if (modelType.equalsIgnoreCase("node")) {
-                if (object.has("node")) {
-                    JsonObject nodeData = object.getAsJsonObject("node");
-                    ModelCategory size;
-                    String sizeString = nodeData.get("size").getAsString(), typeString = nodeData.get("type").getAsString();
-
-                    if (sizeString.equals("large")) {
-                        size = ModelCategory.LARGE_NODE;
-                    } else if (sizeString.equals("normal")) {
-                        size = ModelCategory.NORMAL_NODE;
-                    } else {
-                        throw new JsonParseException("Unknown node size \" " + sizeString + "\"");
-                    }
-
-                    metadata = new Metadata(ModelCategory.valueOf("NODE_" + typeString.toUpperCase(Locale.ROOT)));
-                    metadata.setSize(size);
-                } else {
-                    throw new JsonParseException("Missing node data in node model metadata file " + file.toString());
-                }
-            } else {
-                metadata = new Metadata(getModelCategory(modelType));
-            }
+            Metadata metadata = new Metadata();
 
             if (object.has("id")) {
                 metadata.setId(object.get("id").getAsInt());
-            }
-
-            if (object.has("stages")) {
-                metadata.setStages(DungeonCrawl.GSON.fromJson(object.get("stages"), int[].class));
-            }
-
-            if (object.has("weights")) {
-                metadata.setWeights(DungeonCrawl.GSON.fromJson(object.get("weights"), int[].class));
             }
 
             if (object.has("offset")) {
@@ -347,10 +302,6 @@ public class DungeonModel {
             return metadata;
         }
 
-        private void setSize(ModelCategory size) {
-            this.size = size;
-        }
-
         private void setId(Integer id) {
             this.id = id;
         }
@@ -386,19 +337,6 @@ public class DungeonModel {
 
         private void setVariation(boolean variation) {
             this.variation = variation;
-        }
-
-        @Nullable
-        private static ModelCategory getModelCategory(String name) {
-            if (name.equalsIgnoreCase("generic")) {
-                return null;
-            }
-            try {
-                return ModelCategory.valueOf(name.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException e) {
-                DungeonCrawl.LOGGER.warn("Unknown model type: {} ({})", name, name.toUpperCase(Locale.ROOT));
-                return null;
-            }
         }
 
     }

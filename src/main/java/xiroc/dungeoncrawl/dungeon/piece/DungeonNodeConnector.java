@@ -29,7 +29,7 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
 import java.util.List;
 import java.util.Random;
@@ -69,8 +69,8 @@ public class DungeonNodeConnector extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        this.model = ModelCategory.get(ModelCategory.NODE_CONNECTOR, layerCategory).roll(rand);
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+        this.model = modelSelector.nodeConnectors.roll(rand);
     }
 
     public void adjustPositionAndBounds() {

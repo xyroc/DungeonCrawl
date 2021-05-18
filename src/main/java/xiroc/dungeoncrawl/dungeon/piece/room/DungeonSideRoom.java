@@ -28,9 +28,8 @@ import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 import java.util.List;
@@ -47,7 +46,8 @@ public class DungeonSideRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+        this.model = modelSelector.rooms.roll(rand);
     }
 
     @Override
@@ -66,6 +66,8 @@ public class DungeonSideRoom extends DungeonPiece {
         }
 
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+
+        entrances(worldIn, structureBoundingBoxIn, model);
 
         if (Config.NO_SPAWNERS.get())
             spawnMobs(worldIn, this, model.width, model.length, new int[]{1});

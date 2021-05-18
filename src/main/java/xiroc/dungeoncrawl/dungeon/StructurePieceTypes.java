@@ -30,8 +30,6 @@ public class StructurePieceTypes {
     public static IStructurePieceType ROOM;
     public static IStructurePieceType CORRIDOR;
     public static IStructurePieceType STAIRS;
-    public static IStructurePieceType STAIRCASE;
-    public static IStructurePieceType HOLE;
     public static IStructurePieceType SIDE_ROOM;
     public static IStructurePieceType NODE_ROOM;
     public static IStructurePieceType NODE_CONNECTOR;
@@ -41,15 +39,13 @@ public class StructurePieceTypes {
 
     public static IStructurePieceType DUMMY;
 
-    public static void registerAll() {
+    public static void register() {
         DungeonCrawl.LOGGER.info("Registering Structure Piece Types");
 
         ENTRANCE = IStructurePieceType.register(DungeonEntrance::new, createKey("entrance"));
         ROOM = IStructurePieceType.register(DungeonRoom::new, createKey("room"));
         CORRIDOR = IStructurePieceType.register(DungeonCorridor::new, createKey("corridor"));
         STAIRS = IStructurePieceType.register(DungeonStairs::new, createKey("stairs"));
-        STAIRCASE = IStructurePieceType.register(DungeonStaircase::new, createKey("staircase"));
-        HOLE = IStructurePieceType.register(DungeonCorridorHole::new, createKey("corridor_hole"));
         SIDE_ROOM = IStructurePieceType.register(DungeonSideRoom::new, createKey("side_room"));
         NODE_ROOM = IStructurePieceType.register(DungeonNodeRoom::new, createKey("node_room"));
         NODE_CONNECTOR = IStructurePieceType.register(DungeonNodeConnector::new, createKey("node_connector"));

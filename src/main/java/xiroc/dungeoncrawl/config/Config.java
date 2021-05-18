@@ -32,7 +32,7 @@ public class Config {
     public static final String GENERAL = "general";
     public static final String DUNGEON = "dungeon";
     public static final String WORLD_GENERATION = "world generation";
-    public static final String ADVANCED_WORLD_GENERATION = "advanced world generation";
+    public static final String DUNGEON_PLACEMENT = "dungeon placement";
 
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
@@ -64,10 +64,10 @@ public class Config {
                 .define("tick_falling_blocks", true);
         BUILDER.pop();
 
-        BUILDER.comment("Advanced World Generation Settings").push(ADVANCED_WORLD_GENERATION);
-        SPACING = BUILDER.comment("The average distance between the dungeons. This has to be higher than the separation!")
+        BUILDER.comment("Dungeon Placement Settings").push(DUNGEON_PLACEMENT);
+        SPACING = BUILDER.comment("The average distance between the dungeons in chunks. This has to be higher than the separation!")
                 .defineInRange("spacing", 20, 8, 8192);
-        SEPARATION = BUILDER.comment("The minimum distance between the dungeons. This has to be lower than the spacing!")
+        SEPARATION = BUILDER.comment("The minimum distance between the dungeons in chunks. This has to be lower than the spacing!")
                 .defineInRange("separation", 10, 8, 8192);
         BUILDER.pop();
 

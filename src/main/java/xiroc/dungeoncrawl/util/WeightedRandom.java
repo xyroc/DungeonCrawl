@@ -24,35 +24,48 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
 public class WeightedRandom<T> implements IRandom<T> {
 
-    // TODO: migrate other WeightedRandom classes to this
-
-    public static final WeightedRandom.JsonReader<Item> ITEM = (array) -> {
+    public static final WeightedRandom.JsonReader<Item> ITEM = (entries) -> {
         WeightedRandom.Builder<Item> builder = new WeightedRandom.Builder<>();
-        array.forEach((element) -> {
-            JsonObject object = element.getAsJsonObject();
-            int weight = JSONUtils.getWeightOrDefault(object);
-            builder.add(RandomEquipment.getItem(new ResourceLocation(object.get("item").getAsString())), weight);
+        entries.forEach((element) -> {
+            JsonObject entry = element.getAsJsonObject();
+            int weight = JSONUtils.getWeightOrDefault(entry);
+            builder.add(RandomEquipment.getItem(new ResourceLocation(entry.get("item").getAsString())), weight);
         });
         return builder.build();
     };
-    
-    private final int totalWeight;
-    private final List<Tuple<Integer, T>> entries;
 
-    public WeightedRandom(List<Tuple<Integer, T>> entries) {
+    public static final WeightedRandom.JsonReader<DungeonModel> MODEL = (entries) -> {
+        WeightedRandom.Builder<DungeonModel> builder = new WeightedRandom.Builder<>();
+        entries.forEach((element) -> {
+            JsonObject entry = element.getAsJsonObject();
+            String key = entry.get("key").getAsString();
+            if (!DungeonModels.KEY_TO_MODEL.containsKey(key)) {
+                throw new RuntimeException("");
+            }
+        });
+        return builder.build();
+    };
+
+    private final int totalWeight;
+    private final List<Tuple<T, Integer>> entries;
+
+    public WeightedRandom(List<Tuple<T, Integer>> entries) {
         this.entries = new ArrayList<>();
         int weight = 0;
-        for (Tuple<Integer, T> entry : entries) {
-            weight += entry.getA();
-            this.entries.add(new Tuple<>(weight, entry.getB()));
+        for (Tuple<T, Integer> entry : entries) {
+            weight += entry.getB();
+            this.entries.add(new Tuple<>(entry.getA(), weight));
         }
         this.totalWeight = weight;
     }
@@ -60,12 +73,16 @@ public class WeightedRandom<T> implements IRandom<T> {
     @Override
     public T roll(Random rand) {
         int r = rand.nextInt(totalWeight);
-        for (Tuple<Integer, T> entry : entries) {
-            if (r < entry.getA()) {
-                return entry.getB();
+        for (Tuple<T, Integer> entry : entries) {
+            if (r < entry.getB()) {
+                return entry.getA();
             }
         }
         return null;
+    }
+
+    public boolean isEmpty() {
+        return entries.isEmpty();
     }
 
     public int size() {
@@ -74,20 +91,19 @@ public class WeightedRandom<T> implements IRandom<T> {
 
     public static class Builder<T> {
 
-        public List<Tuple<Integer, T>> entries;
+        public final List<Tuple<T, Integer>> entries;
 
         public Builder() {
             entries = Lists.newArrayList();
         }
 
         public WeightedRandom.Builder<T> add(T t, int weight) {
-            entries.add(new Tuple<>(weight, t));
+            entries.add(new Tuple<>(t, weight));
             return this;
         }
 
-        public WeightedRandom.Builder<T> add(List<Tuple<Integer, T>> entries) {
+        public void addAll(Collection<Tuple<T, Integer>> entries) {
             this.entries.addAll(entries);
-            return this;
         }
 
         public WeightedRandom<T> build() {
@@ -99,7 +115,7 @@ public class WeightedRandom<T> implements IRandom<T> {
     @FunctionalInterface
     public interface JsonReader<T> {
 
-        WeightedRandom<T> fromJson(JsonArray array);
+        WeightedRandom<T> fromJson(JsonArray entries);
 
     }
 

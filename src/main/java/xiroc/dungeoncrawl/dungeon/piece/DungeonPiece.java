@@ -95,7 +95,7 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public Rotation rotation;
-    public int connectedSides, gridX, gridZ, x, y, z, stage;
+    public int connectedSides, x, y, z, stage;
     public boolean[] sides; // N-E-S-W
     public DirectionalBlockPos[] featurePositions;
     public byte[] variation;
@@ -104,56 +104,57 @@ public abstract class DungeonPiece extends StructurePiece {
     public Theme theme;
     public SubTheme subTheme;
 
+    public Position2D gridPosition;
+
     public final PlacementContext context;
 
     public DungeonPiece(IStructurePieceType p_i51343_1_) {
         super(p_i51343_1_, DEFAULT_NBT);
-        sides = new boolean[4];
-        rotation = Rotation.NONE;
-
+        this.sides = new boolean[4];
+        this.rotation = Rotation.NONE;
         this.context = new PlacementContext();
+        this.gridPosition = new Position2D(0, 0);
     }
 
     public DungeonPiece(IStructurePieceType p_i51343_1_, CompoundNBT p_i51343_2_) {
         super(p_i51343_1_, p_i51343_2_);
-        sides = new boolean[4];
-        sides[0] = p_i51343_2_.getBoolean("north");
-        sides[1] = p_i51343_2_.getBoolean("east");
-        sides[2] = p_i51343_2_.getBoolean("south");
-        sides[3] = p_i51343_2_.getBoolean("west");
-        connectedSides = p_i51343_2_.getInt("connectedSides");
-        gridX = p_i51343_2_.getInt("posX");
-        gridZ = p_i51343_2_.getInt("posZ");
-        x = p_i51343_2_.getInt("x");
-        y = p_i51343_2_.getInt("y");
-        z = p_i51343_2_.getInt("z");
-        stage = p_i51343_2_.getInt("stage");
-        rotation = Orientation.getRotation(p_i51343_2_.getInt("rotation"));
+        this.sides = new boolean[4];
+        this.sides[0] = p_i51343_2_.getBoolean("north");
+        this.sides[1] = p_i51343_2_.getBoolean("east");
+        this.sides[2] = p_i51343_2_.getBoolean("south");
+        this.sides[3] = p_i51343_2_.getBoolean("west");
+        this.connectedSides = p_i51343_2_.getInt("connectedSides");
+        this.gridPosition = new Position2D(p_i51343_2_.getInt("posX"), p_i51343_2_.getInt("posZ"));
+        this.x = p_i51343_2_.getInt("x");
+        this.y = p_i51343_2_.getInt("y");
+        this.z = p_i51343_2_.getInt("z");
+        this.stage = p_i51343_2_.getInt("stage");
+        this.rotation = Orientation.getRotation(p_i51343_2_.getInt("rotation"));
 
         if (p_i51343_2_.contains("theme", 99)) {
-            theme = Theme.getThemeByID(p_i51343_2_.getInt("theme"));
+            this.theme = Theme.getThemeByID(p_i51343_2_.getInt("theme"));
         } else {
-            theme = Theme.getTheme(p_i51343_2_.getString("theme"));
+            this.theme = Theme.getTheme(p_i51343_2_.getString("theme"));
         }
 
         if (p_i51343_2_.contains("subTheme", 99)) {
-            subTheme = Theme.getSubThemeByID(p_i51343_2_.getInt("subTheme"));
+            this.subTheme = Theme.getSubThemeByID(p_i51343_2_.getInt("subTheme"));
         } else {
-            subTheme = Theme.getSubTheme(p_i51343_2_.getString("subTheme"));
+            this.subTheme = Theme.getSubTheme(p_i51343_2_.getString("subTheme"));
         }
 
         if (p_i51343_2_.contains("model", 99)) {
-            model = DungeonModels.ID_TO_MODEL.get(p_i51343_2_.getInt("model"));
+            this.model = DungeonModels.ID_TO_MODEL.get(p_i51343_2_.getInt("model"));
         } else {
-            model = DungeonModels.KEY_TO_MODEL.get(p_i51343_2_.getString("model"));
+            this.model = DungeonModels.KEY_TO_MODEL.get(p_i51343_2_.getString("model"));
         }
 
         if (p_i51343_2_.contains("featurePositions", 9)) {
-            featurePositions = readAllPositions(p_i51343_2_.getList("featurePositions", 10));
+            this.featurePositions = readAllPositions(p_i51343_2_.getList("featurePositions", 10));
         }
 
         if (p_i51343_2_.contains("variation")) {
-            variation = p_i51343_2_.getByteArray("variation");
+            this.variation = p_i51343_2_.getByteArray("variation");
         }
 
         this.context = new PlacementContext();
@@ -168,8 +169,8 @@ public abstract class DungeonPiece extends StructurePiece {
         tagCompound.putBoolean("south", sides[2]);
         tagCompound.putBoolean("west", sides[3]);
         tagCompound.putInt("connectedSides", connectedSides);
-        tagCompound.putInt("posX", gridX);
-        tagCompound.putInt("posZ", gridZ);
+        tagCompound.putInt("posX", gridPosition.x);
+        tagCompound.putInt("posZ", gridPosition.z);
         tagCompound.putInt("x", x);
         tagCompound.putInt("y", y);
         tagCompound.putInt("z", z);
@@ -200,7 +201,7 @@ public abstract class DungeonPiece extends StructurePiece {
      * Called during the dungeon-post-processing to determine the model that will be
      * used to build this piece.
      */
-    public abstract void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand);
+    public abstract void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand);
 
     public abstract void setupBoundingBox();
 
@@ -229,21 +230,6 @@ public abstract class DungeonPiece extends StructurePiece {
                     return;
                 sides[3] = true;
                 connectedSides++;
-                return;
-            case UP:
-                if (sides[4])
-                    return;
-                sides[4] = true;
-                connectedSides++;
-                return;
-            case DOWN:
-                if (sides[5])
-                    return;
-                sides[5] = true;
-                connectedSides++;
-                return;
-            default:
-                DungeonCrawl.LOGGER.warn("Failed to open a segment side: Unknown side " + side);
         }
     }
 
@@ -257,13 +243,11 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     public void setGridPosition(int x, int z) {
-        this.gridX = x;
-        this.gridZ = z;
+        this.gridPosition = new Position2D(x, z);
     }
 
     public void setGridPosition(Position2D position) {
-        this.gridX = position.x;
-        this.gridZ = position.z;
+        this.gridPosition = position;
     }
 
     public void setWorldPosition(int x, int y, int z) {
@@ -293,7 +277,7 @@ public abstract class DungeonPiece extends StructurePiece {
         return model != null && model.multipartData != null;
     }
 
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelCategory layerCategory, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelSelector modelSelector, int layer, Random rand) {
         if (model != null && model.multipartData != null) {
             BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
             for (MultipartModelData data : model.multipartData) {
@@ -359,11 +343,20 @@ public abstract class DungeonPiece extends StructurePiece {
     public void replaceBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
                                   MutableBoundingBox boundingboxIn, PlacementContext context) {
         BlockPos blockPos = new BlockPos(x, y, z);
+        if (boundingboxIn.isVecInside(blockPos)) {
 
-        if (DungeonBuilder.isBlockProtected(worldIn, blockPos, context) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
-            return;
+            if (DungeonBuilder.isBlockProtected(worldIn, blockPos, context) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
+                return;
 
-        setBlockState(worldIn, blockstateIn, boundingboxIn, blockPos);
+            worldIn.setBlockState(blockPos, blockstateIn, 2);
+            worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+
+            IFluidState ifluidstate = worldIn.getFluidState(blockPos);
+            if (ifluidstate.isSource()) {
+                worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
+            }
+
+        }
     }
 
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,

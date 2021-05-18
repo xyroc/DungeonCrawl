@@ -34,6 +34,7 @@ import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.block.pattern.CheckedPattern;
 import xiroc.dungeoncrawl.dungeon.block.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.theme.Theme.SubTheme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -149,7 +150,7 @@ public class JsonThemeHandler {
             WeightedRandom.Builder<Theme> builder = new WeightedRandom.Builder<>();
             entries.forEach((tuple) -> {
                 if (!Theme.KEY_TO_THEME.containsKey(tuple.getA())) {
-                    throw new RuntimeException("Reference to unknown theme " + tuple.getA() + " in " + file.toString());
+                    throw new DatapackLoadException("Cannot resolve theme key " + tuple.getA() + " in " + file.toString());
                 }
                 builder.add(Theme.KEY_TO_THEME.get(tuple.getA()), tuple.getB());
             });
@@ -163,7 +164,6 @@ public class JsonThemeHandler {
      * @param object the json object
      * @param file   the location of the sub-theme file
      */
-
     public static void deserializeSubThemeMapping(JsonObject object, ResourceLocation file) {
         object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
             ArrayList<Tuple<String, Integer>> entries = checkAndListThemes(entry);
@@ -171,7 +171,7 @@ public class JsonThemeHandler {
             WeightedRandom.Builder<SubTheme> builder = new WeightedRandom.Builder<>();
             entries.forEach((tuple) -> {
                 if (!Theme.KEY_TO_SUB_THEME.containsKey(tuple.getA())) {
-                    throw new RuntimeException("Reference to unknown sub-theme " + tuple.getA() + " in " + file.toString());
+                    throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
                 }
                 builder.add(Theme.KEY_TO_SUB_THEME.get(tuple.getA()), tuple.getB());
             });

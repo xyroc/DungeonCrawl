@@ -22,8 +22,8 @@ import xiroc.dungeoncrawl.util.Position2D;
 
 public class DungeonLayerMap {
 
-    public int width, length;
-    public boolean[][] map;
+    public final int width, length;
+    public final boolean[][] map;
 
     public DungeonLayerMap(int width, int length) {
         this.width = width;

@@ -18,14 +18,16 @@
 
 package xiroc.dungeoncrawl.dungeon.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.DoubleBlockHalf;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure.Type;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
+import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 import java.util.Random;
@@ -34,63 +36,50 @@ public class Plants {
 
     public static class Farmland implements IBlockPlacementHandler {
 
-        public static final Block[] CROPS = new Block[]{Blocks.WHEAT, Blocks.POTATOES, Blocks.CARROTS,
-                Blocks.BEETROOTS, Blocks.MELON_STEM, Blocks.PUMPKIN_STEM, Blocks.CAVE_AIR};
-
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
-                               int lootLevel) {
-
-            BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
-            if (theme == 1) {
-                state = Blocks.SOUL_SAND.getDefaultState();
-                world.setBlockState(pos, state, 3);
-
-                BlockState netherWart = Blocks.NETHER_WART.getDefaultState();
-                if (netherWart.hasProperty(BlockStateProperties.AGE_0_3))
-                    netherWart = netherWart.with(BlockStateProperties.AGE_0_3, rand.nextInt(3));
-                world.setBlockState(cropPos, netherWart, 3);
-
-                return;
-            }
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                          Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
             state = state.with(BlockStateProperties.MOISTURE_0_7, 7);
-            world.setBlockState(pos, state, 3);
-            BlockState crop = CROPS[rand.nextInt(CROPS.length)].getDefaultState();
-            if (crop.hasProperty(BlockStateProperties.AGE_0_7))
-                crop = crop.with(BlockStateProperties.AGE_0_7, rand.nextInt(8));
-            world.setBlockState(cropPos, crop, 3);
+            world.setBlockState(pos, state, 2);
+            BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
+            if (rand.nextFloat() < 0.6) {
+                BlockState crop = BlockTags.CROPS.getRandomElement(rand).getDefaultState();
+                if (crop.hasProperty(BlockStateProperties.AGE_0_7))
+                    crop = crop.with(BlockStateProperties.AGE_0_7, rand.nextInt(8));
+                world.setBlockState(cropPos, crop, 2);
+                context.protectedBlocks.add(cropPos);
+            } else {
+                world.setBlockState(cropPos, Blocks.CAVE_AIR.getDefaultState(), 2);
+            }
         }
 
     }
 
     public static class FlowerPot implements IBlockPlacementHandler {
 
-        public static final Block[] POTTED_FLOWERS = new Block[]{Blocks.POTTED_ALLIUM, Blocks.POTTED_AZURE_BLUET,
-                Blocks.POTTED_BAMBOO, Blocks.POTTED_BLUE_ORCHID, Blocks.POTTED_BROWN_MUSHROOM, Blocks.POTTED_CACTUS,
-                Blocks.POTTED_CORNFLOWER, Blocks.POTTED_DANDELION, Blocks.POTTED_DEAD_BUSH, Blocks.POTTED_FERN,
-                Blocks.POTTED_LILY_OF_THE_VALLEY, Blocks.POTTED_ORANGE_TULIP, Blocks.POTTED_OXEYE_DAISY,
-                Blocks.POTTED_PINK_TULIP, Blocks.POTTED_POPPY, Blocks.POTTED_RED_MUSHROOM, Blocks.POTTED_RED_TULIP,
-                Blocks.POTTED_WHITE_TULIP};
-
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme,
-                               int lootLevel) {
-            world.setBlockState(pos, POTTED_FLOWERS[rand.nextInt(POTTED_FLOWERS.length)].getDefaultState(), 3);
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                          Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+            world.setBlockState(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).getDefaultState(), 2);
         }
 
     }
 
     public static class Podzol implements IBlockPlacementHandler {
 
-        public static final Block[] LARGE_FLOWERS = new Block[]{Blocks.LILAC, Blocks.ROSE_BUSH, Blocks.LARGE_FERN, Blocks.PEONY};
-
         @Override
-        public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Type treasureType, int theme, int lootLevel) {
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                          Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
             world.setBlockState(pos, state, 2);
-            BlockState flower = LARGE_FLOWERS[rand.nextInt(LARGE_FLOWERS.length)].getDefaultState();
-            world.setBlockState(pos.up(), DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);
-            world.setBlockState(pos.up(2), DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 2);
+            BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).getDefaultState();
+            BlockPos lowerPart = pos.up();
+            BlockPos upperPart = lowerPart.up();
+            world.setBlockState(lowerPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);
+            world.setBlockState(upperPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 2);
+            context.protectedBlocks.add(lowerPart);
+            context.protectedBlocks.add(upperPart);
         }
+
     }
 
 }

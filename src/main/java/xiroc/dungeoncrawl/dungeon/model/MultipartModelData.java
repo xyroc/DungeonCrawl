@@ -1,3 +1,21 @@
+/*
+        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
+        Copyright (C) 2020
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.JsonArray;
@@ -9,9 +27,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -20,8 +36,7 @@ import java.util.Locale;
 
 public class MultipartModelData {
 
-    @Nullable
-    public List<Condition<?>> conditions;
+    public final List<Condition<?>> conditions;
 
     public WeightedRandom<Instance> models;
 
@@ -29,7 +44,7 @@ public class MultipartModelData {
     public WeightedRandom<Instance> alternatives;
 
     private MultipartModelData() {
-        this.conditions = null;
+        this.conditions = new ArrayList<>();
         this.models = null;
         this.alternatives = null;
     }
@@ -38,18 +53,15 @@ public class MultipartModelData {
         MultipartModelData multipartModelData = new MultipartModelData();
 
         if (object.has("conditions")) {
-            List<Condition<?>> conditions = new ArrayList<>();
             JsonObject jsonConditions = object.getAsJsonObject("conditions");
             jsonConditions.entrySet().forEach((entry) -> {
                 Condition<?> condition = Condition.fromJson(entry.getValue(), entry.getKey());
                 if (condition != null) {
-                    conditions.add(condition);
+                    multipartModelData.conditions.add(condition);
                 }
             });
-            if (!conditions.isEmpty()) {
-                multipartModelData.conditions = conditions;
-            } else {
-                DungeonCrawl.LOGGER.warn("Multipart metadata has an empty or incorrect condition set");
+            if (multipartModelData.conditions.isEmpty()) {
+                DungeonCrawl.LOGGER.warn("Multipart metadata in {} has an empty or incorrect condition set.", file);
             }
         }
 
@@ -84,7 +96,7 @@ public class MultipartModelData {
             MultipartModelData.Instance data = MultipartModelData.Instance.fromJson(object1, file);
             builder.add(data, JSONUtils.getWeightOrDefault(object1));
             if (data != MultipartModelData.Instance.EMPTY) {
-                DungeonModels.REFERENCES_TO_UPDATE.add(data); // Enqueue reference update
+                ResourceReloadHandler.UPDATEABLES.add(data); // Enqueue reference update
             }
         });
         if (builder.entries.isEmpty()) {
@@ -104,7 +116,7 @@ public class MultipartModelData {
         return true;
     }
 
-    public static class Instance {
+    public static class Instance implements Updateable {
 
         public static final Instance EMPTY = new Instance(null, null, DungeonModels.NO_OFFSET, Rotation.NONE);
 
@@ -135,7 +147,7 @@ public class MultipartModelData {
                 Vector3i rotatedOffset = Orientation.rotatedMultipartOffset(parent, model, offset, rotation, fullRotation);
 
                 piece.setWorldPosition(x + rotatedOffset.getX(), y + rotatedOffset.getY(), z + rotatedOffset.getZ());
-                piece.modelKey = model.key;
+                piece.model = model;
                 piece.rotation = fullRotation;
                 piece.stage = parentPiece.stage;
                 piece.theme = parentPiece.theme;
@@ -147,11 +159,11 @@ public class MultipartModelData {
             }
         }
 
-        public void updateReference() {
+        public void update() {
             if (this == EMPTY) {
                 return;
             }
-            this.model = DungeonModels.MODELS.get(key);
+            this.model = DungeonModels.KEY_TO_MODEL.get(key);
             if (model == null) {
                 throw new RuntimeException("Missing model " + key + " in " + file.toString());
             }

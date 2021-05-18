@@ -1,0 +1,132 @@
+{
+  "id": 204,
+  "offset": {
+    "x": 2,
+    "z": 2
+  },
+  "multipart": [
+    {
+      "models": [
+        {
+          "model": "default/multipart/catacombs/ceiling",
+          "offset": {
+            "x": 1,
+            "y": 5,
+            "z": 1
+          },
+          "weight": 4
+        },
+        {
+          "model": "default/multipart/catacombs/ceiling_glowstone",
+          "offset": {
+            "x": 1,
+            "y": 5,
+            "z": 1
+          }
+        },
+        {
+          "model": "default/multipart/catacombs/ceiling_lamp",
+          "offset": {
+            "x": 1,
+            "y": 5,
+            "z": 1
+          }
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_north": true
+      },
+      "models": [
+        {
+          "model": "default/multipart/catacombs/connector",
+          "offset": {
+            "z": -2
+          },
+          "rotation": "counterclockwise_90"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "default/multipart/catacombs/wall",
+          "offset": {
+            "x": 1,
+            "z": -1
+          },
+          "rotation": "counterclockwise_90"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_east": true
+      },
+      "models": [
+        {
+          "model": "default/multipart/catacombs/connector",
+          "offset": {
+            "x": 5
+          }
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "default/multipart/catacombs/wall",
+          "offset": {
+            "x": 5,
+            "z": 1
+          }
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_west": true
+      },
+      "models": [
+        {
+          "model": "default/multipart/catacombs/connector",
+          "offset": {
+            "x": -2
+          },
+          "rotation": "clockwise_180"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "default/multipart/catacombs/wall",
+          "offset": {
+            "x": -1,
+            "z": 1
+          },
+          "rotation": "clockwise_180"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_south": true
+      },
+      "models": [
+        {
+          "model": "default/multipart/catacombs/connector",
+          "offset": {
+            "z": 5
+          },
+          "rotation": "clockwise_90"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "default/multipart/catacombs/wall",
+          "offset": {
+            "x": 1,
+            "z": 5
+          },
+          "rotation": "clockwise_90"
+        }
+      ]
+    }
+  ]
+}

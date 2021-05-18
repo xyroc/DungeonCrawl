@@ -18,11 +18,12 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -33,17 +34,13 @@ public class ScatteredDecoration implements IDungeonDecoration {
     private final IBlockStateProvider blockStateProvider;
     private final float chance;
 
-    public ScatteredDecoration(BlockState state, float chance) {
-        this(() -> state, chance);
-    }
-
     public ScatteredDecoration(IBlockStateProvider blockStateProvider, float chance) {
         this.blockStateProvider = blockStateProvider;
         this.chance = chance;
     }
 
     @Override
-    public void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+    public void decorate(DungeonModel model, IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
         int maxX = ew ? width : length;
         int maxZ = ew ? length : width;
@@ -51,7 +48,12 @@ public class ScatteredDecoration implements IDungeonDecoration {
             for (int y = 0; y < height; y++) {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (worldGenBounds.isVecInside(currentPos) && structureBounds.isVecInside(currentPos) && world.isAirBlock(currentPos) && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                    if (!DungeonBuilder.isBlockProtected(world, currentPos, context)
+                            && worldGenBounds.isVecInside(currentPos)
+                            && structureBounds.isVecInside(currentPos)
+                            && world.isAirBlock(currentPos)
+                            && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                         BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
                         BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
@@ -65,7 +67,7 @@ public class ScatteredDecoration implements IDungeonDecoration {
                         boolean _up = worldGenBounds.isVecInside(up) && structureBounds.isVecInside(up) && world.getBlockState(up).isSolid();
 
                         if (_north || _east || _south || _west || _up) {
-                            world.setBlockState(currentPos, blockStateProvider.get(), 2);
+                            world.setBlockState(currentPos, blockStateProvider.get(currentPos), 2);
                         }
 
                     }

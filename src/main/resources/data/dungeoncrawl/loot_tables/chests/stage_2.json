@@ -3,8 +3,8 @@
     {
       "name": "dungeon_chest_stage_2",
       "rolls": {
-        "min": 7,
-        "max": 10
+        "min": 6,
+        "max": 9
       },
       "entries": [
         {
@@ -89,7 +89,7 @@
               }
             }
           ],
-          "weight": 2
+          "weight": 3
         },
         {
           "type": "item",
@@ -103,7 +103,7 @@
               }
             }
           ],
-          "weight": 2
+          "weight": 3
         },
         {
           "type": "item",
@@ -117,7 +117,7 @@
               }
             }
           ],
-          "weight": 4
+          "weight": 2
         },
         {
           "type": "item",
@@ -126,8 +126,8 @@
             {
               "function": "set_count",
               "count": {
-                "min": 4,
-                "max": 6
+                "min": 2,
+                "max": 3
               }
             }
           ],
@@ -140,12 +140,12 @@
             {
               "function": "set_count",
               "count": {
-                "min": 3,
-                "max": 7
+                "min": 1,
+                "max": 4
               }
             }
           ],
-          "weight": 5
+          "weight": 2
         },
         {
           "type": "item",
@@ -175,7 +175,7 @@
         {
           "type": "item",
           "name": "minecraft:arrow",
-          "weight": 9,
+          "weight": 3,
           "functions": [
             {
               "function": "set_count",
@@ -199,12 +199,12 @@
         {
           "type": "item",
           "name": "minecraft:name_tag",
-          "weight": 2
+          "weight": 1
         },
         {
           "type": "item",
           "name": "minecraft:book",
-          "weight": 2,
+          "weight": 3,
           "functions": [
             {
               "function": "enchant_with_levels",
@@ -226,7 +226,7 @@
         {
           "type": "item",
           "name": "minecraft:torch",
-          "weight": 6,
+          "weight": 4,
           "functions": [
             {
               "function": "set_count",
@@ -240,7 +240,7 @@
         {
           "type": "item",
           "name": "minecraft:brown_mushroom",
-          "weight": 7,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -254,7 +254,7 @@
         {
           "type": "item",
           "name": "minecraft:red_mushroom",
-          "weight": 7,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -268,7 +268,7 @@
         {
           "type": "item",
           "name": "minecraft:bowl",
-          "weight": 7
+          "weight": 3
         },
         {
           "type": "item",
@@ -288,7 +288,7 @@
         {
           "type": "item",
           "name": "minecraft:spider_eye",
-          "weight": 6,
+          "weight": 3,
           "functions": [
             {
               "function": "set_count",
@@ -302,7 +302,7 @@
         {
           "type": "item",
           "name": "minecraft:stick",
-          "weight": 10,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -316,7 +316,7 @@
         {
           "type": "item",
           "name": "minecraft:feather",
-          "weight": 3,
+          "weight": 1,
           "functions": [
             {
               "function": "set_count",
@@ -330,6 +330,7 @@
         {
           "type": "item",
           "name": "minecraft:paper",
+          "weight": 1,
           "functions": [
             {
               "function": "set_count",
@@ -343,7 +344,7 @@
         {
           "type": "item",
           "name": "minecraft:sugar_cane",
-          "weight": 2,
+          "weight": 1,
           "functions": [
             {
               "function": "set_count",
@@ -357,7 +358,7 @@
         {
           "type": "item",
           "name": "minecraft:bone_meal",
-          "weight": 4,
+          "weight": 1,
           "functions": [
             {
               "function": "set_count",
@@ -539,7 +540,7 @@
         {
           "type": "item",
           "name": "minecraft:egg",
-          "weight": 2,
+          "weight": 1,
           "functions": [
             {
               "function": "set_count",
@@ -621,18 +622,18 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_potion",
-              "loot_level": 2
+              "loot_level": 1
             }
           ]
         },
         {
           "type": "item",
           "name": "minecraft:air",
-          "weight": 7,
+          "weight": 9,
           "functions": [
             {
               "function": "dungeoncrawl:random_item",
-              "loot_level": 2
+              "loot_level": 1
             }
           ]
         },
@@ -664,7 +665,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:shield",
-              "loot_level": 2
+              "loot_level": 1
             }
           ]
         }

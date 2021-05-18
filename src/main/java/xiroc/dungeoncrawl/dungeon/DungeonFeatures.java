@@ -23,12 +23,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
-import xiroc.dungeoncrawl.dungeon.piece.PlaceHolder;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
-import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.util.List;
 import java.util.Random;
@@ -45,20 +41,13 @@ public class DungeonFeatures {
                 Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z), rand);
                 if (sideRoomData != null) {
                     DungeonSideRoom sideRoom = new DungeonSideRoom();
-                    WeightedRandom<DungeonModel> randomModel = ModelCategory.get(ModelCategory.SIDE_ROOM, ModelCategory.getCategoryForStage(stage));
-                    if (randomModel != null && randomModel.size() > 0) {
-                        sideRoom.modelKey = randomModel.roll(rand).key;
-                    } else {
-                        return false;
-                    }
-
                     Direction dir = sideRoomData.getB().rotate(Direction.WEST);
                     sideRoom.openSide(dir);
                     sideRoom.setGridPosition(sideRoomData.getA());
                     sideRoom.setRotation(sideRoomData.getB());
                     sideRoom.stage = stage;
 
-                    layer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom).addFlag(PlaceHolder.Flag.FIXED_MODEL);
+                    layer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom);
                     layer.grid[x][z].reference.openSide(dir.getOpposite());
                     layer.map.markPositionAsOccupied(sideRoomData.getA());
                     layer.rotatePiece(layer.grid[x][z], rand);

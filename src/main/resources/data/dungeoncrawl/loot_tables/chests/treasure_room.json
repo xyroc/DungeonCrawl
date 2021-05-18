@@ -15,7 +15,7 @@
             {
               "function": "set_count",
               "count": {
-                "min": 10,
+                "min": 5,
                 "max": 20
               }
             }
@@ -38,13 +38,13 @@
         {
           "type": "item",
           "name": "minecraft:gold_block",
-          "weight": 3,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
               "count": {
-                "min": 5,
-                "max": 15
+                "min": 2,
+                "max": 8
               }
             }
           ]
@@ -62,11 +62,6 @@
               }
             }
           ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:enchanted_golden_apple",
-          "weight": 2
         },
         {
           "type": "item",

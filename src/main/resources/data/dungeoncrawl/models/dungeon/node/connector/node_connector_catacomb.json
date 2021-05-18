@@ -1,6 +1,0 @@
-{
-  "type": "node_connector",
-  "id": 62,
-  "stages": [3, 4],
-  "weights": [0, 0, 2, 3, 0]
-}

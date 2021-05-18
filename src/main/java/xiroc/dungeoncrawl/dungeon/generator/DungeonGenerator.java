@@ -20,7 +20,8 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import net.minecraft.util.math.ChunkPos;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.DungeonType;
+import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGenerator;
 
 import java.util.Random;
 
@@ -29,30 +30,21 @@ import java.util.Random;
  */
 public abstract class DungeonGenerator extends LayerGenerator {
 
-    public DungeonGenerator(DungeonGeneratorSettings settings) {
-        super(settings);
-    }
+    /**
+     * The dungeon type currently in use.
+     */
+    protected DungeonType type;
 
     /**
      * Called once before the layout generation for a dungeon starts.
      */
-    public abstract void initializeDungeon(DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand);
-
-    /**
-     * @return whether the given layer contains a secret room or not.
-     */
-    public boolean doesLayerHaveSecretRoom(int layer) {
-        return false;
+    public void initializeDungeon(DungeonType type, DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand) {
+        this.type = type;
     }
 
     /**
      * @return the amount of layers the dungeon will have.
      */
-    public abstract int calculateLayerCount(Random rand, int height);
-
-    /**
-     * @return the model category for the given layer
-     */
-    public abstract ModelCategory getCategoryForLayer(int layer);
+    public abstract int layerCount(Random rand, int height);
 
 }

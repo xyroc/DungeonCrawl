@@ -1,0 +1,8 @@
+{
+  "conditions": {
+    "present": [],
+    "absent": []
+  },
+  "default": [{"key": "default"}],
+  "mapping": {}
+}

@@ -3,8 +3,8 @@
     {
       "name": "dungeon_chest_stage_5",
       "rolls": {
-        "min": 7,
-        "max": 10
+        "min": 6,
+        "max": 9
       },
       "entries": [
         {
@@ -66,21 +66,7 @@
               }
             }
           ],
-          "weight": 6
-        },
-        {
-          "type": "item",
-          "name": "minecraft:rotten_flesh",
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 3,
-                "max": 7
-              }
-            }
-          ],
-          "weight": 6
+          "weight": 3
         },
         {
           "type": "item",
@@ -131,7 +117,7 @@
         {
           "type": "item",
           "name": "minecraft:torch",
-          "weight": 6,
+          "weight": 3,
           "functions": [
             {
               "function": "set_count",
@@ -145,7 +131,7 @@
         {
           "type": "item",
           "name": "minecraft:lapis_lazuli",
-          "weight": 4,
+          "weight": 5,
           "functions": [
             {
               "function": "set_count",
@@ -220,7 +206,7 @@
         {
           "type": "item",
           "name": "minecraft:gold_nugget",
-          "weight": 6,
+          "weight": 10,
           "functions": [
             {
               "function": "set_count",
@@ -234,7 +220,7 @@
         {
           "type": "item",
           "name": "minecraft:iron_nugget",
-          "weight": 4,
+          "weight": 10,
           "functions": [
             {
               "function": "set_count",
@@ -248,7 +234,7 @@
         {
           "type": "item",
           "name": "minecraft:string",
-          "weight": 3,
+          "weight": 1,
           "functions": [
             {
               "function": "set_count",
@@ -303,45 +289,8 @@
         },
         {
           "type": "item",
-          "name": "minecraft:melon",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 1,
-                "max": 3
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:pumpkin",
-          "weight": 1,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 1,
-                "max": 3
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:dead_bush",
-          "weight": 4,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 3,
-                "max": 7
-              }
-            }
-          ]
+          "name": "minecraft:gold_block",
+          "weight": 1
         },
         {
           "type": "item",
@@ -351,16 +300,6 @@
         {
           "type": "item",
           "name": "minecraft:tnt_minecart",
-          "weight": 1
-        },
-        {
-          "type": "item",
-          "name": "minecraft:cauldron",
-          "weight": 1
-        },
-        {
-          "type": "item",
-          "name": "minecraft:map",
           "weight": 1
         },
         {
@@ -389,18 +328,18 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_potion",
-              "loot_level": 5
+              "loot_level": 4
             }
           ]
         },
         {
           "type": "item",
           "name": "minecraft:air",
-          "weight": 10,
+          "weight": 9,
           "functions": [
             {
               "function": "dungeoncrawl:random_item",
-              "loot_level": 5
+              "loot_level": 4
             }
           ]
         },
@@ -411,7 +350,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:special_item",
-              "loot_level": 1
+              "loot_level": 4
             }
           ]
         },
@@ -432,7 +371,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:shield",
-              "loot_level": 5
+              "loot_level": 4
             }
           ]
         }

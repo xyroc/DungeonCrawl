@@ -19,10 +19,29 @@
 package xiroc.dungeoncrawl.util;
 
 import com.google.gson.JsonObject;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.state.Property;
 import net.minecraft.util.math.vector.Vector3i;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 
+import java.util.Optional;
+
 public class JSONUtils {
+
+    public static BlockState getBlockState(Block block, JsonObject element) {
+        BlockState state = block.getDefaultState();
+        if (element.has("data")) {
+            JsonObject data = element.get("data").getAsJsonObject();
+            for (Property<?> property : state.getProperties()) {
+                if (data.has(property.getName())) {
+                    state = parseProperty(state, property, data.get(property.getName()).getAsString());
+                }
+            }
+        }
+        return state;
+    }
 
     public static int getWeightOrDefault(JsonObject object) {
         return object.has("weight") ? object.get("weight").getAsInt() : 1;
@@ -43,6 +62,23 @@ public class JSONUtils {
             return DungeonModels.NO_OFFSET;
         }
         return new Vector3i(x, y, z);
+    }
+
+    /**
+     * Applies the property value to the BlockState. It is required that the BlockState supports that property.
+     *
+     * @return the resulting block state
+     */
+    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property,
+                                                                      String value) {
+        Optional<T> optional = property.parseValue(value);
+        if (optional.isPresent()) {
+            T t = optional.get();
+            return state.with(property, t);
+        } else {
+            DungeonCrawl.LOGGER.warn("Couldn't apply property {} with value {} to {}", property.getName(), value, state.getBlock().getRegistryName());
+        }
+        return state;
     }
 
 }

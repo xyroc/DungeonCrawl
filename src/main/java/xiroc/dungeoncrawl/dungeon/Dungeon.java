@@ -27,7 +27,6 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
@@ -44,7 +43,6 @@ import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.api.event.DungeonPlacementCheckEvent;
 import xiroc.dungeoncrawl.config.Config;
 
 import java.util.Locale;
@@ -64,8 +62,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final Structure<NoFeatureConfig> DUNGEON = new Dungeon();
     public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = DUNGEON.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG);
 
+
     public static final int SIZE = 15;
-    public static int spacing, separation;
 
     public Dungeon() {
         super(NoFeatureConfig.CODEC);
@@ -79,10 +77,18 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
         ForgeRegistries.STRUCTURE_FEATURES.register(DUNGEON);
 
+        StructureSeparationSettings separationSettings;
+
+        if (Config.SPACING.get() > Config.SEPARATION.get() && Config.SEPARATION.get() >= 0) {
+            separationSettings = new StructureSeparationSettings(Config.SPACING.get(), Config.SEPARATION.get(), 10387313);
+        } else {
+            throw new IllegalArgumentException("Invalid dungeon spacing/separation settings in the config.");
+        }
+
         DimensionStructuresSettings.field_236191_b_ =
                 ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
                         .putAll(DimensionStructuresSettings.field_236191_b_)
-                        .put(DUNGEON, new StructureSeparationSettings(separation, separation, 10387313))
+                        .put(DUNGEON, separationSettings)
                         .build();
 
         Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
@@ -104,12 +110,8 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     @Override
     protected boolean func_230363_a_(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
         for (Biome biome : p_230363_2_.getBiomes(p_230363_6_ * 16, p_230363_1_.getGroundHeight(), p_230363_7_ * 16, 64)) {
-            if (!biome.getGenerationSettings().hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
+            if (!biome.getGenerationSettings().hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get())
                 return false;
-            }
-        }
-        if (DungeonCrawl.EVENT_BUS.post(new DungeonPlacementCheckEvent(p_230363_1_, p_230363_8_, p_230363_6_, p_230363_7_))) {
-            return false;
         }
         return true;
     }
@@ -133,26 +135,15 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
         @Override
         public void func_230364_a_(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGenerator, TemplateManager p_230364_3_, int chunkX, int chunkZ, Biome p_230364_6_, NoFeatureConfig p_230364_7_) {
-            if (DungeonBuilder.isWorldEligible(chunkGenerator)) {
-                ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
-                DungeonBuilder builder = new DungeonBuilder(dynamicRegistries, chunkGenerator, chunkpos, rand);
-                this.components.addAll(builder.build());
-                this.recalculateStructureSize();
-                DungeonCrawl.LOGGER.debug("Created the dungeon layout for [{}, {}] with a total of {} pieces.", chunkX, chunkZ, this.components.size());
-            } else {
-                DungeonCrawl.LOGGER.warn("The current world seems to have biomes of overworld-like categories, but is not eligible for dungeon generation.");
-            }
+            ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
+            DungeonBuilder builder = new DungeonBuilder(dynamicRegistries, chunkGenerator, chunkpos, rand);
+            this.components.addAll(builder.build());
+            this.recalculateStructureSize();
+            DungeonCrawl.LOGGER.debug("Created the dungeon layout for [{}, {}] with a total of {} pieces.", chunkX, chunkZ, this.components.size());
         }
 
         @Override
         public void func_230366_a_(ISeedReader p_230366_1_, StructureManager p_230366_2_, ChunkGenerator p_230366_3_, Random p_230366_4_, MutableBoundingBox p_230366_5_, ChunkPos p_230366_6_) {
-            if (!Config.IGNORE_DIMENSION.get() && !(p_230366_1_.getDimensionType() == p_230366_1_.func_241828_r().getRegistry(Registry.DIMENSION_TYPE_KEY).getValueForKey(DimensionType.OVERWORLD))) {
-                DungeonCrawl.LOGGER.info(
-                        "Cancelling the generation of an existing Dungeon because it is not in the overworld. To avoid this, set \"ignore_dimension\" in the config to true. Dimension: {}",
-                        p_230366_1_.getDimensionType());
-                return;
-            }
-
             if (Config.EXTENDED_DEBUG.get()) {
                 DungeonCrawl.LOGGER.debug("Starting dungeon generation in chunk [{},{}]", p_230366_6_.x, p_230366_6_.z);
             }

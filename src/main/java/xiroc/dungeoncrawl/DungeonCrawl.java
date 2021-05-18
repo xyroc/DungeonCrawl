@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.FlatChunkGenerator;
@@ -34,31 +35,27 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
-import xiroc.dungeoncrawl.theme.WeightedThemeRandomizer;
-import xiroc.dungeoncrawl.util.DataReloadListener;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Tools;
-import xiroc.dungeoncrawl.util.WeightedIntegerEntry;
+import xiroc.dungeoncrawl.util.ResourceReloadHandler;
+import xiroc.dungeoncrawl.util.tools.Tools;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,16 +64,12 @@ public class DungeonCrawl {
 
     public static final String MOD_ID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
-    public static final String VERSION = "2.2.4";
+    public static final String VERSION = "2.3.0-dev";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(WeightedThemeRandomizer.class, new WeightedThemeRandomizer.Deserializer())
-            .registerTypeAdapter(WeightedIntegerEntry.class, new WeightedIntegerEntry.Deserializer())
-            .setPrettyPrinting().create();
-
-    public static IEventBus EVENT_BUS;
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final JsonParser JSON_PARSER = new JsonParser();
 
     public DungeonCrawl() {
         LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
@@ -93,38 +86,22 @@ public class DungeonCrawl {
         Treasure.init();
         DungeonModelFeature.init();
         DungeonModelBlockType.buildNameTable();
-
-        EVENT_BUS = Bus.MOD.bus().get();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("Common Setup");
         //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
+        JsonConfig.load();
 
-        if (Config.SPACING.get() > Config.SEPARATION.get()) {
-            Dungeon.spacing = Config.SPACING.get();
-            Dungeon.separation = Config.SEPARATION.get();
-        } else {
-            LOGGER.error("Invalid separation/spacing setting in the config. Using default values.");
-            Dungeon.spacing = 20;
-            Dungeon.separation = 10;
-        }
-
-        StructurePieceTypes.registerAll();
+        StructurePieceTypes.register();
 
         if (Config.ENABLE_TOOLS.get()) {
             MinecraftForge.EVENT_BUS.register(new Tools());
         }
 
-        DungeonModelBlock.init();
         IBlockPlacementHandler.init();
-        DungeonBlocks.init();
         Modules.load();
-    }
-
-    private void onAddReloadListener(final AddReloadListenerEvent event) {
-        event.addListener(new DataReloadListener());
     }
 
     private void onRegisterStructures(final RegistryEvent.Register<Structure<?>> event) {
@@ -155,8 +132,13 @@ public class DungeonCrawl {
         }
     }
 
-    public static String getDate() {
-        return new SimpleDateFormat().format(new Date());
+    private void onAddReloadListener(final AddReloadListenerEvent event) {
+        event.addListener(new ResourceReloadHandler());
+    }
+
+    @SubscribeEvent
+    public void onServerStart(FMLServerStartingEvent event) {
+        SpawnDungeonCommand.register(event.getServer().getCommandManager().getDispatcher());
     }
 
     public static ResourceLocation locate(String path) {

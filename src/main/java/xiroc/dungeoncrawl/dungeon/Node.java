@@ -18,8 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 
 import java.util.Random;
 
@@ -32,35 +32,12 @@ public class Node {
     public static final Node STRAIGHT = new Node(false, true, false, true);
     public static final Node TURN = new Node(false, false, true, true);
     public static final Node FORK = new Node(false, true, true, true);
-    public static final Node ALL = new Node(true, true, true, true);
+    public static final Node FULL = new Node(true, true, true, true);
 
     private final boolean[] sides; // Order is N-E-S-W
 
     public Node(boolean north, boolean east, boolean south, boolean west) {
         this.sides = new boolean[]{north, east, south, west};
-    }
-
-    public Node(boolean[] values) {
-        this.sides = values;
-    }
-
-    public boolean canConnect(Direction side) {
-        return sides[(side.getHorizontalIndex() + 2) % 4];
-    }
-
-    public Direction findClosest(Direction base) {
-        if (canConnect(base))
-            return base;
-        base = base.rotateY();
-        if (canConnect(base))
-            return base;
-        base = base.getOpposite();
-        if (canConnect(base))
-            return base;
-        base = base.rotateYCCW();
-        if (canConnect(base))
-            return base;
-        return null;
     }
 
     public Node rotate(Rotation rotation) {
@@ -95,6 +72,24 @@ public class Node {
             }
         }
         return currentRotation;
+    }
+
+    public static Node getForNodeRoom(DungeonNodeRoom nodeRoom) {
+        switch (nodeRoom.connectedSides) {
+            case 1:
+                return DEAD_END;
+            case 2: {
+                if (nodeRoom.sides[0] && nodeRoom.sides[2] || nodeRoom.sides[1] && nodeRoom.sides[3]) {
+                    return STRAIGHT;
+                } else {
+                    return TURN;
+                }
+            }
+            case 3:
+                return FORK;
+            default:
+                return FULL;
+        }
     }
 
 }

@@ -29,28 +29,21 @@ import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.Node;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.ModelCategory;
+import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Orientation;
-import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.util.List;
 import java.util.Random;
 
 public class DungeonNodeRoom extends DungeonPiece {
 
-    public Node node;
-
-    public boolean large, lootRoom;
+    public boolean lootRoom;
 
     public DungeonNodeRoom() {
         super(StructurePieceTypes.NODE_ROOM);
@@ -58,65 +51,43 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     public DungeonNodeRoom(TemplateManager manager, CompoundNBT nbt) {
         super(StructurePieceTypes.NODE_ROOM, nbt);
-        this.large = nbt.getBoolean("large");
         this.lootRoom = nbt.getBoolean("lootRoom");
         setupBoundingBox();
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
         if (lootRoom) {
-            node = Node.ALL;
-            this.modelKey = DungeonModels.LOOT_ROOM.key;
+            this.model = DungeonModels.KEY_TO_MODEL.get("loot_room");
             return;
         }
 
-        large = stage >= 2 && rand.nextFloat() < 0.15;
-
-        ModelCategory base;
-
         switch (connectedSides) {
             case 1:
-                base = ModelCategory.NODE_DEAD_END;
-                node = Node.DEAD_END;
+                this.model = modelSelector.deadEndNodes.roll(rand);
                 break;
             case 2:
                 if (sides[0] && sides[2] || sides[1] && sides[3]) {
-                    base = ModelCategory.NODE_STRAIGHT;
-                    node = Node.STRAIGHT;
+                    this.model = modelSelector.straightNodes.roll(rand);
                 } else {
-                    base = ModelCategory.NODE_TURN;
-                    node = Node.TURN;
+                    this.model = modelSelector.turnNodes.roll(rand);
                 }
                 break;
             case 3:
-                base = ModelCategory.NODE_FORK;
-                node = Node.FORK;
+                this.model = modelSelector.forkNodes.roll(rand);
                 break;
             default:
-                base = ModelCategory.NODE_FULL;
-                node = Node.ALL;
-                break;
+                this.model = modelSelector.fullNodes.roll(rand);
         }
-
-        WeightedRandom<DungeonModel> provider = large
-                ? ModelCategory.get(ModelCategory.LARGE_NODE, layerCategory, base)
-                : ModelCategory.get(ModelCategory.NORMAL_NODE, layerCategory, base);
-
-        this.modelKey = provider.roll(rand).key;
     }
 
     @Override
     public void setWorldPosition(int x, int y, int z) {
-        if (large)
-            super.setWorldPosition(x - 9, y, z - 9);
-        else
-            super.setWorldPosition(x - 4, y, z - 4);
+        super.setWorldPosition(x - 4, y, z - 4);
     }
 
     @Override
     public void customSetup(Random rand) {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
             return;
         }
@@ -135,34 +106,28 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
+            DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
             return true;
         }
 
         Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).add(offset);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, Theme.get(theme), Theme.getSub(subTheme), model.getTreasureType(), stage, rotation, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, rotation, context, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-            model.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, model.width, model.height, model.length, Theme.get(theme), structureBoundingBoxIn, boundingBox, model);
-
-        if (Config.NO_SPAWNERS.get())
-            spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
+        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
@@ -174,21 +139,18 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean canConnect(Direction side) {
-        return node.canConnect(side);
+    public boolean canConnect(Direction side, int x, int z) {
+        return x == this.gridPosition.x || z == this.gridPosition.z;
     }
 
     @Override
     public boolean hasChildPieces() {
-        return !large;
+        return true;
     }
 
     @Override
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelCategory layerCategory, int layer, Random rand) {
-        super.addChildPieces(pieces, builder, layerCategory, layer, rand);
-        if (large) {
-            return;
-        }
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelSelector modelSelector, int layer, Random rand) {
+        super.addChildPieces(pieces, builder, modelSelector, layer, rand);
 
         if (sides[0]) {
             DungeonNodeConnector connector = new DungeonNodeConnector();
@@ -196,7 +158,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.setupModel(builder, layerCategory, pieces, rand);
+            connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x + 7, y, z - 5);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
@@ -208,7 +170,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.setupModel(builder, layerCategory, pieces, rand);
+            connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x + 17, y, z + 7);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
@@ -220,7 +182,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.setupModel(builder, layerCategory, pieces, rand);
+            connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x + 7, y, z + 17);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
@@ -232,7 +194,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             connector.theme = theme;
             connector.subTheme = subTheme;
             connector.stage = stage;
-            connector.setupModel(builder, layerCategory, pieces, rand);
+            connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x - 5, y, z + 7);
             connector.adjustPositionAndBounds();
             pieces.add(connector);
@@ -242,7 +204,6 @@ public class DungeonNodeRoom extends DungeonPiece {
     @Override
     public void readAdditional(CompoundNBT tagCompound) {
         super.readAdditional(tagCompound);
-        tagCompound.putBoolean("large", large);
         tagCompound.putBoolean("lootRoom", lootRoom);
     }
 

@@ -19,14 +19,17 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -35,37 +38,45 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel.FeaturePosition;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ModelHandler {
 
+    public static final byte LATEST_MODEL_FORMAT = 1;
+
     public static void readAndSaveModelToFile(String name, ModelBlockDefinition definition, World world, BlockPos pos, int width, int height, int length) {
         DungeonCrawl.LOGGER.info("Reading and saving {} to disk. Size: {}, {}, {}", name, width, height, length);
-        DungeonModelBlock[][][] model = new DungeonModelBlock[width][height][length];
+
+        List<DungeonModelBlock> blocks = new ArrayList<>();
 
         List<FeaturePosition> featurePositions = Lists.newArrayList();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < length; z++) {
-                    BlockState state = world
-                            .getBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z));
-                    if (state.getBlock() == Blocks.AIR || state.getBlock() == Blocks.BEDROCK) {
-                        model[x][y][z] = null;
+
+                    BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+                    BlockState state = world.getBlockState(position);
+                    Block block = state.getBlock();
+                    if (block == Blocks.BARRIER) {
                         continue;
-                    } else if (state.getBlock() == Blocks.JIGSAW) {
+                    } else if (block == Blocks.JIGSAW) {
                         featurePositions.add(new FeaturePosition(x, y, z, state.get(BlockStateProperties.FACING)));
+                        blocks.add(new DungeonModelBlock(DungeonModelBlockType.AIR, new Vector3i(x, y, z)));
                         continue;
+                    } else if (BlockTags.CARPETS.contains(block)) {
+                        // TODO: carpets
                     }
-                    model[x][y][z] = new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock(), definition)).loadDataFromState(state);
+                    blocks.add(new DungeonModelBlock(DungeonModelBlockType.get(state.getBlock(), definition), new Vector3i(x, y, z)).loadDataFromState(state));
                 }
             }
         }
         writeModelToFile(
-                new DungeonModel(model, featurePositions.isEmpty() ? null : featurePositions.toArray(new FeaturePosition[0])),
+                new DungeonModel(blocks, featurePositions.isEmpty() ? null : featurePositions.toArray(new FeaturePosition[0]), width, height, length),
                 ((ServerWorld) world).getServer().getDataDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
 
+        DungeonCrawl.LOGGER.info("Done.");
     }
 
     public static void writeModelToFile(DungeonModel model, String path) {
@@ -86,31 +97,16 @@ public class ModelHandler {
                 length = (byte) (model.length > 127 ? -(model.length - 127) : model.length),
                 height = (byte) (model.height > 127 ? -(model.height - 127) : model.height);
 
-        CompoundNBT newModel = new CompoundNBT();
-        newModel.putByte("length", length);
-        newModel.putByte("height", height);
-        newModel.putByte("width", width);
+        CompoundNBT nbt = new CompoundNBT();
+        nbt.putByte("format", LATEST_MODEL_FORMAT);
+
+        nbt.putByte("length", length);
+        nbt.putByte("height", height);
+        nbt.putByte("width", width);
 
         ListNBT blocks = new ListNBT();
 
-        for (int x = 0; x < model.width; x++) {
-            ListNBT blocks2 = new ListNBT();
-
-            for (int y = 0; y < model.height; y++) {
-                ListNBT blocks3 = new ListNBT();
-
-                for (int z = 0; z < model.length; z++) {
-                    if (model.model[x][y][z] != null)
-                        blocks3.add(model.model[x][y][z].getAsNBT());
-                    else
-                        blocks3.add(new CompoundNBT());
-                }
-                blocks2.add(blocks3);
-
-            }
-            blocks.add(blocks2);
-
-        }
+        model.blocks.forEach((block) -> blocks.add(block.toNBT()));
 
         if (model.featurePositions != null && model.featurePositions.length > 0) {
             ListNBT list = new ListNBT();
@@ -126,50 +122,25 @@ public class ModelHandler {
                     vecCompound.putString("facing", pos.facing.toString());
                 list.add(vecCompound);
             }
-            newModel.put("featurePositions", list);
+            nbt.put("featurePositions", list);
         }
 
-        newModel.put("model", blocks);
+        nbt.put("blocks", blocks);
 
-        return newModel;
+        return nbt;
     }
 
-    public static DungeonModel getModelFromNBT(CompoundNBT nbt) {
-        int width = nbt.getInt("width"), height = nbt.getInt("height"), length = nbt.getInt("length");
+    public static DungeonModel loadModelFromNBT(CompoundNBT nbt, ResourceLocation file) {
+        int format = nbt.getInt("format");
 
-        ListNBT blocks = nbt.getList("model", 9);
-
-        DungeonModelBlock[][][] model = new DungeonModelBlock[width][height][length];
-
-        for (int x = 0; x < width; x++) {
-            ListNBT blocks2 = blocks.getList(x);
-            for (int y = 0; y < height; y++) {
-                ListNBT blocks3 = blocks2.getList(y);
-                for (int z = 0; z < length; z++)
-                    model[x][y][z] = DungeonModelBlock.fromNBT(blocks3.getCompound(z));
-            }
+        if (format == 1) {
+            return ModelLoader.VERSION_1.load(nbt, file);
         }
+        return ModelLoader.LEGACY.load(nbt, file);
+    }
 
-        FeaturePosition[] featurePositions = null;
-
-        if (nbt.contains("featurePositions", 9)) {
-            ListNBT list = nbt.getList("featurePositions", 10);
-            int amount = list.getCompound(0).getInt("amount");
-            featurePositions = new FeaturePosition[amount];
-            for (int i = 1; i < list.size(); i++) {
-                CompoundNBT compound = list.getCompound(i);
-                if (compound.contains("facing")) {
-                    featurePositions[i - 1] = new FeaturePosition(compound.getInt("x"), compound.getInt("y"),
-                            compound.getInt("z"),
-                            Direction.valueOf(compound.getString("facing").toUpperCase(Locale.ROOT)));
-                } else {
-                    featurePositions[i - 1] = new FeaturePosition(compound.getInt("x"), compound.getInt("y"),
-                            compound.getInt("z"));
-                }
-            }
-        }
-
-        return new DungeonModel(model, featurePositions);
+    public static DungeonModel getModelFromJigsawNBT(CompoundNBT nbt) {
+        return null;
     }
 
 }

@@ -31,7 +31,7 @@ public class Orientation {
     public static final IRandom<Direction> RANDOM_FACING = (rand) -> FACINGS[rand.nextInt(FACINGS.length)];
     public static final IRandom<Direction> RANDOM_HORIZONTAL_FACING = (rand) -> FACINGS[rand.nextInt(4)];
 
-    public static final Direction[] FLAT_FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH,
+    public static final Direction[] HORIZONTAL_FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH,
             Direction.WEST};
 
     public static final Direction[] EAST_SOUTH_WEST = new Direction[]{Direction.EAST, Direction.SOUTH,
@@ -61,51 +61,6 @@ public class Orientation {
             }
             default:
                 return offset;
-        }
-    }
-
-    public static Direction horizontalOpposite(Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return Direction.SOUTH;
-            case EAST:
-                return Direction.WEST;
-            case SOUTH:
-                return Direction.NORTH;
-            case WEST:
-                return Direction.EAST;
-            default:
-                return direction;
-        }
-    }
-
-    public static Direction rotateY(Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return Direction.EAST;
-            case EAST:
-                return Direction.SOUTH;
-            case SOUTH:
-                return Direction.WEST;
-            case WEST:
-                return Direction.NORTH;
-            default:
-                return direction;
-        }
-    }
-
-    public static Direction rotateYCCW(Direction direction) {
-        switch (direction) {
-            case NORTH:
-                return Direction.WEST;
-            case EAST:
-                return Direction.NORTH;
-            case SOUTH:
-                return Direction.EAST;
-            case WEST:
-                return Direction.SOUTH;
-            default:
-                return direction;
         }
     }
 

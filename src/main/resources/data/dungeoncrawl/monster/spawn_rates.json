@@ -1,7 +1,7 @@
 {
   "level_1": {
     "delay": {
-      "min": 220,
+      "min": 180,
       "max": 200
     },
     "amount": {
@@ -11,8 +11,8 @@
   },
   "level_2": {
     "delay": {
-      "min": 200,
-      "max": 160
+      "min": 160,
+      "max": 190
     },
     "amount": {
       "min": 1,
@@ -21,8 +21,8 @@
   },
   "level_3": {
     "delay": {
-      "min": 180,
-      "max": 150
+      "min": 170,
+      "max": 180
     },
     "amount": {
       "min": 1,
@@ -32,7 +32,7 @@
   "level_4": {
     "delay": {
       "min": 170,
-      "max": 150
+      "max": 180
     },
     "amount": {
       "min": 1,
@@ -41,8 +41,8 @@
   },
   "level_5": {
     "delay": {
-      "min": 160,
-      "max": 140
+      "min": 140,
+      "max": 160
     },
     "amount": {
       "min": 2,

@@ -30,16 +30,19 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
 import javax.annotation.Nullable;
@@ -54,9 +57,12 @@ public class Spawner implements IBlockPlacementHandler {
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
     @Override
-    public void placeBlock(IWorld world, BlockState state, BlockPos pos, Random rand, Treasure.Type treasureType,
-                           int theme, int stage) {
-        world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 3);
+    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                      Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int stage) {
+        if (world.isAirBlock(pos.down())) {
+            return;
+        }
+        world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 2);
         TileEntity tileentity = world.getTileEntity(pos);
         if (tileentity instanceof MobSpawnerTileEntity) {
             MobSpawnerTileEntity tile = (MobSpawnerTileEntity) tileentity;
@@ -79,7 +85,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
                 spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
                 spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).generateInt(rand));
-                spawnerNBT.putShort("RequiredPlayerRange", (short) 10);
+                spawnerNBT.putShort("RequiredPlayerRange", Config.SPAWNER_RANGE.get().shortValue());
                 tile.getSpawnerBaseLogic().read(spawnerNBT);
             }
         } else {
@@ -95,7 +101,13 @@ public class Spawner implements IBlockPlacementHandler {
         if (spawnData == null)
             spawnData = new CompoundNBT();
 
-        spawnData.putString("id", type.getRegistryName().toString());
+        ResourceLocation registryName = type.getRegistryName();
+        if (registryName == null) {
+            DungeonCrawl.LOGGER.warn("Entity type {} has no registry name.", type);
+            return new CompoundNBT();
+        }
+
+        spawnData.putString("id", registryName.toString());
         if (INVENTORY_ENTITIES.contains(type)) {
             ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
             ListNBT armorList = new ListNBT();
@@ -133,7 +145,7 @@ public class Spawner implements IBlockPlacementHandler {
             }
         }
 
-        if (RandomMonster.NBT_PATCHERS.containsKey(type)) {
+        if (Config.OVERWRITE_ENTITY_LOOT_TABLES.get() && RandomMonster.NBT_PATCHERS.containsKey(type)) {
             RandomMonster.NBT_PATCHERS.get(type).patch(spawnData, rand, stage);
         }
         return spawnData;

@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.math.BlockPos;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks.TupleFloatBlock;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.IRandom;
@@ -87,7 +88,7 @@ public class WeightedRandomBlock implements IRandom<BlockState>, IBlockStateProv
     }
 
     @Override
-    public BlockState get() {
+    public BlockState get(BlockPos pos) {
         return roll(RANDOM);
     }
 

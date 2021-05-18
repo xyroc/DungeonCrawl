@@ -3,8 +3,8 @@
     {
       "name": "dungeon_chest_stage_4",
       "rolls": {
-        "min": 7,
-        "max": 10
+        "min": 6,
+        "max": 9
       },
       "entries": [
         {
@@ -19,7 +19,7 @@
               }
             }
           ],
-          "weight": 5
+          "weight": 3
         },
         {
           "type": "item",
@@ -52,7 +52,7 @@
         {
           "type": "item",
           "name": "minecraft:arrow",
-          "weight": 7,
+          "weight": 3,
           "functions": [
             {
               "function": "set_count",
@@ -80,7 +80,7 @@
               }
             }
           ],
-          "weight": 6
+          "weight": 3
         },
         {
           "type": "item",
@@ -89,12 +89,12 @@
             {
               "function": "set_count",
               "count": {
-                "min": 4,
-                "max": 6
+                "min": 2,
+                "max": 10
               }
             }
           ],
-          "weight": 10
+          "weight": 3
         },
         {
           "type": "item",
@@ -103,12 +103,12 @@
             {
               "function": "set_count",
               "count": {
-                "min": 3,
-                "max": 7
+                "min": 2,
+                "max": 10
               }
             }
           ],
-          "weight": 8
+          "weight": 3
         },
         {
           "type": "item",
@@ -136,11 +136,6 @@
         },
         {
           "type": "item",
-          "name": "minecraft:enchanted_golden_apple",
-          "weight": 1
-        },
-        {
-          "type": "item",
           "name": "minecraft:music_disc_13",
           "weight": 1
         },
@@ -152,7 +147,7 @@
         {
           "type": "item",
           "name": "minecraft:name_tag",
-          "weight": 3
+          "weight": 1
         },
         {
           "type": "item",
@@ -161,7 +156,7 @@
           "functions": [
             {
               "function": "enchant_with_levels",
-              "levels": 30,
+              "levels": 23,
               "treasure": true
             }
           ]
@@ -169,7 +164,7 @@
         {
           "type": "item",
           "name": "minecraft:torch",
-          "weight": 8,
+          "weight": 3,
           "functions": [
             {
               "function": "set_count",
@@ -183,7 +178,7 @@
         {
           "type": "item",
           "name": "minecraft:lapis_lazuli",
-          "weight": 3,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -197,7 +192,7 @@
         {
           "type": "item",
           "name": "minecraft:lapis_block",
-          "weight": 3,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -235,55 +230,13 @@
         {
           "type": "item",
           "name": "minecraft:stick",
-          "weight": 3,
+          "weight": 1,
           "functions": [
             {
               "function": "set_count",
               "count": {
                 "min": 4,
                 "max": 8
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:feather",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 3,
-                "max": 7
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:gold_nugget",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 6,
-                "max": 12
-              }
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:iron_nugget",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 5,
-                "max": 10
               }
             }
           ]
@@ -333,7 +286,7 @@
         {
           "type": "item",
           "name": "minecraft:glass_bottle",
-          "weight": 3,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -347,7 +300,7 @@
         {
           "type": "item",
           "name": "minecraft:slime_ball",
-          "weight": 3,
+          "weight": 2,
           "functions": [
             {
               "function": "set_count",
@@ -357,11 +310,6 @@
               }
             }
           ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:carrot_on_a_stick",
-          "weight": 1
         },
         {
           "type": "item",
@@ -376,11 +324,6 @@
         {
           "type": "item",
           "name": "minecraft:cauldron",
-          "weight": 1
-        },
-        {
-          "type": "item",
-          "name": "minecraft:map",
           "weight": 1
         },
         {
@@ -423,7 +366,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_potion",
-              "loot_level": 4
+              "loot_level": 3
             }
           ]
         },
@@ -434,7 +377,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:random_item",
-              "loot_level": 4
+              "loot_level": 3
             }
           ]
         },
@@ -445,7 +388,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:special_item",
-              "loot_level": 1
+              "loot_level": 3
             }
           ]
         },
@@ -466,7 +409,7 @@
           "functions": [
             {
               "function": "dungeoncrawl:shield",
-              "loot_level": 4
+              "loot_level": 3
             }
           ]
         }

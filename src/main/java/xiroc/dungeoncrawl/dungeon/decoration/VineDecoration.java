@@ -24,6 +24,8 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -31,7 +33,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 public class VineDecoration implements IDungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+    public void decorate(DungeonModel model, IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
         int maxX = ew ? width : length;
         int maxZ = ew ? length : width;
@@ -39,7 +41,10 @@ public class VineDecoration implements IDungeonDecoration {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < maxZ; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (worldGenBounds.isVecInside(currentPos) && structureBounds.isVecInside(currentPos) && world.isAirBlock(currentPos)) {
+                    if (!DungeonBuilder.isBlockProtected(world, currentPos, context)
+                            && worldGenBounds.isVecInside(currentPos)
+                            && structureBounds.isVecInside(currentPos)
+                            && world.isAirBlock(currentPos)) {
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                         BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
                         BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);

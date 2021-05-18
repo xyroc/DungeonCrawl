@@ -49,7 +49,7 @@ public class SpawnRates {
                 loadLevel(data, resource, 3);
                 loadLevel(data, resource, 4);
             } else {
-                throw new FileNotFoundException("Missing file " + resource.toString());
+                throw new FileNotFoundException("Missing file " + resource);
             }
         } catch (IOException e) {
             DungeonCrawl.LOGGER.error("An error occurred whilst trying to load {}", resource.toString());

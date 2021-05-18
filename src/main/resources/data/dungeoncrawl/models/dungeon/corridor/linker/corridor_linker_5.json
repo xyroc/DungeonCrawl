@@ -1,6 +1,0 @@
-{
-  "type": "corridor_linker",
-  "id": 20,
-  "stages": [2],
-  "weights": [0, 1, 0, 0, 0]
-}

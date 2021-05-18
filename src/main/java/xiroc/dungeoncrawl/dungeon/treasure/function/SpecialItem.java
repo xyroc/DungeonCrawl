@@ -27,14 +27,9 @@ import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.theme.Theme;
 
 public class SpecialItem extends LootFunction {
 
@@ -48,11 +43,7 @@ public class SpecialItem extends LootFunction {
     @Override
     protected ItemStack doApply(ItemStack stack, LootContext context) {
         if (context.has(LootParameters.ORIGIN)) {
-            Biome biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.ORIGIN)));
-            ResourceLocation biomeName = context.getWorld().func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(biome);
-
-            return RandomItems.generateSpecialItem(context.getWorld(), context.getRandom(),
-                    Theme.BIOME_TO_THEME_MAP.getOrDefault(biomeName, 0), lootLevel);
+            return RandomItems.generateSpecialItem(context.getWorld(), context.getRandom(), lootLevel);
         } else {
             return ItemStack.EMPTY;
         }
@@ -76,7 +67,7 @@ public class SpecialItem extends LootFunction {
 
         @Override
         public SpecialItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn) {
-            return new SpecialItem(conditionsIn, object.get("loot_level").getAsInt() - 1);
+            return new SpecialItem(conditionsIn, object.get("loot_level").getAsInt());
         }
     }
 

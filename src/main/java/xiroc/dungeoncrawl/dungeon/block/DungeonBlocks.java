@@ -23,68 +23,25 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
 import net.minecraft.util.Tuple;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 
 public class DungeonBlocks {
 
-    public static final Block[] CARPET = new Block[]{Blocks.WHITE_CARPET, Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
-            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET, Blocks.GRAY_CARPET,
-            Blocks.LIGHT_GRAY_CARPET, Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
-            Blocks.BROWN_CARPET, Blocks.RED_CARPET, Blocks.BLACK_CARPET};
+    public static final Block[] CARPET = new Block[]{Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
+            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET,
+            Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
+            Blocks.BROWN_CARPET, Blocks.RED_CARPET};
 
-    public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.getDefaultState();
     public static final BlockState SPAWNER = Blocks.SPAWNER.getDefaultState();
     public static final BlockState CHEST = Blocks.CHEST.getDefaultState();
 
-    public static final BlockState STONE_BRICKS = Blocks.STONE_BRICKS.getDefaultState();
-
-    public static WeightedRandomBlock STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE;
-    public static WeightedRandomBlock STONE_BRICK_FLOOR;
-    public static WeightedRandomBlock STONE_BRICKS_GRAVEL_COBBLESTONE;
-    public static WeightedRandomBlock STAIRS_STONE_COBBLESTONE;
-
-    public static WeightedRandomBlock STONE_WALL;
-
-    /*
-     * Calculate the WeightedRandomBlocks
-     */
-    public static void init() {
-        STONE_BRICKS_NORMAL_CRACKED_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[]{
-                new TupleIntBlock(5, STONE_BRICKS), new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
-                new TupleIntBlock(2, Blocks.COBBLESTONE.getDefaultState()), new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState())});
-
-        STONE_BRICK_FLOOR = new WeightedRandomBlock(
-                new TupleIntBlock[]{new TupleIntBlock(8, Blocks.STONE_BRICKS.getDefaultState()),
-                        new TupleIntBlock(2, Blocks.CRACKED_STONE_BRICKS.getDefaultState()),
-                        new TupleIntBlock(2, Blocks.COBBLESTONE.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState())});
-
-        STONE_BRICKS_GRAVEL_COBBLESTONE = new WeightedRandomBlock(new TupleIntBlock[]{new TupleIntBlock(2, STONE_BRICKS),
-                new TupleIntBlock(1, Blocks.GRAVEL.getDefaultState()),
-                new TupleIntBlock(1, Blocks.COBBLESTONE.getDefaultState()), new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE.getDefaultState()),
-                new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICKS.getDefaultState())});
-
-        STONE_WALL = new WeightedRandomBlock(
-                new TupleIntBlock[]{new TupleIntBlock(1, Blocks.STONE_BRICK_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.COBBLESTONE_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.ANDESITE_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.MOSSY_STONE_BRICK_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.MOSSY_COBBLESTONE_WALL.getDefaultState()),
-                        new TupleIntBlock(1, Blocks.DIORITE_WALL.getDefaultState())});
-    }
+    public static final Tuple<BlockState, Boolean> CAVE_AIR = new Tuple<>(Blocks.CAVE_AIR.getDefaultState(), false);
 
     public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, Property<T> property, V value) {
         if (state.hasProperty(property)) {
             return state.with(property, value);
         }
         return state;
-    }
-
-    public static final class TupleIntBlock extends Tuple<Integer, BlockState> {
-
-        public TupleIntBlock(Integer aIn, BlockState bIn) {
-            super(aIn, bIn);
-        }
-
     }
 
     public static final class TupleFloatBlock extends Tuple<Float, BlockState> {

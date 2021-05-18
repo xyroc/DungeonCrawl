@@ -29,11 +29,12 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.model.*;
@@ -55,61 +56,69 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelCategory layerCategory, List<DungeonPiece> pieces, Random rand) {
-        if (ModelCategory.ENTRANCE.members.isEmpty()) {
-            DungeonCrawl.LOGGER.warn("The entrance model list is empty. Using the RLD default entrance.");
-            this.modelID = DungeonModels.ENTRANCE.id;
-        } else {
-            this.modelID = ModelCategory.ENTRANCE.members.get(rand.nextInt(ModelCategory.ENTRANCE.members.size())).id;
-        }
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+        // TODO: use model selector
+        this.model = DungeonModels.KEY_TO_MODEL.get("default/entrance/roguelike_tower");
     }
 
     @Override
     public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+        if (model == null) {
+            DungeonCrawl.LOGGER.warn("Missing model for {}", this);
+            return true;
+        }
 
-        int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
-
-        Theme buildTheme = Theme.get(theme);
-        SubTheme sub = Theme.getSub(subTheme);
+        int height = worldIn.getHeight(context.heightmapType, x + 4, z + 4);
         int cursorHeight = y;
+
+        DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get("default/staircase");
 
         while (cursorHeight < height) {
             if (height - cursorHeight <= 4)
                 break;
-            super.build(DungeonModels.STAIRCASE, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), buildTheme, sub, Treasure.Type.DEFAULT, stage, true);
+            super.build(staircase, worldIn, structureBoundingBoxIn,
+                    new BlockPos(x + 2, cursorHeight, z + 2), theme, subTheme, Treasure.Type.DEFAULT, stage, context, true);
             cursorHeight += 8;
         }
 
-        DungeonModel entrance = DungeonModels.getModel(modelKey, modelID);
-        if (entrance == null) {
-            DungeonCrawl.LOGGER.warn("Missing model {} in {}", modelID != null ? modelID : modelKey, this);
-            return true;
-        }
-
-        Vector3i offset = entrance.getOffset(rotation);
+        Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, cursorHeight, z).add(offset);
 
-        // Creating a custom bounding box because the cursor height was unknown during #setupBoundingBox.
-        this.boundingBox = new MutableBoundingBox(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + entrance.width - 1, pos.getY() + entrance.height - 1, pos.getZ() + entrance.length - 1);
+        build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, true);
 
-        buildFull(entrance, worldIn, structureBoundingBoxIn, pos, Theme.get(theme),
-                Theme.getSub(subTheme), entrance.getTreasureType(), stage, true);
-
-        if (entrance.metadata != null && entrance.metadata.feature != null && featurePositions != null) {
-            entrance.metadata.feature.build(worldIn, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
+            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
         }
 
-        decorate(worldIn, pos, entrance.width, entrance.height, entrance.length, Theme.get(theme), structureBoundingBoxIn,
-                boundingBox, entrance);
+        // A custom bounding box for decorations (eg. vines placement).
+        // The original bounding box of this piece goes from the bottom to the top of the world,
+        //  since the ground height is unknown up the point of actual generation.
+        // And because we dont want the decorations to decorate everything from top to bottom,
+        //  we use a custom bounding box for them.
+        MutableBoundingBox populationBox = model.createBoundingBox(pos, rotation);
+        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model);
         return true;
     }
 
     @Override
     public void setupBoundingBox() {
-        DungeonModel model = DungeonModels.getModel(modelKey, modelID);
         if (model != null) {
-            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+            Vector3i offset = model.getOffset(rotation);
+            int x = this.x + 4 + offset.getX();
+            int z = this.z + 4 + offset.getZ();
+            switch (rotation) {
+                case NONE:
+                case CLOCKWISE_180:
+                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
+                    break;
+                case CLOCKWISE_90:
+                case COUNTERCLOCKWISE_90:
+                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.length - 1, 256, z + model.width - 1);
+                    break;
+                default:
+                    DungeonCrawl.LOGGER.warn("Unknown entrance rotation: {}", rotation);
+                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
+            }
         }
     }
 
@@ -123,77 +132,33 @@ public class DungeonEntrance extends DungeonPiece {
         super.readAdditional(tagCompound);
     }
 
-    @Override
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                      SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
-
-        int xStart = Math.max(boundsIn.minX, pos.getX()) - pos.getX(),
-                width = Math.min(model.width, boundsIn.maxX - pos.getX() - xStart + 1);
-        int zStart = Math.max(boundsIn.minZ, pos.getZ()) - pos.getZ(),
-                length = Math.min(model.length, boundsIn.maxZ - pos.getZ() - zStart + 1);
-
-        for (int x = xStart; x < width; x++) {
-            for (int y = 0; y < model.height; y++) {
-                for (int z = zStart; z < length; z++) {
-                    if (model.model[x][y][z] == null) {
-                        setBlockState(CAVE_AIR, world, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
-                                this.theme, lootLevel, DungeonModelBlockType.SOLID);
-                    } else {
-                        BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                        Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z], Rotation.NONE, world,
-                                position, theme, subTheme,
-                                WeightedRandomBlock.RANDOM, variation, lootLevel);
-                        if (result == null)
-                            continue;
-                        setBlockState(result.getA(), world, treasureType, pos.getX() + x, pos.getY() + y, pos.getZ() + z,
-                                this.theme, lootLevel, fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
-
-                        if (result.getB()) {
-                            world.getChunk(position).markBlockForPostprocessing(position);
-                        }
-
-                        if (y == 0 && world.isAirBlock(position.down())
-                                && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                            buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                        }
-                    }
-                }
-            }
+                      SubTheme subTheme, Treasure.Type treasureType, int lootLevel, PlacementContext context, boolean fillAir) {
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
         }
-    }
 
-    @Override
-    public void buildFull(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                          SubTheme subTheme, Treasure.Type treasureType, int lootLevel, boolean fillAir) {
+        model.blocks.forEach((block) -> {
+            BlockPos position = pos.add(block.position);
+            if (boundsIn.isVecInside(position)) {
+                Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
+                        Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+                if (state == null)
+                    return;
 
-        for (int x = 0; x < model.width; x++) {
-            for (int y = 0; y < model.height; y++) {
-                for (int z = 0; z < model.length; z++) {
-                    BlockPos position = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (boundsIn.isVecInside(position)) {
-                        if (model.model[x][y][z] == null) {
-                            setBlockState(CAVE_AIR, world, treasureType, position,
-                                    this.theme, lootLevel, DungeonModelBlockType.SOLID);
-                        } else {
-                            Tuple<BlockState, Boolean> result = DungeonModelBlock.getBlockState(model.model[x][y][z],
-                                    Rotation.NONE, world, position, theme, subTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
-                            if (result == null)
-                                continue;
-                            setBlockState(result.getA(), world, treasureType, position, this.theme, lootLevel,
-                                    fillAir ? DungeonModelBlockType.SOLID : model.model[x][y][z].type);
+                placeBlock(block, world, context, theme, subTheme, treasureType, lootLevel, fillAir, position, state);
 
-                            if (result.getB()) {
-                                world.getChunk(position).markBlockForPostprocessing(position);
-                            }
-
-                            if (y == 0 && world.isAirBlock(position.down())
-                                    && model.model[x][0][z].type == DungeonModelBlockType.SOLID) {
-                                buildPillar(world, theme, position.getX(), position.getY(), position.getZ(), boundsIn);
-                            }
-                        }
-                    }
+                if (block.position.getY() == 0
+                        && model.height > 1
+                        && world.isAirBlock(position.down())
+                        && block.type == DungeonModelBlockType.SOLID) {
+                    buildPillar(world, theme, pos.getX() + block.position.getX(), pos.getY(), pos.getZ() + block.position.getZ(), boundsIn);
                 }
             }
+        });
+
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Finished building {} with model id {} at ({} | {} | {})", model.location, model.id, pos.getX(), pos.getY(), pos.getZ());
         }
     }
 

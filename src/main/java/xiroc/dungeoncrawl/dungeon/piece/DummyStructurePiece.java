@@ -34,7 +34,6 @@ import java.util.Random;
 /*
 A dummy piece that is used to handle old structure pieces.
  */
-
 public class DummyStructurePiece extends StructurePiece {
 
     public DummyStructurePiece(TemplateManager manager, CompoundNBT nbt) {
@@ -49,4 +48,5 @@ public class DummyStructurePiece extends StructurePiece {
     public boolean func_230383_a_(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         return true;
     }
+
 }

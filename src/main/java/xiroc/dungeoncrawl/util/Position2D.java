@@ -22,12 +22,7 @@ import net.minecraft.util.Direction;
 
 public class Position2D {
 
-    /**
-     * A facing that can be brought together with the position.
-     */
-    public Direction facing;
-
-    public int x, z;
+    public final int x, z;
 
     public Position2D(int x, int z) {
         this.x = x;
@@ -36,7 +31,7 @@ public class Position2D {
 
     /**
      * Returns true if x and z are greater than -1, x smaller than xBound and z
-     * smaller than zBound. Used for DungeonLayer calculations.
+     * smaller than zBound.
      */
 
     public boolean isValid(int xBound, int zBound) {
@@ -69,7 +64,7 @@ public class Position2D {
 
     /**
      * @return the direction you have to move to get from this position to the given
-     * one. X or Z have to be equal for this to make any sense.
+     * one. Either X or Z have to be equal.
      */
     public Direction directionTo(Position2D pos) {
         if (pos.x > this.x) {
@@ -84,7 +79,7 @@ public class Position2D {
         if (pos.z < this.z) {
             return Direction.NORTH;
         }
-        return null;
+        throw new IllegalArgumentException("The target position must not be equal to the origin position.");
     }
 
     /**
@@ -135,10 +130,6 @@ public class Position2D {
             default:
                 return new Position2D(x, z);
         }
-    }
-
-    public boolean hasFacing() {
-        return facing != null;
     }
 
 }

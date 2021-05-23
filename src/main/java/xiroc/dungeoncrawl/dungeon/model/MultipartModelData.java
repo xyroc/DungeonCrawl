@@ -27,7 +27,11 @@ import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.util.*;
+import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.util.ResourceReloadHandler;
+import xiroc.dungeoncrawl.util.Updateable;
+import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -106,7 +110,7 @@ public class MultipartModelData {
     }
 
     public boolean checkConditions(DungeonPiece piece) {
-        if (conditions != null) {
+        if (!conditions.isEmpty()) {
             for (Condition<?> condition : conditions) {
                 if (!condition.check(piece)) {
                     return false;
@@ -131,9 +135,9 @@ public class MultipartModelData {
         @Nullable
         public DungeonModel model;
 
-        private final String key;
+        private final ResourceLocation key;
 
-        public Instance(ResourceLocation file, String key, Vec3i offset, Rotation rotation) {
+        public Instance(ResourceLocation file, ResourceLocation key, Vec3i offset, Rotation rotation) {
             this.file = file;
             this.key = key;
             this.offset = offset;
@@ -151,7 +155,7 @@ public class MultipartModelData {
                 piece.rotation = fullRotation;
                 piece.stage = parentPiece.stage;
                 piece.theme = parentPiece.theme;
-                piece.subTheme = parentPiece.subTheme;
+                piece.secondaryTheme = parentPiece.secondaryTheme;
                 piece.setupBoundingBox();
                 return piece;
             } else {
@@ -175,7 +179,7 @@ public class MultipartModelData {
 
                 Rotation rotation = object.has("rotation") ? Rotation.valueOf(object.get("rotation").getAsString().toUpperCase(Locale.ROOT)) : Rotation.NONE;
 
-                return new Instance(file, object.get("model").getAsString(), offset, rotation);
+                return new Instance(file, new ResourceLocation(object.get("model").getAsString()), offset, rotation);
             } else {
                 return EMPTY;
             }

@@ -26,7 +26,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -38,7 +37,7 @@ public class Plants {
 
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                          Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+                          Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             state = state.with(BlockStateProperties.MOISTURE_0_7, 7);
             world.setBlockState(pos, state, 2);
             BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
@@ -59,7 +58,7 @@ public class Plants {
 
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                          Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+                          Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlockState(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).getDefaultState(), 2);
         }
 
@@ -69,7 +68,7 @@ public class Plants {
 
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                          Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+                          Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlockState(pos, state, 2);
             BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).getDefaultState();
             BlockPos lowerPart = pos.up();

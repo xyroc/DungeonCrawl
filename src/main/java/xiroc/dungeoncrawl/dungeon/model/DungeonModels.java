@@ -18,12 +18,12 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonParser;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.Vec3i;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -32,28 +32,43 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Hashtable;
 
 public class DungeonModels {
 
-    public static final Hashtable<String, DungeonModel> KEY_TO_MODEL = new Hashtable<>();
+    public static final Hashtable<ResourceLocation, DungeonModel> KEY_TO_MODEL = new Hashtable<>();
     public static final Hashtable<Integer, DungeonModel> ID_TO_MODEL = new Hashtable<>();
 
     public static final Hashtable<Integer, WeightedRandom<DungeonModel>> WEIGHTED_MODELS = new Hashtable<>();
 
     public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
 
-    private static final String FILE_PATH = "models";
+    public static final ResourceLocation SECRET_ROOM_ENTRANCE = DungeonCrawl.locate("default/corridor/corridor_secret_room_entrance");
+    public static final ResourceLocation STARTER_ROOM = DungeonCrawl.locate("default/room/starter_room");
+    public static final ResourceLocation ROGUELIKE_TOWER = DungeonCrawl.locate("default/entrance/roguelike_tower");
+    public static final ResourceLocation STAIRCASE = DungeonCrawl.locate("default/staircase");
+    public static final ResourceLocation BOTTOM_STAIRS = DungeonCrawl.locate("default/stairs_bottom");
+    public static final ResourceLocation BOTTOM_STAIRS_2 = DungeonCrawl.locate("default/stairs_bottom_2");
+    public static final ResourceLocation TOP_STAIRS = DungeonCrawl.locate("default/stairs_top");
+    public static final ResourceLocation LOOT_ROOM = DungeonCrawl.locate("default/loot_room");
+    public static final ResourceLocation SECRET_ROOM = DungeonCrawl.locate("default/room/secret_room");
+
+    public static ImmutableSet<ResourceLocation> KEYS;
+    private static ImmutableSet.Builder<ResourceLocation> keySetBuilder;
+
+    private static final String DIRECTORY = "models";
 
     public static synchronized void load(IResourceManager resourceManager) {
         ID_TO_MODEL.clear();
         KEY_TO_MODEL.clear();
         WEIGHTED_MODELS.clear();
 
-        resourceManager.getAllResourceLocations(FILE_PATH, (s) -> s.endsWith(".nbt"))
+        keySetBuilder = new ImmutableSet.Builder<>();
+
+        resourceManager.getAllResourceLocations(DIRECTORY, (s) -> s.endsWith(".nbt"))
                 .forEach((resource) -> load(resource, resourceManager));
+
+        KEYS = keySetBuilder.build();
     }
 
     private static void load(ResourceLocation resource, IResourceManager resourceManager) {
@@ -80,10 +95,11 @@ public class DungeonModels {
             CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
             DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource);
 
-            String path = resource.getPath();
-            String key = path.substring(FILE_PATH.length() + 1, path.indexOf(".nbt"));
+            ResourceLocation key = DungeonCrawl.key(resource, DIRECTORY, ".nbt");
+            DungeonCrawl.LOGGER.info("MODEL: {} -> {}", resource, key);
             model.setKey(key);
             KEY_TO_MODEL.put(key, model);
+            keySetBuilder.add(key);
 
             model.setLocation(resource);
             return model;
@@ -93,6 +109,5 @@ public class DungeonModels {
 
         throw new DatapackLoadException("Failed to load " + resource);
     }
-
 
 }

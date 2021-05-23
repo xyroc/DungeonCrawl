@@ -19,26 +19,25 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.IProperty;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.theme.Theme.SubTheme;
+import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Random;
 
 public class DungeonModelBlock {
 
@@ -51,6 +50,9 @@ public class DungeonModelBlock {
     public Integer variation;
 
     public ResourceLocation resource;
+
+    // Custom loot table, can be defined in model metadata.
+    public ResourceLocation lootTable;
 
     public DungeonModelBlock(DungeonModelBlockType type, Vec3i position) {
         this.type = type;
@@ -188,8 +190,8 @@ public class DungeonModelBlock {
      * block factory.
      */
     public static Tuple<BlockState, Boolean> getBlockState(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos,
-                                                           Theme theme, SubTheme subTheme, Random rand, byte[] variation, int stage) {
-        return block.type.blockFactory.get(block, rotation, world, pos, theme, subTheme, rand, variation, stage);
+                                                           Theme theme, SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage) {
+        return block.type.blockFactory.get(block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage);
     }
 
 

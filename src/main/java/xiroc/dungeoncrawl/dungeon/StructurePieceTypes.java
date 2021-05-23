@@ -21,8 +21,17 @@ package xiroc.dungeoncrawl.dungeon;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.piece.*;
-import xiroc.dungeoncrawl.dungeon.piece.room.*;
+import xiroc.dungeoncrawl.dungeon.piece.DummyStructurePiece;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSpiderRoom;
 
 public class StructurePieceTypes {
 

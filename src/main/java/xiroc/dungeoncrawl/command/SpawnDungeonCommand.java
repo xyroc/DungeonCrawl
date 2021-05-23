@@ -23,6 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -49,23 +50,23 @@ public class SpawnDungeonCommand {
                     ServerWorld world = command.getSource().getWorld();
                     return spawnDungeon(command.getSource(), world, pos,
                             Theme.randomTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()),
-                            Theme.randomSubTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()));
+                            Theme.randomSecondaryTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()));
                 })
                 .then(Commands.argument("theme", StringArgumentType.string())
                         .executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
-                                        Theme.getTheme(StringArgumentType.getString(command, "theme")),
+                                        Theme.getTheme(new ResourceLocation(StringArgumentType.getString(command, "theme"))),
                                         Theme.getDefaultSubTheme()))
                         .then(Commands.argument("sub_theme", StringArgumentType.string()).executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
-                                        Theme.getTheme(StringArgumentType.getString(command, "theme")),
-                                        Theme.getSubTheme(StringArgumentType.getString(command, "sub_theme")))
+                                        Theme.getTheme(new ResourceLocation(StringArgumentType.getString(command, "theme"))),
+                                        Theme.getSecondaryTheme(new ResourceLocation(StringArgumentType.getString(command, "sub_theme"))))
                         )))));
     }
 
-    private static int spawnDungeon(CommandSource commandSource, ServerWorld world, BlockPos pos, Theme theme, Theme.SubTheme subTheme) {
+    private static int spawnDungeon(CommandSource commandSource, ServerWorld world, BlockPos pos, Theme theme, Theme.SecondaryTheme secondaryTheme) {
         commandSource.sendFeedback(new StringTextComponent(TextFormatting.RED + "This is an experimental feature." +
                 " Please report any bugs you encounter on the issue tracker on https://github.com/XYROC/DungeonCrawl/issues."), true);
         if (world.getHeight(Heightmap.Type.WORLD_SURFACE, pos.getX(), pos.getZ()) > 32) {
@@ -74,7 +75,7 @@ public class SpawnDungeonCommand {
             commandSource.sendFeedback(new StringTextComponent("Building a dungeon..."), true);
             DungeonBuilder builder = new DungeonBuilder(world, pos, new Random(seed));
             builder.theme = theme;
-            builder.subTheme = subTheme;
+            builder.secondaryTheme = secondaryTheme;
             List<DungeonPiece> pieces = builder.build();
             pieces.forEach((piece) -> {
                 piece.context.heightmapType = Heightmap.Type.WORLD_SURFACE;

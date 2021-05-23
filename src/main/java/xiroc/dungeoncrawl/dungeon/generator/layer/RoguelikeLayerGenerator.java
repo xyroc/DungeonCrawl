@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
-import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.util.Position2D;
 
 import java.util.Random;

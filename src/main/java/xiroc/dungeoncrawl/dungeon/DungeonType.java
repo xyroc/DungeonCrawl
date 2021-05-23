@@ -42,7 +42,7 @@ import java.util.Random;
 
 public class DungeonType {
 
-    private static final Hashtable<String, DungeonType> KEY_TO_TYPE = new Hashtable<>();
+    private static final Hashtable<ResourceLocation, DungeonType> KEY_TO_TYPE = new Hashtable<>();
 
     private static final Hashtable<String, WeightedRandom<DungeonType>> BIOME_TO_TYPE = new Hashtable<>();
     private static WeightedRandom<DungeonType> DEFAULT_TYPE;
@@ -94,8 +94,8 @@ public class DungeonType {
                     });
                 }
 
-                // Key: resource path without the file ending and without the dungeon/types/ at the beginning
-                KEY_TO_TYPE.put(resource.getPath().substring(TYPES_DIRECTORY.length() + 1, resource.getPath().indexOf(".json")), builder.build());
+                ResourceLocation key = DungeonCrawl.key(resource, TYPES_DIRECTORY, ".json");
+                KEY_TO_TYPE.put(key, builder.build());
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load dungeon type " + resource);
                 e.printStackTrace();
@@ -153,7 +153,7 @@ public class DungeonType {
 
         entries.forEach((element) -> {
             JsonObject entry = element.getAsJsonObject();
-            String key = entry.get("key").getAsString();
+            ResourceLocation key = new ResourceLocation(entry.get("key").getAsString());
             if (!KEY_TO_TYPE.containsKey(key)) {
                 throw new DatapackLoadException("Cannot resolve dungeon type " + key + " in " + resource);
             }

@@ -55,7 +55,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
             return true;
         }
 
-        buildRotated(model, p_225577_1_, p_225577_4_, new BlockPos(x, y, z), theme, subTheme, model.getTreasureType(), stage, rotation, context, false);
+        buildRotated(model, p_225577_1_, p_225577_4_, new BlockPos(x, y, z), theme, secondaryTheme, stage, rotation, context, false);
         return true;
     }
 

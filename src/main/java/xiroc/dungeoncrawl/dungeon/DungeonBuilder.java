@@ -58,7 +58,7 @@ public class DungeonBuilder {
     public Biome biome;
 
     public Theme entranceTheme, theme, lowerTheme, bottomTheme;
-    public Theme.SubTheme entranceSubTheme, subTheme, lowerSubTheme, bottomSubTheme;
+    public Theme.SecondaryTheme entranceSecondaryTheme, secondaryTheme, lowerSecondaryTheme, bottomSecondaryTheme;
 
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
@@ -111,7 +111,7 @@ public class DungeonBuilder {
         determineThemes();
 
         entrance.theme = this.entranceTheme;
-        entrance.subTheme = this.entranceSubTheme;
+        entrance.secondaryTheme = this.entranceSecondaryTheme;
 
         pieces.add(entrance);
 
@@ -174,40 +174,40 @@ public class DungeonBuilder {
             if (this.theme == null) this.theme = Theme.getDefaultTheme();
         }
 
-        if (subTheme == null) {
+        if (secondaryTheme == null) {
             if (theme.subTheme != null) {
-                this.subTheme = theme.subTheme.roll(rand);
+                this.secondaryTheme = theme.subTheme.roll(rand);
             } else {
-                this.subTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
+                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
             }
         }
 
-        if (entranceSubTheme == null) {
+        if (entranceSecondaryTheme == null) {
             if (entranceTheme.subTheme != null) {
-                this.entranceSubTheme = entranceTheme.subTheme.roll(rand);
+                this.entranceSecondaryTheme = entranceTheme.subTheme.roll(rand);
             } else {
-                this.entranceSubTheme = registryName != null ? Theme.randomSubTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
+                this.entranceSecondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
             }
         }
 
         if (this.lowerTheme == null)
-            this.lowerTheme = Theme.getTheme("vanilla/catacombs/default");
+            this.lowerTheme = Theme.getTheme(Theme.PRIMARY_CATACOMBS_DEFAULT);
 
-        if (lowerSubTheme == null) {
+        if (lowerSecondaryTheme == null) {
             if (lowerTheme.subTheme != null) {
-                this.lowerSubTheme = lowerTheme.subTheme.roll(rand);
+                this.lowerSecondaryTheme = lowerTheme.subTheme.roll(rand);
             } else {
-                this.lowerSubTheme = this.subTheme;
+                this.lowerSecondaryTheme = this.secondaryTheme;
             }
         }
 
         if (this.bottomTheme == null)
-            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme("vanilla/hell/mossy_obsidian") : Theme.getTheme("vanilla/hell/hell");
+            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.getTheme(Theme.PRIMARY_HELL_DEFAULT);
 
-        if (bottomTheme.subTheme != null && this.bottomSubTheme == null) {
-            this.bottomSubTheme = bottomTheme.subTheme.roll(rand);
+        if (bottomTheme.subTheme != null && this.bottomSecondaryTheme == null) {
+            this.bottomSecondaryTheme = bottomTheme.subTheme.roll(rand);
         } else {
-            this.bottomSubTheme = this.subTheme;
+            this.bottomSecondaryTheme = this.secondaryTheme;
         }
     }
 
@@ -223,13 +223,13 @@ public class DungeonBuilder {
 
                         if (i == layers.length - 1) {
                             layer.grid[x][z].reference.theme = bottomTheme;
-                            layer.grid[x][z].reference.subTheme = bottomSubTheme;
+                            layer.grid[x][z].reference.secondaryTheme = bottomSecondaryTheme;
                         } else if (catacombs && layers.length - i < 4) {
                             layer.grid[x][z].reference.theme = lowerTheme;
-                            layer.grid[x][z].reference.subTheme = lowerSubTheme;
+                            layer.grid[x][z].reference.secondaryTheme = lowerSecondaryTheme;
                         } else {
                             layer.grid[x][z].reference.theme = theme;
-                            layer.grid[x][z].reference.subTheme = subTheme;
+                            layer.grid[x][z].reference.secondaryTheme = secondaryTheme;
                         }
 
                         if (!layer.grid[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {

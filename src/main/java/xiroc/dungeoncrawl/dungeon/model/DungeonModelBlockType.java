@@ -54,17 +54,17 @@ public enum DungeonModelBlockType {
     WALL                    (tFactory(Theme::getWall)),
 
     // Types with Sub-Theme Factories
-    PILLAR                  (sFactory(Theme.SubTheme::getPillar)),
-    MATERIAL_STAIRS         (sFactory(Theme.SubTheme::getStairs)),
-    TRAPDOOR                (sFactory(Theme.SubTheme::getTrapDoor)),
-    SLAB                    (sFactory(Theme.SubTheme::getSlab)),
-    DOOR                    (sFactory(Theme.SubTheme::getDoor)),
-    FENCE                   (sFactory(Theme.SubTheme::getFence)),
-    FENCE_GATE              (sFactory(Theme.SubTheme::getFenceGate)),
-    WOODEN_SLAB             (sFactory(Theme.SubTheme::getSlab)),
-    WOODEN_BUTTON           (sFactory(Theme.SubTheme::getButton)),
-    WOODEN_PRESSURE_PLATE   (sFactory(Theme.SubTheme::getPressurePlate)),
-    MATERIAL                (sFactory(Theme.SubTheme::getMaterial)),
+    PILLAR                  (sFactory(Theme.SecondaryTheme::getPillar)),
+    MATERIAL_STAIRS         (sFactory(Theme.SecondaryTheme::getStairs)),
+    TRAPDOOR                (sFactory(Theme.SecondaryTheme::getTrapDoor)),
+    SLAB                    (sFactory(Theme.SecondaryTheme::getSlab)),
+    DOOR                    (sFactory(Theme.SecondaryTheme::getDoor)),
+    FENCE                   (sFactory(Theme.SecondaryTheme::getFence)),
+    FENCE_GATE              (sFactory(Theme.SecondaryTheme::getFenceGate)),
+    WOODEN_SLAB             (sFactory(Theme.SecondaryTheme::getSlab)),
+    WOODEN_BUTTON           (sFactory(Theme.SecondaryTheme::getButton)),
+    WOODEN_PRESSURE_PLATE   (sFactory(Theme.SecondaryTheme::getPressurePlate)),
+    MATERIAL                (sFactory(Theme.SecondaryTheme::getMaterial)),
 
     // Other
     CHEST((block, rotation, world, pos, theme, subTheme, rand, variation,
@@ -164,7 +164,7 @@ public enum DungeonModelBlockType {
     public interface BlockFactory {
 
         Tuple<BlockState, Boolean> get(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos, Theme theme,
-                                       Theme.SubTheme subTheme, Random rand, byte[] variation, int stage);
+                                       Theme.SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
 
     }
 
@@ -182,7 +182,7 @@ public enum DungeonModelBlockType {
      * @param blockSelector a function that selects the desired field from the sub-theme
      * @return the block factory
      */
-    private static BlockFactory sFactory(Function<Theme.SubTheme, IBlockStateProvider> blockSelector) {
+    private static BlockFactory sFactory(Function<Theme.SecondaryTheme, IBlockStateProvider> blockSelector) {
         return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(subTheme).get(pos), rotation);
     }
 

@@ -1,0 +1,31 @@
+{
+  "default": [
+    {"key": "dungeoncrawl:vanilla/default", "weight": 2},
+    {"key": "dungeoncrawl:vanilla/bricks", "weight": 1},
+    {"key": "dungeoncrawl:vanilla/bricks_2", "weight": 1},
+    {"key": "dungeoncrawl:vanilla/andesite", "weight": 2}
+  ],
+  "mapping": {
+    "minecraft:jungle": [{"key": "dungeoncrawl:vanilla/jungle/jungle"}],
+    "minecraft:jungle_edge": [{"key": "dungeoncrawl:vanilla/jungle/jungle"}],
+    "minecraft:jungle_hills": [{"key": "dungeoncrawl:vanilla/jungle/jungle"}],
+    "minecraft:modified_jungle": [{"key": "dungeoncrawl:vanilla/jungle/jungle"}],
+    "minecraft:modified_jungle_edge": [{"key": "dungeoncrawl:vanilla/jungle/jungle"}],
+    "minecraft:bamboo_jungle": [{"key": "dungeoncrawl:vanilla/jungle/jungle"}],
+    "minecraft:bamboo_jungle_hills": [{"key": "dungeoncrawl:vanilla/jungle/jungle"}],
+
+    "minecraft:desert": [{"key": "dungeoncrawl:vanilla/desert"}],
+    "minecraft:desert_hills": [{"key": "dungeoncrawl:vanilla/desert"}],
+    "minecraft:desert_lakes": [{"key": "dungeoncrawl:vanilla/desert"}],
+
+    "minecraft:badlands": [{"key": "dungeoncrawl:vanilla/badlands"}],
+    "minecraft:badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands"}],
+    "minecraft:wooded_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands"}],
+    "minecraft:eroded_badlands": [{"key": "dungeoncrawl:vanilla/badlands"}],
+    "minecraft:modified_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands"}],
+    "minecraft:modified_wooded_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands"}],
+
+    "minecraft:swamp": [{"key": "dungeoncrawl:vanilla/catacombs/default"}],
+    "minecraft:swamp_hills": [{"key": "dungeoncrawl:vanilla/catacombs/default"}]
+  }
+}

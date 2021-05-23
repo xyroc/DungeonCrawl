@@ -3,6 +3,6 @@
     "present": [],
     "absent": []
   },
-  "default": [{"key": "default"}],
+  "default": [{"key": "dungeoncrawl:default"}],
   "mapping": {}
 }

@@ -42,9 +42,9 @@ import java.util.List;
  */
 public class ModelBlockDefinition {
 
-    private static final String PATH = "block_definitions";
+    private static final String DIRECTORY = "block_definitions";
 
-    public static final Hashtable<String, ModelBlockDefinition> DEFINITIONS = new Hashtable<>();
+    public static final Hashtable<ResourceLocation, ModelBlockDefinition> DEFINITIONS = new Hashtable<>();
 
     private static final Hashtable<Block, DungeonModelBlockType> DEFAULT = new Hashtable<>();
 
@@ -81,7 +81,7 @@ public class ModelBlockDefinition {
 
         DEFAULT_DEFINITION = new ModelBlockDefinition(DEFAULT);
 
-        DEFINITIONS.put("default", DEFAULT_DEFINITION);
+        DEFINITIONS.put(DungeonCrawl.locate("default"), DEFAULT_DEFINITION);
     }
 
     public ModelBlockDefinition fallback;
@@ -112,12 +112,12 @@ public class ModelBlockDefinition {
     }
 
     public static void loadJson(IResourceManager resourceManager) {
-        List<Tuple<ModelBlockDefinition, String>> referencesToUpdate = Lists.newArrayList();
-        resourceManager.getAllResourceLocations(PATH, (s) -> s.endsWith(".json"))
+        List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate = Lists.newArrayList();
+        resourceManager.getAllResourceLocations(DIRECTORY, (s) -> s.endsWith(".json"))
                 .forEach((resource) -> loadDefinition(resourceManager, resource, referencesToUpdate));
 
-        for (Tuple<ModelBlockDefinition, String> reference : referencesToUpdate) {
-            String key = reference.getB();
+        for (Tuple<ModelBlockDefinition, ResourceLocation> reference : referencesToUpdate) {
+            ResourceLocation key = reference.getB();
             if (DEFINITIONS.containsKey(key)) {
                 reference.getA().fallback = DEFINITIONS.get(key);
             } else {
@@ -129,7 +129,7 @@ public class ModelBlockDefinition {
     /**
      * Convenience method to load a single model block definition file.
      */
-    private static void loadDefinition(IResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, String>> referencesToUpdate) {
+    private static void loadDefinition(IResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate) {
         DungeonCrawl.LOGGER.debug("Loading {}", resourceLocation);
         JsonParser parser = new JsonParser();
         Hashtable<Block, DungeonModelBlockType> definition = new Hashtable<>();
@@ -153,10 +153,10 @@ public class ModelBlockDefinition {
             ModelBlockDefinition blockDefinition = new ModelBlockDefinition(definition);
 
             if (object.has("fallback")) {
-                referencesToUpdate.add(new Tuple<>(blockDefinition, object.get("fallback").getAsString()));
+                referencesToUpdate.add(new Tuple<>(blockDefinition, new ResourceLocation(object.get("fallback").getAsString())));
             }
 
-            String key = resourceLocation.getPath().substring(PATH.length() + 1, resourceLocation.getPath().length() - ".json".length());
+            ResourceLocation key = DungeonCrawl.key(resourceLocation, DIRECTORY, ".json");
             DEFINITIONS.put(key, blockDefinition);
         } catch (IOException e) {
             e.printStackTrace();

@@ -24,23 +24,23 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
-import xiroc.dungeoncrawl.dungeon.block.*;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.block.Furnace;
+import xiroc.dungeoncrawl.dungeon.block.Plants;
+import xiroc.dungeoncrawl.dungeon.block.Spawner;
 import xiroc.dungeoncrawl.theme.Theme;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Random;
 
 public interface IBlockPlacementHandler {
 
-    IBlockPlacementHandler CHEST = new Chest(), TRAPPED_CHEST = new Chest.TrappedChest(), SPAWNER = new Spawner();
+    public static IBlockPlacementHandler SPAWNER = new Spawner();
 
-    HashMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new HashMap<>();
+    Hashtable<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new Hashtable<>();
 
-    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, context, treasureType, theme, subTheme, lootLevel) -> {
+    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, context, theme, subTheme, lootLevel) -> {
         if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
             world.getChunk(pos).getBlocksToBeTicked().scheduleTick(pos, state.getBlock(), 1);
         }
@@ -48,20 +48,20 @@ public interface IBlockPlacementHandler {
     };
 
     static void init() {
-        PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);
-        PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, TRAPPED_CHEST);
-        PLACEMENT_HANDLERS.put(Blocks.BARREL, CHEST);
+//        PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);
+//        PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, TRAPPED_CHEST);
+//        PLACEMENT_HANDLERS.put(Blocks.BARREL, CHEST);
         PLACEMENT_HANDLERS.put(Blocks.FURNACE, new Furnace());
         PLACEMENT_HANDLERS.put(Blocks.SMOKER, new Furnace.Smoker());
         PLACEMENT_HANDLERS.put(Blocks.SPAWNER, SPAWNER);
-        PLACEMENT_HANDLERS.put(Blocks.DISPENSER, new Dispenser());
+//        PLACEMENT_HANDLERS.put(Blocks.DISPENSER, new Dispenser());
         PLACEMENT_HANDLERS.put(Blocks.FARMLAND, new Plants.Farmland());
         PLACEMENT_HANDLERS.put(Blocks.FLOWER_POT, new Plants.FlowerPot());
         PLACEMENT_HANDLERS.put(Blocks.PODZOL, new Plants.Podzol());
     }
 
     void place(IWorld world, BlockState state, BlockPos pos, Random rand,
-               PlacementContext context, Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel);
+               PlacementContext context, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel);
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

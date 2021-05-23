@@ -1,7 +1,7 @@
 {
   "type": "theme",
   "id": 1,
-  "sub_theme": [{"key": "vanilla/hell/default"}],
+  "secondary_theme": [{"key": "dungeoncrawl:vanilla/hell/default"}],
   "theme": {
     "generic": {
       "type": "random_block",

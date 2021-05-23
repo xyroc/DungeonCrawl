@@ -20,9 +20,6 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
-import xiroc.dungeoncrawl.dungeon.Dungeon;
-
-import java.util.function.Function;
 
 public class DungeonGeneratorSettings {
 

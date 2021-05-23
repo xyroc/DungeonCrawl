@@ -18,7 +18,6 @@
 
 package xiroc.dungeoncrawl.config;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
@@ -27,7 +26,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.monster.ArmorSet;
 import xiroc.dungeoncrawl.util.IJsonConfigurable;
 
 import java.io.File;
@@ -36,7 +34,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class JsonConfig implements IJsonConfigurable {
 

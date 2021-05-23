@@ -45,29 +45,34 @@ public class MaterialBlocks extends LootFunction {
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
         TileEntity chest = context.get(LootParameters.BLOCK_ENTITY);
-        if (chest != null && chest.getTileData().contains("theme", 8)) {
-            Tuple<Theme, Theme.SubTheme> themes = Loot.getLootInformation(chest.getTileData());
-            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(),context.get(LootParameters.POSITION), context.getRandom())),
+        if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
+            Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), context.get(LootParameters.POSITION), context.getRandom())),
                     16 + context.getRandom().nextInt(49));
         } else {
             Random random = context.getRandom();
             Theme theme;
-            Theme.SubTheme subTheme;
+            Theme.SecondaryTheme secondaryTheme;
             if (context.has(LootParameters.POSITION)) {
                 ResourceLocation biome = context.getWorld().getBiome(context.get(LootParameters.POSITION)).getRegistryName();
-                theme = Theme.randomTheme(biome.toString(), context.getRandom());
-                subTheme = Theme.randomSubTheme(biome.toString(), context.getRandom());
+                if (biome != null) {
+                    theme = Theme.randomTheme(biome.toString(), context.getRandom());
+                    secondaryTheme = Theme.randomSecondaryTheme(biome.toString(), context.getRandom());
+                } else {
+                    theme = Theme.getDefaultTheme();
+                    secondaryTheme = Theme.getDefaultSubTheme();
+                }
             } else {
                 theme = Theme.getDefaultTheme();
-                subTheme = Theme.getDefaultSubTheme();
+                secondaryTheme = Theme.getDefaultSubTheme();
             }
-            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(theme, subTheme,context.get(LootParameters.POSITION), random)), 16 + context.getRandom().nextInt(49));
+            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(theme, secondaryTheme, context.get(LootParameters.POSITION), random)), 16 + context.getRandom().nextInt(49));
         }
     }
 
-    private static ResourceLocation getMaterial(Theme theme, Theme.SubTheme subTheme, BlockPos pos, Random rand) {
+    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, BlockPos pos, Random rand) {
         return rand.nextBoolean() ? theme.material.get(pos).getBlock().getRegistryName()
-                : subTheme.material.get(pos).getBlock().getRegistryName();
+                : secondaryTheme.material.get(pos).getBlock().getRegistryName();
     }
 
     public static class Serializer extends LootFunction.Serializer<MaterialBlocks> {

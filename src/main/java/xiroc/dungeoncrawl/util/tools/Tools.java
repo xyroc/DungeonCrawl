@@ -39,7 +39,8 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.command.argument.DungeonModelArgument;
+import xiroc.dungeoncrawl.command.arguments.DungeonModelArgument;
+import xiroc.dungeoncrawl.command.arguments.ModelBlockDefinitionArgument;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.model.ModelHandler;
@@ -84,7 +85,7 @@ public class Tools {
                                 Math.max(context.pos1.getY(), context.pos2.getY()),
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(name,
-                                ModelBlockDefinition.DEFAULT_DEFINITION,
+                                ModelBlockDefinition.getDefaultDefinition(),
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
                         command.getSource().sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Done."), true);
@@ -95,19 +96,14 @@ public class Tools {
                                 true);
                         return 1;
                     }
-                }).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                }).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
+                    ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     UUID uuid = command.getSource().asPlayer().getUniqueID();
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
                         command.getSource().sendFeedback(
                                 new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
-                        return 1;
-                    }
-
-                    String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    if (!ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
-                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition path \"" + blockDefinition + "\""), true);
                         return 1;
                     }
 
@@ -121,7 +117,7 @@ public class Tools {
                                 Math.max(context.pos1.getY(), context.pos2.getY()),
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
-                                ModelBlockDefinition.DEFINITIONS.get(blockDefinition),
+                                blockDefinition,
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
                         command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
@@ -139,38 +135,28 @@ public class Tools {
                 .then(Commands.argument("model", DungeonModelArgument.modelArgument()).executes((command) -> {
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
                     BlockPos pos = command.getSource().asPlayer().getPosition();
-                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.getDefaultDefinition());
                     setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
                     BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
+                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.getDefaultDefinition());
                     setOrigin(command.getSource(), pos);
                     return 0;
-                })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
-                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                })).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
+                    ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
-                    if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
-                        BlockPos pos = command.getSource().asPlayer().getPosition();
-                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
-                        setOrigin(command.getSource(), pos);
-                    } else {
-                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
-                        return 1;
-                    }
+                    BlockPos pos = command.getSource().asPlayer().getPosition();
+                    buildModel(model, command.getSource().asPlayer().world, pos, blockDefinition);
+                    setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-                    String blockDefinition = StringArgumentType.getString(command, "block definition");
+                    ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
-                    if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
-                        BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
-                        setOrigin(command.getSource(), pos);
-                    } else {
-                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
-                        return 1;
-                    }
+                    BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                    buildModel(model, command.getSource().asPlayer().world, pos, blockDefinition);
+                    setOrigin(command.getSource(), pos);
                     return 0;
                 })))));
 

@@ -61,9 +61,9 @@ public enum DungeonModelBlockType {
     DOOR                    (sFactory(Theme.SecondaryTheme::getDoor)),
     FENCE                   (sFactory(Theme.SecondaryTheme::getFence)),
     FENCE_GATE              (sFactory(Theme.SecondaryTheme::getFenceGate)),
-    WOODEN_SLAB             (sFactory(Theme.SecondaryTheme::getSlab)),
-    WOODEN_BUTTON           (sFactory(Theme.SecondaryTheme::getButton)),
-    WOODEN_PRESSURE_PLATE   (sFactory(Theme.SecondaryTheme::getPressurePlate)),
+    MATERIAL_SLAB           (sFactory(Theme.SecondaryTheme::getSlab)),
+    MATERIAL_BUTTON         (sFactory(Theme.SecondaryTheme::getButton)),
+    MATERIAL_PRESSURE_PLATE (sFactory(Theme.SecondaryTheme::getPressurePlate)),
     MATERIAL                (sFactory(Theme.SecondaryTheme::getMaterial)),
 
     // Other
@@ -148,6 +148,10 @@ public enum DungeonModelBlockType {
         // Renamed types
         NAME_TO_TYPE.put("NORMAL", GENERIC);
         NAME_TO_TYPE.put("VANILLA_WALL", WALL);
+        NAME_TO_TYPE.put("WOODEN_BUTTON", MATERIAL_BUTTON);
+        NAME_TO_TYPE.put("WOODEN_SLAB", MATERIAL_SLAB);
+        NAME_TO_TYPE.put("WOODEN_PRESSURE_PLATE", MATERIAL_PRESSURE_PLATE);
+
 
         // Removed types
         NAME_TO_TYPE.put("NORMAL_2", AIR);

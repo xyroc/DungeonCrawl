@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -48,7 +49,9 @@ public class ModelBlockDefinition {
 
     private static final Hashtable<Block, DungeonModelBlockType> DEFAULT = new Hashtable<>();
 
-    public static final ModelBlockDefinition DEFAULT_DEFINITION;
+    private static final ModelBlockDefinition DEFAULT_DEFINITION;
+
+    private static final ResourceLocation DEFAULT_LOCATION = DungeonCrawl.locate("default");
 
     static {
         DEFAULT.put(Blocks.AIR, DungeonModelBlockType.AIR);
@@ -65,11 +68,11 @@ public class ModelBlockDefinition {
         DEFAULT.put(Blocks.OAK_PLANKS, DungeonModelBlockType.MATERIAL);
         DEFAULT.put(Blocks.OAK_DOOR, DungeonModelBlockType.DOOR);
         DEFAULT.put(Blocks.OAK_STAIRS, DungeonModelBlockType.MATERIAL_STAIRS);
-        DEFAULT.put(Blocks.OAK_SLAB, DungeonModelBlockType.WOODEN_SLAB);
-        DEFAULT.put(Blocks.OAK_BUTTON, DungeonModelBlockType.WOODEN_BUTTON);
+        DEFAULT.put(Blocks.OAK_SLAB, DungeonModelBlockType.MATERIAL_SLAB);
+        DEFAULT.put(Blocks.OAK_BUTTON, DungeonModelBlockType.MATERIAL_BUTTON);
         DEFAULT.put(Blocks.OAK_FENCE, DungeonModelBlockType.FENCE);
         DEFAULT.put(Blocks.OAK_FENCE_GATE, DungeonModelBlockType.FENCE_GATE);
-        DEFAULT.put(Blocks.OAK_PRESSURE_PLATE, DungeonModelBlockType.WOODEN_PRESSURE_PLATE);
+        DEFAULT.put(Blocks.OAK_PRESSURE_PLATE, DungeonModelBlockType.MATERIAL_PRESSURE_PLATE);
         DEFAULT.put(Blocks.OAK_TRAPDOOR, DungeonModelBlockType.TRAPDOOR);
 
         DEFAULT.put(Blocks.GRAVEL, DungeonModelBlockType.FLOOR);
@@ -81,12 +84,15 @@ public class ModelBlockDefinition {
 
         DEFAULT_DEFINITION = new ModelBlockDefinition(DEFAULT);
 
-        DEFINITIONS.put(DungeonCrawl.locate("default"), DEFAULT_DEFINITION);
+        DEFINITIONS.put(DungeonCrawl.locate("builtin/default"), DEFAULT_DEFINITION);
     }
 
     public ModelBlockDefinition fallback;
     public Hashtable<Block, DungeonModelBlockType> definition;
     public Hashtable<DungeonModelBlockType, Block> invertedDefinition;
+
+    public static ImmutableSet<ResourceLocation> KEYS;
+    private static ImmutableSet.Builder<ResourceLocation> keySetBuilder;
 
     public ModelBlockDefinition(Hashtable<Block, DungeonModelBlockType> definition) {
         this.definition = definition;
@@ -112,6 +118,7 @@ public class ModelBlockDefinition {
     }
 
     public static void loadJson(IResourceManager resourceManager) {
+        keySetBuilder = new ImmutableSet.Builder<>();
         List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate = Lists.newArrayList();
         resourceManager.getAllResourceLocations(DIRECTORY, (s) -> s.endsWith(".json"))
                 .forEach((resource) -> loadDefinition(resourceManager, resource, referencesToUpdate));
@@ -124,6 +131,7 @@ public class ModelBlockDefinition {
                 DungeonCrawl.LOGGER.warn("Unknown fallback model block definition: {}", key);
             }
         }
+        KEYS = keySetBuilder.build();
     }
 
     /**
@@ -158,9 +166,14 @@ public class ModelBlockDefinition {
 
             ResourceLocation key = DungeonCrawl.key(resourceLocation, DIRECTORY, ".json");
             DEFINITIONS.put(key, blockDefinition);
+            keySetBuilder.add(key);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ModelBlockDefinition getDefaultDefinition() {
+        return DEFINITIONS.getOrDefault(DEFAULT_LOCATION, DEFAULT_DEFINITION);
     }
 
 }

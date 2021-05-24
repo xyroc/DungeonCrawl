@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.theme;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.block.Blocks;
@@ -38,8 +39,8 @@ public class Theme {
     protected static Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
     protected static Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
 
-    protected static Hashtable<ResourceLocation, Theme> KEY_TO_THEME = new Hashtable<>();
-    protected static Hashtable<ResourceLocation, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
+    public static Hashtable<ResourceLocation, Theme> KEY_TO_THEME = new Hashtable<>();
+    public static Hashtable<ResourceLocation, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
 
     // Legacy, kept for backwards compatibility only.
     public static Hashtable<Integer, Theme> ID_TO_THEME = new Hashtable<>();
@@ -57,6 +58,9 @@ public class Theme {
 
     private static final ResourceLocation PRIMARY_THEME_MAPPINGS = DungeonCrawl.locate("theming/mappings/primary_themes.json");
     private static final ResourceLocation SECONDARY_THEME_MAPPINGS = DungeonCrawl.locate("theming/mappings/secondary_themes.json");
+
+    public static ImmutableSet<ResourceLocation> THEME_KEYS, SECONDARY_THEME_KEYS;
+    private static ImmutableSet.Builder<ResourceLocation> themeKeySetBuilder, secondaryThemeKeySetBuilder;
 
     public static final Theme DEFAULT_THEME = new Theme(
             (pos) -> Blocks.STONE_BRICKS.getDefaultState(),
@@ -251,6 +255,8 @@ public class Theme {
 
     public static void loadJson(IResourceManager resourceManager) {
         JsonParser parser = new JsonParser();
+        themeKeySetBuilder = new ImmutableSet.Builder<>();
+        secondaryThemeKeySetBuilder = new ImmutableSet.Builder<>();
 
         for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate(SECONDARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
             DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
@@ -259,7 +265,7 @@ public class Theme {
                 ResourceLocation key = DungeonCrawl.key(resource, SECONDARY_THEME_DIRECTORY, ".json");
                 SecondaryTheme theme = JsonThemeHandler.deserializeSubTheme(parser.parse(reader).getAsJsonObject(), resource);
                 theme.key = key;
-                DungeonCrawl.LOGGER.info("THEME: {} -> {}", resource, key);
+                secondaryThemeKeySetBuilder.add(key);
 
                 KEY_TO_SECONDARY_THEME.put(key, theme);
             } catch (Exception e) {
@@ -275,7 +281,7 @@ public class Theme {
                 ResourceLocation key = DungeonCrawl.key(resource, PRIMARY_THEME_DIRECTORY, ".json");
                 Theme theme = JsonThemeHandler.deserializeTheme(parser.parse(reader).getAsJsonObject(), resource);
                 theme.key = key;
-                DungeonCrawl.LOGGER.info("SECONDARY THEME: {} -> {}", resource, key);
+                themeKeySetBuilder.add(key);
 
                 KEY_TO_THEME.put(key, theme);
             } catch (Exception e) {
@@ -302,6 +308,8 @@ public class Theme {
             e.printStackTrace();
         }
 
+        THEME_KEYS = themeKeySetBuilder.build();
+        SECONDARY_THEME_KEYS = secondaryThemeKeySetBuilder.build();
     }
 
     public static Theme getDefaultTheme() {

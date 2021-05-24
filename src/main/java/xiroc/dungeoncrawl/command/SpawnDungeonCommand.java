@@ -32,6 +32,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
+import xiroc.dungeoncrawl.command.arguments.SecondaryThemeArgument;
+import xiroc.dungeoncrawl.command.arguments.ThemeArgument;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -52,17 +54,17 @@ public class SpawnDungeonCommand {
                             Theme.randomTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()),
                             Theme.randomSecondaryTheme(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).getRegistryName().toString(), world.getRandom()));
                 })
-                .then(Commands.argument("theme", StringArgumentType.string())
+                .then(Commands.argument("theme", ThemeArgument.theme())
                         .executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
-                                        Theme.getTheme(new ResourceLocation(StringArgumentType.getString(command, "theme"))),
+                                        ThemeArgument.getTheme(command, "theme"),
                                         Theme.getDefaultSubTheme()))
-                        .then(Commands.argument("sub_theme", StringArgumentType.string()).executes((command) ->
+                        .then(Commands.argument("seondary_theme", SecondaryThemeArgument.secondaryTheme()).executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
-                                        Theme.getTheme(new ResourceLocation(StringArgumentType.getString(command, "theme"))),
-                                        Theme.getSecondaryTheme(new ResourceLocation(StringArgumentType.getString(command, "sub_theme"))))
+                                        ThemeArgument.getTheme(command, "theme"),
+                                        SecondaryThemeArgument.getSecondaryTheme(command, "secondary_theme"))
                         )))));
     }
 

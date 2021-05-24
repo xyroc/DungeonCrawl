@@ -96,7 +96,6 @@ public class DungeonModels {
             DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource);
 
             ResourceLocation key = DungeonCrawl.key(resource, DIRECTORY, ".nbt");
-            DungeonCrawl.LOGGER.info("MODEL: {} -> {}", resource, key);
             model.setKey(key);
             KEY_TO_MODEL.put(key, model);
             keySetBuilder.add(key);

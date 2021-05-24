@@ -19,9 +19,12 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.JsonObject;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.loot.RandomValueRange;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -31,11 +34,10 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Orientation;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,23 +49,20 @@ public interface DungeonModelFeature {
 
     DungeonModelFeature CHESTS = (world, context, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
-                    && bounds.isVecInside(position.position)
+            if (bounds.isVecInside(position.position)
+                    && !DungeonBuilder.isBlockProtected(world, position.position, context)
                     && world.getBlockState(position.position.down()).isSolid()) {
-                IBlockPlacementHandler.CHEST.place(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
-                        position.position, rand, context, Treasure.Type.DEFAULT, theme, subTheme, stage);
+                placeChest(world, position.position, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction), theme, subTheme, stage, rand);
             }
         }
     };
 
     DungeonModelFeature TNT_CHESTS = (world, context, rand, pos, positions, bounds, theme, subTheme, stage) -> {
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
-                    && bounds.isVecInside(position.position)
+            if (bounds.isVecInside(position.position)
+                    && !DungeonBuilder.isBlockProtected(world, position.position, context)
                     && world.getBlockState(position.position.down()).isSolid()) {
-                IBlockPlacementHandler.CHEST.place(world, Blocks.TRAPPED_CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING,
-                        Orientation.RANDOM_HORIZONTAL_FACING.roll(rand)),
-                        position.position, rand, context, Treasure.Type.DEFAULT, theme, subTheme, stage);
+                placeChest(world, position.position, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction), theme, subTheme, stage, rand);
                 BlockPos down = position.position.down(2);
                 if (!DungeonBuilder.isBlockProtected(world, down, context) && !world.isAirBlock(down)) {
                     world.setBlockState(position.position.down(2), Blocks.TNT.getDefaultState(), 2);
@@ -77,11 +76,12 @@ public interface DungeonModelFeature {
             return;
         }
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
-                    && bounds.isVecInside(position.position)
+
+            if (bounds.isVecInside(position.position)
+                    && !DungeonBuilder.isBlockProtected(world, position.position, context)
                     && world.getBlockState(position.position.down()).isSolid()) {
                 IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER,
-                        position.position, rand, context, null, theme, subTheme, stage);
+                        position.position, rand, context, theme, subTheme, stage);
             }
         }
     };
@@ -89,26 +89,26 @@ public interface DungeonModelFeature {
     DungeonModelFeature CATACOMB = (world, context, rand, pos, positions, bounds, theme, subTheme, stage) -> {
 
         for (DirectionalBlockPos position : positions) {
-            if (!DungeonBuilder.isBlockProtected(world, position.position, context)
-                    && bounds.isVecInside(position.position)
+            if (bounds.isVecInside(position.position)
+                    && !DungeonBuilder.isBlockProtected(world, position.position, context)
                     && world.getBlockState(position.position.down()).isSolid()) {
-                IBlockPlacementHandler.CHEST.place(world, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction),
-                        position.position, rand, context, Treasure.Type.CATACOMB, theme, subTheme, stage);
+                placeChest(world, position.position, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, position.direction), theme, subTheme, stage, rand);
             }
+
             if (Config.NO_SPAWNERS.get()) {
                 return;
             }
 
             BlockPos spawner = position.position.offset(position.direction);
-            if (!DungeonBuilder.isBlockProtected(world, spawner, context)
-                    && bounds.isVecInside(spawner)
+            if (bounds.isVecInside(spawner)
+                    && !DungeonBuilder.isBlockProtected(world, spawner, context)
                     && world.getBlockState(spawner.down()).isSolid()) {
-                IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, spawner, rand, context, null, theme, subTheme, stage);
+                IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, spawner, rand, context, theme, subTheme, stage);
             }
         }
     };
 
-    void build(IWorld world, PlacementContext context, Random rand, BlockPos pos, DirectionalBlockPos[] positions, MutableBoundingBox bounds, Theme theme, Theme.SubTheme subTheme, int stage);
+    void build(IWorld world, PlacementContext context, Random rand, BlockPos pos, DirectionalBlockPos[] positions, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage);
 
     /**
      * An improvised way to generate an array with a predetermined amount of random feature positions while iterating through
@@ -154,6 +154,14 @@ public interface DungeonModelFeature {
             return feature;
         }
         throw new IllegalArgumentException("Unknown model feature: " + name);
+    }
+
+    static void placeChest(IWorld world, BlockPos pos, BlockState chest, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel, Random rand) {
+        world.setBlockState(pos, chest, 2);
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof LockableLootTileEntity) {
+            Loot.setLoot((LockableLootTileEntity) tileEntity, Loot.getLootTable(lootLevel, rand), theme, secondaryTheme, rand);
+        }
     }
 
     class Metadata {

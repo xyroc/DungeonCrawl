@@ -24,8 +24,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
 import java.util.ArrayList;
@@ -41,18 +39,6 @@ public class WeightedRandom<T> implements IRandom<T> {
             JsonObject entry = element.getAsJsonObject();
             int weight = JSONUtils.getWeightOrDefault(entry);
             builder.add(RandomEquipment.getItem(new ResourceLocation(entry.get("item").getAsString())), weight);
-        });
-        return builder.build();
-    };
-
-    public static final WeightedRandom.JsonReader<DungeonModel> MODEL = (entries) -> {
-        WeightedRandom.Builder<DungeonModel> builder = new WeightedRandom.Builder<>();
-        entries.forEach((element) -> {
-            JsonObject entry = element.getAsJsonObject();
-            String key = entry.get("key").getAsString();
-            if (!DungeonModels.KEY_TO_MODEL.containsKey(key)) {
-                throw new RuntimeException("");
-            }
         });
         return builder.build();
     };

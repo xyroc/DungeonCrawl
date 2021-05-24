@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -50,7 +49,7 @@ public class ModelPools {
 
                 entry.getValue().getAsJsonArray().forEach((element) -> {
                     JsonObject modelEntry = element.getAsJsonObject();
-                    String key = modelEntry.get("key").getAsString();
+                    ResourceLocation key = new ResourceLocation(modelEntry.get("key").getAsString());
                     if (!DungeonModels.KEY_TO_MODEL.containsKey(key)) {
                         DungeonCrawl.LOGGER.warn("Cannot resolve model key " + key + " in " + FILE);
                     } else {

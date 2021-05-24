@@ -1,237 +1,237 @@
 {
   "pools": {
     "entrances": [
-      {"key": "default/entrance/roguelike_entrance"},
-      {"key": "default/entrance/roguelike_house", "weight": 2},
-      {"key": "default/entrance/roguelike_tower", "weight": 2}
+      {"key": "dungeoncrawl:default/entrance/roguelike_entrance"},
+      {"key": "dungeoncrawl:default/entrance/roguelike_house", "weight": 2},
+      {"key": "dungeoncrawl:default/entrance/roguelike_tower", "weight": 2}
     ],
     "corridors:upper_one": [
-      {"key": "default/corridor/corridor", "weight": 4},
-      {"key": "default/corridor/corridor_2", "weight": 4},
-      {"key": "default/corridor/corridor_3", "weight": 4},
-      {"key": "default/corridor/corridor_light", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_2", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_3", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_light", "weight": 1}
     ],
     "corridors:upper_two": [
-      {"key": "default/corridor/corridor", "weight": 4},
-      {"key": "default/corridor/corridor_2", "weight": 4},
-      {"key": "default/corridor/corridor_3", "weight": 4},
-      {"key": "default/corridor/corridor_fire", "weight": 1},
-      {"key": "default/corridor/corridor_light", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_2", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_3", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_fire", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/corridor_light", "weight": 1}
     ],
     "corridors:upper_catacombs": [
-      {"key": "default/corridor/corridor", "weight": 4},
-      {"key": "default/corridor/stone_corridor", "weight": 4},
-      {"key": "default/corridor/corridor_fire", "weight": 1},
-      {"key": "default/corridor/corridor_light", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_fire", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/corridor_light", "weight": 1}
     ],
     "corridors:catacombs": [
-      {"key": "default/corridor/corridor", "weight": 4},
-      {"key": "default/corridor/stone_corridor", "weight": 4},
-      {"key": "default/corridor/corridor_fire", "weight": 1},
-      {"key": "default/corridor/corridor_light", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/corridor_fire", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/corridor_light", "weight": 1}
     ],
     "corridors:hell": [
-      {"key": "default/corridor/hell/corridor", "weight": 4},
-      {"key": "default/corridor/hell/corridor_2", "weight": 1},
-      {"key": "default/corridor/hell/corridor_3", "weight": 1},
-      {"key": "default/corridor/hell/corridor_4", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/hell/corridor", "weight": 4},
+      {"key": "dungeoncrawl:default/corridor/hell/corridor_2", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/hell/corridor_3", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/hell/corridor_4", "weight": 1}
     ],
     "rooms:upper_one": [
-      {"key": "default/room/spawner_room", "weight": 1},
-      {"key": "default/room/spawner_room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/room/spawner_room", "weight": 1},
+      {"key": "dungeoncrawl:default/room/spawner_room_2", "weight": 1}
     ],
     "rooms:upper_two": [
-      {"key": "default/room/spawner_room", "weight": 1},
-      {"key": "default/room/spawner_room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/room/spawner_room", "weight": 1},
+      {"key": "dungeoncrawl:default/room/spawner_room_2", "weight": 1}
     ],
     "rooms:upper_catacombs": [
-      {"key": "default/room/catacombs/spawner_room", "weight": 1}
+      {"key": "dungeoncrawl:default/room/catacombs/spawner_room", "weight": 1}
     ],
     "rooms:catacombs": [
-      {"key": "default/room/catacombs/spawner_room", "weight": 1}
+      {"key": "dungeoncrawl:default/room/catacombs/spawner_room", "weight": 1}
     ],
     "rooms:hell": [
-      {"key": "default/room/hell/spawner_room", "weight": 1}
+      {"key": "dungeoncrawl:default/room/hell/spawner_room", "weight": 1}
     ],
     "nodes:full:upper_one": [
-      {"key": "default/node/large_fire_hall", "weight": 1},
-      {"key": "default/node/node_jukebox", "weight": 1}
+      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1}
     ],
     "nodes:full:upper_two": [
-      {"key": "default/node/node_jukebox", "weight": 1}
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1}
     ],
     "nodes:full:upper_catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1}
     ],
     "nodes:full:catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1}
     ],
     "nodes:full:hell": [
-      {"key": "default/node/hell/lava", "weight": 1},
-      {"key": "default/node/hell/lava_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/hell/lava", "weight": 1},
+      {"key": "dungeoncrawl:default/node/hell/lava_2", "weight": 1}
     ],
     "nodes:fork:upper_one": [
-      {"key": "default/node/large_fire_hall", "weight": 1},
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 4}
+      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 4}
     ],
     "nodes:fork:upper_two": [
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 2}
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 2}
     ],
     "nodes:fork:upper_catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 6}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 6}
     ],
     "nodes:fork:catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 6}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 6}
     ],
     "nodes:fork:hell": [
-      {"key": "default/node/hell/lava", "weight": 1},
-      {"key": "default/node/hell/lava_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/hell/lava", "weight": 1},
+      {"key": "dungeoncrawl:default/node/hell/lava_2", "weight": 1}
     ],
     "nodes:straight:upper_one": [
-      {"key": "default/node/large_fire_hall", "weight": 1},
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 1}
+      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 1}
     ],
     "nodes:straight:upper_two": [
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 1}
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 1}
     ],
     "nodes:straight:upper_catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 1},
-      {"key": "default/node/catacombs/sewers_straight", "weight": 8}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_straight", "weight": 8}
     ],
     "nodes:straight:catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 1},
-      {"key": "default/node/catacombs/sewers_straight", "weight": 8}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_straight", "weight": 8}
     ],
     "nodes:straight:hell": [
-      {"key": "default/node/hell/lava", "weight": 1},
-      {"key": "default/node/hell/lava_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/hell/lava", "weight": 1},
+      {"key": "dungeoncrawl:default/node/hell/lava_2", "weight": 1}
     ],
     "nodes:turn:upper_one": [
-      {"key": "default/node/large_fire_hall", "weight": 1},
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 1}
+      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 1}
     ],
     "nodes:turn:upper_two": [
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 1}
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 1}
     ],
     "nodes:turn:upper_catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 1}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1}
     ],
     "nodes:turn:catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 1}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1}
     ],
     "nodes:turn:hell": [
-      {"key": "default/node/hell/lava", "weight": 1},
-      {"key": "default/node/hell/lava_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/hell/lava", "weight": 1},
+      {"key": "dungeoncrawl:default/node/hell/lava_2", "weight": 1}
     ],
     "nodes:dead_end:upper_one": [
-      {"key": "default/node/large_fire_hall", "weight": 1},
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 1}
+      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 1}
     ],
     "nodes:dead_end:upper_two": [
-      {"key": "default/node/node_jukebox", "weight": 1},
-      {"key": "default/node/fireplace", "weight": 1}
+      {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fireplace", "weight": 1}
     ],
     "nodes:dead_end:upper_catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 1},
-      {"key": "default/node/catacombs/sewers_straight", "weight": 1},
-      {"key": "default/node/catacombs/sewers_dead_end", "weight": 10}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_straight", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_dead_end", "weight": 10}
     ],
     "nodes:dead_end:catacombs": [
-      {"key": "default/node/catacombs/fountain", "weight": 1},
-      {"key": "default/node/catacombs/sewers", "weight": 1},
-      {"key": "default/node/catacombs/prison", "weight": 1},
-      {"key": "default/node/catacombs/sewers_fork", "weight": 1},
-      {"key": "default/node/catacombs/sewers_straight", "weight": 1},
-      {"key": "default/node/catacombs/sewers_dead_end", "weight": 10}
+      {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_straight", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_dead_end", "weight": 10}
     ],
     "nodes:dead_end:hell": [
-      {"key": "default/node/hell/lava", "weight": 1},
-      {"key": "default/node/hell/lava_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/hell/lava", "weight": 1},
+      {"key": "dungeoncrawl:default/node/hell/lava_2", "weight": 1}
     ],
     "node_connectors:upper_one": [
-      {"key": "default/node/connector/connector", "weight": 1},
-      {"key": "default/node/connector/connector_4", "weight": 1},
-      {"key": "default/node/connector/connector_6", "weight": 1}
+      {"key": "dungeoncrawl:default/node/connector/connector", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_4", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_6", "weight": 1}
     ],
     "node_connectors:upper_two": [
-      {"key": "default/node/connector/connector", "weight": 1},
-      {"key": "default/node/connector/connector_2", "weight": 1},
-      {"key": "default/node/connector/connector_3", "weight": 1},
-      {"key": "default/node/connector/connector_4", "weight": 1},
-      {"key": "default/node/connector/connector_6", "weight": 1}
+      {"key": "dungeoncrawl:default/node/connector/connector", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_2", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_3", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_4", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_6", "weight": 1}
     ],
     "node_connectors:upper_catacombs": [
-      {"key": "default/node/connector/connector", "weight": 1},
-      {"key": "default/node/connector/connector_2", "weight": 1},
-      {"key": "default/node/connector/connector_3", "weight": 1},
-      {"key": "default/node/connector/connector_6", "weight": 1}
+      {"key": "dungeoncrawl:default/node/connector/connector", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_2", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_3", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_6", "weight": 1}
     ],
     "node_connectors:catacombs": [
-      {"key": "default/node/connector/connector_2", "weight": 1},
-      {"key": "default/node/connector/connector_3", "weight": 1},
-      {"key": "default/node/connector/connector_4", "weight": 1},
-      {"key": "default/node/connector/connector_6", "weight": 1}
+      {"key": "dungeoncrawl:default/node/connector/connector_2", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_3", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_4", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_6", "weight": 1}
     ],
     "node_connectors:hell": [
-      {"key": "default/node/connector/connector_5", "weight": 1},
-      {"key": "default/node/connector/connector_6", "weight": 1}
+      {"key": "dungeoncrawl:default/node/connector/connector_5", "weight": 1},
+      {"key": "dungeoncrawl:default/node/connector/connector_6", "weight": 1}
     ],
     "corridor_linkers:upper_one": [
-      {"key": "default/corridor/linker/cake_room", "weight": 2},
-      {"key": "default/corridor/linker/linker", "weight": 1},
-      {"key": "default/corridor/linker/linker_3", "weight": 1},
-      {"key": "default/corridor/linker/linker_6", "weight": 2}
+      {"key": "dungeoncrawl:default/corridor/linker/cake_room", "weight": 2},
+      {"key": "dungeoncrawl:default/corridor/linker/linker", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/linker/linker_3", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/linker/linker_6", "weight": 2}
     ],
     "corridor_linkers:upper_two": [
-      {"key": "default/corridor/linker/cake_room", "weight": 1},
-      {"key": "default/corridor/linker/linker", "weight": 1},
-      {"key": "default/corridor/linker/linker_3", "weight": 1},
-      {"key": "default/corridor/linker/linker_4", "weight": 1},
-      {"key": "default/corridor/linker/linker_5", "weight": 1},
-      {"key": "default/corridor/linker/linker_6", "weight": 2}
+      {"key": "dungeoncrawl:default/corridor/linker/cake_room", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/linker/linker", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/linker/linker_3", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/linker/linker_4", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/linker/linker_5", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/linker/linker_6", "weight": 2}
     ],
     "corridor_linkers:upper_catacombs": [
-      {"key": "default/corridor/catacombs/linker/linker", "weight": 1},
-      {"key": "default/corridor/catacombs/linker/linker_trap", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/catacombs/linker/linker", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/catacombs/linker/linker_trap", "weight": 1}
     ],
     "corridor_linkers:catacombs": [
-      {"key": "default/corridor/catacombs/linker/linker", "weight": 1},
-      {"key": "default/corridor/catacombs/linker/linker_trap", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/catacombs/linker/linker", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/catacombs/linker/linker_trap", "weight": 1}
     ],
     "corridor_linkers:hell": [
-      {"key": "default/corridor/linker/linker_4", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/linker/linker_4", "weight": 1}
     ]
   }
 }

@@ -35,15 +35,28 @@ import java.util.Random;
 
 public class Theme {
 
-    public static Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
-    public static Hashtable<String, IRandom<SubTheme>> BIOME_TO_SUB_THEME = new Hashtable<>();
+    protected static Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
+    protected static Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
 
-    public static Hashtable<String, Theme> KEY_TO_THEME = new Hashtable<>();
-    public static Hashtable<String, SubTheme> KEY_TO_SUB_THEME = new Hashtable<>();
+    protected static Hashtable<ResourceLocation, Theme> KEY_TO_THEME = new Hashtable<>();
+    protected static Hashtable<ResourceLocation, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
 
-    // Legacy, kept  for backwards compatibility only.
+    // Legacy, kept for backwards compatibility only.
     public static Hashtable<Integer, Theme> ID_TO_THEME = new Hashtable<>();
-    public static Hashtable<Integer, SubTheme> ID_TO_SUB_THEME = new Hashtable<>();
+    public static Hashtable<Integer, SecondaryTheme> ID_TO_SECONDARY_THEME = new Hashtable<>();
+
+    private static final ResourceLocation PRIMARY_THEME_DEFAULT = DungeonCrawl.locate("vanilla/default");
+    private static final ResourceLocation SECONDARY_THEME_DEFAULT = DungeonCrawl.locate("vanilla/default");
+
+    public static final ResourceLocation PRIMARY_CATACOMBS_DEFAULT = DungeonCrawl.locate("vanilla/catacombs/default");
+    public static final ResourceLocation PRIMARY_HELL_DEFAULT = DungeonCrawl.locate("vanilla/hell/default");
+    public static final ResourceLocation PRIMARY_HELL_MOSSY = DungeonCrawl.locate("vanilla/hell/mossy");
+
+    private static final String PRIMARY_THEME_DIRECTORY = "theming/primary_themes";
+    private static final String SECONDARY_THEME_DIRECTORY = "theming/secondary_themes";
+
+    private static final ResourceLocation PRIMARY_THEME_MAPPINGS = DungeonCrawl.locate("theming/mappings/primary_themes.json");
+    private static final ResourceLocation SECONDARY_THEME_MAPPINGS = DungeonCrawl.locate("theming/mappings/secondary_themes.json");
 
     public static final Theme DEFAULT_THEME = new Theme(
             (pos) -> Blocks.STONE_BRICKS.getDefaultState(),
@@ -57,7 +70,7 @@ public class Theme {
             (pos) -> Blocks.COBBLESTONE_SLAB.getDefaultState(),
             (pos) -> Blocks.STONE_BRICK_SLAB.getDefaultState());
 
-    public static final SubTheme DEFAULT_SUB_THEME = new SubTheme(
+    public static final SecondaryTheme DEFAULT_SUB_THEME = new SecondaryTheme(
             (pos) -> Blocks.OAK_LOG.getDefaultState(),
             (pos) -> Blocks.OAK_TRAPDOOR.getDefaultState(),
             (pos) -> Blocks.OAK_DOOR.getDefaultState(),
@@ -70,17 +83,17 @@ public class Theme {
             (pos) -> Blocks.OAK_PRESSURE_PLATE.getDefaultState());
 
     static {
-        DEFAULT_THEME.key = "builtin:default";
-        DEFAULT_SUB_THEME.key = "builtin:default";
+        DEFAULT_THEME.key = DungeonCrawl.locate("builtin/default");
+        DEFAULT_SUB_THEME.key = DungeonCrawl.locate("builtin/default");
         KEY_TO_THEME.put(DEFAULT_THEME.key, DEFAULT_THEME);
-        KEY_TO_SUB_THEME.put(DEFAULT_SUB_THEME.key, DEFAULT_SUB_THEME);
+        KEY_TO_SECONDARY_THEME.put(DEFAULT_SUB_THEME.key, DEFAULT_SUB_THEME);
     }
 
     public final IBlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab;
 
-    public IRandom<SubTheme> subTheme;
+    public IRandom<SecondaryTheme> subTheme;
 
-    private String key;
+    private ResourceLocation key;
 
     private IDungeonDecoration[] decorations;
 
@@ -114,7 +127,7 @@ public class Theme {
         return decorations != null;
     }
 
-    public String getKey() {
+    public ResourceLocation getKey() {
         return key;
     }
 
@@ -162,22 +175,22 @@ public class Theme {
         return solidSlab;
     }
 
-    public static class SubTheme {
+    public static class SecondaryTheme {
 
         public final IBlockStateProvider pillar, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate;
 
-        private String key;
+        private ResourceLocation key;
 
-        public SubTheme(IBlockStateProvider pillar,
-                        IBlockStateProvider trapDoor,
-                        IBlockStateProvider door,
-                        IBlockStateProvider material,
-                        IBlockStateProvider stairs,
-                        IBlockStateProvider slab,
-                        IBlockStateProvider fence,
-                        IBlockStateProvider fenceGate,
-                        IBlockStateProvider button,
-                        IBlockStateProvider pressurePlate) {
+        public SecondaryTheme(IBlockStateProvider pillar,
+                              IBlockStateProvider trapDoor,
+                              IBlockStateProvider door,
+                              IBlockStateProvider material,
+                              IBlockStateProvider stairs,
+                              IBlockStateProvider slab,
+                              IBlockStateProvider fence,
+                              IBlockStateProvider fenceGate,
+                              IBlockStateProvider button,
+                              IBlockStateProvider pressurePlate) {
             this.pillar = pillar;
             this.trapDoor = trapDoor;
             this.door = door;
@@ -190,7 +203,7 @@ public class Theme {
             this.pressurePlate = pressurePlate;
         }
 
-        public String getKey() {
+        public ResourceLocation getKey() {
             return key;
         }
 
@@ -239,27 +252,31 @@ public class Theme {
     public static void loadJson(IResourceManager resourceManager) {
         JsonParser parser = new JsonParser();
 
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate("theming/sub_themes").getPath(), (s) -> s.endsWith(".json"))) {
+        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate(SECONDARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
             DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                String key = resource.getPath().substring(19, resource.getPath().length() - 5); // cut off "theming/sub_themes/" and the file ending from the path
-                SubTheme theme = JsonThemeHandler.deserializeSubTheme(parser.parse(reader).getAsJsonObject(), resource);
+                ResourceLocation key = DungeonCrawl.key(resource, SECONDARY_THEME_DIRECTORY, ".json");
+                SecondaryTheme theme = JsonThemeHandler.deserializeSubTheme(parser.parse(reader).getAsJsonObject(), resource);
                 theme.key = key;
-                KEY_TO_SUB_THEME.put(key, theme);
+                DungeonCrawl.LOGGER.info("THEME: {} -> {}", resource, key);
+
+                KEY_TO_SECONDARY_THEME.put(key, theme);
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
                 e.printStackTrace();
             }
         }
 
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate("theming/themes").getPath(), (s) -> s.endsWith(".json"))) {
+        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate(PRIMARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
             DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                String key = resource.getPath().substring(15, resource.getPath().length() - 5); // cut off "theming/themes/" and the file ending from the path
+                ResourceLocation key = DungeonCrawl.key(resource, PRIMARY_THEME_DIRECTORY, ".json");
                 Theme theme = JsonThemeHandler.deserializeTheme(parser.parse(reader).getAsJsonObject(), resource);
                 theme.key = key;
+                DungeonCrawl.LOGGER.info("SECONDARY THEME: {} -> {}", resource, key);
+
                 KEY_TO_THEME.put(key, theme);
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
@@ -267,64 +284,62 @@ public class Theme {
             }
         }
 
-        ResourceLocation themeMapping = DungeonCrawl.locate("theming/mappings/themes.json");
         try {
             JsonThemeHandler.deserializeThemeMapping(
-                    parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(themeMapping).getInputStream()))).getAsJsonObject(),
-                    themeMapping);
+                    parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(PRIMARY_THEME_MAPPINGS).getInputStream()))).getAsJsonObject(),
+                    PRIMARY_THEME_MAPPINGS);
         } catch (IOException e) {
-            DungeonCrawl.LOGGER.error("Failed to load {}", themeMapping.toString());
+            DungeonCrawl.LOGGER.error("Failed to load {}", PRIMARY_THEME_MAPPINGS);
             e.printStackTrace();
         }
 
-        ResourceLocation subThemeMapping = DungeonCrawl.locate("theming/mappings/sub_themes.json");
         try {
             JsonThemeHandler.deserializeSubThemeMapping(
-                    parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(subThemeMapping).getInputStream()))).getAsJsonObject(),
-                    subThemeMapping);
+                    parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(SECONDARY_THEME_MAPPINGS).getInputStream()))).getAsJsonObject(),
+                    SECONDARY_THEME_MAPPINGS);
         } catch (IOException e) {
-            DungeonCrawl.LOGGER.error("Failed to load {}", subThemeMapping.toString());
+            DungeonCrawl.LOGGER.error("Failed to load {}", SECONDARY_THEME_MAPPINGS);
             e.printStackTrace();
         }
 
     }
 
     public static Theme getDefaultTheme() {
-        return KEY_TO_THEME.getOrDefault("default", DEFAULT_THEME);
+        return KEY_TO_THEME.getOrDefault(PRIMARY_THEME_DEFAULT, DEFAULT_THEME);
     }
 
-    public static SubTheme getDefaultSubTheme() {
-        return KEY_TO_SUB_THEME.getOrDefault("default", DEFAULT_SUB_THEME);
+    public static SecondaryTheme getDefaultSubTheme() {
+        return KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_DEFAULT, DEFAULT_SUB_THEME);
     }
 
     public static Theme randomTheme(String biome, Random rand) {
         return BIOME_TO_THEME.computeIfAbsent(biome, (key) -> {
-            Theme theme = KEY_TO_THEME.getOrDefault("vanilla/default", DEFAULT_THEME);
+            Theme theme = KEY_TO_THEME.getOrDefault(PRIMARY_THEME_DEFAULT, DEFAULT_THEME);
             return (random) -> theme;
         }).roll(rand);
     }
 
-    public static SubTheme randomSubTheme(String biome, Random rand) {
-        return BIOME_TO_SUB_THEME.computeIfAbsent(biome, (key) -> {
-            SubTheme theme = KEY_TO_SUB_THEME.getOrDefault("vanilla/default", DEFAULT_SUB_THEME);
+    public static SecondaryTheme randomSecondaryTheme(String biome, Random rand) {
+        return BIOME_TO_SECONDARY_THEME.computeIfAbsent(biome, (key) -> {
+            SecondaryTheme theme = KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_DEFAULT, DEFAULT_SUB_THEME);
             return (random) -> theme;
         }).roll(rand);
     }
 
-    public static Theme getTheme(String key) {
-        return KEY_TO_THEME.getOrDefault(key, KEY_TO_THEME.getOrDefault("vanilla/default", DEFAULT_THEME));
+    public static Theme getTheme(ResourceLocation key) {
+        return KEY_TO_THEME.getOrDefault(key, KEY_TO_THEME.getOrDefault(PRIMARY_THEME_DEFAULT, DEFAULT_THEME));
     }
 
-    public static SubTheme getSubTheme(String key) {
-        return KEY_TO_SUB_THEME.getOrDefault(key, KEY_TO_SUB_THEME.getOrDefault("vanilla/default", DEFAULT_SUB_THEME));
+    public static SecondaryTheme getSecondaryTheme(ResourceLocation key) {
+        return KEY_TO_SECONDARY_THEME.getOrDefault(key, KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_DEFAULT, DEFAULT_SUB_THEME));
     }
 
     public static Theme getThemeByID(int theme) {
         return ID_TO_THEME.getOrDefault(theme, ID_TO_THEME.getOrDefault(0, DEFAULT_THEME));
     }
 
-    public static SubTheme getSubThemeByID(int id) {
-        return ID_TO_SUB_THEME.getOrDefault(id, ID_TO_SUB_THEME.getOrDefault(0, DEFAULT_SUB_THEME));
+    public static SecondaryTheme getSubThemeByID(int id) {
+        return ID_TO_SECONDARY_THEME.getOrDefault(id, ID_TO_SECONDARY_THEME.getOrDefault(0, DEFAULT_SUB_THEME));
     }
 
 }

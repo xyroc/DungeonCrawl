@@ -51,8 +51,7 @@ public class DungeonSecretRoom extends DungeonPiece {
 
         BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme,
-                model.getTreasureType(), stage, rotation, context, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
@@ -64,7 +63,7 @@ public class DungeonSecretRoom extends DungeonPiece {
 
     @Override
     public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
-        this.model = DungeonModels.KEY_TO_MODEL.get("default/room/secret_room");
+        this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.SECRET_ROOM);
     }
 
 //    @Override

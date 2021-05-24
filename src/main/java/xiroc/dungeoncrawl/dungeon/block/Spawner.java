@@ -41,7 +41,6 @@ import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -58,7 +57,7 @@ public class Spawner implements IBlockPlacementHandler {
 
     @Override
     public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                      Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int stage) {
+                      Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
         if (world.isAirBlock(pos.down())) {
             return;
         }

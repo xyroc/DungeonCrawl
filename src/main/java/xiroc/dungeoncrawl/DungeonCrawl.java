@@ -145,4 +145,17 @@ public class DungeonCrawl {
         return new ResourceLocation(MOD_ID, path);
     }
 
+    /**
+     * Creates a key for a given resource location. Removes the base directory and the following slash and the file ending.
+     *
+     * @param resourceLocation the initial resource location.
+     * @param baseDirectory the base path without the last slash. ( dira/dirb not dira/dirb/ )
+     * @param fileEnding the file ending to remove at the end of the path
+     * @return the key
+     */
+    public static ResourceLocation key(ResourceLocation resourceLocation, String baseDirectory, String fileEnding) {
+        String path = resourceLocation.getPath();
+        return new ResourceLocation(resourceLocation.getNamespace(), path.substring(baseDirectory.length() + 1, path.length() - fileEnding.length()));
+    }
+
 }

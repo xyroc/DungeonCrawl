@@ -25,33 +25,31 @@ import com.google.gson.JsonParseException;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class DungeonModel {
 
 //    public static final DungeonModel EMPTY = new DungeonModel(new DungeonModelBlock[0][0][0], null);
 
 
-    public ResourceLocation location;
+    private ResourceLocation location;
 
-    private String key;
+    private ResourceLocation key;
     public Integer id; // ID's are no longer the main way to identify models. Kept only for backwards compatibility.
 
     public int width, height, length;
 
     public final List<DungeonModelBlock> blocks;
-//    public DungeonModelBlock[][][] model;
 
     @Nullable
     public FeaturePosition[] featurePositions;
@@ -74,22 +72,26 @@ public class DungeonModel {
         return blocks;
     }
 
-    public void setLocation(ResourceLocation location) {
-        this.location = location;
-    }
-
     public DungeonModel setId(int id) {
         DungeonModels.ID_TO_MODEL.put(id, this);
         this.id = id;
         return this;
     }
 
-    public void setKey(String key) {
+    public void setKey(ResourceLocation key) {
         this.key = key;
     }
 
-    public String getKey() {
+    public void setLocation(ResourceLocation location) {
+        this.location = location;
+    }
+
+    public ResourceLocation getKey() {
         return key;
+    }
+
+    public ResourceLocation getLocation() {
+        return location;
     }
 
     public void loadMetadata(Metadata metadata) {
@@ -98,6 +100,17 @@ public class DungeonModel {
         if (metadata.id != null) {
             this.id = metadata.id;
             DungeonModels.ID_TO_MODEL.put(id, this);
+        }
+
+        if (metadata.loot != null) {
+            metadata.loot.forEach((loot) -> {
+                for (DungeonModelBlock block : blocks) {
+                    if (block.position.equals(loot.getA())) {
+                        block.lootTable = loot.getB();
+                        return;
+                    }
+                }
+            });
         }
 
         if (metadata.multipartData != null) {
@@ -138,12 +151,6 @@ public class DungeonModel {
         }
     }
 
-    public Treasure.Type getTreasureType() {
-        if (metadata != null && metadata.treasureType != null) {
-            return metadata.treasureType;
-        }
-        return Treasure.Type.DEFAULT;
-    }
 
     public Vector3i getOffset(Rotation rotation) {
         if (metadata != null && metadata.offset != null) {
@@ -232,19 +239,17 @@ public class DungeonModel {
 
     public static class Metadata {
 
-
         public Integer id;
 
         public DungeonModelFeature feature;
         public DungeonModelFeature.Metadata featureMetadata;
 
-        public Treasure.Type treasureType;
-
         public List<MultipartModelData> multipartData;
 
         public boolean variation;
-
         public Vector3i offset, rotatedOffset;
+
+        private ArrayList<Tuple<Vector3i, ResourceLocation>> loot;
 
         private Metadata() {
         }
@@ -271,12 +276,16 @@ public class DungeonModel {
                 metadata.setVariation(object.get("variation").getAsBoolean());
             }
 
-            if (object.has("treasure_type")) {
-                try {
-                    metadata.setLoot(Treasure.Type.valueOf(object.get("treasure_type").getAsString().toUpperCase(Locale.ROOT)));
-                } catch (IllegalArgumentException e) {
-                    DungeonCrawl.LOGGER.error("Invalid treasure type {} in metadata file {}", object.get("treasure_type"), file.toString());
-                    e.printStackTrace();
+            if (object.has("loot")) {
+                JsonArray array = object.getAsJsonArray("loot");
+                if (array.size() > 0) {
+                    metadata.loot = new ArrayList<>();
+                    array.forEach((element) -> {
+                        JsonObject instance = element.getAsJsonObject();
+                        Vector3i pos = JSONUtils.getOffset(instance.getAsJsonObject("pos"));
+                        ResourceLocation lootTable = new ResourceLocation(instance.get("loot_table").getAsString());
+                        metadata.loot.add(new Tuple<>(pos, lootTable));
+                    });
                 }
             }
 
@@ -312,10 +321,6 @@ public class DungeonModel {
         private void setOffset(Vector3i offset, boolean rotatable) {
             this.offset = offset;
             this.rotatedOffset = rotatable ? new Vector3i(offset.getZ(), offset.getY(), offset.getX()) : null;
-        }
-
-        private void setLoot(Treasure.Type treasureType) {
-            this.treasureType = treasureType;
         }
 
         private void setMultipartData(List<MultipartModelData> multipartData) {

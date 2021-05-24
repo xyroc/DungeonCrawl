@@ -60,10 +60,10 @@ public class DungeonStairs extends DungeonPiece {
     public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
         switch (stairType) {
             case 0:
-                this.model = stage > 0 ? DungeonModels.KEY_TO_MODEL.get("default/stairs_bottom_2") : DungeonModels.KEY_TO_MODEL.get("default/stairs_bottom");
+                this.model = stage > 0 ? DungeonModels.KEY_TO_MODEL.get(DungeonModels.BOTTOM_STAIRS_2) : DungeonModels.KEY_TO_MODEL.get(DungeonModels.BOTTOM_STAIRS);
                 return;
             case 1:
-                this.model = DungeonModels.KEY_TO_MODEL.get("default/stairs_top");
+                this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.TOP_STAIRS);
         }
     }
 
@@ -76,22 +76,22 @@ public class DungeonStairs extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
         switch (stairType) {
             case 0: {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, false);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
                 ironBars(worldIn, structureBoundingBoxIn, model, context);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
                 }
 
                 decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             case 1: {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, false);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
                 entrances(worldIn, structureBoundingBoxIn, model);
 
                 if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
                 }
 
                 decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);

@@ -57,12 +57,12 @@ public class DungeonRoom extends DungeonPiece {
         Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).add(offset);
 
-        build(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, context, false);
+        build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
         }
 
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);

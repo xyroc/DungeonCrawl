@@ -55,7 +55,8 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
-        buildRotated(model, world, p_230383_5_, new BlockPos(x, y, z), theme, subTheme, model.getTreasureType(), stage, rotation, context, false);
+        buildRotated(model, world, p_230383_5_, new BlockPos(x, y, z), theme, secondaryTheme, stage, rotation, context, false);
+
         return true;
     }
 

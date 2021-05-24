@@ -16,28 +16,31 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon.generator;
+package xiroc.dungeoncrawl.dungeon.treasure.function;
 
-import com.google.gson.JsonObject;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraftforge.registries.ForgeRegistries;
 
-public class DungeonGeneratorSettings {
+public class ConditionalLootFunctions extends LootFunction {
 
-    /**
-     * The maximum allowed amount of layers.
-     */
-    public final int maxLayers;
-
-    public DungeonGeneratorSettings(int maxLayers) {
-        this.maxLayers = maxLayers;
+    protected ConditionalLootFunctions(ILootCondition[] conditionsIn) {
+        super(conditionsIn);
     }
 
-    public static DungeonGeneratorSettings fromJson(JsonObject settings, ResourceLocation file) {
-        if (settings.has("max_layers")) {
-            return new DungeonGeneratorSettings(settings.get("max_layers").getAsInt());
-        } else {
-            throw new RuntimeException("Missing entry max_layers in " + file);
-        }
+    @Override
+    protected ItemStack doApply(ItemStack stack, LootContext context) {
+        return null;
+    }
+
+    @Override
+    public LootFunctionType getFunctionType() {
+        return null;
     }
 
 }

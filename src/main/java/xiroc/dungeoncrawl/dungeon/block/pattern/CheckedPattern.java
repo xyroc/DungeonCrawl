@@ -15,7 +15,7 @@ public class CheckedPattern implements IBlockStateProvider {
 
     @Override
     public BlockState get(BlockPos pos) {
-        if((pos.getX() & 1) + (pos.getZ() & 1) == 1) {
+        if(((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
             return block1.get(pos);
         } else {
             return block2.get(pos);

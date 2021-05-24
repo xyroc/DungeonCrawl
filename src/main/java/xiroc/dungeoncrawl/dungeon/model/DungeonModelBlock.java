@@ -32,7 +32,7 @@ import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.theme.Theme.SubTheme;
+import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +50,8 @@ public class DungeonModelBlock {
     public Integer variation;
 
     public ResourceLocation resource;
+    // Custom loot table, can be defined in model metadata.
+    public ResourceLocation lootTable;
 
     public DungeonModelBlock(DungeonModelBlockType type, Vector3i position) {
         this.type = type;
@@ -186,8 +188,8 @@ public class DungeonModelBlock {
      * block factory.
      */
     public static Tuple<BlockState, Boolean> getBlockState(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos,
-                                                           Theme theme, SubTheme subTheme, Random rand, byte[] variation, int stage) {
-        return block.type.blockFactory.get(block, rotation, world, pos, theme, subTheme, rand, variation, stage);
+                                                           Theme theme, SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage) {
+        return block.type.blockFactory.get(block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage);
     }
 
 

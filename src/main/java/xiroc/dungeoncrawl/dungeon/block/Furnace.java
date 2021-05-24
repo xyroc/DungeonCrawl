@@ -30,8 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure.Type;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -45,8 +43,8 @@ public class Furnace implements IBlockPlacementHandler {
     public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(4, 16);
 
     @Override
-    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                      Treasure.Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context
+            , Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
         world.setBlockState(pos, state, 2);
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof FurnaceTileEntity) {
@@ -61,7 +59,7 @@ public class Furnace implements IBlockPlacementHandler {
 
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                          Type treasureType, Theme theme, Theme.SubTheme subTheme, int lootLevel) {
+                          Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlockState(pos, state, 2);
             TileEntity tile = world.getTileEntity(pos);
             if (tile instanceof SmokerTileEntity) {

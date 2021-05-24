@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGeneratorSettings;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -91,7 +90,7 @@ public class ModelSelector {
         if (models.has("models")) {
             models.getAsJsonArray("models").forEach((element) -> {
                 JsonObject entry = element.getAsJsonObject();
-                String key = entry.get("key").getAsString();
+                ResourceLocation key = new ResourceLocation(entry.get("key").getAsString());
                 if (DungeonModels.KEY_TO_MODEL.containsKey(key)) {
                     builder.add(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeightOrDefault(entry));
                 } else {

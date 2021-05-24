@@ -58,7 +58,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     @Override
     public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
         if (lootRoom) {
-            this.model = DungeonModels.KEY_TO_MODEL.get("loot_room");
+            this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.LOOT_ROOM);
             return;
         }
 
@@ -114,12 +114,12 @@ public class DungeonNodeRoom extends DungeonPiece {
         Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).add(offset);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, subTheme, model.getTreasureType(), stage, rotation, context, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
 
         entrances(worldIn, structureBoundingBoxIn, model);
 
         if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, subTheme, stage);
+            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
         }
 
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
@@ -156,7 +156,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             DungeonNodeConnector connector = new DungeonNodeConnector();
             connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.NORTH);
             connector.theme = theme;
-            connector.subTheme = subTheme;
+            connector.secondaryTheme = secondaryTheme;
             connector.stage = stage;
             connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x + 7, y, z - 5);
@@ -168,7 +168,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             DungeonNodeConnector connector = new DungeonNodeConnector();
             connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.EAST);
             connector.theme = theme;
-            connector.subTheme = subTheme;
+            connector.secondaryTheme = secondaryTheme;
             connector.stage = stage;
             connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x + 17, y, z + 7);
@@ -180,7 +180,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             DungeonNodeConnector connector = new DungeonNodeConnector();
             connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.SOUTH);
             connector.theme = theme;
-            connector.subTheme = subTheme;
+            connector.secondaryTheme = secondaryTheme;
             connector.stage = stage;
             connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x + 7, y, z + 17);
@@ -192,7 +192,7 @@ public class DungeonNodeRoom extends DungeonPiece {
             DungeonNodeConnector connector = new DungeonNodeConnector();
             connector.rotation = Orientation.getOppositeRotationFromFacing(Direction.WEST);
             connector.theme = theme;
-            connector.subTheme = subTheme;
+            connector.secondaryTheme = secondaryTheme;
             connector.stage = stage;
             connector.setupModel(builder, modelSelector, pieces, rand);
             connector.setWorldPosition(x - 5, y, z + 7);

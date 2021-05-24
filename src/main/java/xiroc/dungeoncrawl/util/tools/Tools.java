@@ -18,7 +18,6 @@
 
 package xiroc.dungeoncrawl.util.tools;
 
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Block;
@@ -42,8 +41,9 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.command.arguments.DungeonModelArgument;
+import xiroc.dungeoncrawl.command.arguments.ModelBlockDefinitionArgument;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.model.ModelHandler;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
@@ -87,7 +87,7 @@ public class Tools {
                                 Math.max(context.pos1.getY(), context.pos2.getY()),
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(name,
-                                ModelBlockDefinition.DEFAULT_DEFINITION,
+                                ModelBlockDefinition.getDefaultDefinition(),
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
                         command.getSource().sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Done."), true);
@@ -98,19 +98,14 @@ public class Tools {
                                 true);
                         return 1;
                     }
-                }).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
+                }).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
+                    ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     UUID uuid = command.getSource().asPlayer().getUniqueID();
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
                         command.getSource().sendFeedback(
                                 new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
-                        return 1;
-                    }
-
-                    String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    if (!ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
-                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition path \"" + blockDefinition + "\""), true);
                         return 1;
                     }
 
@@ -124,7 +119,7 @@ public class Tools {
                                 Math.max(context.pos1.getY(), context.pos2.getY()),
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
-                                ModelBlockDefinition.DEFINITIONS.get(blockDefinition),
+                                blockDefinition,
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
                         command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
@@ -138,126 +133,33 @@ public class Tools {
                 }))
         ));
 
+
         event.getServer().getCommandManager().getDispatcher().register(Commands.literal("buildmodel").requires((a) -> a.hasPermissionLevel(2))
-                .then(Commands.argument("id", IntegerArgumentType.integer()).executes((command) -> {
-                    int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
-                    if (model != null) {
-                        BlockPos pos = command.getSource().asPlayer().getPosition();
-                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
-                        setOrigin(command.getSource(), pos);
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
-                        return 1;
-                    }
+                .then(Commands.argument("model", DungeonModelArgument.modelArgument()).executes((command) -> {
+                    DungeonModel model = DungeonModelArgument.getModel(command, "model");
+                    BlockPos pos = command.getSource().asPlayer().getPosition();
+                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.getDefaultDefinition());
+                    setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-                    int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
-                    if (model != null) {
-                        BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
-                        setOrigin(command.getSource(), pos);
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
-                        return 1;
-                    }
+                    DungeonModel model = DungeonModelArgument.getModel(command, "model");
+                    BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.getDefaultDefinition());
+                    setOrigin(command.getSource(), pos);
                     return 0;
-                })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
-                    int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
-                    String key = StringArgumentType.getString(command, "block definition");
-                    if (model != null) {
-                        if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
-                            BlockPos pos = command.getSource().asPlayer().getPosition();
-                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
-                            setOrigin(command.getSource(), pos);
-                        } else {
-                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + key), true);
-                            return 1;
-                        }
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
-                        return 1;
-                    }
+                })).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
+                    ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
+                    DungeonModel model = DungeonModelArgument.getModel(command, "model");
+                    BlockPos pos = command.getSource().asPlayer().getPosition();
+                    buildModel(model, command.getSource().asPlayer().world, pos, blockDefinition);
+                    setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-                    int id = command.getArgument("id", int.class);
-                    DungeonModel model = DungeonModels.ID_TO_MODEL.get(id);
-                    String key = StringArgumentType.getString(command, "block definition");
-                    if (model != null) {
-                        if (ModelBlockDefinition.DEFINITIONS.containsKey(key)) {
-                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(key));
-                            setOrigin(command.getSource(), pos);
-                        } else {
-                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + key), true);
-                            return 1;
-                        }
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model id: " + id));
-                        return 1;
-                    }
-                    return 0;
-                })))).then(Commands.argument("key", StringArgumentType.string()).executes((command) -> {
-                    String key = StringArgumentType.getString(command, "key");
-                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
-                    if (model != null) {
-                        BlockPos pos = command.getSource().asPlayer().getPosition();
-                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
-                        setOrigin(command.getSource(), pos);
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
-                        return 1;
-                    }
-                    return 0;
-                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-                    String key = StringArgumentType.getString(command, "key");
-                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
-                    if (model != null) {
-                        BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                        buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFAULT_DEFINITION);
-                        setOrigin(command.getSource(), pos);
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
-                        return 1;
-                    }
-                    return 0;
-                })).then(Commands.argument("block definition", StringArgumentType.word()).executes((command) -> {
-                    String key = StringArgumentType.getString(command, "key");
-                    String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
-                    if (model != null) {
-                        if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
-                            BlockPos pos = command.getSource().asPlayer().getPosition();
-                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
-                            setOrigin(command.getSource(), pos);
-                        } else {
-                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
-                            return 1;
-                        }
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
-                        return 1;
-                    }
-                    return 0;
-                }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
-                    String key = StringArgumentType.getString(command, "key");
-                    String blockDefinition = StringArgumentType.getString(command, "block definition");
-                    DungeonModel model = DungeonModels.KEY_TO_MODEL.get(key);
-                    if (model != null) {
-                        if (ModelBlockDefinition.DEFINITIONS.containsKey(blockDefinition)) {
-                            BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                            buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.DEFINITIONS.get(blockDefinition));
-                            setOrigin(command.getSource(), pos);
-                        } else {
-                            command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown block definition: " + blockDefinition), true);
-                            return 1;
-                        }
-                    } else {
-                        command.getSource().sendErrorMessage(new StringTextComponent("Unknown model key: " + key));
-                        return 1;
-                    }
+                    ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
+                    DungeonModel model = DungeonModelArgument.getModel(command, "model");
+                    BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                    buildModel(model, command.getSource().asPlayer().world, pos, blockDefinition);
+                    setOrigin(command.getSource(), pos);
                     return 0;
                 })))));
 
@@ -282,10 +184,26 @@ public class Tools {
                                 + (pos.getZ() - context.origin.getZ() + ").")), true);
                         return 0;
                     }
-                }).then(Commands.argument("location", Vec3Argument.vec3())
+                })
+                .then(Commands.argument("location", Vec3Argument.vec3())
                         .executes((command) -> {
                             BlockPos location = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
                             setOrigin(command.getSource(), location);
+                            return 0;
+                        }))
+                .then(Commands.argument("other", StringArgumentType.word())
+                        .executes((command) -> {
+                            String argument = StringArgumentType.getString(command, "other");
+                            if (argument.equals("reset")) {
+                                UUID uuid = command.getSource().asPlayer().getUniqueID();
+                                if (CONTEXT_TABLE.containsKey(uuid)) {
+                                    CONTEXT_TABLE.get(uuid).origin = null;
+                                } else {
+                                    command.getSource().sendFeedback(new StringTextComponent("Nothing to reset."), true);
+                                }
+                            } else {
+                                command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown argument : " + argument), true);
+                            }
                             return 0;
                         })));
     }
@@ -308,17 +226,32 @@ public class Tools {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
         IWorld world = event.getPlayer().world;
-        if (!world.isRemote() && event.getPlayer().isCreative() && event.getItemStack().getItem() == Items.DIAMOND_AXE) {
-            event.setCanceled(true);
+        if (!world.isRemote() && event.getPlayer().isCreative()) {
+            if (event.getPlayer().isSneaking()) {
+                if (CONTEXT_TABLE.containsKey(event.getPlayer().getUniqueID())) {
+                    ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUniqueID());
+                    if (context.origin != null) {
+                        event.setCanceled(true);
+                        event.getPlayer().sendMessage(new StringTextComponent("The coordinates of the block you clicked" +
+                                " relative to the origin are (x: "
+                                + (event.getPos().getX() - context.origin.getX()) + " y: "
+                                + (event.getPos().getY() - context.origin.getY()) + " z: "
+                                + (event.getPos().getZ() - context.origin.getZ() + ").")), event.getPlayer().getUniqueID());
+                    }
+                }
+            } else if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
+                event.setCanceled(true);
 
-            BlockPos pos = event.getPos();
+                BlockPos pos = event.getPos();
 
-            UUID uuid = event.getPlayer().getGameProfile().getId();
-            CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
+                UUID uuid = event.getPlayer().getGameProfile().getId();
+                CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
 
-            event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
-                            + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "),
-                    event.getPlayer().getUniqueID());
+                event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
+                                + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "),
+                        event.getPlayer().getUniqueID());
+
+            }
         }
 
     }

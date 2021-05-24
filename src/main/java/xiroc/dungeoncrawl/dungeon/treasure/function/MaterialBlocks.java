@@ -32,6 +32,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.ForgeRegistries;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -46,32 +47,34 @@ public class MaterialBlocks extends LootFunction {
 
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
+        TileEntity chest = context.get(LootParameters.BLOCK_ENTITY);
         if (context.has(LootParameters.ORIGIN)) {
-            TileEntity chest = context.get(LootParameters.BLOCK_ENTITY);
-            if (chest != null && chest.getTileData().contains("theme", 8)) {
-                Tuple<Theme, Theme.SubTheme> themes = Loot.getLootInformation(chest.getTileData());
-                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(),
-                        new BlockPos(context.get(LootParameters.ORIGIN)), context.getRandom())),
+            if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
+                Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), new BlockPos(context.get(LootParameters.ORIGIN)), context.getRandom())),
                         16 + context.getRandom().nextInt(49));
             } else {
                 Random random = context.getRandom();
-                BlockPos pos = new BlockPos(context.get(LootParameters.ORIGIN));
-                ResourceLocation biome = context.getWorld().getBiome(pos).getRegistryName();
-
-                return new ItemStack(ForgeRegistries.BLOCKS.getValue(
-                        getMaterial(Theme.randomTheme(biome.toString(), context.getRandom()),
-                                Theme.randomSubTheme(biome.toString(), context.getRandom()),
-                                pos, random)), 16 + context.getRandom().nextInt(49));
-
+                Theme theme;
+                Theme.SecondaryTheme secondaryTheme;
+                ResourceLocation biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.ORIGIN))).getRegistryName();
+                if (biome != null) {
+                    theme = Theme.randomTheme(biome.toString(), context.getRandom());
+                    secondaryTheme = Theme.randomSecondaryTheme(biome.toString(), context.getRandom());
+                } else {
+                    theme = Theme.getDefaultTheme();
+                    secondaryTheme = Theme.getDefaultSubTheme();
+                }
+                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(theme, secondaryTheme, new BlockPos(context.get(LootParameters.ORIGIN)), random)), 16 + context.getRandom().nextInt(49));
             }
         } else {
             return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
         }
     }
 
-    private static ResourceLocation getMaterial(Theme theme, Theme.SubTheme subTheme, BlockPos pos, Random rand) {
+    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, BlockPos pos, Random rand) {
         return rand.nextBoolean() ? theme.material.get(pos).getBlock().getRegistryName()
-                : subTheme.material.get(pos).getBlock().getRegistryName();
+                : secondaryTheme.material.get(pos).getBlock().getRegistryName();
     }
 
     @Override

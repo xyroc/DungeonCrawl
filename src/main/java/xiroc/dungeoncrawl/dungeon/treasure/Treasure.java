@@ -24,7 +24,12 @@ import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
-import xiroc.dungeoncrawl.dungeon.treasure.function.*;
+import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
+import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
+import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
+import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
+import xiroc.dungeoncrawl.dungeon.treasure.function.SpecialItem;
+import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 
 import java.util.HashMap;
 

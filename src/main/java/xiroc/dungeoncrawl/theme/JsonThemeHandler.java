@@ -35,7 +35,7 @@ import xiroc.dungeoncrawl.dungeon.block.pattern.CheckedPattern;
 import xiroc.dungeoncrawl.dungeon.block.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.theme.Theme.SubTheme;
+import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -86,13 +86,13 @@ public class JsonThemeHandler {
             theme.setDecorations(decorations);
         }
 
-        if (object.has("sub_theme")) {
-            WeightedRandom.Builder<SubTheme> builder = new WeightedRandom.Builder<>();
-            object.getAsJsonArray("sub_theme").forEach((element) -> {
+        if (object.has("secondary_theme")) {
+            WeightedRandom.Builder<SecondaryTheme> builder = new WeightedRandom.Builder<>();
+            object.getAsJsonArray("secondary_theme").forEach((element) -> {
                 JsonObject instance = element.getAsJsonObject();
-                String key = instance.get("key").getAsString();
-                if (Theme.KEY_TO_SUB_THEME.containsKey(key)) {
-                    builder.add(Theme.KEY_TO_SUB_THEME.get(key), JSONUtils.getWeightOrDefault(instance));
+                ResourceLocation key = new ResourceLocation(instance.get("key").getAsString());
+                if (Theme.KEY_TO_SECONDARY_THEME.containsKey(key)) {
+                    builder.add(Theme.KEY_TO_SECONDARY_THEME.get(key), JSONUtils.getWeightOrDefault(instance));
                 } else {
                     throw new NoSuchElementException("Unknown sub-theme key " + key + " in " + file.toString());
                 }
@@ -113,7 +113,7 @@ public class JsonThemeHandler {
      * @param object the json object
      * @return the resulting sub-theme
      */
-    public static SubTheme deserializeSubTheme(JsonObject object, ResourceLocation file) {
+    public static SecondaryTheme deserializeSubTheme(JsonObject object, ResourceLocation file) {
 
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
@@ -128,13 +128,13 @@ public class JsonThemeHandler {
         IBlockStateProvider button = JsonThemeHandler.deserialize(themeObject, "button", file);
         IBlockStateProvider pressurePlate = JsonThemeHandler.deserialize(themeObject, "pressure_plate", file);
 
-        SubTheme subTheme = new SubTheme(wallLog, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
+        SecondaryTheme secondaryTheme = new SecondaryTheme(wallLog, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
 
         if (object.has("id")) {
-            Theme.ID_TO_SUB_THEME.put(object.get("id").getAsInt(), subTheme);
+            Theme.ID_TO_SECONDARY_THEME.put(object.get("id").getAsInt(), secondaryTheme);
         }
 
-        return subTheme;
+        return secondaryTheme;
     }
 
     /**
@@ -145,7 +145,7 @@ public class JsonThemeHandler {
      */
     public static void deserializeThemeMapping(JsonObject object, ResourceLocation file) {
         object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-            ArrayList<Tuple<String, Integer>> entries = checkAndListThemes(entry);
+            ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
 
             WeightedRandom.Builder<Theme> builder = new WeightedRandom.Builder<>();
             entries.forEach((tuple) -> {
@@ -166,28 +166,28 @@ public class JsonThemeHandler {
      */
     public static void deserializeSubThemeMapping(JsonObject object, ResourceLocation file) {
         object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-            ArrayList<Tuple<String, Integer>> entries = checkAndListThemes(entry);
+            ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
 
-            WeightedRandom.Builder<SubTheme> builder = new WeightedRandom.Builder<>();
+            WeightedRandom.Builder<SecondaryTheme> builder = new WeightedRandom.Builder<>();
             entries.forEach((tuple) -> {
-                if (!Theme.KEY_TO_SUB_THEME.containsKey(tuple.getA())) {
+                if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(tuple.getA())) {
                     throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
                 }
-                builder.add(Theme.KEY_TO_SUB_THEME.get(tuple.getA()), tuple.getB());
+                builder.add(Theme.KEY_TO_SECONDARY_THEME.get(tuple.getA()), tuple.getB());
             });
-            Theme.BIOME_TO_SUB_THEME.put(entry.getKey(), builder.build());
+            Theme.BIOME_TO_SECONDARY_THEME.put(entry.getKey(), builder.build());
         });
     }
 
-    private static ArrayList<Tuple<String, Integer>> checkAndListThemes(Map.Entry<String, JsonElement> entry) {
+    private static ArrayList<Tuple<ResourceLocation, Integer>> checkAndListThemes(Map.Entry<String, JsonElement> entry) {
         if (!ForgeRegistries.BIOMES.containsKey(new ResourceLocation(entry.getKey()))) {
             DungeonCrawl.LOGGER.warn("The biome {} does not exist.", entry.getKey());
         }
 
-        ArrayList<Tuple<String, Integer>> entries = new ArrayList<>();
+        ArrayList<Tuple<ResourceLocation, Integer>> entries = new ArrayList<>();
         entry.getValue().getAsJsonArray().forEach((element) -> {
             JsonObject jsonObject = element.getAsJsonObject();
-            entries.add(new Tuple<>(jsonObject.get("key").getAsString(), JSONUtils.getWeightOrDefault(jsonObject)));
+            entries.add(new Tuple<>(new ResourceLocation(jsonObject.get("key").getAsString()), JSONUtils.getWeightOrDefault(jsonObject)));
         });
         return entries;
     }

@@ -19,11 +19,9 @@
 package xiroc.dungeoncrawl.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -60,7 +58,7 @@ public class SpawnDungeonCommand {
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
                                         ThemeArgument.getTheme(command, "theme"),
                                         Theme.getDefaultSubTheme()))
-                        .then(Commands.argument("seondary_theme", SecondaryThemeArgument.secondaryTheme()).executes((command) ->
+                        .then(Commands.argument("secondary_theme", SecondaryThemeArgument.secondaryTheme()).executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
                                         ThemeArgument.getTheme(command, "theme"),

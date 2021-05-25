@@ -367,7 +367,9 @@ public abstract class DungeonPiece extends StructurePiece {
                 return;
 
             worldIn.setBlockState(blockPos, blockstateIn, 2);
-            worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+            if (context.postProcessing) {
+                worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+            }
 
             IFluidState ifluidstate = worldIn.getFluidState(blockPos);
             if (ifluidstate.isSource()) {

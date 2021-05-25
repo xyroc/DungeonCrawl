@@ -19,11 +19,9 @@
 package xiroc.dungeoncrawl.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -33,6 +31,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
+import xiroc.dungeoncrawl.command.arguments.SecondaryThemeArgument;
+import xiroc.dungeoncrawl.command.arguments.ThemeArgument;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -55,17 +55,17 @@ public class SpawnDungeonCommand {
                             Theme.randomTheme(biome, world.getRandom()),
                             Theme.randomSecondaryTheme(biome, world.getRandom()));
                 })
-                .then(Commands.argument("theme", StringArgumentType.string())
+                .then(Commands.argument("theme", ThemeArgument.theme())
                         .executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
-                                        Theme.getTheme(new ResourceLocation(StringArgumentType.getString(command, "theme"))),
+                                        ThemeArgument.getTheme(command, "theme"),
                                         Theme.getDefaultSubTheme()))
-                        .then(Commands.argument("sub_theme", StringArgumentType.string()).executes((command) ->
+                        .then(Commands.argument("secondary_theme", SecondaryThemeArgument.secondaryTheme()).executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
-                                        Theme.getTheme(new ResourceLocation(StringArgumentType.getString(command, "theme"))),
-                                        Theme.getSecondaryTheme(new ResourceLocation(StringArgumentType.getString(command, "sub_theme"))))
+                                        ThemeArgument.getTheme(command, "theme"),
+                                        SecondaryThemeArgument.getSecondaryTheme(command, "secondary_theme"))
                         )))));
     }
 

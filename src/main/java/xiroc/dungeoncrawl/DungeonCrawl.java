@@ -35,7 +35,6 @@ import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -82,6 +81,7 @@ public class DungeonCrawl {
         forgeEventBus.addListener(this::onAddReloadListener);
         forgeEventBus.addListener(this::onWorldLoad);
         forgeEventBus.addListener(EventPriority.HIGH, this::onBiomeLoad);
+        forgeEventBus.addListener(this::onServerStart);
 
         Treasure.init();
         DungeonModelFeature.init();
@@ -136,8 +136,7 @@ public class DungeonCrawl {
         event.addListener(new ResourceReloadHandler());
     }
 
-    @SubscribeEvent
-    public void onServerStart(FMLServerStartingEvent event) {
+    private void onServerStart(FMLServerStartingEvent event) {
         SpawnDungeonCommand.register(event.getServer().getCommandManager().getDispatcher());
     }
 
@@ -149,8 +148,8 @@ public class DungeonCrawl {
      * Creates a key for a given resource location. Removes the base directory and the following slash and the file ending.
      *
      * @param resourceLocation the initial resource location.
-     * @param baseDirectory the base path without the last slash. ( dira/dirb not dira/dirb/ )
-     * @param fileEnding the file ending to remove at the end of the path
+     * @param baseDirectory    the base path without the last slash. ( dira/dirb not dira/dirb/ )
+     * @param fileEnding       the file ending to remove at the end of the path
      * @return the key
      */
     public static ResourceLocation key(ResourceLocation resourceLocation, String baseDirectory, String fileEnding) {

@@ -85,7 +85,7 @@ public class DungeonEntrance extends DungeonPiece {
         }
 
         Vector3i offset = model.getOffset(rotation);
-        BlockPos pos = new BlockPos(x, cursorHeight, z).add(offset);
+        BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).add(offset);
 
         build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, true);
 

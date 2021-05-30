@@ -139,13 +139,15 @@
       {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
-      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1}
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/crypt_turn", "weight": 5}
     ],
     "nodes:turn:catacombs": [
       {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/sewers", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
-      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1}
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
+      {"key": "dungeoncrawl:default/node/catacombs/crypt_turn", "weight": 5}
     ],
     "nodes:turn:hell": [
       {"key": "dungeoncrawl:default/node/hell/lava", "weight": 1},
@@ -155,6 +157,7 @@
       {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1}
+
     ],
     "nodes:dead_end:upper_two": [
       {"key": "dungeoncrawl:default/node/node_jukebox", "weight": 1},
@@ -166,7 +169,8 @@
       {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/sewers_straight", "weight": 1},
-      {"key": "dungeoncrawl:default/node/catacombs/sewers_dead_end", "weight": 10}
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_dead_end", "weight": 5},
+      {"key": "dungeoncrawl:default/node/catacombs/crypt_dead_end", "weight": 5}
     ],
     "nodes:dead_end:catacombs": [
       {"key": "dungeoncrawl:default/node/catacombs/fountain", "weight": 1},
@@ -174,7 +178,8 @@
       {"key": "dungeoncrawl:default/node/catacombs/prison", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/sewers_fork", "weight": 1},
       {"key": "dungeoncrawl:default/node/catacombs/sewers_straight", "weight": 1},
-      {"key": "dungeoncrawl:default/node/catacombs/sewers_dead_end", "weight": 10}
+      {"key": "dungeoncrawl:default/node/catacombs/sewers_dead_end", "weight": 5},
+      {"key": "dungeoncrawl:default/node/catacombs/crypt_dead_end", "weight": 5}
     ],
     "nodes:dead_end:hell": [
       {"key": "dungeoncrawl:default/node/hell/lava", "weight": 1},

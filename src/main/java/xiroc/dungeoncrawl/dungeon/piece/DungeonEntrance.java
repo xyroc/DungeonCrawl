@@ -88,10 +88,7 @@ public class DungeonEntrance extends DungeonPiece {
         BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).add(offset);
 
         build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, true);
-
-        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
-        }
+        placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
 
         // A custom bounding box for decorations (eg. vines placement).
         // The original bounding box of this piece goes from the bottom to the top of the world,
@@ -155,7 +152,7 @@ public class DungeonEntrance extends DungeonPiece {
                         && model.height > 1
                         && world.isAirBlock(position.down())
                         && block.type == DungeonModelBlockType.SOLID) {
-                    buildPillar(world, theme, pos.getX() + block.position.getX(), pos.getY(), pos.getZ() + block.position.getZ(), boundsIn);
+                    buildPillar(world, theme, pos.getX() + block.position.getX(), pos.getY(), pos.getZ() + block.position.getZ());
                 }
             }
         });

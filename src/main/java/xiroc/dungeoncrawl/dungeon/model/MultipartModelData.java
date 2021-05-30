@@ -37,6 +37,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class MultipartModelData {
 
@@ -144,7 +145,7 @@ public class MultipartModelData {
             this.rotation = rotation;
         }
 
-        public DungeonMultipartModelPiece createMultipartPiece(DungeonPiece parentPiece, DungeonModel parent, Rotation rotation, int x, int y, int z) {
+        public DungeonMultipartModelPiece createMultipartPiece(DungeonPiece parentPiece, DungeonModel parent, Rotation rotation, int x, int y, int z, Random rand) {
             if (model != null) {
                 DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece(null, DungeonPiece.DEFAULT_NBT);
                 Rotation fullRotation = this.rotation.add(rotation);
@@ -157,6 +158,7 @@ public class MultipartModelData {
                 piece.theme = parentPiece.theme;
                 piece.secondaryTheme = parentPiece.secondaryTheme;
                 piece.setupBoundingBox();
+                piece.customSetup(rand);
                 return piece;
             } else {
                 throw new RuntimeException("Can't create a multipart piece without a model. Metadata file: " + file.toString());

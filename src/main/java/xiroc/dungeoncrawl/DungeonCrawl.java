@@ -48,7 +48,6 @@ import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -84,7 +83,6 @@ public class DungeonCrawl {
         forgeEventBus.addListener(this::onServerStart);
 
         Treasure.init();
-        DungeonModelFeature.init();
         DungeonModelBlockType.buildNameTable();
     }
 

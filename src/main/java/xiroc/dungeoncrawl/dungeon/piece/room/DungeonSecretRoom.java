@@ -52,6 +52,7 @@ public class DungeonSecretRoom extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
+        placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
@@ -66,20 +67,21 @@ public class DungeonSecretRoom extends DungeonPiece {
         this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.SECRET_ROOM);
     }
 
-//    @Override
-//    public void setWorldPosition(int x, int y, int z) {
-//        switch (rotation) {
-//            case NONE:
-//                super.setWorldPosition(x + 1, y, z);
-//                break;
-//            case CLOCKWISE_90:
-//                super.setWorldPosition(x, y, z + 1);
-//                break;
-//            default:
-//                super.setWorldPosition(x, y, z);
-//                break;
-//        }
-//    }
+    // TODO: Why is this necessary?
+    @Override
+    public void setWorldPosition(int x, int y, int z) {
+        switch (rotation) {
+            case NONE:
+                super.setWorldPosition(x + 1, y, z);
+                break;
+            case CLOCKWISE_90:
+                super.setWorldPosition(x, y, z + 1);
+                break;
+            default:
+                super.setWorldPosition(x, y, z);
+                break;
+        }
+    }
 
     @Override
     public void setupBoundingBox() {

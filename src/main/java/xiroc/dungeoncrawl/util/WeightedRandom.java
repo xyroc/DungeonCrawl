@@ -50,8 +50,10 @@ public class WeightedRandom<T> implements IRandom<T> {
         this.entries = new ArrayList<>();
         int weight = 0;
         for (Tuple<T, Integer> entry : entries) {
-            weight += entry.getB();
-            this.entries.add(new Tuple<>(entry.getA(), weight));
+            if (entry.getB() > 0) {
+                weight += entry.getB();
+                this.entries.add(new Tuple<>(entry.getA(), weight));
+            }
         }
         this.totalWeight = weight;
     }

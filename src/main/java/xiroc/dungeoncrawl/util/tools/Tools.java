@@ -26,8 +26,8 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +46,6 @@ import xiroc.dungeoncrawl.command.arguments.ModelBlockDefinitionArgument;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.model.ModelHandler;
-import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 
 import java.util.Hashtable;
 import java.util.UUID;
@@ -191,55 +190,45 @@ public class Tools {
                             setOrigin(command.getSource(), location);
                             return 0;
                         }))
-                .then(Commands.argument("other", StringArgumentType.word())
-                        .executes((command) -> {
-                            String argument = StringArgumentType.getString(command, "other");
-                            if (argument.equals("reset")) {
-                                UUID uuid = command.getSource().asPlayer().getUniqueID();
-                                if (CONTEXT_TABLE.containsKey(uuid)) {
-                                    CONTEXT_TABLE.get(uuid).origin = null;
-                                } else {
-                                    command.getSource().sendFeedback(new StringTextComponent("Nothing to reset."), true);
-                                }
-                            } else {
-                                command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Unknown argument : " + argument), true);
-                            }
-                            return 0;
-                        })));
+                .then(Commands.literal("reset").executes((command) -> {
+                    UUID uuid = command.getSource().asPlayer().getUniqueID();
+                    if (CONTEXT_TABLE.containsKey(uuid)) {
+                        CONTEXT_TABLE.get(uuid).origin = null;
+                        command.getSource().sendFeedback(new StringTextComponent("Origin reset."), true);
+                    } else {
+                        command.getSource().sendFeedback(new StringTextComponent("Nothing to reset."), true);
+                    }
+                    return 0;
+                })));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (!event.getWorld().isRemote() && event.getPlayer().isCreative()
-                && event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() == Items.DIAMOND_AXE) {
-            event.setCanceled(true);
-            BlockPos pos = event.getPos();
+        if (!event.getWorld().isRemote() && event.getPlayer().isCreative()) {
+            Item item = event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem();
+            if (item == Items.DIAMOND_AXE) {
+                event.setCanceled(true);
+                BlockPos pos = event.getPos();
 
-            UUID uuid = event.getPlayer().getGameProfile().getId();
-            CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos1 = pos;
-
-            event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE + "Position 1 set to ("
-                    + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUniqueID());
+                UUID uuid = event.getPlayer().getGameProfile().getId();
+                CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos1 = pos;
+                event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE + "Position 1 set to ("
+                        + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUniqueID());
+            } else if (item == Items.GOLDEN_AXE) {
+                event.setCanceled(true);
+                CONTEXT_TABLE.computeIfAbsent(event.getPlayer().getUniqueID(), (key) -> new ModelEditContext()).origin = event.getPos();
+                event.getPlayer().sendMessage(new StringTextComponent("Origin set to (x: "
+                        + event.getPos().getX() + " y: "
+                        + event.getPos().getY() + " z: "
+                        + event.getPos().getZ() + ")."), event.getPlayer().getUniqueID());
+            }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
-        IWorld world = event.getPlayer().world;
-        if (!world.isRemote() && event.getPlayer().isCreative()) {
-            if (event.getPlayer().isSneaking()) {
-                if (CONTEXT_TABLE.containsKey(event.getPlayer().getUniqueID())) {
-                    ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUniqueID());
-                    if (context.origin != null) {
-                        event.setCanceled(true);
-                        event.getPlayer().sendMessage(new StringTextComponent("The coordinates of the block you clicked" +
-                                " relative to the origin are (x: "
-                                + (event.getPos().getX() - context.origin.getX()) + " y: "
-                                + (event.getPos().getY() - context.origin.getY()) + " z: "
-                                + (event.getPos().getZ() - context.origin.getZ() + ").")), event.getPlayer().getUniqueID());
-                    }
-                }
-            } else if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
+        if (!event.getPlayer().world.isRemote() && event.getPlayer().isCreative()) {
+            if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
                 event.setCanceled(true);
 
                 BlockPos pos = event.getPos();
@@ -248,9 +237,18 @@ public class Tools {
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
 
                 event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
-                                + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "),
-                        event.getPlayer().getUniqueID());
-
+                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUniqueID());
+            } else if (event.getItemStack().getItem() == Items.GOLDEN_AXE
+                    && CONTEXT_TABLE.containsKey(event.getPlayer().getUniqueID())) {
+                event.setCanceled(true);
+                ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUniqueID());
+                if (context.origin != null) {
+                    event.getPlayer().sendMessage(new StringTextComponent("The coordinates of the block you clicked" +
+                            " relative to the origin are (x: "
+                            + (event.getPos().getX() - context.origin.getX()) + " y: "
+                            + (event.getPos().getY() - context.origin.getY()) + " z: "
+                            + (event.getPos().getZ() - context.origin.getZ() + ").")), event.getPlayer().getUniqueID());
+                }
             }
         }
 
@@ -265,7 +263,8 @@ public class Tools {
                 + context.origin.getZ() + ")."), true);
     }
 
-    public static void buildModel(DungeonModel model, IWorld world, BlockPos pos, ModelBlockDefinition definition) {
+    public static void buildModel(DungeonModel model, IWorld world, BlockPos pos, ModelBlockDefinition
+            definition) {
         for (int y = 0; y < model.height; y++) {
             for (int x = 0; x < model.width; x++) {
                 for (int z = 0; z < model.length; z++) {
@@ -284,12 +283,6 @@ public class Tools {
             world.setBlockState(placePos, modelBlock.create(block.getDefaultState(), world, placePos, Rotation.NONE).getA(), 3);
         });
 
-        if (model.featurePositions != null) {
-            for (DungeonModel.FeaturePosition featurePosition : model.featurePositions) {
-                DirectionalBlockPos blockPos = featurePosition.directionalBlockPos(pos.getX(), pos.getY(), pos.getZ());
-                world.setBlockState(blockPos.position, Blocks.JIGSAW.getDefaultState().with(BlockStateProperties.ORIENTATION, getJigsawOrientation(blockPos.direction)), 3);
-            }
-        }
     }
 
     private static JigsawOrientation getJigsawOrientation(Direction primary) {

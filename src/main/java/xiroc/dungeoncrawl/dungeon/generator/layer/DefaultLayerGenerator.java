@@ -69,7 +69,6 @@ public class DefaultLayerGenerator extends LayerGenerator {
         this.farthestRoom = null;
         this.corridors.clear();
         this.rooms.clear();
-        DungeonCrawl.LOGGER.info("Layer {} Nodes {} Rooms {}", layer, nodesLeft, roomsLeft);
     }
 
     @Override
@@ -85,10 +84,10 @@ public class DefaultLayerGenerator extends LayerGenerator {
 
         DungeonCrawl.LOGGER.info("Initial generation of layer {}", layer);
         for (int i = rand.nextInt(2); i < 4; i++) {
-            DungeonCrawl.LOGGER.info("Step {} in {}", i, direction);
             findPositionAndContinue(dungeonLayer, start, direction, rand, settings.minDistance, settings.maxDistance, layer, 1);
             direction = direction.rotateY();
         }
+
 
         if (!dungeonLayer.stairsPlaced) {
             if (farthestRoom != null) {

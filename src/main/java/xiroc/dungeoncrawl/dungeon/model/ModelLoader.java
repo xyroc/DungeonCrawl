@@ -39,26 +39,7 @@ public interface ModelLoader {
             modelBlocks.add(DungeonModelBlock.fromNBT(blocks.getCompound(i)));
         }
 
-        DungeonModel.FeaturePosition[] featurePositions = null;
-
-        if (nbt.contains("featurePositions", 9)) {
-            ListNBT list = nbt.getList("featurePositions", 10);
-            int amount = list.getCompound(0).getInt("amount");
-            featurePositions = new DungeonModel.FeaturePosition[amount];
-            for (int i = 1; i < list.size(); i++) {
-                CompoundNBT compound = list.getCompound(i);
-                if (compound.contains("facing")) {
-                    featurePositions[i - 1] = new DungeonModel.FeaturePosition(compound.getInt("x"), compound.getInt("y"),
-                            compound.getInt("z"),
-                            Direction.valueOf(compound.getString("facing").toUpperCase(Locale.ROOT)));
-                } else {
-                    featurePositions[i - 1] = new DungeonModel.FeaturePosition(compound.getInt("x"), compound.getInt("y"),
-                            compound.getInt("z"));
-                }
-            }
-        }
-
-        return new DungeonModel(modelBlocks, featurePositions, nbt.getInt("width"), nbt.getInt("height"), nbt.getInt("length"));
+        return new DungeonModel(modelBlocks, nbt.getInt("width"), nbt.getInt("height"), nbt.getInt("length"));
     };
 
     ModelLoader LEGACY = (nbt, file) -> {
@@ -80,26 +61,7 @@ public interface ModelLoader {
             }
         }
 
-        DungeonModel.FeaturePosition[] featurePositions = null;
-
-        if (nbt.contains("featurePositions", 9)) {
-            ListNBT list = nbt.getList("featurePositions", 10);
-            int amount = list.getCompound(0).getInt("amount");
-            featurePositions = new DungeonModel.FeaturePosition[amount];
-            for (int i = 1; i < list.size(); i++) {
-                CompoundNBT compound = list.getCompound(i);
-                if (compound.contains("facing")) {
-                    featurePositions[i - 1] = new DungeonModel.FeaturePosition(compound.getInt("x"), compound.getInt("y"),
-                            compound.getInt("z"),
-                            Direction.valueOf(compound.getString("facing").toUpperCase(Locale.ROOT)));
-                } else {
-                    featurePositions[i - 1] = new DungeonModel.FeaturePosition(compound.getInt("x"), compound.getInt("y"),
-                            compound.getInt("z"));
-                }
-            }
-        }
-
-        return new DungeonModel(modelBlocks, featurePositions, width, height, length);
+        return new DungeonModel(modelBlocks, width, height, length);
     };
 
     DungeonModel load(CompoundNBT nbt, ResourceLocation file);

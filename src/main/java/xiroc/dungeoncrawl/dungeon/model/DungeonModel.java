@@ -22,7 +22,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
@@ -30,7 +29,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import javax.annotation.Nullable;
@@ -51,17 +49,13 @@ public class DungeonModel {
     public final List<DungeonModelBlock> blocks;
 
     @Nullable
-    public FeaturePosition[] featurePositions;
-
-    @Nullable
     public List<MultipartModelData> multipartData;
 
     @Nullable
-    public Metadata metadata;
+    private Metadata metadata;
 
-    public DungeonModel(List<DungeonModelBlock> blocks, @Nullable FeaturePosition[] featurePositions, int width, int height, int length) {
+    public DungeonModel(List<DungeonModelBlock> blocks, int width, int height, int length) {
         this.blocks = blocks;
-        this.featurePositions = featurePositions;
         this.width = width;
         this.height = height;
         this.length = length;
@@ -91,6 +85,11 @@ public class DungeonModel {
 
     public ResourceLocation getLocation() {
         return location;
+    }
+
+    @Nullable
+    public Metadata getMetadata() {
+        return metadata;
     }
 
     public void loadMetadata(Metadata metadata) {
@@ -166,93 +165,24 @@ public class DungeonModel {
         return "{key=" + key + "}";
     }
 
-    public static class FeaturePosition {
-
-        public Vec3i position;
-        public Direction facing;
-
-        public FeaturePosition(int x, int y, int z) {
-            this.position = new Vec3i(x, y, z);
-        }
-
-        public FeaturePosition(int x, int y, int z, Direction facing) {
-            this.position = new Vec3i(x, y, z);
-            this.facing = facing;
-        }
-
-        public FeaturePosition rotate(Rotation rotation, DungeonModel model) {
-            switch (rotation) {
-                case CLOCKWISE_90:
-                    return new FeaturePosition(model.length - position.getZ() - 1, position.getY(), position.getX(),
-                            facing.getAxis() != Direction.Axis.Y ? facing.rotateY() : facing);
-                case CLOCKWISE_180:
-                    return new FeaturePosition(model.width - position.getX() - 1, position.getY(), model.length - position.getZ() - 1,
-                            facing.getAxis() != Direction.Axis.Y ? facing.getOpposite() : facing);
-                case COUNTERCLOCKWISE_90:
-                    return new FeaturePosition(position.getZ(), position.getY(), model.width - position.getX() - 1,
-                            facing.getAxis() != Direction.Axis.Y ? facing.rotateYCCW() : facing);
-                default:
-                    return this;
-            }
-        }
-
-        public BlockPos blockPos(int x, int y, int z) {
-            return new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
-        }
-
-        public BlockPos blockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
-            switch (rotation) {
-                case CLOCKWISE_90:
-                    return new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX());
-                case CLOCKWISE_180:
-                    return new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + model.width - position.getX() - 1);
-                case COUNTERCLOCKWISE_90:
-                    return new BlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1);
-                default:
-                    return new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
-            }
-        }
-
-        public DirectionalBlockPos directionalBlockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
-            switch (rotation) {
-                case CLOCKWISE_90:
-                    return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(),
-                            facing.getAxis() != Direction.Axis.Y ? facing.rotateY() : facing);
-                case CLOCKWISE_180:
-                    return new DirectionalBlockPos(x + model.width - position.getX() - 1, y + position.getY(), z + model.length - position.getZ() - 1,
-                            facing.getAxis() != Direction.Axis.Y ? facing.getOpposite() : facing);
-                case COUNTERCLOCKWISE_90:
-                    return new DirectionalBlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1,
-                            facing.getAxis() != Direction.Axis.Y ? facing.rotateYCCW() : facing);
-                default:
-                    return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
-            }
-        }
-
-        public DirectionalBlockPos directionalBlockPos(int x, int y, int z) {
-            return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), this.facing);
-        }
-
-        public DirectionalBlockPos directionalBlockPos(int x, int y, int z, Direction facing) {
-            return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
-        }
-
-    }
-
     public static class Metadata {
 
+        @Nullable
         public Integer id;
 
-        public DungeonModelFeature feature;
-        public DungeonModelFeature.Metadata featureMetadata;
-
+        @Nullable
         public List<MultipartModelData> multipartData;
 
         public boolean variation;
 
-        public Vec3i offset, rotatedOffset;
+        @Nullable
+        private Vec3i offset, rotatedOffset;
 
-        private ArrayList<Tuple<Vec3i, ResourceLocation>> loot;
+        @Nullable
+        public DungeonModelFeature[] features;
+
+        @Nullable
+        public ArrayList<Tuple<Vec3i, ResourceLocation>> loot;
 
         private Metadata() {
         }
@@ -269,10 +199,13 @@ public class DungeonModel {
                 metadata.setOffset(JSONUtils.getOffset(offset), offset.has("rotate") && offset.get("rotate").getAsBoolean());
             }
 
-            if (object.has("feature")) {
-                JsonObject featureData = object.getAsJsonObject("feature");
-                metadata.setFeature(DungeonModelFeature.getFromName(featureData.get("type").getAsString()));
-                metadata.setFeatureMetadata(new DungeonModelFeature.Metadata(featureData));
+            if (object.has("features")) {
+                JsonArray array = object.getAsJsonArray("features");
+                DungeonModelFeature[] features = new DungeonModelFeature[array.size()];
+                for (int i = 0; i < array.size(); i++) {
+                    features[i] = DungeonModelFeature.fromJson(array.get(i).getAsJsonObject(), file);
+                }
+                metadata.setFeatures(features);
             }
 
             if (object.has("variation")) {
@@ -309,16 +242,12 @@ public class DungeonModel {
             return metadata;
         }
 
-        private void setId(Integer id) {
+        private void setId(@Nullable Integer id) {
             this.id = id;
         }
 
-        private void setFeature(DungeonModelFeature feature) {
-            this.feature = feature;
-        }
-
-        private void setFeatureMetadata(DungeonModelFeature.Metadata featureMetadata) {
-            this.featureMetadata = featureMetadata;
+        private void setFeatures(@Nullable DungeonModelFeature[] features) {
+            this.features = features;
         }
 
         private void setOffset(Vec3i offset, boolean rotatable) {
@@ -326,7 +255,7 @@ public class DungeonModel {
             this.rotatedOffset = rotatable ? new Vec3i(offset.getZ(), offset.getY(), offset.getX()) : null;
         }
 
-        private void setMultipartData(List<MultipartModelData> multipartData) {
+        private void setMultipartData(@Nullable List<MultipartModelData> multipartData) {
             this.multipartData = multipartData;
         }
 

@@ -49,13 +49,14 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public boolean create(IWorld p_225577_1_, ChunkGenerator<?> p_225577_2_, Random p_225577_3_, MutableBoundingBox p_225577_4_, ChunkPos p_225577_5_) {
+    public boolean create(IWorld worldIn, ChunkGenerator<?> p_225577_2_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_225577_5_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
 
-        buildRotated(model, p_225577_1_, p_225577_4_, new BlockPos(x, y, z), theme, secondaryTheme, stage, rotation, context, false);
+        buildRotated(model, worldIn, structureBoundingBoxIn, new BlockPos(x, y, z), theme, secondaryTheme, stage, rotation, context, false);
+        placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         return true;
     }
 

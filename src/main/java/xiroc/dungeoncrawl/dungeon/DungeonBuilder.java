@@ -219,41 +219,40 @@ public class DungeonBuilder {
             ModelSelector modelSelector = type.getLayer(i).modelSelector;
             for (int x = 0; x < layer.width; x++)
                 for (int z = 0; z < layer.length; z++) {
-                    if (layer.grid[x][z] != null && !layer.grid[x][z].hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
-
+                    PlaceHolder placeHolder = layer.grid[x][z];
+                    if (placeHolder != null && !placeHolder.hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
                         if (i == layers.length - 1) {
-                            layer.grid[x][z].reference.theme = bottomTheme;
-                            layer.grid[x][z].reference.secondaryTheme = bottomSecondaryTheme;
+                            placeHolder.reference.theme = bottomTheme;
+                            placeHolder.reference.secondaryTheme = bottomSecondaryTheme;
                         } else if (catacombs && layers.length - i < 4) {
-                            layer.grid[x][z].reference.theme = lowerTheme;
-                            layer.grid[x][z].reference.secondaryTheme = lowerSecondaryTheme;
+                            placeHolder.reference.theme = lowerTheme;
+                            placeHolder.reference.secondaryTheme = lowerSecondaryTheme;
                         } else {
-                            layer.grid[x][z].reference.theme = theme;
-                            layer.grid[x][z].reference.secondaryTheme = secondaryTheme;
+                            placeHolder.reference.theme = theme;
+                            placeHolder.reference.secondaryTheme = secondaryTheme;
                         }
 
-                        if (!layer.grid[x][z].hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
-                            layer.grid[x][z].reference.setupModel(this, modelSelector, pieces, rand);
+                        if (!placeHolder.hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {
+                            placeHolder.reference.setupModel(this, modelSelector, pieces, rand);
                         }
 
-                        if (!layer.grid[x][z].hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
-                            layer.grid[x][z].reference.setWorldPosition(startPos.getX() + x * 9,
+                        if (!placeHolder.hasFlag(PlaceHolder.Flag.FIXED_POSITION)) {
+                            placeHolder.reference.setWorldPosition(startPos.getX() + x * 9,
                                     startPos.getY() - i * 9, startPos.getZ() + z * 9);
                         }
 
-                        layer.grid[x][z].reference.setupBoundingBox();
+                        placeHolder.reference.setupBoundingBox();
 
-                        if (layer.grid[x][z].reference.hasChildPieces()) {
-                            layer.grid[x][z].reference.addChildPieces(pieces, this, modelSelector, i, rand);
+                        if (placeHolder.reference.hasChildPieces()) {
+                            placeHolder.reference.addChildPieces(pieces, this, modelSelector, i, rand);
                         }
 
-                        if (layer.grid[x][z].reference.getType() == 10) {
-                            layer.rotateNode(layer.grid[x][z], rand);
+                        if (placeHolder.reference.getType() == 10) {
+                            layer.rotateNode(placeHolder, rand);
                         }
 
-                        layer.grid[x][z].reference.customSetup(rand);
-
-                        pieces.add(layer.grid[x][z].reference);
+                        placeHolder.reference.customSetup(rand);
+                        pieces.add(placeHolder.reference);
                     }
                 }
         }

@@ -31,20 +31,9 @@ public class DirectionalBlockPos {
     public Direction direction;
     public Rotation rotation;
 
-    public DirectionalBlockPos(BlockPos position, Direction direction) {
-        this.position = position;
-        this.direction = direction;
-    }
-
     public DirectionalBlockPos(int x, int y, int z, Direction direction) {
         this.position = new BlockPos(x, y, z);
         this.direction = direction;
-    }
-
-    public DirectionalBlockPos(BlockPos position, Direction direction, Rotation rotation) {
-        this.position = position;
-        this.direction = direction;
-        this.rotation = rotation;
     }
 
     public DirectionalBlockPos(int x, int y, int z, Direction direction, Rotation rotation) {
@@ -62,7 +51,7 @@ public class DirectionalBlockPos {
         nbt.putInt("x", position.getX());
         nbt.putInt("y", position.getY());
         nbt.putInt("z", position.getZ());
-        nbt.putString("direction", direction.toString().toUpperCase(Locale.ROOT));
+        nbt.putInt("direction", direction.getIndex());
         if (rotation != null) {
             nbt.putString("rotation", rotation.toString().toUpperCase(Locale.ROOT));
         }
@@ -70,6 +59,7 @@ public class DirectionalBlockPos {
 
     public static DirectionalBlockPos fromNBT(CompoundNBT nbt) {
         return new DirectionalBlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"),
-                Direction.valueOf(nbt.getString("direction")), nbt.contains("rotation") ? Rotation.valueOf(nbt.getString("rotation")) : null);
+                Direction.byIndex(nbt.getInt("direction")), nbt.contains("rotation") ? Rotation.valueOf(nbt.getString("rotation")) : null);
     }
+
 }

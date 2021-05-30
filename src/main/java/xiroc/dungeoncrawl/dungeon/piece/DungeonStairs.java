@@ -77,22 +77,14 @@ public class DungeonStairs extends DungeonPiece {
             case 0: {
                 build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
                 ironBars(worldIn, structureBoundingBoxIn, model, context);
-
-                if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
-                }
-
+                placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
                 decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
                 return true;
             }
             case 1: {
                 build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
                 entrances(worldIn, structureBoundingBoxIn, model);
-
-                if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-                    model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
-                }
-
+                placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
                 decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
                 return true;
             }

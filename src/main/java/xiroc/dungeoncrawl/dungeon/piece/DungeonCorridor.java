@@ -66,19 +66,11 @@ public class DungeonCorridor extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).add(offset);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
-
-        if (model.metadata != null && model.metadata.feature != null && featurePositions != null) {
-            model.metadata.feature.build(worldIn, context, randomIn, pos, featurePositions, structureBoundingBoxIn, theme, secondaryTheme, stage);
-        }
-
         if (connectedSides != 2 || !isStraight()) {
             entrances(worldIn, structureBoundingBoxIn, model);
         }
-
+        placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
-
-        if (Config.NO_SPAWNERS.get())
-            spawnMobs(worldIn, this, model.width, model.length, new int[]{offset.getY()});
         return true;
     }
 

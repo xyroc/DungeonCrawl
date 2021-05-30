@@ -20,10 +20,6 @@ package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -43,7 +39,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
-import xiroc.dungeoncrawl.dungeon.block.Spawner;
 import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -53,41 +48,21 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
-import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
-import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public abstract class DungeonPiece extends StructurePiece {
 
-    // 0    corridor
-    // 1    stairs
-    // 2    (unused) corridor hole
-    // 3    (unused) corridor trap
-    // 4    corridor room
-    // 5    <removed>
-    // 6    entrance builder
-    // 7    (unused) large corridor
-    // 8    room
-    // 9    side room
-    // 10   node room
-    // 11   node connector
-    // 12   (unused) prisoner cell
-    // 13   staircase
-    // 14   secret room
-    // 15   (unused) spider room
-    // 16   multipart model piece
-
     public static final CompoundNBT DEFAULT_NBT;
-
-//    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.IRON_BARS).build();
 
     static {
         DEFAULT_NBT = new CompoundNBT();
@@ -105,8 +80,10 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public Rotation rotation;
     public int connectedSides, x, y, z, stage;
-    public boolean[] sides; // N-E-S-W
-    public DirectionalBlockPos[] featurePositions;
+    public boolean[] sides; // Order: North, East, South, West
+
+    @Nullable
+    public DungeonModelFeature.Instance[] features;
     public byte[] variation;
 
     public DungeonModel model;
@@ -158,8 +135,8 @@ public abstract class DungeonPiece extends StructurePiece {
             this.model = DungeonModels.KEY_TO_MODEL.get(new ResourceLocation(p_i51343_2_.getString("model")));
         }
 
-        if (p_i51343_2_.contains("featurePositions", 9)) {
-            this.featurePositions = readAllPositions(p_i51343_2_.getList("featurePositions", 10));
+        if (p_i51343_2_.contains("features", 9)) {
+            this.features = readAllFeatures(p_i51343_2_.getList("features", 10));
         }
 
         if (p_i51343_2_.contains("variation")) {
@@ -185,20 +162,25 @@ public abstract class DungeonPiece extends StructurePiece {
         tagCompound.putInt("z", z);
         tagCompound.putInt("stage", stage);
         tagCompound.putInt("rotation", Orientation.rotationAsInt(this.rotation));
+
         if (model != null) {
             tagCompound.putString("model", model.getKey().toString());
         }
+
         if (theme != null) {
             tagCompound.putString("theme", theme.getKey().toString());
         }
+
         if (secondaryTheme != null) {
             tagCompound.putString("secondaryTheme", secondaryTheme.getKey().toString());
         }
-        if (featurePositions != null) {
+
+        if (features != null) {
             ListNBT list = new ListNBT();
-            writeAllPositions(featurePositions, list);
-            tagCompound.put("featurePositions", list);
+            writeAllFeatures(features, list);
+            tagCompound.put("features", list);
         }
+
         if (variation != null) {
             tagCompound.putByteArray("variation", variation);
         }
@@ -269,10 +251,22 @@ public abstract class DungeonPiece extends StructurePiece {
         if (model == null) {
             return;
         }
-        if (model.metadata != null && model.metadata.featureMetadata != null && model.featurePositions != null && model.featurePositions.length > 0) {
-            Vec3i offset = model.getOffset(rotation);
-            DungeonModelFeature.setup(this, model, model.featurePositions, rotation, rand, model.metadata.featureMetadata,
-                    x + offset.getX(), y + offset.getY(), z + offset.getZ());
+        DungeonModel.Metadata metadata = model.getMetadata();
+        if (metadata != null) {
+            if (metadata.features != null) {
+                Vec3i offset = model.getOffset(rotation);
+                List<DungeonModelFeature.Instance> features = new ArrayList<>();
+                for (int i = 0; i < metadata.features.length; i++) {
+                    metadata.features[i].setup(model, x + offset.getX(), y + offset.getY(), z + offset.getZ(), rotation, features, rand);
+                }
+                this.features = features.toArray(new DungeonModelFeature.Instance[0]);
+            }
+            if (metadata.variation) {
+                variation = new byte[16];
+                for (int i = 0; i < variation.length; i++) {
+                    variation[i] = (byte) rand.nextInt(32);
+                }
+            }
         }
     }
 
@@ -291,9 +285,9 @@ public abstract class DungeonPiece extends StructurePiece {
             BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
             for (MultipartModelData data : model.multipartData) {
                 if (data.checkConditions(this)) {
-                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
+                    pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ(), rand));
                 } else if (data.alternatives != null) {
-                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ()));
+                    pieces.add(data.alternatives.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ(), rand));
                 }
             }
         }
@@ -331,42 +325,15 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public static void setBlockState(IWorld worldIn, BlockState blockstateIn,
-                                     MutableBoundingBox boundingboxIn, BlockPos blockPos) {
-        if (boundingboxIn.isVecInside(blockPos)) {
-
-            worldIn.setBlockState(blockPos, blockstateIn, 2);
-
-            IFluidState ifluidstate = worldIn.getFluidState(blockPos);
-            if (ifluidstate.isSource()) {
-                worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
-            }
-
-//            if (BLOCKS_NEEDING_POSTPROCESSING.contains(blockstateIn.getBlock())) {
-//                worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
-//            }
-        }
-    }
-
-    public static void setBlockState(IWorld worldIn, BlockState state, int x, int y, int z,
-                                     MutableBoundingBox worldGenBounds, boolean fillAir) {
+    public void replaceBlockState(IWorld worldIn, BlockState blockState, int x, int y, int z,
+                                  MutableBoundingBox bounds, PlacementContext context) {
         BlockPos blockPos = new BlockPos(x, y, z);
-
-        if (!fillAir && worldIn.isAirBlock(blockPos))
-            return;
-
-        setBlockState(worldIn, state, worldGenBounds, blockPos);
-    }
-
-    public void replaceBlockState(IWorld worldIn, BlockState blockstateIn, int x, int y, int z,
-                                  MutableBoundingBox boundingboxIn, PlacementContext context) {
-        BlockPos blockPos = new BlockPos(x, y, z);
-        if (boundingboxIn.isVecInside(blockPos)) {
+        if (bounds.isVecInside(blockPos)) {
 
             if (DungeonBuilder.isBlockProtected(worldIn, blockPos, context) || worldIn.getBlockState(blockPos).isAir(worldIn, blockPos))
                 return;
 
-            worldIn.setBlockState(blockPos, blockstateIn, 2);
+            worldIn.setBlockState(blockPos, blockState, 2);
             if (context.postProcessing) {
                 worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
             }
@@ -498,7 +465,7 @@ public abstract class DungeonPiece extends StructurePiece {
     /**
      * Builds a 1x1 pillar to the ground
      */
-    public void buildPillar(IWorld world, Theme theme, int x, int y, int z, MutableBoundingBox bounds) {
+    public void buildPillar(IWorld world, Theme theme, int x, int y, int z) {
         int height = getGroundHeightFrom(world, x, y - 1, z);
         for (; y > height; y--) {
             BlockPos pos = new BlockPos(x, y, z);
@@ -557,8 +524,16 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
+    public void placeFeatures(IWorld world, PlacementContext context, MutableBoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, Random rand, int stage) {
+        if (features != null) {
+            for (DungeonModelFeature.Instance feature : features) {
+                feature.place(world, context, bounds, rand, theme, secondaryTheme, stage);
+            }
+        }
+    }
+
     /**
-     * A debug method to visualize bounding boxes in the game
+     * A debug method to visualize bounding boxes ingame.
      */
     public static void buildBoundingBox(IWorld world, MutableBoundingBox box, Block block) {
         BlockState state = block.getDefaultState();
@@ -614,30 +589,6 @@ public abstract class DungeonPiece extends StructurePiece {
         return true;
     }
 
-    public static void spawnMobs(IWorld world, DungeonPiece piece, int width, int length, int[] floors) {
-        for (int floor : floors) {
-            for (int x = 1; x < width; x++) {
-                for (int z = 1; z < length; z++) {
-                    BlockPos pos = new BlockPos(piece.x + x, piece.y + floor + 1, piece.z + z);
-                    if (piece.boundingBox.isVecInside(pos) && world.getBlockState(pos).isAir(world, pos)
-                            && world.getRandom().nextDouble() < Config.MOB_SPAWN_RATE.get()) {
-                        EntityType<?> mob = RandomMonster.randomMonster(world.getRandom(), piece.stage);
-                        Entity entity = mob.create(world.getWorld());
-                        if (entity instanceof MonsterEntity) {
-                            MonsterEntity mobEntity = (MonsterEntity) entity;
-                            mobEntity.heal(mobEntity.getMaxHealth());
-                            mobEntity.setLocationAndAngles(pos.getX(), pos.getY(), pos.getZ(), 0, 0);
-                            Spawner.equipMonster(mobEntity, world.getRandom(), piece.stage);
-                            mobEntity.onInitialSpawn(world, world.getDifficultyForLocation(pos), SpawnReason.STRUCTURE,
-                                    null, null);
-                            world.addEntity(mobEntity);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public static Direction getOpenSide(DungeonPiece piece, int n) {
         int c = 0;
         for (int i = 0; i < 4; i++) {
@@ -660,20 +611,20 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public static DirectionalBlockPos[] readAllPositions(ListNBT nbt) {
-        DirectionalBlockPos[] positions = new DirectionalBlockPos[nbt.size()];
+    public static DungeonModelFeature.Instance[] readAllFeatures(ListNBT nbt) {
+        DungeonModelFeature.Instance[] features = new DungeonModelFeature.Instance[nbt.size()];
 
-        for (int i = 0; i < positions.length; i++) {
-            positions[i] = DirectionalBlockPos.fromNBT(nbt.getCompound(i));
+        for (int i = 0; i < features.length; i++) {
+            features[i] = DungeonModelFeature.Instance.read(nbt.getCompound(i));
         }
 
-        return positions;
+        return features;
     }
 
-    public static void writeAllPositions(DirectionalBlockPos[] positions, ListNBT nbt) {
-        for (DirectionalBlockPos directionalBlockPos : positions) {
+    public static void writeAllFeatures(DungeonModelFeature.Instance[] positions, ListNBT nbt) {
+        for (DungeonModelFeature.Instance feature : positions) {
             CompoundNBT position = new CompoundNBT();
-            directionalBlockPos.writeToNBT(position);
+            feature.write(position);
             nbt.add(position);
         }
     }

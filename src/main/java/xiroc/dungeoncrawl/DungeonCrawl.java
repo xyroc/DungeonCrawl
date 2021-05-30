@@ -45,7 +45,6 @@ import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -74,7 +73,6 @@ public class DungeonCrawl {
 
         ForgeRegistries.FEATURES.register(Dungeon.DUNGEON.setRegistryName(new ResourceLocation(Dungeon.NAME.toLowerCase())));
         Treasure.init();
-        DungeonModelFeature.init();
         DungeonModelBlockType.buildNameTable();
     }
 
@@ -140,8 +138,8 @@ public class DungeonCrawl {
      * Creates a key for a given resource location. Removes the base directory and the following slash and the file ending.
      *
      * @param resourceLocation the initial resource location.
-     * @param baseDirectory the base path without the last slash. ( dira/dirb not dira/dirb/ )
-     * @param fileEnding the file ending to remove at the end of the path
+     * @param baseDirectory    the base path without the last slash. ( dira/dirb not dira/dirb/ )
+     * @param fileEnding       the file ending to remove at the end of the path
      * @return the key
      */
     public static ResourceLocation key(ResourceLocation resourceLocation, String baseDirectory, String fileEnding) {

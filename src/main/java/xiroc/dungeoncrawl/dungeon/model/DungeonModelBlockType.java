@@ -47,6 +47,7 @@ public enum DungeonModelBlockType {
     SOLID_STAIRS            (tFactory(Theme::getSolidStairs), PlacementBehaviour.SOLID),
     SOLID_SLAB              (tFactory(Theme::getSolidSlab), PlacementBehaviour.SOLID),
     GENERIC                 (tFactory(Theme::getGeneric)),
+    SLAB                    (tFactory(Theme::getSlab)),
     SOLID_PILLAR            (tFactory(Theme::getPillar), PlacementBehaviour.SOLID),
     SOLID_FLOOR             (tFactory(Theme::getFloor), PlacementBehaviour.SOLID),
     FLOOR                   (tFactory(Theme::getFloor), PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
@@ -57,7 +58,6 @@ public enum DungeonModelBlockType {
     PILLAR                  (sFactory(Theme.SecondaryTheme::getPillar)),
     MATERIAL_STAIRS         (sFactory(Theme.SecondaryTheme::getStairs)),
     TRAPDOOR                (sFactory(Theme.SecondaryTheme::getTrapDoor)),
-    SLAB                    (sFactory(Theme.SecondaryTheme::getSlab)),
     DOOR                    (sFactory(Theme.SecondaryTheme::getDoor)),
     FENCE                   (sFactory(Theme.SecondaryTheme::getFence)),
     FENCE_GATE              (sFactory(Theme.SecondaryTheme::getFenceGate)),
@@ -157,7 +157,6 @@ public enum DungeonModelBlockType {
         NAME_TO_TYPE.put("NORMAL_2", AIR);
         NAME_TO_TYPE.put("SPAWNER", AIR);
         NAME_TO_TYPE.put("BARREL", AIR);
-
     }
 
     /**
@@ -178,7 +177,7 @@ public enum DungeonModelBlockType {
      * @return the block factory
      */
     private static BlockFactory tFactory(Function<Theme, IBlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(pos), rotation);
+        return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(pos, rotation), rotation);
     }
 
     /**
@@ -187,7 +186,7 @@ public enum DungeonModelBlockType {
      * @return the block factory
      */
     private static BlockFactory sFactory(Function<Theme.SecondaryTheme, IBlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(subTheme).get(pos), rotation);
+        return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(subTheme).get(pos, rotation), rotation);
     }
 
 }

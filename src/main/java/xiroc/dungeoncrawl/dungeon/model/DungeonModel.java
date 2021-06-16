@@ -87,6 +87,10 @@ public class DungeonModel {
         return location;
     }
 
+    public int getEntranceType() {
+        return metadata != null ? metadata.entranceType : 0;
+    }
+
     @Nullable
     public Metadata getMetadata() {
         return metadata;
@@ -167,11 +171,14 @@ public class DungeonModel {
 
     public static class Metadata {
 
+
         @Nullable
         public Integer id;
 
         @Nullable
         public List<MultipartModelData> multipartData;
+
+        public int entranceType;
 
         public boolean variation;
 
@@ -197,6 +204,12 @@ public class DungeonModel {
             if (object.has("offset")) {
                 JsonObject offset = object.getAsJsonObject("offset");
                 metadata.setOffset(JSONUtils.getOffset(offset), offset.has("rotate") && offset.get("rotate").getAsBoolean());
+            }
+
+            if (object.has("entrance_type")) {
+                if (object.get("entrance_type").getAsString().equals("secondary")) {
+                    metadata.entranceType = 1;
+                }
             }
 
             if (object.has("features")) {

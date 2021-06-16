@@ -34,7 +34,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
@@ -141,7 +141,7 @@ public class DungeonEntrance extends DungeonPiece {
             BlockPos position = pos.add(block.position);
             if (boundsIn.isVecInside(position)) {
                 Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                        Rotation.NONE, world, position, theme, secondaryTheme, WeightedRandomBlock.RANDOM, variation, lootLevel);
+                        Rotation.NONE, world, position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
                 if (state == null)
                     return;
 

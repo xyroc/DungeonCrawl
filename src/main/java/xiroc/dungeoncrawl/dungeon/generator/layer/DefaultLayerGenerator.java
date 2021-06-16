@@ -165,7 +165,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
         if (rand.nextFloat() < 0.5 && depth <= settings.maxNodeDepth && depth >= settings.minNodeDepth && nodesLeft > 0) {
             Position2D center = currentPosition.shift(lastPosition.directionTo(currentPosition), 1);
 
-            if (DungeonBuilder.canPlacePiece(dungeonLayer, center.x - 1, center.z - 1, 3, 3, false)) {
+            if (dungeonLayer.canPlaceNode(center)) {
                 createNodeRoom(center, dungeonLayer);
                 this.nodesLeft--;
 

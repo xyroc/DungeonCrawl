@@ -1,0 +1,38 @@
+{
+  "id": 47,
+  "feature": {
+    "type": "chests",
+    "min": 1,
+    "max": 2
+  },
+  "multipart": [
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 6,
+            "y": 7,
+            "z": 6
+          },
+          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/flat"
+        },
+        {
+          "offset": {
+            "x": 6,
+            "y": 7,
+            "z": 6
+          },
+          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/dome"
+        },
+        {
+          "offset": {
+            "x": 6,
+            "y": 7,
+            "z": 6
+          },
+          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/light"
+        }
+      ]
+    }
+  ]
+}

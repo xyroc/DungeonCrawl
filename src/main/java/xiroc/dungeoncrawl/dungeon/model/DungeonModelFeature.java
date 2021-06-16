@@ -218,7 +218,7 @@ public final class DungeonModelFeature {
 
                 BlockPos p = pos.offset(direction, 2);
                 if (bounds.isVecInside(p)) {
-                    world.setBlockState(p, theme.material.get(p), 2);
+                    world.setBlockState(p, Blocks.QUARTZ_BLOCK.getDefaultState(), 2);
                 }
             }
 
@@ -233,7 +233,7 @@ public final class DungeonModelFeature {
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 BlockPos position = pos.offset(direction, 2);
                 if (bounds.isVecInside(position)) {
-                    world.setBlockState(position, theme.material.get(position), 2);
+                    world.setBlockState(position, Blocks.QUARTZ_BLOCK.getDefaultState(), 2);
                 }
             }
 
@@ -243,12 +243,41 @@ public final class DungeonModelFeature {
             }
         };
 
+        Type STAIRS = new Type() {
+
+            @Override
+            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+                if (direction.getAxis() == Direction.Axis.Y) return;
+                for (int length = 0; length < 10; length++) {
+                    if (bounds.isVecInside(pos)) {
+                        int height = world.getHeight(context.heightmapType, pos).getY();
+                        if (height < pos.getY()) {
+                            for (; height < pos.getY(); height++) {
+                                BlockPos p = new BlockPos(pos.getX(), height, pos.getZ());
+                                world.setBlockState(p, theme.solid.get(p), 2);
+                            }
+                            world.setBlockState(pos, theme.solidStairs.get(pos).with(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
+                            pos = pos.offset(direction).offset(Direction.DOWN);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public String getName() {
+                return "stairs";
+            }
+        };
+
         ImmutableMap<String, Type> TYPES = new ImmutableMap.Builder<String, Type>()
                 .put(CHESTS.getName(), CHESTS)
                 .put(TNT_CHESTS.getName(), TNT_CHESTS)
                 .put(SPAWNER_GRAVE.getName(), SPAWNER_GRAVE)
                 .put(EMPTY_GRAVE.getName(), EMPTY_GRAVE)
                 .put(SPAWNERS.getName(), SPAWNERS)
+                .put(STAIRS.getName(), STAIRS)
                 .build();
 
         void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage);

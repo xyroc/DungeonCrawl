@@ -7,6 +7,7 @@
     "minecraft:cobblestone": "generic",
     "minecraft:stone_bricks": "solid",
     "minecraft:stone_brick_wall": "wall",
+    "minecraft:stone_brick_slab": "solid_slab",
     "minecraft:purpur_pillar": "solid_pillar",
     "minecraft:oak_log": "pillar",
     "minecraft:oak_planks": "material",

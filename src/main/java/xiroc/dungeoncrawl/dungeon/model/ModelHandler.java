@@ -24,7 +24,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -55,8 +54,6 @@ public class ModelHandler {
                     Block block = state.getBlock();
                     if (block == Blocks.BARRIER) {
                         continue;
-                    } else if (BlockTags.CARPETS.contains(block)) {
-                        // TODO: carpets
                     }
                     blocks.add(new DungeonModelBlock(DungeonModelBlockType.get(block, definition), new Vec3i(x, y, z)).loadDataFromState(state));
                 }

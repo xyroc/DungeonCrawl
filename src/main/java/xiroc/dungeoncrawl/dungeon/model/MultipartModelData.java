@@ -171,7 +171,7 @@ public class MultipartModelData {
             }
             this.model = DungeonModels.KEY_TO_MODEL.get(key);
             if (model == null) {
-                throw new RuntimeException("Missing model " + key + " in " + file.toString());
+                throw new RuntimeException("Cannot resolve model key " + key + " in " + file.toString());
             }
         }
 
@@ -189,7 +189,7 @@ public class MultipartModelData {
 
     }
 
-    public static class Condition<T> {
+    private static class Condition<T> {
 
         private final Property<T> property;
         private final T value;
@@ -237,7 +237,7 @@ public class MultipartModelData {
     }
 
     @FunctionalInterface
-    public interface Property<T> {
+    private interface Property<T> {
 
         Property<Boolean> NORTH = (piece) -> piece.sides[0];
         Property<Boolean> EAST = (piece) -> piece.sides[1];
@@ -258,4 +258,5 @@ public class MultipartModelData {
         T get(DungeonPiece piece);
 
     }
+
 }

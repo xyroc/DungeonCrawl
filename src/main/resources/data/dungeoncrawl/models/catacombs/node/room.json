@@ -1,0 +1,86 @@
+{
+  "offset": {
+    "x": 1,
+    "z": 1
+  },
+  "features": [
+    {
+      "type": "chests",
+      "positions": [
+        {"x": 1, "y": 2, "z": 11, "facing": "east"},
+        {"x": 1, "y": 2, "z": 3, "facing": "east"},
+        {"x": 3, "y": 2, "z": 1, "facing": "south"},
+        {"x": 11, "y": 2, "z": 1, "facing": "south"},
+        {"x": 13, "y": 2, "z": 3, "facing": "west"},
+        {"x": 13, "y": 2, "z": 11, "facing": "west"},
+        {"x": 11, "y": 2, "z": 13, "facing": "north"},
+        {"x": 3, "y": 2, "z": 13, "facing": "north"}
+      ],
+      "amount": {
+        "min": 1,
+        "max": 2
+      }
+    }
+  ],
+  "multipart": [
+    {
+      "conditions": {
+        "rotated_north": true
+      },
+      "models": [
+        {
+          "offset": {
+            "x": 5,
+            "z": -1
+          },
+          "rotation": "counterclockwise_90",
+          "model": "dungeoncrawl:default/multipart/node_connector"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_east": true
+      },
+      "models": [
+        {
+          "offset": {
+            "x": 15,
+            "z": 5
+          },
+          "model": "dungeoncrawl:default/multipart/node_connector"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_south": true
+      },
+      "models": [
+        {
+          "offset": {
+            "x": 5,
+            "z": 15
+          },
+          "rotation": "clockwise_90",
+          "model": "dungeoncrawl:default/multipart/node_connector"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_west": true
+      },
+      "models": [
+        {
+          "offset": {
+            "x": -1,
+            "z": 5
+          },
+          "rotation": "clockwise_180",
+          "model": "dungeoncrawl:default/multipart/node_connector"
+        }
+      ]
+    }
+  ]
+}

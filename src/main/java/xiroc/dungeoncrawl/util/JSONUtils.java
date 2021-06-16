@@ -18,17 +18,39 @@
 
 package xiroc.dungeoncrawl.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.fml.ModList;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 
 import java.util.Optional;
 
 public class JSONUtils {
+
+    public static boolean areRequirementsMet(JsonObject object) {
+        if (object.has("requirements")) {
+            JsonObject conditions = object.getAsJsonObject("requirements");
+            if (conditions.has("present")) {
+                JsonArray present = conditions.getAsJsonArray("present");
+                for (JsonElement mod : present) {
+                    if (!ModList.get().isLoaded(mod.getAsString())) return false;
+                }
+            }
+            if (conditions.has("absent")) {
+                JsonArray present = conditions.getAsJsonArray("absent");
+                for (JsonElement mod : present) {
+                    if (ModList.get().isLoaded(mod.getAsString())) return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public static BlockState getBlockState(Block block, JsonObject element) {
         BlockState state = block.getDefaultState();

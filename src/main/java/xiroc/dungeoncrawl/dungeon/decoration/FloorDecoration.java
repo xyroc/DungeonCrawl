@@ -18,12 +18,13 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
-import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -50,7 +51,7 @@ public class FloorDecoration implements IDungeonDecoration {
                     && structureBounds.isVecInside(pos)
                     && world.isAirBlock(origin.add(block.position).up())
                     && checkSolid(world, origin.add(block.position), worldGenBounds, structureBounds)
-                    && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                    && DungeonBlocks.RANDOM.nextFloat() < chance) {
                 world.setBlockState(pos, blockStateProvider.get(pos), 2);
             }
         });
@@ -85,7 +86,7 @@ public class FloorDecoration implements IDungeonDecoration {
                             || checkSolid(world, pos.east(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.south(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.west(), worldGenBounds, structureBounds))
-                            && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                            && DungeonBlocks.RANDOM.nextFloat() < chance) {
                         world.setBlockState(pos, blockStateProvider.get(pos), 2);
                     }
                 }

@@ -19,10 +19,15 @@
 package xiroc.dungeoncrawl.util;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 
 public interface IBlockStateProvider {
 
-    BlockState get(BlockPos pos);
+    default BlockState get(BlockPos pos) {
+        return get(pos, Rotation.NONE);
+    }
+
+    BlockState get(BlockPos pos, Rotation rotation);
 
 }

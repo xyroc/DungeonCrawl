@@ -43,9 +43,9 @@ public class DungeonModels {
 
     public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
 
-    public static final ResourceLocation SECRET_ROOM_ENTRANCE = DungeonCrawl.locate("default/corridor/corridor_secret_room_entrance");
+    public static final ResourceLocation SECRET_ROOM_ENTRANCE = DungeonCrawl.locate("default/corridor/secret_room_entrance");
     public static final ResourceLocation STARTER_ROOM = DungeonCrawl.locate("default/room/starter_room");
-    public static final ResourceLocation ROGUELIKE_TOWER = DungeonCrawl.locate("default/entrance/roguelike_tower");
+    public static final ResourceLocation ROGUELIKE_TOWER = DungeonCrawl.locate("default/entrance/roguelike/rogue_tower");
     public static final ResourceLocation STAIRCASE = DungeonCrawl.locate("default/staircase");
     public static final ResourceLocation BOTTOM_STAIRS = DungeonCrawl.locate("default/stairs_bottom");
     public static final ResourceLocation BOTTOM_STAIRS_2 = DungeonCrawl.locate("default/stairs_bottom_2");
@@ -53,7 +53,7 @@ public class DungeonModels {
     public static final ResourceLocation LOOT_ROOM = DungeonCrawl.locate("default/loot_room");
     public static final ResourceLocation SECRET_ROOM = DungeonCrawl.locate("default/room/secret_room");
 
-    public static ImmutableSet<ResourceLocation> KEYS;
+    private static ImmutableSet<ResourceLocation> KEYS;
     private static ImmutableSet.Builder<ResourceLocation> keySetBuilder;
 
     private static final String DIRECTORY = "models";
@@ -109,4 +109,7 @@ public class DungeonModels {
         throw new DatapackLoadException("Failed to load " + resource);
     }
 
+    public static ImmutableSet<ResourceLocation> getKeys() {
+        return KEYS;
+    }
 }

@@ -66,9 +66,9 @@ public class Config {
 
         BUILDER.comment("Dungeon Placement Settings").push(DUNGEON_PLACEMENT);
         SPACING = BUILDER.comment("The average distance between the dungeons in chunks. This has to be higher than the separation!")
-                .defineInRange("spacing", 20, 8, 8192);
+                .defineInRange("spacing", 30, 8, 8192);
         SEPARATION = BUILDER.comment("The minimum distance between the dungeons in chunks. This has to be lower than the spacing!")
-                .defineInRange("separation", 10, 8, 8192);
+                .defineInRange("separation", 12, 8, 8192);
         BUILDER.pop();
 
         BUILDER.comment("Dungeon Settings").push(DUNGEON);

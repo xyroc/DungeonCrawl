@@ -57,8 +57,8 @@ public class DungeonBuilder {
 
     public Biome biome;
 
-    public Theme entranceTheme, theme, lowerTheme, bottomTheme;
-    public Theme.SecondaryTheme entranceSecondaryTheme, secondaryTheme, lowerSecondaryTheme, bottomSecondaryTheme;
+    public Theme theme, lowerTheme, bottomTheme;
+    public Theme.SecondaryTheme secondaryTheme, lowerSecondaryTheme, bottomSecondaryTheme;
 
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
@@ -96,7 +96,7 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
-        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome((chunkPos.x + 4) << 2, chunkGenerator.getSeaLevel() >> 4, (chunkPos.z + 4) << 2);
+        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome(chunkPos.x << 2, chunkGenerator.getSeaLevel() >> 4, chunkPos.z << 2);
         DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
         generateLayout(type, DEFAULT_GENERATOR);
 
@@ -105,13 +105,13 @@ public class DungeonBuilder {
         entrance.setWorldPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
-        entrance.setupModel(this, null, pieces, rand);
+        entrance.model = type.entrances.roll(rand);
         entrance.setupBoundingBox();
 
         determineThemes();
 
-        entrance.theme = this.entranceTheme;
-        entrance.secondaryTheme = this.entranceSecondaryTheme;
+        entrance.theme = this.theme;
+        entrance.secondaryTheme = this.secondaryTheme;
 
         pieces.add(entrance);
 
@@ -167,10 +167,8 @@ public class DungeonBuilder {
         ResourceLocation registryName = biome.getRegistryName();
 
         if (registryName != null) {
-            if (this.entranceTheme == null) this.entranceTheme = Theme.randomTheme(registryName.toString(), rand);
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), rand);
         } else {
-            if (this.entranceTheme == null) this.entranceTheme = Theme.getDefaultTheme();
             if (this.theme == null) this.theme = Theme.getDefaultTheme();
         }
 
@@ -178,15 +176,7 @@ public class DungeonBuilder {
             if (theme.subTheme != null) {
                 this.secondaryTheme = theme.subTheme.roll(rand);
             } else {
-                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
-            }
-        }
-
-        if (entranceSecondaryTheme == null) {
-            if (entranceTheme.subTheme != null) {
-                this.entranceSecondaryTheme = entranceTheme.subTheme.roll(rand);
-            } else {
-                this.entranceSecondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
+                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSecondaryTheme();
             }
         }
 
@@ -243,12 +233,12 @@ public class DungeonBuilder {
 
                         placeHolder.reference.setupBoundingBox();
 
-                        if (placeHolder.reference.hasChildPieces()) {
-                            placeHolder.reference.addChildPieces(pieces, this, modelSelector, i, rand);
-                        }
-
                         if (placeHolder.reference.getType() == 10) {
                             layer.rotateNode(placeHolder, rand);
+                        }
+
+                        if (placeHolder.reference.hasChildPieces()) {
+                            placeHolder.reference.addChildPieces(pieces, this, modelSelector, i, rand);
                         }
 
                         placeHolder.reference.customSetup(rand);

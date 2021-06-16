@@ -30,8 +30,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
-import xiroc.dungeoncrawl.command.arguments.SecondaryThemeArgument;
-import xiroc.dungeoncrawl.command.arguments.ThemeArgument;
+import xiroc.dungeoncrawl.command.argument.SecondaryThemeArgument;
+import xiroc.dungeoncrawl.command.argument.ThemeArgument;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -57,7 +57,7 @@ public class SpawnDungeonCommand {
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
                                         ThemeArgument.getTheme(command, "theme"),
-                                        Theme.getDefaultSubTheme()))
+                                        Theme.getDefaultSecondaryTheme()))
                         .then(Commands.argument("secondary_theme", SecondaryThemeArgument.secondaryTheme()).executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),

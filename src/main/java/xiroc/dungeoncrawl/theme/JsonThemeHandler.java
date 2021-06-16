@@ -25,12 +25,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.pattern.CheckedPattern;
 import xiroc.dungeoncrawl.dungeon.block.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
@@ -143,19 +145,18 @@ public class JsonThemeHandler {
      * @param object the json object
      * @param file   the location of the theme file
      */
-    public static void deserializeThemeMapping(JsonObject object, ResourceLocation file) {
-        object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-            ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
-
-            WeightedRandom.Builder<Theme> builder = new WeightedRandom.Builder<>();
-            entries.forEach((tuple) -> {
-                if (!Theme.KEY_TO_THEME.containsKey(tuple.getA())) {
-                    throw new DatapackLoadException("Cannot resolve theme key " + tuple.getA() + " in " + file.toString());
-                }
-                builder.add(Theme.KEY_TO_THEME.get(tuple.getA()), tuple.getB());
+    public static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, ResourceLocation file) {
+        if (JSONUtils.areRequirementsMet(object)) {
+            object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
+                ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
+                entries.forEach((tuple) -> {
+                    if (!Theme.KEY_TO_THEME.containsKey(tuple.getA())) {
+                        throw new DatapackLoadException("Cannot resolve theme key " + tuple.getA() + " in " + file.toString());
+                    }
+                    themeMappingBuilders.computeIfAbsent(entry.getKey(), (key) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_THEME.get(tuple.getA()), tuple.getB());
+                });
             });
-            Theme.BIOME_TO_THEME.put(entry.getKey(), builder.build());
-        });
+        }
     }
 
     /**
@@ -164,19 +165,19 @@ public class JsonThemeHandler {
      * @param object the json object
      * @param file   the location of the sub-theme file
      */
-    public static void deserializeSubThemeMapping(JsonObject object, ResourceLocation file) {
-        object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-            ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
+    public static void deserializeSubThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, ResourceLocation file) {
+        if (JSONUtils.areRequirementsMet(object)) {
+            object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
+                ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
 
-            WeightedRandom.Builder<SecondaryTheme> builder = new WeightedRandom.Builder<>();
-            entries.forEach((tuple) -> {
-                if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(tuple.getA())) {
-                    throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
-                }
-                builder.add(Theme.KEY_TO_SECONDARY_THEME.get(tuple.getA()), tuple.getB());
+                entries.forEach((tuple) -> {
+                    if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(tuple.getA())) {
+                        throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
+                    }
+                    secondaryThemeMappingBuilders.computeIfAbsent(entry.getKey(), (key) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_SECONDARY_THEME.get(tuple.getA()), tuple.getB());
+                });
             });
-            Theme.BIOME_TO_SECONDARY_THEME.put(entry.getKey(), builder.build());
-        });
+        }
     }
 
     private static ArrayList<Tuple<ResourceLocation, Integer>> checkAndListThemes(Map.Entry<String, JsonElement> entry) {
@@ -202,43 +203,36 @@ public class JsonThemeHandler {
             String type = object.get("type").getAsString();
             if (type.equalsIgnoreCase("random_block")) {
                 JsonArray blockObjects = object.get("blocks").getAsJsonArray();
-                TupleIntBlock[] blocks = new TupleIntBlock[blockObjects.size()];
+                WeightedRandom.Builder<BlockState> builder = new WeightedRandom.Builder<>();
 
-                int i = 0;
-                for (JsonElement blockObject : blockObjects) {
-                    JsonObject element = (JsonObject) blockObject;
+                for (JsonElement blockElement : blockObjects) {
+                    JsonObject blockObject = (JsonObject) blockElement;
                     Block block = ForgeRegistries.BLOCKS
-                            .getValue(new ResourceLocation(element.get("block").getAsString()));
+                            .getValue(new ResourceLocation(blockObject.get("block").getAsString()));
                     if (block != null) {
-                        BlockState state = JSONUtils.getBlockState(block, element);
-                        blocks[i++] = new TupleIntBlock(element.has("weight") ? element.get("weight").getAsInt() : 1, state);
+                        BlockState state = JSONUtils.getBlockState(block, blockObject);
+                        builder.add(state, JSONUtils.getWeightOrDefault(blockObject));
                     } else {
-                        LOGGER.error("Unknown block: {}", element.get("block").getAsString());
+                        LOGGER.error("Unknown block: {}", blockObject.get("block").getAsString());
                     }
                 }
-                return new WeightedRandomBlock(blocks);
+                return new WeightedRandomBlock(builder.build());
             } else if (type.equalsIgnoreCase("block")) {
                 Block block = ForgeRegistries.BLOCKS
                         .getValue(new ResourceLocation(object.get("block").getAsString()));
                 if (block != null) {
                     BlockState state = JSONUtils.getBlockState(block, object);
-                    return (pos) -> state;
+                    return (pos, rotation) -> state;
                 } else {
                     LOGGER.error("Unknown block: {}", object.get("block").getAsString());
-                    return (pos) -> Blocks.CAVE_AIR.getDefaultState();
+                    return (pos, rotation) -> Blocks.CAVE_AIR.getDefaultState();
                 }
             } else if (type.equalsIgnoreCase("pattern")) {
                 switch (object.get("pattern_type").getAsString().toLowerCase(Locale.ROOT)) {
                     case "checked":
                         return new CheckedPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
                     case "terracotta":
-                        ResourceLocation block = new ResourceLocation(object.get("block").getAsString());
-                        if (ForgeRegistries.BLOCKS.containsKey(block)) {
-                            return new TerracottaPattern(ForgeRegistries.BLOCKS.getValue(block));
-                        } else {
-                            LOGGER.error("Unknown block: {}", object.get("block").getAsString());
-                            return null;
-                        }
+                        return new TerracottaPattern(deserialize(object, "block", file));
                     default:
                         LOGGER.error("Unknown block pattern type: " + object.get("pattern_type").getAsString());
                         return null;
@@ -253,12 +247,18 @@ public class JsonThemeHandler {
         }
     }
 
-    private static final class TupleIntBlock extends Tuple<Integer, BlockState> {
+    private static class WeightedRandomBlock implements IBlockStateProvider {
 
-        public TupleIntBlock(Integer aIn, BlockState bIn) {
-            super(aIn, bIn);
+        private final WeightedRandom<BlockState> randomBlockState;
+
+        WeightedRandomBlock(WeightedRandom<BlockState> randomBlockState) {
+            this.randomBlockState = randomBlockState;
         }
 
+        @Override
+        public BlockState get(BlockPos pos, Rotation rotation) {
+            return randomBlockState.roll(DungeonBlocks.RANDOM);
+        }
     }
 
 }

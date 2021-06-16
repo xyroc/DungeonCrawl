@@ -1,0 +1,132 @@
+{
+  "id": 204,
+  "offset": {
+    "x": 2,
+    "z": 2
+  },
+  "multipart": [
+    {
+      "models": [
+        {
+          "model": "dungeoncrawl:catacombs/multipart/corridor/ceiling",
+          "offset": {
+            "x": 1,
+            "y": 5,
+            "z": 1
+          },
+          "weight": 4
+        },
+        {
+          "model": "dungeoncrawl:catacombs/multipart/corridor/ceiling_glowstone",
+          "offset": {
+            "x": 1,
+            "y": 5,
+            "z": 1
+          }
+        },
+        {
+          "model": "dungeoncrawl:catacombs/multipart/corridor/ceiling_lamp",
+          "offset": {
+            "x": 1,
+            "y": 5,
+            "z": 1
+          }
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_north": true
+      },
+      "models": [
+        {
+          "model": "dungeoncrawl:catacombs/multipart/connector",
+          "offset": {
+            "z": -2
+          },
+          "rotation": "counterclockwise_90"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "dungeoncrawl:default/multipart/wall",
+          "offset": {
+            "x": 1,
+            "z": -1
+          },
+          "rotation": "counterclockwise_90"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_east": true
+      },
+      "models": [
+        {
+          "model": "dungeoncrawl:catacombs/multipart/connector",
+          "offset": {
+            "x": 5
+          }
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "dungeoncrawl:default/multipart/wall",
+          "offset": {
+            "x": 5,
+            "z": 1
+          }
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_west": true
+      },
+      "models": [
+        {
+          "model": "dungeoncrawl:catacombs/multipart/connector",
+          "offset": {
+            "x": -2
+          },
+          "rotation": "clockwise_180"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "dungeoncrawl:default/multipart/wall",
+          "offset": {
+            "x": -1,
+            "z": 1
+          },
+          "rotation": "clockwise_180"
+        }
+      ]
+    },
+    {
+      "conditions": {
+        "rotated_south": true
+      },
+      "models": [
+        {
+          "model": "dungeoncrawl:catacombs/multipart/connector",
+          "offset": {
+            "z": 5
+          },
+          "rotation": "clockwise_90"
+        }
+      ],
+      "alternatives": [
+        {
+          "model": "dungeoncrawl:default/multipart/wall",
+          "offset": {
+            "x": 1,
+            "z": 5
+          },
+          "rotation": "clockwise_90"
+        }
+      ]
+    }
+  ]
+}

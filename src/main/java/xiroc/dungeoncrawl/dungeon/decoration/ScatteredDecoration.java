@@ -24,7 +24,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
-import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
@@ -52,7 +52,7 @@ public class ScatteredDecoration implements IDungeonDecoration {
                             && worldGenBounds.isVecInside(currentPos)
                             && structureBounds.isVecInside(currentPos)
                             && world.isAirBlock(currentPos)
-                            && WeightedRandomBlock.RANDOM.nextFloat() < chance) {
+                            && DungeonBlocks.RANDOM.nextFloat() < chance) {
 
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                         BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);

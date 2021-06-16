@@ -1,0 +1,14 @@
+{
+  "offset": {
+    "x": -4,
+    "z": -8
+  },
+  "variation": true,
+  "features": [
+    {
+      "type": "stairs",
+      "amount": {"min": 1, "max": 1},
+      "positions": [{"x": 10, "z": 1, "facing": "north"}]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "settings": {
+    "max_layers": 6
+  },
+  "entrances": {
+    "models": [{"key": "dungeoncrawl:default/entrance/roguelike/eniko_tower"}]
+  },
+  "layers": [
+    {
+      "type": "default",
+      "models": {
+        "rooms":            {"inherit": ["rooms:upper_catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:upper_catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:upper_catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:upper_catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:upper_catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:upper_catacombs"]},
+        "corridors":        {"inherit": ["corridors:upper_catacombs"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:upper_catacombs"]},
+        "node_connectors":  {"inherit": ["node_connectors:upper_catacombs"]}
+      },
+      "settings": {
+        "min_rooms": 5,
+        "max_rooms": 7,
+        "min_nodes": 5,
+        "max_nodes": 7,
+        "min_room_depth": 1,
+        "max_room_depth": 5,
+        "min_node_depth": 1,
+        "max_node_depth": 5,
+        "min_stairs_depth": 2,
+        "max_depth": 7,
+        "min_distance": 2,
+        "max_distance": 4
+      }
+    },
+    {
+      "type": "default",
+      "models": {
+        "rooms":            {"inherit": ["rooms:upper_catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:upper_catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:upper_catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:upper_catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:upper_catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:upper_catacombs"]},
+        "corridors":        {"inherit": ["corridors:upper_catacombs"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:upper_catacombs"]},
+        "node_connectors":  {"inherit": ["node_connectors:upper_catacombs"]}
+      },
+      "settings": {
+        "min_rooms": 5,
+        "max_rooms": 7,
+        "min_nodes": 8,
+        "max_nodes": 10,
+        "min_room_depth": 1,
+        "max_room_depth": 8,
+        "min_node_depth": 1,
+        "max_node_depth": 8,
+        "min_stairs_depth": 2,
+        "max_depth": 8,
+        "min_distance": 2,
+        "max_distance": 4
+      }
+    },
+    {
+      "type": "default",
+      "models": {
+        "rooms":            {"inherit": ["rooms:catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:catacombs"]},
+        "corridors":        {"inherit": ["corridors:catacombs"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:catacombs"]},
+        "node_connectors":  {"inherit": ["node_connectors:catacombs"]}
+      },
+      "settings": {
+        "min_rooms": 6,
+        "max_rooms": 8,
+        "min_nodes": 10,
+        "max_nodes": 14,
+        "min_room_depth": 1,
+        "max_room_depth": 8,
+        "min_node_depth": 1,
+        "max_node_depth": 8,
+        "min_stairs_depth": 2,
+        "max_depth": 8,
+        "min_distance": 2,
+        "max_distance": 4
+      }
+    },
+    {
+      "type": "default",
+      "models": {
+        "rooms":            {"inherit": ["rooms:catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:catacombs"]},
+        "corridors":        {"inherit": ["corridors:catacombs"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:catacombs"]},
+        "node_connectors":  {"inherit": ["node_connectors:catacombs"]}
+      },
+      "settings": {
+        "min_rooms": 6,
+        "max_rooms": 8,
+        "min_nodes": 10,
+        "max_nodes": 14,
+        "min_room_depth": 1,
+        "max_room_depth": 8,
+        "min_node_depth": 1,
+        "max_node_depth": 8,
+        "min_stairs_depth": 2,
+        "max_depth": 8,
+        "min_distance": 2,
+        "max_distance": 4
+      }
+    },
+    {
+      "type": "hell",
+      "models": {
+        "rooms":            {"inherit": ["rooms:hell"]},
+        "full_nodes":       {"inherit": ["nodes:full:hell"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:hell"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:hell"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:hell"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:hell"]},
+        "corridors":        {"inherit": ["corridors:hell"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:hell"]},
+        "node_connectors":  {"inherit": ["node_connectors:hell"]}
+      },
+      "settings": {
+        "min_rooms": 6,
+        "max_rooms": 8,
+        "min_nodes": 10,
+        "max_nodes": 14,
+        "min_room_depth": 1,
+        "max_room_depth": 8,
+        "min_node_depth": 1,
+        "max_node_depth": 8,
+        "min_stairs_depth": 2,
+        "max_depth": 8,
+        "min_distance": 2,
+        "max_distance": 4
+      }
+    }
+  ]
+}

@@ -25,7 +25,11 @@ import net.minecraft.state.IProperty;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 
+import java.util.Random;
+
 public class DungeonBlocks {
+
+    public static Random RANDOM = new Random();
 
     public static final Block[] CARPET = new Block[]{Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
             Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET,
@@ -42,14 +46,6 @@ public class DungeonBlocks {
             return state.with(property, value);
         }
         return state;
-    }
-
-    public static final class TupleFloatBlock extends Tuple<Float, BlockState> {
-
-        public TupleFloatBlock(Float aIn, BlockState bIn) {
-            super(aIn, bIn);
-        }
-
     }
 
 }

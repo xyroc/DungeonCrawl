@@ -19,8 +19,8 @@
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import com.google.common.collect.Lists;
+import net.minecraft.loot.RandomValueRange;
 import net.minecraft.util.Direction;
-import net.minecraft.world.storage.loot.RandomValueRange;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;

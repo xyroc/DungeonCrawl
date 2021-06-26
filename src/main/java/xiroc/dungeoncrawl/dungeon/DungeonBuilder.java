@@ -116,16 +116,13 @@ public class DungeonBuilder {
         pieces.add(entrance);
 
         postProcessDungeon(pieces, type, rand);
-
-//        pieces.forEach((piece) -> DungeonCrawl.LOGGER.info("{} ({}) : {}", piece, piece.model, piece.getBoundingBox()));
-
         return pieces;
     }
 
     private void generateLayout(DungeonType type, DungeonGenerator generator) {
         generator.initializeDungeon(type, this, this.chunkPos, this.rand);
-        int gridSize = 17;
 
+        int gridSize = 17;
         int startCoordinate = gridSize / 2;
 
         this.start = new Position2D(startCoordinate, startCoordinate);
@@ -139,7 +136,7 @@ public class DungeonBuilder {
         }
 
         for (int layer = 0; layer < layers.length; layer++) {
-            generator.initializeLayer(type.getLayer(layer).settings, this, rand, layer);
+            generator.initializeLayer(type.getLayer(layer).settings, this, rand, layer, layer == layerCount - 1);
             generator.generateLayer(this, layers[layer], layer, rand, (layer == 0) ? this.start : layers[layer - 1].end);
         }
 
@@ -181,7 +178,7 @@ public class DungeonBuilder {
         }
 
         if (this.lowerTheme == null)
-            this.lowerTheme = Theme.getTheme(Theme.PRIMARY_CATACOMBS_DEFAULT);
+            this.lowerTheme = Theme.getTheme(Theme.CATACOMBS_FALLBACK);
 
         if (lowerSecondaryTheme == null) {
             if (lowerTheme.subTheme != null) {
@@ -192,7 +189,7 @@ public class DungeonBuilder {
         }
 
         if (this.bottomTheme == null)
-            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.getTheme(Theme.PRIMARY_HELL_DEFAULT);
+            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.getTheme(Theme.PRIMARY_HELL_FALLBACK);
 
         if (bottomTheme.subTheme != null && this.bottomSecondaryTheme == null) {
             this.bottomSecondaryTheme = bottomTheme.subTheme.roll(rand);
@@ -246,27 +243,6 @@ public class DungeonBuilder {
                     }
                 }
         }
-    }
-
-    /**
-     * Checks if a piece can be placed at the given position.
-     *
-     * @return true if the piece can be placed, false if not
-     */
-    public static boolean canPlacePiece(DungeonLayer layer, int x, int z, int width, int length,
-                                        boolean ignoreStartPosition) {
-        if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
-            return false;
-
-        for (int x0 = 0; x0 < width; x0++) {
-            for (int z0 = 0; z0 < length; z0++) {
-                if (!(ignoreStartPosition && x0 == 0 && z0 == 0)
-                        && (layer.grid[x + x0][z + z0] != null || !layer.map.isPositionFree(x + x0, z + z0))) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public static boolean isBlockProtected(IWorld world, BlockPos pos, PlacementContext context) {

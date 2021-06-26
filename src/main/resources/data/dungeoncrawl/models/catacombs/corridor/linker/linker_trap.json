@@ -4,6 +4,13 @@
     "x": 2,
     "z": 2
   },
+  "features": [
+    {
+      "type": "sewer_hole",
+      "positions": [{"x": 2, "z": 2}],
+      "amount": {"min": 1, "max": 1}
+    }
+  ],
   "multipart": [
     {
       "models": [

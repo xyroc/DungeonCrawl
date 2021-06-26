@@ -134,7 +134,7 @@ public class DungeonEntrance extends DungeonPiece {
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
                       SecondaryTheme secondaryTheme, int lootLevel, PlacementContext context, boolean fillAir) {
         if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Building {} with model id {} at ({} | {} | {})", model.getKey(), model.id, pos.getX(), pos.getY(), pos.getZ());
+            DungeonCrawl.LOGGER.debug("Building {} at ({} | {} | {})", model.getKey(), pos.getX(), pos.getY(), pos.getZ());
         }
 
         model.blocks.forEach((block) -> {
@@ -147,17 +147,16 @@ public class DungeonEntrance extends DungeonPiece {
 
                 placeBlock(block, world, context, theme, secondaryTheme, lootLevel, fillAir, position, state);
 
-                if (block.position.getY() == 0
-                        && model.height > 1
-                        && world.isAirBlock(position.down())
-                        && block.type == DungeonModelBlockType.SOLID) {
-                    buildPillar(world, theme, pos.getX() + block.position.getX(), pos.getY(), pos.getZ() + block.position.getZ());
+                if (block.type == DungeonModelBlockType.SOLID
+                        && block.position.getY() == 0
+                        && world.isAirBlock(position.down())) {
+                    buildPillar(world, position.down());
                 }
             }
         });
 
         if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Finished building {} with model id {} at ({} | {} | {})", model.getKey(), model.id, pos.getX(), pos.getY(), pos.getZ());
+            DungeonCrawl.LOGGER.debug("Finished building {} at ({} | {} | {})", model.getKey(), pos.getX(), pos.getY(), pos.getZ());
         }
     }
 

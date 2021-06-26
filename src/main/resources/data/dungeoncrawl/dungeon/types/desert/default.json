@@ -1,7 +1,5 @@
 {
-  "settings": {
-    "max_layers": 5
-  },
+  "settings": {},
   "entrances": {
     "models": [
       {"key": "dungeoncrawl:default/entrance/roguelike/pyramid", "weight": 4},
@@ -122,7 +120,7 @@
       }
     },
     {
-      "type": "hell",
+      "type": "default",
       "models": {
         "rooms":            {"inherit": ["rooms:hell"]},
         "full_nodes":       {"inherit": ["nodes:full:hell"]},

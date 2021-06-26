@@ -59,52 +59,51 @@ public class ModelHandler {
                 }
             }
         }
-        writeModelToFile(new DungeonModel(blocks, width, height, length),
+        writeToFile(toNbt(blocks, width, height, length),
                 ((ServerWorld) world).getServer().getDataDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
-
         DungeonCrawl.LOGGER.info("Done.");
     }
 
-    public static void writeModelToFile(DungeonModel model, String path) {
+    public static void writeToFile(CompoundNBT nbt, String path) {
         try {
             DungeonCrawl.LOGGER.info("Writing a model to disk at {}. ", path);
             File file = new File(path);
             Files.createDirectories(file.getParentFile().toPath());
             Files.deleteIfExists(file.toPath());
             Files.createFile(file.toPath());
-            CompressedStreamTools.writeCompressed(convertModelToNBT(model), new FileOutputStream(file));
+            CompressedStreamTools.writeCompressed(nbt, new FileOutputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static CompoundNBT convertModelToNBT(DungeonModel model) {
-        byte width = (byte) (model.width > 127 ? -(model.width - 127) : model.width),
-                length = (byte) (model.length > 127 ? -(model.length - 127) : model.length),
-                height = (byte) (model.height > 127 ? -(model.height - 127) : model.height);
+    public static CompoundNBT toNbt(DungeonModel model) {
+        return toNbt(model.blocks, model.width, model.height, model.length);
+    }
 
+    public static CompoundNBT toNbt(List<DungeonModelBlock> blocks, int width, int height, int length) {
         CompoundNBT nbt = new CompoundNBT();
         nbt.putByte("format", LATEST_MODEL_FORMAT);
 
-        nbt.putByte("length", length);
-        nbt.putByte("height", height);
-        nbt.putByte("width", width);
+        nbt.putByte("width", (byte) width);
+        nbt.putByte("height", (byte) height);
+        nbt.putByte("length", (byte) length);
 
-        ListNBT blocks = new ListNBT();
+        ListNBT _blocks = new ListNBT();
 
-        model.blocks.forEach((block) -> blocks.add(block.toNBT()));
+        blocks.forEach((block) -> _blocks.add(block.toNBT()));
 
-        nbt.put("blocks", blocks);
+        nbt.put("blocks", _blocks);
         return nbt;
     }
 
-    public static DungeonModel loadModelFromNBT(CompoundNBT nbt, ResourceLocation file) {
+    public static DungeonModel loadModelFromNBT(CompoundNBT nbt, ResourceLocation file, ResourceLocation key) {
         int format = nbt.getInt("format");
 
         if (format == 1) {
-            return ModelLoader.VERSION_1.load(nbt, file);
+            return ModelLoader.VERSION_1.load(nbt, file, key);
         }
-        return ModelLoader.LEGACY.load(nbt, file);
+        return ModelLoader.LEGACY.load(nbt, file, key);
     }
 
     public static DungeonModel getModelFromJigsawNBT(CompoundNBT nbt) {

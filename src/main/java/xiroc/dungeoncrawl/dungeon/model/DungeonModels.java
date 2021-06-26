@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonParser;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.resources.IResourceManager;
@@ -27,7 +26,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3i;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel.Metadata;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
@@ -79,8 +77,7 @@ public class DungeonModels {
         if (resourceManager.hasResource(metadata)) {
             DungeonCrawl.LOGGER.debug("Loading {}", metadata);
             try {
-                Metadata data = Metadata.fromJson(new JsonParser().parse(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
-                model.loadMetadata(data);
+                model.loadMetadata(DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
                 e.printStackTrace();
@@ -93,14 +90,17 @@ public class DungeonModels {
 
         try {
             CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
-            DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource);
 
             ResourceLocation key = DungeonCrawl.key(resource, DIRECTORY, ".nbt");
-            model.setKey(key);
+            DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource, key);
+
             KEY_TO_MODEL.put(key, model);
             keySetBuilder.add(key);
 
-            model.setLocation(resource);
+            if (model.hasId()) {
+                ID_TO_MODEL.put(model.getId(), model);
+            }
+
             return model;
         } catch (IOException e) {
             e.printStackTrace();

@@ -19,7 +19,9 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.IProperty;
@@ -29,11 +31,13 @@ import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -45,14 +49,21 @@ public class DungeonModelBlock {
 
     public Vec3i position;
 
+    @Nullable
     private PropertyHolder[] properties;
 
+    @Nullable
     public Integer variation;
 
-    public ResourceLocation resource;
+    @Nullable
+    public ResourceLocation blockName;
+    @Nullable
+    private Block block;
 
     // Custom loot table, can be defined in model metadata.
+    @Nullable
     public ResourceLocation lootTable;
+
 
     public DungeonModelBlock(DungeonModelBlockType type, Vec3i position) {
         this.type = type;
@@ -75,8 +86,8 @@ public class DungeonModelBlock {
         position.putInt("z", this.position.getZ());
         tag.put("position", position);
 
-        if (resource != null)
-            tag.putString("resourceName", resource.toString());
+        if (blockName != null)
+            tag.putString("resourceName", blockName.toString());
 
         if (this.properties != null) {
             ListNBT properties = new ListNBT();
@@ -107,19 +118,21 @@ public class DungeonModelBlock {
 
         String type = nbt.getString("type");
         if (!DungeonModelBlockType.NAME_TO_TYPE.containsKey(type)) {
-            if (type.equals("SPAWNER")) {
-                DungeonModelBlock spawner = new DungeonModelBlock(DungeonModelBlockType.OTHER, null);
-                spawner.resource = new ResourceLocation("spawner");
-                return spawner;
-            }
             DungeonCrawl.LOGGER.warn("Unknown model block type: {}", type);
             return new DungeonModelBlock(DungeonModelBlockType.AIR, position);
         }
 
         DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.NAME_TO_TYPE.get(type), position);
 
-        if (nbt.contains("resourceName"))
-            block.resource = new ResourceLocation(nbt.getString("resourceName"));
+        if (nbt.contains("resourceName")) {
+            block.blockName = new ResourceLocation(nbt.getString("resourceName"));
+            if (ForgeRegistries.BLOCKS.containsKey(block.blockName)) {
+                block.block = ForgeRegistries.BLOCKS.getValue(block.blockName);
+            } else {
+                DungeonCrawl.LOGGER.warn("Unknown block: {}", block.blockName);
+                block.block = Blocks.CAVE_AIR;
+            }
+        }
 
         if (nbt.contains("properties")) {
             ListNBT properties = nbt.getList("properties", 10);
@@ -155,9 +168,9 @@ public class DungeonModelBlock {
                     break;
                 }
             }
-            this.resource = state.getBlock().getRegistryName();
+            this.blockName = state.getBlock().getRegistryName();
         } else if (type == DungeonModelBlockType.OTHER) {
-            this.resource = state.getBlock().getRegistryName();
+            this.blockName = state.getBlock().getRegistryName();
         }
         return this;
     }
@@ -183,6 +196,14 @@ public class DungeonModelBlock {
             return tuple(state, true);
         }
         return tuple(state, false);
+    }
+
+    /**
+     * @return the custom block if specified, null otherwise
+     */
+    @Nullable
+    public Block getBlock() {
+        return block;
     }
 
     /**

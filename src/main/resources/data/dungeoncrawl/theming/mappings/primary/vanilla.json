@@ -38,5 +38,11 @@
 
     "minecraft:swamp": [{"key": "dungeoncrawl:vanilla/catacombs/default"}],
     "minecraft:swamp_hills": [{"key": "dungeoncrawl:vanilla/catacombs/default"}]
+  },
+  "catacombs": {
+    "default": [],
+    "mapping": {
+
+    }
   }
 }

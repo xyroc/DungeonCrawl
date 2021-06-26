@@ -40,7 +40,9 @@ public class Config {
 
     public static final IntValue SPAWNER_ENTITIES, SPAWNER_RANGE, SPACING, SEPARATION;
 
-    public static final DoubleValue SHIELD_PROBABILITY, MOB_SPAWN_RATE;
+    public static final DoubleValue SHIELD_PROBABILITY;
+
+
 
     public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
             NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN, EXTENDED_DEBUG, TICK_FALLING_BLOCKS,
@@ -75,15 +77,12 @@ public class Config {
         NO_SPAWNERS = BUILDER.comment(
                 "If you dont like the fact that the dungeons contain lots of mob spawners, set this to true! Mobs will get spawned manually during the dungeon generation then. Note that this is a lot more performance demanding than enabling spawners. (Which also depends on the mob spawn rate)")
                 .define("no_spawners", false);
-        OVERWRITE_ENTITY_LOOT_TABLES = BUILDER.comment("Wheter loot tables of certain spawner entities should be overwritten." +
-                " Having this enabled will prevent wither skeletons in dungeons from dropping skulls. Changing this will not affect already generated dungeons.")
+        OVERWRITE_ENTITY_LOOT_TABLES = BUILDER.comment("Whether loot tables of certain spawner entities should be overwritten." +
+                " If this enabled, wither skeletons from dungeon spawners will never drop skulls. Changing this will not affect already generated dungeons.")
                 .define("overwrite_entity_loot_tables", true);
         NO_NETHER_STUFF = BUILDER.comment(
-                "Set this to true if you want to prevent that the last layer of each dungeon will contain nether content.")
+                "When enabled, the hell stage will be built with blocks from the overworld, not from the nether.")
                 .define("no_nether_stuff", false);
-        MOB_SPAWN_RATE = BUILDER.comment(
-                "This value defines how many mobs do get spawned manually during the generation. (if no_spawners = true, there is no effect otherwise)")
-                .defineInRange("mob_spawn_rate", 0.05, 0.0, 1.0);
         SPAWNER_RANGE = BUILDER.comment("The activation range for the spawners in the dungeons").defineInRange("spawner_activation_range", 12, 1, 64);
         SPAWNER_ENTITIES = BUILDER.comment(
                 "The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")

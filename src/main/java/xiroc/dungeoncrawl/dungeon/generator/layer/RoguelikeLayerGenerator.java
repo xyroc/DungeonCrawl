@@ -36,8 +36,8 @@ public class RoguelikeLayerGenerator extends LayerGenerator {
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer) {
-        super.initializeLayer(settings, dungeonBuilder, rand, layer);
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
+        super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
     }
 
     @Override

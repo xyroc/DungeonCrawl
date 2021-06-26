@@ -47,9 +47,9 @@ public class NewLayerGenerator extends LayerGenerator {
     public static final NewLayerGenerator INSTANCE = new NewLayerGenerator();
 
     private boolean secretRoom;
-    private final ArrayList<LayerElement> elements;
+    private final ArrayList<DungeonCorridor> corridors;
     private ArrayList<LayerElement> newElements;
-    private boolean stairsPlaced;
+    private boolean placeStairs;
 
     private static final Consumer<NewLayerGenerator> ON_ROOM_PLACED = (generator) -> {
         generator.roomsLeft--;
@@ -62,24 +62,23 @@ public class NewLayerGenerator extends LayerGenerator {
     };
 
     private static final Consumer<NewLayerGenerator> ON_STAIRS_PLACED = (generator) -> {
-        generator.stairsPlaced = true;
+        generator.placeStairs = false;
     };
 
     private NewLayerGenerator() {
-        this.secretRoom = false;
-        this.elements = new ArrayList<>();
+        this.corridors = new ArrayList<>();
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer) {
-        super.initializeLayer(settings, dungeonBuilder, rand, layer);
-        this.elements.clear();
-        this.stairsPlaced = false;
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
+        super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
+        this.corridors.clear();
+        this.placeStairs = !isLastLayer;
+        this.secretRoom = false;
         this.roomsLeft = settings.rooms.generateInt(rand);
         this.nodesLeft = settings.nodes.generateInt(rand);
         this.rooms = 0;
         this.nodes = 0;
-        DungeonCrawl.LOGGER.info("Nodes Left: {} Rooms Left: {}", nodesLeft, roomsLeft);
     }
 
     @Override
@@ -98,10 +97,20 @@ public class NewLayerGenerator extends LayerGenerator {
             lastElements = newElements;
         } while (!lastElements.isEmpty());
 
-        elements.clear();
+        if (secretRoom && !this.corridors.isEmpty()) {
+            for (int i = 0; i < 8; i++) {
+                DungeonCorridor corridor = this.corridors.get(rand.nextInt(corridors.size()));
+                if (corridor.isStraight() && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, rand)) {
+                    break;
+                }
+                this.corridors.remove(corridor);
+            }
+        }
+
+        corridors.clear();
         newElements.clear();
 
-        DungeonCrawl.LOGGER.info("Generated Layer {} with {}({}) Nodes and {}({}) Rooms", layer, nodes, nodesLeft, rooms, roomsLeft);
+        DungeonCrawl.LOGGER.debug("Generated Layer {} with {}({}) Nodes and {}({}) Rooms", layer, nodes, nodesLeft, rooms, roomsLeft);
     }
 
     /**
@@ -132,7 +141,6 @@ public class NewLayerGenerator extends LayerGenerator {
                             element.place(dungeonLayer);
                             element.onPlaced.accept(this); // Update room / node counts.
                             connectStraight(dungeonLayer, cursor.getConnectionPoint(direction), element.getConnectionPoint(direction.getOpposite()));
-                            this.elements.add(element);
                             this.newElements.add(element);
                         }
                     }
@@ -144,9 +152,8 @@ public class NewLayerGenerator extends LayerGenerator {
     @Nullable
     private LayerElement nextElement(DungeonLayer dungeonLayer, Position2D pos, Direction toOrigin, Random rand, int depth) {
         if (dungeonLayer.isTileFree(pos)) {
-            if (!stairsPlaced && depth <= settings.minStairsDepth) {
+            if (placeStairs && depth <= settings.minStairsDepth) {
                 dungeonLayer.end = pos;
-                stairsPlaced = true;
                 return new GenericElement(new DungeonStairs().top(), pos, toOrigin, ON_STAIRS_PLACED, depth);
             }
             if (depth <= settings.maxNodeDepth && nodesLeft > 0 && rand.nextFloat() < 0.65F) {
@@ -211,7 +218,7 @@ public class NewLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.SOUTH);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.NORTH));
                             dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
-
+                            this.corridors.add(corridor);
                         }
                     }
                 } else {
@@ -232,6 +239,7 @@ public class NewLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.NORTH);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.SOUTH));
                             dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
+                            this.corridors.add(corridor);
                         }
                     }
                 }
@@ -254,6 +262,7 @@ public class NewLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.EAST);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.WEST));
                             dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
+                            this.corridors.add(corridor);
                         }
                     }
                 } else {
@@ -274,6 +283,7 @@ public class NewLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.WEST);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.EAST));
                             dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
+                            this.corridors.add(corridor);
                         }
                     }
                 }

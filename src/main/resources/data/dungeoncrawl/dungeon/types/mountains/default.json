@@ -1,7 +1,5 @@
 {
-  "settings": {
-    "max_layers": 6
-  },
+  "settings": {},
   "entrances": {
     "models": [{"key": "dungeoncrawl:default/entrance/roguelike/eniko_tower"}]
   },
@@ -119,7 +117,7 @@
       }
     },
     {
-      "type": "hell",
+      "type": "default",
       "models": {
         "rooms":            {"inherit": ["rooms:hell"]},
         "full_nodes":       {"inherit": ["nodes:full:hell"]},

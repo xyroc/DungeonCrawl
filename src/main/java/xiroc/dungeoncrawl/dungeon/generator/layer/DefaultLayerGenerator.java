@@ -61,8 +61,8 @@ public class DefaultLayerGenerator extends LayerGenerator {
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer) {
-        super.initializeLayer(settings, dungeonBuilder, rand, layer);
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
+        super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
         this.nodesLeft = settings.nodes.generateInt(rand);
         this.roomsLeft = settings.rooms.generateInt(rand);
         this.secretRoom = false;

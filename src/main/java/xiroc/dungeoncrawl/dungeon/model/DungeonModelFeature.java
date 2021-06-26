@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -46,6 +47,7 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import javax.annotation.Nullable;
@@ -140,7 +142,7 @@ public final class DungeonModelFeature {
     }
 
     private interface Type {
-        Type CHESTS = new Type() {
+        Type CHEST = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isVecInside(pos)
@@ -152,11 +154,11 @@ public final class DungeonModelFeature {
 
             @Override
             public String getName() {
-                return "chests";
+                return "chest";
             }
         };
 
-        Type TNT_CHESTS = new Type() {
+        Type TNT_CHEST = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isVecInside(pos)
@@ -172,11 +174,11 @@ public final class DungeonModelFeature {
 
             @Override
             public String getName() {
-                return "tnt_chests";
+                return "tnt_chest";
             }
         };
 
-        Type SPAWNERS = new Type() {
+        Type SPAWNER = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (Config.NO_SPAWNERS.get()) {
@@ -192,7 +194,7 @@ public final class DungeonModelFeature {
 
             @Override
             public String getName() {
-                return "spawners";
+                return "spawner";
             }
         };
 
@@ -244,7 +246,6 @@ public final class DungeonModelFeature {
         };
 
         Type STAIRS = new Type() {
-
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (direction.getAxis() == Direction.Axis.Y) return;
@@ -271,13 +272,84 @@ public final class DungeonModelFeature {
             }
         };
 
+        Type SEWER_HOLE = new Type() {
+            private final IBlockStateProvider AIR_WATER = (pos, rotation) -> {
+                if (pos.getY() > 8) return Blocks.CAVE_AIR.getDefaultState();
+                return Blocks.WATER.getDefaultState();
+            };
+
+            private final IBlockStateProvider AIR_LAVA = (pos, rotation) -> {
+                if (pos.getY() > 8) return Blocks.CAVE_AIR.getDefaultState();
+                return Blocks.LAVA.getDefaultState();
+            };
+
+            @Override
+            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+                IBlockStateProvider inner = stage < 4 ? AIR_WATER : AIR_LAVA;
+
+                buildDown(world, context, pos, bounds, inner);
+
+                BlockPos east = pos.east();
+                buildDown(world, context, east, bounds, inner);
+
+                BlockPos west = pos.west();
+                buildDown(world, context, west, bounds, inner);
+
+                BlockPos north = pos.north();
+                buildDown(world, context, north, bounds, inner);
+
+                BlockPos south = pos.south();
+                buildDown(world, context, pos.south(), bounds, inner);
+
+                buildDown(world, context, east.north(), bounds, inner);
+                buildDown(world, context, east.south(), bounds, inner);
+
+                buildDown(world, context, west.north(), bounds, inner);
+                buildDown(world, context, west.south(), bounds, inner);
+
+                // Walls
+                buildDown(world, context, east.east(), bounds, theme.floor);
+                buildDown(world, context, east.east().north(), bounds, theme.floor);
+                buildDown(world, context, east.east().south(), bounds, theme.floor);
+
+                buildDown(world, context, south.south(), bounds, theme.floor);
+                buildDown(world, context, south.south().east(), bounds, theme.floor);
+                buildDown(world, context, south.south().west(), bounds, theme.floor);
+
+                buildDown(world, context, west.west(), bounds, theme.floor);
+                buildDown(world, context, west.west().north(), bounds, theme.floor);
+                buildDown(world, context, west.west().south(), bounds, theme.floor);
+
+                buildDown(world, context, north.north(), bounds, theme.floor);
+                buildDown(world, context, north.north().east(), bounds, theme.floor);
+                buildDown(world, context, north.north().west(), bounds, theme.floor);
+            }
+
+            @Override
+            public String getName() {
+                return "sewer_hole";
+            }
+
+            private void buildDown(IWorld world, PlacementContext context, BlockPos pos, MutableBoundingBox bounds, IBlockStateProvider blockStateProvider) {
+                if (!bounds.isVecInside(pos)) return;
+                for (; pos.getY() > 0; pos = pos.down()) {
+                    if (!DungeonBuilder.isBlockProtected(world, pos, context) && !world.isAirBlock(pos)) {
+                        world.setBlockState(pos, blockStateProvider.get(pos), 2);
+                        IFluidState state = world.getFluidState(pos);
+                        if (!state.isEmpty()) world.getPendingFluidTicks().scheduleTick(pos, state.getFluid(), 0);
+                    }
+                }
+            }
+        };
+
         ImmutableMap<String, Type> TYPES = new ImmutableMap.Builder<String, Type>()
-                .put(CHESTS.getName(), CHESTS)
-                .put(TNT_CHESTS.getName(), TNT_CHESTS)
+                .put(CHEST.getName(), CHEST)
+                .put(TNT_CHEST.getName(), TNT_CHEST)
                 .put(SPAWNER_GRAVE.getName(), SPAWNER_GRAVE)
                 .put(EMPTY_GRAVE.getName(), EMPTY_GRAVE)
-                .put(SPAWNERS.getName(), SPAWNERS)
+                .put(SPAWNER.getName(), SPAWNER)
                 .put(STAIRS.getName(), STAIRS)
+                .put(SEWER_HOLE.getName(), SEWER_HOLE)
                 .build();
 
         void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage);
@@ -328,7 +400,9 @@ public final class DungeonModelFeature {
 
         public static Position fromJson(JsonObject object) {
             Vec3i position = JSONUtils.getOffset(object);
-            Direction facing = Direction.valueOf(object.get("facing").getAsString().toUpperCase(Locale.ROOT));
+            Direction facing = object.has("facing") ?
+                    Direction.valueOf(object.get("facing").getAsString().toUpperCase(Locale.ROOT))
+                    : Direction.NORTH;
             return new Position(position, facing);
         }
 

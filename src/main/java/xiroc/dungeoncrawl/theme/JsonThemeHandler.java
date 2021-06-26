@@ -110,12 +110,12 @@ public class JsonThemeHandler {
     }
 
     /**
-     * Convenience method to deserialize a sub-theme from a json object
+     * Convenience method to deserialize a secondary theme from a json object
      *
      * @param object the json object
      * @return the resulting sub-theme
      */
-    public static SecondaryTheme deserializeSubTheme(JsonObject object, ResourceLocation file) {
+    public static SecondaryTheme deserializeSecondaryTheme(JsonObject object, ResourceLocation file) {
 
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
@@ -160,12 +160,12 @@ public class JsonThemeHandler {
     }
 
     /**
-     * Convenience method to deserialize a theme mapping from the given json object.
+     * Convenience method to deserialize a secondary theme mapping from the given json object.
      *
      * @param object the json object
      * @param file   the location of the sub-theme file
      */
-    public static void deserializeSubThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, ResourceLocation file) {
+    public static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, ResourceLocation file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
                 ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);

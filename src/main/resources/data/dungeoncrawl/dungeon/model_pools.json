@@ -55,13 +55,11 @@
     "nodes:full:upper_one": [
       {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:full:upper_two": [
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:full:upper_catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -87,14 +85,12 @@
       {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 2},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:fork:upper_two": [
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:fork:upper_catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -124,14 +120,12 @@
       {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:straight:upper_two": [
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:straight:upper_catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -163,14 +157,12 @@
       {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:turn:upper_two": [
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
     "nodes:turn:upper_catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -202,14 +194,12 @@
       {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 2},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 2}
+      {"key": "dungeoncrawl:default/node/room", "weight": 2}
     ],
     "nodes:dead_end:upper_two": [
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 2},
-      {"key": "dungeoncrawl:default/node/room_2", "weight": 2}
+      {"key": "dungeoncrawl:default/node/room", "weight": 2}
     ],
     "nodes:dead_end:upper_catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -273,7 +263,8 @@
       {"key": "dungeoncrawl:default/corridor/linker/cake_room", "weight": 2},
       {"key": "dungeoncrawl:default/corridor/linker/linker", "weight": 1},
       {"key": "dungeoncrawl:default/corridor/linker/linker_3", "weight": 1},
-      {"key": "dungeoncrawl:default/corridor/linker/linker_6", "weight": 2}
+      {"key": "dungeoncrawl:default/corridor/linker/linker_6", "weight": 2},
+      {"key": "dungeoncrawl:catacombs/corridor/linker/linker", "weight": 3}
     ],
     "corridor_linkers:upper_two": [
       {"key": "dungeoncrawl:default/corridor/linker/cake_room", "weight": 1},
@@ -281,14 +272,15 @@
       {"key": "dungeoncrawl:default/corridor/linker/linker_3", "weight": 1},
       {"key": "dungeoncrawl:default/corridor/linker/linker_4", "weight": 1},
       {"key": "dungeoncrawl:default/corridor/linker/linker_5", "weight": 1},
-      {"key": "dungeoncrawl:default/corridor/linker/linker_6", "weight": 2}
+      {"key": "dungeoncrawl:default/corridor/linker/linker_6", "weight": 2},
+      {"key": "dungeoncrawl:catacombs/corridor/linker/linker", "weight": 5}
     ],
     "corridor_linkers:upper_catacombs": [
-      {"key": "dungeoncrawl:catacombs/corridor/linker/linker", "weight": 1},
+      {"key": "dungeoncrawl:catacombs/corridor/linker/linker", "weight": 2},
       {"key": "dungeoncrawl:catacombs/corridor/linker/linker_trap", "weight": 1}
     ],
     "corridor_linkers:catacombs": [
-      {"key": "dungeoncrawl:catacombs/corridor/linker/linker", "weight": 1},
+      {"key": "dungeoncrawl:catacombs/corridor/linker/linker", "weight": 2},
       {"key": "dungeoncrawl:catacombs/corridor/linker/linker_trap", "weight": 1}
     ],
     "corridor_linkers:hell": [

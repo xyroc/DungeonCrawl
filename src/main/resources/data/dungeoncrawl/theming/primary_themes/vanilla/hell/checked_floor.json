@@ -1,5 +1,4 @@
 {
-  "type": "theme",
   "id": 1,
   "secondary_theme": [{"key": "dungeoncrawl:vanilla/hell/default"}],
   "theme": {

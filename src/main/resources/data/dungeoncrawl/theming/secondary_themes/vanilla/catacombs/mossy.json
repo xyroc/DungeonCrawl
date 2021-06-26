@@ -1,0 +1,125 @@
+{
+  "theme": {
+    "pillar": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cobblestone",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:stone_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone"
+        },
+        {
+          "block": "minecraft:mossy_stone_bricks"
+        }
+      ]
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:iron_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:iron_door"
+    },
+    "material": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cobblestone",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:stone_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone"
+        },
+        {
+          "block": "minecraft:mossy_stone_bricks"
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:stone_brick_stairs",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:cobblestone_stairs",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_stairs"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone_stairs"
+        }
+      ]
+    },
+    "slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:stone_brick_slab",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:cobblestone_slab",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_slab"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone_slab"
+        }
+      ]
+    },
+    "fence": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:stone_brick_wall",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:cobblestone_wall",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_wall"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone_wall"
+        }
+      ]
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:cave_air"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:stone_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:stone_pressure_plate"
+    }
+  }
+}

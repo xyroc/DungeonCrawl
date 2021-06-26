@@ -54,8 +54,8 @@ public class JSONUtils {
 
     public static BlockState getBlockState(Block block, JsonObject element) {
         BlockState state = block.getDefaultState();
-        if (element.has("data")) {
-            JsonObject data = element.get("data").getAsJsonObject();
+        if (element.has("properties")) {
+            JsonObject data = element.get("properties").getAsJsonObject();
             for (IProperty<?> property : state.getProperties()) {
                 if (data.has(property.getName())) {
                     state = parseProperty(state, property, data.get(property.getName()).getAsString());

@@ -25,7 +25,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
 import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
-import xiroc.dungeoncrawl.dungeon.treasure.function.SpecialItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 
 import java.util.HashMap;
@@ -48,7 +47,6 @@ public class Treasure {
         LootFunctionManager.registerFunction(new MaterialBlocks.Serializer());
         LootFunctionManager.registerFunction(new Shield.Serializer());
         LootFunctionManager.registerFunction(new SuspiciousStew.Serializer());
-        LootFunctionManager.registerFunction(new SpecialItem.Serializer());
     }
 
     /**

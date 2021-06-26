@@ -64,7 +64,7 @@ public abstract class LayerGenerator {
     /**
      * Used to (re-)initialize the layer generator. Called before every layer generation.
      */
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer) {
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer,  boolean isLastLayer) {
         this.settings = settings;
     }
 

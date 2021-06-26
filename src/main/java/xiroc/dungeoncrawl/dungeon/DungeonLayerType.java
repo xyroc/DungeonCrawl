@@ -19,27 +19,15 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.ImmutableMap;
-import xiroc.dungeoncrawl.dungeon.generator.layer.CatacombLayerGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.layer.DefaultLayerGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.layer.NewLayerGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.layer.RoguelikeLayerGenerator;
-
-import java.util.Hashtable;
 
 public enum DungeonLayerType {
 
-    NEW(NewLayerGenerator.INSTANCE),
-    DEFAULT(DefaultLayerGenerator.INSTANCE),
-    CATACOMBS(CatacombLayerGenerator.INSTANCE),
-    LOWER_CATACOMBS(CatacombLayerGenerator.INSTANCE),
-    HELL(DefaultLayerGenerator.INSTANCE);
+    DEFAULT(NewLayerGenerator.INSTANCE);
 
     public static final ImmutableMap<String, DungeonLayerType> NAME_TO_TYPE = new ImmutableMap.Builder<String, DungeonLayerType>()
-            .put("default", NEW)
-            .put("catacombs", CATACOMBS)
-            .put("lower_catacombs", LOWER_CATACOMBS)
-            .put("hell", HELL)
+            .put("default", DEFAULT)
             .build();
 
     public final LayerGenerator layerGenerator;

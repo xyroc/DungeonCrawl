@@ -103,7 +103,7 @@ public class ModelBlockDefinition {
     @Nullable
     public Block getBlock(DungeonModelBlock block) {
         if (block.type == DungeonModelBlockType.OTHER) {
-            return ForgeRegistries.BLOCKS.getValue(block.resource);
+            return ForgeRegistries.BLOCKS.getValue(block.blockName);
         } else if (block.type == DungeonModelBlockType.CARPET) {
             return DungeonBlocks.CARPET[block.variation];
         }

@@ -60,49 +60,49 @@
       "blocks": [
         {
           "block": "minecraft:mossy_stone_brick_stairs",
-          "data": {
+          "properties": {
             "facing": "north"
           }
         },
         {
           "block": "minecraft:mossy_stone_brick_stairs",
-          "data": {
+          "properties": {
             "facing": "east"
           }
         },
         {
           "block": "minecraft:mossy_stone_brick_stairs",
-          "data": {
+          "properties": {
             "facing": "south"
           }
         },
         {
           "block": "minecraft:mossy_stone_brick_stairs",
-          "data": {
+          "properties": {
             "facing": "west"
           }
         },
         {
           "block": "minecraft:mossy_cobblestone_stairs",
-          "data": {
+          "properties": {
             "facing": "north"
           }
         },
         {
           "block": "minecraft:mossy_cobblestone_stairs",
-          "data": {
+          "properties": {
             "facing": "east"
           }
         },
         {
           "block": "minecraft:mossy_cobblestone_stairs",
-          "data": {
+          "properties": {
             "facing": "south"
           }
         },
         {
           "block": "minecraft:mossy_cobblestone_stairs",
-          "data": {
+          "properties": {
             "facing": "west"
           }
         },

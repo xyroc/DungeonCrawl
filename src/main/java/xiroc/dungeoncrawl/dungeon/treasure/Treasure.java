@@ -28,7 +28,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
 import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
-import xiroc.dungeoncrawl.dungeon.treasure.function.SpecialItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 
 import java.util.HashMap;
@@ -38,7 +37,6 @@ public class Treasure {
     public static final LootFunctionType ENCHANTED_BOOK = func_237451_a_("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
     public static final LootFunctionType MATERIAL_BLOCKS = func_237451_a_("dungeoncrawl:material_blocks", new MaterialBlocks.Serializer());
     public static final LootFunctionType RANDOM_ITEM = func_237451_a_("dungeoncrawl:random_item", new RandomItem.Serializer());
-    public static final LootFunctionType SPECIAL_ITEM = func_237451_a_("dungeoncrawl:special_item", new SpecialItem.Serializer());
     public static final LootFunctionType RANDOM_POTION = func_237451_a_("dungeoncrawl:random_potion", new RandomPotion.Serializer());
     public static final LootFunctionType SHIELD = func_237451_a_("dungeoncrawl:shield", new Shield.Serializer());
     public static final LootFunctionType SUSPICIOUS_STEW = func_237451_a_("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());

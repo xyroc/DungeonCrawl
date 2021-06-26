@@ -60,8 +60,8 @@ public class DungeonBuilder {
 
     private final DynamicRegistries dynamicRegistries;
 
-    public Theme entranceTheme, theme, lowerTheme, bottomTheme;
-    public Theme.SecondaryTheme entranceSecondaryTheme, secondaryTheme, lowerSecondaryTheme, bottomSecondaryTheme;
+    public Theme theme, lowerTheme, bottomTheme;
+    public Theme.SecondaryTheme secondaryTheme, lowerSecondaryTheme, bottomSecondaryTheme;
 
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
@@ -100,7 +100,7 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
-        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome((chunkPos.x + 4) << 2, chunkGenerator.getSeaLevel() >> 4, (chunkPos.z + 4) << 2);
+        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome(chunkPos.x << 2, chunkGenerator.getSeaLevel() >> 4, chunkPos.z << 2);
         DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
         generateLayout(type, DEFAULT_GENERATOR);
 
@@ -109,27 +109,24 @@ public class DungeonBuilder {
         entrance.setWorldPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
-        entrance.setupModel(this, null, pieces, rand);
+        entrance.model = type.entrances.roll(rand);
         entrance.setupBoundingBox();
 
         determineThemes();
 
-        entrance.theme = this.entranceTheme;
-        entrance.secondaryTheme = this.entranceSecondaryTheme;
+        entrance.theme = this.theme;
+        entrance.secondaryTheme = this.secondaryTheme;
 
         pieces.add(entrance);
 
         postProcessDungeon(pieces, type, rand);
-
-//        pieces.forEach((piece) -> DungeonCrawl.LOGGER.info("{} ({}) : {}", piece, piece.model, piece.getBoundingBox()));
-
         return pieces;
     }
 
     private void generateLayout(DungeonType type, DungeonGenerator generator) {
         generator.initializeDungeon(type, this, this.chunkPos, this.rand);
-        int gridSize = 17;
 
+        int gridSize = 17;
         int startCoordinate = gridSize / 2;
 
         this.start = new Position2D(startCoordinate, startCoordinate);
@@ -143,7 +140,7 @@ public class DungeonBuilder {
         }
 
         for (int layer = 0; layer < layers.length; layer++) {
-            generator.initializeLayer(type.getLayer(layer).settings, this, rand, layer);
+            generator.initializeLayer(type.getLayer(layer).settings, this, rand, layer, layer == layerCount - 1);
             generator.generateLayer(this, layers[layer], layer, rand, (layer == 0) ? this.start : layers[layer - 1].end);
         }
 
@@ -171,10 +168,8 @@ public class DungeonBuilder {
         ResourceLocation registryName = dynamicRegistries.getRegistry(Registry.BIOME_KEY).getKey(biome);
 
         if (registryName != null) {
-            if (this.entranceTheme == null) this.entranceTheme = Theme.randomTheme(registryName.toString(), rand);
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), rand);
         } else {
-            if (this.entranceTheme == null) this.entranceTheme = Theme.getDefaultTheme();
             if (this.theme == null) this.theme = Theme.getDefaultTheme();
         }
 
@@ -182,20 +177,12 @@ public class DungeonBuilder {
             if (theme.subTheme != null) {
                 this.secondaryTheme = theme.subTheme.roll(rand);
             } else {
-                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
-            }
-        }
-
-        if (entranceSecondaryTheme == null) {
-            if (entranceTheme.subTheme != null) {
-                this.entranceSecondaryTheme = entranceTheme.subTheme.roll(rand);
-            } else {
-                this.entranceSecondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSubTheme();
+                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSecondaryTheme();
             }
         }
 
         if (this.lowerTheme == null)
-            this.lowerTheme = Theme.getTheme(Theme.PRIMARY_CATACOMBS_DEFAULT);
+            this.lowerTheme = Theme.getTheme(Theme.CATACOMBS_FALLBACK);
 
         if (lowerSecondaryTheme == null) {
             if (lowerTheme.subTheme != null) {
@@ -206,7 +193,7 @@ public class DungeonBuilder {
         }
 
         if (this.bottomTheme == null)
-            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.getTheme(Theme.PRIMARY_HELL_DEFAULT);
+            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.getTheme(Theme.PRIMARY_HELL_FALLBACK);
 
         if (bottomTheme.subTheme != null && this.bottomSecondaryTheme == null) {
             this.bottomSecondaryTheme = bottomTheme.subTheme.roll(rand);
@@ -247,12 +234,12 @@ public class DungeonBuilder {
 
                         placeHolder.reference.setupBoundingBox();
 
-                        if (placeHolder.reference.hasChildPieces()) {
-                            placeHolder.reference.addChildPieces(pieces, this, modelSelector, i, rand);
-                        }
-
                         if (placeHolder.reference.getType() == 10) {
                             layer.rotateNode(placeHolder, rand);
+                        }
+
+                        if (placeHolder.reference.hasChildPieces()) {
+                            placeHolder.reference.addChildPieces(pieces, this, modelSelector, i, rand);
                         }
 
                         placeHolder.reference.customSetup(rand);
@@ -260,27 +247,6 @@ public class DungeonBuilder {
                     }
                 }
         }
-    }
-
-    /**
-     * Checks if a piece can be placed at the given position.
-     *
-     * @return true if the piece can be placed, false if not
-     */
-    public static boolean canPlacePiece(DungeonLayer layer, int x, int z, int width, int length,
-                                        boolean ignoreStartPosition) {
-        if (x + width > Dungeon.SIZE || z + length > Dungeon.SIZE || x < 0 || z < 0)
-            return false;
-
-        for (int x0 = 0; x0 < width; x0++) {
-            for (int z0 = 0; z0 < length; z0++) {
-                if (!(ignoreStartPosition && x0 == 0 && z0 == 0)
-                        && (layer.grid[x + x0][z + z0] != null || !layer.map.isPositionFree(x + x0, z + z0))) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public static boolean isBlockProtected(IWorld world, BlockPos pos, PlacementContext context) {

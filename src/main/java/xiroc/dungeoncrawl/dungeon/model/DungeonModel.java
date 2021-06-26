@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,32 +38,111 @@ import java.util.List;
 
 public class DungeonModel {
 
-//    public static final DungeonModel EMPTY = new DungeonModel(new DungeonModelBlock[0][0][0], null);
+    public static final DungeonModel EMPTY = new DungeonModel(DungeonCrawl.locate("empty"), ImmutableList.of(), 0, 0, 0);
 
-    private ResourceLocation location;
+    private final ResourceLocation key;
 
-    private ResourceLocation key;
-    public Integer id; // ID's are no longer the main way to identify models. Kept only for backwards compatibility.
+    public final int width, height, length;
 
-    public int width, height, length;
-
-    public final List<DungeonModelBlock> blocks;
+    public final ImmutableList<DungeonModelBlock> blocks;
 
     @Nullable
-    public List<MultipartModelData> multipartData;
+    private Integer id;
 
     @Nullable
-    private Metadata metadata;
+    private List<MultipartModelData> multipartData;
 
-    public DungeonModel(List<DungeonModelBlock> blocks, int width, int height, int length) {
+    private int entranceType;
+
+    private Vector3i offset, rotatedOffset;
+    @Nullable
+    private DungeonModelFeature[] features;
+
+    private boolean hasId;
+    private boolean hasFeatures;
+    private boolean hasMultipart;
+
+    public DungeonModel(ResourceLocation key, ImmutableList<DungeonModelBlock> blocks, int width, int height, int length) {
+        this.key = key;
         this.blocks = blocks;
         this.width = width;
         this.height = height;
         this.length = length;
+
+        this.offset = DungeonModels.NO_OFFSET;
+        this.rotatedOffset = DungeonModels.NO_OFFSET;
     }
 
     public List<DungeonModelBlock> getBlocks() {
         return blocks;
+    }
+
+    public void loadMetadata(JsonObject object, ResourceLocation file) throws JsonParseException {
+        if (object.has("id")) {
+            this.id = object.get("id").getAsInt();
+            this.hasId = true;
+        }
+
+        if (object.has("offset")) {
+            JsonObject offset = object.getAsJsonObject("offset");
+            this.offset = JSONUtils.getOffset(offset);
+            if (offset.has("rotate") && offset.get("rotate").getAsBoolean()) {
+                this.rotatedOffset = new Vector3i(this.offset.getZ(), this.offset.getY(), this.offset.getX());
+            } else {
+                this.rotatedOffset = this.offset;
+            }
+        }
+
+        if (object.has("entrance_type")) {
+            if (object.get("entrance_type").getAsString().equals("secondary")) {
+                entranceType = 1;
+            }
+        }
+
+        if (object.has("features")) {
+            JsonArray array = object.getAsJsonArray("features");
+            this.features = new DungeonModelFeature[array.size()];
+            for (int i = 0; i < array.size(); i++) {
+                this.features[i] = DungeonModelFeature.fromJson(array.get(i).getAsJsonObject(), file);
+            }
+            this.hasFeatures = true;
+        }
+
+        if (object.has("loot")) {
+            JsonArray array = object.getAsJsonArray("loot");
+            if (array.size() > 0) {
+                ArrayList<Tuple<Vector3i, ResourceLocation>> loot = new ArrayList<>();
+                array.forEach((element) -> {
+                    JsonObject instance = element.getAsJsonObject();
+                    Vector3i pos = JSONUtils.getOffset(instance.getAsJsonObject("pos"));
+                    ResourceLocation lootTable = new ResourceLocation(instance.get("loot_table").getAsString());
+                    loot.add(new Tuple<>(pos, lootTable));
+                });
+                loot.forEach((l) -> {
+                    for (DungeonModelBlock block : blocks) {
+                        if (block.position.equals(l.getA())) {
+                            block.lootTable = l.getB();
+                            return;
+                        }
+                    }
+                });
+            }
+        }
+
+        if (object.has("multipart")) {
+            JsonArray array = object.getAsJsonArray("multipart");
+            if (array.size() > 0) {
+                ArrayList<MultipartModelData> multipartData = new ArrayList<>();
+                for (JsonElement element : array) {
+                    MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
+                    if (multipartModelData != null) {
+                        multipartData.add(multipartModelData);
+                    }
+                }
+                this.multipartData = multipartData;
+                this.hasMultipart = true;
+            }
+        }
     }
 
     public DungeonModel setId(int id) {
@@ -71,49 +151,12 @@ public class DungeonModel {
         return this;
     }
 
-    public void setKey(ResourceLocation key) {
-        this.key = key;
-    }
-
-    public void setLocation(ResourceLocation location) {
-        this.location = location;
-    }
-
     public ResourceLocation getKey() {
         return key;
     }
 
-    public ResourceLocation getLocation() {
-        return location;
-    }
-
-    @Nullable
-    public Metadata getMetadata() {
-        return metadata;
-    }
-
-    public void loadMetadata(Metadata metadata) {
-        this.metadata = metadata;
-
-        if (metadata.id != null) {
-            this.id = metadata.id;
-            DungeonModels.ID_TO_MODEL.put(id, this);
-        }
-
-        if (metadata.loot != null) {
-            metadata.loot.forEach((loot) -> {
-                for (DungeonModelBlock block : blocks) {
-                    if (block.position.equals(loot.getA())) {
-                        block.lootTable = loot.getB();
-                        return;
-                    }
-                }
-            });
-        }
-
-        if (metadata.multipartData != null) {
-            this.multipartData = metadata.multipartData;
-        }
+    public int getEntranceType() {
+        return entranceType;
     }
 
     public MutableBoundingBox createBoundingBox(int x, int y, int z, Rotation rotation) {
@@ -151,119 +194,43 @@ public class DungeonModel {
 
 
     public Vector3i getOffset(Rotation rotation) {
-        if (metadata != null && metadata.offset != null) {
-            if (metadata.rotatedOffset != null && ((rotation.ordinal()) & 1) == 1) {
-                return metadata.rotatedOffset;
-            } else {
-                return metadata.offset;
-            }
+        if ((rotation.ordinal() & 1) == 1) {
+            return rotatedOffset;
+        } else {
+            return offset;
         }
-        return DungeonModels.NO_OFFSET;
+    }
+
+    public boolean hasId() {
+        return hasId;
+    }
+
+    public boolean hasFeatures() {
+        return hasFeatures;
+    }
+
+    public boolean hasMultipart() {
+        return hasMultipart;
+    }
+
+    @Nullable
+    public DungeonModelFeature[] getFeatures() {
+        return features;
+    }
+
+    @Nullable
+    public List<MultipartModelData> getMultipartData() {
+        return multipartData;
+    }
+
+    @Nullable
+    public Integer getId() {
+        return id;
     }
 
     @Override
     public String toString() {
         return "{key=" + key + "}";
-    }
-
-    public static class Metadata {
-
-        @Nullable
-        public Integer id;
-
-        @Nullable
-        public List<MultipartModelData> multipartData;
-
-        public boolean variation;
-
-        @Nullable
-        private Vector3i offset, rotatedOffset;
-
-        @Nullable
-        public DungeonModelFeature[] features;
-
-        @Nullable
-        public ArrayList<Tuple<Vector3i, ResourceLocation>> loot;
-
-        private Metadata() {
-        }
-
-        public static Metadata fromJson(JsonObject object, ResourceLocation file) throws JsonParseException {
-            Metadata metadata = new Metadata();
-
-            if (object.has("id")) {
-                metadata.setId(object.get("id").getAsInt());
-            }
-
-            if (object.has("offset")) {
-                JsonObject offset = object.getAsJsonObject("offset");
-                metadata.setOffset(JSONUtils.getOffset(offset), offset.has("rotate") && offset.get("rotate").getAsBoolean());
-            }
-
-            if (object.has("features")) {
-                JsonArray array = object.getAsJsonArray("features");
-                DungeonModelFeature[] features = new DungeonModelFeature[array.size()];
-                for (int i = 0; i < array.size(); i++) {
-                    features[i] = DungeonModelFeature.fromJson(array.get(i).getAsJsonObject(), file);
-                }
-                metadata.setFeatures(features);
-            }
-
-            if (object.has("variation")) {
-                metadata.setVariation(object.get("variation").getAsBoolean());
-            }
-
-            if (object.has("loot")) {
-                JsonArray array = object.getAsJsonArray("loot");
-                if (array.size() > 0) {
-                    metadata.loot = new ArrayList<>();
-                    array.forEach((element) -> {
-                        JsonObject instance = element.getAsJsonObject();
-                        Vector3i pos = JSONUtils.getOffset(instance.getAsJsonObject("pos"));
-                        ResourceLocation lootTable = new ResourceLocation(instance.get("loot_table").getAsString());
-                        metadata.loot.add(new Tuple<>(pos, lootTable));
-                    });
-                }
-            }
-
-            if (object.has("multipart")) {
-                JsonArray array = object.getAsJsonArray("multipart");
-                if (array.size() > 0) {
-                    ArrayList<MultipartModelData> multipartData = new ArrayList<>();
-                    for (JsonElement element : array) {
-                        MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
-                        if (multipartModelData != null) {
-                            multipartData.add(multipartModelData);
-                        }
-                    }
-                    metadata.setMultipartData(multipartData);
-                }
-            }
-
-            return metadata;
-        }
-
-        private void setId(@Nullable Integer id) {
-            this.id = id;
-        }
-
-        private void setFeatures(@Nullable DungeonModelFeature[] features) {
-            this.features = features;
-        }
-
-        private void setOffset(Vector3i offset, boolean rotatable) {
-            this.offset = offset;
-            this.rotatedOffset = rotatable ? new Vector3i(offset.getZ(), offset.getY(), offset.getX()) : null;
-        }
-
-        private void setMultipartData(@Nullable List<MultipartModelData> multipartData) {
-            this.multipartData = multipartData;
-        }
-
-        private void setVariation(boolean variation) {
-            this.variation = variation;
-        }
-
     }
 
 }

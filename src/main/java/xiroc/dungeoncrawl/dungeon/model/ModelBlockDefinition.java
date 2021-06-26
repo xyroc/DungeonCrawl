@@ -91,7 +91,7 @@ public class ModelBlockDefinition {
     public Hashtable<Block, DungeonModelBlockType> definition;
     public Hashtable<DungeonModelBlockType, Block> invertedDefinition;
 
-    public static ImmutableSet<ResourceLocation> KEYS;
+    private static ImmutableSet<ResourceLocation> KEYS;
     private static ImmutableSet.Builder<ResourceLocation> keySetBuilder;
 
     public ModelBlockDefinition(Hashtable<Block, DungeonModelBlockType> definition) {
@@ -103,7 +103,7 @@ public class ModelBlockDefinition {
     @Nullable
     public Block getBlock(DungeonModelBlock block) {
         if (block.type == DungeonModelBlockType.OTHER) {
-            return ForgeRegistries.BLOCKS.getValue(block.resource);
+            return ForgeRegistries.BLOCKS.getValue(block.blockName);
         } else if (block.type == DungeonModelBlockType.CARPET) {
             return DungeonBlocks.CARPET[block.variation];
         }
@@ -176,4 +176,7 @@ public class ModelBlockDefinition {
         return DEFINITIONS.getOrDefault(DEFAULT_LOCATION, DEFAULT_DEFINITION);
     }
 
+    public static ImmutableSet<ResourceLocation> getKeys() {
+        return KEYS;
+    }
 }

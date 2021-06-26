@@ -1,0 +1,55 @@
+{
+  "id": 48,
+  "features": [
+    {
+      "type": "spawner",
+      "positions": [
+        {"x": 3, "y": 1, "z": 3, "facing": "south"},
+        {"x": 13, "y": 1, "z": 3, "facing": "west"},
+        {"x": 13, "y": 1, "z": 13, "facing": "north"},
+        {"x": 3, "y": 1, "z": 13, "facing": "east"}
+      ],
+      "amount": {
+        "min": 1,
+        "max": 2
+      },
+      "follow_up": {
+        "type": "chest",
+        "amount": {
+          "min": 1,
+          "max": 2
+        }
+      }
+    }
+  ],
+  "multipart": [
+    {
+      "models": [
+        {
+          "offset": {
+            "x": 6,
+            "y": 7,
+            "z": 6
+          },
+          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/flat"
+        },
+        {
+          "offset": {
+            "x": 6,
+            "y": 7,
+            "z": 6
+          },
+          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/dome"
+        },
+        {
+          "offset": {
+            "x": 6,
+            "y": 7,
+            "z": 6
+          },
+          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/light"
+        }
+      ]
+    }
+  ]
+}

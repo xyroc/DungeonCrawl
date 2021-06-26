@@ -121,8 +121,8 @@ public class Spawner implements IBlockPlacementHandler {
 
             ListNBT handItems = new ListNBT();
             ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
-                    ? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
-                    : RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
+                    ? RandomEquipment.getRangedWeapon(DungeonBlocks.RANDOM, stage)
+                    : RandomEquipment.getMeleeWeapon(DungeonBlocks.RANDOM, stage);
 
             if (mainHand != ItemStack.EMPTY) {
                 handItems.add(mainHand.write(new CompoundNBT()));
@@ -159,8 +159,8 @@ public class Spawner implements IBlockPlacementHandler {
             entity.setItemStackToSlot(EquipmentSlotType.HEAD, armor[3]);
 
             ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(entity.getType())
-                    ? RandomEquipment.getRangedWeapon(WeightedRandomBlock.RANDOM, stage)
-                    : RandomEquipment.getMeleeWeapon(WeightedRandomBlock.RANDOM, stage);
+                    ? RandomEquipment.getRangedWeapon(DungeonBlocks.RANDOM, stage)
+                    : RandomEquipment.getMeleeWeapon(DungeonBlocks.RANDOM, stage);
             entity.setItemStackToSlot(EquipmentSlotType.MAINHAND, mainHand);
 
             if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())

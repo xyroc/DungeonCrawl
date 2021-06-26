@@ -44,12 +44,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.config.JsonConfig;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.module.Modules;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
@@ -83,14 +80,16 @@ public class DungeonCrawl {
         forgeEventBus.addListener(this::onServerStart);
 
         Treasure.init();
-        DungeonModelBlockType.buildNameTable();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("Common Setup");
         //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
-        JsonConfig.load();
+
+        if (Config.SPACING.get() <= Config.SEPARATION.get()) {
+            throw new IllegalArgumentException("Invalid spacing/separation setting in the config.");
+        }
 
         StructurePieceTypes.register();
 
@@ -99,7 +98,6 @@ public class DungeonCrawl {
         }
 
         IBlockPlacementHandler.init();
-        Modules.load();
     }
 
     private void onRegisterStructures(final RegistryEvent.Register<Structure<?>> event) {
@@ -107,7 +105,7 @@ public class DungeonCrawl {
     }
 
     private void onBiomeLoad(final BiomeLoadingEvent event) {
-        if (event.getName() == null || !JsonConfig.BIOME_OVERWORLD_BLOCKLIST.contains(event.getName().toString()) && Dungeon.ALLOWED_CATEGORIES.contains(event.getCategory())) {
+        if (Dungeon.ALLOWED_CATEGORIES.contains(event.getCategory())) {
             LOGGER.debug("Generation Biome: {}", event.getName());
             event.getGeneration().withStructure(Dungeon.CONFIGURED_DUNGEON);
         }
@@ -146,7 +144,7 @@ public class DungeonCrawl {
      * Creates a key for a given resource location. Removes the base directory and the following slash and the file ending.
      *
      * @param resourceLocation the initial resource location.
-     * @param baseDirectory    the base path without the last slash. ( dira/dirb not dira/dirb/ )
+     * @param baseDirectory    the base path without the last slash. ( dirA/dirB not dirA/dirB/ )
      * @param fileEnding       the file ending to remove at the end of the path
      * @return the key
      */

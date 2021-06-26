@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
@@ -30,8 +31,8 @@ import java.util.Locale;
 
 public interface ModelLoader {
 
-    ModelLoader VERSION_1 = (nbt, file) -> {
-        List<DungeonModelBlock> modelBlocks = new ArrayList<>();
+    ModelLoader VERSION_1 = (nbt, file, key) -> {
+        ImmutableList.Builder<DungeonModelBlock> modelBlocks = new ImmutableList.Builder<>();
 
         ListNBT blocks = nbt.getList("blocks", 10);
 
@@ -39,15 +40,15 @@ public interface ModelLoader {
             modelBlocks.add(DungeonModelBlock.fromNBT(blocks.getCompound(i)));
         }
 
-        return new DungeonModel(modelBlocks, nbt.getInt("width"), nbt.getInt("height"), nbt.getInt("length"));
+        return new DungeonModel(key, modelBlocks.build(), nbt.getInt("width"), nbt.getInt("height"), nbt.getInt("length"));
     };
 
-    ModelLoader LEGACY = (nbt, file) -> {
+    ModelLoader LEGACY = (nbt, file, key) -> {
         int width = nbt.getInt("width"), height = nbt.getInt("height"), length = nbt.getInt("length");
 
         ListNBT blocks = nbt.getList("model", 9);
 
-        List<DungeonModelBlock> modelBlocks = new ArrayList<>();
+        ImmutableList.Builder<DungeonModelBlock> modelBlocks = new ImmutableList.Builder<>();
 
         for (int x = 0; x < width; x++) {
             ListNBT blocks2 = blocks.getList(x);
@@ -61,9 +62,9 @@ public interface ModelLoader {
             }
         }
 
-        return new DungeonModel(modelBlocks, width, height, length);
+        return new DungeonModel(key, modelBlocks.build(), width, height, length);
     };
 
-    DungeonModel load(CompoundNBT nbt, ResourceLocation file);
+    DungeonModel load(CompoundNBT nbt, ResourceLocation file, ResourceLocation key);
 
 }

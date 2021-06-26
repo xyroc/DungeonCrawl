@@ -1,0 +1,45 @@
+{
+  "id": 0,
+  "theme": {
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:oak_log"
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:oak_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:oak_door"
+    },
+    "material": {
+      "type": "block",
+      "block": "minecraft:oak_planks"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "minecraft:oak_stairs"
+    },
+    "slab": {
+      "type": "block",
+      "block": "minecraft:oak_slab"
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:oak_fence"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:oak_fence_gate"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:oak_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:oak_pressure_plate"
+    }
+  }
+}

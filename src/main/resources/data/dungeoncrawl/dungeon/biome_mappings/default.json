@@ -1,8 +1,24 @@
 {
-  "conditions": {
-    "present": [],
-    "absent": []
-  },
   "default": [{"key": "dungeoncrawl:default"}],
-  "mapping": {}
+  "mapping": {
+    "minecraft:forest": [{"key": "dungeoncrawl:forest/default"}],
+    "minecraft:birch_forest": [{"key": "dungeoncrawl:forest/default"}],
+    "minecraft:tall_birch_forest": [{"key": "dungeoncrawl:forest/default"}],
+    "minecraft:dark_forest": [{"key": "dungeoncrawl:forest/default"}],
+    "minecraft:flower_forest": [{"key": "dungeoncrawl:forest/default"}],
+
+    "minecraft:mountains": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:snowy_mountains": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:gravelly_mountains": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:modified_gravelly_mountains": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:wooded_mountains": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:mountain_edge": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:giant_tree_taiga_hills": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:taiga_mountains": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:snowy_taiga_mountains": [{"key": "dungeoncrawl:mountains/default"}],
+    "minecraft:giant_spruce_taiga_hills": [{"key": "dungeoncrawl:mountains/default"}],
+
+    "minecraft:desert": [{"key": "dungeoncrawl:desert/default"}],
+    "minecraft:desert_hills": [{"key": "dungeoncrawl:desert/default"}]
+  }
 }

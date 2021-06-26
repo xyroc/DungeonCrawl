@@ -38,6 +38,10 @@ import java.util.Random;
 
 public class DungeonRoom extends DungeonPiece {
 
+    public DungeonRoom() {
+        super(StructurePieceTypes.ROOM);
+    }
+
     public DungeonRoom(TemplateManager manager, CompoundNBT p_i51343_2_) {
         super(StructurePieceTypes.ROOM, p_i51343_2_);
     }

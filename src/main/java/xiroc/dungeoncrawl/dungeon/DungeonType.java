@@ -28,6 +28,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGeneratorSettings;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -52,13 +53,15 @@ public class DungeonType {
 
     public final ResourceLocation source;
     public final DungeonGeneratorSettings dungeonSettings;
+    public final WeightedRandom<DungeonModel> entrances;
 
     public final Layer[] layers;
 
-    private DungeonType(ResourceLocation source, DungeonGeneratorSettings dungeonSettings, Layer[] layers) {
+    private DungeonType(ResourceLocation source, DungeonGeneratorSettings dungeonSettings, Layer[] layers, WeightedRandom<DungeonModel> entrances) {
         this.source = source;
         this.dungeonSettings = dungeonSettings;
         this.layers = layers;
+        this.entrances = entrances;
     }
 
     public Layer getLayer(int layer) {
@@ -72,8 +75,9 @@ public class DungeonType {
                 JsonObject file = DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
 
                 DungeonType.Builder builder = new DungeonType.Builder(resource);
-                DungeonGeneratorSettings settings = DungeonGeneratorSettings.fromJson(file.getAsJsonObject("settings"), resource);
-                builder.settings(settings);
+//                DungeonGeneratorSettings settings = DungeonGeneratorSettings.fromJson(file.getAsJsonObject("settings"), resource);
+                builder.settings(new DungeonGeneratorSettings(5));
+                builder.entrances(ModelSelector.loadRandom("entrances", file, resource));
 
                 JsonArray layers = file.getAsJsonArray("layers");
                 if (layers.size() == 0) {
@@ -188,12 +192,18 @@ public class DungeonType {
 
         private final ResourceLocation source;
         private final List<Layer> layers;
+        private WeightedRandom<DungeonModel> entrances;
 
         private DungeonGeneratorSettings settings;
 
         public Builder(ResourceLocation source) {
             this.source = source;
             this.layers = new ArrayList<>();
+        }
+
+        public Builder entrances(WeightedRandom<DungeonModel> entrances) {
+            this.entrances = entrances;
+            return this;
         }
 
         public Builder settings(DungeonGeneratorSettings settings) {
@@ -210,7 +220,7 @@ public class DungeonType {
             if (settings == null || layers.size() == 0) {
                 throw new DatapackLoadException("Incomplete Dungeon Type " + source);
             }
-            return new DungeonType(source, settings, layers.toArray(new Layer[0]));
+            return new DungeonType(source, settings, layers.toArray(new Layer[0]), entrances);
         }
 
     }

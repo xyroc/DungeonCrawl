@@ -79,6 +79,17 @@ public class Orientation {
         }
     }
 
+    public static Rotation getOppositeRotation(Rotation rotation) {
+        switch (rotation) {
+            case CLOCKWISE_90:
+                return Rotation.COUNTERCLOCKWISE_90;
+            case COUNTERCLOCKWISE_90:
+                return Rotation.CLOCKWISE_90;
+            default:
+                return rotation;
+        }
+    }
+
     public static Rotation getRotationFromFacing(Direction facing) {
         switch (facing) {
             case NORTH:

@@ -61,8 +61,8 @@ public class DefaultLayerGenerator extends LayerGenerator {
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer) {
-        super.initializeLayer(settings, dungeonBuilder, rand, layer);
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
+        super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
         this.nodesLeft = settings.nodes.generateInt(rand);
         this.roomsLeft = settings.rooms.generateInt(rand);
         this.secretRoom = false;
@@ -165,7 +165,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
         if (rand.nextFloat() < 0.5 && depth <= settings.maxNodeDepth && depth >= settings.minNodeDepth && nodesLeft > 0) {
             Position2D center = currentPosition.shift(lastPosition.directionTo(currentPosition), 1);
 
-            if (DungeonBuilder.canPlacePiece(dungeonLayer, center.x - 1, center.z - 1, 3, 3, false)) {
+            if (dungeonLayer.canPlaceNode(center)) {
                 createNodeRoom(center, dungeonLayer);
                 this.nodesLeft--;
 

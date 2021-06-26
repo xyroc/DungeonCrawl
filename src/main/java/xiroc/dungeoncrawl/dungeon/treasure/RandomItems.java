@@ -33,7 +33,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.SpecialItemTags;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
@@ -52,10 +51,7 @@ public class RandomItems {
     public static final ItemStack REINFORCED_BOW, BOOTS_OF_BATTLE, PANTS_OF_DEFLECTION, LUMBERJACKET, YOKEL_AXE, DOOM,
             THE_SLAYER, DEMON_HUNTER_CROSSBOW, THIEF_DAGGER, THE_GREAT_CLEAVER, ARCHANGEL_SWORD, REPULSER, ELB_BOW;
 
-    public static final TreasureItem CAP, PANTALOONS, LEATHER_JACKET, LEATHER_BOOTS, IRON_SWORD;
-
     public static WeightedRandomTreasureItem STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5;
-    public static final TreasureItem[] SPECIAL_ITEMS, RARE_SPECIAL_ITEMS;
 
     private static final RandomValueRange[] UNBREAKING_LEVELS = {new RandomValueRange(1, 1), new RandomValueRange(1, 2),
             new RandomValueRange(2, 2), new RandomValueRange(2, 3), new RandomValueRange(3, 3)};
@@ -140,58 +136,6 @@ public class RandomItems {
 
         RARE_ITEMS = new ItemStack[]{THE_SLAYER, DEMON_HUNTER_CROSSBOW, THIEF_DAGGER, THE_GREAT_CLEAVER};
 
-        CAP = new TreasureItem("minecraft:air").setProcessor((world, rand, lootLevel) ->
-                RandomEquipment.setArmorColor(SpecialItemTags.rollForTagsAndApply(
-                        ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:leather_helmet")), lootLevel,
-                        rand, "Cap"), RandomEquipment.getRandomColor(rand)));
-        LEATHER_JACKET = new TreasureItem(
-                "minecraft:air")
-                .setProcessor(
-                        (world, rand, lootLevel) -> RandomEquipment
-                                .setArmorColor(
-                                        SpecialItemTags.rollForTagsAndApply(
-                                                ForgeRegistries.ITEMS.getValue(
-                                                        new ResourceLocation("minecraft:leather_chestplate")),
-                                                lootLevel, rand, "Jacket"),
-                                        RandomEquipment.getRandomColor(rand)));
-
-        PANTALOONS = new TreasureItem("minecraft:air").setProcessor((world, rand, lootLevel) ->
-                RandomEquipment.setArmorColor(SpecialItemTags
-                        .rollForTagsAndApply(ForgeRegistries.ITEMS
-                                .getValue(new ResourceLocation("minecraft:leather_leggings")), lootLevel, rand, "Pantaloons"), RandomEquipment.getRandomColor(rand)));
-
-        LEATHER_BOOTS = new TreasureItem(
-                "minecraft:air")
-                .setProcessor(
-                        (world, rand, lootLevel) -> RandomEquipment
-                                .setArmorColor(
-                                        SpecialItemTags.rollForTagsAndApply(
-                                                ForgeRegistries.ITEMS.getValue(
-                                                        new ResourceLocation("minecraft:leather_boots")),
-                                                lootLevel, rand, "Boots"),
-                                        RandomEquipment.getRandomColor(rand)));
-
-        IRON_SWORD = new TreasureItem("minecraft:air").setProcessor((world, rand, lootLevel) -> SpecialItemTags
-                .rollForTagsAndApply(ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:iron_sword")),
-                        lootLevel, rand, "Blade"));
-
-        SPECIAL_ITEMS = new TreasureItem[]{CAP, PANTALOONS, LEATHER_JACKET, LEATHER_BOOTS,
-                createSpecialItem("minecraft:chainmail_boots"),
-                createSpecialItem("minecraft:chainmail_leggings"),
-                createSpecialItem("minecraft:chainmail_chestplate"),
-                createSpecialItem("minecraft:chainmail_helmet"), createSpecialItem("minecraft:stone_sword"),
-                createSpecialItem("minecraft:golden_sword"), createSpecialItem("minecraft:golden_axe"),
-                createSpecialItem("minecraft:golden_boots"), createSpecialItem("minecraft:golden_leggings"),
-                createSpecialItem("minecraft:golden_chestplate"), createSpecialItem("minecraft:golden_helmet"),
-                createSpecialItem("minecraft:iron_axe"), createSpecialItem("minecraft:iron_boots"),
-                createSpecialItem("minecraft:iron_leggings"), createSpecialItem("minecraft:iron_chestplate"),
-                createSpecialItem("minecraft:iron_helmet"), IRON_SWORD};
-
-        RARE_SPECIAL_ITEMS = new TreasureItem[]{createSpecialItem("minecraft:diamond_sword"),
-                createSpecialItem("minecraft:diamond_boots"), createSpecialItem("minecraft:diamond_leggings"),
-                createSpecialItem("minecraft:diamond_chestplate"),
-                createSpecialItem("minecraft:diamond_helmet"), createSpecialItem("minecraft:diamond_axe"),
-                createSpecialItem("minecraft:diamond_shovel"), createSpecialItem("minecraft:diamond_pickaxe")};
     }
 
     public static void loadJson(IResourceManager resourceManager) {
@@ -238,15 +182,6 @@ public class RandomItems {
         }
     }
 
-    public static ItemStack generateSpecialItem(ServerWorld world, Random rand, int lootLevel) {
-        if (lootLevel > 4 || rand.nextDouble() < 0.025 * lootLevel)
-            return rand.nextBoolean() ? RARE_SPECIAL_ITEMS[rand.nextInt(RARE_SPECIAL_ITEMS.length)]
-                    .createItem(world, rand, lootLevel) : RARE_ITEMS[rand.nextInt(RARE_ITEMS.length)].copy();
-        return rand.nextDouble() < 0.8
-                ? SPECIAL_ITEMS[rand.nextInt(SPECIAL_ITEMS.length)].createItem(world, rand, lootLevel)
-                : ITEMS[rand.nextInt(ITEMS.length)].copy();
-    }
-
     public static ItemStack generate(ServerWorld world, Random rand, Integer lootLevel) {
         switch (lootLevel) {
             case 0:
@@ -260,11 +195,6 @@ public class RandomItems {
             default:
                 return STAGE_5.roll(rand).createItem(world, rand, lootLevel);
         }
-    }
-
-    public static TreasureItem createSpecialItem(String item) {
-        return new TreasureItem("minecraft:air").setProcessor((world, rand, lootLevel) -> SpecialItemTags
-                .rollForTagsAndApply(ForgeRegistries.ITEMS.getValue(new ResourceLocation(item)), lootLevel, rand));
     }
 
     public static TreasureItem createEnchantedSpecialItem(String itemName) {

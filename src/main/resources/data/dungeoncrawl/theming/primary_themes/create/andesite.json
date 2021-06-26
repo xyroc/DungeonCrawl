@@ -1,5 +1,4 @@
 {
-  "type": "theme",
   "requirements": {
     "present": ["create"]
   },
@@ -38,7 +37,60 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "create:layered_andesite"
+          "block": "create:layered_andesite",
+          "weight": 3
+        },
+        {
+          "block": "create:fancy_andesite_bricks",
+          "weight": 3
+        },
+        {
+          "block": "create:andesite_bricks",
+          "weight": 3
+        },
+        {
+          "block": "create:andesite_cobblestone"
+        }
+      ]
+    },
+    "pillar": {
+      "type": "block",
+      "block": "create:fancy_andesite_bricks"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "create:paved_andesite_stairs"
+    },
+    "solid_stairs": {
+      "type": "block",
+      "block": "create:fancy_andesite_bricks_stairs"
+    },
+    "slab": {
+      "type": "block",
+      "block": "create:paved_andesite_slab"
+    },
+    "solid_slab": {
+      "type": "block",
+      "block": "create:fancy_andesite_bricks_stairs"
+    },
+    "material": {
+      "type": "block",
+      "block": "create:andesite_bricks"
+    },
+    "wall": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "create:andesite_cobblestone_wall"
+        },
+        {
+          "block": "create:andesite_bricks_wall"
+        },
+        {
+          "block": "create:fancy_andesite_bricks_wall"
+        },
+        {
+          "block": "create:paved_andesite_wall"
         }
       ]
     }

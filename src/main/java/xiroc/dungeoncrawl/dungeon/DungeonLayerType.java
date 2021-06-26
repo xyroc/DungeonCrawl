@@ -18,31 +18,17 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import xiroc.dungeoncrawl.dungeon.generator.layer.CatacombLayerGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.layer.DefaultLayerGenerator;
+import com.google.common.collect.ImmutableMap;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.layer.RoguelikeLayerGenerator;
-
-import java.util.Hashtable;
+import xiroc.dungeoncrawl.dungeon.generator.layer.NewLayerGenerator;
 
 public enum DungeonLayerType {
 
-    DEFAULT(DefaultLayerGenerator.INSTANCE),
-    ROGUELIKE(RoguelikeLayerGenerator.INSTANCE),
-    ROGUELIKE_MST(null),
-    CATACOMBS(CatacombLayerGenerator.INSTANCE),
-    LOWER_CATACOMBS(CatacombLayerGenerator.INSTANCE),
-    HELL(DefaultLayerGenerator.INSTANCE);
+    DEFAULT(NewLayerGenerator.INSTANCE);
 
-    public static final Hashtable<String, DungeonLayerType> NAME_TO_TYPE = new Hashtable<>();
-
-    static {
-        NAME_TO_TYPE.put("default", DEFAULT);
-        NAME_TO_TYPE.put("roguelike", ROGUELIKE);
-        NAME_TO_TYPE.put("catacombs", CATACOMBS);
-        NAME_TO_TYPE.put("lower_catacombs", LOWER_CATACOMBS);
-        NAME_TO_TYPE.put("hell", HELL);
-    }
+    public static final ImmutableMap<String, DungeonLayerType> NAME_TO_TYPE = new ImmutableMap.Builder<String, DungeonLayerType>()
+            .put("default", DEFAULT)
+            .build();
 
     public final LayerGenerator layerGenerator;
 

@@ -26,7 +26,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
-import xiroc.dungeoncrawl.dungeon.block.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
@@ -57,7 +57,7 @@ public class VineDecoration implements IDungeonDecoration {
                         boolean _west = worldGenBounds.isVecInside(west) && structureBounds.isVecInside(west) && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
                         boolean _up = worldGenBounds.isVecInside(up) && structureBounds.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
 
-                        if ((_north || _east || _south || _west || _up) && WeightedRandomBlock.RANDOM.nextFloat() < 0.35F) {
+                        if ((_north || _east || _south || _west || _up) && DungeonBlocks.RANDOM.nextFloat() < 0.35F) {
                             BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
                             world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
                                     .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)

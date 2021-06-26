@@ -42,9 +42,9 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer) {
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
         this.layerGenerator = this.type.getLayer(layer).layerType.layerGenerator;
-        this.layerGenerator.initializeLayer(settings, dungeonBuilder, rand, layer);
+        this.layerGenerator.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
     }
 
     @Override

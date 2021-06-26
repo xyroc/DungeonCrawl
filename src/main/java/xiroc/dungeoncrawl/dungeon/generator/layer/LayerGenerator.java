@@ -40,7 +40,16 @@ public abstract class LayerGenerator {
      * @param dungeonLayer the layer to place the node room in
      */
     public static void createNodeRoom(Position2D center, DungeonLayer dungeonLayer) {
-        DungeonNodeRoom nodeRoom = new DungeonNodeRoom();
+        placeNodeRoom(new DungeonNodeRoom(), center, dungeonLayer);
+    }
+
+    /**
+     * Places the given node room at the given position in the specified layer.
+     *
+     * @param center       the position of the center of the node room
+     * @param dungeonLayer the layer to place the node room in
+     */
+    public static void placeNodeRoom(DungeonNodeRoom nodeRoom, Position2D center, DungeonLayer dungeonLayer) {
         nodeRoom.setGridPosition(center.x, center.z);
 
         PlaceHolder placeHolder = new PlaceHolder(nodeRoom).addFlag(PlaceHolder.Flag.PLACEHOLDER);
@@ -55,7 +64,7 @@ public abstract class LayerGenerator {
     /**
      * Used to (re-)initialize the layer generator. Called before every layer generation.
      */
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer) {
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer,  boolean isLastLayer) {
         this.settings = settings;
     }
 

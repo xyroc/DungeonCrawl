@@ -58,12 +58,13 @@ public class MaterialBlocks extends LootFunction {
                 Theme theme;
                 Theme.SecondaryTheme secondaryTheme;
                 ResourceLocation biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.ORIGIN))).getRegistryName();
+
                 if (biome != null) {
                     theme = Theme.randomTheme(biome.toString(), context.getRandom());
                     secondaryTheme = Theme.randomSecondaryTheme(biome.toString(), context.getRandom());
                 } else {
                     theme = Theme.getDefaultTheme();
-                    secondaryTheme = Theme.getDefaultSubTheme();
+                    secondaryTheme = Theme.getDefaultSecondaryTheme();
                 }
                 return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(theme, secondaryTheme, new BlockPos(context.get(LootParameters.ORIGIN)), random)), 16 + context.getRandom().nextInt(49));
             }
@@ -73,7 +74,8 @@ public class MaterialBlocks extends LootFunction {
     }
 
     private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, BlockPos pos, Random rand) {
-        return rand.nextBoolean() ? theme.material.get(pos).getBlock().getRegistryName()
+        return rand.nextBoolean()
+                ? theme.material.get(pos).getBlock().getRegistryName()
                 : secondaryTheme.material.get(pos).getBlock().getRegistryName();
     }
 

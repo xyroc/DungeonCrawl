@@ -72,7 +72,7 @@ public class ModelSelector {
      * @param resource the file containing the json object
      * @return the WeightedRandom instance
      */
-    private static WeightedRandom<DungeonModel> loadRandom(String name, JsonObject object, ResourceLocation resource) {
+    public static WeightedRandom<DungeonModel> loadRandom(String name, JsonObject object, ResourceLocation resource) {
         WeightedRandom.Builder<DungeonModel> builder = new WeightedRandom.Builder<>();
         JsonObject models = object.getAsJsonObject(name);
 
@@ -81,7 +81,6 @@ public class ModelSelector {
                 String key = element.getAsString();
                 if (ModelPools.POOLS.containsKey(key)) {
                     builder.addAll(ModelPools.POOLS.get(key));
-//                    DungeonCrawl.LOGGER.info(ModelPools.POOLS.get(key).size());
                 } else {
                     throw new DatapackLoadException("Unknown model pool " + key + " in " + resource);
                 }

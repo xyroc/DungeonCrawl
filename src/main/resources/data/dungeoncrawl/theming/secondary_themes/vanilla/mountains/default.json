@@ -1,0 +1,72 @@
+{
+  "theme": {
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:smooth_stone"
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:spruce_trapdoor"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:spruce_door"
+    },
+    "material": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:mossy_stone_bricks"
+        },
+        {
+          "block": "minecraft:cracked_stone_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:stone_bricks",
+          "weight": 4
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:mossy_stone_brick_stairs"
+        },
+        {
+          "block": "minecraft:stone_brick_stairs",
+          "weight": 3
+        }
+      ]
+    },
+    "slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:mossy_stone_brick_slab"
+        },
+        {
+          "block": "minecraft:stone_brick_slab",
+          "weight": 3
+        }
+      ]
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:spruce_fence"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:spruce_fence_gate"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:stone_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:stone_pressure_plate"
+    }
+  }
+}

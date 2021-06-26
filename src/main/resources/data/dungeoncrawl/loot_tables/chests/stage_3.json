@@ -413,17 +413,6 @@
         {
           "type": "item",
           "name": "minecraft:air",
-          "weight": 6,
-          "functions": [
-            {
-              "function": "dungeoncrawl:special_item",
-              "loot_level": 2
-            }
-          ]
-        },
-        {
-          "type": "item",
-          "name": "minecraft:air",
           "weight": 4,
           "functions": [
             {

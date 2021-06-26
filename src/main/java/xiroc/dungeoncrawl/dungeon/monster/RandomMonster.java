@@ -21,9 +21,7 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.resources.IResourceManager;
@@ -36,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
 import java.util.Random;
-import java.util.UUID;
 
 public class RandomMonster {
 
@@ -49,31 +46,12 @@ public class RandomMonster {
 //            "fletcher", "leatherworker", "librarian", "mason", "nitwit", "shepherd", "toolsmith", "weaponsmith"};
 
     private static final CompoundNBT VILLAGER_OFFERS;
-    private static final ListNBT VILLAGER_GOSSIPS;
 
     static {
         VILLAGER_OFFERS = new CompoundNBT();
         ListNBT recipes = new ListNBT();
-        CompoundNBT offer = new CompoundNBT();
-        offer.putBoolean("rewardExp", false);
-        offer.putInt("maxUses", 1);
-        offer.putInt("uses", 1);
-        offer.putInt("xp", 0);
-        offer.putInt("specialPrice", 0);
-        offer.putInt("demand", 0);
-        offer.putFloat("priceMultiplier", 0F);
-        CompoundNBT grassBlock = new ItemStack(Blocks.GRASS_BLOCK).write(new CompoundNBT());
-        offer.put("buy", grassBlock);
-        offer.put("sell", grassBlock);
-        recipes.add(offer);
+        recipes.add(offer("minecraft:paper", (byte) 1, "minecraft:air", (byte) 0, "minecraft:paper", (byte) 1));
         VILLAGER_OFFERS.put("Recipes", recipes);
-
-        VILLAGER_GOSSIPS = new ListNBT();
-        CompoundNBT gossip = new CompoundNBT();
-        gossip.putString("Type", "trading");
-        gossip.putInt("Value", 1);
-        gossip.putUniqueId("Target", UUID.fromString("00000000-0000-0000-0000-000000000000"));
-        VILLAGER_GOSSIPS.add(gossip);
 
         NBT_PATCHERS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
             nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.toString());
@@ -84,13 +62,52 @@ public class RandomMonster {
             nbt.put("Offers", VILLAGER_OFFERS.copy());
             nbt.putInt("Xp", 1);
             nbt.putBoolean("Willing", false);
-//            CompoundNBT villagerData = new CompoundNBT();
-//            villagerData.putString("type", "minecraft:" + VILLAGER_TYPES[rand.nextInt(VILLAGER_TYPES.length)]);
-//            villagerData.putString("profession", "minecraft:" + VILLAGER_PROFESSIONS[rand.nextInt(VILLAGER_PROFESSIONS.length)]);
-//            villagerData.putInt("level", 1);
-//            nbt.put("Gossips", VILLAGER_GOSSIPS.copy());
-//            nbt.put("VillagerData", villagerData);
+            CompoundNBT villagerData = nbt.getCompound("villagerData");
+            villagerData.putInt("level", 5);
         });
+    }
+
+    private static CompoundNBT offer(String buy, byte buyCount, String buyB, byte buyBCount, String sell, byte sellCount) {
+        CompoundNBT offer = new CompoundNBT();
+
+        CompoundNBT buyNbt = new CompoundNBT();
+        buyNbt.putString("id", buy);
+        buyNbt.putBoolean("Count", true);
+        buyNbt.putInt("MaxUses", 3);
+        buyNbt.putByte("Count", buyCount);
+        CompoundNBT buyTag = new CompoundNBT();
+        buyTag.putInt("Damage", 0);
+        buyNbt.put("tag", buyTag);
+
+        CompoundNBT buyBNbt = new CompoundNBT();
+        buyBNbt.putString("id", buyB);
+        buyBNbt.putBoolean("Count", true);
+        buyBNbt.putInt("MaxUses", 3);
+        buyBNbt.putByte("Count", buyBCount);
+        CompoundNBT buyBTag = new CompoundNBT();
+        buyBTag.putInt("Damage", 0);
+        buyBNbt.put("tag", buyBTag);
+
+        CompoundNBT sellNbt = new CompoundNBT();
+        sellNbt.putString("id", sell);
+        sellNbt.putBoolean("Count", true);
+        sellNbt.putInt("MaxUses", 3);
+        sellNbt.putByte("Count", sellCount);
+        CompoundNBT sellTag = new CompoundNBT();
+        sellTag.putInt("Damage", 0);
+        sellNbt.put("tag", sellTag);
+
+        offer.put("buy", buyNbt);
+        offer.put("buyB", buyBNbt);
+        offer.put("sell", sellNbt);
+        offer.putInt("uses", 0);
+        offer.putInt("xp", 0);
+        offer.putFloat("priceMultiplier", 0F);
+        offer.putInt("demand", 0);
+        offer.putInt("specialPrice", 0);
+        offer.putBoolean("rewardXp", false);
+
+        return offer;
     }
 
     /**

@@ -82,13 +82,13 @@ public class Loot {
     public static void setLootInformation(CompoundNBT nbt, Theme theme, Theme.SecondaryTheme secondaryTheme) {
         CompoundNBT data = new CompoundNBT();
         data.putString("theme", theme.getKey().toString());
-        data.putString("subTheme", secondaryTheme.getKey().toString());
+        data.putString("secondaryTheme", secondaryTheme.getKey().toString());
         nbt.put(DungeonCrawl.MOD_ID, data);
     }
 
     public static Tuple<Theme, Theme.SecondaryTheme> getLootInformation(CompoundNBT nbt) {
         CompoundNBT data = nbt.getCompound(DungeonCrawl.MOD_ID);
-        return new Tuple<>(Theme.getTheme(new ResourceLocation(data.getString("theme"))), Theme.getSecondaryTheme(new ResourceLocation(data.getString("subTheme"))));
+        return new Tuple<>(Theme.getTheme(new ResourceLocation(data.getString("theme"))), Theme.getSecondaryTheme(new ResourceLocation(data.getString("secondaryTheme"))));
     }
 
 }

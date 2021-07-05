@@ -1,7 +1,7 @@
 {
   "settings": {},
   "entrances": {
-    "models": [{"key": "dungeoncrawl:default/entrance/roguelike/eniko_tower"}]
+    "models": [{"key": "dungeoncrawl:entrance/roguelike/eniko_tower"}]
   },
   "layers": [
     {

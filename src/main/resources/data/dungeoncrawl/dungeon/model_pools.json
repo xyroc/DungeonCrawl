@@ -1,8 +1,8 @@
 {
   "pools": {
     "entrances:default": [
-      {"key": "dungeoncrawl:default/entrance/roguelike/rogue_tower"},
-      {"key": "dungeoncrawl:default/entrance/roguelike/witch_tower"}
+      {"key": "dungeoncrawl:entrance/roguelike/rogue_tower"},
+      {"key": "dungeoncrawl:entrance/roguelike/witch_tower"}
     ],
     "corridors:top": [
       {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},

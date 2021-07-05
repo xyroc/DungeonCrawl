@@ -19,6 +19,7 @@
     "minecraft:giant_spruce_taiga_hills": [{"key": "dungeoncrawl:mountains/default"}],
 
     "minecraft:desert": [{"key": "dungeoncrawl:desert/default"}],
-    "minecraft:desert_hills": [{"key": "dungeoncrawl:desert/default"}]
+    "minecraft:desert_hills": [{"key": "dungeoncrawl:desert/default"}],
+    "minecraft:desert_lakes": [{"key": "dungeoncrawl:desert/default"}]
   }
 }

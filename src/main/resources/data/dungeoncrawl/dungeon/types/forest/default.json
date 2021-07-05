@@ -3,7 +3,7 @@
   "entrances": {
     "inherit": ["entrances:default"],
     "models": [
-      {"key": "dungeoncrawl:default/entrance/roguelike/house", "weight": 2}
+      {"key": "dungeoncrawl:entrance/roguelike/house", "weight": 2}
     ]
   },
   "layers": [

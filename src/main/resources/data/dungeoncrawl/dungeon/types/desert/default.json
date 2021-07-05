@@ -2,8 +2,8 @@
   "settings": {},
   "entrances": {
     "models": [
-      {"key": "dungeoncrawl:default/entrance/roguelike/pyramid", "weight": 4},
-      {"key": "dungeoncrawl:default/entrance/roguelike/witch_tower"}
+      {"key": "dungeoncrawl:entrance/roguelike/pyramid", "weight": 4},
+      {"key": "dungeoncrawl:entrance/roguelike/witch_tower"}
     ]
   },
   "layers": [

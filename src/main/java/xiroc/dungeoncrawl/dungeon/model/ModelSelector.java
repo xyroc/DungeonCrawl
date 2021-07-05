@@ -91,7 +91,7 @@ public class ModelSelector {
                 JsonObject entry = element.getAsJsonObject();
                 ResourceLocation key = new ResourceLocation(entry.get("key").getAsString());
                 if (DungeonModels.KEY_TO_MODEL.containsKey(key)) {
-                    builder.add(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeightOrDefault(entry));
+                    builder.add(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeight(entry));
                 } else {
                     throw new DatapackLoadException("Unknown model key " + key + " in " + resource);
                 }

@@ -53,7 +53,7 @@ public class ModelPools {
                     if (!DungeonModels.KEY_TO_MODEL.containsKey(key)) {
                         DungeonCrawl.LOGGER.warn("Cannot resolve model key " + key + " in " + FILE);
                     } else {
-                        builder.add(new Tuple<>(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeightOrDefault(modelEntry)));
+                        builder.add(new Tuple<>(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeight(modelEntry)));
                     }
                 });
 

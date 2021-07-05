@@ -262,6 +262,12 @@ public abstract class DungeonPiece extends StructurePiece {
             }
             this.features = features.toArray(new DungeonModelFeature.Instance[0]);
         }
+        if (model.isVariationEnabled()) {
+            this.variation = new byte[8];
+            for (int i = 0; i < variation.length; i++) {
+                variation[i] = (byte) rand.nextInt(64);
+            }
+        }
     }
 
     public void takeOverProperties(DungeonPiece piece) {

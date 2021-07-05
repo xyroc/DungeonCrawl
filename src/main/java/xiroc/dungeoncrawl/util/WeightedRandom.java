@@ -37,7 +37,7 @@ public class WeightedRandom<T> implements IRandom<T> {
         WeightedRandom.Builder<Item> builder = new WeightedRandom.Builder<>();
         entries.forEach((element) -> {
             JsonObject entry = element.getAsJsonObject();
-            int weight = JSONUtils.getWeightOrDefault(entry);
+            int weight = JSONUtils.getWeight(entry);
             builder.add(RandomEquipment.getItem(new ResourceLocation(entry.get("item").getAsString())), weight);
         });
         return builder.build();

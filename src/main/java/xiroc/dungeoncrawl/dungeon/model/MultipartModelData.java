@@ -99,7 +99,7 @@ public class MultipartModelData {
         array.forEach((element) -> {
             JsonObject object1 = element.getAsJsonObject();
             MultipartModelData.Instance data = MultipartModelData.Instance.fromJson(object1, file);
-            builder.add(data, JSONUtils.getWeightOrDefault(object1));
+            builder.add(data, JSONUtils.getWeight(object1));
             if (data != MultipartModelData.Instance.EMPTY) {
                 ResourceReloadHandler.UPDATEABLES.add(data); // Enqueue reference update
             }

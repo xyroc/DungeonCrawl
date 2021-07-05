@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -30,6 +31,7 @@ import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
+import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -161,7 +163,7 @@ public class DungeonType {
             if (!KEY_TO_TYPE.containsKey(key)) {
                 throw new DatapackLoadException("Cannot resolve dungeon type " + key + " in " + resource);
             }
-            builder.add(KEY_TO_TYPE.get(key), JSONUtils.getWeightOrDefault(entry));
+            builder.add(KEY_TO_TYPE.get(key), JSONUtils.getWeight(entry));
         });
         return builder.build();
     }
@@ -180,10 +182,21 @@ public class DungeonType {
         public final LayerGeneratorSettings settings;
         public final ModelSelector modelSelector;
 
+        // Custom multipart data for models on this layer.
+        private ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides;
+
         private Layer(DungeonLayerType layerType, LayerGeneratorSettings settings, ModelSelector modelSelector) {
             this.layerType = layerType;
             this.settings = settings;
             this.modelSelector = modelSelector;
+        }
+
+        public boolean hasMultipartOverride(DungeonModel model) {
+            return multipartOverrides.containsKey(model.getKey());
+        }
+
+        public List<MultipartModelData> getMultipartData(DungeonModel model) {
+            return multipartOverrides.getOrDefault(model.getKey(), model.getMultipartData());
         }
 
     }

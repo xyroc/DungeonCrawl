@@ -7,15 +7,15 @@
     {
       "type": "default",
       "models": {
-        "rooms":            {"inherit": ["rooms:upper_catacombs"]},
-        "full_nodes":       {"inherit": ["nodes:full:upper_catacombs"]},
-        "fork_nodes":       {"inherit": ["nodes:fork:upper_catacombs"]},
-        "straight_nodes":   {"inherit": ["nodes:straight:upper_catacombs"]},
-        "turn_nodes":       {"inherit": ["nodes:turn:upper_catacombs"]},
-        "dead_end_nodes":   {"inherit": ["nodes:dead_end:upper_catacombs"]},
-        "corridors":        {"inherit": ["corridors:upper_catacombs"]},
-        "corridor_linkers": {"inherit": ["corridor_linkers:upper_catacombs"]},
-        "node_connectors":  {"inherit": ["node_connectors:upper_catacombs"]}
+        "rooms":            {"inherit": ["rooms:catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:catacombs"]},
+        "corridors":        {"inherit": ["corridors:catacombs"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:catacombs"]},
+        "node_connectors":  {"inherit": ["node_connectors:catacombs"]}
       },
       "settings": {
         "min_rooms": 5,
@@ -35,15 +35,15 @@
     {
       "type": "default",
       "models": {
-        "rooms":            {"inherit": ["rooms:upper_catacombs"]},
-        "full_nodes":       {"inherit": ["nodes:full:upper_catacombs"]},
-        "fork_nodes":       {"inherit": ["nodes:fork:upper_catacombs"]},
-        "straight_nodes":   {"inherit": ["nodes:straight:upper_catacombs"]},
-        "turn_nodes":       {"inherit": ["nodes:turn:upper_catacombs"]},
-        "dead_end_nodes":   {"inherit": ["nodes:dead_end:upper_catacombs"]},
-        "corridors":        {"inherit": ["corridors:upper_catacombs"]},
-        "corridor_linkers": {"inherit": ["corridor_linkers:upper_catacombs"]},
-        "node_connectors":  {"inherit": ["node_connectors:upper_catacombs"]}
+        "rooms":            {"inherit": ["rooms:catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:catacombs"]},
+        "corridors":        {"inherit": ["corridors:catacombs"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:catacombs"]},
+        "node_connectors":  {"inherit": ["node_connectors:catacombs"]}
       },
       "settings": {
         "min_rooms": 5,
@@ -63,7 +63,7 @@
     {
       "type": "default",
       "models": {
-        "rooms":            {"inherit": ["rooms:catacombs"]},
+        "rooms":            {"inherit": ["rooms:lower_catacombs"]},
         "full_nodes":       {"inherit": ["nodes:full:catacombs"]},
         "fork_nodes":       {"inherit": ["nodes:fork:catacombs"]},
         "straight_nodes":   {"inherit": ["nodes:straight:catacombs"]},

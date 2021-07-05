@@ -20,14 +20,15 @@ package xiroc.dungeoncrawl.theme;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.block.Blocks;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -38,41 +39,6 @@ import java.util.Hashtable;
 import java.util.Random;
 
 public class Theme {
-
-    protected static final Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
-    protected static final Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
-
-    public static final Hashtable<ResourceLocation, Theme> KEY_TO_THEME = new Hashtable<>();
-    public static final Hashtable<ResourceLocation, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
-
-    protected static IRandom<Theme> PRIMARY_UPPER_DEFAULT, PRIMARY_CATACOMBS_DEFAULT, PRIMARY_HELL_DEFAULT;
-    protected static IRandom<SecondaryTheme> SECONDARY_UPPER_DEFAULT, SECONDARY_CATACOMBS_DEFAULT, SECONDARY_HELL_DEFAULT;
-
-    // Legacy, kept for backwards compatibility only.
-    public static final Hashtable<Integer, Theme> ID_TO_THEME = new Hashtable<>();
-    public static final Hashtable<Integer, SecondaryTheme> ID_TO_SECONDARY_THEME = new Hashtable<>();
-
-    // Fallback themes, used if there is no default case in the theme mappings.
-    private static final ResourceLocation PRIMARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/default");
-    private static final ResourceLocation SECONDARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/oak");
-
-    // Fallback themes, used if there is no default case in the catacomb theme mappings.
-    // Works for both primary and secondary themes.
-    public static final ResourceLocation UPPER_CATACOMBS_FALLBACK = DungeonCrawl.locate("vanilla/catacombs/mossy");
-    public static final ResourceLocation CATACOMBS_FALLBACK = DungeonCrawl.locate("vanilla/catacombs/overgrown");
-
-    // Fallback theme, used if there is no default case in the hell theme mappings.
-    public static final ResourceLocation PRIMARY_HELL_FALLBACK = DungeonCrawl.locate("vanilla/hell/default");
-
-    public static final ResourceLocation PRIMARY_HELL_MOSSY = DungeonCrawl.locate("vanilla/hell/mossy");
-
-    private static final String PRIMARY_THEME_DIRECTORY = "theming/primary_themes";
-    private static final String SECONDARY_THEME_DIRECTORY = "theming/secondary_themes";
-
-    private static final String PRIMARY_THEME_MAPPINGS_DIRECTORY = "theming/mappings/primary";
-    private static final String SECONDARY_THEME_MAPPINGS_DIRECTORY = "theming/mappings/secondary";
-
-    private static ImmutableSet<ResourceLocation> THEME_KEYS, SECONDARY_THEME_KEYS;
 
     public static final Theme DEFAULT_THEME = new Theme(
             (pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
@@ -98,9 +64,57 @@ public class Theme {
             (pos, rotation) -> Blocks.OAK_BUTTON.getDefaultState(),
             (pos, rotation) -> Blocks.OAK_PRESSURE_PLATE.getDefaultState());
 
+    protected static final Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
+    protected static final Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
+
+    public static final Hashtable<ResourceLocation, Theme> KEY_TO_THEME = new Hashtable<>();
+    public static final Hashtable<ResourceLocation, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
+
+    private static IRandom<Theme> CATACOMBS_THEME = (rand) -> {
+        throw new IllegalStateException();
+    };
+    private static IRandom<Theme> LOWER_CATACOMBS_THEME = (rand) -> {
+        throw new IllegalStateException();
+    };
+    private static IRandom<Theme> HELL_THEME = (rand) -> {
+        throw new IllegalStateException();
+    };
+
+    private static IRandom<SecondaryTheme> CATACOMBS_SECONDARY_THEME = (rand) -> {
+        throw new IllegalStateException();
+    };
+    private static IRandom<SecondaryTheme> LOWER_CATACOMBS_SECONDARY_THEME = (rand) -> {
+        throw new IllegalStateException();
+    };
+    private static IRandom<SecondaryTheme> HELL_SECONDARY_THEME = (rand) -> {
+        throw new IllegalStateException();
+    };
+
+    // Legacy, kept for backwards compatibility only.
+    public static final Hashtable<Integer, Theme> ID_TO_THEME = new Hashtable<>();
+    public static final Hashtable<Integer, SecondaryTheme> ID_TO_SECONDARY_THEME = new Hashtable<>();
+
+    // Fallback themes, used if there is no default case in the theme mappings.
+    private static final ResourceLocation PRIMARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/default");
+    private static final ResourceLocation SECONDARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/oak");
+
+    public static final ResourceLocation PRIMARY_HELL_MOSSY = DungeonCrawl.locate("vanilla/hell/mossy");
+
+    private static final String PRIMARY_THEME_DIRECTORY = "theming/primary_themes";
+    private static final String SECONDARY_THEME_DIRECTORY = "theming/secondary_themes";
+
+    private static final String PRIMARY_THEME_MAPPINGS_DIRECTORY = "theming/mappings/primary";
+    private static final String SECONDARY_THEME_MAPPINGS_DIRECTORY = "theming/mappings/secondary";
+
+    private static final String UPPER_CATACOMBS_THEMES_DIRECTORY = "theming/lower_layers/upper_catacombs";
+    private static final String CATACOMBS_THEMES_DIRECTORY = "theming/lower_layers/catacombs";
+    private static final String HELL_THEMES_DIRECTORY = "theming/lower_layers/hell";
+
+    private static ImmutableSet<ResourceLocation> THEME_KEYS, SECONDARY_THEME_KEYS;
+
     static {
-        DEFAULT_THEME.key = DungeonCrawl.locate("builtin/default");
-        DEFAULT_SECONDARY_THEME.key = DungeonCrawl.locate("builtin/default");
+        DEFAULT_THEME.key = new ResourceLocation("builtin:default");
+        DEFAULT_SECONDARY_THEME.key = new ResourceLocation("builtin:default");
         KEY_TO_THEME.put(DEFAULT_THEME.key, DEFAULT_THEME);
         KEY_TO_SECONDARY_THEME.put(DEFAULT_SECONDARY_THEME.key, DEFAULT_SECONDARY_THEME);
     }
@@ -273,7 +287,6 @@ public class Theme {
         BIOME_TO_THEME.clear();
         BIOME_TO_SECONDARY_THEME.clear();
 
-        JsonParser parser = new JsonParser();
         ImmutableSet.Builder<ResourceLocation> themeKeySetBuilder = new ImmutableSet.Builder<>();
         ImmutableSet.Builder<ResourceLocation> secondaryThemeKeySetBuilder = new ImmutableSet.Builder<>();
 
@@ -282,9 +295,9 @@ public class Theme {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 ResourceLocation key = DungeonCrawl.key(resource, SECONDARY_THEME_DIRECTORY, ".json");
-                JsonObject json = parser.parse(reader).getAsJsonObject();
+                JsonObject json = DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
-                    SecondaryTheme theme = JsonThemeHandler.deserializeSecondaryTheme(json, resource);
+                    SecondaryTheme theme = JsonTheming.deserializeSecondaryTheme(json, resource);
                     theme.key = key;
                     secondaryThemeKeySetBuilder.add(key);
 
@@ -301,9 +314,9 @@ public class Theme {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 ResourceLocation key = DungeonCrawl.key(resource, PRIMARY_THEME_DIRECTORY, ".json");
-                JsonObject json = parser.parse(reader).getAsJsonObject();
+                JsonObject json = DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
-                    Theme theme = JsonThemeHandler.deserializeTheme(json, resource);
+                    Theme theme = JsonTheming.deserializeTheme(json, resource);
                     theme.key = key;
                     themeKeySetBuilder.add(key);
 
@@ -320,9 +333,8 @@ public class Theme {
 
         for (ResourceLocation resource : resourceManager.getAllResourceLocations(PRIMARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
-                JsonThemeHandler.deserializeThemeMapping(
-                        parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()))).getAsJsonObject(),
-                        themeMappingBuilders, resource);
+                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
+                JsonTheming.deserializeThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), themeMappingBuilders, resource);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
@@ -331,9 +343,8 @@ public class Theme {
 
         for (ResourceLocation resource : resourceManager.getAllResourceLocations(SECONDARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
-                JsonThemeHandler.deserializeSecondaryThemeMapping(
-                        parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()))).getAsJsonObject(),
-                        secondaryThemeMappingBuilders, resource);
+                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
+                JsonTheming.deserializeSecondaryThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), secondaryThemeMappingBuilders, resource);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
@@ -345,6 +356,41 @@ public class Theme {
 
         THEME_KEYS = themeKeySetBuilder.build();
         SECONDARY_THEME_KEYS = secondaryThemeKeySetBuilder.build();
+
+        Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> catacombs = loadRandomThemeFiles(UPPER_CATACOMBS_THEMES_DIRECTORY, resourceManager);
+        Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> lowerCatacombs = loadRandomThemeFiles(CATACOMBS_THEMES_DIRECTORY, resourceManager);
+        Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> hell = loadRandomThemeFiles(HELL_THEMES_DIRECTORY, resourceManager);
+
+        CATACOMBS_THEME = catacombs.getA();
+        CATACOMBS_SECONDARY_THEME = catacombs.getB();
+
+        LOWER_CATACOMBS_THEME = lowerCatacombs.getA();
+        LOWER_CATACOMBS_SECONDARY_THEME = lowerCatacombs.getB();
+
+        HELL_THEME = hell.getA();
+        HELL_SECONDARY_THEME = hell.getB();
+    }
+
+    private static Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> loadRandomThemeFiles(String directory, IResourceManager resourceManager) {
+        WeightedRandom.Builder<Theme> primary = new WeightedRandom.Builder<>();
+        WeightedRandom.Builder<SecondaryTheme> secondary = new WeightedRandom.Builder<>();
+        for (ResourceLocation resource : resourceManager.getAllResourceLocations(directory, (s) -> s.endsWith(".json"))) {
+            try {
+                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
+                JsonTheming.deserializeRandomThemeFile(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(),
+                        primary, secondary, resource);
+            } catch (IOException e) {
+                DungeonCrawl.LOGGER.error("Failed to load {}", resource);
+                e.printStackTrace();
+            }
+        }
+        if (primary.entries.isEmpty()) {
+            throw new DatapackLoadException("No primary themes were present after loading " + directory);
+        }
+        if (secondary.entries.isEmpty()) {
+            throw new DatapackLoadException("No secondary themes were present after loading " + directory);
+        }
+        return new Tuple<>(primary.build(), secondary.build());
     }
 
     public static Theme getDefaultTheme() {
@@ -361,6 +407,30 @@ public class Theme {
 
     public static SecondaryTheme randomSecondaryTheme(String biome, Random rand) {
         return BIOME_TO_SECONDARY_THEME.getOrDefault(biome, (r) -> KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, DEFAULT_SECONDARY_THEME)).roll(rand);
+    }
+
+    public static Theme randomCatacombsTheme(Random rand) {
+        return CATACOMBS_THEME.roll(rand);
+    }
+
+    public static SecondaryTheme randomCatacombsSecondaryTheme(Random rand) {
+        return CATACOMBS_SECONDARY_THEME.roll(rand);
+    }
+
+    public static Theme randomLowerCatacombsTheme(Random rand) {
+        return LOWER_CATACOMBS_THEME.roll(rand);
+    }
+
+    public static SecondaryTheme randomLowerCatacombsSecondaryTheme(Random rand) {
+        return LOWER_CATACOMBS_SECONDARY_THEME.roll(rand);
+    }
+
+    public static Theme randomHellTheme(Random rand) {
+        return HELL_THEME.roll(rand);
+    }
+
+    public static SecondaryTheme randomHellSecondaryTheme(Random rand) {
+        return HELL_SECONDARY_THEME.roll(rand);
     }
 
     public static Theme getTheme(ResourceLocation key) {

@@ -57,8 +57,8 @@ public class DungeonBuilder {
 
     public Biome biome;
 
-    public Theme theme, lowerTheme, bottomTheme;
-    public Theme.SecondaryTheme secondaryTheme, lowerSecondaryTheme, bottomSecondaryTheme;
+    public Theme theme, catacombsTheme, lowerCatacombsTheme, bottomTheme;
+    public Theme.SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
 
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
@@ -177,24 +177,38 @@ public class DungeonBuilder {
             }
         }
 
-        if (this.lowerTheme == null)
-            this.lowerTheme = Theme.getTheme(Theme.CATACOMBS_FALLBACK);
+        if (this.catacombsTheme == null) {
+            this.catacombsTheme = Theme.randomCatacombsTheme(rand);
+        }
 
-        if (lowerSecondaryTheme == null) {
-            if (lowerTheme.subTheme != null) {
-                this.lowerSecondaryTheme = lowerTheme.subTheme.roll(rand);
+        if (catacombsSecondaryTheme == null) {
+            if (catacombsTheme.subTheme != null) {
+                this.catacombsSecondaryTheme = catacombsTheme.subTheme.roll(rand);
             } else {
-                this.lowerSecondaryTheme = this.secondaryTheme;
+                this.catacombsSecondaryTheme = Theme.randomCatacombsSecondaryTheme(rand);
             }
         }
 
-        if (this.bottomTheme == null)
-            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.getTheme(Theme.PRIMARY_HELL_FALLBACK);
+        if (this.lowerCatacombsTheme == null) {
+            this.lowerCatacombsTheme = Theme.randomLowerCatacombsTheme(rand);
+        }
+
+        if (lowerCatacombsSecondaryTheme == null) {
+            if (lowerCatacombsTheme.subTheme != null) {
+                this.lowerCatacombsSecondaryTheme = lowerCatacombsTheme.subTheme.roll(rand);
+            } else {
+                this.lowerCatacombsSecondaryTheme = Theme.randomLowerCatacombsSecondaryTheme(rand);
+            }
+        }
+
+        if (this.bottomTheme == null) {
+            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.randomHellTheme(rand);
+        }
 
         if (bottomTheme.subTheme != null && this.bottomSecondaryTheme == null) {
             this.bottomSecondaryTheme = bottomTheme.subTheme.roll(rand);
         } else {
-            this.bottomSecondaryTheme = this.secondaryTheme;
+            this.bottomSecondaryTheme = Theme.randomHellSecondaryTheme(rand);
         }
     }
 
@@ -208,15 +222,26 @@ public class DungeonBuilder {
                 for (int z = 0; z < layer.length; z++) {
                     PlaceHolder placeHolder = layer.grid[x][z];
                     if (placeHolder != null && !placeHolder.hasFlag(PlaceHolder.Flag.PLACEHOLDER)) {
-                        if (i == layers.length - 1) {
-                            placeHolder.reference.theme = bottomTheme;
-                            placeHolder.reference.secondaryTheme = bottomSecondaryTheme;
-                        } else if (catacombs && layers.length - i < 4) {
-                            placeHolder.reference.theme = lowerTheme;
-                            placeHolder.reference.secondaryTheme = lowerSecondaryTheme;
-                        } else {
-                            placeHolder.reference.theme = theme;
-                            placeHolder.reference.secondaryTheme = secondaryTheme;
+                        switch (i) {
+                            case 2: {
+                                placeHolder.reference.theme = catacombsTheme;
+                                placeHolder.reference.secondaryTheme = catacombsSecondaryTheme;
+                                break;
+                            }
+                            case 3: {
+                                placeHolder.reference.theme = lowerCatacombsTheme;
+                                placeHolder.reference.secondaryTheme = lowerCatacombsSecondaryTheme;
+                                break;
+                            }
+                            default: {
+                                if (i >= 4) {
+                                    placeHolder.reference.theme = bottomTheme;
+                                    placeHolder.reference.secondaryTheme = bottomSecondaryTheme;
+                                } else {
+                                    placeHolder.reference.theme = theme;
+                                    placeHolder.reference.secondaryTheme = secondaryTheme;
+                                }
+                            }
                         }
 
                         if (!placeHolder.hasFlag(PlaceHolder.Flag.FIXED_MODEL)) {

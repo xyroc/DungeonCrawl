@@ -58,9 +58,10 @@ public class DungeonModel {
     @Nullable
     private DungeonModelFeature[] features;
 
-    private boolean hasId;
-    private boolean hasFeatures;
-    private boolean hasMultipart;
+    private boolean hasId = false;
+    private boolean hasFeatures = false;
+    private boolean hasMultipart = false;
+    private boolean variation = false;
 
     public DungeonModel(ResourceLocation key, ImmutableList<DungeonModelBlock> blocks, int width, int height, int length) {
         this.key = key;
@@ -106,6 +107,10 @@ public class DungeonModel {
                 this.features[i] = DungeonModelFeature.fromJson(array.get(i).getAsJsonObject(), file);
             }
             this.hasFeatures = true;
+        }
+
+        if (object.has("variation")) {
+            variation = object.get("variation").getAsBoolean();
         }
 
         if (object.has("loot")) {
@@ -210,6 +215,10 @@ public class DungeonModel {
 
     public boolean hasMultipart() {
         return hasMultipart;
+    }
+
+    public boolean isVariationEnabled() {
+        return variation;
     }
 
     @Nullable

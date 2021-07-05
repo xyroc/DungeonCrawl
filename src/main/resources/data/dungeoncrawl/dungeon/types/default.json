@@ -7,40 +7,40 @@
     {
       "type": "default",
       "models": {
-        "rooms": {"inherit": ["rooms:upper_one"]},
+        "rooms": {"inherit": ["rooms:top"]},
         "full_nodes": {
-          "inherit": ["nodes:full:upper_one"],
+          "inherit": ["nodes:full:top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "fork_nodes": {
-          "inherit": ["nodes:fork:upper_one"],
+          "inherit": ["nodes:fork:top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "straight_nodes": {
-          "inherit": ["nodes:straight:upper_one"],
+          "inherit": ["nodes:straight:top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "turn_nodes": {
-          "inherit": ["nodes:turn:upper_one"],
+          "inherit": ["nodes:turn:top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "dead_end_nodes": {
-          "inherit": ["nodes:dead_end:upper_one"],
+          "inherit": ["nodes:dead_end:top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
-        "corridors": {"inherit": ["corridors:upper_one"]},
-        "corridor_linkers": {"inherit": ["corridor_linkers:upper_one"]},
-        "node_connectors": {"inherit": ["node_connectors:upper_one"]}
+        "corridors": {"inherit": ["corridors:top"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:top"]},
+        "node_connectors": {"inherit": ["node_connectors:top"]}
       },
       "settings": {
         "min_rooms": 3,
@@ -60,40 +60,40 @@
     {
       "type": "default",
       "models": {
-        "rooms": {"inherit": ["rooms:upper_two"]},
+        "rooms": {"inherit": ["rooms:lower_top"]},
         "full_nodes": {
-          "inherit": ["nodes:full:upper_two"],
+          "inherit": ["nodes:full:lower_top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "fork_nodes": {
-          "inherit": ["nodes:fork:upper_two"],
+          "inherit": ["nodes:fork:lower_top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "straight_nodes": {
-          "inherit": ["nodes:straight:upper_two"],
+          "inherit": ["nodes:straight:lower_top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "turn_nodes": {
-          "inherit": ["nodes:turn:upper_two"],
+          "inherit": ["nodes:turn:lower_top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
         "dead_end_nodes": {
-          "inherit": ["nodes:dead_end:upper_two"],
+          "inherit": ["nodes:dead_end:lower_top"],
           "models": [
             {"key": "dungeoncrawl:default/node/room_2", "weight": 1}
           ]
         },
-        "corridors": {"inherit": ["corridors:upper_two"]},
-        "corridor_linkers": {"inherit": ["corridor_linkers:upper_two"]},
-        "node_connectors": {"inherit": ["node_connectors:upper_two"]}
+        "corridors": {"inherit": ["corridors:lower_top"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:lower_top"]},
+        "node_connectors": {"inherit": ["node_connectors:lower_top"]}
       },
       "settings": {
         "min_rooms": 4,
@@ -113,43 +113,15 @@
     {
       "type": "default",
       "models": {
-        "rooms": {"inherit": ["rooms:upper_catacombs"]},
-        "full_nodes": {"inherit": ["nodes:full:upper_catacombs"]},
-        "fork_nodes": {"inherit": ["nodes:fork:upper_catacombs"]},
-        "straight_nodes": {"inherit": ["nodes:straight:upper_catacombs"]},
-        "turn_nodes": {"inherit": ["nodes:turn:upper_catacombs"]},
-        "dead_end_nodes": {"inherit": ["nodes:dead_end:upper_catacombs"]},
-        "corridors": {"inherit": ["corridors:upper_catacombs"]},
-        "corridor_linkers": {"inherit": ["corridor_linkers:upper_catacombs"]},
-        "node_connectors": {"inherit": ["node_connectors:upper_catacombs"]}
-      },
-      "settings": {
-        "min_rooms": 4,
-        "max_rooms": 6,
-        "min_nodes": 8,
-        "max_nodes": 12,
-        "min_room_depth": 1,
-        "max_room_depth": 8,
-        "min_node_depth": 1,
-        "max_node_depth": 8,
-        "min_stairs_depth": 2,
-        "max_depth": 8,
-        "min_distance": 2,
-        "max_distance": 4
-      }
-    },
-    {
-      "type": "default",
-      "models": {
-        "rooms": {"inherit": ["rooms:catacombs"]},
-        "full_nodes": {"inherit": ["nodes:full:catacombs"]},
-        "fork_nodes": {"inherit": ["nodes:fork:catacombs"]},
-        "straight_nodes": {"inherit": ["nodes:straight:catacombs"]},
-        "turn_nodes": {"inherit": ["nodes:turn:catacombs"]},
-        "dead_end_nodes": {"inherit": ["nodes:dead_end:catacombs"]},
-        "corridors": {"inherit": ["corridors:catacombs"]},
+        "rooms":            {"inherit": ["rooms:catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:catacombs"]},
+        "corridors":        {"inherit": ["corridors:catacombs"]},
         "corridor_linkers": {"inherit": ["corridor_linkers:catacombs"]},
-        "node_connectors": {"inherit": ["node_connectors:catacombs"]}
+        "node_connectors":  {"inherit": ["node_connectors:catacombs"]}
       },
       "settings": {
         "min_rooms": 4,
@@ -169,15 +141,43 @@
     {
       "type": "default",
       "models": {
-        "rooms": {"inherit": ["rooms:hell"]},
-        "full_nodes": {"inherit": ["nodes:full:hell"]},
-        "fork_nodes": {"inherit": ["nodes:fork:hell"]},
-        "straight_nodes": {"inherit": ["nodes:straight:hell"]},
-        "turn_nodes": {"inherit": ["nodes:turn:hell"]},
-        "dead_end_nodes": {"inherit": ["nodes:dead_end:hell"]},
-        "corridors": {"inherit": ["corridors:hell"]},
+        "rooms":            {"inherit": ["rooms:lower_catacombs"]},
+        "full_nodes":       {"inherit": ["nodes:full:lower_catacombs"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:lower_catacombs"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:lower_catacombs"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:lower_catacombs"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:lower_catacombs"]},
+        "corridors":        {"inherit": ["corridors:lower_catacombs"]},
+        "corridor_linkers": {"inherit": ["corridor_linkers:lower_catacombs"]},
+        "node_connectors":  {"inherit": ["node_connectors:lower_catacombs"]}
+      },
+      "settings": {
+        "min_rooms": 4,
+        "max_rooms": 6,
+        "min_nodes": 8,
+        "max_nodes": 12,
+        "min_room_depth": 1,
+        "max_room_depth": 8,
+        "min_node_depth": 1,
+        "max_node_depth": 8,
+        "min_stairs_depth": 2,
+        "max_depth": 8,
+        "min_distance": 2,
+        "max_distance": 4
+      }
+    },
+    {
+      "type": "default",
+      "models": {
+        "rooms":            {"inherit": ["rooms:hell"]},
+        "full_nodes":       {"inherit": ["nodes:full:hell"]},
+        "fork_nodes":       {"inherit": ["nodes:fork:hell"]},
+        "straight_nodes":   {"inherit": ["nodes:straight:hell"]},
+        "turn_nodes":       {"inherit": ["nodes:turn:hell"]},
+        "dead_end_nodes":   {"inherit": ["nodes:dead_end:hell"]},
+        "corridors":        {"inherit": ["corridors:hell"]},
         "corridor_linkers": {"inherit": ["corridor_linkers:hell"]},
-        "node_connectors": {"inherit": ["node_connectors:hell"]}
+        "node_connectors":  {"inherit": ["node_connectors:hell"]}
       },
       "settings": {
         "min_rooms": 4,

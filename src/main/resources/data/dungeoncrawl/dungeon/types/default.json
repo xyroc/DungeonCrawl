@@ -108,6 +108,30 @@
         "max_depth": 7,
         "min_distance": 2,
         "max_distance": 4
+      },
+      "multipart": {
+        "dungeoncrawl:default/corridor/corridor": {
+          "action": "add",
+          "additions": {
+            "left": {
+              "models": [{
+                "offset": {"x": 3, "z": -2},
+                "model": "dungeoncrawl:default/multipart/corridor/fire",
+                "weight": 30
+              }]
+            },
+            "right": {
+              "models": [
+                {
+                  "offset": {"x": 3, "z": 5},
+                  "rotation": "clockwise_180",
+                  "model": "dungeoncrawl:default/multipart/corridor/fire",
+                  "weight": 30
+                }
+              ]
+            }
+          }
+        }
       }
     },
     {

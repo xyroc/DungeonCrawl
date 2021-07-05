@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.util.ResourceLocation;
@@ -135,18 +134,27 @@ public class DungeonModel {
         }
 
         if (object.has("multipart")) {
-            JsonArray array = object.getAsJsonArray("multipart");
-            if (array.size() > 0) {
-                ArrayList<MultipartModelData> multipartData = new ArrayList<>();
-                for (JsonElement element : array) {
-                    MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
-                    if (multipartModelData != null) {
-                        multipartData.add(multipartModelData);
-                    }
-                }
+            List<MultipartModelData> multipartData = parseMultipartData(object.getAsJsonObject("multipart"), file);
+            if (multipartData != null) {
                 this.multipartData = multipartData;
                 this.hasMultipart = true;
             }
+        }
+    }
+
+    @Nullable
+    public static List<MultipartModelData> parseMultipartData(JsonObject multipartData, ResourceLocation file) {
+        if (multipartData.size() > 0) {
+            ArrayList<MultipartModelData> list = new ArrayList<>();
+            multipartData.entrySet().forEach((entry) -> {
+                MultipartModelData multipartModelData = MultipartModelData.fromJson(entry.getKey(), entry.getValue().getAsJsonObject(), file);
+                if (multipartModelData != null) {
+                    list.add(multipartModelData);
+                }
+            });
+            return list;
+        } else {
+            return null;
         }
     }
 

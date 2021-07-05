@@ -20,7 +20,7 @@ package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
-import xiroc.dungeoncrawl.dungeon.PlaceHolder;
+import xiroc.dungeoncrawl.dungeon.Tile;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -52,13 +52,13 @@ public abstract class LayerGenerator {
     public static void placeNodeRoom(DungeonNodeRoom nodeRoom, Position2D center, DungeonLayer dungeonLayer) {
         nodeRoom.setGridPosition(center.x, center.z);
 
-        PlaceHolder placeHolder = new PlaceHolder(nodeRoom).addFlag(PlaceHolder.Flag.PLACEHOLDER);
+        Tile placeHolder = new Tile(nodeRoom).addFlag(Tile.Flag.PLACEHOLDER);
         for (int x = -1; x < 2; x++)
             for (int z = -1; z < 2; z++)
                 if ((x != 0 || z != 0) && Position2D.isValid(center.x + x, center.z + z, dungeonLayer.width, dungeonLayer.length))
                     dungeonLayer.grid[center.x + x][center.z + z] = placeHolder;
 
-        dungeonLayer.grid[center.x][center.z] = new PlaceHolder(nodeRoom);
+        dungeonLayer.grid[center.x][center.z] = new Tile(nodeRoom);
     }
 
     /**

@@ -135,7 +135,7 @@ public class TreasureItems {
             CompoundNBT absorption = new CompoundNBT();
             absorption.putInt("Id", 22);
             absorption.putInt("Amplifier", 14);
-            absorption.putInt("Duration", 2400);
+            absorption.putInt("Duration", 600);
             customPotionEffects.add(absorption);
             customPotionEffects.add(resistance);
             customPotionEffects.add(blindness);

@@ -4,8 +4,8 @@
     "x": 2,
     "z": 2
   },
-  "multipart": [
-    {
+  "multipart": {
+    "ceiling": {
       "models": [
         {
           "model": "dungeoncrawl:catacombs/multipart/corridor/ceiling",
@@ -34,7 +34,7 @@
         }
       ]
     },
-    {
+    "entrance_north": {
       "conditions": {
         "rotated_north": true
       },
@@ -58,7 +58,7 @@
         }
       ]
     },
-    {
+    "entrance_east": {
       "conditions": {
         "rotated_east": true
       },
@@ -80,7 +80,7 @@
         }
       ]
     },
-    {
+    "entrance_west": {
       "conditions": {
         "rotated_west": true
       },
@@ -104,7 +104,7 @@
         }
       ]
     },
-    {
+    "entrance_south": {
       "conditions": {
         "rotated_south": true
       },
@@ -128,5 +128,5 @@
         }
       ]
     }
-  ]
+  }
 }

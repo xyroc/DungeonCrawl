@@ -40,6 +40,7 @@ import net.minecraft.world.gen.feature.structure.StructurePiece;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
@@ -280,10 +281,10 @@ public abstract class DungeonPiece extends StructurePiece {
         return model != null && model.hasMultipart();
     }
 
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelSelector modelSelector, int layer, Random rand) {
-        if (model != null && model.hasMultipart()) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonType type, ModelSelector modelSelector, int layer, Random rand) {
+        if (model != null && (model.hasMultipart() || type.getLayer(layer).hasMultipartOverride(model))) {
             BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
-            for (MultipartModelData data : model.getMultipartData()) {
+            for (MultipartModelData data : type.getLayer(layer).getMultipartData(model)) {
                 if (data.checkConditions(this)) {
                     pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ(), rand));
                 } else if (data.alternatives != null) {

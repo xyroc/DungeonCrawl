@@ -76,7 +76,6 @@ public class Tools {
 
                     if (context.arePositionsSet()) {
                         String name = StringArgumentType.getString(command, "name");
-                        command.getSource().sendFeedback(new StringTextComponent("Saving as " + name), true);
                         BlockPos pos1 = new BlockPos(Math.min(context.pos1.getX(), context.pos2.getX()),
                                 Math.min(context.pos1.getY(), context.pos2.getY()),
                                 Math.min(context.pos1.getZ(), context.pos2.getZ()));
@@ -87,7 +86,7 @@ public class Tools {
                                 ModelBlockDefinition.getDefaultDefinition(),
                                 command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Done."), true);
+                        command.getSource().sendFeedback(new StringTextComponent("Saved as " + TextFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
                         command.getSource().sendFeedback(

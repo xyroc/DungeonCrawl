@@ -3,8 +3,8 @@
   "offset": {
     "y": -1
   },
-  "multipart": [
-    {
+  "multipart": {
+    "ceiling": {
       "models": [
         {
           "offset": {
@@ -40,5 +40,5 @@
         }
       ]
     }
-  ]
+  }
 }

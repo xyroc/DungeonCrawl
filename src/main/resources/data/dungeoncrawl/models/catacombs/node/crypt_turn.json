@@ -1,7 +1,7 @@
 {
   "id": 39,
-  "multipart": [
-    {
+  "multipart": {
+    "ceiling": {
       "models": [
         {
           "offset": {
@@ -29,7 +29,7 @@
         }
       ]
     },
-    {
+    "spawner_cell_left": {
       "models": [
         {
           "offset": {
@@ -49,7 +49,7 @@
         }
       ]
     },
-    {
+    "spawner_cell": {
       "models": [
         {
           "offset": {
@@ -68,7 +68,7 @@
         }
       ]
     },
-    {
+    "graves_left": {
       "models": [
         {
           "offset": {
@@ -89,7 +89,7 @@
         }
       ]
     },
-    {
+    "graves": {
       "models": [
         {
           "offset": {
@@ -108,5 +108,5 @@
         }
       ]
     }
-  ]
+  }
 }

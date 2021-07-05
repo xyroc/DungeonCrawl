@@ -37,7 +37,7 @@ public class DungeonFeatures {
         CORRIDOR_FEATURES = Lists.newArrayList();
 
         CORRIDOR_FEATURES.add(((builder, layer, x, z, rand, lyr, stage, startPos) -> {
-            if (layer.grid[x][z].reference.connectedSides < 4 && rand.nextFloat() < 0.075) {
+            if (layer.grid[x][z].piece.connectedSides < 4 && rand.nextFloat() < 0.075) {
                 Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z), rand);
                 if (sideRoomData != null) {
                     DungeonSideRoom sideRoom = new DungeonSideRoom();
@@ -47,8 +47,8 @@ public class DungeonFeatures {
                     sideRoom.setRotation(sideRoomData.getB());
                     sideRoom.stage = stage;
 
-                    layer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(sideRoom);
-                    layer.grid[x][z].reference.openSide(dir.getOpposite());
+                    layer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new Tile(sideRoom);
+                    layer.grid[x][z].piece.openSide(dir.getOpposite());
                     layer.map.markPositionAsOccupied(sideRoomData.getA());
                     layer.rotatePiece(layer.grid[x][z], rand);
                     return true;

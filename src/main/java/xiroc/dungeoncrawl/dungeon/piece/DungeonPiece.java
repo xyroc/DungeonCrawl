@@ -488,20 +488,22 @@ public abstract class DungeonPiece extends StructurePiece {
      * Builds a pillar with stairs at the top.
      */
     protected void buildFancyPillarPart(IWorld world, BlockPos pos) {
-        byte x = (byte) (Math.abs(pos.getX()) % 3);
-        byte z = (byte) (Math.abs(pos.getZ()) % 3);
+        int x = pos.getX() % 3;
+        int z = pos.getZ() % 4;
 
         if (x == 0) {
             switch (z) {
                 case 0:
                     buildPillar(world, pos);
                     return;
+                case -2:
                 case 1: { // One block south from the pillar
                     BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
                     stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
                     world.setBlockState(pos, stair, 2);
                     return;
                 }
+                case -1:
                 case 2: { // Two blocks south from the pillar
                     BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
                     stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
@@ -509,48 +511,15 @@ public abstract class DungeonPiece extends StructurePiece {
                 }
             }
         } else if (z == 0) {
-            if (x == 1) { // One block east from the pillar
-                BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
-                stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-                world.setBlockState(pos, stair, 2);
+            BlockState stair;
+            if (x == 1 || x == -2) { // One block east from the pillar
+                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
             } else { // Two blocks east from the pillar
-                BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
-                stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-                world.setBlockState(pos, stair, 2);
+                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
             }
+            stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
+            world.setBlockState(pos, stair, 2);
         }
-
-//        if (boundingBox.isVecInside(pos)) {
-//            buildPillar(world, pos);
-//        }
-//
-//        BlockPos north = pos.north();
-//        if (boundingBox.isVecInside(north) && !world.getBlockState(north).isSolid()) {
-//            BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(north), BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
-//            stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-//            world.setBlockState(north, stair, 2);
-//        }
-//
-//        BlockPos east = pos.north();
-//        if (boundingBox.isVecInside(east) && !world.getBlockState(east).isSolid()) {
-//            BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(east), BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
-//            stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-//            world.setBlockState(east, stair, 2);
-//        }
-//
-//        BlockPos south = pos.north();
-//        if (boundingBox.isVecInside(south) && !world.getBlockState(south).isSolid()) {
-//            BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(south), BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
-//            stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-//            world.setBlockState(south, stair, 2);
-//        }
-//
-//        BlockPos west = pos.north();
-//        if (boundingBox.isVecInside(west) && !world.getBlockState(west).isSolid()) {
-//            BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(west), BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
-//            stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-//            world.setBlockState(west, stair, 2);
-//        }
     }
 
     protected void entrances(IWorld world, MutableBoundingBox bounds, DungeonModel model) {

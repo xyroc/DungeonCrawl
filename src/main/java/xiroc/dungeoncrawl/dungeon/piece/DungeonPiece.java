@@ -321,9 +321,9 @@ public abstract class DungeonPiece extends StructurePiece {
         }
 
         IFluidState ifluidstate = world.getFluidState(pos);
-//        if (ifluidstate.isSource()) {
-        world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
-//        }
+        if (!ifluidstate.isEmpty()) {
+            world.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
+        }
     }
 
     public void replaceBlockState(IWorld worldIn, BlockState blockState, int x, int y, int z,
@@ -340,9 +340,9 @@ public abstract class DungeonPiece extends StructurePiece {
             }
 
             IFluidState ifluidstate = worldIn.getFluidState(blockPos);
-//            if (ifluidstate.isSource()) {
-            worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
-//            }
+            if (!ifluidstate.isEmpty()) {
+                worldIn.getPendingFluidTicks().scheduleTick(blockPos, ifluidstate.getFluid(), 0);
+            }
 
         }
     }

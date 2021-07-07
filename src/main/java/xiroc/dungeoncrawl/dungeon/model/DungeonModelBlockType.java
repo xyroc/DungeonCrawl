@@ -51,6 +51,7 @@ public enum DungeonModelBlockType {
     SOLID_PILLAR            (tFactory(Theme::getPillar), PlacementBehaviour.SOLID, true),
     SOLID_FLOOR             (tFactory(Theme::getFloor), PlacementBehaviour.SOLID),
     FLOOR                   (tFactory(Theme::getFloor), PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
+    LOOSE_GROUND            (tFactory(Theme::getFloor)),
     STAIRS                  (tFactory(Theme::getStairs)),
     WALL                    (tFactory(Theme::getWall)),
 

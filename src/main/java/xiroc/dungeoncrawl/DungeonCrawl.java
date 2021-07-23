@@ -141,7 +141,7 @@ public class DungeonCrawl {
     }
 
     /**
-     * Creates a key for a given resource location. Removes the base directory and the following slash and the file ending.
+     * Creates a key for a given resource location. Removes the base directory, the following slash and the file ending.
      *
      * @param resourceLocation the initial resource location.
      * @param baseDirectory    the base path without the last slash. ( dirA/dirB not dirA/dirB/ )

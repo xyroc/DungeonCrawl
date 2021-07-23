@@ -30,7 +30,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3i;
@@ -357,8 +356,8 @@ public abstract class DungeonPiece extends StructurePiece {
         model.blocks.forEach((block) -> {
             BlockPos position = pos.add(block.position);
             if (boundsIn.isVecInside(position)) {
-                Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                        Rotation.NONE, world, position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
+                BlockState state = block.type.blockFactory.get(block, Rotation.NONE, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+
                 if (state == null)
                     return;
 
@@ -388,8 +387,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + block.position.getX());
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                                Rotation.CLOCKWISE_90, world, position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_90, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -408,9 +406,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.width - block.position.getX() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                                Rotation.COUNTERCLOCKWISE_90, world, position, theme, secondaryTheme,
-                                DungeonBlocks.RANDOM, variation, lootLevel);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.COUNTERCLOCKWISE_90, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -429,8 +425,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.length - block.position.getZ() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block, Rotation.CLOCKWISE_180, world,
-                                position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_180, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -456,11 +451,11 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public void placeBlock(DungeonModelBlock block, IWorld world, PlacementContext context,
                            Theme theme, SecondaryTheme secondaryTheme, int lootLevel, boolean fillAir,
-                           BlockPos position, Tuple<BlockState, Boolean> state) {
-        setBlockState(state.getA(), world, position, theme, secondaryTheme, lootLevel, block,
+                           BlockPos position, BlockState state) {
+        setBlockState(state, world, position, theme, secondaryTheme, lootLevel, block,
                 fillAir ? DungeonModelBlockType.SOLID : block.type, context);
 
-        if (state.getB() && context.postProcessing) {
+        if (block.hasProperties && context.postProcessing) {
             world.getChunk(position).markBlockForPostprocessing(position);
         }
 
@@ -481,7 +476,7 @@ public abstract class DungeonPiece extends StructurePiece {
     protected void buildPillar(IWorld world, BlockPos pos) {
         for (; pos.getY() > 0; pos = pos.down()) {
             if (world.getBlockState(pos).isSolid()) return;
-            world.setBlockState(pos, theme.solid.get(pos), 2);
+            world.setBlockState(pos, theme.solid.get(world, pos), 2);
         }
     }
 
@@ -499,14 +494,14 @@ public abstract class DungeonPiece extends StructurePiece {
                     return;
                 case -2:
                 case 1: { // One block south from the pillar
-                    BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
+                    BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
                     stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
                     world.setBlockState(pos, stair, 2);
                     return;
                 }
                 case -1:
                 case 2: { // Two blocks south from the pillar
-                    BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
+                    BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
                     stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
                     world.setBlockState(pos, stair, 2);
                 }
@@ -514,9 +509,9 @@ public abstract class DungeonPiece extends StructurePiece {
         } else if (z == 0) {
             BlockState stair;
             if (x == 1 || x == -2) { // One block east from the pillar
-                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
+                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
             } else { // Two blocks east from the pillar
-                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(pos), BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
+                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
             }
             stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
             world.setBlockState(pos, stair, 2);
@@ -540,13 +535,13 @@ public abstract class DungeonPiece extends StructurePiece {
             IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX() + pathStartX, pos.getY() + 3, pos.getZ());
-            BlockState stair1 = stateProvider.get(pos1);
+            BlockState stair1 = stateProvider.get(world, pos1);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
             BlockPos pos2 = pos1.offset(Direction.EAST, 2);
-            BlockState stair2 = stateProvider.get(pos2);
+            BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair2, pos2.getX(), pos2.getY(), pos2.getZ(), bounds, context);
@@ -563,13 +558,13 @@ public abstract class DungeonPiece extends StructurePiece {
             IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX() + model.width - 1, pos.getY() + 3, pos.getZ() + pathStartZ);
-            BlockState stair1 = stateProvider.get(pos1);
+            BlockState stair1 = stateProvider.get(world, pos1);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
             BlockPos pos2 = pos1.offset(Direction.SOUTH, 2);
-            BlockState stair2 = stateProvider.get(pos2);
+            BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair2, pos2.getX(), pos2.getY(), pos2.getZ(), bounds, context);
@@ -585,13 +580,13 @@ public abstract class DungeonPiece extends StructurePiece {
             IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX() + pathStartX, pos.getY() + 3, pos.getZ() + model.length - 1);
-            BlockState stair1 = stateProvider.get(pos1);
+            BlockState stair1 = stateProvider.get(world, pos1);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
             BlockPos pos2 = pos1.offset(Direction.EAST, 2);
-            BlockState stair2 = stateProvider.get(pos2);
+            BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair2, pos2.getX(), pos2.getY(), pos2.getZ(), bounds, context);
@@ -607,13 +602,13 @@ public abstract class DungeonPiece extends StructurePiece {
             IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX(), pos.getY() + 3, pos.getZ() + pathStartZ);
-            BlockState stair1 = stateProvider.get(pos1);
+            BlockState stair1 = stateProvider.get(world, pos1);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
             BlockPos pos2 = pos1.offset(Direction.SOUTH, 2);
-            BlockState stair2 = stateProvider.get(pos2);
+            BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair2, pos2.getX(), pos2.getY(), pos2.getZ(), bounds, context);

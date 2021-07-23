@@ -2,6 +2,7 @@
   "requirements": {
     "present": ["create"]
   },
+  "default": [],
   "mapping": {
   }
 }

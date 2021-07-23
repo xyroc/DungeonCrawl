@@ -3,6 +3,7 @@ package xiroc.dungeoncrawl.dungeon.block.pattern;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 public class CheckedPattern implements IBlockStateProvider {
@@ -15,11 +16,11 @@ public class CheckedPattern implements IBlockStateProvider {
     }
 
     @Override
-    public BlockState get(BlockPos pos, Rotation rotation) {
+    public BlockState get(IWorld world, BlockPos pos, Rotation rotation) {
         if(((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
-            return block1.get(pos, rotation);
+            return block1.get(world, pos, rotation);
         } else {
-            return block2.get(pos, rotation);
+            return block2.get(world, pos, rotation);
         }
     }
 }

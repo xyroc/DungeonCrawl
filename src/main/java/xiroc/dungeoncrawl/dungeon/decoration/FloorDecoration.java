@@ -18,7 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
@@ -52,7 +51,7 @@ public class FloorDecoration implements IDungeonDecoration {
                     && world.isAirBlock(origin.add(block.position).up())
                     && checkSolid(world, origin.add(block.position), worldGenBounds, structureBounds)
                     && DungeonBlocks.RANDOM.nextFloat() < chance) {
-                world.setBlockState(pos, blockStateProvider.get(pos), 2);
+                world.setBlockState(pos, blockStateProvider.get(world, pos), 2);
             }
         });
     }
@@ -87,7 +86,7 @@ public class FloorDecoration implements IDungeonDecoration {
                             || checkSolid(world, pos.south(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.west(), worldGenBounds, structureBounds))
                             && DungeonBlocks.RANDOM.nextFloat() < chance) {
-                        world.setBlockState(pos, blockStateProvider.get(pos), 2);
+                        world.setBlockState(pos, blockStateProvider.get(world, pos), 2);
                     }
                 }
             });

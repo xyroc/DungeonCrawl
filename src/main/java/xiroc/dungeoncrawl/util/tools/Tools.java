@@ -279,7 +279,8 @@ public class Tools {
             if (block == null)
                 block = Blocks.AIR;
 
-            world.setBlockState(placePos, modelBlock.create(block.getDefaultState(), world, placePos, Rotation.NONE).getA(), 3);
+            world.setBlockState(placePos, modelBlock.create(block.getDefaultState(), world, placePos, Rotation.NONE), 3);
+
         });
 
     }

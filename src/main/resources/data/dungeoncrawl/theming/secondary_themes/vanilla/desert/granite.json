@@ -1,0 +1,76 @@
+{
+  "theme": {
+    "pillar": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:granite"
+        },
+        {
+          "block": "minecraft:polished_granite",
+          "weight": 3
+        }
+      ]
+    },
+    "trapdoor": {
+      "type": "block",
+      "block": "minecraft:cave_air"
+    },
+    "door": {
+      "type": "block",
+      "block": "minecraft:cave_air"
+    },
+    "material": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone"
+        },
+        {
+          "block": "minecraft:chiseled_sandstone"
+        },
+        {
+          "block": "minecraft:cut_sandstone"
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:granite_stairs"
+        },
+        {
+          "block": "minecraft:polished_granite_stairs"
+        }
+      ]
+    },
+    "slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:sandstone_slab"
+        },
+        {
+          "block": "minecraft:cut_sandstone_slab"
+        }
+      ]
+    },
+    "fence": {
+      "type": "block",
+      "block": "minecraft:cave_air"
+    },
+    "fence_gate": {
+      "type": "block",
+      "block": "minecraft:cave_air"
+    },
+    "button": {
+      "type": "block",
+      "block": "minecraft:oak_button"
+    },
+    "pressure_plate": {
+      "type": "block",
+      "block": "minecraft:oak_pressure_plate"
+    }
+  }
+}

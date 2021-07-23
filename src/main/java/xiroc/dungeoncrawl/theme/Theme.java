@@ -40,35 +40,42 @@ import java.util.Random;
 
 public class Theme {
 
-    public static final Theme DEFAULT_THEME = new Theme(
-            (pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
-            (pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
-            (pos, rotation) -> Blocks.COBBLESTONE.getDefaultState(),
-            (pos, rotation) -> Blocks.GRAVEL.getDefaultState(),
-            (pos, rotation) -> Blocks.STONE_BRICK_STAIRS.getDefaultState(),
-            (pos, rotation) -> Blocks.COBBLESTONE_STAIRS.getDefaultState(),
-            (pos, rotation) -> Blocks.COBBLESTONE.getDefaultState(),
-            (pos, rotation) -> Blocks.COBBLESTONE_WALL.getDefaultState(),
-            (pos, rotation) -> Blocks.COBBLESTONE_SLAB.getDefaultState(),
-            (pos, rotation) -> Blocks.STONE_BRICK_SLAB.getDefaultState());
+    /**
+     * These builtin themes will only be used as a last resort,
+     * in case a theme can't be found and the default theme can't be found either.
+     */
+    public static final Theme BUILTIN_DEFAULT_THEME = new Theme(
+            (world, pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
+            (world, pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE.getDefaultState(),
+            (world, pos, rotation) -> Blocks.GRAVEL.getDefaultState(),
+            (world, pos, rotation) -> Blocks.STONE_BRICK_STAIRS.getDefaultState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE_STAIRS.getDefaultState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE.getDefaultState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE_WALL.getDefaultState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE_SLAB.getDefaultState(),
+            (world, pos, rotation) -> Blocks.STONE_BRICK_SLAB.getDefaultState());
 
-    public static final SecondaryTheme DEFAULT_SECONDARY_THEME = new SecondaryTheme(
-            (pos, rotation) -> Blocks.OAK_LOG.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_TRAPDOOR.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_DOOR.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_PLANKS.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_STAIRS.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_SLAB.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_FENCE.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_FENCE_GATE.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_BUTTON.getDefaultState(),
-            (pos, rotation) -> Blocks.OAK_PRESSURE_PLATE.getDefaultState());
+    public static final SecondaryTheme BUILTIN_DEFAULT_SECONDARY_THEME = new SecondaryTheme(
+            (world, pos, rotation) -> Blocks.OAK_LOG.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_TRAPDOOR.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_DOOR.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_PLANKS.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_STAIRS.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_SLAB.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_FENCE.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_FENCE_GATE.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_BUTTON.getDefaultState(),
+            (world, pos, rotation) -> Blocks.OAK_PRESSURE_PLATE.getDefaultState());
 
     protected static final Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
     protected static final Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
 
     public static final Hashtable<ResourceLocation, Theme> KEY_TO_THEME = new Hashtable<>();
     public static final Hashtable<ResourceLocation, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
+
+    private static WeightedRandom<Theme> DEFAULT_TOP_THEME = null;
+    private static WeightedRandom<SecondaryTheme> DEFAULT_SECONDARY_TOP_THEME = null;
 
     private static IRandom<Theme> CATACOMBS_THEME = (rand) -> {
         throw new IllegalStateException();
@@ -113,10 +120,10 @@ public class Theme {
     private static ImmutableSet<ResourceLocation> THEME_KEYS, SECONDARY_THEME_KEYS;
 
     static {
-        DEFAULT_THEME.key = new ResourceLocation("builtin:default");
-        DEFAULT_SECONDARY_THEME.key = new ResourceLocation("builtin:default");
-        KEY_TO_THEME.put(DEFAULT_THEME.key, DEFAULT_THEME);
-        KEY_TO_SECONDARY_THEME.put(DEFAULT_SECONDARY_THEME.key, DEFAULT_SECONDARY_THEME);
+        BUILTIN_DEFAULT_THEME.key = new ResourceLocation("builtin:default");
+        BUILTIN_DEFAULT_SECONDARY_THEME.key = new ResourceLocation("builtin:default");
+        KEY_TO_THEME.put(BUILTIN_DEFAULT_THEME.key, BUILTIN_DEFAULT_THEME);
+        KEY_TO_SECONDARY_THEME.put(BUILTIN_DEFAULT_SECONDARY_THEME.key, BUILTIN_DEFAULT_SECONDARY_THEME);
     }
 
     public final IBlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab;
@@ -331,10 +338,13 @@ public class Theme {
         Hashtable<String, WeightedRandom.Builder<Theme>> themeMappingBuilders = new Hashtable<>();
         Hashtable<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders = new Hashtable<>();
 
+        WeightedRandom.Builder<Theme> primaryDefaultBuilder = new WeightedRandom.Builder<>();
+        WeightedRandom.Builder<SecondaryTheme> secondaryDefaultBuilder = new WeightedRandom.Builder<>();
+
         for (ResourceLocation resource : resourceManager.getAllResourceLocations(PRIMARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), themeMappingBuilders, resource);
+                JsonTheming.deserializeThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), themeMappingBuilders, primaryDefaultBuilder, resource);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
@@ -344,7 +354,7 @@ public class Theme {
         for (ResourceLocation resource : resourceManager.getAllResourceLocations(SECONDARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeSecondaryThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), secondaryThemeMappingBuilders, resource);
+                JsonTheming.deserializeSecondaryThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), secondaryThemeMappingBuilders, secondaryDefaultBuilder, resource);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
@@ -353,6 +363,17 @@ public class Theme {
 
         themeMappingBuilders.forEach((biome, builder) -> BIOME_TO_THEME.put(biome, builder.build()));
         secondaryThemeMappingBuilders.forEach((biome, builder) -> BIOME_TO_SECONDARY_THEME.put(biome, builder.build()));
+
+        DEFAULT_TOP_THEME = primaryDefaultBuilder.build();
+        DEFAULT_SECONDARY_TOP_THEME = secondaryDefaultBuilder.build();
+
+        if (DEFAULT_TOP_THEME.isEmpty()) {
+            throw new DatapackLoadException("No default primary themes are specified in the mappings.");
+        }
+
+        if (DEFAULT_SECONDARY_TOP_THEME.isEmpty()) {
+            throw new DatapackLoadException("No default secondary themes are specified in the mappings.");
+        }
 
         THEME_KEYS = themeKeySetBuilder.build();
         SECONDARY_THEME_KEYS = secondaryThemeKeySetBuilder.build();
@@ -393,20 +414,20 @@ public class Theme {
         return new Tuple<>(primary.build(), secondary.build());
     }
 
-    public static Theme getDefaultTheme() {
-        return KEY_TO_THEME.getOrDefault(PRIMARY_THEME_FALLBACK, DEFAULT_THEME);
+    public static Theme getBuiltinDefaultTheme() {
+        return KEY_TO_THEME.getOrDefault(PRIMARY_THEME_FALLBACK, BUILTIN_DEFAULT_THEME);
     }
 
-    public static SecondaryTheme getDefaultSecondaryTheme() {
-        return KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, DEFAULT_SECONDARY_THEME);
+    public static SecondaryTheme getBuiltinDefaultSecondaryTheme() {
+        return KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, BUILTIN_DEFAULT_SECONDARY_THEME);
     }
 
     public static Theme randomTheme(String biome, Random rand) {
-        return BIOME_TO_THEME.getOrDefault(biome, (r) -> KEY_TO_THEME.getOrDefault(PRIMARY_THEME_FALLBACK, DEFAULT_THEME)).roll(rand);
+        return BIOME_TO_THEME.getOrDefault(biome, DEFAULT_TOP_THEME).roll(rand);
     }
 
     public static SecondaryTheme randomSecondaryTheme(String biome, Random rand) {
-        return BIOME_TO_SECONDARY_THEME.getOrDefault(biome, (r) -> KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, DEFAULT_SECONDARY_THEME)).roll(rand);
+        return BIOME_TO_SECONDARY_THEME.getOrDefault(biome, DEFAULT_SECONDARY_TOP_THEME).roll(rand);
     }
 
     public static Theme randomCatacombsTheme(Random rand) {
@@ -434,19 +455,19 @@ public class Theme {
     }
 
     public static Theme getTheme(ResourceLocation key) {
-        return KEY_TO_THEME.getOrDefault(key, KEY_TO_THEME.getOrDefault(PRIMARY_THEME_FALLBACK, DEFAULT_THEME));
+        return KEY_TO_THEME.getOrDefault(key, KEY_TO_THEME.getOrDefault(PRIMARY_THEME_FALLBACK, BUILTIN_DEFAULT_THEME));
     }
 
     public static SecondaryTheme getSecondaryTheme(ResourceLocation key) {
-        return KEY_TO_SECONDARY_THEME.getOrDefault(key, KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, DEFAULT_SECONDARY_THEME));
+        return KEY_TO_SECONDARY_THEME.getOrDefault(key, KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, BUILTIN_DEFAULT_SECONDARY_THEME));
     }
 
     public static Theme getThemeByID(int theme) {
-        return ID_TO_THEME.getOrDefault(theme, ID_TO_THEME.getOrDefault(0, DEFAULT_THEME));
+        return ID_TO_THEME.getOrDefault(theme, ID_TO_THEME.getOrDefault(0, BUILTIN_DEFAULT_THEME));
     }
 
     public static SecondaryTheme getSubThemeByID(int id) {
-        return ID_TO_SECONDARY_THEME.getOrDefault(id, ID_TO_SECONDARY_THEME.getOrDefault(0, DEFAULT_SECONDARY_THEME));
+        return ID_TO_SECONDARY_THEME.getOrDefault(id, ID_TO_SECONDARY_THEME.getOrDefault(0, BUILTIN_DEFAULT_SECONDARY_THEME));
     }
 
     public static ImmutableSet<ResourceLocation> getThemeKeys() {

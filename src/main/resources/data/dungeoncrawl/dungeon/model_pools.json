@@ -52,7 +52,7 @@
       {"key": "dungeoncrawl:catacombs/room/spawner_room", "weight": 1}
     ],
     "nodes:full:top": [
-      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/room", "weight": 1}
     ],
@@ -88,7 +88,7 @@
       {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
     ],
     "nodes:fork:top": [
-      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 2},
       {"key": "dungeoncrawl:default/node/room", "weight": 1}
@@ -128,7 +128,7 @@
       {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
     ],
     "nodes:straight:top": [
-      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
       {"key": "dungeoncrawl:default/node/room", "weight": 1}
@@ -170,15 +170,17 @@
       {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
     ],
     "nodes:turn:top": [
-      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1},
+      {"key": "dungeoncrawl:default/node/dark_hall", "weight": 1}
     ],
     "nodes:turn:lower_top": [
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 1}
+      {"key": "dungeoncrawl:default/node/room", "weight": 1},
+      {"key": "dungeoncrawl:default/node/dark_hall", "weight": 1}
     ],
     "nodes:turn:catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -189,7 +191,8 @@
       {"key": "dungeoncrawl:catacombs/node/crypt_turn", "weight": 7},
       {"key": "dungeoncrawl:catacombs/node/room", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room_2", "weight": 1},
-      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
+      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1},
+      {"key": "dungeoncrawl:default/node/dark_hall", "weight": 1}
     ],
     "nodes:turn:lower_catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -212,15 +215,17 @@
       {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
     ],
     "nodes:dead_end:top": [
-      {"key": "dungeoncrawl:default/node/large_fire_hall", "weight": 1},
+      {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 2}
+      {"key": "dungeoncrawl:default/node/room", "weight": 2},
+      {"key": "dungeoncrawl:default/node/dark_hall", "weight": 1}
     ],
     "nodes:dead_end:lower_top": [
       {"key": "dungeoncrawl:default/node/jukebox_room", "weight": 1},
       {"key": "dungeoncrawl:default/node/fireplace", "weight": 1},
-      {"key": "dungeoncrawl:default/node/room", "weight": 2}
+      {"key": "dungeoncrawl:default/node/room", "weight": 2},
+      {"key": "dungeoncrawl:default/node/dark_hall", "weight": 1}
     ],
     "nodes:dead_end:catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},
@@ -233,7 +238,8 @@
       {"key": "dungeoncrawl:catacombs/node/crypt_dead_end", "weight": 5},
       {"key": "dungeoncrawl:catacombs/node/room", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room_2", "weight": 1},
-      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
+      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1},
+      {"key": "dungeoncrawl:default/node/dark_hall", "weight": 1}
     ],
     "nodes:dead_end:lower_catacombs": [
       {"key": "dungeoncrawl:catacombs/node/fountain", "weight": 1},

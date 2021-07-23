@@ -61,7 +61,7 @@ public class SpawnDungeonCommand {
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
                                         ThemeArgument.getTheme(command, "theme"),
-                                        Theme.getDefaultSecondaryTheme()))
+                                        Theme.getBuiltinDefaultSecondaryTheme()))
                         .then(Commands.argument("secondary_theme", SecondaryThemeArgument.secondaryTheme()).executes((command) ->
                                 spawnDungeon(command.getSource(), command.getSource().getWorld(),
                                         Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),

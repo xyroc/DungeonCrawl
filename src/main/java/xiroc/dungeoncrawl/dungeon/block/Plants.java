@@ -44,7 +44,7 @@ public class Plants {
             if (rand.nextFloat() < 0.6) {
                 BlockState crop = BlockTags.CROPS.getRandomElement(rand).getDefaultState();
                 if (crop.hasProperty(BlockStateProperties.AGE_0_7))
-                    crop = crop.with(BlockStateProperties.AGE_0_7, rand.nextInt(8));
+                    crop = crop.with(BlockStateProperties.AGE_0_7, 4 + rand.nextInt(4));
                 world.setBlockState(cropPos, crop, 2);
                 context.protectedBlocks.add(cropPos);
             } else {

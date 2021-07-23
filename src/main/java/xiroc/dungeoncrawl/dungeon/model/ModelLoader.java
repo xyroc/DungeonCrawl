@@ -21,13 +21,8 @@ package xiroc.dungeoncrawl.dungeon.model;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3i;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public interface ModelLoader {
 
@@ -55,9 +50,7 @@ public interface ModelLoader {
             for (int y = 0; y < height; y++) {
                 ListNBT blocks3 = blocks2.getList(y);
                 for (int z = 0; z < length; z++) {
-                    DungeonModelBlock block = DungeonModelBlock.fromNBT(blocks3.getCompound(z));
-                    block.position = new Vector3i(x, y, z);
-                    modelBlocks.add(block);
+                    modelBlocks.add(DungeonModelBlock.fromNBT(blocks3.getCompound(z), new Vector3i(x, y, z)));
                 }
             }
         }

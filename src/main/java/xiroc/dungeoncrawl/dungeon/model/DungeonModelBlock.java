@@ -28,21 +28,17 @@ import net.minecraft.state.Property;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Random;
 
 public class DungeonModelBlock {
 
@@ -51,28 +47,74 @@ public class DungeonModelBlock {
     public Vector3i position;
 
     @Nullable
-    private PropertyHolder[] properties;
-
+    private final PropertyHolder[] properties;
+    public final boolean hasProperties;
     @Nullable
-    public Integer variation;
 
-
+    public final Integer variation;
+    private final Block block;
     @Nullable
-    public ResourceLocation blockName;
-    @Nullable
-    private Block block;
-
-    // Custom loot table, can be defined in model metadata.
+    public final ResourceLocation blockName;
+    // A custom loot table, can be defined in model metadata.
     @Nullable
     public ResourceLocation lootTable;
 
-    public DungeonModelBlock(DungeonModelBlockType type, Vector3i position) {
+
+    private DungeonModelBlock(DungeonModelBlockType type, Vector3i position) {
+        this(type, position, null, null, Blocks.CAVE_AIR, null);
+    }
+
+    private DungeonModelBlock(DungeonModelBlockType type,
+                              Vector3i position,
+                              @Nullable PropertyHolder[] properties,
+                              @Nullable Integer variation,
+                              Block block,
+                              @Nullable ResourceLocation blockName) {
         this.type = type;
         this.position = position;
+        this.properties = properties;
+        this.hasProperties = properties != null;
+        this.variation = variation;
+        this.block = block;
+        this.blockName = blockName;
+    }
+
+    public static DungeonModelBlock fromBlockState(BlockState state, DungeonModelBlockType type, Vector3i position) {
+        List<PropertyHolder> properties = Lists.newArrayList();
+        for (Property<?> property : state.getProperties()) {
+            properties.add(new PropertyHolder(property, state.get(property)));
+        }
+        PropertyHolder[] blockProperties = properties.isEmpty() ? null : properties.toArray(new PropertyHolder[0]);
+        Integer variation = null;
+        Block block;
+        ResourceLocation blockName = null;
+        if (type == DungeonModelBlockType.CARPET) {
+            Collection<Block> carpets = BlockTags.CARPETS.getAllElements();
+            int index = 0;
+            for (Block carpet : carpets) {
+                if (state.getBlock() == carpet) {
+                    variation = index;
+                    break;
+                }
+                index++;
+            }
+            block = state.getBlock();
+            blockName = state.getBlock().getRegistryName();
+        } else if (type == DungeonModelBlockType.OTHER) {
+            block = state.getBlock();
+            blockName = state.getBlock().getRegistryName();
+        } else {
+            block = Blocks.CAVE_AIR;
+        }
+        return new DungeonModelBlock(type, position, blockProperties, variation, block, blockName);
     }
 
     /**
+     * <<<<<<< HEAD
      * Creates an NBT representation of the DungeonModelBlock.
+     * =======
+     * Creates a NBT representation of the DungeonModelBlock.
+     * >>>>>>> origin/1.15
      *
      * @return The CompoundNBT
      */
@@ -108,13 +150,20 @@ public class DungeonModelBlock {
         return tag;
     }
 
-    public static DungeonModelBlock fromNBT(CompoundNBT nbt) {
+    /**
+     * Loads a model block with a fallback position, used to load from legacy models.
+     */
+    public static DungeonModelBlock fromNBT(CompoundNBT nbt, Vector3i position) {
         if (!nbt.contains("type")) { // backwards compatibility
-            return new DungeonModelBlock(DungeonModelBlockType.AIR, null);
+//            return new DungeonModelBlock(DungeonModelBlockType.AIR, null);
+            DungeonCrawl.LOGGER.info("Model block does not have a type parameter");
+            return null;
         }
 
-        CompoundNBT pos = nbt.getCompound("position");
-        Vector3i position = new Vector3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+        if (nbt.contains("position")) {
+            CompoundNBT pos = nbt.getCompound("position");
+            position = new Vector3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+        }
 
         String type = nbt.getString("type");
         if (!DungeonModelBlockType.NAME_TO_TYPE.containsKey(type)) {
@@ -122,105 +171,79 @@ public class DungeonModelBlock {
             return new DungeonModelBlock(DungeonModelBlockType.AIR, position);
         }
 
-        DungeonModelBlock block = new DungeonModelBlock(DungeonModelBlockType.NAME_TO_TYPE.get(type), position);
+        DungeonModelBlockType blockType = DungeonModelBlockType.NAME_TO_TYPE.get(type);
+        Block block;
+        ResourceLocation blockName = null;
 
         if (nbt.contains("resourceName")) {
-            block.blockName = new ResourceLocation(nbt.getString("resourceName"));
-            if (ForgeRegistries.BLOCKS.containsKey(block.blockName)) {
-                block.block = ForgeRegistries.BLOCKS.getValue(block.blockName);
+            blockName = new ResourceLocation(nbt.getString("resourceName"));
+            if (ForgeRegistries.BLOCKS.containsKey(blockName)) {
+                block = ForgeRegistries.BLOCKS.getValue(blockName);
             } else {
-                DungeonCrawl.LOGGER.warn("Unknown block: {}", block.blockName);
-                block.block = Blocks.CAVE_AIR;
+                DungeonCrawl.LOGGER.warn("Unknown block: {}", blockName);
+                block = Blocks.CAVE_AIR;
             }
+        } else {
+            block = Blocks.CAVE_AIR;
         }
+
+        PropertyHolder[] properties = null;
 
         if (nbt.contains("properties")) {
-            ListNBT properties = nbt.getList("properties", 10);
+            ListNBT nbtProperties = nbt.getList("properties", 10);
 
-            block.properties = new PropertyHolder[properties.size()];
+            properties = new PropertyHolder[nbtProperties.size()];
 
-            for (int i = 0; i < properties.size(); i++) {
-                CompoundNBT data = (CompoundNBT) properties.get(i);
-                block.properties[i] = new PropertyHolder(data.getString("property"), data.getString("value"));
+            for (int i = 0; i < nbtProperties.size(); i++) {
+                CompoundNBT data = (CompoundNBT) nbtProperties.get(i);
+                properties[i] = new PropertyHolder(data.getString("property"), data.getString("value"));
             }
         }
 
+        Integer variation = null;
+
         if (nbt.contains("variation")) {
-            block.variation = nbt.getInt("variation");
+            variation = nbt.getInt("variation");
         }
 
-        return block;
+        return new DungeonModelBlock(blockType, position, properties, variation, block, blockName);
     }
 
     /**
-     * Loads all existing properties from the given BlockState.
+     * Loads a model block from a version 1 model.
      */
-    public DungeonModelBlock loadDataFromState(BlockState state) {
-        List<PropertyHolder> properties = Lists.newArrayList();
-        for (Property<?> property : state.getProperties()) {
-            properties.add(new PropertyHolder(property, state.get(property)));
-        }
-        this.properties = properties.toArray(new PropertyHolder[0]);
-        if (type == DungeonModelBlockType.CARPET) {
-            Collection<Block> carpets = BlockTags.CARPETS.getAllElements();
-            int index = 0;
-            for (Block carpet : carpets) {
-                if (state.getBlock() == carpet) {
-                    this.variation = index;
-                    break;
-                }
-                index++;
-            }
-            this.blockName = state.getBlock().getRegistryName();
-        } else if (type == DungeonModelBlockType.OTHER) {
-            this.blockName = state.getBlock().getRegistryName();
-        }
-        return this;
+
+    public static DungeonModelBlock fromNBT(CompoundNBT nbt) {
+        return fromNBT(nbt, null);
     }
 
     /**
      * Applies all existing properties to the given BlockState.
      */
-    public Tuple<BlockState, Boolean> create(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+    public BlockState create(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+
         if (properties != null) {
             for (PropertyHolder holder : properties) {
                 state = holder.apply(state);
             }
-            return tuple(state.rotate(world, pos, rotation), true);
         }
-        return tuple(state.rotate(world, pos, rotation), false);
+        return state.rotate(world, pos, rotation);
     }
 
-    public Tuple<BlockState, Boolean> create(BlockState state) {
+    public BlockState create(BlockState state) {
         if (properties != null) {
             for (PropertyHolder holder : properties) {
                 state = holder.apply(state);
             }
-            return tuple(state, true);
         }
-        return tuple(state, false);
+        return state;
     }
 
     /**
-     * @return the custom block if specified, null otherwise
+     * @return the custom block, or cave air if not specified
      */
-    @Nullable
     public Block getBlock() {
         return block;
-    }
-
-    /**
-     * Creates a BlockState from a DungeonModelBlock using its type's
-     * block factory.
-     */
-    public static Tuple<BlockState, Boolean> getBlockState(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos,
-                                                           Theme theme, SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage) {
-        return block.type.blockFactory.get(block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage);
-    }
-
-
-    public static Tuple<BlockState, Boolean> tuple(BlockState state, boolean postProcessing) {
-        return new Tuple<>(state, postProcessing);
     }
 
     private static class PropertyHolder {

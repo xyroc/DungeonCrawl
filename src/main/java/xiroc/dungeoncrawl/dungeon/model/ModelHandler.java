@@ -56,7 +56,7 @@ public class ModelHandler {
                     if (block == Blocks.BARRIER) {
                         continue;
                     }
-                    blocks.add(new DungeonModelBlock(DungeonModelBlockType.get(block, definition), new Vector3i(x, y, z)).loadDataFromState(state));
+                    blocks.add(DungeonModelBlock.fromBlockState(state, DungeonModelBlockType.get(block, definition), new Vector3i(x, y, z)));
                 }
             }
         }

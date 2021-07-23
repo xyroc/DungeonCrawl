@@ -67,7 +67,7 @@ public class ScatteredDecoration implements IDungeonDecoration {
                         boolean _up = worldGenBounds.isVecInside(up) && structureBounds.isVecInside(up) && world.getBlockState(up).isSolid();
 
                         if (_north || _east || _south || _west || _up) {
-                            world.setBlockState(currentPos, blockStateProvider.get(currentPos), 2);
+                            world.setBlockState(currentPos, blockStateProvider.get(world, currentPos), 2);
                         }
 
                     }

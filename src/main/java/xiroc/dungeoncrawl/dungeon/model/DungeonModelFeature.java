@@ -38,7 +38,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.IWorld;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -181,9 +180,6 @@ public final class DungeonModelFeature {
         Type SPAWNER = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-                if (Config.NO_SPAWNERS.get()) {
-                    return;
-                }
                 if (bounds.isVecInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.down()).isSolid()) {
@@ -205,10 +201,6 @@ public final class DungeonModelFeature {
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.down()).isSolid()) {
                     placeChest(world, pos, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
-                }
-
-                if (Config.NO_SPAWNERS.get()) {
-                    return;
                 }
 
                 BlockPos spawner = pos.offset(direction);
@@ -255,9 +247,9 @@ public final class DungeonModelFeature {
                         if (height < pos.getY()) {
                             for (; height < pos.getY(); height++) {
                                 BlockPos p = new BlockPos(pos.getX(), height, pos.getZ());
-                                world.setBlockState(p, theme.solid.get(p), 2);
+                                world.setBlockState(p, theme.solid.get(world, p), 2);
                             }
-                            world.setBlockState(pos, theme.solidStairs.get(pos).with(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
+                            world.setBlockState(pos, theme.solidStairs.get(world, pos).with(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
                             pos = pos.offset(direction).offset(Direction.DOWN);
                         } else {
                             break;
@@ -273,12 +265,12 @@ public final class DungeonModelFeature {
         };
 
         Type SEWER_HOLE = new Type() {
-            private final IBlockStateProvider AIR_WATER = (pos, rotation) -> {
+            private final IBlockStateProvider AIR_WATER = (world, pos, rotation) -> {
                 if (pos.getY() > 8) return Blocks.CAVE_AIR.getDefaultState();
                 return Blocks.WATER.getDefaultState();
             };
 
-            private final IBlockStateProvider AIR_LAVA = (pos, rotation) -> {
+            private final IBlockStateProvider AIR_LAVA = (world, pos, rotation) -> {
                 if (pos.getY() > 8) return Blocks.CAVE_AIR.getDefaultState();
                 return Blocks.LAVA.getDefaultState();
             };
@@ -334,7 +326,7 @@ public final class DungeonModelFeature {
                 if (!bounds.isVecInside(pos)) return;
                 for (; pos.getY() > 0; pos = pos.down()) {
                     if (!DungeonBuilder.isBlockProtected(world, pos, context) && !world.isAirBlock(pos)) {
-                        world.setBlockState(pos, blockStateProvider.get(pos), 2);
+                        world.setBlockState(pos, blockStateProvider.get(world, pos), 2);
                         FluidState state = world.getFluidState(pos);
                         if (!state.isEmpty()) world.getPendingFluidTicks().scheduleTick(pos, state.getFluid(), 0);
                     }

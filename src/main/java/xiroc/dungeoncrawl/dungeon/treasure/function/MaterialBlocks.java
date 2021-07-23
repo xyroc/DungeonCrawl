@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
@@ -48,35 +49,19 @@ public class MaterialBlocks extends LootFunction {
     @Override
     public ItemStack doApply(ItemStack stack, LootContext context) {
         TileEntity chest = context.get(LootParameters.BLOCK_ENTITY);
-        if (context.has(LootParameters.ORIGIN)) {
-            if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
-                Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
-                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), new BlockPos(context.get(LootParameters.ORIGIN)), context.getRandom())),
-                        16 + context.getRandom().nextInt(49));
-            } else {
-                Random random = context.getRandom();
-                Theme theme;
-                Theme.SecondaryTheme secondaryTheme;
-                ResourceLocation biome = context.getWorld().getBiome(new BlockPos(context.get(LootParameters.ORIGIN))).getRegistryName();
-
-                if (biome != null) {
-                    theme = Theme.randomTheme(biome.toString(), context.getRandom());
-                    secondaryTheme = Theme.randomSecondaryTheme(biome.toString(), context.getRandom());
-                } else {
-                    theme = Theme.getDefaultTheme();
-                    secondaryTheme = Theme.getDefaultSecondaryTheme();
-                }
-                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(theme, secondaryTheme, new BlockPos(context.get(LootParameters.ORIGIN)), random)), 16 + context.getRandom().nextInt(49));
-            }
+        if (context.has(LootParameters.ORIGIN) && chest != null && chest.hasWorld() & chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
+            Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), chest.getWorld(), new BlockPos(context.get(LootParameters.ORIGIN)), context.getRandom())),
+                    16 + context.getRandom().nextInt(49));
         } else {
             return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
         }
     }
 
-    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, BlockPos pos, Random rand) {
+    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {
         return rand.nextBoolean()
-                ? theme.material.get(pos).getBlock().getRegistryName()
-                : secondaryTheme.material.get(pos).getBlock().getRegistryName();
+                ? theme.material.get(world, pos).getBlock().getRegistryName()
+                : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();
     }
 
     @Override

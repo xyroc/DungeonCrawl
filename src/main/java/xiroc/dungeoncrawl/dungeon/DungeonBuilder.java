@@ -170,14 +170,14 @@ public class DungeonBuilder {
         if (registryName != null) {
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), rand);
         } else {
-            if (this.theme == null) this.theme = Theme.getDefaultTheme();
+            if (this.theme == null) this.theme = Theme.getBuiltinDefaultTheme();
         }
 
         if (secondaryTheme == null) {
             if (theme.subTheme != null) {
                 this.secondaryTheme = theme.subTheme.roll(rand);
             } else {
-                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getDefaultSecondaryTheme();
+                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getBuiltinDefaultSecondaryTheme();
             }
         }
 

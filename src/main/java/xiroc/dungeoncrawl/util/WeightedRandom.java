@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.util;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -26,7 +27,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -37,24 +37,29 @@ public class WeightedRandom<T> implements IRandom<T> {
         WeightedRandom.Builder<Item> builder = new WeightedRandom.Builder<>();
         entries.forEach((element) -> {
             JsonObject entry = element.getAsJsonObject();
-            int weight = JSONUtils.getWeightOrDefault(entry);
+            int weight = JSONUtils.getWeight(entry);
             builder.add(RandomEquipment.getItem(new ResourceLocation(entry.get("item").getAsString())), weight);
         });
         return builder.build();
     };
 
     private final int totalWeight;
-    private final List<Tuple<T, Integer>> entries;
+    private final ImmutableList<Tuple<T, Integer>> entries;
+
+    // All the entries and their absolute weight values.
+    private final ImmutableList<Tuple<T, Integer>> originalEntries;
 
     public WeightedRandom(List<Tuple<T, Integer>> entries) {
-        this.entries = new ArrayList<>();
+        this.originalEntries = ImmutableList.copyOf(entries);
+        ImmutableList.Builder<Tuple<T, Integer>> builder = new ImmutableList.Builder<>();
         int weight = 0;
         for (Tuple<T, Integer> entry : entries) {
             if (entry.getB() > 0) {
                 weight += entry.getB();
-                this.entries.add(new Tuple<>(entry.getA(), weight));
+                builder.add(new Tuple<>(entry.getA(), weight));
             }
         }
+        this.entries = builder.build();
         this.totalWeight = weight;
     }
 
@@ -75,6 +80,10 @@ public class WeightedRandom<T> implements IRandom<T> {
 
     public int size() {
         return entries.size();
+    }
+
+    public ImmutableList<Tuple<T, Integer>> getEntries() {
+        return originalEntries;
     }
 
     public static class Builder<T> {

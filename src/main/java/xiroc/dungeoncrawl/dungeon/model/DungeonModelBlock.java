@@ -25,6 +25,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.Property;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
@@ -33,11 +34,11 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -161,11 +162,14 @@ public class DungeonModelBlock {
         }
         this.properties = properties.toArray(new PropertyHolder[0]);
         if (type == DungeonModelBlockType.CARPET) {
-            for (int i = 0; i < DungeonBlocks.CARPET.length; i++) {
-                if (state.getBlock() == DungeonBlocks.CARPET[i]) {
-                    this.variation = i;
+            Collection<Block> carpets = BlockTags.CARPETS.getAllElements();
+            int index = 0;
+            for (Block carpet : carpets) {
+                if (state.getBlock() == carpet) {
+                    this.variation = index;
                     break;
                 }
+                index++;
             }
             this.blockName = state.getBlock().getRegistryName();
         } else if (type == DungeonModelBlockType.OTHER) {

@@ -42,9 +42,9 @@ import java.util.concurrent.Executor;
 public class ResourceReloadHandler implements IFutureReloadListener {
 
     /**
-     * A list of all objects that need updating after the data pack files were loaded.
+     * A list of all objects that need to get updated after the data pack files have been loaded.
      */
-    public static final ArrayList<Updateable> UPDATEABLES = new ArrayList<>(128);
+    public static final ArrayList<Updateable> UPDATEABLES = new ArrayList<>();
 
     public void reload(IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.info("Loading data...");

@@ -18,18 +18,23 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
+import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -37,6 +42,7 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
@@ -94,7 +100,7 @@ public class DungeonType {
                         DungeonLayerType layerType = DungeonLayerType.NAME_TO_TYPE.get(layer.get("type").getAsString());
                         LayerGeneratorSettings layerSettings = LayerGeneratorSettings.fromJson(layer.getAsJsonObject("settings"), resource);
                         ModelSelector modelSelector = ModelSelector.fromJson(layer.getAsJsonObject("models"), resource);
-                        builder.layer(layerType, layerSettings, modelSelector);
+                        builder.layer(layerType, layerSettings, modelSelector, getMultipartOverrides(layer, resource));
                     });
                 }
 
@@ -161,7 +167,7 @@ public class DungeonType {
             if (!KEY_TO_TYPE.containsKey(key)) {
                 throw new DatapackLoadException("Cannot resolve dungeon type " + key + " in " + resource);
             }
-            builder.add(KEY_TO_TYPE.get(key), JSONUtils.getWeightOrDefault(entry));
+            builder.add(KEY_TO_TYPE.get(key), JSONUtils.getWeight(entry));
         });
         return builder.build();
     }
@@ -174,16 +180,89 @@ public class DungeonType {
         }
     }
 
+    private static ImmutableMap<ResourceLocation, List<MultipartModelData>> getMultipartOverrides(JsonObject layer, ResourceLocation file) {
+        if (layer.has("multipart")) {
+            ImmutableMap.Builder<ResourceLocation, List<MultipartModelData>> builder = new ImmutableMap.Builder<>();
+            JsonObject multipart = layer.getAsJsonObject("multipart");
+            multipart.entrySet().forEach((entry) -> {
+                JsonObject object = entry.getValue().getAsJsonObject();
+                ResourceLocation target = new ResourceLocation(entry.getKey());
+                if (DungeonModels.KEY_TO_MODEL.containsKey(target)) {
+                    String action = object.get("action").getAsString();
+                    switch (action) {
+                        case "override": {
+                            List<MultipartModelData> multipartData = DungeonModel.parseMultipartData(object.getAsJsonObject("data"), file);
+                            if (multipartData != null) {
+                                builder.put(target, multipartData);
+                            }
+                            break;
+                        }
+                        case "add": {
+                            HashMap<String, Tuple<List<Tuple<MultipartModelData.Instance, Integer>>, List<Tuple<MultipartModelData.Instance, Integer>>>> additions = new HashMap<>();
+                            object.getAsJsonObject("additions").entrySet().forEach(((entry1) -> {
+                                JsonObject object1 = entry1.getValue().getAsJsonObject();
+                                List<Tuple<MultipartModelData.Instance, Integer>> models = object1.has("models")
+                                        ? MultipartModelData.getRawInstancesFromJson(object1.getAsJsonArray("models"), file)
+                                        : new ArrayList<>(0);
+                                List<Tuple<MultipartModelData.Instance, Integer>> alternatives = object1.has("alternatives")
+                                        ? MultipartModelData.getRawInstancesFromJson(object1.getAsJsonArray("alternatives"), file)
+                                        : new ArrayList<>(0);
+                                additions.put(entry1.getKey(), new Tuple<>(models, alternatives));
+                            }));
+
+                            DungeonModel model = DungeonModels.KEY_TO_MODEL.get(target);
+                            if (model.hasMultipart()) {
+                                List<MultipartModelData> multipartData = model.getMultipartData();
+                                ImmutableList.Builder<MultipartModelData> newDataBuilder = new ImmutableList.Builder<>();
+                                multipartData.forEach((data) -> {
+                                    if (additions.containsKey(data.name)) {
+                                        Tuple<List<Tuple<MultipartModelData.Instance, Integer>>, List<Tuple<MultipartModelData.Instance, Integer>>> addition = additions.get(data.name);
+                                        newDataBuilder.add(data.combine(addition.getA(), addition.getB()));
+                                    } else {
+                                        newDataBuilder.add(data);
+                                    }
+                                });
+                                builder.put(target, newDataBuilder.build());
+                            } else {
+                                DungeonCrawl.LOGGER.warn(target + " doesn't have multipart data, but " + file + " adds to it.");
+                            }
+                            break;
+                        }
+                        default:
+                            throw new DatapackLoadException("Unknown multipart action " + action + " in " + file);
+                    }
+                } else {
+                    throw new DatapackLoadException("Cannot resolve model key " + entry.getKey() + " in " + file);
+                }
+            });
+            return builder.build();
+        } else {
+            return ImmutableMap.of();
+        }
+    }
+
     public static class Layer {
 
         public final DungeonLayerType layerType;
         public final LayerGeneratorSettings settings;
         public final ModelSelector modelSelector;
 
-        private Layer(DungeonLayerType layerType, LayerGeneratorSettings settings, ModelSelector modelSelector) {
+        // Custom multipart data for models on this layer.
+        private final ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides;
+
+        private Layer(DungeonLayerType layerType, LayerGeneratorSettings settings, ModelSelector modelSelector, ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides) {
             this.layerType = layerType;
             this.settings = settings;
             this.modelSelector = modelSelector;
+            this.multipartOverrides = multipartOverrides;
+        }
+
+        public boolean hasMultipartOverride(DungeonModel model) {
+            return multipartOverrides.containsKey(model.getKey());
+        }
+
+        public List<MultipartModelData> getMultipartData(DungeonModel model) {
+            return multipartOverrides.getOrDefault(model.getKey(), model.getMultipartData());
         }
 
     }
@@ -211,8 +290,8 @@ public class DungeonType {
             return this;
         }
 
-        public Builder layer(DungeonLayerType type, LayerGeneratorSettings settings, ModelSelector modelSelector) {
-            this.layers.add(new Layer(type, settings, modelSelector));
+        public Builder layer(DungeonLayerType type, LayerGeneratorSettings settings, ModelSelector modelSelector, ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides) {
+            this.layers.add(new Layer(type, settings, modelSelector, multipartOverrides));
             return this;
         }
 

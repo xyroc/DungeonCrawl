@@ -22,8 +22,8 @@
       }
     }
   ],
-  "multipart": [
-    {
+  "multipart": {
+    "ceiling": {
       "models": [
         {
           "offset": {
@@ -51,5 +51,5 @@
         }
       ]
     }
-  ]
+  }
 }

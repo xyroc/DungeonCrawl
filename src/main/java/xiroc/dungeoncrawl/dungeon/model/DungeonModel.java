@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.util.ResourceLocation;
@@ -58,9 +57,10 @@ public class DungeonModel {
     @Nullable
     private DungeonModelFeature[] features;
 
-    private boolean hasId;
-    private boolean hasFeatures;
-    private boolean hasMultipart;
+    private boolean hasId = false;
+    private boolean hasFeatures = false;
+    private boolean hasMultipart = false;
+    private boolean variation = false;
 
     public DungeonModel(ResourceLocation key, ImmutableList<DungeonModelBlock> blocks, int width, int height, int length) {
         this.key = key;
@@ -108,6 +108,10 @@ public class DungeonModel {
             this.hasFeatures = true;
         }
 
+        if (object.has("variation")) {
+            variation = object.get("variation").getAsBoolean();
+        }
+
         if (object.has("loot")) {
             JsonArray array = object.getAsJsonArray("loot");
             if (array.size() > 0) {
@@ -130,18 +134,27 @@ public class DungeonModel {
         }
 
         if (object.has("multipart")) {
-            JsonArray array = object.getAsJsonArray("multipart");
-            if (array.size() > 0) {
-                ArrayList<MultipartModelData> multipartData = new ArrayList<>();
-                for (JsonElement element : array) {
-                    MultipartModelData multipartModelData = MultipartModelData.fromJson(element.getAsJsonObject(), file);
-                    if (multipartModelData != null) {
-                        multipartData.add(multipartModelData);
-                    }
-                }
+            List<MultipartModelData> multipartData = parseMultipartData(object.getAsJsonObject("multipart"), file);
+            if (multipartData != null) {
                 this.multipartData = multipartData;
                 this.hasMultipart = true;
             }
+        }
+    }
+
+    @Nullable
+    public static List<MultipartModelData> parseMultipartData(JsonObject multipartData, ResourceLocation file) {
+        if (multipartData.size() > 0) {
+            ArrayList<MultipartModelData> list = new ArrayList<>();
+            multipartData.entrySet().forEach((entry) -> {
+                MultipartModelData multipartModelData = MultipartModelData.fromJson(entry.getKey(), entry.getValue().getAsJsonObject(), file);
+                if (multipartModelData != null) {
+                    list.add(multipartModelData);
+                }
+            });
+            return list;
+        } else {
+            return null;
         }
     }
 
@@ -211,6 +224,10 @@ public class DungeonModel {
 
     public boolean hasMultipart() {
         return hasMultipart;
+    }
+
+    public boolean isVariationEnabled() {
+        return variation;
     }
 
     @Nullable

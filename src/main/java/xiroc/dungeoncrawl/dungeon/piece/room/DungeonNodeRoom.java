@@ -30,6 +30,7 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
@@ -127,8 +128,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, ModelSelector modelSelector, int layer, Random rand) {
-        super.addChildPieces(pieces, builder, modelSelector, layer, rand);
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonType type, ModelSelector modelSelector, int layer, Random rand) {
+        super.addChildPieces(pieces, builder, type, modelSelector, layer, rand);
 
         if (sides[0]) {
             DungeonNodeConnector connector = new DungeonNodeConnector();

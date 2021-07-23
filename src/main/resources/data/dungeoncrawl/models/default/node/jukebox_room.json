@@ -22,8 +22,8 @@
       }
     }
   ],
-  "multipart": [
-    {
+  "multipart": {
+    "entrance_north": {
       "conditions": {
         "rotated_north": true
       },
@@ -38,7 +38,7 @@
         }
       ]
     },
-    {
+    "entrance_east": {
       "conditions": {
         "rotated_east": true
       },
@@ -52,7 +52,7 @@
         }
       ]
     },
-    {
+    "entrance_south": {
       "conditions": {
         "rotated_south": true
       },
@@ -67,7 +67,7 @@
         }
       ]
     },
-    {
+    "entrance_west": {
       "conditions": {
         "rotated_west": true
       },
@@ -82,5 +82,5 @@
         }
       ]
     }
-  ]
+  }
 }

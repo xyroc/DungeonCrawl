@@ -71,20 +71,22 @@ public class DungeonEntrance extends DungeonPiece {
             return true;
         }
 
-        int height = worldIn.getHeight(context.heightmapType, x + 4, z + 4);
+        Vector3i offset = model.getOffset(rotation);
+
+        int height = worldIn.getHeight(context.heightmapType, x + offset.getX() + 4, z + offset.getZ() + 4);
         int cursorHeight = y;
 
         DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE);
 
         while (cursorHeight < height) {
-            if (height - cursorHeight <= 4)
+            if (height - cursorHeight < 4) {
                 break;
+            }
             super.build(staircase, worldIn, structureBoundingBoxIn,
                     new BlockPos(x + 2, cursorHeight, z + 2), theme, secondaryTheme, stage, context, true);
             cursorHeight += 8;
         }
 
-        Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).add(offset);
 
         build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, true);

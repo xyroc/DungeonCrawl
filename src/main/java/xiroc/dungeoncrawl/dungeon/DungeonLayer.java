@@ -37,7 +37,7 @@ import java.util.Random;
 
 public class DungeonLayer {
 
-    public final PlaceHolder[][] grid;
+    public final Tile[][] grid;
 
     public Position2D start;
     public Position2D end;
@@ -65,7 +65,7 @@ public class DungeonLayer {
         this.width = width;
         this.length = length;
         this.statTracker = new LayerStatTracker();
-        this.grid = new PlaceHolder[this.width][this.length];
+        this.grid = new Tile[this.width][this.length];
         this.distantNodes = Lists.newArrayList();
         this.map = new DungeonLayerMap(width, length);
     }
@@ -130,8 +130,8 @@ public class DungeonLayer {
             for (int j = 0; j < 2; j++) {
                 Position2D current = start.shift(Orientation.HORIZONTAL_FACINGS[index], j + 1);
                 if (current.isValid(Dungeon.SIZE) && grid[current.x][current.z] != null
-                        && grid[current.x][current.z].reference.getType() == 0
-                        && grid[current.x][current.z].reference.connectedSides < 4) {
+                        && grid[current.x][current.z].piece.getType() == 0
+                        && grid[current.x][current.z].piece.connectedSides < 4) {
                     Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(current.x, current.z), rand);
                     if (data != null) {
                         return data;
@@ -185,7 +185,7 @@ public class DungeonLayer {
      */
     public void openSideIfPresent(Position2D position, Direction side) {
         if (position.isValid(width, length) && grid[position.x][position.z] != null) {
-            grid[position.x][position.z].reference.openSide(side);
+            grid[position.x][position.z].piece.openSide(side);
         }
     }
 
@@ -196,10 +196,10 @@ public class DungeonLayer {
      * @param placeHolder the place holder of the piece
      * @param rand        an instance of Random which will be used to choose a random one of the valid rotations, should there be more than one
      */
-    public void rotatePiece(PlaceHolder placeHolder, Random rand) {
-        if (placeHolder.hasFlag(PlaceHolder.Flag.FIXED_ROTATION))
+    public void rotatePiece(Tile placeHolder, Random rand) {
+        if (placeHolder.hasFlag(Tile.Flag.FIXED_ROTATION))
             return;
-        DungeonPiece piece = placeHolder.reference;
+        DungeonPiece piece = placeHolder.piece;
 
         switch (piece.connectedSides) {
             case 1:
@@ -232,10 +232,10 @@ public class DungeonLayer {
      * @param rand        an instance of Random which will be used to choose in which direction (clockwise or counterclockwise)
      *                    the algorithm rotates the node until it matches to create more randomness.
      */
-    public void rotateNode(PlaceHolder placeHolder, Random rand) {
-        if (placeHolder.hasFlag(PlaceHolder.Flag.FIXED_ROTATION))
+    public void rotateNode(Tile placeHolder, Random rand) {
+        if (placeHolder.hasFlag(Tile.Flag.FIXED_ROTATION))
             return;
-        DungeonNodeRoom node = (DungeonNodeRoom) placeHolder.reference;
+        DungeonNodeRoom node = (DungeonNodeRoom) placeHolder.piece;
         Rotation rotation = Node.getForNodeRoom(node).compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
         if (rotation != null) {
             node.rotation = rotation;
@@ -267,12 +267,12 @@ public class DungeonLayer {
                 int x = Math.min(outerPosition.x, innerPosition.x), z = Math.min(outerPosition.z, innerPosition.z);
                 room.setGridPosition(x, z);
                 room.setRotation(Orientation.getRotationFromFacing(direction));
-                grid[x][z] = new PlaceHolder(room);
+                grid[x][z] = new Tile(room);
                 Position2D other = getOther(x, z, direction);
-                grid[other.x][other.z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.PLACEHOLDER);
+                grid[other.x][other.z] = new Tile(room).addFlag(Tile.Flag.PLACEHOLDER);
                 corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
                 corridor.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.SECRET_ROOM_ENTRANCE);
-                grid[corridorPos.x][corridorPos.z].addFlag(PlaceHolder.Flag.FIXED_MODEL);
+                grid[corridorPos.x][corridorPos.z].addFlag(Tile.Flag.FIXED_MODEL);
                 return true;
             }
         }

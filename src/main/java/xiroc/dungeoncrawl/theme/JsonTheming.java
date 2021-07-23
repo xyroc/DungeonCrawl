@@ -29,8 +29,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.pattern.CheckedPattern;
@@ -47,9 +45,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-public class JsonThemeHandler {
-
-    private static final Logger LOGGER = LogManager.getLogger("DungeonCrawl/JsonThemeHandler");
+public class JsonTheming {
 
     /**
      * Convenience method to deserialize a theme from a json object
@@ -57,25 +53,25 @@ public class JsonThemeHandler {
      * @param object the json object
      * @return the resulting theme
      */
-    public static Theme deserializeTheme(JsonObject object, ResourceLocation file) {
+    protected static Theme deserializeTheme(JsonObject object, ResourceLocation file) {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider solid = JsonThemeHandler.deserialize(themeObject, "solid", file);
+        IBlockStateProvider solid = JsonTheming.deserialize(themeObject, "solid", file);
 
-        IBlockStateProvider generic = JsonThemeHandler.deserialize(themeObject, "generic", file);
+        IBlockStateProvider generic = JsonTheming.deserialize(themeObject, "generic", file);
 
-        IBlockStateProvider pillar = JsonThemeHandler.deserialize(themeObject, "pillar", file);
+        IBlockStateProvider pillar = JsonTheming.deserialize(themeObject, "pillar", file);
 
-        IBlockStateProvider floor = JsonThemeHandler.deserialize(themeObject, "floor", file);
+        IBlockStateProvider floor = JsonTheming.deserialize(themeObject, "floor", file);
 
-        IBlockStateProvider stairs = JsonThemeHandler.deserialize(themeObject, "stairs", file);
-        IBlockStateProvider solidStairs = JsonThemeHandler.deserialize(themeObject, "solid_stairs", file);
+        IBlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
+        IBlockStateProvider solidStairs = JsonTheming.deserialize(themeObject, "solid_stairs", file);
 
-        IBlockStateProvider slab = JsonThemeHandler.deserialize(themeObject, "slab", file);
-        IBlockStateProvider solidSlab = JsonThemeHandler.deserialize(themeObject, "solid_slab", file);
+        IBlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
+        IBlockStateProvider solidSlab = JsonTheming.deserialize(themeObject, "solid_slab", file);
 
-        IBlockStateProvider material = JsonThemeHandler.deserialize(themeObject, "material", file);
-        IBlockStateProvider vanillaWall = JsonThemeHandler.deserialize(themeObject, "wall", file);
+        IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
+        IBlockStateProvider vanillaWall = JsonTheming.deserialize(themeObject, "wall", file);
 
         Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, vanillaWall, slab, solidSlab);
 
@@ -94,7 +90,7 @@ public class JsonThemeHandler {
                 JsonObject instance = element.getAsJsonObject();
                 ResourceLocation key = new ResourceLocation(instance.get("key").getAsString());
                 if (Theme.KEY_TO_SECONDARY_THEME.containsKey(key)) {
-                    builder.add(Theme.KEY_TO_SECONDARY_THEME.get(key), JSONUtils.getWeightOrDefault(instance));
+                    builder.add(Theme.KEY_TO_SECONDARY_THEME.get(key), JSONUtils.getWeight(instance));
                 } else {
                     throw new NoSuchElementException("Unknown sub-theme key " + key + " in " + file.toString());
                 }
@@ -115,20 +111,20 @@ public class JsonThemeHandler {
      * @param object the json object
      * @return the resulting sub-theme
      */
-    public static SecondaryTheme deserializeSecondaryTheme(JsonObject object, ResourceLocation file) {
+    protected static SecondaryTheme deserializeSecondaryTheme(JsonObject object, ResourceLocation file) {
 
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider wallLog = JsonThemeHandler.deserialize(themeObject, "pillar", file);
-        IBlockStateProvider trapDoor = JsonThemeHandler.deserialize(themeObject, "trapdoor", file);
-        IBlockStateProvider door = JsonThemeHandler.deserialize(themeObject, "door", file);
-        IBlockStateProvider material = JsonThemeHandler.deserialize(themeObject, "material", file);
-        IBlockStateProvider stairs = JsonThemeHandler.deserialize(themeObject, "stairs", file);
-        IBlockStateProvider slab = JsonThemeHandler.deserialize(themeObject, "slab", file);
-        IBlockStateProvider fence = JsonThemeHandler.deserialize(themeObject, "fence", file);
-        IBlockStateProvider fenceGate = JsonThemeHandler.deserialize(themeObject, "fence_gate", file);
-        IBlockStateProvider button = JsonThemeHandler.deserialize(themeObject, "button", file);
-        IBlockStateProvider pressurePlate = JsonThemeHandler.deserialize(themeObject, "pressure_plate", file);
+        IBlockStateProvider wallLog = JsonTheming.deserialize(themeObject, "pillar", file);
+        IBlockStateProvider trapDoor = JsonTheming.deserialize(themeObject, "trapdoor", file);
+        IBlockStateProvider door = JsonTheming.deserialize(themeObject, "door", file);
+        IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
+        IBlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
+        IBlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
+        IBlockStateProvider fence = JsonTheming.deserialize(themeObject, "fence", file);
+        IBlockStateProvider fenceGate = JsonTheming.deserialize(themeObject, "fence_gate", file);
+        IBlockStateProvider button = JsonTheming.deserialize(themeObject, "button", file);
+        IBlockStateProvider pressurePlate = JsonTheming.deserialize(themeObject, "pressure_plate", file);
 
         SecondaryTheme secondaryTheme = new SecondaryTheme(wallLog, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
 
@@ -145,7 +141,7 @@ public class JsonThemeHandler {
      * @param object the json object
      * @param file   the location of the theme file
      */
-    public static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, ResourceLocation file) {
+    protected static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, ResourceLocation file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
                 ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
@@ -165,7 +161,7 @@ public class JsonThemeHandler {
      * @param object the json object
      * @param file   the location of the sub-theme file
      */
-    public static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, ResourceLocation file) {
+    protected static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, ResourceLocation file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
                 ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
@@ -188,14 +184,42 @@ public class JsonThemeHandler {
         ArrayList<Tuple<ResourceLocation, Integer>> entries = new ArrayList<>();
         entry.getValue().getAsJsonArray().forEach((element) -> {
             JsonObject jsonObject = element.getAsJsonObject();
-            entries.add(new Tuple<>(new ResourceLocation(jsonObject.get("key").getAsString()), JSONUtils.getWeightOrDefault(jsonObject)));
+            entries.add(new Tuple<>(new ResourceLocation(jsonObject.get("key").getAsString()), JSONUtils.getWeight(jsonObject)));
         });
         return entries;
     }
 
+    protected static void deserializeRandomThemeFile(JsonObject object, WeightedRandom.Builder<Theme> themes, WeightedRandom.Builder<SecondaryTheme> secondaryThemes, ResourceLocation file) {
+        if (JSONUtils.areRequirementsMet(object)) {
+            if (object.has("primary_themes")) {
+                object.getAsJsonArray("primary_themes").forEach((element) -> {
+                    JsonObject entry = element.getAsJsonObject();
+                    ResourceLocation key = new ResourceLocation(entry.get("key").getAsString());
+                    if (Theme.KEY_TO_THEME.containsKey(key)) {
+                        themes.add(Theme.KEY_TO_THEME.get(key), JSONUtils.getWeight(entry));
+                    } else {
+                        throw new DatapackLoadException("Cannot resolve primary theme key " + key + " in " + file);
+                    }
+                });
+            }
+
+            if (object.has("secondary_themes")) {
+                object.getAsJsonArray("secondary_themes").forEach((element) -> {
+                    JsonObject entry = element.getAsJsonObject();
+                    ResourceLocation key = new ResourceLocation(entry.get("key").getAsString());
+                    if (Theme.KEY_TO_SECONDARY_THEME.containsKey(key)) {
+                        secondaryThemes.add(Theme.KEY_TO_SECONDARY_THEME.get(key), JSONUtils.getWeight(entry));
+                    } else {
+                        throw new DatapackLoadException("Cannot resolve secondary theme key " + key + " in " + file);
+                    }
+                });
+            }
+        }
+    }
+
     public static IBlockStateProvider deserialize(JsonObject base, String name, ResourceLocation file) {
         if (!base.has(name)) {
-            LOGGER.warn("Missing BlockState Provider \"{}\" in {}", name, file.toString());
+            DungeonCrawl.LOGGER.warn("Missing BlockState Provider \"{}\" in {}", name, file.toString());
             return null;
         }
         JsonObject object = (JsonObject) base.get(name);
@@ -211,9 +235,9 @@ public class JsonThemeHandler {
                             .getValue(new ResourceLocation(blockObject.get("block").getAsString()));
                     if (block != null) {
                         BlockState state = JSONUtils.getBlockState(block, blockObject);
-                        builder.add(state, JSONUtils.getWeightOrDefault(blockObject));
+                        builder.add(state, JSONUtils.getWeight(blockObject));
                     } else {
-                        LOGGER.error("Unknown block: {}", blockObject.get("block").getAsString());
+                        DungeonCrawl.LOGGER.error("Unknown block: {}", blockObject.get("block").getAsString());
                     }
                 }
                 return new WeightedRandomBlock(builder.build());
@@ -224,7 +248,7 @@ public class JsonThemeHandler {
                     BlockState state = JSONUtils.getBlockState(block, object);
                     return (pos, rotation) -> state;
                 } else {
-                    LOGGER.error("Unknown block: {}", object.get("block").getAsString());
+                    DungeonCrawl.LOGGER.error("Unknown block: {}", object.get("block").getAsString());
                     return (pos, rotation) -> Blocks.CAVE_AIR.getDefaultState();
                 }
             } else if (type.equalsIgnoreCase("pattern")) {
@@ -234,15 +258,15 @@ public class JsonThemeHandler {
                     case "terracotta":
                         return new TerracottaPattern(deserialize(object, "block", file));
                     default:
-                        LOGGER.error("Unknown block pattern type: " + object.get("pattern_type").getAsString());
+                        DungeonCrawl.LOGGER.error("Unknown block pattern type: " + object.get("pattern_type").getAsString());
                         return null;
                 }
             } else {
-                LOGGER.error("Failed to load BlockState Provider {}: Unknown type {}.", object, type);
+                DungeonCrawl.LOGGER.error("Failed to load BlockState Provider {}: Unknown type {}.", object, type);
                 return null;
             }
         } else {
-            LOGGER.error("Invalid BlockState Provider \"{}\": Type not specified.", name);
+            DungeonCrawl.LOGGER.error("Invalid BlockState Provider \"{}\": Type not specified.", name);
             return null;
         }
     }

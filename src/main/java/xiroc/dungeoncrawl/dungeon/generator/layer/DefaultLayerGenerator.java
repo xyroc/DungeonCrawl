@@ -25,7 +25,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
-import xiroc.dungeoncrawl.dungeon.PlaceHolder;
+import xiroc.dungeoncrawl.dungeon.Tile;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -75,7 +75,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
     public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start) {
         DungeonStairs startPiece = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom();
         startPiece.setGridPosition(start.x, start.z);
-        dungeonLayer.grid[startPiece.gridPosition.x][startPiece.gridPosition.z] = new PlaceHolder(startPiece).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
+        dungeonLayer.grid[startPiece.gridPosition.x][startPiece.gridPosition.z] = new Tile(startPiece).addFlag(Tile.Flag.FIXED_ROTATION);
 
         dungeonLayer.stairsPlaced = false;
         dungeonLayer.start = start;
@@ -94,7 +94,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                 DungeonStairs stairs = new DungeonStairs().top();
                 stairs.takeOverProperties(this.farthestRoom);
                 stairs.setGridPosition(this.farthestRoom.gridPosition);
-                dungeonLayer.grid[stairs.gridPosition.x][stairs.gridPosition.z] = new PlaceHolder(stairs);
+                dungeonLayer.grid[stairs.gridPosition.x][stairs.gridPosition.z] = new Tile(stairs);
                 dungeonLayer.end = stairs.gridPosition;
             } else {
                 dungeonLayer.end = start;
@@ -139,7 +139,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
             DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
             stairs.openSide(toLast);
             stairs.setGridPosition(dungeonLayer.end.x, dungeonLayer.end.z);
-            dungeonLayer.grid[stairs.gridPosition.x][stairs.gridPosition.z] = new PlaceHolder(stairs).addFlag(PlaceHolder.Flag.FIXED_ROTATION);
+            dungeonLayer.grid[stairs.gridPosition.x][stairs.gridPosition.z] = new Tile(stairs).addFlag(Tile.Flag.FIXED_ROTATION);
 
             dungeonLayer.stairsPlaced = true;
 
@@ -192,7 +192,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
         if (depth <= settings.maxRoomDepth && depth >= settings.minRoomDepth && roomsLeft > 0) {
             DungeonRoom room = new DungeonRoom(null, DungeonPiece.DEFAULT_NBT);
             room.setGridPosition(currentPosition);
-            dungeonLayer.grid[currentPosition.x][currentPosition.z] = new PlaceHolder(room);
+            dungeonLayer.grid[currentPosition.x][currentPosition.z] = new Tile(room);
             this.roomsLeft--;
             this.rooms.add(room);
 
@@ -274,11 +274,11 @@ public class DefaultLayerGenerator extends LayerGenerator {
             room.stage = layer;
 
             dungeonLayer.map.markPositionAsOccupied(sideRoomData.getA());
-            dungeonLayer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new PlaceHolder(room).addFlag(PlaceHolder.Flag.FIXED_MODEL);
+            dungeonLayer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new Tile(room).addFlag(Tile.Flag.FIXED_MODEL);
 
             Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
             if (dungeonLayer.grid[connectedSegment.x][connectedSegment.z] != null) {
-                dungeonLayer.grid[connectedSegment.x][connectedSegment.z].reference.openSide(dir.getOpposite());
+                dungeonLayer.grid[connectedSegment.x][connectedSegment.z].piece.openSide(dir.getOpposite());
                 dungeonLayer.rotatePiece(dungeonLayer.grid[connectedSegment.x][connectedSegment.z], rand);
             }
         }
@@ -302,7 +302,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                     dungeonLayer.openSideIfPresent(end, Direction.SOUTH);
                     for (int z = start.z - 1; z > end.z; z--) {
                         if (dungeonLayer.grid[start.x][z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[start.x][z].reference;
+                            DungeonPiece piece = dungeonLayer.grid[start.x][z].piece;
                             if (piece.canConnect(Direction.NORTH, start.x, z) && piece.canConnect(Direction.SOUTH, start.x, z)) {
                                 piece.openSide(Direction.NORTH);
                                 piece.openSide(Direction.SOUTH);
@@ -313,7 +313,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.NORTH);
                             corridor.openSide(Direction.SOUTH);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.NORTH));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
+                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
                             this.corridors.add(corridor);
 
                             rollForAdditionalNode(dungeonLayer, corridor.gridPosition.x, corridor.gridPosition.z, Direction.EAST, rand, layer);
@@ -326,7 +326,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                     dungeonLayer.openSideIfPresent(end, Direction.NORTH);
                     for (int z = start.z + 1; z < end.z; z++) {
                         if (dungeonLayer.grid[start.x][z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[start.x][z].reference;
+                            DungeonPiece piece = dungeonLayer.grid[start.x][z].piece;
                             if (piece.canConnect(Direction.SOUTH, start.x, z) && piece.canConnect(Direction.NORTH, start.x, z)) {
                                 piece.openSide(Direction.SOUTH);
                                 piece.openSide(Direction.NORTH);
@@ -337,7 +337,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.SOUTH);
                             corridor.openSide(Direction.NORTH);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.SOUTH));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
+                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
                             this.corridors.add(corridor);
 
                             rollForAdditionalNode(dungeonLayer, corridor.gridPosition.x, corridor.gridPosition.z, Direction.WEST, rand, layer);
@@ -352,7 +352,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                     dungeonLayer.openSideIfPresent(end, Direction.EAST);
                     for (int x = start.x - 1; x > end.x; x--) {
                         if (dungeonLayer.grid[x][start.z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[x][start.z].reference;
+                            DungeonPiece piece = dungeonLayer.grid[x][start.z].piece;
                             if (piece.canConnect(Direction.WEST, x, start.z) && piece.canConnect(Direction.EAST, x, start.z)) {
                                 piece.openSide(Direction.WEST);
                                 piece.openSide(Direction.EAST);
@@ -363,7 +363,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.WEST);
                             corridor.openSide(Direction.EAST);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.WEST));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
+                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
                             this.corridors.add(corridor);
 
                             rollForAdditionalNode(dungeonLayer, corridor.gridPosition.x, corridor.gridPosition.z, Direction.NORTH, rand, layer);
@@ -376,7 +376,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                     dungeonLayer.openSideIfPresent(end, Direction.WEST);
                     for (int x = start.x + 1; x < end.x; x++) {
                         if (dungeonLayer.grid[x][start.z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[x][start.z].reference;
+                            DungeonPiece piece = dungeonLayer.grid[x][start.z].piece;
                             if (piece.canConnect(Direction.EAST, x, start.z) && piece.canConnect(Direction.WEST, x, start.z)) {
                                 piece.openSide(Direction.EAST);
                                 piece.openSide(Direction.WEST);
@@ -387,7 +387,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
                             corridor.openSide(Direction.EAST);
                             corridor.openSide(Direction.WEST);
                             corridor.setRotation(Orientation.getRotationFromFacing(Direction.EAST));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new PlaceHolder(corridor);
+                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
                             this.corridors.add(corridor);
 
                             rollForAdditionalNode(dungeonLayer, corridor.gridPosition.x, corridor.gridPosition.z, Direction.SOUTH, rand, layer);

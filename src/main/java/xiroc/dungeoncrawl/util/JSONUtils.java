@@ -66,7 +66,7 @@ public class JSONUtils {
         return state;
     }
 
-    public static int getWeightOrDefault(JsonObject object) {
+    public static int getWeight(JsonObject object) {
         return object.has("weight") ? object.get("weight").getAsInt() : 1;
     }
 

@@ -1,7 +1,7 @@
 {
   "id": 40,
-  "multipart": [
-    {
+  "multipart": {
+    "ceiling": {
       "models": [
         {
           "offset": {
@@ -29,7 +29,7 @@
         }
       ]
     },
-    {
+    "spawner_cell_left": {
       "models": [
         {
           "offset": {
@@ -49,7 +49,7 @@
         }
       ]
     },
-    {
+    "spawner_cell_right": {
       "models": [
         {
           "offset": {
@@ -70,7 +70,7 @@
         }
       ]
     },
-    {
+    "graves_left": {
       "models": [
         {
           "offset": {
@@ -91,7 +91,7 @@
         }
       ]
     },
-    {
+    "graves_middle": {
       "models": [
         {
           "offset": {
@@ -110,7 +110,7 @@
         }
       ]
     },
-    {
+    "graves_right": {
       "models": [
         {
           "offset": {
@@ -131,5 +131,5 @@
         }
       ]
     }
-  ]
+  }
 }

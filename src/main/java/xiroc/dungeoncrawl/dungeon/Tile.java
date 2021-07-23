@@ -18,11 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import com.google.common.collect.Lists;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.annotation.Nonnull;
 
 /*
  * Used for objects that contain data for the dungeon layout generation process.
@@ -31,33 +29,37 @@ import java.util.List;
  *  data that actually needs to be stored in the pieces themselves.
  */
 
-public class PlaceHolder {
+public class Tile {
 
-    public final DungeonPiece reference;
-    public List<Flag> flags;
+    public final DungeonPiece piece;
+    private int flags;
 
-    public PlaceHolder(DungeonPiece reference) {
-        this.reference = reference;
-        this.flags = Lists.newArrayList();
+    public Tile(@Nonnull DungeonPiece piece) {
+        this.piece = piece;
+        this.flags = 0;
     }
 
-    public PlaceHolder addFlag(Flag flag) {
-        flags.add(flag);
-        return this;
-    }
-
-    public PlaceHolder addFlags(Flag... flags) {
-        this.flags.addAll(Arrays.asList(flags));
+    public Tile addFlag(Flag flag) {
+        flags = flags | flag.value;
         return this;
     }
 
     public boolean hasFlag(Flag flag) {
-        return flags.contains(flag);
+        return (flags & flag.value) != 0;
     }
 
     public enum Flag {
 
-        PLACEHOLDER, FIXED_POSITION, FIXED_ROTATION, FIXED_MODEL
+        PLACEHOLDER(1),
+        FIXED_POSITION(2),
+        FIXED_ROTATION(4),
+        FIXED_MODEL(8);
+
+        int value;
+
+        Flag(int value) {
+            this.value = value;
+        }
 
     }
 

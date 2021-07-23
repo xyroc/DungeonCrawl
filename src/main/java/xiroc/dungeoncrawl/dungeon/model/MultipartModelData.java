@@ -18,11 +18,13 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.vector.Vector3i;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
@@ -48,14 +50,45 @@ public class MultipartModelData {
     @Nullable
     public WeightedRandom<Instance> alternatives;
 
-    private MultipartModelData() {
+    public final String name;
+
+    private MultipartModelData(String name) {
+        this.name = name;
         this.conditions = new ArrayList<>();
         this.models = null;
         this.alternatives = null;
     }
 
-    public static MultipartModelData fromJson(JsonObject object, ResourceLocation file) {
-        MultipartModelData multipartModelData = new MultipartModelData();
+    public MultipartModelData combine(@Nullable List<Tuple<Instance, Integer>> models, @Nullable List<Tuple<Instance, Integer>> alternatives) {
+        MultipartModelData result = new MultipartModelData(this.name);
+        result.conditions.addAll(this.conditions);
+        if (models != null) {
+            ImmutableList<Tuple<Instance, Integer>> base = this.models.getEntries();
+            List<Tuple<Instance, Integer>> combined = new ArrayList<>(base.size() + models.size());
+            combined.addAll(base);
+            combined.addAll(models);
+            result.models = new WeightedRandom<>(combined);
+        } else {
+            result.models = this.models;
+        }
+        if (alternatives != null) {
+            if (this.alternatives != null) {
+                ImmutableList<Tuple<Instance, Integer>> base = this.alternatives.getEntries();
+                List<Tuple<Instance, Integer>> combined = new ArrayList<>(base.size() + alternatives.size());
+                combined.addAll(base);
+                combined.addAll(alternatives);
+                result.alternatives = new WeightedRandom<>(combined);
+            } else {
+                result.alternatives = new WeightedRandom<>(alternatives);
+            }
+        } else {
+            result.alternatives = this.alternatives;
+        }
+        return result;
+    }
+
+    public static MultipartModelData fromJson(String name, JsonObject object, ResourceLocation file) {
+        MultipartModelData multipartModelData = new MultipartModelData(name);
 
         if (object.has("conditions")) {
             JsonObject jsonConditions = object.getAsJsonObject("conditions");
@@ -94,20 +127,24 @@ public class MultipartModelData {
 
     @Nullable
     private static WeightedRandom<Instance> getInstancesFromJson(JsonArray array, ResourceLocation file) {
-        WeightedRandom.Builder<MultipartModelData.Instance> builder = new WeightedRandom.Builder<>();
+        List<Tuple<Instance, Integer>> entries = getRawInstancesFromJson(array, file);
+        if (entries.isEmpty()) {
+            return null;
+        }
+        return new WeightedRandom<>(entries);
+    }
 
+    public static List<Tuple<Instance, Integer>> getRawInstancesFromJson(JsonArray array, ResourceLocation file) {
+        ArrayList<Tuple<Instance, Integer>> list = new ArrayList<>();
         array.forEach((element) -> {
             JsonObject object1 = element.getAsJsonObject();
             MultipartModelData.Instance data = MultipartModelData.Instance.fromJson(object1, file);
-            builder.add(data, JSONUtils.getWeightOrDefault(object1));
+            list.add(new Tuple<>(data, JSONUtils.getWeight(object1)));
             if (data != MultipartModelData.Instance.EMPTY) {
                 ResourceReloadHandler.UPDATEABLES.add(data); // Enqueue reference update
             }
         });
-        if (builder.entries.isEmpty()) {
-            return null;
-        }
-        return builder.build();
+        return list;
     }
 
     public boolean checkConditions(DungeonPiece piece) {

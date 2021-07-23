@@ -36,13 +36,7 @@
     "minecraft:taiga_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
     "minecraft:snowy_taiga_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
 
-    "minecraft:swamp": [{"key": "dungeoncrawl:vanilla/catacombs/default"}],
-    "minecraft:swamp_hills": [{"key": "dungeoncrawl:vanilla/catacombs/default"}]
-  },
-  "catacombs": {
-    "default": [],
-    "mapping": {
-
-    }
+    "minecraft:swamp": [{"key": "dungeoncrawl:vanilla/catacombs/mossy"}],
+    "minecraft:swamp_hills": [{"key": "dungeoncrawl:vanilla/catacombs/mossy"}]
   }
 }

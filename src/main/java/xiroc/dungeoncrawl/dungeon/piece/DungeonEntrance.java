@@ -138,7 +138,7 @@ public class DungeonEntrance extends DungeonPiece {
         model.blocks.forEach((block) -> {
             BlockPos position = pos.add(block.position);
             if (boundsIn.isVecInside(position)) {
-                BlockState state = block.type.blockFactory.get(block, rotation, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+                BlockState state = block.type.blockFactory.get(block, rotation, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                 if (state == null)
                     return;

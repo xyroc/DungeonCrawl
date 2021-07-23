@@ -355,7 +355,7 @@ public abstract class DungeonPiece extends StructurePiece {
         model.blocks.forEach((block) -> {
             BlockPos position = pos.add(block.position);
             if (boundsIn.isVecInside(position)) {
-                BlockState state = block.type.blockFactory.get(block, Rotation.NONE, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+                BlockState state = block.type.blockFactory.get(block, Rotation.NONE, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                 if (state == null)
                     return;
@@ -386,7 +386,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + block.position.getX());
 
                     if (boundsIn.isVecInside(position)) {
-                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_90, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_90, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -405,7 +405,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.width - block.position.getX() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        BlockState state = block.type.blockFactory.get(block, Rotation.COUNTERCLOCKWISE_90, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.COUNTERCLOCKWISE_90, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -424,7 +424,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.length - block.position.getZ() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_180, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_180, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;

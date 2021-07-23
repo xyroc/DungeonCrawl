@@ -42,11 +42,18 @@ public class Config {
 
     public static final DoubleValue SHIELD_PROBABILITY;
 
-
-
-    public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST, IGNORE_DIMENSION, VANILLA_SPAWNERS, NO_SPAWNERS,
-            NO_NETHER_STUFF, ENABLE_TOOLS, ENABLE_DUMMY_PIECES, SOLID, NATURAL_DESPAWN, EXTENDED_DEBUG, TICK_FALLING_BLOCKS,
-            OVERWRITE_ENTITY_LOOT_TABLES;
+    public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST,
+            IGNORE_DIMENSION,
+            VANILLA_SPAWNERS,
+            NO_NETHER_STUFF,
+            ENABLE_TOOLS,
+            ENABLE_DUMMY_PIECES,
+            SOLID,
+            NATURAL_DESPAWN,
+            EXTENDED_DEBUG,
+            TICK_FALLING_BLOCKS,
+            OVERWRITE_ENTITY_LOOT_TABLES,
+            SECRET_ROOMS;
 
     static {
         BUILDER.comment("General Settings").push(GENERAL);
@@ -74,9 +81,7 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.comment("Dungeon Settings").push(DUNGEON);
-        NO_SPAWNERS = BUILDER.comment(
-                "If you dont like the fact that the dungeons contain lots of mob spawners, set this to true! Mobs will get spawned manually during the dungeon generation then. Note that this is a lot more performance demanding than enabling spawners. (Which also depends on the mob spawn rate)")
-                .define("no_spawners", false);
+        SECRET_ROOMS = BUILDER.comment("Whether the dungeons should have secret rooms or not.").define("secret_rooms", true);
         OVERWRITE_ENTITY_LOOT_TABLES = BUILDER.comment("Whether loot tables of certain spawner entities should be overwritten." +
                 " If this enabled, wither skeletons from dungeon spawners will never drop skulls. Changing this will not affect already generated dungeons.")
                 .define("overwrite_entity_loot_tables", true);

@@ -104,7 +104,7 @@ public class ModelBlockDefinition {
     public Block getBlock(DungeonModelBlock block) {
         if (block.type == DungeonModelBlockType.OTHER) {
             return ForgeRegistries.BLOCKS.getValue(block.blockName);
-        } else if (block.type == DungeonModelBlockType.CARPET) {
+        } else if (block.type == DungeonModelBlockType.CARPET && block.variation != null) {
             return DungeonBlocks.CARPET[block.variation];
         }
         if (invertedDefinition.containsKey(block.type)) {

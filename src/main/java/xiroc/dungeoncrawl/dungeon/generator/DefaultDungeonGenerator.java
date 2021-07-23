@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import net.minecraft.util.math.ChunkPos;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
@@ -55,8 +56,9 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
     @Override
     public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start) {
         DungeonCrawl.LOGGER.debug("Generating layout for layer {}", layer);
-        if (layer == secretRoomLayer)
+        if (Config.SECRET_ROOMS.get() && layer == secretRoomLayer) {
             this.layerGenerator.enableSecretRoom();
+        }
         this.layerGenerator.generateLayer(dungeonBuilder, dungeonLayer, layer, rand, start);
     }
 

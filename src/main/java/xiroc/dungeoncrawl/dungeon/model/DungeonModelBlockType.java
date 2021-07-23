@@ -25,7 +25,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,7 +33,6 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
-import java.util.Hashtable;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -72,8 +70,7 @@ public enum DungeonModelBlockType {
            stage) -> block.create(Blocks.CHEST.getDefaultState(), rotation)),
     SKULL((block, rotation, world, pos, theme, subTheme, rand, variation,
            stage) -> {
-        Tuple<BlockState, Boolean> skull = block.create(Blocks.SKELETON_SKULL.getDefaultState(), rotation);
-        BlockState state = skull.getA();
+        BlockState state = block.create(Blocks.SKELETON_SKULL.getDefaultState(), rotation);
         if (state.has(BlockStateProperties.ROTATION_0_15)) {
             int r = state.get(BlockStateProperties.ROTATION_0_15);
             int add = rand.nextInt(3);
@@ -85,9 +82,9 @@ public enum DungeonModelBlockType {
                 r = (r + add) % 16;
             }
             state = state.with(BlockStateProperties.ROTATION_0_15, r);
-            return new Tuple<>(state, skull.getB());
+            return state;
         }
-        return skull;
+        return state;
     }),
     CARPET((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
         Block b = block.variation != null && variation != null ?
@@ -123,6 +120,7 @@ public enum DungeonModelBlockType {
 
         // Removed types
         builder.put("NORMAL_2", AIR);
+        builder.put("GENERIC_SECONDARY", AIR);
         builder.put("SPAWNER", AIR);
         builder.put("BARREL", AIR);
         NAME_TO_TYPE = builder.build();
@@ -165,8 +163,9 @@ public enum DungeonModelBlockType {
         } else if (definition.fallback != null && definition.fallback.definition.containsKey(block)) {
             return definition.fallback.definition.get(block);
         }
-        if (BlockTags.CARPETS.contains(block))
+        if (BlockTags.CARPETS.contains(block)) {
             return CARPET;
+        }
         return OTHER;
     }
 
@@ -177,7 +176,7 @@ public enum DungeonModelBlockType {
     @FunctionalInterface
     public interface BlockFactory {
 
-        Tuple<BlockState, Boolean> get(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos, Theme theme,
+        BlockState get(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos, Theme theme,
                                        Theme.SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
 
     }

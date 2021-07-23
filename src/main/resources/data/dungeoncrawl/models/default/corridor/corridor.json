@@ -10,37 +10,32 @@
         {
           "offset": {"x": 3},
           "model": "dungeoncrawl:default/multipart/corridor/default",
-          "weight": 6
+          "weight": 8
         },
         {
           "offset": {"x": 3},
           "model": "dungeoncrawl:default/multipart/corridor/variant",
-          "weight": 6
+          "weight": 7
         },
         {
           "offset": {"x": 3},
           "model": "dungeoncrawl:default/multipart/corridor/variant_2",
-          "weight": 6
+          "weight": 7
         },
         {
           "offset": {"x": 3},
           "model": "dungeoncrawl:default/multipart/corridor/bookshelf",
-          "weight": 5
+          "weight": 4
         },
         {
           "offset": {"x": 3},
           "model": "dungeoncrawl:default/multipart/corridor/chest",
-          "weight": 3
+          "weight": 4
         },
         {
           "offset": {"x": 3},
           "model": "dungeoncrawl:default/multipart/corridor/spawner",
-          "weight": 3
-        },
-        {
-          "offset": {"x": 3},
-          "model": "dungeoncrawl:default/multipart/corridor/crops",
-          "weight": 2
+          "weight": 4
         },
         {
           "offset": {"x": 2, "z": -4},
@@ -49,14 +44,6 @@
         {
           "offset": {"x": 2, "z": -4},
           "model": "dungeoncrawl:default/multipart/corridor/empty_room_2"
-        },
-        {
-          "offset": {"x": 2, "z": -4},
-          "model": "dungeoncrawl:default/multipart/corridor/empty_room_3"
-        },
-        {
-          "offset": {"x": 2, "z": -4},
-          "model": "dungeoncrawl:default/multipart/corridor/empty_room_4"
         }
       ]
     },
@@ -66,43 +53,37 @@
           "offset": {"x": 3, "z": 5},
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/default",
-          "weight": 6
+          "weight": 8
         },
         {
           "offset": {"x": 3, "z": 5},
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/variant",
-          "weight": 6
+          "weight": 7
         },
         {
           "offset": {"x": 3, "z": 5},
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/variant_2",
-          "weight": 6
+          "weight": 7
         },
         {
           "offset": {"x": 3, "z": 5},
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/bookshelf",
-          "weight": 5
+          "weight": 4
         },
         {
           "offset": {"x": 3, "z": 5},
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/chest",
-          "weight": 3
+          "weight": 4
         },
         {
           "offset": {"x": 3, "z": 5},
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/spawner",
-          "weight": 3
-        },
-        {
-          "offset": {"x": 3, "z": 5},
-          "rotation": "clockwise_180",
-          "model": "dungeoncrawl:default/multipart/corridor/crops",
-          "weight": 2
+          "weight": 4
         },
         {
           "offset": {"x": 2, "z": 5},
@@ -113,16 +94,6 @@
           "offset": {"x": 2, "z": 5},
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/empty_room_2"
-        },
-        {
-          "offset": {"x": 2, "z": 5},
-          "rotation": "clockwise_180",
-          "model": "dungeoncrawl:default/multipart/corridor/empty_room_3"
-        },
-        {
-          "offset": {"x": 2, "z": 5},
-          "rotation": "clockwise_180",
-          "model": "dungeoncrawl:default/multipart/corridor/empty_room_4"
         }
       ]
     }

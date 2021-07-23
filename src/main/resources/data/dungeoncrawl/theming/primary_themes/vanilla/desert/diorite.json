@@ -1,6 +1,5 @@
 {
-  "id": 16,
-  "secondary_theme": [{"key": "dungeoncrawl:vanilla/desert/default"}],
+  "secondary_theme": [{"key": "dungeoncrawl:vanilla/desert/diorite"}],
   "theme": {
     "generic": {
       "type": "random_block",
@@ -32,11 +31,11 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:cut_sandstone"
+          "block": "minecraft:diorite"
         },
         {
-          "block": "minecraft:chiseled_sandstone",
-          "weight": 2
+          "block": "minecraft:diorite_granite",
+          "weight": 3
         }
       ]
     },
@@ -66,10 +65,11 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:sandstone_stairs"
+          "block": "minecraft:diorite_stairs"
         },
         {
-          "block": "minecraft:smooth_sandstone_stairs"
+          "block": "minecraft:diorite_granite_stairs",
+          "weight": 3
         }
       ]
     },

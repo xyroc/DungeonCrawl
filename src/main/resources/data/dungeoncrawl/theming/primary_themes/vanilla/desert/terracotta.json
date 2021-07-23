@@ -1,6 +1,6 @@
 {
   "id": 16,
-  "sub_theme": [{"key": "vanilla/desert"}],
+  "secondary_theme": [{"key": "dungeoncrawl:vanilla/desert/default"}],
   "theme": {
     "generic": {
       "type": "random_block",

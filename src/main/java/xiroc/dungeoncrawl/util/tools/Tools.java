@@ -275,7 +275,7 @@ public class Tools {
             if (block == null)
                 block = Blocks.AIR;
 
-            world.setBlockState(placePos, modelBlock.create(block.getDefaultState(), Rotation.NONE).getA(), 3);
+            world.setBlockState(placePos, modelBlock.create(block.getDefaultState(), Rotation.NONE), 3);
             world.notifyNeighbors(placePos, world.getBlockState(placePos).getBlock());
 
         });

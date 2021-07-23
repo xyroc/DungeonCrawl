@@ -20,8 +20,6 @@ package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -34,9 +32,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
@@ -142,8 +138,8 @@ public class DungeonEntrance extends DungeonPiece {
         model.blocks.forEach((block) -> {
             BlockPos position = pos.add(block.position);
             if (boundsIn.isVecInside(position)) {
-                Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                        Rotation.NONE, world, position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
+                BlockState state = block.type.blockFactory.get(block, rotation, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+
                 if (state == null)
                     return;
 

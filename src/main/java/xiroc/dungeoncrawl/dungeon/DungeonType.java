@@ -28,6 +28,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.system.CallbackI;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGeneratorSettings;
@@ -112,6 +113,8 @@ public class DungeonType {
             }
         });
 
+        WeightedRandom.Builder<DungeonType> defaultType = new WeightedRandom.Builder<>();
+
         resourceManager.getAllResourceLocations(MAPPINGS_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", resource);
@@ -134,7 +137,7 @@ public class DungeonType {
                 }
 
                 if (file.has("default")) {
-                    DEFAULT_TYPE = dungeonTypeWeightedRandom(file.getAsJsonArray("default"), resource);
+                    addEntries(defaultType, file.getAsJsonArray("default"), resource);
                 }
 
                 JsonObject mapping = file.getAsJsonObject("mapping");
@@ -153,14 +156,20 @@ public class DungeonType {
             }
         });
 
-        if (DEFAULT_TYPE == null || DEFAULT_TYPE.isEmpty()) {
+        DEFAULT_TYPE = defaultType.build();
+
+        if (DEFAULT_TYPE.isEmpty()) {
             throw new DatapackLoadException("No default case was specified in the dungeon type biome mappings.");
         }
     }
 
     private static WeightedRandom<DungeonType> dungeonTypeWeightedRandom(JsonArray entries, ResourceLocation resource) {
         WeightedRandom.Builder<DungeonType> builder = new WeightedRandom.Builder<>();
+        addEntries(builder, entries, resource);
+        return builder.build();
+    }
 
+    private static void addEntries(WeightedRandom.Builder<DungeonType> builder, JsonArray entries, ResourceLocation resource) {
         entries.forEach((element) -> {
             JsonObject entry = element.getAsJsonObject();
             ResourceLocation key = new ResourceLocation(entry.get("key").getAsString());
@@ -169,7 +178,6 @@ public class DungeonType {
             }
             builder.add(KEY_TO_TYPE.get(key), JSONUtils.getWeight(entry));
         });
-        return builder.build();
     }
 
     public static DungeonType randomType(ResourceLocation biome, Random rand) {

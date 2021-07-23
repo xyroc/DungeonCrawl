@@ -181,9 +181,6 @@ public final class DungeonModelFeature {
         Type SPAWNER = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-                if (Config.NO_SPAWNERS.get()) {
-                    return;
-                }
                 if (bounds.isVecInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.down()).isSolid()) {
@@ -205,10 +202,6 @@ public final class DungeonModelFeature {
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.down()).isSolid()) {
                     placeChest(world, pos, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
-                }
-
-                if (Config.NO_SPAWNERS.get()) {
-                    return;
                 }
 
                 BlockPos spawner = pos.offset(direction);

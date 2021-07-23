@@ -17,15 +17,8 @@
             "y": 5,
             "z": 6
           },
-          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/dome"
-        },
-        {
-          "offset": {
-            "x": 6,
-            "y": 5,
-            "z": 6
-          },
-          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/light"
+          "model": "dungeoncrawl:catacombs/multipart/node/ceiling/dome",
+          "weight": 2
         }
       ]
     },
@@ -37,7 +30,7 @@
           },
           "model": "dungeoncrawl:catacombs/multipart/large_spawner_cell_open",
           "rotation": "counterclockwise_90",
-          "weight": 2
+          "weight": 4
         },
         {
           "offset": {
@@ -57,7 +50,7 @@
             "z": 11
           },
           "model": "dungeoncrawl:catacombs/multipart/large_spawner_cell_open",
-          "weight": 2
+          "weight": 4
         },
         {
           "offset": {
@@ -77,7 +70,7 @@
           },
           "model": "dungeoncrawl:catacombs/multipart/crypt_graves",
           "rotation": "counterclockwise_90",
-          "weight": 2
+          "weight": 4
         },
         {
           "offset": {
@@ -97,7 +90,7 @@
             "z": 5
           },
           "model": "dungeoncrawl:catacombs/multipart/crypt_graves",
-          "weight": 2
+          "weight": 4
         },
         {
           "offset": {

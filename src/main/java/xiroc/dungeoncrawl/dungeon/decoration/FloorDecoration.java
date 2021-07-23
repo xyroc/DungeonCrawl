@@ -18,7 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;

@@ -43,7 +43,6 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 public class JsonTheming {
 
@@ -92,7 +91,7 @@ public class JsonTheming {
                 if (Theme.KEY_TO_SECONDARY_THEME.containsKey(key)) {
                     builder.add(Theme.KEY_TO_SECONDARY_THEME.get(key), JSONUtils.getWeight(instance));
                 } else {
-                    throw new NoSuchElementException("Unknown sub-theme key " + key + " in " + file.toString());
+                    throw new DatapackLoadException("Unknown secondary theme key " + key + " in " + file.toString());
                 }
             });
             theme.subTheme = builder.build();
@@ -141,7 +140,7 @@ public class JsonTheming {
      * @param object the json object
      * @param file   the location of the theme file
      */
-    protected static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, ResourceLocation file) {
+    protected static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, WeightedRandom.Builder<Theme> defaultBuilder, ResourceLocation file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
                 ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
@@ -152,6 +151,16 @@ public class JsonTheming {
                     themeMappingBuilders.computeIfAbsent(entry.getKey(), (key) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_THEME.get(tuple.getA()), tuple.getB());
                 });
             });
+            if (object.has("default")) {
+                object.getAsJsonArray("default").forEach((element) -> {
+                    JsonObject entry = element.getAsJsonObject();
+                    ResourceLocation theme = new ResourceLocation(entry.get("key").getAsString());
+                    if (!Theme.KEY_TO_THEME.containsKey(theme)) {
+                        throw new DatapackLoadException("Cannot resolve theme key " + theme + " in the default case of " + file);
+                    }
+                    defaultBuilder.add(Theme.KEY_TO_THEME.get(theme), JSONUtils.getWeight(entry));
+                });
+            }
         }
     }
 
@@ -161,11 +170,10 @@ public class JsonTheming {
      * @param object the json object
      * @param file   the location of the sub-theme file
      */
-    protected static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, ResourceLocation file) {
+    protected static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, WeightedRandom.Builder<SecondaryTheme> defaultBuilder, ResourceLocation file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
                 ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
-
                 entries.forEach((tuple) -> {
                     if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(tuple.getA())) {
                         throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
@@ -173,6 +181,16 @@ public class JsonTheming {
                     secondaryThemeMappingBuilders.computeIfAbsent(entry.getKey(), (key) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_SECONDARY_THEME.get(tuple.getA()), tuple.getB());
                 });
             });
+            if (object.has("default")) {
+                object.getAsJsonArray("default").forEach((element) -> {
+                    JsonObject entry = element.getAsJsonObject();
+                    ResourceLocation theme = new ResourceLocation(entry.get("key").getAsString());
+                    if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(theme)) {
+                        throw new DatapackLoadException("Cannot resolve secondary theme key " + theme + " in the default case of " + file);
+                    }
+                    defaultBuilder.add(Theme.KEY_TO_SECONDARY_THEME.get(theme), JSONUtils.getWeight(entry));
+                });
+            }
         }
     }
 

@@ -30,7 +30,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
@@ -356,8 +355,8 @@ public abstract class DungeonPiece extends StructurePiece {
         model.blocks.forEach((block) -> {
             BlockPos position = pos.add(block.position);
             if (boundsIn.isVecInside(position)) {
-                Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                        Rotation.NONE, world, position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
+                BlockState state = block.type.blockFactory.get(block, Rotation.NONE, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
+
                 if (state == null)
                     return;
 
@@ -387,8 +386,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + block.position.getX());
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                                Rotation.CLOCKWISE_90, world, position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_90, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -407,9 +405,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.width - block.position.getX() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block,
-                                Rotation.COUNTERCLOCKWISE_90, world, position, theme, secondaryTheme,
-                                DungeonBlocks.RANDOM, variation, lootLevel);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.COUNTERCLOCKWISE_90, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -428,8 +424,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getZ() + model.length - block.position.getZ() - 1);
 
                     if (boundsIn.isVecInside(position)) {
-                        Tuple<BlockState, Boolean> state = DungeonModelBlock.getBlockState(block, Rotation.CLOCKWISE_180, world,
-                                position, theme, secondaryTheme, DungeonBlocks.RANDOM, variation, lootLevel);
+                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_180, world, pos, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
                             return;
@@ -455,11 +450,11 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public void placeBlock(DungeonModelBlock block, IWorld world, PlacementContext context,
                            Theme theme, SecondaryTheme secondaryTheme, int lootLevel, boolean fillAir,
-                           BlockPos position, Tuple<BlockState, Boolean> state) {
-        setBlockState(state.getA(), world, position, theme, secondaryTheme, lootLevel, block,
+                           BlockPos position, BlockState state) {
+        setBlockState(state, world, position, theme, secondaryTheme, lootLevel, block,
                 fillAir ? DungeonModelBlockType.SOLID : block.type, context);
 
-        if (state.getB() && context.postProcessing) {
+        if (block.hasProperties && context.postProcessing) {
             world.getChunk(position).markBlockForPostprocessing(position);
         }
 

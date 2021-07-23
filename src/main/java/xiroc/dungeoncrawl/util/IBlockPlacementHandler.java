@@ -36,7 +36,7 @@ import java.util.Random;
 
 public interface IBlockPlacementHandler {
 
-    public static IBlockPlacementHandler SPAWNER = new Spawner();
+    IBlockPlacementHandler SPAWNER = new Spawner();
 
     Hashtable<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new Hashtable<>();
 

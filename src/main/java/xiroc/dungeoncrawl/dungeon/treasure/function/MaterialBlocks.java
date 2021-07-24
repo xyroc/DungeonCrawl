@@ -47,11 +47,11 @@ public class MaterialBlocks extends LootFunction {
     }
 
     @Override
-    public ItemStack doApply(ItemStack stack, LootContext context) {
-        TileEntity chest = context.get(LootParameters.BLOCK_ENTITY);
-        if (context.has(LootParameters.ORIGIN) && chest != null && chest.hasWorld() & chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
+    public ItemStack run(ItemStack stack, LootContext context) {
+        TileEntity chest = context.getParamOrNull(LootParameters.BLOCK_ENTITY);
+        if (context.hasParam(LootParameters.ORIGIN) && chest != null && chest.hasLevel() & chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
             Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
-            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), chest.getWorld(), new BlockPos(context.get(LootParameters.ORIGIN)), context.getRandom())),
+            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), chest.getLevel(), new BlockPos(context.getParamOrNull(LootParameters.ORIGIN)), context.getRandom())),
                     16 + context.getRandom().nextInt(49));
         } else {
             return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
@@ -65,7 +65,7 @@ public class MaterialBlocks extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return Treasure.MATERIAL_BLOCKS;
     }
 

@@ -65,15 +65,15 @@ public class Loot {
     public static ResourceLocation getLootTable(int lootLevel, Random rand) {
         switch (lootLevel) {
             case 0:
-                return rand.nextFloat() < 0.1 ? LootTables.CHESTS_JUNGLE_TEMPLE : CHEST_STAGE_1;
+                return rand.nextFloat() < 0.1 ? LootTables.JUNGLE_TEMPLE : CHEST_STAGE_1;
             case 1:
-                return rand.nextFloat() < 0.1 ? LootTables.CHESTS_SIMPLE_DUNGEON : CHEST_STAGE_2;
+                return rand.nextFloat() < 0.1 ? LootTables.SIMPLE_DUNGEON : CHEST_STAGE_2;
             case 2:
-                return rand.nextFloat() < 0.1 ? LootTables.CHESTS_SIMPLE_DUNGEON : CHEST_STAGE_3;
+                return rand.nextFloat() < 0.1 ? LootTables.SIMPLE_DUNGEON : CHEST_STAGE_3;
             case 3:
-                return rand.nextFloat() < 0.1 ? LootTables.CHESTS_STRONGHOLD_CROSSING : CHEST_STAGE_4;
+                return rand.nextFloat() < 0.1 ? LootTables.STRONGHOLD_CROSSING : CHEST_STAGE_4;
             case 4:
-                return rand.nextFloat() < 0.1 ? LootTables.CHESTS_STRONGHOLD_CROSSING : CHEST_STAGE_5;
+                return rand.nextFloat() < 0.1 ? LootTables.STRONGHOLD_CROSSING : CHEST_STAGE_5;
             default:
                 return Loot.CHEST_STAGE_5;
         }

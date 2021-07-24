@@ -75,8 +75,8 @@ public class NewLayerGenerator extends LayerGenerator {
         this.corridors.clear();
         this.placeStairs = !isLastLayer;
         this.secretRoom = false;
-        this.roomsLeft = settings.rooms.generateInt(rand);
-        this.nodesLeft = settings.nodes.generateInt(rand);
+        this.roomsLeft = settings.rooms.getInt(rand);
+        this.nodesLeft = settings.nodes.getInt(rand);
         this.rooms = 0;
         this.nodes = 0;
     }
@@ -131,7 +131,7 @@ public class NewLayerGenerator extends LayerGenerator {
             Direction direction = directions.remove(rand.nextInt(directions.size()));
             int maxDistance = maxDistance(cursor.position, direction, dungeonLayer);
             if (maxDistance >= settings.minDistance) {
-                Position2D nextPos = cursor.position.shift(direction, new RandomValueRange(settings.minDistance, maxDistance).generateInt(rand));
+                Position2D nextPos = cursor.position.shift(direction, new RandomValueRange(settings.minDistance, maxDistance).getInt(rand));
                 if (nextPos.isValid(dungeonLayer.width, dungeonLayer.length)) {
                     LayerElement element = nextElement(dungeonLayer, nextPos, direction.getOpposite(), rand, depth);
                     if (element != null) {

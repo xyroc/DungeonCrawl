@@ -46,11 +46,11 @@ public class SpawnDungeonCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("roguelike").requires((a)
-                -> a.hasPermissionLevel(4)).then(Commands.argument("location", Vec3Argument.vec3())
+                -> a.hasPermission(4)).then(Commands.argument("location", Vec3Argument.vec3())
                 .executes((command) -> {
-                    BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                    ServerWorld world = command.getSource().getWorld();
-                    ResourceLocation biomeKey = world.func_241828_r().getRegistry(Registry.BIOME_KEY).getKey(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2));
+                    BlockPos pos = Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource());
+                    ServerWorld world = command.getSource().getLevel();
+                    ResourceLocation biomeKey = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2));
                     String biome = biomeKey != null ? biomeKey.toString() : "minecraft:plains";
                     return spawnDungeon(command.getSource(), world, pos,
                             Theme.randomTheme(biome, world.getRandom()),
@@ -58,25 +58,25 @@ public class SpawnDungeonCommand {
                 })
                 .then(Commands.argument("theme", ThemeArgument.theme())
                         .executes((command) ->
-                                spawnDungeon(command.getSource(), command.getSource().getWorld(),
-                                        Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
+                                spawnDungeon(command.getSource(), command.getSource().getLevel(),
+                                        Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource()),
                                         ThemeArgument.getTheme(command, "theme"),
                                         Theme.getBuiltinDefaultSecondaryTheme()))
                         .then(Commands.argument("secondary_theme", SecondaryThemeArgument.secondaryTheme()).executes((command) ->
-                                spawnDungeon(command.getSource(), command.getSource().getWorld(),
-                                        Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource()),
+                                spawnDungeon(command.getSource(), command.getSource().getLevel(),
+                                        Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource()),
                                         ThemeArgument.getTheme(command, "theme"),
                                         SecondaryThemeArgument.getSecondaryTheme(command, "secondary_theme"))
                         )))));
     }
 
     private static int spawnDungeon(CommandSource commandSource, ServerWorld world, BlockPos pos, Theme theme, Theme.SecondaryTheme secondaryTheme) {
-        commandSource.sendFeedback(new StringTextComponent(TextFormatting.RED + "This is an experimental feature." +
+        commandSource.sendSuccess(new StringTextComponent(TextFormatting.RED + "This is an experimental feature." +
                 " Please report any bugs you encounter on the issue tracker on https://github.com/XYROC/DungeonCrawl/issues."), true);
         if (world.getHeight(Heightmap.Type.WORLD_SURFACE, pos.getX(), pos.getZ()) > 32) {
             long seed = (long) pos.getX() + pos.getZ() << 8 + world.getSeed();
-            commandSource.sendFeedback(new StringTextComponent("Dungeon Seed: " + seed), true);
-            commandSource.sendFeedback(new StringTextComponent("Building a dungeon..."), true);
+            commandSource.sendSuccess(new StringTextComponent("Dungeon Seed: " + seed), true);
+            commandSource.sendSuccess(new StringTextComponent("Building a dungeon..."), true);
             DungeonBuilder builder = new DungeonBuilder(world, pos, new Random(seed));
             builder.theme = theme;
             builder.secondaryTheme = secondaryTheme;
@@ -89,21 +89,21 @@ public class SpawnDungeonCommand {
                     Vector3i offset = piece.model.getOffset(piece.rotation);
                     int x = piece.x + 4 + offset.getX(), z = piece.z + 4 + offset.getZ();
                     MutableBoundingBox bounds = new MutableBoundingBox(x, 0, z,
-                            x + piece.model.width - 1, world.getHeight(), z + piece.model.length - 1);
-                    Vector3i vector3i = bounds.func_215126_f();
-                    piece.func_230383_a_(world, world.getStructureManager(), world.getChunkProvider().generator, builder.rand,
-                            bounds, new ChunkPos(piece.x >> 4, piece.z >> 4), new BlockPos(vector3i.getX(), bounds.minY, vector3i.getZ()));
+                            x + piece.model.width - 1, world.getMaxBuildHeight(), z + piece.model.length - 1);
+                    Vector3i vector3i = bounds.getCenter();
+                    piece.postProcess(world, world.structureFeatureManager(), world.getChunkSource().generator, builder.rand,
+                            bounds, new ChunkPos(piece.x >> 4, piece.z >> 4), new BlockPos(vector3i.getX(), bounds.y0, vector3i.getZ()));
                 } else {
                     MutableBoundingBox boundingBox = piece.getBoundingBox();
-                    Vector3i vector3i = boundingBox.func_215126_f();
-                    piece.func_230383_a_(world, world.getStructureManager(), world.getChunkProvider().generator, builder.rand,
-                            boundingBox, new ChunkPos(piece.x >> 4, piece.z >> 4), new BlockPos(vector3i.getX(), boundingBox.minY, vector3i.getZ()));
+                    Vector3i vector3i = boundingBox.getCenter();
+                    piece.postProcess(world, world.structureFeatureManager(), world.getChunkSource().generator, builder.rand,
+                            boundingBox, new ChunkPos(piece.x >> 4, piece.z >> 4), new BlockPos(vector3i.getX(), boundingBox.y0, vector3i.getZ()));
                 }
             });
-            commandSource.sendFeedback(new StringTextComponent(TextFormatting.GREEN + "Done."), true);
+            commandSource.sendSuccess(new StringTextComponent(TextFormatting.GREEN + "Done."), true);
             return 0;
         } else {
-            commandSource.sendErrorMessage(new StringTextComponent("Your current position is unfit for a dungeon."));
+            commandSource.sendFailure(new StringTextComponent("Your current position is unfit for a dungeon."));
             return 1;
         }
     }

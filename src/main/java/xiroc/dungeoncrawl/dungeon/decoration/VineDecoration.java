@@ -42,26 +42,26 @@ public class VineDecoration implements IDungeonDecoration {
                 for (int z = 0; z < maxZ; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (!DungeonBuilder.isBlockProtected(world, currentPos, context)
-                            && worldGenBounds.isVecInside(currentPos)
-                            && structureBounds.isVecInside(currentPos)
-                            && world.isAirBlock(currentPos)) {
+                            && worldGenBounds.isInside(currentPos)
+                            && structureBounds.isInside(currentPos)
+                            && world.isEmptyBlock(currentPos)) {
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                         BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
                         BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
                         BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                         BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
 
-                        boolean _north = worldGenBounds.isVecInside(north) && structureBounds.isVecInside(north) && world.getBlockState(north).isNormalCube(world, north) && !world.isAirBlock(north);
-                        boolean _east = worldGenBounds.isVecInside(east) && structureBounds.isVecInside(east) && world.getBlockState(east).isNormalCube(world, east) && !world.isAirBlock(east);
-                        boolean _south = worldGenBounds.isVecInside(south) && structureBounds.isVecInside(south) && world.getBlockState(south).isNormalCube(world, south) && !world.isAirBlock(south);
-                        boolean _west = worldGenBounds.isVecInside(west) && structureBounds.isVecInside(west) && world.getBlockState(west).isNormalCube(world, east) && !world.isAirBlock(west);
-                        boolean _up = worldGenBounds.isVecInside(up) && structureBounds.isVecInside(up) && world.getBlockState(up).isNormalCube(world, up) && !world.isAirBlock(up);
+                        boolean _north = worldGenBounds.isInside(north) && structureBounds.isInside(north) && world.getBlockState(north).isRedstoneConductor(world, north) && !world.isEmptyBlock(north);
+                        boolean _east = worldGenBounds.isInside(east) && structureBounds.isInside(east) && world.getBlockState(east).isRedstoneConductor(world, east) && !world.isEmptyBlock(east);
+                        boolean _south = worldGenBounds.isInside(south) && structureBounds.isInside(south) && world.getBlockState(south).isRedstoneConductor(world, south) && !world.isEmptyBlock(south);
+                        boolean _west = worldGenBounds.isInside(west) && structureBounds.isInside(west) && world.getBlockState(west).isRedstoneConductor(world, east) && !world.isEmptyBlock(west);
+                        boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).isRedstoneConductor(world, up) && !world.isEmptyBlock(up);
 
                         if ((_north || _east || _south || _west || _up) && DungeonBlocks.RANDOM.nextFloat() < 0.35F) {
                             BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
-                            world.setBlockState(p, Blocks.VINE.getDefaultState().with(BlockStateProperties.NORTH, _north)
-                                    .with(BlockStateProperties.EAST, _east).with(BlockStateProperties.SOUTH, _south)
-                                    .with(BlockStateProperties.WEST, _west).with(BlockStateProperties.UP, _up), 2);
+                            world.setBlock(p, Blocks.VINE.defaultBlockState().setValue(BlockStateProperties.NORTH, _north)
+                                    .setValue(BlockStateProperties.EAST, _east).setValue(BlockStateProperties.SOUTH, _south)
+                                    .setValue(BlockStateProperties.WEST, _west).setValue(BlockStateProperties.UP, _up), 2);
                         }
                     }
                 }

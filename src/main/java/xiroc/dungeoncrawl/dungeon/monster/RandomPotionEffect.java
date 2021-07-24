@@ -129,7 +129,7 @@ public class RandomPotionEffect {
         if (stage > 4)
             stage = 4;
         if (rand.nextFloat() < CHANCES[stage]) {
-            int rolls = ROLLS[stage].generateInt(rand);
+            int rolls = ROLLS[stage].getInt(rand);
             if (rolls > 0) {
                 Effect[] effects = new Effect[rolls - 1];
                 loop:
@@ -142,14 +142,14 @@ public class RandomPotionEffect {
                         }
                         if (i < rolls - 1)
                             effects[i] = effect.effect;
-                        entity.addPotionEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
+                        entity.addEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
                     }
                 }
             }
         }
         if (GUARANTEED_EFFECTS[stage] != null) {
             for (PotionEffect effect : GUARANTEED_EFFECTS[stage]) {
-                entity.addPotionEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
+                entity.addEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
             }
         }
     }
@@ -166,7 +166,7 @@ public class RandomPotionEffect {
         if (chance || guaranteed) {
             ListNBT list = new ListNBT();
             if (chance) {
-                int rolls = ROLLS[stage].generateInt(rand);
+                int rolls = ROLLS[stage].getInt(rand);
                 if (rolls > 0) {
                     Effect[] effects = new Effect[rolls - 1];
                     loop:
@@ -179,14 +179,14 @@ public class RandomPotionEffect {
                             }
                             if (i < rolls - 1)
                                 effects[i] = effect.effect;
-                            list.add(toNBT(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
+                            list.add(toNBT(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
                         }
                     }
                 }
             }
             if (guaranteed) {
                 for (PotionEffect effect : GUARANTEED_EFFECTS[stage]) {
-                    list.add(toNBT(effect.effect, effect.duration, effect.amplifier.generateInt(rand)));
+                    list.add(toNBT(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
                 }
             }
             return list;

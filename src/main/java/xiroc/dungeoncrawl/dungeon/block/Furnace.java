@@ -45,11 +45,11 @@ public class Furnace implements IBlockPlacementHandler {
     @Override
     public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context
             , Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
-        world.setBlockState(pos, state, 2);
-        TileEntity tile = world.getTileEntity(pos);
+        world.setBlock(pos, state, 2);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof FurnaceTileEntity) {
             FurnaceTileEntity furnace = (FurnaceTileEntity) tile;
-            furnace.setInventorySlotContents(1, new ItemStack(Items.COAL, COAL_AMOUNT.generateInt(rand)));
+            furnace.setItem(1, new ItemStack(Items.COAL, COAL_AMOUNT.getInt(rand)));
         } else {
             DungeonCrawl.LOGGER.warn("Failed to fetch a furnace entity at {}", pos.toString());
         }
@@ -60,12 +60,12 @@ public class Furnace implements IBlockPlacementHandler {
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
-            world.setBlockState(pos, state, 2);
-            TileEntity tile = world.getTileEntity(pos);
+            world.setBlock(pos, state, 2);
+            TileEntity tile = world.getBlockEntity(pos);
             if (tile instanceof SmokerTileEntity) {
                 SmokerTileEntity smoker = (SmokerTileEntity) tile;
-                smoker.setInventorySlotContents(1, new ItemStack(Items.CHARCOAL, COAL_AMOUNT.generateInt(rand)));
-                smoker.setInventorySlotContents(2, new ItemStack(FOOD[rand.nextInt(FOOD.length)], 1 + rand.nextInt(16)));
+                smoker.setItem(1, new ItemStack(Items.CHARCOAL, COAL_AMOUNT.getInt(rand)));
+                smoker.setItem(2, new ItemStack(FOOD[rand.nextInt(FOOD.length)], 1 + rand.nextInt(16)));
             } else {
                 DungeonCrawl.LOGGER.warn("Failed to fetch a smoker entity at {}", pos.toString());
             }

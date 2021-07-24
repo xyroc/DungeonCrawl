@@ -82,14 +82,14 @@ public class DungeonModelBlock {
     public static DungeonModelBlock fromBlockState(BlockState state, DungeonModelBlockType type, Vector3i position) {
         List<PropertyHolder> properties = Lists.newArrayList();
         for (Property<?> property : state.getProperties()) {
-            properties.add(new PropertyHolder(property, state.get(property)));
+            properties.add(new PropertyHolder(property, state.getValue(property)));
         }
         PropertyHolder[] blockProperties = properties.isEmpty() ? null : properties.toArray(new PropertyHolder[0]);
         Integer variation = null;
         Block block;
         ResourceLocation blockName = null;
         if (type == DungeonModelBlockType.CARPET) {
-            Collection<Block> carpets = BlockTags.CARPETS.getAllElements();
+            Collection<Block> carpets = BlockTags.CARPETS.getValues();
             int index = 0;
             for (Block carpet : carpets) {
                 if (state.getBlock() == carpet) {
@@ -271,7 +271,7 @@ public class DungeonModelBlock {
                 for (Property<?> p : state.getProperties()) {
                     if (p.getName().equals(propertyName)) {
                         this.property = p;
-                        Optional<?> optional = p.parseValue(valueName);
+                        Optional<?> optional = p.getValue(valueName);
                         if (optional.isPresent()) {
                             this.value = optional.get();
                         } else {
@@ -283,7 +283,7 @@ public class DungeonModelBlock {
             }
 
             if (state.hasProperty(property)) {
-                return state.with((Property<T>) property, (T) value);
+                return state.setValue((Property<T>) property, (T) value);
             }
 
             return state;

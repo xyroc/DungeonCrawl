@@ -120,7 +120,7 @@ public class ModelBlockDefinition {
     public static void loadJson(IResourceManager resourceManager) {
         keySetBuilder = new ImmutableSet.Builder<>();
         List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate = Lists.newArrayList();
-        resourceManager.getAllResourceLocations(DIRECTORY, (s) -> s.endsWith(".json"))
+        resourceManager.listResources(DIRECTORY, (s) -> s.endsWith(".json"))
                 .forEach((resource) -> loadDefinition(resourceManager, resource, referencesToUpdate));
 
         for (Tuple<ModelBlockDefinition, ResourceLocation> reference : referencesToUpdate) {

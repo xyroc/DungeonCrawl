@@ -80,12 +80,12 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean func_230383_a_(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         return true;
     }
 
     @Override
-    public int getType() {
+    public int getDungeonPieceType() {
         return 15;
     }
 
@@ -99,8 +99,8 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void readAdditional(CompoundNBT tagCompound) {
-        super.readAdditional(tagCompound);
+    public void addAdditionalSaveData(CompoundNBT tagCompound) {
+        super.addAdditionalSaveData(tagCompound);
         if (spawners != null) {
             ListNBT list = new ListNBT();
             for (BlockPos pos : spawners) {

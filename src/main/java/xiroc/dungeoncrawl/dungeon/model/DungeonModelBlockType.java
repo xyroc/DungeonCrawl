@@ -68,12 +68,12 @@ public enum DungeonModelBlockType {
     // Other
 
     CHEST((block, rotation, world, pos, theme, subTheme, rand, variation,
-           stage) -> block.create(Blocks.CHEST.getDefaultState(), world, pos, rotation)),
+           stage) -> block.create(Blocks.CHEST.defaultBlockState(), world, pos, rotation)),
     SKULL((block, rotation, world, pos, theme, subTheme, rand, variation,
            stage) -> {
-        BlockState state = block.create(Blocks.SKELETON_SKULL.getDefaultState(), world, pos, rotation);
-        if (state.hasProperty(BlockStateProperties.ROTATION_0_15)) {
-            int r = state.get(BlockStateProperties.ROTATION_0_15);
+        BlockState state = block.create(Blocks.SKELETON_SKULL.defaultBlockState(), world, pos, rotation);
+        if (state.hasProperty(BlockStateProperties.ROTATION_16)) {
+            int r = state.getValue(BlockStateProperties.ROTATION_16);
             int add = rand.nextInt(3);
             if (rand.nextBoolean()) {
                 r -= add;
@@ -82,7 +82,7 @@ public enum DungeonModelBlockType {
             } else {
                 r = (r + add) % 16;
             }
-            state = state.with(BlockStateProperties.ROTATION_0_15, r);
+            state = state.setValue(BlockStateProperties.ROTATION_16, r);
             return state;
         }
         return state;
@@ -94,10 +94,10 @@ public enum DungeonModelBlockType {
         if (b == null) {
             b = DungeonBlocks.CARPET[rand.nextInt(DungeonBlocks.CARPET.length)];
         }
-        return block.create(b.getDefaultState());
+        return block.create(b.defaultBlockState());
     }),
     OTHER((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
-        return block.create(block.getBlock().getDefaultState(), world, pos, rotation);
+        return block.create(block.getBlock().defaultBlockState(), world, pos, rotation);
     });
 
     /**

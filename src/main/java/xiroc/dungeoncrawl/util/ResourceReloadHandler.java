@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import net.minecraft.resources.IFutureReloadListener.IStage;
+
 public class ResourceReloadHandler implements IFutureReloadListener {
 
     /**
@@ -74,11 +76,11 @@ public class ResourceReloadHandler implements IFutureReloadListener {
 
     @Override
     public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-        return stage.markCompleteAwaitingOthers(Unit.INSTANCE).thenRunAsync(() -> {
+        return stage.wait(Unit.INSTANCE).thenRunAsync(() -> {
             reloadProfiler.startTick();
-            reloadProfiler.startSection("listener");
+            reloadProfiler.push("listener");
             this.reload(resourceManager);
-            reloadProfiler.endSection();
+            reloadProfiler.pop();
             reloadProfiler.endTick();
         }, gameExecutor);
     }

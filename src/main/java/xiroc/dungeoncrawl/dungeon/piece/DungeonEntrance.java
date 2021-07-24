@@ -61,7 +61,7 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
@@ -83,7 +83,7 @@ public class DungeonEntrance extends DungeonPiece {
             cursorHeight += 8;
         }
 
-        BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).add(offset);
+        BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).offset(offset);
 
         build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, true);
         placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
@@ -121,13 +121,13 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public int getType() {
+    public int getDungeonPieceType() {
         return 6;
     }
 
     @Override
-    public void readAdditional(CompoundNBT tagCompound) {
-        super.readAdditional(tagCompound);
+    public void addAdditionalSaveData(CompoundNBT tagCompound) {
+        super.addAdditionalSaveData(tagCompound);
     }
 
     public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
@@ -137,8 +137,8 @@ public class DungeonEntrance extends DungeonPiece {
         }
 
         model.blocks.forEach((block) -> {
-            BlockPos position = pos.add(block.position);
-            if (boundsIn.isVecInside(position)) {
+            BlockPos position = pos.offset(block.position);
+            if (boundsIn.isInside(position)) {
                 BlockState state = block.type.blockFactory.get(block, rotation, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                 if (state == null)
@@ -148,8 +148,8 @@ public class DungeonEntrance extends DungeonPiece {
 
                 if (block.type == DungeonModelBlockType.SOLID
                         && block.position.getY() == 0
-                        && world.isAirBlock(position.down())) {
-                    buildPillar(world, position.down());
+                        && world.isEmptyBlock(position.below())) {
+                    buildPillar(world, position.below());
                 }
             }
         });

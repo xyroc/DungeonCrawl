@@ -63,8 +63,8 @@ public class DefaultLayerGenerator extends LayerGenerator {
     @Override
     public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
         super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
-        this.nodesLeft = settings.nodes.generateInt(rand);
-        this.roomsLeft = settings.rooms.generateInt(rand);
+        this.nodesLeft = settings.nodes.getInt(rand);
+        this.roomsLeft = settings.rooms.getInt(rand);
         this.secretRoom = false;
         this.farthestRoom = null;
         this.corridors.clear();
@@ -85,7 +85,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
         DungeonCrawl.LOGGER.info("Initial generation of layer {}", layer);
         for (int i = rand.nextInt(2); i < 4; i++) {
             findPositionAndContinue(dungeonLayer, start, direction, rand, settings.minDistance, settings.maxDistance, layer, 1);
-            direction = direction.rotateY();
+            direction = direction.getClockWise();
         }
 
 

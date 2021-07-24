@@ -107,7 +107,7 @@ public class DungeonCrawl {
     private void onBiomeLoad(final BiomeLoadingEvent event) {
         if (Dungeon.ALLOWED_CATEGORIES.contains(event.getCategory())) {
             LOGGER.debug("Generation Biome: {}", event.getName());
-            event.getGeneration().withStructure(Dungeon.CONFIGURED_DUNGEON);
+            event.getGeneration().addStructureStart(Dungeon.CONFIGURED_DUNGEON);
         }
     }
 
@@ -115,14 +115,14 @@ public class DungeonCrawl {
         if (event.getWorld() instanceof ServerWorld) {
 
             ServerWorld serverWorld = (ServerWorld) event.getWorld();
-            if (serverWorld.getChunkProvider().getChunkGenerator() instanceof FlatChunkGenerator &&
-                    serverWorld.getDimensionKey().equals(World.OVERWORLD)) {
+            if (serverWorld.getChunkSource().getGenerator() instanceof FlatChunkGenerator &&
+                    serverWorld.dimension().equals(World.OVERWORLD)) {
                 return;
             }
 
-            Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkProvider().generator.func_235957_b_().func_236195_a_());
-            tempMap.putIfAbsent(Dungeon.DUNGEON, DimensionStructuresSettings.field_236191_b_.get(Dungeon.DUNGEON));
-            serverWorld.getChunkProvider().generator.func_235957_b_().field_236193_d_ = tempMap;
+            Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkSource().generator.getSettings().structureConfig());
+            tempMap.putIfAbsent(Dungeon.DUNGEON, DimensionStructuresSettings.DEFAULTS.get(Dungeon.DUNGEON));
+            serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
         } else {
             LOGGER.info("Skipping world {}", event.getWorld().getClass());
         }
@@ -133,7 +133,7 @@ public class DungeonCrawl {
     }
 
     private void onServerStart(FMLServerStartingEvent event) {
-        SpawnDungeonCommand.register(event.getServer().getCommandManager().getDispatcher());
+        SpawnDungeonCommand.register(event.getServer().getCommands().getDispatcher());
     }
 
     public static ResourceLocation locate(String path) {

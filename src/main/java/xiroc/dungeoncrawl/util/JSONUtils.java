@@ -54,7 +54,7 @@ public class JSONUtils {
     }
 
     public static BlockState getBlockState(Block block, JsonObject element) {
-        BlockState state = block.getDefaultState();
+        BlockState state = block.defaultBlockState();
         if (element.has("properties")) {
             JsonObject data = element.get("properties").getAsJsonObject();
             for (Property<?> property : state.getProperties()) {
@@ -94,10 +94,10 @@ public class JSONUtils {
      */
     private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property,
                                                                       String value) {
-        Optional<T> optional = property.parseValue(value);
+        Optional<T> optional = property.getValue(value);
         if (optional.isPresent()) {
             T t = optional.get();
-            return state.with(property, t);
+            return state.setValue(property, t);
         } else {
             DungeonCrawl.LOGGER.warn("Couldn't apply property {} with value {} to {}", property.getName(), value, state.getBlock().getRegistryName());
         }

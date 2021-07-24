@@ -152,7 +152,7 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     @Override
-    public void readAdditional(CompoundNBT tagCompound) {
+    public void addAdditionalSaveData(CompoundNBT tagCompound) {
         tagCompound.putBoolean("north", sides[0]);
         tagCompound.putBoolean("east", sides[1]);
         tagCompound.putBoolean("south", sides[2]);
@@ -189,7 +189,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public abstract int getType();
+    public abstract int getDungeonPieceType();
 
     /**
      * Called during the dungeon-post-processing to determine the model that will be
@@ -283,7 +283,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
     public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonType type, ModelSelector modelSelector, int layer, Random rand) {
         if (model != null && (model.hasMultipart() || type.getLayer(layer).hasMultipartOverride(model))) {
-            BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
+            BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
             for (MultipartModelData data : type.getLayer(layer).getMultipartData(model)) {
                 if (data.checkConditions(this)) {
                     pieces.add(data.models.roll(rand).createMultipartPiece(this, model, this.rotation, pos.getX(), pos.getY(), pos.getZ(), rand));
@@ -302,7 +302,7 @@ public abstract class DungeonPiece extends StructurePiece {
             return;
 
         if (DungeonBuilder.isBlockProtected(world, pos, context)
-                || world.isAirBlock(pos) && !type.isSolid(world, pos, DungeonBlocks.RANDOM, 0, 0, 0)) {
+                || world.isEmptyBlock(pos) && !type.isSolid(world, pos, DungeonBlocks.RANDOM, 0, 0, 0)) {
             return;
         }
 
@@ -311,7 +311,7 @@ public abstract class DungeonPiece extends StructurePiece {
         IBlockPlacementHandler.getHandler(state.getBlock()).place(world, state, pos, rand,
                 context, theme, secondaryTheme, lootLevel);
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof LockableLootTileEntity) {
             if (block.lootTable != null) {
                 Loot.setLoot((LockableLootTileEntity) tile, block.lootTable, theme, secondaryTheme, rand);
@@ -322,7 +322,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
         FluidState fluidState = world.getFluidState(pos);
         if (!fluidState.isEmpty()) {
-            world.getPendingFluidTicks().scheduleTick(pos, fluidState.getFluid(), 0);
+            world.getLiquidTicks().scheduleTick(pos, fluidState.getType(), 0);
 
         }
     }
@@ -330,19 +330,19 @@ public abstract class DungeonPiece extends StructurePiece {
     public void replaceBlockState(IWorld worldIn, BlockState blockState, int x, int y, int z,
                                   MutableBoundingBox bounds, PlacementContext context) {
         BlockPos blockPos = new BlockPos(x, y, z);
-        if (bounds.isVecInside(blockPos)) {
+        if (bounds.isInside(blockPos)) {
 
-            if (DungeonBuilder.isBlockProtected(worldIn, blockPos, context) || worldIn.isAirBlock(blockPos))
+            if (DungeonBuilder.isBlockProtected(worldIn, blockPos, context) || worldIn.isEmptyBlock(blockPos))
                 return;
 
-            worldIn.setBlockState(blockPos, blockState, 2);
+            worldIn.setBlock(blockPos, blockState, 2);
             if (context.postProcessing) {
-                worldIn.getChunk(blockPos).markBlockForPostprocessing(blockPos);
+                worldIn.getChunk(blockPos).markPosForPostprocessing(blockPos);
             }
 
             FluidState fluidstate = worldIn.getFluidState(blockPos);
             if (!fluidstate.isEmpty()) {
-                worldIn.getPendingFluidTicks().scheduleTick(blockPos, fluidstate.getFluid(), 0);
+                worldIn.getLiquidTicks().scheduleTick(blockPos, fluidstate.getType(), 0);
             }
         }
     }
@@ -354,8 +354,8 @@ public abstract class DungeonPiece extends StructurePiece {
         }
 
         model.blocks.forEach((block) -> {
-            BlockPos position = pos.add(block.position);
-            if (boundsIn.isVecInside(position)) {
+            BlockPos position = pos.offset(block.position);
+            if (boundsIn.isInside(position)) {
                 BlockState state = block.type.blockFactory.get(block, Rotation.NONE, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                 if (state == null)
@@ -386,7 +386,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getY() + block.position.getY(),
                             pos.getZ() + block.position.getX());
 
-                    if (boundsIn.isVecInside(position)) {
+                    if (boundsIn.isInside(position)) {
                         BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_90, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
@@ -405,7 +405,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getY() + block.position.getY(),
                             pos.getZ() + model.width - block.position.getX() - 1);
 
-                    if (boundsIn.isVecInside(position)) {
+                    if (boundsIn.isInside(position)) {
                         BlockState state = block.type.blockFactory.get(block, Rotation.COUNTERCLOCKWISE_90, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
@@ -424,7 +424,7 @@ public abstract class DungeonPiece extends StructurePiece {
                             pos.getY() + block.position.getY(),
                             pos.getZ() + model.length - block.position.getZ() - 1);
 
-                    if (boundsIn.isVecInside(position)) {
+                    if (boundsIn.isInside(position)) {
                         BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_180, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
 
                         if (state == null)
@@ -456,15 +456,15 @@ public abstract class DungeonPiece extends StructurePiece {
                 fillAir ? DungeonModelBlockType.SOLID : block.type, context);
 
         if (block.hasProperties && context.postProcessing) {
-            world.getChunk(position).markBlockForPostprocessing(position);
+            world.getChunk(position).markPosForPostprocessing(position);
         }
 
     }
 
     protected void tryBuildFancyPillarPart(IWorld world, DungeonModelBlock block, BlockPos blockPos) {
-        if (world.getBlockState(blockPos).isSolid()) {
-            BlockPos pos = blockPos.down(block.position.getY() + 1);
-            if (world.getBlockState(pos).isSolid()) return;
+        if (world.getBlockState(blockPos).canOcclude()) {
+            BlockPos pos = blockPos.below(block.position.getY() + 1);
+            if (world.getBlockState(pos).canOcclude()) return;
             if (block.type.isPillar() && block.position.getY() < 2) {
                 buildPillar(world, pos);
             } else if ((block.type == DungeonModelBlockType.FLOOR)) {
@@ -474,9 +474,9 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     protected void buildPillar(IWorld world, BlockPos pos) {
-        for (; pos.getY() > 0; pos = pos.down()) {
-            if (world.getBlockState(pos).isSolid()) return;
-            world.setBlockState(pos, theme.solid.get(world, pos), 2);
+        for (; pos.getY() > 0; pos = pos.below()) {
+            if (world.getBlockState(pos).canOcclude()) return;
+            world.setBlock(pos, theme.solid.get(world, pos), 2);
         }
     }
 
@@ -496,14 +496,14 @@ public abstract class DungeonPiece extends StructurePiece {
                 case 1: { // One block south from the pillar
                     BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
                     stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-                    world.setBlockState(pos, stair, 2);
+                    world.setBlock(pos, stair, 2);
                     return;
                 }
                 case -1:
                 case 2: { // Two blocks south from the pillar
                     BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
                     stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-                    world.setBlockState(pos, stair, 2);
+                    world.setBlock(pos, stair, 2);
                 }
             }
         } else if (z == 0) {
@@ -514,7 +514,7 @@ public abstract class DungeonPiece extends StructurePiece {
                 stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
             }
             stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-            world.setBlockState(pos, stair, 2);
+            world.setBlock(pos, stair, 2);
         }
     }
 
@@ -540,7 +540,7 @@ public abstract class DungeonPiece extends StructurePiece {
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
-            BlockPos pos2 = pos1.offset(Direction.EAST, 2);
+            BlockPos pos2 = pos1.relative(Direction.EAST, 2);
             BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
@@ -563,7 +563,7 @@ public abstract class DungeonPiece extends StructurePiece {
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
-            BlockPos pos2 = pos1.offset(Direction.SOUTH, 2);
+            BlockPos pos2 = pos1.relative(Direction.SOUTH, 2);
             BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
@@ -585,7 +585,7 @@ public abstract class DungeonPiece extends StructurePiece {
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
-            BlockPos pos2 = pos1.offset(Direction.EAST, 2);
+            BlockPos pos2 = pos1.relative(Direction.EAST, 2);
             BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
@@ -607,7 +607,7 @@ public abstract class DungeonPiece extends StructurePiece {
             stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
             replaceBlockState(world, stair1, pos1.getX(), pos1.getY(), pos1.getZ(), bounds, context);
 
-            BlockPos pos2 = pos1.offset(Direction.SOUTH, 2);
+            BlockPos pos2 = pos1.relative(Direction.SOUTH, 2);
             BlockState stair2 = stateProvider.get(world, pos2);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
             stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
@@ -646,33 +646,33 @@ public abstract class DungeonPiece extends StructurePiece {
      * A debug method to visualize bounding boxes ingame.
      */
     public static void buildBoundingBox(IWorld world, MutableBoundingBox box, Block block) {
-        BlockState state = block.getDefaultState();
+        BlockState state = block.defaultBlockState();
 
-        for (int x0 = box.minX; x0 < box.maxX; x0++) {
-            world.setBlockState(new BlockPos(x0, box.minY, box.minZ), state, 2);
-            world.setBlockState(new BlockPos(x0, box.minY, box.maxZ), state, 2);
+        for (int x0 = box.x0; x0 < box.x1; x0++) {
+            world.setBlock(new BlockPos(x0, box.y0, box.z0), state, 2);
+            world.setBlock(new BlockPos(x0, box.y0, box.z1), state, 2);
 
-            world.setBlockState(new BlockPos(x0, box.maxY, box.minZ), state, 2);
-            world.setBlockState(new BlockPos(x0, box.maxY, box.maxZ), state, 2);
+            world.setBlock(new BlockPos(x0, box.y1, box.z0), state, 2);
+            world.setBlock(new BlockPos(x0, box.y1, box.z1), state, 2);
         }
 
-        for (int y0 = box.minY; y0 < box.maxY; y0++) {
-            world.setBlockState(new BlockPos(box.minX, y0, box.minZ), state, 2);
-            world.setBlockState(new BlockPos(box.minX, y0, box.maxZ), state, 2);
+        for (int y0 = box.y0; y0 < box.y1; y0++) {
+            world.setBlock(new BlockPos(box.x0, y0, box.z0), state, 2);
+            world.setBlock(new BlockPos(box.x0, y0, box.z1), state, 2);
 
-            world.setBlockState(new BlockPos(box.maxX, y0, box.minZ), state, 2);
-            world.setBlockState(new BlockPos(box.maxX, y0, box.maxZ), state, 2);
+            world.setBlock(new BlockPos(box.x1, y0, box.z0), state, 2);
+            world.setBlock(new BlockPos(box.x1, y0, box.z1), state, 2);
         }
 
-        for (int z0 = box.minZ; z0 < box.maxZ; z0++) {
-            world.setBlockState(new BlockPos(box.minX, box.minY, z0), state, 2);
-            world.setBlockState(new BlockPos(box.minX, box.maxY, z0), state, 2);
+        for (int z0 = box.z0; z0 < box.z1; z0++) {
+            world.setBlock(new BlockPos(box.x0, box.y0, z0), state, 2);
+            world.setBlock(new BlockPos(box.x0, box.y1, z0), state, 2);
 
-            world.setBlockState(new BlockPos(box.maxX, box.minY, z0), state, 2);
-            world.setBlockState(new BlockPos(box.maxX, box.maxY, z0), state, 2);
+            world.setBlock(new BlockPos(box.x1, box.y0, z0), state, 2);
+            world.setBlock(new BlockPos(box.x1, box.y1, z0), state, 2);
         }
 
-        world.setBlockState(new BlockPos(box.maxX, box.maxY, box.maxZ), state, 2);
+        world.setBlock(new BlockPos(box.x1, box.y1, box.z1), state, 2);
     }
 
     public static Direction getOneWayDirection(DungeonPiece piece) {

@@ -130,7 +130,7 @@ public class DungeonLayer {
             for (int j = 0; j < 2; j++) {
                 Position2D current = start.shift(Orientation.HORIZONTAL_FACINGS[index], j + 1);
                 if (current.isValid(Dungeon.SIZE) && grid[current.x][current.z] != null
-                        && grid[current.x][current.z].piece.getType() == 0
+                        && grid[current.x][current.z].piece.getDungeonPieceType() == 0
                         && grid[current.x][current.z].piece.connectedSides < 4) {
                     Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(current.x, current.z), rand);
                     if (data != null) {
@@ -220,7 +220,7 @@ public class DungeonLayer {
                         DungeonPiece.getOpenSide(piece, 1), DungeonPiece.getOpenSide(piece, 2)));
                 return;
             default:
-                piece.setRotation(Rotation.randomRotation(rand));
+                piece.setRotation(Rotation.getRandom(rand));
         }
     }
 
@@ -270,7 +270,7 @@ public class DungeonLayer {
                 grid[x][z] = new Tile(room);
                 Position2D other = getOther(x, z, direction);
                 grid[other.x][other.z] = new Tile(room).addFlag(Tile.Flag.PLACEHOLDER);
-                corridor.rotation = Orientation.getRotationFromFacing(direction).add(Rotation.CLOCKWISE_90);
+                corridor.rotation = Orientation.getRotationFromFacing(direction).getRotated(Rotation.CLOCKWISE_90);
                 corridor.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.SECRET_ROOM_ENTRANCE);
                 grid[corridorPos.x][corridorPos.z].addFlag(Tile.Flag.FIXED_MODEL);
                 return true;

@@ -76,7 +76,7 @@ public class DungeonType {
     }
 
     public static void load(IResourceManager resourceManager) {
-        resourceManager.getAllResourceLocations(TYPES_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
+        resourceManager.listResources(TYPES_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", resource);
                 JsonObject file = DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
@@ -115,7 +115,7 @@ public class DungeonType {
 
         WeightedRandom.Builder<DungeonType> defaultType = new WeightedRandom.Builder<>();
 
-        resourceManager.getAllResourceLocations(MAPPINGS_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
+        resourceManager.listResources(MAPPINGS_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", resource);
                 JsonObject file = DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();

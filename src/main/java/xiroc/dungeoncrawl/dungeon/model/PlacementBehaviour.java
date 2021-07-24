@@ -42,8 +42,8 @@ public enum PlacementBehaviour {
     }
 
     private static boolean isSolid(IWorld world, BlockPos pos) {
-        if (world.chunkExists(pos.getX() >> 4, pos.getZ() >> 4)) {
-            return world.getBlockState(pos).isSolid() || world.getBlockState(pos.down()).isSolid();
+        if (world.hasChunk(pos.getX() >> 4, pos.getZ() >> 4)) {
+            return world.getBlockState(pos).canOcclude() || world.getBlockState(pos.below()).canOcclude();
         } else {
             return false;
         }

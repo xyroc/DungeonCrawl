@@ -58,7 +58,7 @@ public class ModelBlockDefinitionArgument implements ArgumentType<ModelBlockDefi
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggestIterable(ModelBlockDefinition.getKeys(), builder);
+        return ISuggestionProvider.suggestResource(ModelBlockDefinition.getKeys(), builder);
     }
 
 }

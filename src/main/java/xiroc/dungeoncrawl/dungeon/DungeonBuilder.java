@@ -83,8 +83,8 @@ public class DungeonBuilder {
      * Instantiates a Dungeon Builder for post world gen usage like a manual dungeon spawn by command.
      */
     public DungeonBuilder(ServerWorld world, BlockPos pos, Random rand) {
-        this.dynamicRegistries = world.func_241828_r();
-        this.chunkGenerator = world.getChunkProvider().getChunkGenerator();
+        this.dynamicRegistries = world.registryAccess();
+        this.chunkGenerator = world.getChunkSource().getGenerator();
         this.rand = rand;
 
         this.chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
@@ -100,7 +100,7 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
-        this.biome = chunkGenerator.getBiomeProvider().getNoiseBiome(chunkPos.x << 2, chunkGenerator.getSeaLevel() >> 4, chunkPos.z << 2);
+        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(chunkPos.x << 2, chunkGenerator.getSeaLevel() >> 4, chunkPos.z << 2);
         DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
         generateLayout(type, DEFAULT_GENERATOR);
 
@@ -156,7 +156,7 @@ public class DungeonBuilder {
                 if (layer.grid[x][z] != null) {
                     if (!layer.grid[x][z].hasFlag(Tile.Flag.PLACEHOLDER)) {
                         layer.grid[x][z].piece.stage = stage;
-                        if (layer.grid[x][z].piece.getType() == 0)
+                        if (layer.grid[x][z].piece.getDungeonPieceType() == 0)
                             DungeonFeatures.processCorridor(this, layer, x, z, rand, lyr, stage, startPos);
                     }
                 }
@@ -165,7 +165,7 @@ public class DungeonBuilder {
     }
 
     private void determineThemes() {
-        ResourceLocation registryName = dynamicRegistries.getRegistry(Registry.BIOME_KEY).getKey(biome);
+        ResourceLocation registryName = dynamicRegistries.registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
 
         if (registryName != null) {
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), rand);
@@ -257,7 +257,7 @@ public class DungeonBuilder {
 
                         tile.piece.setupBoundingBox();
 
-                        if (tile.piece.getType() == 10) {
+                        if (tile.piece.getDungeonPieceType() == 10) {
                             layer.rotateNode(tile, rand);
                         }
 
@@ -274,7 +274,7 @@ public class DungeonBuilder {
 
     public static boolean isBlockProtected(IWorld world, BlockPos pos, PlacementContext context) {
         BlockState state = world.getBlockState(pos);
-        return state.getBlockHardness(world, pos) < 0 || context.protectedBlocks.contains(pos) || BlockTags.PORTALS.contains(state.getBlock());
+        return state.getDestroySpeed(world, pos) < 0 || context.protectedBlocks.contains(pos) || BlockTags.PORTALS.contains(state.getBlock());
     }
 
 }

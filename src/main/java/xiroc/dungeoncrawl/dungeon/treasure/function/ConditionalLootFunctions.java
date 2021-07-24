@@ -34,12 +34,12 @@ public class ConditionalLootFunctions extends LootFunction {
     }
 
     @Override
-    protected ItemStack doApply(ItemStack stack, LootContext context) {
+    protected ItemStack run(ItemStack stack, LootContext context) {
         return null;
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return null;
     }
 

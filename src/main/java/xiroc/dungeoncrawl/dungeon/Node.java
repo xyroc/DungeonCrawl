@@ -68,7 +68,7 @@ public class Node {
         for (int i = 0; i < node.sides.length; i++) {
             if (node.sides[i] && !rotatedNode.sides[i]) {
                 return compare(node, rotatedNode.rotate(step),
-                        currentRotation.add(step), step, ++depth);
+                        currentRotation.getRotated(step), step, ++depth);
             }
         }
         return currentRotation;

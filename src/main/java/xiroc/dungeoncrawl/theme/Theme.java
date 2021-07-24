@@ -45,28 +45,28 @@ public class Theme {
      * in case a theme can't be found and the default theme can't be found either.
      */
     public static final Theme BUILTIN_DEFAULT_THEME = new Theme(
-            (world, pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
-            (world, pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE.getDefaultState(),
-            (world, pos, rotation) -> Blocks.GRAVEL.getDefaultState(),
-            (world, pos, rotation) -> Blocks.STONE_BRICK_STAIRS.getDefaultState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE_STAIRS.getDefaultState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE.getDefaultState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE_WALL.getDefaultState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE_SLAB.getDefaultState(),
-            (world, pos, rotation) -> Blocks.STONE_BRICK_SLAB.getDefaultState());
+            (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.GRAVEL.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.STONE_BRICK_STAIRS.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE_STAIRS.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE_WALL.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.COBBLESTONE_SLAB.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.STONE_BRICK_SLAB.defaultBlockState());
 
     public static final SecondaryTheme BUILTIN_DEFAULT_SECONDARY_THEME = new SecondaryTheme(
-            (world, pos, rotation) -> Blocks.OAK_LOG.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_TRAPDOOR.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_DOOR.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_PLANKS.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_STAIRS.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_SLAB.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_FENCE.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_FENCE_GATE.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_BUTTON.getDefaultState(),
-            (world, pos, rotation) -> Blocks.OAK_PRESSURE_PLATE.getDefaultState());
+            (world, pos, rotation) -> Blocks.OAK_LOG.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_TRAPDOOR.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_DOOR.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_PLANKS.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_STAIRS.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_SLAB.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_FENCE.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_FENCE_GATE.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_BUTTON.defaultBlockState(),
+            (world, pos, rotation) -> Blocks.OAK_PRESSURE_PLATE.defaultBlockState());
 
     protected static final Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
     protected static final Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
@@ -297,7 +297,7 @@ public class Theme {
         ImmutableSet.Builder<ResourceLocation> themeKeySetBuilder = new ImmutableSet.Builder<>();
         ImmutableSet.Builder<ResourceLocation> secondaryThemeKeySetBuilder = new ImmutableSet.Builder<>();
 
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate(SECONDARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
+        for (ResourceLocation resource : resourceManager.listResources(DungeonCrawl.locate(SECONDARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
             DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
@@ -316,7 +316,7 @@ public class Theme {
             }
         }
 
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(DungeonCrawl.locate(PRIMARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
+        for (ResourceLocation resource : resourceManager.listResources(DungeonCrawl.locate(PRIMARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
             DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
@@ -341,7 +341,7 @@ public class Theme {
         WeightedRandom.Builder<Theme> primaryDefaultBuilder = new WeightedRandom.Builder<>();
         WeightedRandom.Builder<SecondaryTheme> secondaryDefaultBuilder = new WeightedRandom.Builder<>();
 
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(PRIMARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
+        for (ResourceLocation resource : resourceManager.listResources(PRIMARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 JsonTheming.deserializeThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), themeMappingBuilders, primaryDefaultBuilder, resource);
@@ -351,7 +351,7 @@ public class Theme {
             }
         }
 
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(SECONDARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
+        for (ResourceLocation resource : resourceManager.listResources(SECONDARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 JsonTheming.deserializeSecondaryThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), secondaryThemeMappingBuilders, secondaryDefaultBuilder, resource);
@@ -395,7 +395,7 @@ public class Theme {
     private static Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> loadRandomThemeFiles(String directory, IResourceManager resourceManager) {
         WeightedRandom.Builder<Theme> primary = new WeightedRandom.Builder<>();
         WeightedRandom.Builder<SecondaryTheme> secondary = new WeightedRandom.Builder<>();
-        for (ResourceLocation resource : resourceManager.getAllResourceLocations(directory, (s) -> s.endsWith(".json"))) {
+        for (ResourceLocation resource : resourceManager.listResources(directory, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 JsonTheming.deserializeRandomThemeFile(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(),

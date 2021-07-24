@@ -36,14 +36,14 @@ public class DungeonBlocks {
             Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
             Blocks.BROWN_CARPET, Blocks.RED_CARPET};
 
-    public static final BlockState SPAWNER = Blocks.SPAWNER.getDefaultState();
-    public static final BlockState CHEST = Blocks.CHEST.getDefaultState();
+    public static final BlockState SPAWNER = Blocks.SPAWNER.defaultBlockState();
+    public static final BlockState CHEST = Blocks.CHEST.defaultBlockState();
 
-    public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.getDefaultState();
+    public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.defaultBlockState();
 
     public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, Property<T> property, V value) {
         if (state.hasProperty(property)) {
-            return state.with(property, value);
+            return state.setValue(property, value);
         }
         return state;
     }

@@ -46,18 +46,18 @@ public class FloorDecoration implements IDungeonDecoration {
             BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
             if (!DungeonBuilder.isBlockProtected(world, origin, context)
                     && block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
-                    && worldGenBounds.isVecInside(pos)
-                    && structureBounds.isVecInside(pos)
-                    && world.isAirBlock(origin.add(block.position).up())
-                    && checkSolid(world, origin.add(block.position), worldGenBounds, structureBounds)
+                    && worldGenBounds.isInside(pos)
+                    && structureBounds.isInside(pos)
+                    && world.isEmptyBlock(origin.offset(block.position).above())
+                    && checkSolid(world, origin.offset(block.position), worldGenBounds, structureBounds)
                     && DungeonBlocks.RANDOM.nextFloat() < chance) {
-                world.setBlockState(pos, blockStateProvider.get(world, pos), 2);
+                world.setBlock(pos, blockStateProvider.get(world, pos), 2);
             }
         });
     }
 
     private static boolean checkSolid(IWorld world, BlockPos pos, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds) {
-        return worldGenBounds.isVecInside(pos) && structureBounds.isVecInside(pos) && world.getBlockState(pos).isSolid();
+        return worldGenBounds.isInside(pos) && structureBounds.isInside(pos) && world.getBlockState(pos).canOcclude();
     }
 
     public static class NextToSolid implements IDungeonDecoration {
@@ -77,16 +77,16 @@ public class FloorDecoration implements IDungeonDecoration {
                 if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1) {
                     BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
 
-                    if (worldGenBounds.isVecInside(pos)
-                            && structureBounds.isVecInside(pos) && world.isAirBlock(pos)
-                            && world.getBlockState(pos.down()).isSolid()
+                    if (worldGenBounds.isInside(pos)
+                            && structureBounds.isInside(pos) && world.isEmptyBlock(pos)
+                            && world.getBlockState(pos.below()).canOcclude()
                             && !DungeonBuilder.isBlockProtected(world, pos, context)
                             && (checkSolid(world, pos.north(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.east(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.south(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.west(), worldGenBounds, structureBounds))
                             && DungeonBlocks.RANDOM.nextFloat() < chance) {
-                        world.setBlockState(pos, blockStateProvider.get(world, pos), 2);
+                        world.setBlock(pos, blockStateProvider.get(world, pos), 2);
                     }
                 }
             });

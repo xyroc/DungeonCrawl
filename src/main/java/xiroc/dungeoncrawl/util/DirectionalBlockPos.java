@@ -43,7 +43,7 @@ public class DirectionalBlockPos {
     }
 
     public DirectionalBlockPos offset(Direction direction, int amount) {
-        position = position.offset(direction, amount);
+        position = position.relative(direction, amount);
         return this;
     }
 
@@ -51,7 +51,7 @@ public class DirectionalBlockPos {
         nbt.putInt("x", position.getX());
         nbt.putInt("y", position.getY());
         nbt.putInt("z", position.getZ());
-        nbt.putInt("direction", direction.getIndex());
+        nbt.putInt("direction", direction.get3DDataValue());
         if (rotation != null) {
             nbt.putString("rotation", rotation.toString().toUpperCase(Locale.ROOT));
         }
@@ -59,7 +59,7 @@ public class DirectionalBlockPos {
 
     public static DirectionalBlockPos fromNBT(CompoundNBT nbt) {
         return new DirectionalBlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"),
-                Direction.byIndex(nbt.getInt("direction")), nbt.contains("rotation") ? Rotation.valueOf(nbt.getString("rotation")) : null);
+                Direction.from3DDataValue(nbt.getInt("direction")), nbt.contains("rotation") ? Rotation.valueOf(nbt.getString("rotation")) : null);
     }
 
 }

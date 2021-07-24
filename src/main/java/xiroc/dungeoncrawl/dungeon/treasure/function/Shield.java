@@ -38,12 +38,12 @@ public class Shield extends LootFunction {
     }
 
     @Override
-    public ItemStack doApply(ItemStack stack, LootContext context) {
+    public ItemStack run(ItemStack stack, LootContext context) {
         return RandomItems.createShield(context.getRandom(), lootLevel);
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return Treasure.SHIELD;
     }
 

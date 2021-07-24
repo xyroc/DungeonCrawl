@@ -217,21 +217,21 @@ public class RandomEquipment {
     }
 
     public static ItemStack createItemStack(Random rand, Item item, int stage) {
-        ItemStack itemStack = EnchantmentHelper.addRandomEnchantment(rand, new ItemStack(item), 10 + 3 * stage, false);
+        ItemStack itemStack = EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * stage, false);
         applyDamage(itemStack, rand);
         return itemStack;
     }
 
     public static void applyDamage(ItemStack item, Random rand) {
-        if (item.isDamageable())
-            item.setDamage(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
+        if (item.isDamageableItem())
+            item.setDamageValue(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
     }
 
     public static void enchantItem(ItemStack item, Enchantment enchantment, double multiplier) {
         int level = (int) ((double) enchantment.getMaxLevel() * multiplier);
         if (level < 1)
             level = 1;
-        item.addEnchantment(enchantment, level);
+        item.enchant(enchantment, level);
     }
 
     public static ItemStack setArmorColor(ItemStack item, int color) {

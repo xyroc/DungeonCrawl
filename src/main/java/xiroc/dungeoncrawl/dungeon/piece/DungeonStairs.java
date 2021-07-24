@@ -43,7 +43,7 @@ import java.util.Random;
 
 public class DungeonStairs extends DungeonPiece {
 
-    private static final BlockState IRON_BARS = Blocks.IRON_BARS.getDefaultState();
+    private static final BlockState IRON_BARS = Blocks.IRON_BARS.defaultBlockState();
 
     public int stairType; // 0: bottom stairs, 1: top stairs
 
@@ -68,12 +68,12 @@ public class DungeonStairs extends DungeonPiece {
     }
 
     @Override
-    public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
-        BlockPos pos = new BlockPos(x, y, z).add(model.getOffset(rotation));
+        BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
         switch (stairType) {
             case 0: {
                 build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
@@ -144,13 +144,13 @@ public class DungeonStairs extends DungeonPiece {
     }
 
     @Override
-    public void readAdditional(CompoundNBT tagCompound) {
-        super.readAdditional(tagCompound);
+    public void addAdditionalSaveData(CompoundNBT tagCompound) {
+        super.addAdditionalSaveData(tagCompound);
         tagCompound.putInt("stairType", stairType);
     }
 
     @Override
-    public int getType() {
+    public int getDungeonPieceType() {
         return 1;
     }
 

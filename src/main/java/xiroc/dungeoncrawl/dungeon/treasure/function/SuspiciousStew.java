@@ -117,13 +117,13 @@ public class SuspiciousStew extends LootFunction {
     }
 
     @Override
-    public ItemStack doApply(ItemStack stack, LootContext context) {
+    public ItemStack run(ItemStack stack, LootContext context) {
         stack.getOrCreateTag().put("Effects", createEffectList(context.getRandom()));
         return stack;
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return Treasure.SUSPICIOUS_STEW;
     }
 

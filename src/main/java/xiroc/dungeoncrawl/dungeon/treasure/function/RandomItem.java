@@ -46,16 +46,16 @@ public class RandomItem extends LootFunction {
     }
 
     @Override
-    public ItemStack doApply(ItemStack stack, LootContext context) {
-        if (context.has(LootParameters.ORIGIN)) {
-            return RandomItems.generate(context.getWorld(), context.getRandom(), lootLevel);
+    public ItemStack run(ItemStack stack, LootContext context) {
+        if (context.hasParam(LootParameters.ORIGIN)) {
+            return RandomItems.generate(context.getLevel(), context.getRandom(), lootLevel);
         } else {
             return ItemStack.EMPTY;
         }
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return Treasure.RANDOM_ITEM;
     }
 

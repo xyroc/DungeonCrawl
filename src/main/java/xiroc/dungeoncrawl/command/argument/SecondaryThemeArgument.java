@@ -58,7 +58,7 @@ public class SecondaryThemeArgument implements ArgumentType<Theme.SecondaryTheme
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggestIterable(Theme.getSecondaryThemeKeys(), builder);
+        return ISuggestionProvider.suggestResource(Theme.getSecondaryThemeKeys(), builder);
     }
 
 }

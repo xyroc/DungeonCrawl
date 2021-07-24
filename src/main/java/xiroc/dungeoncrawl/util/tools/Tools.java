@@ -57,18 +57,18 @@ public class Tools {
     @SubscribeEvent
     public void onServerStart(FMLServerStartingEvent event) {
         DungeonCrawl.LOGGER.debug("Registering Commands...");
-        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("savemodel").requires((a) -> {
+        event.getServer().getCommands().getDispatcher().register(Commands.literal("savemodel").requires((a) -> {
             try {
-                return a.asPlayer().isCreative();
+                return a.getPlayerOrException().isCreative();
             } catch (CommandSyntaxException e) {
-                a.sendErrorMessage(new StringTextComponent("You must be a player!"));
+                a.sendFailure(new StringTextComponent("You must be a player!"));
                 return false;
             }
         }).then(Commands.argument("name", StringArgumentType.string()).executes((command) -> {
-                    UUID uuid = command.getSource().asPlayer().getUniqueID();
+                    UUID uuid = command.getSource().getPlayerOrException().getUUID();
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
-                        command.getSource().sendFeedback(
+                        command.getSource().sendSuccess(
                                 new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
@@ -86,22 +86,22 @@ public class Tools {
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(name,
                                 ModelBlockDefinition.getDefaultDefinition(),
-                                command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
+                                command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendFeedback(new StringTextComponent("Saved as " + TextFormatting.GREEN + name + ".nbt"), true);
+                        command.getSource().sendSuccess(new StringTextComponent("Saved as " + TextFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
-                        command.getSource().sendFeedback(
+                        command.getSource().sendSuccess(
                                 new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
                 }).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
                     ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
-                    UUID uuid = command.getSource().asPlayer().getUniqueID();
+                    UUID uuid = command.getSource().getPlayerOrException().getUUID();
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
-                        command.getSource().sendFeedback(
+                        command.getSource().sendSuccess(
                                 new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
@@ -118,12 +118,12 @@ public class Tools {
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
                                 blockDefinition,
-                                command.getSource().asPlayer().world, pos1, pos2.getX() - pos1.getX() + 1,
+                                command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendFeedback(new StringTextComponent("Saving a model..."), true);
+                        command.getSource().sendSuccess(new StringTextComponent("Saving a model..."), true);
                         return 0;
                     } else {
-                        command.getSource().sendFeedback(
+                        command.getSource().sendSuccess(
                                 new StringTextComponent(TextFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
@@ -132,51 +132,51 @@ public class Tools {
         ));
 
 
-        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("buildmodel").requires((a) -> a.hasPermissionLevel(2))
+        event.getServer().getCommands().getDispatcher().register(Commands.literal("buildmodel").requires((a) -> a.hasPermission(2))
                 .then(Commands.argument("model", DungeonModelArgument.modelArgument()).executes((command) -> {
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
-                    BlockPos pos = command.getSource().asPlayer().getPosition();
-                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.getDefaultDefinition());
+                    BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
+                    buildModel(model, command.getSource().getPlayerOrException().level, pos, ModelBlockDefinition.getDefaultDefinition());
                     setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
-                    BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                    buildModel(model, command.getSource().asPlayer().world, pos, ModelBlockDefinition.getDefaultDefinition());
+                    BlockPos pos = Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource());
+                    buildModel(model, command.getSource().getPlayerOrException().level, pos, ModelBlockDefinition.getDefaultDefinition());
                     setOrigin(command.getSource(), pos);
                     return 0;
                 })).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
                     ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
-                    BlockPos pos = command.getSource().asPlayer().getPosition();
-                    buildModel(model, command.getSource().asPlayer().world, pos, blockDefinition);
+                    BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
+                    buildModel(model, command.getSource().getPlayerOrException().level, pos, blockDefinition);
                     setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
-                    BlockPos pos = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
-                    buildModel(model, command.getSource().asPlayer().world, pos, blockDefinition);
+                    BlockPos pos = Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource());
+                    buildModel(model, command.getSource().getPlayerOrException().level, pos, blockDefinition);
                     setOrigin(command.getSource(), pos);
                     return 0;
                 })))));
 
-        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("origin").requires((source) -> source.hasPermissionLevel(2))
+        event.getServer().getCommands().getDispatcher().register(Commands.literal("origin").requires((source) -> source.hasPermission(2))
                 .executes((command) -> {
-                    UUID uuid = command.getSource().asPlayer().getUniqueID();
+                    UUID uuid = command.getSource().getPlayerOrException().getUUID();
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
-                        command.getSource().sendFeedback(new StringTextComponent(TextFormatting.RED + "Please set your origin with "
+                        command.getSource().sendSuccess(new StringTextComponent(TextFormatting.RED + "Please set your origin with "
                                 + TextFormatting.BOLD + "/origin ~ ~ ~"
                                 + TextFormatting.RED + " first."), true);
                         return 1;
                     } else {
                         ModelEditContext context = CONTEXT_TABLE.get(uuid);
-                        BlockPos pos = command.getSource().asPlayer().getPosition();
-                        command.getSource().sendFeedback(new StringTextComponent("The origin is (x: "
+                        BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
+                        command.getSource().sendSuccess(new StringTextComponent("The origin is (x: "
                                 + context.origin.getX() + " y: "
                                 + context.origin.getY() + " z: "
                                 + context.origin.getZ() + ")."), true);
-                        command.getSource().sendFeedback(new StringTextComponent("Your coordinates relative to the origin are (x: "
+                        command.getSource().sendSuccess(new StringTextComponent("Your coordinates relative to the origin are (x: "
                                 + (pos.getX() - context.origin.getX()) + " y: "
                                 + (pos.getY() - context.origin.getY()) + " z: "
                                 + (pos.getZ() - context.origin.getZ() + ").")), true);
@@ -185,17 +185,17 @@ public class Tools {
                 })
                 .then(Commands.argument("location", Vec3Argument.vec3())
                         .executes((command) -> {
-                            BlockPos location = Vec3Argument.getLocation(command, "location").getBlockPos(command.getSource());
+                            BlockPos location = Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource());
                             setOrigin(command.getSource(), location);
                             return 0;
                         }))
                 .then(Commands.literal("reset").executes((command) -> {
-                    UUID uuid = command.getSource().asPlayer().getUniqueID();
+                    UUID uuid = command.getSource().getPlayerOrException().getUUID();
                     if (CONTEXT_TABLE.containsKey(uuid)) {
                         CONTEXT_TABLE.get(uuid).origin = null;
-                        command.getSource().sendFeedback(new StringTextComponent("Origin reset."), true);
+                        command.getSource().sendSuccess(new StringTextComponent("Origin reset."), true);
                     } else {
-                        command.getSource().sendFeedback(new StringTextComponent("Nothing to reset."), true);
+                        command.getSource().sendSuccess(new StringTextComponent("Nothing to reset."), true);
                     }
                     return 0;
                 })));
@@ -203,8 +203,8 @@ public class Tools {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (!event.getWorld().isRemote() && event.getPlayer().isCreative()) {
-            Item item = event.getPlayer().getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem();
+        if (!event.getWorld().isClientSide() && event.getPlayer().isCreative()) {
+            Item item = event.getPlayer().getItemBySlot(EquipmentSlotType.MAINHAND).getItem();
             if (item == Items.DIAMOND_AXE) {
                 event.setCanceled(true);
                 BlockPos pos = event.getPos();
@@ -212,21 +212,21 @@ public class Tools {
                 UUID uuid = event.getPlayer().getGameProfile().getId();
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos1 = pos;
                 event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE + "Position 1 set to ("
-                        + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUniqueID());
+                        + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUUID());
             } else if (item == Items.GOLDEN_AXE) {
                 event.setCanceled(true);
-                CONTEXT_TABLE.computeIfAbsent(event.getPlayer().getUniqueID(), (key) -> new ModelEditContext()).origin = event.getPos();
+                CONTEXT_TABLE.computeIfAbsent(event.getPlayer().getUUID(), (key) -> new ModelEditContext()).origin = event.getPos();
                 event.getPlayer().sendMessage(new StringTextComponent("Origin set to (x: "
                         + event.getPos().getX() + " y: "
                         + event.getPos().getY() + " z: "
-                        + event.getPos().getZ() + ")."), event.getPlayer().getUniqueID());
+                        + event.getPos().getZ() + ")."), event.getPlayer().getUUID());
             }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
-        if (!event.getPlayer().world.isRemote() && event.getPlayer().isCreative()) {
+        if (!event.getPlayer().level.isClientSide() && event.getPlayer().isCreative()) {
             if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
                 event.setCanceled(true);
 
@@ -236,17 +236,17 @@ public class Tools {
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
 
                 event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
-                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUniqueID());
+                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUUID());
             } else if (event.getItemStack().getItem() == Items.GOLDEN_AXE
-                    && CONTEXT_TABLE.containsKey(event.getPlayer().getUniqueID())) {
+                    && CONTEXT_TABLE.containsKey(event.getPlayer().getUUID())) {
                 event.setCanceled(true);
-                ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUniqueID());
+                ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUUID());
                 if (context.origin != null) {
                     event.getPlayer().sendMessage(new StringTextComponent("The coordinates of the block you clicked" +
                             " relative to the origin are (x: "
                             + (event.getPos().getX() - context.origin.getX()) + " y: "
                             + (event.getPos().getY() - context.origin.getY()) + " z: "
-                            + (event.getPos().getZ() - context.origin.getZ() + ").")), event.getPlayer().getUniqueID());
+                            + (event.getPos().getZ() - context.origin.getZ() + ").")), event.getPlayer().getUUID());
                 }
             }
         }
@@ -254,9 +254,9 @@ public class Tools {
     }
 
     private static void setOrigin(CommandSource source, BlockPos pos) throws CommandSyntaxException {
-        ModelEditContext context = CONTEXT_TABLE.computeIfAbsent(source.asPlayer().getUniqueID(), (id) -> new ModelEditContext());
+        ModelEditContext context = CONTEXT_TABLE.computeIfAbsent(source.getPlayerOrException().getUUID(), (id) -> new ModelEditContext());
         context.origin = pos;
-        source.sendFeedback(new StringTextComponent("Origin set to (x: "
+        source.sendSuccess(new StringTextComponent("Origin set to (x: "
                 + context.origin.getX() + " y: "
                 + context.origin.getY() + " z: "
                 + context.origin.getZ() + ")."), true);
@@ -267,19 +267,19 @@ public class Tools {
         for (int y = 0; y < model.height; y++) {
             for (int x = 0; x < model.width; x++) {
                 for (int z = 0; z < model.length; z++) {
-                    world.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), Blocks.BARRIER.getDefaultState(), 2);
+                    world.setBlock(new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z), Blocks.BARRIER.defaultBlockState(), 2);
                 }
             }
         }
 
         model.blocks.forEach((modelBlock) -> {
-            BlockPos placePos = pos.add(modelBlock.position);
+            BlockPos placePos = pos.offset(modelBlock.position);
             Block block = definition.getBlock(modelBlock);
 
             if (block == null)
                 block = Blocks.AIR;
 
-            world.setBlockState(placePos, modelBlock.create(block.getDefaultState(), world, placePos, Rotation.NONE), 3);
+            world.setBlock(placePos, modelBlock.create(block.defaultBlockState(), world, placePos, Rotation.NONE), 3);
 
         });
 
@@ -291,10 +291,10 @@ public class Tools {
             case WEST:
             case SOUTH:
             case NORTH:
-                return JigsawOrientation.func_239641_a_(primary, Direction.UP);
+                return JigsawOrientation.fromFrontAndTop(primary, Direction.UP);
             case UP:
             case DOWN:
-                return JigsawOrientation.func_239641_a_(primary, Direction.EAST);
+                return JigsawOrientation.fromFrontAndTop(primary, Direction.EAST);
             default:
                 return JigsawOrientation.NORTH_UP;
         }

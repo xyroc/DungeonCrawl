@@ -58,78 +58,78 @@ public class RandomItems {
 
     static {
         REINFORCED_BOW = new ItemStack(Items.BOW);
-        REINFORCED_BOW.addEnchantment(Enchantments.UNBREAKING, 1);
-        REINFORCED_BOW.addEnchantment(Enchantments.POWER, 1);
-        REINFORCED_BOW.setDisplayName(new StringTextComponent("Reinforced Bow"));
+        REINFORCED_BOW.enchant(Enchantments.UNBREAKING, 1);
+        REINFORCED_BOW.enchant(Enchantments.POWER_ARROWS, 1);
+        REINFORCED_BOW.setHoverName(new StringTextComponent("Reinforced Bow"));
 
         BOOTS_OF_BATTLE = new ItemStack(Items.LEATHER_BOOTS);
         RandomEquipment.setArmorColor(BOOTS_OF_BATTLE, COLOR);
-        BOOTS_OF_BATTLE.addEnchantment(Enchantments.UNBREAKING, 1);
-        BOOTS_OF_BATTLE.addEnchantment(Enchantments.PROTECTION, 1);
-        BOOTS_OF_BATTLE.setDisplayName(new StringTextComponent("Boots of Battle"));
+        BOOTS_OF_BATTLE.enchant(Enchantments.UNBREAKING, 1);
+        BOOTS_OF_BATTLE.enchant(Enchantments.ALL_DAMAGE_PROTECTION, 1);
+        BOOTS_OF_BATTLE.setHoverName(new StringTextComponent("Boots of Battle"));
 
         PANTS_OF_DEFLECTION = new ItemStack(Items.LEATHER_LEGGINGS);
         RandomEquipment.setArmorColor(PANTS_OF_DEFLECTION, COLOR);
-        PANTS_OF_DEFLECTION.addEnchantment(Enchantments.PROTECTION, 2);
-        PANTS_OF_DEFLECTION.addEnchantment(Enchantments.THORNS, 1);
-        PANTS_OF_DEFLECTION.setDisplayName(new StringTextComponent("Pants of Deflection"));
+        PANTS_OF_DEFLECTION.enchant(Enchantments.ALL_DAMAGE_PROTECTION, 2);
+        PANTS_OF_DEFLECTION.enchant(Enchantments.THORNS, 1);
+        PANTS_OF_DEFLECTION.setHoverName(new StringTextComponent("Pants of Deflection"));
 
         LUMBERJACKET = new ItemStack(Items.LEATHER_CHESTPLATE);
         RandomEquipment.setArmorColor(LUMBERJACKET, 11546150);
-        LUMBERJACKET.addEnchantment(Enchantments.UNBREAKING, 3);
-        LUMBERJACKET.addEnchantment(Enchantments.FIRE_PROTECTION, 1);
-        LUMBERJACKET.setDisplayName(new StringTextComponent("Lumberjacket"));
+        LUMBERJACKET.enchant(Enchantments.UNBREAKING, 3);
+        LUMBERJACKET.enchant(Enchantments.FIRE_PROTECTION, 1);
+        LUMBERJACKET.setHoverName(new StringTextComponent("Lumberjacket"));
 
         YOKEL_AXE = new ItemStack(Items.IRON_AXE);
-        YOKEL_AXE.addEnchantment(Enchantments.EFFICIENCY, 2);
-        YOKEL_AXE.addEnchantment(Enchantments.SHARPNESS, 1);
-        YOKEL_AXE.addEnchantment(Enchantments.UNBREAKING, 1);
-        YOKEL_AXE.setDisplayName(new StringTextComponent("Yokel's Axe"));
+        YOKEL_AXE.enchant(Enchantments.BLOCK_EFFICIENCY, 2);
+        YOKEL_AXE.enchant(Enchantments.SHARPNESS, 1);
+        YOKEL_AXE.enchant(Enchantments.UNBREAKING, 1);
+        YOKEL_AXE.setHoverName(new StringTextComponent("Yokel's Axe"));
 
         DOOM = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:golden_sword")));
-        DOOM.addEnchantment(Enchantments.SHARPNESS, 1);
-        DOOM.addEnchantment(Enchantments.FIRE_ASPECT, 2);
-        DOOM.addEnchantment(Enchantments.UNBREAKING, 1);
-        DOOM.setDisplayName(new StringTextComponent("Doom"));
+        DOOM.enchant(Enchantments.SHARPNESS, 1);
+        DOOM.enchant(Enchantments.FIRE_ASPECT, 2);
+        DOOM.enchant(Enchantments.UNBREAKING, 1);
+        DOOM.setHoverName(new StringTextComponent("Doom"));
 
         THE_SLAYER = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:diamond_sword")));
-        THE_SLAYER.addEnchantment(Enchantments.SHARPNESS, 4);
-        THE_SLAYER.setDisplayName(new StringTextComponent("The Slayer"));
+        THE_SLAYER.enchant(Enchantments.SHARPNESS, 4);
+        THE_SLAYER.setHoverName(new StringTextComponent("The Slayer"));
 
         DEMON_HUNTER_CROSSBOW = new ItemStack(Items.CROSSBOW);
-        DEMON_HUNTER_CROSSBOW.addEnchantment(Enchantments.PIERCING, 2);
-        DEMON_HUNTER_CROSSBOW.addEnchantment(Enchantments.MULTISHOT, 1);
-        DEMON_HUNTER_CROSSBOW.addEnchantment(Enchantments.QUICK_CHARGE, 1);
-        DEMON_HUNTER_CROSSBOW.addEnchantment(Enchantments.POWER, 4);
-        DEMON_HUNTER_CROSSBOW.setDisplayName(new StringTextComponent("Demon Hunter's Crossbow"));
+        DEMON_HUNTER_CROSSBOW.enchant(Enchantments.PIERCING, 2);
+        DEMON_HUNTER_CROSSBOW.enchant(Enchantments.MULTISHOT, 1);
+        DEMON_HUNTER_CROSSBOW.enchant(Enchantments.QUICK_CHARGE, 1);
+        DEMON_HUNTER_CROSSBOW.enchant(Enchantments.POWER_ARROWS, 4);
+        DEMON_HUNTER_CROSSBOW.setHoverName(new StringTextComponent("Demon Hunter's Crossbow"));
 
         THIEF_DAGGER = new ItemStack(Items.IRON_SWORD);
-        THIEF_DAGGER.addEnchantment(Enchantments.SHARPNESS, 1);
-        THIEF_DAGGER.addEnchantment(Enchantments.LOOTING, 3);
-        THIEF_DAGGER.setDisplayName(new StringTextComponent("Thief's Dagger"));
+        THIEF_DAGGER.enchant(Enchantments.SHARPNESS, 1);
+        THIEF_DAGGER.enchant(Enchantments.MOB_LOOTING, 3);
+        THIEF_DAGGER.setHoverName(new StringTextComponent("Thief's Dagger"));
 
         THE_GREAT_CLEAVER = new ItemStack(Items.DIAMOND_SWORD);
-        THE_GREAT_CLEAVER.addEnchantment(Enchantments.SWEEPING, 3);
-        THE_GREAT_CLEAVER.addEnchantment(Enchantments.SMITE, 4);
-        THE_GREAT_CLEAVER.addEnchantment(Enchantments.UNBREAKING, 3);
-        THE_GREAT_CLEAVER.setDisplayName(new StringTextComponent("The Great Cleaver"));
+        THE_GREAT_CLEAVER.enchant(Enchantments.SWEEPING_EDGE, 3);
+        THE_GREAT_CLEAVER.enchant(Enchantments.SMITE, 4);
+        THE_GREAT_CLEAVER.enchant(Enchantments.UNBREAKING, 3);
+        THE_GREAT_CLEAVER.setHoverName(new StringTextComponent("The Great Cleaver"));
 
         ARCHANGEL_SWORD = new ItemStack(Items.GOLDEN_SWORD);
-        ARCHANGEL_SWORD.addEnchantment(Enchantments.SHARPNESS, 4);
-        ARCHANGEL_SWORD.addEnchantment(Enchantments.UNBREAKING, 2);
-        ARCHANGEL_SWORD.addEnchantment(Enchantments.VANISHING_CURSE, 1);
-        ARCHANGEL_SWORD.setDisplayName(new StringTextComponent("Archangel's Sword"));
+        ARCHANGEL_SWORD.enchant(Enchantments.SHARPNESS, 4);
+        ARCHANGEL_SWORD.enchant(Enchantments.UNBREAKING, 2);
+        ARCHANGEL_SWORD.enchant(Enchantments.VANISHING_CURSE, 1);
+        ARCHANGEL_SWORD.setHoverName(new StringTextComponent("Archangel's Sword"));
 
         REPULSER = new ItemStack(Items.IRON_SWORD);
-        REPULSER.addEnchantment(Enchantments.KNOCKBACK, 2);
-        REPULSER.addEnchantment(Enchantments.SWEEPING, 1);
-        REPULSER.setDisplayName(new StringTextComponent("Repulser"));
+        REPULSER.enchant(Enchantments.KNOCKBACK, 2);
+        REPULSER.enchant(Enchantments.SWEEPING_EDGE, 1);
+        REPULSER.setHoverName(new StringTextComponent("Repulser"));
 
         ELB_BOW = new ItemStack(Items.BOW);
-        ELB_BOW.addEnchantment(Enchantments.POWER, 4);
-        ELB_BOW.addEnchantment(Enchantments.PIERCING, 3);
-        ELB_BOW.addEnchantment(Enchantments.MENDING, 1);
-        ELB_BOW.setDisplayName(new StringTextComponent("Bow of the Elbs"));
+        ELB_BOW.enchant(Enchantments.POWER_ARROWS, 4);
+        ELB_BOW.enchant(Enchantments.PIERCING, 3);
+        ELB_BOW.enchant(Enchantments.MENDING, 1);
+        ELB_BOW.setHoverName(new StringTextComponent("Bow of the Elbs"));
 
         ITEMS = new ItemStack[]{REINFORCED_BOW, BOOTS_OF_BATTLE, LUMBERJACKET, YOKEL_AXE, DOOM, ARCHANGEL_SWORD,
                 REPULSER};
@@ -201,7 +201,7 @@ public class RandomItems {
         return new TreasureItem("minecraft:air").setProcessor((world, rand, lootLevel) -> {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
             if (item != null) {
-                return EnchantmentHelper.addRandomEnchantment(rand, new ItemStack(item), 10 + 3 * lootLevel, lootLevel > 2);
+                return EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * lootLevel, lootLevel > 2);
             } else {
                 DungeonCrawl.LOGGER.error("The item {} does not exist.", itemName);
                 return ItemStack.EMPTY;
@@ -217,12 +217,12 @@ public class RandomItems {
         lootLevel = Math.min(4, lootLevel);
         float f = rand.nextFloat();
         if (f < 0.12f + lootLevel * 0.02f) {
-            shield.addEnchantment(Enchantments.UNBREAKING, UNBREAKING_LEVELS[lootLevel].generateInt(rand));
+            shield.enchant(Enchantments.UNBREAKING, UNBREAKING_LEVELS[lootLevel].getInt(rand));
             if (f < 0.04 + lootLevel * 0.01) {
-                shield.addEnchantment(Enchantments.MENDING, 1);
+                shield.enchant(Enchantments.MENDING, 1);
             }
             if (rand.nextFloat() < 0.75) {
-                shield.addEnchantment(Enchantments.VANISHING_CURSE, 1);
+                shield.enchant(Enchantments.VANISHING_CURSE, 1);
             }
         }
         shield.getOrCreateTag().put("BlockEntityTag", Banner.createPatterns(rand));

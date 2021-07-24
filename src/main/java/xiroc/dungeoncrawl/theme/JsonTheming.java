@@ -268,7 +268,7 @@ public class JsonTheming {
                     return (world, pos, rotation) -> state;
                 } else {
                     DungeonCrawl.LOGGER.error("Unknown block: {}", object.get("block").getAsString());
-                    return (world, pos, rotation) -> Blocks.CAVE_AIR.getDefaultState();
+                    return (world, pos, rotation) -> Blocks.CAVE_AIR.defaultBlockState();
                 }
             } else if (type.equalsIgnoreCase("pattern")) {
                 switch (object.get("pattern_type").getAsString().toLowerCase(Locale.ROOT)) {

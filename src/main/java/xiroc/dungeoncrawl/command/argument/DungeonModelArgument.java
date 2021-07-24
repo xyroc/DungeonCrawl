@@ -59,7 +59,7 @@ public class DungeonModelArgument implements ArgumentType<DungeonModel> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggestIterable(DungeonModels.getKeys(), builder);
+        return ISuggestionProvider.suggestResource(DungeonModels.getKeys(), builder);
     }
 
 }

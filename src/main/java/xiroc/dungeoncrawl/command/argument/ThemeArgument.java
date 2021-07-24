@@ -58,7 +58,7 @@ public class ThemeArgument implements ArgumentType<Theme> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggestIterable(Theme.getThemeKeys(), builder);
+        return ISuggestionProvider.suggestResource(Theme.getThemeKeys(), builder);
     }
 
 }

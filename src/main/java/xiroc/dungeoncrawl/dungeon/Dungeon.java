@@ -49,6 +49,8 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
+
 public class Dungeon extends Structure<NoFeatureConfig> {
 
     public static final Set<Biome.Category> ALLOWED_CATEGORIES = ImmutableSet.<Biome.Category>builder()
@@ -60,7 +62,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
 
     public static final Structure<NoFeatureConfig> DUNGEON = new Dungeon();
-    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = DUNGEON.withConfiguration(NoFeatureConfig.NO_FEATURE_CONFIG);
+    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = DUNGEON.configured(NoFeatureConfig.NONE);
 
 
     public static final int SIZE = 15;
@@ -73,7 +75,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         ResourceLocation registryName = new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT));
 
         DUNGEON.setRegistryName(registryName);
-        Structure.NAME_STRUCTURE_BIMAP.put(registryName.toString().toLowerCase(Locale.ROOT), DUNGEON);
+        Structure.STRUCTURES_REGISTRY.put(registryName.toString().toLowerCase(Locale.ROOT), DUNGEON);
 
         ForgeRegistries.STRUCTURE_FEATURES.register(DUNGEON);
 
@@ -85,32 +87,32 @@ public class Dungeon extends Structure<NoFeatureConfig> {
             throw new IllegalArgumentException("Invalid dungeon spacing/separation settings in the config.");
         }
 
-        DimensionStructuresSettings.field_236191_b_ =
+        DimensionStructuresSettings.DEFAULTS =
                 ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
-                        .putAll(DimensionStructuresSettings.field_236191_b_)
+                        .putAll(DimensionStructuresSettings.DEFAULTS)
                         .put(DUNGEON, separationSettings)
                         .build();
 
         Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
         Registry.register(registry, registryName, CONFIGURED_DUNGEON);
 
-        FlatGenerationSettings.STRUCTURES.put(DUNGEON, CONFIGURED_DUNGEON);
+        FlatGenerationSettings.STRUCTURE_FEATURES.put(DUNGEON, CONFIGURED_DUNGEON);
     }
 
     @Override
-    public GenerationStage.Decoration getDecorationStage() {
+    public GenerationStage.Decoration step() {
         return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
     @Override
-    protected boolean func_230365_b_() {
+    protected boolean linearSeparation() {
         return false;
     }
 
     @Override
-    protected boolean func_230363_a_(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-        for (Biome biome : p_230363_2_.getBiomes(p_230363_6_ * 16, p_230363_1_.getGroundHeight(), p_230363_7_ * 16, 64)) {
-            if (!biome.getGenerationSettings().hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get())
+    protected boolean isFeatureChunk(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
+        for (Biome biome : p_230363_2_.getBiomesWithin(p_230363_6_ * 16, p_230363_1_.getSpawnHeight(), p_230363_7_ * 16, 64)) {
+            if (!biome.getGenerationSettings().isValidStart(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get())
                 return false;
         }
         return true;
@@ -122,7 +124,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     }
 
     @Override
-    public String getStructureName() {
+    public String getFeatureName() {
         return NAME;
     }
 
@@ -134,21 +136,21 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         }
 
         @Override
-        public void func_230364_a_(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGenerator, TemplateManager p_230364_3_, int chunkX, int chunkZ, Biome p_230364_6_, NoFeatureConfig p_230364_7_) {
+        public void generatePieces(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGenerator, TemplateManager p_230364_3_, int chunkX, int chunkZ, Biome p_230364_6_, NoFeatureConfig p_230364_7_) {
             ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
-            DungeonBuilder builder = new DungeonBuilder(dynamicRegistries, chunkGenerator, chunkpos, rand);
-            this.components.addAll(builder.build());
-            this.recalculateStructureSize();
-            DungeonCrawl.LOGGER.debug("Created the dungeon layout for [{}, {}] with a total of {} pieces.", chunkX, chunkZ, this.components.size());
+            DungeonBuilder builder = new DungeonBuilder(dynamicRegistries, chunkGenerator, chunkpos, random);
+            this.pieces.addAll(builder.build());
+            this.calculateBoundingBox();
+            DungeonCrawl.LOGGER.debug("Created the dungeon layout for [{}, {}] with a total of {} pieces.", chunkX, chunkZ, this.pieces.size());
         }
 
         @Override
-        public void func_230366_a_(ISeedReader p_230366_1_, StructureManager p_230366_2_, ChunkGenerator p_230366_3_, Random p_230366_4_, MutableBoundingBox p_230366_5_, ChunkPos p_230366_6_) {
+        public void placeInChunk(ISeedReader p_230366_1_, StructureManager p_230366_2_, ChunkGenerator p_230366_3_, Random p_230366_4_, MutableBoundingBox p_230366_5_, ChunkPos p_230366_6_) {
             if (Config.EXTENDED_DEBUG.get()) {
                 DungeonCrawl.LOGGER.debug("Starting dungeon generation in chunk [{},{}]", p_230366_6_.x, p_230366_6_.z);
             }
 
-            super.func_230366_a_(p_230366_1_, p_230366_2_, p_230366_3_, p_230366_4_, p_230366_5_, p_230366_6_);
+            super.placeInChunk(p_230366_1_, p_230366_2_, p_230366_3_, p_230366_4_, p_230366_5_, p_230366_6_);
 
             if (Config.EXTENDED_DEBUG.get()) {
                 DungeonCrawl.LOGGER.debug("Finished dungeon generation in chunk [{},{}]", p_230366_6_.x, p_230366_6_.z);

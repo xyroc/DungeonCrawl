@@ -40,13 +40,13 @@ public class EnchantedBook extends LootFunction {
     }
 
     @Override
-    public ItemStack doApply(ItemStack stack, LootContext context) {
-        return EnchantmentHelper.addRandomEnchantment(context.getRandom(), new ItemStack(Items.BOOK),
+    public ItemStack run(ItemStack stack, LootContext context) {
+        return EnchantmentHelper.enchantItem(context.getRandom(), new ItemStack(Items.BOOK),
                 10 + lootLevel * 3, lootLevel > 2);
     }
 
     @Override
-    public LootFunctionType getFunctionType() {
+    public LootFunctionType getType() {
         return Treasure.ENCHANTED_BOOK;
     }
 

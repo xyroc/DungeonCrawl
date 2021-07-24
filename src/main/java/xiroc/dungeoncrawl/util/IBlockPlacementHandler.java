@@ -42,9 +42,9 @@ public interface IBlockPlacementHandler {
 
     IBlockPlacementHandler DEFAULT = (world, state, pos, rand, context, theme, subTheme, lootLevel) -> {
         if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
-            world.getChunk(pos).getBlocksToBeTicked().scheduleTick(pos, state.getBlock(), 1);
+            world.getChunk(pos).getBlockTicks().scheduleTick(pos, state.getBlock(), 1);
         }
-        world.setBlockState(pos, state, 2);
+        world.setBlock(pos, state, 2);
     };
 
     static void init() {

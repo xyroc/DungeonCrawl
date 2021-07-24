@@ -49,9 +49,9 @@ public class ScatteredDecoration implements IDungeonDecoration {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (!DungeonBuilder.isBlockProtected(world, currentPos, context)
-                            && worldGenBounds.isVecInside(currentPos)
-                            && structureBounds.isVecInside(currentPos)
-                            && world.isAirBlock(currentPos)
+                            && worldGenBounds.isInside(currentPos)
+                            && structureBounds.isInside(currentPos)
+                            && world.isEmptyBlock(currentPos)
                             && DungeonBlocks.RANDOM.nextFloat() < chance) {
 
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
@@ -60,14 +60,14 @@ public class ScatteredDecoration implements IDungeonDecoration {
                         BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                         BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
 
-                        boolean _north = worldGenBounds.isVecInside(north) && structureBounds.isVecInside(north) && world.getBlockState(north).isSolid();
-                        boolean _east = worldGenBounds.isVecInside(east) && structureBounds.isVecInside(east) && world.getBlockState(east).isSolid();
-                        boolean _south = worldGenBounds.isVecInside(south) && structureBounds.isVecInside(south) && world.getBlockState(south).isSolid();
-                        boolean _west = worldGenBounds.isVecInside(west) && structureBounds.isVecInside(west) && world.getBlockState(west).isSolid();
-                        boolean _up = worldGenBounds.isVecInside(up) && structureBounds.isVecInside(up) && world.getBlockState(up).isSolid();
+                        boolean _north = worldGenBounds.isInside(north) && structureBounds.isInside(north) && world.getBlockState(north).canOcclude();
+                        boolean _east = worldGenBounds.isInside(east) && structureBounds.isInside(east) && world.getBlockState(east).canOcclude();
+                        boolean _south = worldGenBounds.isInside(south) && structureBounds.isInside(south) && world.getBlockState(south).canOcclude();
+                        boolean _west = worldGenBounds.isInside(west) && structureBounds.isInside(west) && world.getBlockState(west).canOcclude();
+                        boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).canOcclude();
 
                         if (_north || _east || _south || _west || _up) {
-                            world.setBlockState(currentPos, blockStateProvider.get(world, currentPos), 2);
+                            world.setBlock(currentPos, blockStateProvider.get(world, currentPos), 2);
                         }
 
                     }

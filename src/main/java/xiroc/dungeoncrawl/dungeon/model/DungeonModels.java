@@ -59,7 +59,7 @@ public class DungeonModels {
 
         keySetBuilder = new ImmutableSet.Builder<>();
 
-        resourceManager.getAllResourceLocations(DIRECTORY, (s) -> s.endsWith(".nbt"))
+        resourceManager.listResources(DIRECTORY, (s) -> s.endsWith(".nbt"))
                 .forEach((resource) -> load(resource, resourceManager));
 
         KEYS = keySetBuilder.build();

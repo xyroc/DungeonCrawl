@@ -34,12 +34,12 @@ import java.util.HashMap;
 
 public class Treasure {
 
-    public static final LootFunctionType ENCHANTED_BOOK = func_237451_a_("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
-    public static final LootFunctionType MATERIAL_BLOCKS = func_237451_a_("dungeoncrawl:material_blocks", new MaterialBlocks.Serializer());
-    public static final LootFunctionType RANDOM_ITEM = func_237451_a_("dungeoncrawl:random_item", new RandomItem.Serializer());
-    public static final LootFunctionType RANDOM_POTION = func_237451_a_("dungeoncrawl:random_potion", new RandomPotion.Serializer());
-    public static final LootFunctionType SHIELD = func_237451_a_("dungeoncrawl:shield", new Shield.Serializer());
-    public static final LootFunctionType SUSPICIOUS_STEW = func_237451_a_("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());
+    public static final LootFunctionType ENCHANTED_BOOK = register("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
+    public static final LootFunctionType MATERIAL_BLOCKS = register("dungeoncrawl:material_blocks", new MaterialBlocks.Serializer());
+    public static final LootFunctionType RANDOM_ITEM = register("dungeoncrawl:random_item", new RandomItem.Serializer());
+    public static final LootFunctionType RANDOM_POTION = register("dungeoncrawl:random_potion", new RandomPotion.Serializer());
+    public static final LootFunctionType SHIELD = register("dungeoncrawl:shield", new Shield.Serializer());
+    public static final LootFunctionType SUSPICIOUS_STEW = register("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());
 
     public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES = new HashMap<>();
 
@@ -89,7 +89,7 @@ public class Treasure {
 
     }
 
-    private static LootFunctionType func_237451_a_(String p_237451_0_, ILootSerializer<? extends ILootFunction> p_237451_1_) {
+    private static LootFunctionType register(String p_237451_0_, ILootSerializer<? extends ILootFunction> p_237451_1_) {
         return Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(p_237451_0_), new LootFunctionType(p_237451_1_));
     }
 

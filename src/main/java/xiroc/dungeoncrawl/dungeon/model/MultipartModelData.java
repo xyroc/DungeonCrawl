@@ -185,7 +185,7 @@ public class MultipartModelData {
         public DungeonMultipartModelPiece createMultipartPiece(DungeonPiece parentPiece, DungeonModel parent, Rotation rotation, int x, int y, int z, Random rand) {
             if (model != null) {
                 DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece(null, DungeonPiece.DEFAULT_NBT);
-                Rotation fullRotation = this.rotation.add(rotation);
+                Rotation fullRotation = this.rotation.getRotated(rotation);
                 Vector3i rotatedOffset = Orientation.rotatedMultipartOffset(parent, model, offset, rotation, fullRotation);
 
                 piece.setWorldPosition(x + rotatedOffset.getX(), y + rotatedOffset.getY(), z + rotatedOffset.getZ());

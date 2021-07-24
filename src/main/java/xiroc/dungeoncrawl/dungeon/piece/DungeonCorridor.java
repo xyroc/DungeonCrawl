@@ -55,14 +55,14 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
 
-    public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
 
         Vector3i offset = model.getOffset(rotation);
-        BlockPos pos = new BlockPos(x, y, z).add(offset);
+        BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
         if (connectedSides != 2 || !isStraight()) {
@@ -81,13 +81,13 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public int getType() {
+    public int getDungeonPieceType() {
         return 0;
     }
 
     @Override
-    public void readAdditional(CompoundNBT tagCompound) {
-        super.readAdditional(tagCompound);
+    public void addAdditionalSaveData(CompoundNBT tagCompound) {
+        super.addAdditionalSaveData(tagCompound);
     }
 
     public boolean isStraight() {

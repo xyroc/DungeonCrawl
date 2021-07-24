@@ -41,7 +41,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public int getType() {
+    public int getDungeonPieceType() {
         return 16;
     }
 
@@ -50,7 +50,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public boolean func_230383_a_(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random random, MutableBoundingBox boundingBox, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(ISeedReader world, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random random, MutableBoundingBox boundingBox, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;

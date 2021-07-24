@@ -88,7 +88,7 @@ public class DungeonNodeRoom extends DungeonPiece {
 
 
     @Override
-    public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
 
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
@@ -96,7 +96,7 @@ public class DungeonNodeRoom extends DungeonPiece {
         }
 
         Vector3i offset = model.getOffset(rotation);
-        BlockPos pos = new BlockPos(x, y, z).add(offset);
+        BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
         entrances(worldIn, structureBoundingBoxIn, model);
@@ -113,7 +113,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public int getType() {
+    public int getDungeonPieceType() {
         return 10;
     }
 
@@ -185,8 +185,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void readAdditional(CompoundNBT tagCompound) {
-        super.readAdditional(tagCompound);
+    public void addAdditionalSaveData(CompoundNBT tagCompound) {
+        super.addAdditionalSaveData(tagCompound);
         tagCompound.putBoolean("lootRoom", lootRoom);
     }
 

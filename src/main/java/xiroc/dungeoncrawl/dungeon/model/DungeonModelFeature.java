@@ -75,7 +75,7 @@ public final class DungeonModelFeature {
 
     private void setup(DungeonModel model, int x, int y, int z, Rotation rotation, List<Instance> features, List<Position> positions, Random rand) {
         if (positions.isEmpty()) return;
-        int count = amount.generateInt(rand);
+        int count = amount.getInt(rand);
         if (count >= positions.size()) {
             features.add(new Instance(type, positions.stream().map((pos) -> pos.translate(x, y, z, rotation, model)).toArray(DirectionalBlockPos[]::new)));
         } else {
@@ -94,8 +94,8 @@ public final class DungeonModelFeature {
     }
 
     private static void placeChest(IWorld world, BlockPos pos, BlockState chest, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel, Random rand) {
-        world.setBlockState(pos, chest, 2);
-        TileEntity tileEntity = world.getTileEntity(pos);
+        world.setBlock(pos, chest, 2);
+        TileEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof LockableLootTileEntity) {
             Loot.setLoot((LockableLootTileEntity) tileEntity, Loot.getLootTable(lootLevel, rand), theme, secondaryTheme, rand);
         }
@@ -144,10 +144,10 @@ public final class DungeonModelFeature {
         Type CHEST = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-                if (bounds.isVecInside(pos)
+                if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
-                        && world.getBlockState(pos.down()).isSolid()) {
-                    placeChest(world, pos, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
+                        && world.getBlockState(pos.below()).canOcclude()) {
+                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
                 }
             }
 
@@ -160,13 +160,13 @@ public final class DungeonModelFeature {
         Type TNT_CHEST = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-                if (bounds.isVecInside(pos)
+                if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
-                        && world.getBlockState(pos.down()).isSolid()) {
-                    placeChest(world, pos, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
-                    BlockPos down = pos.down(2);
-                    if (!DungeonBuilder.isBlockProtected(world, down, context) && !world.isAirBlock(down)) {
-                        world.setBlockState(pos.down(2), Blocks.TNT.getDefaultState(), 2);
+                        && world.getBlockState(pos.below()).canOcclude()) {
+                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
+                    BlockPos down = pos.below(2);
+                    if (!DungeonBuilder.isBlockProtected(world, down, context) && !world.isEmptyBlock(down)) {
+                        world.setBlock(pos.below(2), Blocks.TNT.defaultBlockState(), 2);
                     }
                 }
             }
@@ -180,9 +180,9 @@ public final class DungeonModelFeature {
         Type SPAWNER = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-                if (bounds.isVecInside(pos)
+                if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
-                        && world.getBlockState(pos.down()).isSolid()) {
+                        && world.getBlockState(pos.below()).canOcclude()) {
                     IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER,
                             pos, rand, context, theme, secondaryTheme, stage);
                 }
@@ -197,22 +197,22 @@ public final class DungeonModelFeature {
         Type SPAWNER_GRAVE = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-                if (bounds.isVecInside(pos)
+                if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
-                        && world.getBlockState(pos.down()).isSolid()) {
-                    placeChest(world, pos, DungeonBlocks.CHEST.with(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
+                        && world.getBlockState(pos.below()).canOcclude()) {
+                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
                 }
 
-                BlockPos spawner = pos.offset(direction);
-                if (bounds.isVecInside(spawner)
+                BlockPos spawner = pos.relative(direction);
+                if (bounds.isInside(spawner)
                         && !DungeonBuilder.isBlockProtected(world, spawner, context)
-                        && world.getBlockState(spawner.down()).isSolid()) {
+                        && world.getBlockState(spawner.below()).canOcclude()) {
                     IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, spawner, rand, context, theme, secondaryTheme, stage);
                 }
 
-                BlockPos p = pos.offset(direction, 2);
-                if (bounds.isVecInside(p)) {
-                    world.setBlockState(p, Blocks.QUARTZ_BLOCK.getDefaultState(), 2);
+                BlockPos p = pos.relative(direction, 2);
+                if (bounds.isInside(p)) {
+                    world.setBlock(p, Blocks.QUARTZ_BLOCK.defaultBlockState(), 2);
                 }
             }
 
@@ -225,9 +225,9 @@ public final class DungeonModelFeature {
         Type EMPTY_GRAVE = new Type() {
             @Override
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-                BlockPos position = pos.offset(direction, 2);
-                if (bounds.isVecInside(position)) {
-                    world.setBlockState(position, Blocks.QUARTZ_BLOCK.getDefaultState(), 2);
+                BlockPos position = pos.relative(direction, 2);
+                if (bounds.isInside(position)) {
+                    world.setBlock(position, Blocks.QUARTZ_BLOCK.defaultBlockState(), 2);
                 }
             }
 
@@ -242,15 +242,15 @@ public final class DungeonModelFeature {
             public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (direction.getAxis() == Direction.Axis.Y) return;
                 for (int length = 0; length < 10; length++) {
-                    if (bounds.isVecInside(pos)) {
-                        int height = world.getHeight(context.heightmapType, pos).getY();
+                    if (bounds.isInside(pos)) {
+                        int height = world.getHeightmapPos(context.heightmapType, pos).getY();
                         if (height < pos.getY()) {
                             for (; height < pos.getY(); height++) {
                                 BlockPos p = new BlockPos(pos.getX(), height, pos.getZ());
-                                world.setBlockState(p, theme.solid.get(world, p), 2);
+                                world.setBlock(p, theme.solid.get(world, p), 2);
                             }
-                            world.setBlockState(pos, theme.solidStairs.get(world, pos).with(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
-                            pos = pos.offset(direction).offset(Direction.DOWN);
+                            world.setBlock(pos, theme.solidStairs.get(world, pos).setValue(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
+                            pos = pos.relative(direction).relative(Direction.DOWN);
                         } else {
                             break;
                         }
@@ -266,13 +266,13 @@ public final class DungeonModelFeature {
 
         Type SEWER_HOLE = new Type() {
             private final IBlockStateProvider AIR_WATER = (world, pos, rotation) -> {
-                if (pos.getY() > 8) return Blocks.CAVE_AIR.getDefaultState();
-                return Blocks.WATER.getDefaultState();
+                if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
+                return Blocks.WATER.defaultBlockState();
             };
 
             private final IBlockStateProvider AIR_LAVA = (world, pos, rotation) -> {
-                if (pos.getY() > 8) return Blocks.CAVE_AIR.getDefaultState();
-                return Blocks.LAVA.getDefaultState();
+                if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
+                return Blocks.LAVA.defaultBlockState();
             };
 
             @Override
@@ -323,12 +323,12 @@ public final class DungeonModelFeature {
             }
 
             private void buildDown(IWorld world, PlacementContext context, BlockPos pos, MutableBoundingBox bounds, IBlockStateProvider blockStateProvider) {
-                if (!bounds.isVecInside(pos)) return;
-                for (; pos.getY() > 0; pos = pos.down()) {
-                    if (!DungeonBuilder.isBlockProtected(world, pos, context) && !world.isAirBlock(pos)) {
-                        world.setBlockState(pos, blockStateProvider.get(world, pos), 2);
+                if (!bounds.isInside(pos)) return;
+                for (; pos.getY() > 0; pos = pos.below()) {
+                    if (!DungeonBuilder.isBlockProtected(world, pos, context) && !world.isEmptyBlock(pos)) {
+                        world.setBlock(pos, blockStateProvider.get(world, pos), 2);
                         FluidState state = world.getFluidState(pos);
-                        if (!state.isEmpty()) world.getPendingFluidTicks().scheduleTick(pos, state.getFluid(), 0);
+                        if (!state.isEmpty()) world.getLiquidTicks().scheduleTick(pos, state.getType(), 0);
                     }
                 }
             }
@@ -399,7 +399,7 @@ public final class DungeonModelFeature {
         }
 
         public BlockPos blockPos(BlockPos base) {
-            return base.add(position);
+            return base.offset(position);
         }
 
         public BlockPos blockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
@@ -419,13 +419,13 @@ public final class DungeonModelFeature {
             switch (rotation) {
                 case CLOCKWISE_90:
                     return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(),
-                            facing.getAxis() != Direction.Axis.Y ? facing.rotateY() : facing);
+                            facing.getAxis() != Direction.Axis.Y ? facing.getClockWise() : facing);
                 case CLOCKWISE_180:
                     return new DirectionalBlockPos(x + model.width - position.getX() - 1, y + position.getY(), z + model.length - position.getZ() - 1,
                             facing.getAxis() != Direction.Axis.Y ? facing.getOpposite() : facing);
                 case COUNTERCLOCKWISE_90:
                     return new DirectionalBlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1,
-                            facing.getAxis() != Direction.Axis.Y ? facing.rotateYCCW() : facing);
+                            facing.getAxis() != Direction.Axis.Y ? facing.getCounterClockWise() : facing);
                 default:
                     return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
             }

@@ -38,17 +38,17 @@ public class Plants {
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
-            state = state.with(BlockStateProperties.MOISTURE_0_7, 7);
-            world.setBlockState(pos, state, 2);
+            state = state.setValue(BlockStateProperties.MOISTURE, 7);
+            world.setBlock(pos, state, 2);
             BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
             if (rand.nextFloat() < 0.6) {
-                BlockState crop = BlockTags.CROPS.getRandomElement(rand).getDefaultState();
-                if (crop.hasProperty(BlockStateProperties.AGE_0_7))
-                    crop = crop.with(BlockStateProperties.AGE_0_7, 4 + rand.nextInt(4));
-                world.setBlockState(cropPos, crop, 2);
+                BlockState crop = BlockTags.CROPS.getRandomElement(rand).defaultBlockState();
+                if (crop.hasProperty(BlockStateProperties.AGE_7))
+                    crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
+                world.setBlock(cropPos, crop, 2);
                 context.protectedBlocks.add(cropPos);
             } else {
-                world.setBlockState(cropPos, Blocks.CAVE_AIR.getDefaultState(), 2);
+                world.setBlock(cropPos, Blocks.CAVE_AIR.defaultBlockState(), 2);
             }
         }
 
@@ -59,7 +59,7 @@ public class Plants {
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
-            world.setBlockState(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).getDefaultState(), 2);
+            world.setBlock(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).defaultBlockState(), 2);
         }
 
     }
@@ -69,12 +69,12 @@ public class Plants {
         @Override
         public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
-            world.setBlockState(pos, state, 2);
-            BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).getDefaultState();
-            BlockPos lowerPart = pos.up();
-            BlockPos upperPart = lowerPart.up();
-            world.setBlockState(lowerPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);
-            world.setBlockState(upperPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 2);
+            world.setBlock(pos, state, 2);
+            BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).defaultBlockState();
+            BlockPos lowerPart = pos.above();
+            BlockPos upperPart = lowerPart.above();
+            world.setBlock(lowerPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);
+            world.setBlock(upperPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 2);
             context.protectedBlocks.add(lowerPart);
             context.protectedBlocks.add(upperPart);
         }

@@ -16,7 +16,7 @@ apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remappe
 
 version = '2.3.0-dev'
 group = 'xiroc.dungeoncrawl'
-archivesBaseName = 'DungeonCrawl-1.16.3'
+archivesBaseName = 'DungeonCrawl-1.17.1'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 

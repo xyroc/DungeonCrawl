@@ -18,9 +18,9 @@
 
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 
 public class Orientation {
@@ -43,21 +43,21 @@ public class Orientation {
     public static final Direction[] NORTH_SOUTH_WEST = new Direction[]{Direction.NORTH, Direction.SOUTH,
             Direction.WEST};
 
-    public static Vector3i rotatedMultipartOffset(DungeonModel parent, DungeonModel multipart, Vector3i offset, Rotation parentRotation, Rotation fullRotation) {
+    public static Vec3i rotatedMultipartOffset(DungeonModel parent, DungeonModel multipart, Vec3i offset, Rotation parentRotation, Rotation fullRotation) {
         int ordinalBit = fullRotation.ordinal() & 1;
         switch (parentRotation) {
             case CLOCKWISE_90: {
                 int multipartLength = ordinalBit == 0 ? multipart.width : multipart.length;
-                return new Vector3i(parent.length - offset.getZ() - multipartLength, offset.getY(), offset.getX());
+                return new Vec3i(parent.length - offset.getZ() - multipartLength, offset.getY(), offset.getX());
             }
             case CLOCKWISE_180: {
                 int multipartWidth = ordinalBit == 1 ? multipart.length : multipart.width;
                 int multipartLength = ordinalBit == 1 ? multipart.width : multipart.length;
-                return new Vector3i(parent.width - offset.getX() - multipartWidth, offset.getY(), parent.length - offset.getZ() - multipartLength);
+                return new Vec3i(parent.width - offset.getX() - multipartWidth, offset.getY(), parent.length - offset.getZ() - multipartLength);
             }
             case COUNTERCLOCKWISE_90: {
                 int multipartWidth = ordinalBit == 0 ? multipart.length : multipart.width;
-                return new Vector3i(offset.getZ(), offset.getY(), parent.width - offset.getX() - multipartWidth);
+                return new Vec3i(offset.getZ(), offset.getY(), parent.width - offset.getX() - multipartWidth);
             }
             default:
                 return offset;

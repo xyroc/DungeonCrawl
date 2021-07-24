@@ -18,7 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
+import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.piece.DummyStructurePiece;
@@ -35,50 +35,50 @@ import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSpiderRoom;
 
 public class StructurePieceTypes {
 
-    public static IStructurePieceType ENTRANCE;
-    public static IStructurePieceType ROOM;
-    public static IStructurePieceType CORRIDOR;
-    public static IStructurePieceType STAIRS;
-    public static IStructurePieceType SIDE_ROOM;
-    public static IStructurePieceType NODE_ROOM;
-    public static IStructurePieceType NODE_CONNECTOR;
-    public static IStructurePieceType SECRET_ROOM;
-    public static IStructurePieceType SPIDER_ROOM;
-    public static IStructurePieceType MULTIPART_MODEL_PIECE;
+    public static StructurePieceType ENTRANCE;
+    public static StructurePieceType ROOM;
+    public static StructurePieceType CORRIDOR;
+    public static StructurePieceType STAIRS;
+    public static StructurePieceType SIDE_ROOM;
+    public static StructurePieceType NODE_ROOM;
+    public static StructurePieceType NODE_CONNECTOR;
+    public static StructurePieceType SECRET_ROOM;
+    public static StructurePieceType SPIDER_ROOM;
+    public static StructurePieceType MULTIPART_MODEL_PIECE;
 
-    public static IStructurePieceType DUMMY;
+    public static StructurePieceType DUMMY;
 
     public static void register() {
         DungeonCrawl.LOGGER.info("Registering Structure Piece Types");
 
-        ENTRANCE = IStructurePieceType.setPieceId(DungeonEntrance::new, createKey("entrance"));
-        ROOM = IStructurePieceType.setPieceId(DungeonRoom::new, createKey("room"));
-        CORRIDOR = IStructurePieceType.setPieceId(DungeonCorridor::new, createKey("corridor"));
-        STAIRS = IStructurePieceType.setPieceId(DungeonStairs::new, createKey("stairs"));
-        SIDE_ROOM = IStructurePieceType.setPieceId(DungeonSideRoom::new, createKey("side_room"));
-        NODE_ROOM = IStructurePieceType.setPieceId(DungeonNodeRoom::new, createKey("node_room"));
-        NODE_CONNECTOR = IStructurePieceType.setPieceId(DungeonNodeConnector::new, createKey("node_connector"));
-        SECRET_ROOM = IStructurePieceType.setPieceId(DungeonSecretRoom::new, createKey("secret_room"));
-        SPIDER_ROOM = IStructurePieceType.setPieceId(DungeonSpiderRoom::new, createKey("spider_room"));
-        MULTIPART_MODEL_PIECE = IStructurePieceType.setPieceId(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));
+        ENTRANCE = StructurePieceType.setPieceId(DungeonEntrance::new, createKey("entrance"));
+        ROOM = StructurePieceType.setPieceId(DungeonRoom::new, createKey("room"));
+        CORRIDOR = StructurePieceType.setPieceId(DungeonCorridor::new, createKey("corridor"));
+        STAIRS = StructurePieceType.setPieceId(DungeonStairs::new, createKey("stairs"));
+        SIDE_ROOM = StructurePieceType.setPieceId(DungeonSideRoom::new, createKey("side_room"));
+        NODE_ROOM = StructurePieceType.setPieceId(DungeonNodeRoom::new, createKey("node_room"));
+        NODE_CONNECTOR = StructurePieceType.setPieceId(DungeonNodeConnector::new, createKey("node_connector"));
+        SECRET_ROOM = StructurePieceType.setPieceId(DungeonSecretRoom::new, createKey("secret_room"));
+        SPIDER_ROOM = StructurePieceType.setPieceId(DungeonSpiderRoom::new, createKey("spider_room"));
+        MULTIPART_MODEL_PIECE = StructurePieceType.setPieceId(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));
 
         if (Config.ENABLE_DUMMY_PIECES.get()) {
             DungeonCrawl.LOGGER.info("Registering Dummy Structure Pieces");
-            DUMMY  = IStructurePieceType.setPieceId(DummyStructurePiece::new, createKey("dummy"));
+            DUMMY  = StructurePieceType.setPieceId(DummyStructurePiece::new, createKey("dummy"));
 
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_ENTR_BLDR");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_ROOM");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_CRRDR");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STTP");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STRS");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STBT");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_HOLE");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_CRRDR_ROOM");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_TRAP");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_PART");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_HOLE_TRAP");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_SIDE_ROOM");
-            IStructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_PART_WITH_ENTITY");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_ENTR_BLDR");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_ROOM");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_CRRDR");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STTP");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STRS");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STBT");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_HOLE");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_CRRDR_ROOM");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_TRAP");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_PART");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_HOLE_TRAP");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_SIDE_ROOM");
+            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_PART_WITH_ENTITY");
         }
 
     }

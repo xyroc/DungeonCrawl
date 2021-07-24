@@ -21,33 +21,27 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.theme.Theme;
 
-public class RandomItem extends LootFunction {
+public class RandomItem extends LootItemConditionalFunction {
 
     public int lootLevel;
 
-    public RandomItem(ILootCondition[] conditionsIn, int lootLevel) {
+    public RandomItem(LootItemCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
         this.lootLevel = Math.max(0, lootLevel);
     }
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-        if (context.hasParam(LootParameters.ORIGIN)) {
+        if (context.hasParam(LootContextParams.ORIGIN)) {
             return RandomItems.generate(context.getLevel(), context.getRandom(), lootLevel);
         } else {
             return ItemStack.EMPTY;
@@ -55,11 +49,11 @@ public class RandomItem extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Treasure.RANDOM_ITEM;
     }
 
-    public static class Serializer extends LootFunction.Serializer<RandomItem> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<RandomItem> {
 
         public Serializer() {
             super();
@@ -73,7 +67,7 @@ public class RandomItem extends LootFunction {
 
         @Override
         public RandomItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                      ILootCondition[] conditionsIn) {
+                                      LootItemCondition[] conditionsIn) {
             return new RandomItem(conditionsIn, object.get("loot_level").getAsInt());
         }
 

@@ -21,19 +21,19 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.dungeon.treasure.TreasureItems;
 
-public class RandomPotion extends LootFunction {
+public class RandomPotion extends LootItemConditionalFunction {
 
     public int lootLevel;
 
-    public RandomPotion(ILootCondition[] conditionsIn, int lootLevel) {
+    public RandomPotion(LootItemCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
         this.lootLevel = Math.max(0, lootLevel);
     }
@@ -44,11 +44,11 @@ public class RandomPotion extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Treasure.RANDOM_POTION;
     }
 
-    public static class Serializer extends LootFunction.Serializer<RandomPotion> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<RandomPotion> {
 
         public Serializer() {
             super();
@@ -62,7 +62,7 @@ public class RandomPotion extends LootFunction {
 
         @Override
         public RandomPotion deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                        ILootCondition[] conditionsIn) {
+                                        LootItemCondition[] conditionsIn) {
             return new RandomPotion(conditionsIn, object.get("loot_level").getAsInt());
         }
 

@@ -18,45 +18,32 @@
 
 package xiroc.dungeoncrawl.dungeon.misc;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 import java.util.Random;
 
 public class Banner {
 
-    public static final int PATTERNS = 3;
+    private static final int PATTERNS = 3;
 
-    public static final ResourceLocation[] BANNERS = new ResourceLocation[]{
-            new ResourceLocation("minecraft:white_banner"), new ResourceLocation("minecraft:red_banner"),
-            new ResourceLocation("minecraft:green_banner"), new ResourceLocation("minecraft:blue_banner"),
-            new ResourceLocation("minecraft:yellow_banner"), new ResourceLocation("minecraft:light_blue_banner"),
-            new ResourceLocation("minecraft:orange_banner"), new ResourceLocation("minecraft:gray_banner"),
-            new ResourceLocation("minecraft:light_gray_banner"), new ResourceLocation("minecraft:pink_banner"),
-            new ResourceLocation("minecraft:magenta_banner"), new ResourceLocation("minecraft:cyan_banner"),
-            new ResourceLocation("minecraft:purple_banner"), new ResourceLocation("minecraft:brown_banner"),
-            new ResourceLocation("minecraft:lime_banner"), new ResourceLocation("minecraft:black_banner")};
-
-    public static final String[] BANNER_PATTERNS = new String[]{"gru", "bl", "br", "bri", "tr", "bs", "ts", "ls",
+    private static final String[] BANNER_PATTERNS = new String[]{"gru", "bl", "br", "bri", "tr", "bs", "ts", "ls",
             "rs", "bl", "tl", "hh", "vhr", "hhb", "bo", "cbo", "gra", "bts", "tts", "ld", "rd", "lud", "rud", "mc",
             "mr", "vh", "dls", "cs", "ms", "drs", "ss", "cr", "sc", "bt", "tt"};
 
-    public static final String[] BANNER_PATTERNS_FINAL = new String[]{"sku", "cre"};
+    private static final String[] BANNER_PATTERNS_FINAL = new String[]{"sku", "cre"};
 
-    public static final String[] BANNER_PATTERNS_FINAL_RARE = new String[]{"glb", "flo"};
+    private static final String[] BANNER_PATTERNS_FINAL_RARE = new String[]{"glb", "flo"};
 
     /**
      * Creates the BlockEntityTag for banners or shields which contains a list of
      * random patterns.
      */
-    public static CompoundNBT createPatterns(Random rand) {
-        CompoundNBT blockEntityTag = new CompoundNBT();
-        ListNBT patterns = new ListNBT();
+    public static CompoundTag createPatterns(Random rand) {
+        CompoundTag blockEntityTag = new CompoundTag();
+        ListTag patterns = new ListTag();
         for (int i = 0; i < PATTERNS; i++) {
-            CompoundNBT pattern = new CompoundNBT();
+            CompoundTag pattern = new CompoundTag();
             pattern.putInt("Color", rand.nextInt(15));
             pattern.putString("Pattern",
                     i == PATTERNS - 1 && rand.nextDouble() < 0.25
@@ -68,17 +55,6 @@ public class Banner {
         }
         blockEntityTag.put("Patterns", patterns);
         return blockEntityTag;
-    }
-
-    /**
-     * Creates a banner item stack with random patterns.
-     */
-    public static ItemStack createBanner(Random rand) {
-        ItemStack banner = new ItemStack(ForgeRegistries.ITEMS.getValue(BANNERS[rand.nextInt(BANNERS.length)]));
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.put("BlockEntityTag", createPatterns(rand));
-        banner.setTag(nbt);
-        return banner;
     }
 
 }

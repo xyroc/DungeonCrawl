@@ -22,10 +22,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -162,7 +162,7 @@ public class MultipartModelData {
 
         public static final Instance EMPTY = new Instance(null, null, DungeonModels.NO_OFFSET, Rotation.NONE);
 
-        public final Vector3i offset;
+        public final Vec3i offset;
         public final Rotation rotation;
 
         private final ResourceLocation file;
@@ -175,7 +175,7 @@ public class MultipartModelData {
 
         private final ResourceLocation key;
 
-        public Instance(ResourceLocation file, ResourceLocation key, Vector3i offset, Rotation rotation) {
+        public Instance(ResourceLocation file, ResourceLocation key, Vec3i offset, Rotation rotation) {
             this.file = file;
             this.key = key;
             this.offset = offset;
@@ -184,9 +184,9 @@ public class MultipartModelData {
 
         public DungeonMultipartModelPiece createMultipartPiece(DungeonPiece parentPiece, DungeonModel parent, Rotation rotation, int x, int y, int z, Random rand) {
             if (model != null) {
-                DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece(null, DungeonPiece.DEFAULT_NBT);
+                DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece();
                 Rotation fullRotation = this.rotation.getRotated(rotation);
-                Vector3i rotatedOffset = Orientation.rotatedMultipartOffset(parent, model, offset, rotation, fullRotation);
+                Vec3i rotatedOffset = Orientation.rotatedMultipartOffset(parent, model, offset, rotation, fullRotation);
 
                 piece.setWorldPosition(x + rotatedOffset.getX(), y + rotatedOffset.getY(), z + rotatedOffset.getZ());
                 piece.model = model;
@@ -214,7 +214,7 @@ public class MultipartModelData {
 
         public static Instance fromJson(JsonObject object, ResourceLocation file) {
             if (object.has("model")) {
-                Vector3i offset = object.has("offset") ? JSONUtils.getOffset(object.getAsJsonObject("offset")) : DungeonModels.NO_OFFSET;
+                Vec3i offset = object.has("offset") ? JSONUtils.getOffset(object.getAsJsonObject("offset")) : DungeonModels.NO_OFFSET;
 
                 Rotation rotation = object.has("rotation") ? Rotation.valueOf(object.get("rotation").getAsString().toUpperCase(Locale.ROOT)) : Rotation.NONE;
 
@@ -226,44 +226,24 @@ public class MultipartModelData {
 
     }
 
-    private static class Condition<T> {
-
-        private final Property<T> property;
-        private final T value;
-
-        public Condition(Property<T> property, T value) {
-            this.property = property;
-            this.value = value;
-        }
+    private record Condition<T>(Property<T> property, T value) {
 
         @Nullable
         public static Condition<?> fromJson(JsonElement element, String name) {
-            switch (name) {
-                case "north":
-                    return new Condition<>(Property.NORTH, element.getAsBoolean());
-                case "east":
-                    return new Condition<>(Property.EAST, element.getAsBoolean());
-                case "south":
-                    return new Condition<>(Property.SOUTH, element.getAsBoolean());
-                case "west":
-                    return new Condition<>(Property.WEST, element.getAsBoolean());
-                case "rotated_north":
-                    return new Condition<>(Property.ROTATED_NORTH, element.getAsBoolean());
-                case "rotated_east":
-                    return new Condition<>(Property.ROTATED_EAST, element.getAsBoolean());
-                case "rotated_south":
-                    return new Condition<>(Property.ROTATED_SOUTH, element.getAsBoolean());
-                case "rotated_west":
-                    return new Condition<>(Property.ROTATED_WEST, element.getAsBoolean());
-                case "straight":
-                    return new Condition<>(Property.STRAIGHT, element.getAsBoolean());
-                case "connections":
-                    return new Condition<>(Property.CONNECTIONS, element.getAsInt());
-                case "stage":
-                    return new Condition<>(Property.STAGE, element.getAsInt());
-                default:
-                    return null;
-            }
+            return switch (name) {
+                case "north" -> new Condition<>(Property.NORTH, element.getAsBoolean());
+                case "east" -> new Condition<>(Property.EAST, element.getAsBoolean());
+                case "south" -> new Condition<>(Property.SOUTH, element.getAsBoolean());
+                case "west" -> new Condition<>(Property.WEST, element.getAsBoolean());
+                case "rotated_north" -> new Condition<>(Property.ROTATED_NORTH, element.getAsBoolean());
+                case "rotated_east" -> new Condition<>(Property.ROTATED_EAST, element.getAsBoolean());
+                case "rotated_south" -> new Condition<>(Property.ROTATED_SOUTH, element.getAsBoolean());
+                case "rotated_west" -> new Condition<>(Property.ROTATED_WEST, element.getAsBoolean());
+                case "straight" -> new Condition<>(Property.STRAIGHT, element.getAsBoolean());
+                case "connections" -> new Condition<>(Property.CONNECTIONS, element.getAsInt());
+                case "stage" -> new Condition<>(Property.STAGE, element.getAsInt());
+                default -> null;
+            };
         }
 
         public boolean check(DungeonPiece piece) {

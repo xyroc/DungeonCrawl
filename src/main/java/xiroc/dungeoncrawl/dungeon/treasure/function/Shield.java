@@ -20,19 +20,19 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
-public class Shield extends LootFunction {
+public class Shield extends LootItemConditionalFunction {
 
     private final int lootLevel;
 
-    public Shield(ILootCondition[] conditionsIn, int lootLevel) {
+    public Shield(LootItemCondition[] conditionsIn, int lootLevel) {
         super(conditionsIn);
         this.lootLevel = Math.max(0, lootLevel);
     }
@@ -43,11 +43,11 @@ public class Shield extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Treasure.SHIELD;
     }
 
-    public static class Serializer extends LootFunction.Serializer<Shield> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<Shield> {
 
         public Serializer() {
             super();
@@ -55,8 +55,8 @@ public class Shield extends LootFunction {
 
         @Override
         public Shield deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                  ILootCondition[] conditionsIn) {
-            return new Shield(conditionsIn, object.has("loot_level") ? object.get("loot_level").getAsInt(): 0);
+                                  LootItemCondition[] conditionsIn) {
+            return new Shield(conditionsIn, object.has("loot_level") ? object.get("loot_level").getAsInt() : 0);
         }
 
     }

@@ -19,8 +19,8 @@
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import com.google.common.collect.Lists;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
@@ -61,9 +61,7 @@ public class NewLayerGenerator extends LayerGenerator {
         generator.nodes++;
     };
 
-    private static final Consumer<NewLayerGenerator> ON_STAIRS_PLACED = (generator) -> {
-        generator.placeStairs = false;
-    };
+    private static final Consumer<NewLayerGenerator> ON_STAIRS_PLACED = (generator) -> generator.placeStairs = false;
 
     private NewLayerGenerator() {
         this.corridors = new ArrayList<>();
@@ -75,8 +73,8 @@ public class NewLayerGenerator extends LayerGenerator {
         this.corridors.clear();
         this.placeStairs = !isLastLayer;
         this.secretRoom = false;
-        this.roomsLeft = settings.rooms.getInt(rand);
-        this.nodesLeft = settings.nodes.getInt(rand);
+        this.roomsLeft = settings.rooms.nextInt(rand);
+        this.nodesLeft = settings.nodes.nextInt(rand);
         this.rooms = 0;
         this.nodes = 0;
     }
@@ -97,14 +95,8 @@ public class NewLayerGenerator extends LayerGenerator {
             lastElements = newElements;
         } while (!lastElements.isEmpty());
 
-        if (secretRoom && !this.corridors.isEmpty()) {
-            for (int i = 0; i < 8; i++) {
-                DungeonCorridor corridor = this.corridors.get(rand.nextInt(corridors.size()));
-                if (corridor.isStraight() && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, rand)) {
-                    break;
-                }
-                this.corridors.remove(corridor);
-            }
+        if (secretRoom) {
+            tryCreateSecretRoom(dungeonLayer, this.corridors, 8, rand);
         }
 
         corridors.clear();
@@ -131,7 +123,7 @@ public class NewLayerGenerator extends LayerGenerator {
             Direction direction = directions.remove(rand.nextInt(directions.size()));
             int maxDistance = maxDistance(cursor.position, direction, dungeonLayer);
             if (maxDistance >= settings.minDistance) {
-                Position2D nextPos = cursor.position.shift(direction, new RandomValueRange(settings.minDistance, maxDistance).getInt(rand));
+                Position2D nextPos = cursor.position.shift(direction, Mth.nextInt(rand, settings.minDistance, maxDistance));
                 if (nextPos.isValid(dungeonLayer.width, dungeonLayer.length)) {
                     LayerElement element = nextElement(dungeonLayer, nextPos, direction.getOpposite(), rand, depth);
                     if (element != null) {
@@ -169,18 +161,13 @@ public class NewLayerGenerator extends LayerGenerator {
     }
 
     private int maxDistance(Position2D pos, Direction direction, DungeonLayer dungeonLayer) {
-        switch (direction) {
-            case NORTH:
-                return Math.min(pos.z, settings.maxDistance);
-            case SOUTH:
-                return Math.min(dungeonLayer.length - pos.z - 1, settings.maxDistance);
-            case WEST:
-                return Math.min(pos.x, settings.maxDistance);
-            case EAST:
-                return Math.min(dungeonLayer.width - pos.x - 1, settings.maxDistance);
-            default:
-                return 0;
-        }
+        return switch (direction) {
+            case NORTH -> Math.min(pos.z, settings.maxDistance);
+            case SOUTH -> Math.min(dungeonLayer.length - pos.z - 1, settings.maxDistance);
+            case WEST -> Math.min(pos.x, settings.maxDistance);
+            case EAST -> Math.min(dungeonLayer.width - pos.x - 1, settings.maxDistance);
+            default -> 0;
+        };
     }
 
     @Override
@@ -212,12 +199,7 @@ public class NewLayerGenerator extends LayerGenerator {
                                 piece.openSide(Direction.SOUTH);
                             }
                         } else {
-                            DungeonCorridor corridor = new DungeonCorridor();
-                            corridor.setGridPosition(start.x, z);
-                            corridor.openSide(Direction.NORTH);
-                            corridor.openSide(Direction.SOUTH);
-                            corridor.setRotation(Orientation.getRotationFromFacing(Direction.NORTH));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
+                            DungeonCorridor corridor = createCorridor(dungeonLayer, start.x, z, Direction.NORTH, Direction.SOUTH);
                             this.corridors.add(corridor);
                         }
                     }
@@ -233,12 +215,7 @@ public class NewLayerGenerator extends LayerGenerator {
                                 piece.openSide(Direction.NORTH);
                             }
                         } else {
-                            DungeonCorridor corridor = new DungeonCorridor();
-                            corridor.setGridPosition(start.x, z);
-                            corridor.openSide(Direction.SOUTH);
-                            corridor.openSide(Direction.NORTH);
-                            corridor.setRotation(Orientation.getRotationFromFacing(Direction.SOUTH));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
+                            DungeonCorridor corridor = createCorridor(dungeonLayer, start.x, z, Direction.SOUTH, Direction.NORTH);
                             this.corridors.add(corridor);
                         }
                     }
@@ -256,12 +233,7 @@ public class NewLayerGenerator extends LayerGenerator {
                                 piece.openSide(Direction.EAST);
                             }
                         } else {
-                            DungeonCorridor corridor = new DungeonCorridor();
-                            corridor.setGridPosition(x, start.z);
-                            corridor.openSide(Direction.WEST);
-                            corridor.openSide(Direction.EAST);
-                            corridor.setRotation(Orientation.getRotationFromFacing(Direction.WEST));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
+                            DungeonCorridor corridor = createCorridor(dungeonLayer, x, start.z, Direction.WEST, Direction.EAST);
                             this.corridors.add(corridor);
                         }
                     }
@@ -277,12 +249,7 @@ public class NewLayerGenerator extends LayerGenerator {
                                 piece.openSide(Direction.WEST);
                             }
                         } else {
-                            DungeonCorridor corridor = new DungeonCorridor();
-                            corridor.setGridPosition(x, start.z);
-                            corridor.openSide(Direction.EAST);
-                            corridor.openSide(Direction.WEST);
-                            corridor.setRotation(Orientation.getRotationFromFacing(Direction.EAST));
-                            dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
+                            DungeonCorridor corridor = createCorridor(dungeonLayer, x, start.z, Direction.EAST, Direction.WEST);
                             this.corridors.add(corridor);
                         }
                     }
@@ -313,14 +280,9 @@ public class NewLayerGenerator extends LayerGenerator {
                         return false;
                     }
                     for (int z = start.position.z - 1; z > end.position.z; z--) {
-                        if (dungeonLayer.grid[start.position.x][z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[start.position.x][z].piece;
-                            if (!piece.canConnect(Direction.NORTH, start.position.x, z) || !piece.canConnect(Direction.SOUTH, start.position.x, z)) {
-                                return false;
-                            }
-                        }
+                        if (pieceCannotConnect(dungeonLayer, start.position.x, z, Direction.NORTH, Direction.SOUTH))
+                            return false;
                     }
-                    return true;
                 } else {
                     // The corridor goes south from the start.position position (positive z)
                     if (!start.piece.canConnect(Direction.SOUTH, end.position.x, end.position.z)
@@ -328,15 +290,11 @@ public class NewLayerGenerator extends LayerGenerator {
                         return false;
                     }
                     for (int z = start.position.z; z < end.position.z; z++) {
-                        if (dungeonLayer.grid[start.position.x][z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[start.position.x][z].piece;
-                            if (!piece.canConnect(Direction.SOUTH, start.position.x, z) || !piece.canConnect(Direction.NORTH, start.position.x, z)) {
-                                return false;
-                            }
-                        }
+                        if (pieceCannotConnect(dungeonLayer, start.position.x, z, Direction.SOUTH, Direction.NORTH))
+                            return false;
                     }
-                    return true;
                 }
+                return true;
             } else if (start.position.z == end.position.z) {
                 if (start.position.x > end.position.x) {
                     // The corridor goes west from the start.position position (negative x)
@@ -345,14 +303,9 @@ public class NewLayerGenerator extends LayerGenerator {
                         return false;
                     }
                     for (int x = start.position.x - 1; x > end.position.x; x--) {
-                        if (dungeonLayer.grid[x][start.position.z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[x][start.position.z].piece;
-                            if (!piece.canConnect(Direction.WEST, x, start.position.z) || !piece.canConnect(Direction.EAST, x, start.position.z)) {
-                                return false;
-                            }
-                        }
+                        if (pieceCannotConnect(dungeonLayer, x, start.position.z, Direction.WEST, Direction.EAST))
+                            return false;
                     }
-                    return true;
                 } else {
                     // The corridor goes east from the start.position position (positive x)
                     if (!start.piece.canConnect(Direction.EAST, end.position.x, end.position.z)
@@ -360,21 +313,25 @@ public class NewLayerGenerator extends LayerGenerator {
                         return false;
                     }
                     for (int x = start.position.x; x < end.position.x; x++) {
-                        if (dungeonLayer.grid[x][start.position.z] != null) {
-                            DungeonPiece piece = dungeonLayer.grid[x][start.position.z].piece;
-                            if (!piece.canConnect(Direction.EAST, x, start.position.z) || !piece.canConnect(Direction.WEST, x, start.position.z)) {
-                                return false;
-                            }
-                        }
+                        if (pieceCannotConnect(dungeonLayer, x, start.position.z, Direction.EAST, Direction.WEST))
+                            return false;
                     }
-                    return true;
                 }
+                return true;
             } else { // The two elements aren't lined up.
                 return false;
             }
         } else { // The two elements are in the same spot.
             return false;
         }
+    }
+
+    private boolean pieceCannotConnect(DungeonLayer dungeonLayer, int x, int z, Direction from, Direction to) {
+        if (dungeonLayer.grid[x][z] != null) {
+            DungeonPiece piece = dungeonLayer.grid[x][z].piece;
+            return !piece.canConnect(from, x, z) || !piece.canConnect(to, x, z);
+        }
+        return false;
     }
 
     private static abstract class LayerElement {

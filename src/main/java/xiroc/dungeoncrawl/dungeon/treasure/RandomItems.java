@@ -21,20 +21,21 @@ package xiroc.dungeoncrawl.dungeon.treasure;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.util.Range;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,83 +54,83 @@ public class RandomItems {
 
     public static WeightedRandomTreasureItem STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5;
 
-    private static final RandomValueRange[] UNBREAKING_LEVELS = {new RandomValueRange(1, 1), new RandomValueRange(1, 2),
-            new RandomValueRange(2, 2), new RandomValueRange(2, 3), new RandomValueRange(3, 3)};
+    private static final Range[] UNBREAKING_LEVELS = {new Range(1, 1), new Range(1, 2),
+            new Range(2, 2), new Range(2, 3), new Range(3, 3)};
 
     static {
         REINFORCED_BOW = new ItemStack(Items.BOW);
         REINFORCED_BOW.enchant(Enchantments.UNBREAKING, 1);
         REINFORCED_BOW.enchant(Enchantments.POWER_ARROWS, 1);
-        REINFORCED_BOW.setHoverName(new StringTextComponent("Reinforced Bow"));
+        REINFORCED_BOW.setHoverName(new TextComponent("Reinforced Bow"));
 
         BOOTS_OF_BATTLE = new ItemStack(Items.LEATHER_BOOTS);
         RandomEquipment.setArmorColor(BOOTS_OF_BATTLE, COLOR);
         BOOTS_OF_BATTLE.enchant(Enchantments.UNBREAKING, 1);
         BOOTS_OF_BATTLE.enchant(Enchantments.ALL_DAMAGE_PROTECTION, 1);
-        BOOTS_OF_BATTLE.setHoverName(new StringTextComponent("Boots of Battle"));
+        BOOTS_OF_BATTLE.setHoverName(new TextComponent("Boots of Battle"));
 
         PANTS_OF_DEFLECTION = new ItemStack(Items.LEATHER_LEGGINGS);
         RandomEquipment.setArmorColor(PANTS_OF_DEFLECTION, COLOR);
         PANTS_OF_DEFLECTION.enchant(Enchantments.ALL_DAMAGE_PROTECTION, 2);
         PANTS_OF_DEFLECTION.enchant(Enchantments.THORNS, 1);
-        PANTS_OF_DEFLECTION.setHoverName(new StringTextComponent("Pants of Deflection"));
+        PANTS_OF_DEFLECTION.setHoverName(new TextComponent("Pants of Deflection"));
 
         LUMBERJACKET = new ItemStack(Items.LEATHER_CHESTPLATE);
         RandomEquipment.setArmorColor(LUMBERJACKET, 11546150);
         LUMBERJACKET.enchant(Enchantments.UNBREAKING, 3);
         LUMBERJACKET.enchant(Enchantments.FIRE_PROTECTION, 1);
-        LUMBERJACKET.setHoverName(new StringTextComponent("Lumberjacket"));
+        LUMBERJACKET.setHoverName(new TextComponent("Lumberjacket"));
 
         YOKEL_AXE = new ItemStack(Items.IRON_AXE);
         YOKEL_AXE.enchant(Enchantments.BLOCK_EFFICIENCY, 2);
         YOKEL_AXE.enchant(Enchantments.SHARPNESS, 1);
         YOKEL_AXE.enchant(Enchantments.UNBREAKING, 1);
-        YOKEL_AXE.setHoverName(new StringTextComponent("Yokel's Axe"));
+        YOKEL_AXE.setHoverName(new TextComponent("Yokel's Axe"));
 
         DOOM = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:golden_sword")));
         DOOM.enchant(Enchantments.SHARPNESS, 1);
         DOOM.enchant(Enchantments.FIRE_ASPECT, 2);
         DOOM.enchant(Enchantments.UNBREAKING, 1);
-        DOOM.setHoverName(new StringTextComponent("Doom"));
+        DOOM.setHoverName(new TextComponent("Doom"));
 
         THE_SLAYER = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:diamond_sword")));
         THE_SLAYER.enchant(Enchantments.SHARPNESS, 4);
-        THE_SLAYER.setHoverName(new StringTextComponent("The Slayer"));
+        THE_SLAYER.setHoverName(new TextComponent("The Slayer"));
 
         DEMON_HUNTER_CROSSBOW = new ItemStack(Items.CROSSBOW);
         DEMON_HUNTER_CROSSBOW.enchant(Enchantments.PIERCING, 2);
         DEMON_HUNTER_CROSSBOW.enchant(Enchantments.MULTISHOT, 1);
         DEMON_HUNTER_CROSSBOW.enchant(Enchantments.QUICK_CHARGE, 1);
         DEMON_HUNTER_CROSSBOW.enchant(Enchantments.POWER_ARROWS, 4);
-        DEMON_HUNTER_CROSSBOW.setHoverName(new StringTextComponent("Demon Hunter's Crossbow"));
+        DEMON_HUNTER_CROSSBOW.setHoverName(new TextComponent("Demon Hunter's Crossbow"));
 
         THIEF_DAGGER = new ItemStack(Items.IRON_SWORD);
         THIEF_DAGGER.enchant(Enchantments.SHARPNESS, 1);
         THIEF_DAGGER.enchant(Enchantments.MOB_LOOTING, 3);
-        THIEF_DAGGER.setHoverName(new StringTextComponent("Thief's Dagger"));
+        THIEF_DAGGER.setHoverName(new TextComponent("Thief's Dagger"));
 
         THE_GREAT_CLEAVER = new ItemStack(Items.DIAMOND_SWORD);
         THE_GREAT_CLEAVER.enchant(Enchantments.SWEEPING_EDGE, 3);
         THE_GREAT_CLEAVER.enchant(Enchantments.SMITE, 4);
         THE_GREAT_CLEAVER.enchant(Enchantments.UNBREAKING, 3);
-        THE_GREAT_CLEAVER.setHoverName(new StringTextComponent("The Great Cleaver"));
+        THE_GREAT_CLEAVER.setHoverName(new TextComponent("The Great Cleaver"));
 
         ARCHANGEL_SWORD = new ItemStack(Items.GOLDEN_SWORD);
         ARCHANGEL_SWORD.enchant(Enchantments.SHARPNESS, 4);
         ARCHANGEL_SWORD.enchant(Enchantments.UNBREAKING, 2);
         ARCHANGEL_SWORD.enchant(Enchantments.VANISHING_CURSE, 1);
-        ARCHANGEL_SWORD.setHoverName(new StringTextComponent("Archangel's Sword"));
+        ARCHANGEL_SWORD.setHoverName(new TextComponent("Archangel's Sword"));
 
         REPULSER = new ItemStack(Items.IRON_SWORD);
         REPULSER.enchant(Enchantments.KNOCKBACK, 2);
         REPULSER.enchant(Enchantments.SWEEPING_EDGE, 1);
-        REPULSER.setHoverName(new StringTextComponent("Repulser"));
+        REPULSER.setHoverName(new TextComponent("Repulser"));
 
         ELB_BOW = new ItemStack(Items.BOW);
         ELB_BOW.enchant(Enchantments.POWER_ARROWS, 4);
         ELB_BOW.enchant(Enchantments.PIERCING, 3);
         ELB_BOW.enchant(Enchantments.MENDING, 1);
-        ELB_BOW.setHoverName(new StringTextComponent("Bow of the Elbs"));
+        ELB_BOW.setHoverName(new TextComponent("Bow of the Elbs"));
 
         ITEMS = new ItemStack[]{REINFORCED_BOW, BOOTS_OF_BATTLE, LUMBERJACKET, YOKEL_AXE, DOOM, ARCHANGEL_SWORD,
                 REPULSER};
@@ -138,7 +139,7 @@ public class RandomItems {
 
     }
 
-    public static void loadJson(IResourceManager resourceManager) {
+    public static void loadJson(ResourceManager resourceManager) {
         try {
             JsonParser parser = new JsonParser();
 
@@ -182,7 +183,7 @@ public class RandomItems {
         }
     }
 
-    public static ItemStack generate(ServerWorld world, Random rand, Integer lootLevel) {
+    public static ItemStack generate(ServerLevel world, Random rand, Integer lootLevel) {
         switch (lootLevel) {
             case 0:
                 return STAGE_1.roll(rand).createItem(world, rand, lootLevel);
@@ -217,7 +218,7 @@ public class RandomItems {
         lootLevel = Math.min(4, lootLevel);
         float f = rand.nextFloat();
         if (f < 0.12f + lootLevel * 0.02f) {
-            shield.enchant(Enchantments.UNBREAKING, UNBREAKING_LEVELS[lootLevel].getInt(rand));
+            shield.enchant(Enchantments.UNBREAKING, UNBREAKING_LEVELS[Mth.clamp(lootLevel, 0, 4)].nextInt(rand));
             if (f < 0.04 + lootLevel * 0.01) {
                 shield.enchant(Enchantments.MENDING, 1);
             }

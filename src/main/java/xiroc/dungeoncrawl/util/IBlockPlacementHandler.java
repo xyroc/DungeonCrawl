@@ -18,12 +18,12 @@
 
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.Furnace;
@@ -48,19 +48,15 @@ public interface IBlockPlacementHandler {
     };
 
     static void init() {
-//        PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);
-//        PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, TRAPPED_CHEST);
-//        PLACEMENT_HANDLERS.put(Blocks.BARREL, CHEST);
         PLACEMENT_HANDLERS.put(Blocks.FURNACE, new Furnace());
         PLACEMENT_HANDLERS.put(Blocks.SMOKER, new Furnace.Smoker());
         PLACEMENT_HANDLERS.put(Blocks.SPAWNER, SPAWNER);
-//        PLACEMENT_HANDLERS.put(Blocks.DISPENSER, new Dispenser());
         PLACEMENT_HANDLERS.put(Blocks.FARMLAND, new Plants.Farmland());
         PLACEMENT_HANDLERS.put(Blocks.FLOWER_POT, new Plants.FlowerPot());
         PLACEMENT_HANDLERS.put(Blocks.PODZOL, new Plants.Podzol());
     }
 
-    void place(IWorld world, BlockState state, BlockPos pos, Random rand,
+    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand,
                PlacementContext context, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel);
 
     static IBlockPlacementHandler getHandler(Block block) {

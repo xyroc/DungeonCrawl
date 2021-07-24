@@ -18,18 +18,15 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-public class ConditionalLootFunctions extends LootFunction {
+public class ConditionalLootFunctions extends LootItemConditionalFunction {
 
-    protected ConditionalLootFunctions(ILootCondition[] conditionsIn) {
+    protected ConditionalLootFunctions(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
@@ -39,7 +36,7 @@ public class ConditionalLootFunctions extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return null;
     }
 

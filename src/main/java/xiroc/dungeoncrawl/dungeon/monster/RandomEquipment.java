@@ -21,15 +21,14 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.DyeableArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.DyeableArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -52,7 +51,7 @@ public class RandomEquipment {
     /**
      * Initializes all WeightedRandomItems from the datapack.
      */
-    public static void loadJson(IResourceManager resourceManager) {
+    public static void loadJson(ResourceManager resourceManager) {
         HELMET = new Hashtable<>(5);
         CHESTPLATE = new Hashtable<>(5);
         LEGGINGS = new Hashtable<>(5);
@@ -82,7 +81,7 @@ public class RandomEquipment {
     /**
      * Convenience method to load an armor file from json.
      */
-    private static void loadArmorFromJson(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
+    private static void loadArmorFromJson(ResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
@@ -116,14 +115,14 @@ public class RandomEquipment {
                 e.printStackTrace();
             }
         } else {
-            throw new FileNotFoundException("Missing file: " + file.toString());
+            throw new FileNotFoundException("Missing file: " + file);
         }
     }
 
     /**
      * Convenience method to load a weapon file from json.
      */
-    private static void loadWeaponsFromJson(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
+    private static void loadWeaponsFromJson(ResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
             DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
             JsonObject object = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
@@ -140,7 +139,7 @@ public class RandomEquipment {
                 DungeonCrawl.LOGGER.error("Missing entry 'ranged' in {}", file.toString());
             }
         } else {
-            throw new FileNotFoundException("Missing file: " + file.toString());
+            throw new FileNotFoundException("Missing file: " + file);
         }
     }
 
@@ -227,27 +226,19 @@ public class RandomEquipment {
             item.setDamageValue(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
     }
 
-    public static void enchantItem(ItemStack item, Enchantment enchantment, double multiplier) {
-        int level = (int) ((double) enchantment.getMaxLevel() * multiplier);
-        if (level < 1)
-            level = 1;
-        item.enchant(enchantment, level);
-    }
-
-    public static ItemStack setArmorColor(ItemStack item, int color) {
-        CompoundNBT tag = item.getTag();
+    public static void setArmorColor(ItemStack item, int color) {
+        CompoundTag tag = item.getTag();
         if (tag == null)
-            tag = new CompoundNBT();
-        INBT displayNBT = tag.get("display");
-        CompoundNBT display;
+            tag = new CompoundTag();
+        Tag displayNBT = tag.get("display");
+        CompoundTag display;
         if (displayNBT == null)
-            display = new CompoundNBT();
+            display = new CompoundTag();
         else
-            display = (CompoundNBT) displayNBT;
+            display = (CompoundTag) displayNBT;
         display.putInt("color", color);
         tag.put("display", display);
         item.setTag(tag);
-        return item;
     }
 
     public static ItemStack getMeleeWeapon(Random rand, int stage) {
@@ -270,12 +261,6 @@ public class RandomEquipment {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;
         }
-    }
-
-    public static double getStageMultiplier(int stage) {
-        if (stage > HIGHEST_STAGE)
-            return 1.0D;
-        return 1D / (HIGHEST_STAGE - stage + 1);
     }
 
     public static int getRandomColor(Random rand) {

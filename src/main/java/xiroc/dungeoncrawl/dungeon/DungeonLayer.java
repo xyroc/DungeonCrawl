@@ -19,9 +19,9 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -202,10 +202,8 @@ public class DungeonLayer {
         DungeonPiece piece = placeHolder.piece;
 
         switch (piece.connectedSides) {
-            case 1:
-                piece.setRotation(Orientation.getRotationFromFacing(DungeonPiece.getOneWayDirection(piece)));
-                return;
-            case 2:
+            case 1 -> piece.setRotation(Orientation.getRotationFromFacing(DungeonPiece.getOneWayDirection(piece)));
+            case 2 -> {
                 if (piece.sides[0] && piece.sides[2]) {
                     piece.setRotation(Orientation.getRotationFromFacing(rand.nextBoolean() ? Direction.NORTH : Direction.SOUTH));
                 } else if (piece.sides[1] && piece.sides[3]) {
@@ -214,13 +212,10 @@ public class DungeonLayer {
                     piece.setRotation(Orientation.getRotationFromCW90DoubleFacing(DungeonPiece.getOpenSide(piece, 0),
                             DungeonPiece.getOpenSide(piece, 1)));
                 }
-                return;
-            case 3:
-                piece.setRotation(Orientation.getRotationFromTripleFacing(DungeonPiece.getOpenSide(piece, 0),
-                        DungeonPiece.getOpenSide(piece, 1), DungeonPiece.getOpenSide(piece, 2)));
-                return;
-            default:
-                piece.setRotation(Rotation.getRandom(rand));
+            }
+            case 3 -> piece.setRotation(Orientation.getRotationFromTripleFacing(DungeonPiece.getOpenSide(piece, 0),
+                    DungeonPiece.getOpenSide(piece, 1), DungeonPiece.getOpenSide(piece, 2)));
+            default -> piece.setRotation(Rotation.getRandom(rand));
         }
     }
 
@@ -263,7 +258,7 @@ public class DungeonLayer {
         if (outerPosition.isValid(width, length)) {
             Position2D innerPosition = corridorPos.shift(direction, 1);
             if (isTileFree(outerPosition) && isTileFree(innerPosition)) {
-                DungeonSecretRoom room = new DungeonSecretRoom(null, DungeonPiece.DEFAULT_NBT);
+                DungeonSecretRoom room = new DungeonSecretRoom();
                 int x = Math.min(outerPosition.x, innerPosition.x), z = Math.min(outerPosition.z, innerPosition.z);
                 room.setGridPosition(x, z);
                 room.setRotation(Orientation.getRotationFromFacing(direction));
@@ -280,16 +275,11 @@ public class DungeonLayer {
     }
 
     private static Position2D getOther(int x, int z, Direction direction) {
-        switch (direction) {
-            case EAST:
-            case WEST:
-                return new Position2D(x + 1, z);
-            case SOUTH:
-            case NORTH:
-                return new Position2D(x, z + 1);
-            default:
-                throw new UnsupportedOperationException("Can't get other position from direction " + direction);
-        }
+        return switch (direction) {
+            case EAST, WEST -> new Position2D(x + 1, z);
+            case SOUTH, NORTH -> new Position2D(x, z + 1);
+            default -> throw new UnsupportedOperationException("Can't get other position from direction " + direction);
+        };
     }
 
 }

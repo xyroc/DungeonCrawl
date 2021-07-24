@@ -18,10 +18,10 @@
 
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IFutureReloadListener;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
+import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
@@ -39,16 +39,14 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.minecraft.resources.IFutureReloadListener.IStage;
-
-public class ResourceReloadHandler implements IFutureReloadListener {
+public class ResourceReloadHandler implements PreparableReloadListener {
 
     /**
      * A list of all objects that need to get updated after the data pack files have been loaded.
      */
     public static final ArrayList<Updateable> UPDATEABLES = new ArrayList<>();
 
-    public void reload(IResourceManager resourceManager) {
+    public void reload(ResourceManager resourceManager) {
         DungeonCrawl.LOGGER.info("Loading data...");
         UPDATEABLES.clear();
 
@@ -75,7 +73,7 @@ public class ResourceReloadHandler implements IFutureReloadListener {
     }
 
     @Override
-    public CompletableFuture<Void> reload(IStage stage, IResourceManager resourceManager, IProfiler preparationsProfiler, IProfiler reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+    public CompletableFuture<Void> reload(PreparationBarrier stage, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
         return stage.wait(Unit.INSTANCE).thenRunAsync(() -> {
             reloadProfiler.startTick();
             reloadProfiler.push("listener");

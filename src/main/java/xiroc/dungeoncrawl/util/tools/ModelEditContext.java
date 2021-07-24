@@ -18,7 +18,7 @@
 
 package xiroc.dungeoncrawl.util.tools;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public class ModelEditContext {
 

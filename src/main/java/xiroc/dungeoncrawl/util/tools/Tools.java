@@ -20,26 +20,24 @@ package xiroc.dungeoncrawl.util.tools;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.feature.jigsaw.JigsawOrientation;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.command.argument.DungeonModelArgument;
 import xiroc.dungeoncrawl.command.argument.ModelBlockDefinitionArgument;
@@ -61,7 +59,7 @@ public class Tools {
             try {
                 return a.getPlayerOrException().isCreative();
             } catch (CommandSyntaxException e) {
-                a.sendFailure(new StringTextComponent("You must be a player!"));
+                a.sendFailure(new TextComponent("You must be a player!"));
                 return false;
             }
         }).then(Commands.argument("name", StringArgumentType.string()).executes((command) -> {
@@ -69,7 +67,7 @@ public class Tools {
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
                         command.getSource().sendSuccess(
-                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
@@ -88,11 +86,11 @@ public class Tools {
                                 ModelBlockDefinition.getDefaultDefinition(),
                                 command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendSuccess(new StringTextComponent("Saved as " + TextFormatting.GREEN + name + ".nbt"), true);
+                        command.getSource().sendSuccess(new TextComponent("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
                         command.getSource().sendSuccess(
-                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
@@ -102,7 +100,7 @@ public class Tools {
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
                         command.getSource().sendSuccess(
-                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
@@ -120,11 +118,11 @@ public class Tools {
                                 blockDefinition,
                                 command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendSuccess(new StringTextComponent("Saving a model..."), true);
+                        command.getSource().sendSuccess(new TextComponent("Saving a model..."), true);
                         return 0;
                     } else {
                         command.getSource().sendSuccess(
-                                new StringTextComponent(TextFormatting.RED + "Please select two positions."),
+                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
@@ -165,18 +163,18 @@ public class Tools {
                 .executes((command) -> {
                     UUID uuid = command.getSource().getPlayerOrException().getUUID();
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
-                        command.getSource().sendSuccess(new StringTextComponent(TextFormatting.RED + "Please set your origin with "
-                                + TextFormatting.BOLD + "/origin ~ ~ ~"
-                                + TextFormatting.RED + " first."), true);
+                        command.getSource().sendSuccess(new TextComponent(ChatFormatting.RED + "Please set your origin with "
+                                + ChatFormatting.BOLD + "/origin ~ ~ ~"
+                                + ChatFormatting.RED + " first."), true);
                         return 1;
                     } else {
                         ModelEditContext context = CONTEXT_TABLE.get(uuid);
                         BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
-                        command.getSource().sendSuccess(new StringTextComponent("The origin is (x: "
+                        command.getSource().sendSuccess(new TextComponent("The origin is (x: "
                                 + context.origin.getX() + " y: "
                                 + context.origin.getY() + " z: "
                                 + context.origin.getZ() + ")."), true);
-                        command.getSource().sendSuccess(new StringTextComponent("Your coordinates relative to the origin are (x: "
+                        command.getSource().sendSuccess(new TextComponent("Your coordinates relative to the origin are (x: "
                                 + (pos.getX() - context.origin.getX()) + " y: "
                                 + (pos.getY() - context.origin.getY()) + " z: "
                                 + (pos.getZ() - context.origin.getZ() + ").")), true);
@@ -193,9 +191,9 @@ public class Tools {
                     UUID uuid = command.getSource().getPlayerOrException().getUUID();
                     if (CONTEXT_TABLE.containsKey(uuid)) {
                         CONTEXT_TABLE.get(uuid).origin = null;
-                        command.getSource().sendSuccess(new StringTextComponent("Origin reset."), true);
+                        command.getSource().sendSuccess(new TextComponent("Origin reset."), true);
                     } else {
-                        command.getSource().sendSuccess(new StringTextComponent("Nothing to reset."), true);
+                        command.getSource().sendSuccess(new TextComponent("Nothing to reset."), true);
                     }
                     return 0;
                 })));
@@ -204,19 +202,19 @@ public class Tools {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         if (!event.getWorld().isClientSide() && event.getPlayer().isCreative()) {
-            Item item = event.getPlayer().getItemBySlot(EquipmentSlotType.MAINHAND).getItem();
+            Item item = event.getPlayer().getItemBySlot(EquipmentSlot.MAINHAND).getItem();
             if (item == Items.DIAMOND_AXE) {
                 event.setCanceled(true);
                 BlockPos pos = event.getPos();
 
                 UUID uuid = event.getPlayer().getGameProfile().getId();
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos1 = pos;
-                event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE + "Position 1 set to ("
+                event.getPlayer().sendMessage(new TextComponent(ChatFormatting.LIGHT_PURPLE + "Position 1 set to ("
                         + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUUID());
             } else if (item == Items.GOLDEN_AXE) {
                 event.setCanceled(true);
                 CONTEXT_TABLE.computeIfAbsent(event.getPlayer().getUUID(), (key) -> new ModelEditContext()).origin = event.getPos();
-                event.getPlayer().sendMessage(new StringTextComponent("Origin set to (x: "
+                event.getPlayer().sendMessage(new TextComponent("Origin set to (x: "
                         + event.getPos().getX() + " y: "
                         + event.getPos().getY() + " z: "
                         + event.getPos().getZ() + ")."), event.getPlayer().getUUID());
@@ -235,14 +233,14 @@ public class Tools {
                 UUID uuid = event.getPlayer().getGameProfile().getId();
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
 
-                event.getPlayer().sendMessage(new StringTextComponent(TextFormatting.LIGHT_PURPLE
+                event.getPlayer().sendMessage(new TextComponent(ChatFormatting.LIGHT_PURPLE
                         + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUUID());
             } else if (event.getItemStack().getItem() == Items.GOLDEN_AXE
                     && CONTEXT_TABLE.containsKey(event.getPlayer().getUUID())) {
                 event.setCanceled(true);
                 ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUUID());
                 if (context.origin != null) {
-                    event.getPlayer().sendMessage(new StringTextComponent("The coordinates of the block you clicked" +
+                    event.getPlayer().sendMessage(new TextComponent("The coordinates of the block you clicked" +
                             " relative to the origin are (x: "
                             + (event.getPos().getX() - context.origin.getX()) + " y: "
                             + (event.getPos().getY() - context.origin.getY()) + " z: "
@@ -253,16 +251,16 @@ public class Tools {
 
     }
 
-    private static void setOrigin(CommandSource source, BlockPos pos) throws CommandSyntaxException {
+    private static void setOrigin(CommandSourceStack source, BlockPos pos) throws CommandSyntaxException {
         ModelEditContext context = CONTEXT_TABLE.computeIfAbsent(source.getPlayerOrException().getUUID(), (id) -> new ModelEditContext());
         context.origin = pos;
-        source.sendSuccess(new StringTextComponent("Origin set to (x: "
+        source.sendSuccess(new TextComponent("Origin set to (x: "
                 + context.origin.getX() + " y: "
                 + context.origin.getY() + " z: "
                 + context.origin.getZ() + ")."), true);
     }
 
-    public static void buildModel(DungeonModel model, IWorld world, BlockPos pos, ModelBlockDefinition
+    public static void buildModel(DungeonModel model, LevelAccessor world, BlockPos pos, ModelBlockDefinition
             definition) {
         for (int y = 0; y < model.height; y++) {
             for (int x = 0; x < model.width; x++) {
@@ -283,21 +281,6 @@ public class Tools {
 
         });
 
-    }
-
-    private static JigsawOrientation getJigsawOrientation(Direction primary) {
-        switch (primary) {
-            case EAST:
-            case WEST:
-            case SOUTH:
-            case NORTH:
-                return JigsawOrientation.fromFrontAndTop(primary, Direction.UP);
-            case UP:
-            case DOWN:
-                return JigsawOrientation.fromFrontAndTop(primary, Direction.EAST);
-            default:
-                return JigsawOrientation.NORTH_UP;
-        }
     }
 
 }

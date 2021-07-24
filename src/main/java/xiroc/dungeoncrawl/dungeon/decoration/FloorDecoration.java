@@ -18,9 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -29,19 +29,11 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
-public class FloorDecoration implements IDungeonDecoration {
-
-    private final float chance;
-
-    private final IBlockStateProvider blockStateProvider;
-
-    public FloorDecoration(IBlockStateProvider blockStateProvider, float chance) {
-        this.blockStateProvider = blockStateProvider;
-        this.chance = chance;
-    }
+public record FloorDecoration(IBlockStateProvider blockStateProvider,
+                              float chance) implements IDungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, IWorld world, BlockPos origin, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, PlacementContext context, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece, int stage) {
         model.blocks.forEach((block) -> {
             BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
             if (!DungeonBuilder.isBlockProtected(world, origin, context)
@@ -56,23 +48,15 @@ public class FloorDecoration implements IDungeonDecoration {
         });
     }
 
-    private static boolean checkSolid(IWorld world, BlockPos pos, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds) {
+    private static boolean checkSolid(LevelAccessor world, BlockPos pos, BoundingBox worldGenBounds, BoundingBox structureBounds) {
         return worldGenBounds.isInside(pos) && structureBounds.isInside(pos) && world.getBlockState(pos).canOcclude();
     }
 
-    public static class NextToSolid implements IDungeonDecoration {
-
-        private final float chance;
-
-        private final IBlockStateProvider blockStateProvider;
-
-        public NextToSolid(IBlockStateProvider blockStateProvider, float chance) {
-            this.blockStateProvider = blockStateProvider;
-            this.chance = chance;
-        }
+    public record NextToSolid(IBlockStateProvider blockStateProvider,
+                              float chance) implements IDungeonDecoration {
 
         @Override
-        public void decorate(DungeonModel model, IWorld world, BlockPos origin, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+        public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, PlacementContext context, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece, int stage) {
             model.blocks.forEach((block) -> {
                 if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1) {
                     BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);

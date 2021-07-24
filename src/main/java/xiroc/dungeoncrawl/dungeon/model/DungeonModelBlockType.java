@@ -19,14 +19,14 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -154,7 +154,7 @@ public enum DungeonModelBlockType {
         return isPillar;
     }
 
-    public boolean isSolid(IWorld world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ) {
+    public boolean isSolid(LevelAccessor world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ) {
         return Config.SOLID.get() || placementBehavior.function.isSolid(world, pos, rand, relativeX, relativeY, relativeZ);
     }
 
@@ -177,7 +177,7 @@ public enum DungeonModelBlockType {
     @FunctionalInterface
     public interface BlockFactory {
 
-        BlockState get(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos, Theme theme,
+        BlockState get(DungeonModelBlock block, Rotation rotation, LevelAccessor world, BlockPos pos, Theme theme,
                                        Theme.SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
 
     }

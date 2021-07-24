@@ -18,13 +18,13 @@
 
 package xiroc.dungeoncrawl.dungeon.block;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.DoubleBlockHalf;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -36,7 +36,7 @@ public class Plants {
     public static class Farmland implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             state = state.setValue(BlockStateProperties.MOISTURE, 7);
             world.setBlock(pos, state, 2);
@@ -57,7 +57,7 @@ public class Plants {
     public static class FlowerPot implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).defaultBlockState(), 2);
         }
@@ -67,7 +67,7 @@ public class Plants {
     public static class Podzol implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, state, 2);
             BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).defaultBlockState();

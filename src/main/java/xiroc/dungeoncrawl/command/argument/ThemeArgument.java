@@ -25,10 +25,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.concurrent.CompletableFuture;
@@ -36,13 +36,13 @@ import java.util.concurrent.CompletableFuture;
 public class ThemeArgument implements ArgumentType<Theme> {
 
     public static final DynamicCommandExceptionType THEME_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) ->
-            new TranslationTextComponent("Unknown theme: {0}", p_208663_0_));
+            new TranslatableComponent("Unknown theme: {0}", p_208663_0_));
 
     public static ThemeArgument theme() {
         return new ThemeArgument();
     }
 
-    public static Theme getTheme(CommandContext<CommandSource> context, String name) {
+    public static Theme getTheme(CommandContext<CommandSourceStack> context, String name) {
         return context.getArgument(name, Theme.class);
     }
 
@@ -58,7 +58,7 @@ public class ThemeArgument implements ArgumentType<Theme> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggestResource(Theme.getThemeKeys(), builder);
+        return SharedSuggestionProvider.suggestResource(Theme.getThemeKeys(), builder);
     }
 
 }

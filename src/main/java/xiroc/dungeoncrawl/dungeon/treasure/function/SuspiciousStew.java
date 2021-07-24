@@ -20,99 +20,99 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
 import java.util.Random;
 
-public class SuspiciousStew extends LootFunction {
+public class SuspiciousStew extends LootItemConditionalFunction {
 
-    public static CompoundNBT[] EFFECTS;
+    public static CompoundTag[] EFFECTS;
 
     static {
-        CompoundNBT regeneration = new CompoundNBT();
+        CompoundTag regeneration = new CompoundTag();
         regeneration.putInt("EffectId", 10);
         regeneration.putInt("EffectDuration", 160);
 
-        CompoundNBT weakness = new CompoundNBT();
+        CompoundTag weakness = new CompoundTag();
         weakness.putInt("EffectId", 18);
         weakness.putInt("EffectDuration", 320);
 
-        CompoundNBT poison = new CompoundNBT();
+        CompoundTag poison = new CompoundTag();
         poison.putInt("EffectId", 19);
         poison.putInt("EffectDuration", 160);
 
-        CompoundNBT healthBoost = new CompoundNBT();
+        CompoundTag healthBoost = new CompoundTag();
         healthBoost.putInt("EffectId", 21);
         healthBoost.putInt("EffectDuration", 320);
 
-        CompoundNBT blindness = new CompoundNBT();
+        CompoundTag blindness = new CompoundTag();
         blindness.putInt("EffectId", 15);
         blindness.putInt("EffectDuration", 120);
 
-        CompoundNBT resistance = new CompoundNBT();
+        CompoundTag resistance = new CompoundTag();
         resistance.putInt("EffectId", 11);
         resistance.putInt("EffectDuration", 320);
 
-        CompoundNBT nausea = new CompoundNBT();
+        CompoundTag nausea = new CompoundTag();
         nausea.putInt("EffectId", 9);
         nausea.putInt("EffectDuration", 120);
 
-        CompoundNBT absorption = new CompoundNBT();
+        CompoundTag absorption = new CompoundTag();
         absorption.putInt("EffectId", 22);
         absorption.putInt("EffectDuration", 320);
 
-        CompoundNBT hunger = new CompoundNBT();
+        CompoundTag hunger = new CompoundTag();
         hunger.putInt("EffectId", 17);
         hunger.putInt("EffectDuration", 200);
 
-        CompoundNBT saturation = new CompoundNBT();
+        CompoundTag saturation = new CompoundTag();
         saturation.putInt("EffectId", 23);
         saturation.putInt("EffectDuration", 80);
 
-        CompoundNBT fireResistance = new CompoundNBT();
+        CompoundTag fireResistance = new CompoundTag();
         fireResistance.putInt("EffectId", 12);
         fireResistance.putInt("EffectDuration", 320);
 
-        CompoundNBT strength = new CompoundNBT();
+        CompoundTag strength = new CompoundTag();
         strength.putInt("EffectId", 5);
         strength.putInt("EffectDuration", 320);
 
-        CompoundNBT speed = new CompoundNBT();
+        CompoundTag speed = new CompoundTag();
         speed.putInt("EffectId", 1);
         speed.putInt("EffectDuration", 220);
 
-        CompoundNBT slowness = new CompoundNBT();
+        CompoundTag slowness = new CompoundTag();
         slowness.putInt("EffectId", 2);
         slowness.putInt("EffectDuration", 160);
 
-        CompoundNBT miningFatique = new CompoundNBT();
+        CompoundTag miningFatique = new CompoundTag();
         miningFatique.putInt("EffectId", 4);
         miningFatique.putInt("EffectDuration", 160);
 
-        CompoundNBT haste = new CompoundNBT();
+        CompoundTag haste = new CompoundTag();
         haste.putInt("EffectId", 3);
         haste.putInt("EffectDuration", 320);
 
-        CompoundNBT jumpBoost = new CompoundNBT();
+        CompoundTag jumpBoost = new CompoundTag();
         jumpBoost.putInt("EffectId", 8);
         jumpBoost.putInt("EffectDuration", 160);
 
-        CompoundNBT wither = new CompoundNBT();
+        CompoundTag wither = new CompoundTag();
         wither.putInt("EffectId", 20);
         wither.putInt("EffectDuration", 80);
 
-        EFFECTS = new CompoundNBT[]{regeneration, weakness, poison, healthBoost, blindness, resistance, nausea,
+        EFFECTS = new CompoundTag[]{regeneration, weakness, poison, healthBoost, blindness, resistance, nausea,
                 hunger, saturation, fireResistance, strength, speed, slowness, miningFatique, haste, wither};
     }
 
-    public SuspiciousStew(ILootCondition[] conditionsIn) {
+    public SuspiciousStew(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
@@ -123,11 +123,11 @@ public class SuspiciousStew extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Treasure.SUSPICIOUS_STEW;
     }
 
-    public static class Serializer extends LootFunction.Serializer<SuspiciousStew> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<SuspiciousStew> {
 
         public Serializer() {
             super();
@@ -135,15 +135,15 @@ public class SuspiciousStew extends LootFunction {
 
         @Override
         public SuspiciousStew deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                          ILootCondition[] conditionsIn) {
+                                          LootItemCondition[] conditionsIn) {
             return new SuspiciousStew(conditionsIn);
         }
 
     }
 
-    public static ListNBT createEffectList(Random rand) {
+    public static ListTag createEffectList(Random rand) {
         int counter = rand.nextInt(2), max = EFFECTS.length;
-        ListNBT effects = new ListNBT();
+        ListTag effects = new ListTag();
 
         while (counter < max) {
             effects.add(EFFECTS[counter].copy());

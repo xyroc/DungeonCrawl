@@ -19,20 +19,17 @@
 package xiroc.dungeoncrawl.dungeon.block;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.MobSpawnerTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
@@ -43,6 +40,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
+import xiroc.dungeoncrawl.util.Range;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -56,36 +54,35 @@ public class Spawner implements IBlockPlacementHandler {
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
     @Override
-    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                       Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
         if (world.isEmptyBlock(pos.below())) {
             return;
         }
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
-        TileEntity tileentity = world.getBlockEntity(pos);
-        if (tileentity instanceof MobSpawnerTileEntity) {
-            MobSpawnerTileEntity tile = (MobSpawnerTileEntity) tileentity;
+        BlockEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof SpawnerBlockEntity spawner) {
             EntityType<?> type = RandomMonster.randomMonster(rand, stage);
-            tile.getSpawner().setEntityId(type);
+            spawner.getSpawner().setEntityId(type);
             if (!Config.VANILLA_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
-                CompoundNBT spawnerNBT = tile.getSpawner().save(new CompoundNBT());
-                ListNBT potentialSpawns = new ListNBT();
+                CompoundTag spawnerNBT = spawner.getSpawner().save(spawner.getLevel(), pos,  new CompoundTag());
+                ListTag potentialSpawns = new ListTag();
                 for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
-                    CompoundNBT nbt = new CompoundNBT();
-                    CompoundNBT spawnData = createSpawnData(type, null, rand, stage);
+                    CompoundTag nbt = new CompoundTag();
+                    CompoundTag spawnData = createSpawnData(type, null, rand, stage);
                     nbt.put("Entity", spawnData);
                     nbt.putInt("Weight", 1);
                     if (i == 0)
                         spawnerNBT.put("SpawnData", spawnData);
                     potentialSpawns.add(nbt);
                 }
-                RandomValueRange delay = SpawnRates.getDelay(stage);
+                Range delay = SpawnRates.getDelay(stage);
                 spawnerNBT.put("SpawnPotentials", potentialSpawns);
-                spawnerNBT.putShort("MinSpawnDelay", (short) delay.getMin());
-                spawnerNBT.putShort("MaxSpawnDelay", (short) delay.getMax());
-                spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).getInt(rand));
+                spawnerNBT.putShort("MinSpawnDelay", (short) delay.min());
+                spawnerNBT.putShort("MaxSpawnDelay", (short) delay.max());
+                spawnerNBT.putShort("SpawnCount", (short) SpawnRates.getAmount(stage).nextInt(rand));
                 spawnerNBT.putShort("RequiredPlayerRange", Config.SPAWNER_RANGE.get().shortValue());
-                tile.getSpawner().load(spawnerNBT);
+                spawner.getSpawner().load(spawner.getLevel(), pos, spawnerNBT);
             }
         } else {
             DungeonCrawl.LOGGER.error("Failed to fetch a mob spawner at ({}, {}, {})", pos.getX(), pos.getY(),
@@ -93,44 +90,44 @@ public class Spawner implements IBlockPlacementHandler {
         }
     }
 
-    public static CompoundNBT createSpawnData(@Nullable EntityType<?> type, @Nullable CompoundNBT spawnData,
+    public static CompoundTag createSpawnData(@Nullable EntityType<?> type, @Nullable CompoundTag spawnData,
                                               Random rand, int stage) {
         if (type == null)
             type = RandomMonster.randomMonster(rand, stage);
         if (spawnData == null)
-            spawnData = new CompoundNBT();
+            spawnData = new CompoundTag();
 
         ResourceLocation registryName = type.getRegistryName();
         if (registryName == null) {
             DungeonCrawl.LOGGER.warn("Entity type {} has no registry name.", type);
-            return new CompoundNBT();
+            return new CompoundTag();
         }
 
         spawnData.putString("id", registryName.toString());
         if (INVENTORY_ENTITIES.contains(type)) {
             ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
-            ListNBT armorList = new ListNBT();
+            ListTag armorList = new ListTag();
 
             for (ItemStack stack : armor) {
-                armorList.add(stack.save(new CompoundNBT()));
+                armorList.add(stack.save(new CompoundTag()));
             }
 
             if (armorList.size() > 0) {
                 spawnData.put("ArmorItems", armorList);
             }
 
-            ListNBT handItems = new ListNBT();
+            ListTag handItems = new ListTag();
             ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
                     ? RandomEquipment.getRangedWeapon(DungeonBlocks.RANDOM, stage)
                     : RandomEquipment.getMeleeWeapon(DungeonBlocks.RANDOM, stage);
 
             if (mainHand != ItemStack.EMPTY) {
-                handItems.add(mainHand.save(new CompoundNBT()));
+                handItems.add(mainHand.save(new CompoundTag()));
             }
 
             handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
-                    ? RandomItems.createShield(rand, stage).save(new CompoundNBT())
-                    : ItemStack.EMPTY.save(new CompoundNBT()));
+                    ? RandomItems.createShield(rand, stage).save(new CompoundTag())
+                    : ItemStack.EMPTY.save(new CompoundTag()));
 
             spawnData.put("HandItems", handItems);
 
@@ -138,7 +135,7 @@ public class Spawner implements IBlockPlacementHandler {
                 spawnData.putBoolean("PersistenceRequired", true);
             }
 
-            ListNBT potionEffects = RandomPotionEffect.createPotionEffects(rand, stage);
+            ListTag potionEffects = RandomPotionEffect.createPotionEffects(rand, stage);
             if (potionEffects != null) {
                 spawnData.put("ActiveEffects", potionEffects);
             }
@@ -148,37 +145,6 @@ public class Spawner implements IBlockPlacementHandler {
             RandomMonster.NBT_PATCHERS.get(type).patch(spawnData, rand, stage);
         }
         return spawnData;
-    }
-
-    public static void equipMonster(MonsterEntity entity, Random rand, int stage) {
-        if (INVENTORY_ENTITIES.contains(entity.getType())) {
-            ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
-            entity.setItemSlot(EquipmentSlotType.FEET, armor[0]);
-            entity.setItemSlot(EquipmentSlotType.LEGS, armor[1]);
-            entity.setItemSlot(EquipmentSlotType.CHEST, armor[2]);
-            entity.setItemSlot(EquipmentSlotType.HEAD, armor[3]);
-
-            ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(entity.getType())
-                    ? RandomEquipment.getRangedWeapon(DungeonBlocks.RANDOM, stage)
-                    : RandomEquipment.getMeleeWeapon(DungeonBlocks.RANDOM, stage);
-            entity.setItemSlot(EquipmentSlotType.MAINHAND, mainHand);
-
-            if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())
-                entity.setItemSlot(EquipmentSlotType.OFFHAND, RandomItems.createShield(rand, stage));
-
-            RandomPotionEffect.applyPotionEffects(entity, rand, stage);
-
-            if (!Config.NATURAL_DESPAWN.get()) {
-                entity.setPersistenceRequired();
-            }
-
-            if (RandomMonster.NBT_PATCHERS.containsKey(entity.getType())) {
-                CompoundNBT nbt = new CompoundNBT();
-                entity.addAdditionalSaveData(nbt);
-                RandomMonster.NBT_PATCHERS.get(entity.getType()).patch(nbt, rand, stage);
-                entity.readAdditionalSaveData(nbt);
-            }
-        }
     }
 
 }

@@ -18,7 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.level.ChunkPos;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -44,13 +44,13 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
 
     @Override
     public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
-        this.layerGenerator = this.type.getLayer(layer).layerType.layerGenerator;
+        this.layerGenerator = this.type.getLayer(layer).layerType().layerGenerator;
         this.layerGenerator.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
     }
 
     @Override
     public int layerCount(Random rand, int height) {
-        return Math.min(type.dungeonSettings.maxLayers, height / 9);
+        return Math.min(type.dungeonSettings().maxLayers(), height / 9);
     }
 
     @Override

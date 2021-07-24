@@ -18,10 +18,10 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -29,18 +29,11 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
-public class ScatteredDecoration implements IDungeonDecoration {
-
-    private final IBlockStateProvider blockStateProvider;
-    private final float chance;
-
-    public ScatteredDecoration(IBlockStateProvider blockStateProvider, float chance) {
-        this.blockStateProvider = blockStateProvider;
-        this.chance = chance;
-    }
+public record ScatteredDecoration(IBlockStateProvider blockStateProvider,
+                                  float chance) implements IDungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, PlacementContext context, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece, int stage) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
         int maxX = ew ? width : length;
         int maxZ = ew ? length : width;

@@ -2,10 +2,11 @@ package xiroc.dungeoncrawl.dungeon.monster;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.Range;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,9 +14,9 @@ import java.io.InputStreamReader;
 
 public class SpawnRates {
 
-    private static RandomValueRange[] DELAY, AMOUNT;
+    private static Range[] DELAY, AMOUNT;
 
-    public static RandomValueRange getAmount(int level) {
+    public static Range getAmount(int level) {
         if (level < 0) {
             return AMOUNT[0];
         }
@@ -25,7 +26,7 @@ public class SpawnRates {
         return AMOUNT[level];
     }
 
-    public static RandomValueRange getDelay(int level) {
+    public static Range getDelay(int level) {
         if (level < 0) {
             return DELAY[0];
         }
@@ -35,9 +36,9 @@ public class SpawnRates {
         return DELAY[level];
     }
 
-    public static void loadJson(IResourceManager resourceManager) {
-        DELAY = new RandomValueRange[5];
-        AMOUNT = new RandomValueRange[5];
+    public static void loadJson(ResourceManager resourceManager) {
+        DELAY = new Range[5];
+        AMOUNT = new Range[5];
         ResourceLocation resource = DungeonCrawl.locate("monster/spawn_rates.json");
         DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
         try {
@@ -67,13 +68,10 @@ public class SpawnRates {
             JsonObject delay = data.getAsJsonObject("delay");
             JsonObject amount = data.getAsJsonObject("amount");
 
-            DELAY[level] = new RandomValueRange(delay.get("min").getAsInt(), delay.get("max").getAsInt());
-            AMOUNT[level] = new RandomValueRange(amount.get("min").getAsInt(), amount.get("max").getAsInt());
+            DELAY[level] = new Range(delay.get("min").getAsInt(), delay.get("max").getAsInt());
+            AMOUNT[level] = new Range(amount.get("min").getAsInt(), amount.get("max").getAsInt());
         } else {
-            DungeonCrawl.LOGGER.warn("Missing entry {} in {}", entry, resource.toString());
-            // Fallback to default values
-            DELAY[level] = new RandomValueRange(200, 180);
-            AMOUNT[level] = new RandomValueRange(1, 3);
+            throw new DatapackLoadException("Missing entry " + entry + " in " + resource);
         }
     }
 

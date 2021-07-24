@@ -22,16 +22,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.Range;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
@@ -42,16 +41,16 @@ import java.util.Random;
 public class RandomPotionEffect {
 
     public static float[] CHANCES;
-    public static RandomValueRange[] ROLLS;
+    public static Range[] ROLLS;
     public static WeightedRandomPotionEffect[] EFFECTS;
     public static PotionEffect[][] GUARANTEED_EFFECTS;
 
     /**
      * Loads all potion effect files.
      */
-    public static void loadJson(IResourceManager resourceManager) {
+    public static void loadJson(ResourceManager resourceManager) {
         CHANCES = new float[5];
-        ROLLS = new RandomValueRange[5];
+        ROLLS = new Range[5];
         EFFECTS = new WeightedRandomPotionEffect[5];
         GUARANTEED_EFFECTS = new PotionEffect[5][];
 
@@ -71,7 +70,7 @@ public class RandomPotionEffect {
     /**
      * Convenience method to load a single potion effect file.
      */
-    private static void loadFile(IResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
+    private static void loadFile(ResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
@@ -80,23 +79,21 @@ public class RandomPotionEffect {
                 if (object.has("chance")) {
                     CHANCES[stage] = object.get("chance").getAsFloat();
                 } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'chance' in {}", file.toString());
-                    CHANCES[stage] = 0F;
+                    throw new DatapackLoadException("Missing entry 'chance' in " + file);
                 }
 
                 if (object.has("rolls")) {
                     JsonObject amount = object.getAsJsonObject("rolls");
-                    ROLLS[stage] = new RandomValueRange(amount.get("min").getAsInt(), amount.get("max").getAsInt());
+                    ROLLS[stage] = new Range(amount.get("min").getAsInt(), amount.get("max").getAsInt());
                 } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'rolls' in {}", file.toString());
-                    ROLLS[stage] = new RandomValueRange(0);
+                    throw new DatapackLoadException("Missing entry 'rolls' in " + file);
                 }
 
                 if (object.has("effects")) {
                     EFFECTS[stage] = WeightedRandomPotionEffect.fromJson(object.getAsJsonArray("effects"));
                 } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'effects' in {}", file.toString());
-                    EFFECTS[stage] = WeightedRandomPotionEffect.EMPTY;
+                    throw new DatapackLoadException("Missing entry 'effects' in " + file);
+
                 }
 
                 if (object.has("guaranteed")) {
@@ -104,53 +101,21 @@ public class RandomPotionEffect {
                     GUARANTEED_EFFECTS[stage] = new PotionEffect[array.size()];
                     for (int i = 0; i < array.size(); i++) {
                         JsonObject effect = array.get(i).getAsJsonObject();
-                        RandomValueRange amplifier = effect.has("amplifier") ?
-                                new RandomValueRange(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
+                        Range amplifier = effect.has("amplifier") ?
+                                new Range(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
                                         effect.getAsJsonObject("amplifier").get("max").getAsInt())
-                                : new RandomValueRange(0);
+                                : new Range(0, 0);
                         GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.POTIONS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
                                 effect.get("duration").getAsInt(), amplifier);
                     }
                 }
 
             } catch (Exception e) {
-                DungeonCrawl.LOGGER.error("Failed to load {}" + file.toString());
+                DungeonCrawl.LOGGER.error("Failed to load {} ", file);
                 e.printStackTrace();
             }
         } else {
-            throw new FileNotFoundException("Missing file " + file.toString());
-        }
-    }
-
-    /**
-     * Applies random potion effects to the given monster entity.
-     */
-    public static void applyPotionEffects(MonsterEntity entity, Random rand, int stage) {
-        if (stage > 4)
-            stage = 4;
-        if (rand.nextFloat() < CHANCES[stage]) {
-            int rolls = ROLLS[stage].getInt(rand);
-            if (rolls > 0) {
-                Effect[] effects = new Effect[rolls - 1];
-                loop:
-                for (int i = 0; i < rolls; i++) {
-                    WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
-                    if (effect != null) {
-                        for (Effect value : effects) { // Skip duplicates
-                            if (value == effect.effect)
-                                continue loop;
-                        }
-                        if (i < rolls - 1)
-                            effects[i] = effect.effect;
-                        entity.addEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
-                    }
-                }
-            }
-        }
-        if (GUARANTEED_EFFECTS[stage] != null) {
-            for (PotionEffect effect : GUARANTEED_EFFECTS[stage]) {
-                entity.addEffect(new EffectInstance(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
-            }
+            throw new FileNotFoundException("Missing file " + file);
         }
     }
 
@@ -158,35 +123,35 @@ public class RandomPotionEffect {
      * @return An NBT list of potion effects or null.
      */
     @Nullable
-    public static ListNBT createPotionEffects(Random rand, int stage) {
+    public static ListTag createPotionEffects(Random rand, int stage) {
         if (stage > 4)
             stage = 4;
         boolean chance = rand.nextFloat() < CHANCES[stage];
         boolean guaranteed = GUARANTEED_EFFECTS[stage] != null;
         if (chance || guaranteed) {
-            ListNBT list = new ListNBT();
+            ListTag list = new ListTag();
             if (chance) {
-                int rolls = ROLLS[stage].getInt(rand);
+                int rolls = ROLLS[stage].nextInt(rand);
                 if (rolls > 0) {
-                    Effect[] effects = new Effect[rolls - 1];
+                    MobEffect[] effects = new MobEffect[rolls - 1];
                     loop:
                     for (int i = 0; i < rolls; i++) {
                         WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
                         if (effect != null) {
-                            for (Effect value : effects) { // Skip duplicates
-                                if (value == effect.effect)
+                            for (MobEffect value : effects) { // Skip duplicates
+                                if (value == effect.effect())
                                     continue loop;
                             }
                             if (i < rolls - 1)
-                                effects[i] = effect.effect;
-                            list.add(toNBT(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
+                                effects[i] = effect.effect();
+                            list.add(toNBT(effect.effect(), effect.duration(), effect.amplifier().nextInt(rand)));
                         }
                     }
                 }
             }
             if (guaranteed) {
                 for (PotionEffect effect : GUARANTEED_EFFECTS[stage]) {
-                    list.add(toNBT(effect.effect, effect.duration, effect.amplifier.getInt(rand)));
+                    list.add(toNBT(effect.effect, effect.duration, effect.amplifier.nextInt(rand)));
                 }
             }
             return list;
@@ -198,25 +163,16 @@ public class RandomPotionEffect {
     /**
      * Creates an NBT-representation of the given effect.
      */
-    private static CompoundNBT toNBT(Effect effect, int duration, int amplifier) {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putInt("Id", Effect.getId(effect));
+    private static CompoundTag toNBT(MobEffect effect, int duration, int amplifier) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putInt("Id", MobEffect.getId(effect));
         nbt.putInt("Duration", duration);
         nbt.putInt("Amplifier", amplifier);
         return nbt;
     }
 
-    private static class PotionEffect {
-
-        public final Effect effect;
-        public final int duration;
-        public final RandomValueRange amplifier;
-
-        public PotionEffect(Effect effect, int duration, RandomValueRange amplifier) {
-            this.effect = effect;
-            this.duration = duration;
-            this.amplifier = amplifier;
-        }
+    private record PotionEffect(MobEffect effect, int duration,
+                                Range amplifier) {
     }
 
 }

@@ -18,12 +18,16 @@
 
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
+import net.minecraft.core.Direction;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.Tile;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
+import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
+import java.util.List;
 import java.util.Random;
 
 public abstract class LayerGenerator {
@@ -59,6 +63,28 @@ public abstract class LayerGenerator {
                     dungeonLayer.grid[center.x + x][center.z + z] = placeHolder;
 
         dungeonLayer.grid[center.x][center.z] = new Tile(nodeRoom);
+    }
+
+    public static DungeonCorridor  createCorridor(DungeonLayer dungeonLayer, int x, int z, Direction from, Direction to) {
+        DungeonCorridor corridor = new DungeonCorridor();
+        corridor.setGridPosition(x, z);
+        corridor.openSide(from);
+        corridor.openSide(to);
+        corridor.setRotation(Orientation.getRotationFromFacing(from));
+        dungeonLayer.grid[corridor.gridPosition.x][corridor.gridPosition.z] = new Tile(corridor);
+        return corridor;
+    }
+
+    public static void tryCreateSecretRoom(DungeonLayer dungeonLayer, List<DungeonCorridor> corridors, int maxAttempts, Random random) {
+        if (!corridors.isEmpty()) {
+            for (int i = 0; i < maxAttempts; i++) {
+                DungeonCorridor corridor = corridors.get(random.nextInt(corridors.size()));
+                if (corridor.isStraight() && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, random)) {
+                    break;
+                }
+                corridors.remove(corridor);
+            }
+        }
     }
 
     /**

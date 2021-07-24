@@ -18,15 +18,15 @@
 
 package xiroc.dungeoncrawl.dungeon.piece.room;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
@@ -39,21 +39,21 @@ public class DungeonSpiderRoom extends DungeonPiece {
 
     private BlockPos[] spawners, chests;
 
-    public DungeonSpiderRoom(TemplateManager manager, CompoundNBT nbt) {
+    public DungeonSpiderRoom(ServerLevel serverLevel, CompoundTag nbt) {
         super(StructurePieceTypes.SPIDER_ROOM, nbt);
         if (nbt.contains("spawners")) {
-            ListNBT list = nbt.getList("spawners", 10);
+            ListTag list = nbt.getList("spawners", 10);
             spawners = new BlockPos[list.size()];
             for (int i = 0; i < spawners.length; i++) {
-                CompoundNBT pos = list.getCompound(i);
+                CompoundTag pos = list.getCompound(i);
                 spawners[i] = new BlockPos(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
             }
         }
         if (nbt.contains("chests")) {
-            ListNBT list = nbt.getList("chests", 10);
+            ListTag list = nbt.getList("chests", 10);
             chests = new BlockPos[list.size()];
             for (int i = 0; i < chests.length; i++) {
-                CompoundNBT pos = list.getCompound(i);
+                CompoundTag pos = list.getCompound(i);
                 chests[i] = new BlockPos(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
             }
         }
@@ -80,7 +80,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean postProcess(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         return true;
     }
 
@@ -95,16 +95,16 @@ public class DungeonSpiderRoom extends DungeonPiece {
 
     @Override
     public void setupBoundingBox() {
-        this.boundingBox = new MutableBoundingBox(x, y, z, x + 8, y + 8, z + 8);
+        this.boundingBox = new BoundingBox(x, y, z, x + 8, y + 8, z + 8);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundNBT tagCompound) {
-        super.addAdditionalSaveData(tagCompound);
+    public void addAdditionalSaveData(ServerLevel serverLevel, CompoundTag tagCompound) {
+        super.addAdditionalSaveData(serverLevel, tagCompound);
         if (spawners != null) {
-            ListNBT list = new ListNBT();
+            ListTag list = new ListTag();
             for (BlockPos pos : spawners) {
-                CompoundNBT compoundNBT = new CompoundNBT();
+                CompoundTag compoundNBT = new CompoundTag();
                 compoundNBT.putInt("x", pos.getX());
                 compoundNBT.putInt("y", pos.getY());
                 compoundNBT.putInt("z", pos.getZ());
@@ -113,9 +113,9 @@ public class DungeonSpiderRoom extends DungeonPiece {
             tagCompound.put("spawners", list);
         }
         if (chests != null) {
-            ListNBT list = new ListNBT();
+            ListTag list = new ListTag();
             for (BlockPos pos : chests) {
-                CompoundNBT compoundNBT = new CompoundNBT();
+                CompoundTag compoundNBT = new CompoundTag();
                 compoundNBT.putInt("x", pos.getX());
                 compoundNBT.putInt("y", pos.getY());
                 compoundNBT.putInt("z", pos.getZ());

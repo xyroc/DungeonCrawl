@@ -19,18 +19,18 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.Property;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
@@ -44,7 +44,7 @@ public class DungeonModelBlock {
 
     public final DungeonModelBlockType type;
 
-    public Vector3i position;
+    public Vec3i position;
 
     @Nullable
     private final PropertyHolder[] properties;
@@ -60,12 +60,12 @@ public class DungeonModelBlock {
     public ResourceLocation lootTable;
 
 
-    private DungeonModelBlock(DungeonModelBlockType type, Vector3i position) {
+    private DungeonModelBlock(DungeonModelBlockType type, Vec3i position) {
         this(type, position, null, null, Blocks.CAVE_AIR, null);
     }
 
     private DungeonModelBlock(DungeonModelBlockType type,
-                              Vector3i position,
+                              Vec3i position,
                               @Nullable PropertyHolder[] properties,
                               @Nullable Integer variation,
                               Block block,
@@ -79,7 +79,7 @@ public class DungeonModelBlock {
         this.blockName = blockName;
     }
 
-    public static DungeonModelBlock fromBlockState(BlockState state, DungeonModelBlockType type, Vector3i position) {
+    public static DungeonModelBlock fromBlockState(BlockState state, DungeonModelBlockType type, Vec3i position) {
         List<PropertyHolder> properties = Lists.newArrayList();
         for (Property<?> property : state.getProperties()) {
             properties.add(new PropertyHolder(property, state.getValue(property)));
@@ -118,11 +118,11 @@ public class DungeonModelBlock {
      *
      * @return The CompoundNBT
      */
-    public CompoundNBT toNBT() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag toNBT() {
+        CompoundTag tag = new CompoundTag();
         tag.putString("type", type.toString());
 
-        CompoundNBT position = new CompoundNBT();
+        CompoundTag position = new CompoundTag();
         position.putInt("x", this.position.getX());
         position.putInt("y", this.position.getY());
         position.putInt("z", this.position.getZ());
@@ -132,9 +132,9 @@ public class DungeonModelBlock {
             tag.putString("resourceName", blockName.toString());
 
         if (this.properties != null) {
-            ListNBT properties = new ListNBT();
+            ListTag properties = new ListTag();
             for (PropertyHolder holder : this.properties) {
-                CompoundNBT nbt = new CompoundNBT();
+                CompoundTag nbt = new CompoundTag();
                 nbt.putString("property", holder.propertyName);
                 nbt.putString("value", holder.valueName);
                 properties.add(nbt);
@@ -153,16 +153,15 @@ public class DungeonModelBlock {
     /**
      * Loads a model block with a fallback position, used to load from legacy models.
      */
-    public static DungeonModelBlock fromNBT(CompoundNBT nbt, Vector3i position) {
+    public static DungeonModelBlock fromNBT(CompoundTag nbt, Vec3i position) {
         if (!nbt.contains("type")) { // backwards compatibility
-//            return new DungeonModelBlock(DungeonModelBlockType.AIR, null);
             DungeonCrawl.LOGGER.info("Model block does not have a type parameter");
-            return null;
+            return new DungeonModelBlock(DungeonModelBlockType.AIR, position);
         }
 
         if (nbt.contains("position")) {
-            CompoundNBT pos = nbt.getCompound("position");
-            position = new Vector3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+            CompoundTag pos = nbt.getCompound("position");
+            position = new Vec3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
         }
 
         String type = nbt.getString("type");
@@ -190,12 +189,12 @@ public class DungeonModelBlock {
         PropertyHolder[] properties = null;
 
         if (nbt.contains("properties")) {
-            ListNBT nbtProperties = nbt.getList("properties", 10);
+            ListTag nbtProperties = nbt.getList("properties", 10);
 
             properties = new PropertyHolder[nbtProperties.size()];
 
             for (int i = 0; i < nbtProperties.size(); i++) {
-                CompoundNBT data = (CompoundNBT) nbtProperties.get(i);
+                CompoundTag data = (CompoundTag) nbtProperties.get(i);
                 properties[i] = new PropertyHolder(data.getString("property"), data.getString("value"));
             }
         }
@@ -213,14 +212,14 @@ public class DungeonModelBlock {
      * Loads a model block from a version 1 model.
      */
 
-    public static DungeonModelBlock fromNBT(CompoundNBT nbt) {
+    public static DungeonModelBlock fromNBT(CompoundTag nbt) {
         return fromNBT(nbt, null);
     }
 
     /**
      * Applies all existing properties to the given BlockState.
      */
-    public BlockState create(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+    public BlockState create(BlockState state, LevelAccessor world, BlockPos pos, Rotation rotation) {
 
         if (properties != null) {
             for (PropertyHolder holder : properties) {

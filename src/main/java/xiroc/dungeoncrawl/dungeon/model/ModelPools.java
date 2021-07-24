@@ -20,8 +20,8 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -37,7 +37,7 @@ public class ModelPools {
 
     private static final ResourceLocation FILE = DungeonCrawl.locate("dungeon/model_pools.json");
 
-    public static void load(IResourceManager resourceManager) {
+    public static void load(ResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", FILE);
         POOLS.clear();
         try {

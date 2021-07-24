@@ -18,8 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.ArrayList;
 
@@ -27,13 +27,13 @@ public class PlacementContext {
 
     public final ArrayList<BlockPos> protectedBlocks;
 
-    public Heightmap.Type heightmapType;
+    public Heightmap.Types heightmapType;
 
     public boolean postProcessing;
 
     public PlacementContext() {
         this.protectedBlocks = new ArrayList<>(3);
-        this.heightmapType = Heightmap.Type.WORLD_SURFACE_WG;
+        this.heightmapType = Heightmap.Types.WORLD_SURFACE_WG;
         this.postProcessing = true;
     }
 

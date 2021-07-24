@@ -18,7 +18,7 @@
 
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 @FunctionalInterface
 public interface ItemProcessor<W, R, L> {

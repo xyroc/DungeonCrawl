@@ -22,11 +22,11 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -117,7 +117,7 @@ public class ModelBlockDefinition {
         return Blocks.AIR;
     }
 
-    public static void loadJson(IResourceManager resourceManager) {
+    public static void loadJson(ResourceManager resourceManager) {
         keySetBuilder = new ImmutableSet.Builder<>();
         List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate = Lists.newArrayList();
         resourceManager.listResources(DIRECTORY, (s) -> s.endsWith(".json"))
@@ -137,7 +137,7 @@ public class ModelBlockDefinition {
     /**
      * Convenience method to load a single model block definition file.
      */
-    private static void loadDefinition(IResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate) {
+    private static void loadDefinition(ResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate) {
         DungeonCrawl.LOGGER.debug("Loading {}", resourceLocation);
         JsonParser parser = new JsonParser();
         Hashtable<Block, DungeonModelBlockType> definition = new Hashtable<>();

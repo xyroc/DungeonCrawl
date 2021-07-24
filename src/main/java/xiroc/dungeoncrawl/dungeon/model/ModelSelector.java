@@ -19,8 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
-import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGeneratorSettings;
+import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -101,24 +100,6 @@ public class ModelSelector {
             throw new DatapackLoadException("Empty model list " + name + " in " + resource);
         }
         return builder.build();
-    }
-
-    public boolean verify(LayerGeneratorSettings settings) {
-        if (settings.maxRooms > 0 && rooms.isEmpty()) {
-            return false;
-        }
-
-        if (settings.maxNodes > 0
-                && (deadEndNodes.isEmpty()
-                || forkNodes.isEmpty()
-                || straightNodes.isEmpty()
-                || turnNodes.isEmpty()
-                || fullNodes.isEmpty()
-                || nodeConnectors.isEmpty())) {
-            return false;
-        }
-
-        return !corridors.isEmpty() && !corridorLinkers.isEmpty();
     }
 
 }

@@ -19,18 +19,9 @@
 package xiroc.dungeoncrawl.dungeon.generator;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
-public class DungeonGeneratorSettings {
-
-    /**
-     * The maximum allowed amount of layers.
-     */
-    public final int maxLayers;
-
-    public DungeonGeneratorSettings(int maxLayers) {
-        this.maxLayers = maxLayers;
-    }
+public record DungeonGeneratorSettings(int maxLayers) {
 
     public static DungeonGeneratorSettings fromJson(JsonObject settings, ResourceLocation file) {
         if (settings.has("max_layers")) {

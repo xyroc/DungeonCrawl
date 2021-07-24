@@ -18,8 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 
 import java.util.Random;
 
@@ -41,7 +41,7 @@ public enum PlacementBehaviour {
         this.function = function;
     }
 
-    private static boolean isSolid(IWorld world, BlockPos pos) {
+    private static boolean isSolid(LevelAccessor world, BlockPos pos) {
         if (world.hasChunk(pos.getX() >> 4, pos.getZ() >> 4)) {
             return world.getBlockState(pos).canOcclude() || world.getBlockState(pos.below()).canOcclude();
         } else {
@@ -51,7 +51,7 @@ public enum PlacementBehaviour {
 
     public interface PlacementFunction {
 
-        boolean isSolid(IWorld world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ);
+        boolean isSolid(LevelAccessor world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ);
 
     }
 

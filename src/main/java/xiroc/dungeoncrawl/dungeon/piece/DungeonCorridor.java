@@ -18,15 +18,15 @@
 
 package xiroc.dungeoncrawl.dungeon.piece;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
@@ -38,10 +38,10 @@ import java.util.Random;
 public class DungeonCorridor extends DungeonPiece {
 
     public DungeonCorridor() {
-        this(null, DEFAULT_NBT);
+        super(StructurePieceTypes.CORRIDOR);
     }
 
-    public DungeonCorridor(TemplateManager manager, CompoundNBT p_i51343_2_) {
+    public DungeonCorridor(ServerLevel serverLevel, CompoundTag p_i51343_2_) {
         super(StructurePieceTypes.CORRIDOR, p_i51343_2_);
     }
 
@@ -55,13 +55,13 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
 
-    public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
 
-        Vector3i offset = model.getOffset(rotation);
+        Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
@@ -83,11 +83,6 @@ public class DungeonCorridor extends DungeonPiece {
     @Override
     public int getDungeonPieceType() {
         return 0;
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundNBT tagCompound) {
-        super.addAdditionalSaveData(tagCompound);
     }
 
     public boolean isStraight() {

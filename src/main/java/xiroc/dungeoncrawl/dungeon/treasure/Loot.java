@@ -18,11 +18,11 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import net.minecraft.loot.LootTables;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.LockableLootTileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -57,7 +57,7 @@ public class Loot {
 
     public static final ResourceLocation WITHER_SKELETON = DungeonCrawl.locate("monster_overrides/wither_skeleton");
 
-    public static void setLoot(LockableLootTileEntity tile, ResourceLocation lootTable, Theme theme, Theme.SecondaryTheme secondaryTheme, Random rand) {
+    public static void setLoot(RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, Theme.SecondaryTheme secondaryTheme, Random rand) {
         tile.setLootTable(lootTable, rand.nextLong());
         setLootInformation(tile.getTileData(), theme, secondaryTheme);
     }
@@ -65,29 +65,29 @@ public class Loot {
     public static ResourceLocation getLootTable(int lootLevel, Random rand) {
         switch (lootLevel) {
             case 0:
-                return rand.nextFloat() < 0.1 ? LootTables.JUNGLE_TEMPLE : CHEST_STAGE_1;
+                return rand.nextFloat() < 0.1 ? BuiltInLootTables.JUNGLE_TEMPLE : CHEST_STAGE_1;
             case 1:
-                return rand.nextFloat() < 0.1 ? LootTables.SIMPLE_DUNGEON : CHEST_STAGE_2;
+                return rand.nextFloat() < 0.1 ? BuiltInLootTables.SIMPLE_DUNGEON : CHEST_STAGE_2;
             case 2:
-                return rand.nextFloat() < 0.1 ? LootTables.SIMPLE_DUNGEON : CHEST_STAGE_3;
+                return rand.nextFloat() < 0.1 ? BuiltInLootTables.SIMPLE_DUNGEON : CHEST_STAGE_3;
             case 3:
-                return rand.nextFloat() < 0.1 ? LootTables.STRONGHOLD_CROSSING : CHEST_STAGE_4;
+                return rand.nextFloat() < 0.1 ? BuiltInLootTables.STRONGHOLD_CROSSING : CHEST_STAGE_4;
             case 4:
-                return rand.nextFloat() < 0.1 ? LootTables.STRONGHOLD_CROSSING : CHEST_STAGE_5;
+                return rand.nextFloat() < 0.1 ? BuiltInLootTables.STRONGHOLD_CROSSING : CHEST_STAGE_5;
             default:
                 return Loot.CHEST_STAGE_5;
         }
     }
 
-    public static void setLootInformation(CompoundNBT nbt, Theme theme, Theme.SecondaryTheme secondaryTheme) {
-        CompoundNBT data = new CompoundNBT();
+    public static void setLootInformation(CompoundTag nbt, Theme theme, Theme.SecondaryTheme secondaryTheme) {
+        CompoundTag data = new CompoundTag();
         data.putString("theme", theme.getKey().toString());
         data.putString("secondaryTheme", secondaryTheme.getKey().toString());
         nbt.put(DungeonCrawl.MOD_ID, data);
     }
 
-    public static Tuple<Theme, Theme.SecondaryTheme> getLootInformation(CompoundNBT nbt) {
-        CompoundNBT data = nbt.getCompound(DungeonCrawl.MOD_ID);
+    public static Tuple<Theme, Theme.SecondaryTheme> getLootInformation(CompoundTag nbt) {
+        CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID);
         return new Tuple<>(Theme.getTheme(new ResourceLocation(data.getString("theme"))), Theme.getSecondaryTheme(new ResourceLocation(data.getString("secondaryTheme"))));
     }
 

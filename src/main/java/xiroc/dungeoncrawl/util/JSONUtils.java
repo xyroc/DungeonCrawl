@@ -21,11 +21,10 @@ package xiroc.dungeoncrawl.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.Property;
-import net.minecraft.util.math.vector.Vector3i;
-
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fml.ModList;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -70,7 +69,7 @@ public class JSONUtils {
         return object.has("weight") ? object.get("weight").getAsInt() : 1;
     }
 
-    public static Vector3i getOffset(JsonObject jsonObject) {
+    public static Vec3i getOffset(JsonObject jsonObject) {
         int x = 0, y = 0, z = 0;
         if (jsonObject.has("x")) {
             x = jsonObject.get("x").getAsInt();
@@ -84,7 +83,7 @@ public class JSONUtils {
         if (x == 0 && y == 0 && z == 0) {
             return DungeonModels.NO_OFFSET;
         }
-        return new Vector3i(x, y, z);
+        return new Vec3i(x, y, z);
     }
 
     /**

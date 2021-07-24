@@ -19,11 +19,11 @@
 package xiroc.dungeoncrawl.dungeon.decoration;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
@@ -34,7 +34,7 @@ import xiroc.dungeoncrawl.util.IBlockStateProvider;
 @FunctionalInterface
 public interface IDungeonDecoration {
 
-    void decorate(DungeonModel model, IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage);
+    void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, PlacementContext context, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece, int stage);
 
     static IDungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
         if (object.has("type")) {
@@ -94,16 +94,12 @@ public interface IDungeonDecoration {
     }
 
     static BlockPos getRotatedBlockPos(int x, int y, int z, BlockPos base, DungeonModel model, Rotation rotation) {
-        switch (rotation) {
-            case CLOCKWISE_90:
-                return new BlockPos(base.getX() + model.length - z - 1, base.getY() + y, base.getZ() + x);
-            case CLOCKWISE_180:
-                return new BlockPos(base.getX() + model.width - x - 1, base.getY() + y, base.getZ() + model.length - z - 1);
-            case COUNTERCLOCKWISE_90:
-                return new BlockPos(base.getX() + z, base.getY() + y, base.getZ() + model.width - x - 1);
-            default:
-                return new BlockPos(base.getX() + x, base.getY() + y, base.getZ() + z);
-        }
+        return switch (rotation) {
+            case CLOCKWISE_90 -> new BlockPos(base.getX() + model.length - z - 1, base.getY() + y, base.getZ() + x);
+            case CLOCKWISE_180 -> new BlockPos(base.getX() + model.width - x - 1, base.getY() + y, base.getZ() + model.length - z - 1);
+            case COUNTERCLOCKWISE_90 -> new BlockPos(base.getX() + z, base.getY() + y, base.getZ() + model.width - x - 1);
+            default -> new BlockPos(base.getX() + x, base.getY() + y, base.getZ() + z);
+        };
     }
 
 }

@@ -21,14 +21,14 @@ package xiroc.dungeoncrawl.theme;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -290,16 +290,11 @@ public class JsonTheming {
         }
     }
 
-    private static class WeightedRandomBlock implements IBlockStateProvider {
-
-        private final WeightedRandom<BlockState> randomBlockState;
-
-        WeightedRandomBlock(WeightedRandom<BlockState> randomBlockState) {
-            this.randomBlockState = randomBlockState;
-        }
+    private record WeightedRandomBlock(
+            WeightedRandom<BlockState> randomBlockState) implements IBlockStateProvider {
 
         @Override
-        public BlockState get(IWorld world, BlockPos pos, Rotation rotation) {
+        public BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation) {
             return randomBlockState.roll(DungeonBlocks.RANDOM);
         }
     }

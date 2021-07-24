@@ -18,15 +18,15 @@
 
 package xiroc.dungeoncrawl.dungeon.piece;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.structure.StructurePiece;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 
 import java.util.Random;
@@ -36,16 +36,19 @@ A dummy piece that is used to handle old structure pieces.
  */
 public class DummyStructurePiece extends StructurePiece {
 
-    public DummyStructurePiece(TemplateManager manager, CompoundNBT nbt) {
+    public DummyStructurePiece(ServerLevel serverLevel, CompoundTag nbt) {
         super(StructurePieceTypes.DUMMY, nbt);
     }
 
-    protected void addAdditionalSaveData(CompoundNBT tagCompound) {
+    protected void addAdditionalSaveData(CompoundTag tagCompound) {
 
     }
 
     @Override
-    public boolean postProcess(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    protected void addAdditionalSaveData(ServerLevel p_163551_, CompoundTag p_163552_) { }
+
+    @Override
+    public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         return true;
     }
 

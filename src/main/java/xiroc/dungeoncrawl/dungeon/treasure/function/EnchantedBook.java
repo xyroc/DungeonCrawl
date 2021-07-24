@@ -21,20 +21,20 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
-public class EnchantedBook extends LootFunction {
+public class EnchantedBook extends LootItemConditionalFunction {
 
     public int lootLevel;
 
-    public EnchantedBook(ILootCondition[] conditionsIn, int stage) {
+    public EnchantedBook(LootItemCondition[] conditionsIn, int stage) {
         super(conditionsIn);
         this.lootLevel = stage;
     }
@@ -46,11 +46,11 @@ public class EnchantedBook extends LootFunction {
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Treasure.ENCHANTED_BOOK;
     }
 
-    public static class Serializer extends LootFunction.Serializer<EnchantedBook> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<EnchantedBook> {
 
         public Serializer() {
             super();
@@ -65,7 +65,7 @@ public class EnchantedBook extends LootFunction {
 
         @Override
         public EnchantedBook deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                         ILootCondition[] conditionsIn) {
+                                         LootItemCondition[] conditionsIn) {
             return new EnchantedBook(conditionsIn, object.get("loot_level").getAsInt());
         }
 

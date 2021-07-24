@@ -22,22 +22,21 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.LockableLootTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.FluidState;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -48,6 +47,7 @@ import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.Range;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -58,11 +58,11 @@ public final class DungeonModelFeature {
 
     private final Type type;
     private final Position[] positions;
-    private final RandomValueRange amount;
+    private final Range amount;
     @Nullable
     private final DungeonModelFeature followup;
 
-    private DungeonModelFeature(Type type, Position[] positions, RandomValueRange amount, @Nullable DungeonModelFeature followup) {
+    private DungeonModelFeature(Type type, Position[] positions, Range amount, @Nullable DungeonModelFeature followup) {
         this.type = type;
         this.positions = positions;
         this.amount = amount;
@@ -75,7 +75,7 @@ public final class DungeonModelFeature {
 
     private void setup(DungeonModel model, int x, int y, int z, Rotation rotation, List<Instance> features, List<Position> positions, Random rand) {
         if (positions.isEmpty()) return;
-        int count = amount.getInt(rand);
+        int count = amount.nextInt(rand);
         if (count >= positions.size()) {
             features.add(new Instance(type, positions.stream().map((pos) -> pos.translate(x, y, z, rotation, model)).toArray(DirectionalBlockPos[]::new)));
         } else {
@@ -93,11 +93,11 @@ public final class DungeonModelFeature {
         }
     }
 
-    private static void placeChest(IWorld world, BlockPos pos, BlockState chest, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel, Random rand) {
+    private static void placeChest(LevelAccessor world, BlockPos pos, BlockState chest, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel, Random rand) {
         world.setBlock(pos, chest, 2);
-        TileEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof LockableLootTileEntity) {
-            Loot.setLoot((LockableLootTileEntity) tileEntity, Loot.getLootTable(lootLevel, rand), theme, secondaryTheme, rand);
+        BlockEntity tileEntity = world.getBlockEntity(pos);
+        if (tileEntity instanceof RandomizableContainerBlockEntity) {
+            Loot.setLoot((RandomizableContainerBlockEntity) tileEntity, Loot.getLootTable(lootLevel, rand), theme, secondaryTheme, rand);
         }
     }
 
@@ -111,15 +111,15 @@ public final class DungeonModelFeature {
             this.positions = positions;
         }
 
-        public void place(IWorld world, PlacementContext context, MutableBoundingBox worldGenBounds, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+        public void place(LevelAccessor world, PlacementContext context, BoundingBox worldGenBounds, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
             for (DirectionalBlockPos pos : positions) {
                 this.type.place(world, context, rand, pos.position, pos.direction, worldGenBounds, theme, secondaryTheme, stage);
             }
         }
 
-        public static Instance read(CompoundNBT nbt) {
+        public static Instance read(CompoundTag nbt) {
             Type type = Type.TYPES.get(nbt.getString("type"));
-            ListNBT nbtPositions = nbt.getList("positions", 10);
+            ListTag nbtPositions = nbt.getList("positions", 10);
             DirectionalBlockPos[] positions = new DirectionalBlockPos[nbtPositions.size()];
             for (int i = 0; i < nbtPositions.size(); i++) {
                 positions[i] = DirectionalBlockPos.fromNBT(nbtPositions.getCompound(i));
@@ -127,11 +127,11 @@ public final class DungeonModelFeature {
             return new Instance(type, positions);
         }
 
-        public void write(CompoundNBT nbt) {
+        public void write(CompoundTag nbt) {
             nbt.putString("type", type.getName());
-            ListNBT positions = new ListNBT();
+            ListTag positions = new ListTag();
             for (DirectionalBlockPos position : this.positions) {
-                CompoundNBT pos = new CompoundNBT();
+                CompoundTag pos = new CompoundTag();
                 position.writeToNBT(pos);
                 positions.add(pos);
             }
@@ -143,7 +143,7 @@ public final class DungeonModelFeature {
     private interface Type {
         Type CHEST = new Type() {
             @Override
-            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.below()).canOcclude()) {
@@ -159,7 +159,7 @@ public final class DungeonModelFeature {
 
         Type TNT_CHEST = new Type() {
             @Override
-            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.below()).canOcclude()) {
@@ -179,7 +179,7 @@ public final class DungeonModelFeature {
 
         Type SPAWNER = new Type() {
             @Override
-            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.below()).canOcclude()) {
@@ -196,7 +196,7 @@ public final class DungeonModelFeature {
 
         Type SPAWNER_GRAVE = new Type() {
             @Override
-            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos, context)
                         && world.getBlockState(pos.below()).canOcclude()) {
@@ -224,7 +224,7 @@ public final class DungeonModelFeature {
 
         Type EMPTY_GRAVE = new Type() {
             @Override
-            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 BlockPos position = pos.relative(direction, 2);
                 if (bounds.isInside(position)) {
                     world.setBlock(position, Blocks.QUARTZ_BLOCK.defaultBlockState(), 2);
@@ -239,7 +239,7 @@ public final class DungeonModelFeature {
 
         Type STAIRS = new Type() {
             @Override
-            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 if (direction.getAxis() == Direction.Axis.Y) return;
                 for (int length = 0; length < 10; length++) {
                     if (bounds.isInside(pos)) {
@@ -276,7 +276,7 @@ public final class DungeonModelFeature {
             };
 
             @Override
-            public void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
                 IBlockStateProvider inner = stage < 4 ? AIR_WATER : AIR_LAVA;
 
                 buildDown(world, context, pos, bounds, inner);
@@ -322,7 +322,7 @@ public final class DungeonModelFeature {
                 return "sewer_hole";
             }
 
-            private void buildDown(IWorld world, PlacementContext context, BlockPos pos, MutableBoundingBox bounds, IBlockStateProvider blockStateProvider) {
+            private void buildDown(LevelAccessor world, PlacementContext context, BlockPos pos, BoundingBox bounds, IBlockStateProvider blockStateProvider) {
                 if (!bounds.isInside(pos)) return;
                 for (; pos.getY() > 0; pos = pos.below()) {
                     if (!DungeonBuilder.isBlockProtected(world, pos, context) && !world.isEmptyBlock(pos)) {
@@ -344,7 +344,7 @@ public final class DungeonModelFeature {
                 .put(SEWER_HOLE.getName(), SEWER_HOLE)
                 .build();
 
-        void place(IWorld world, PlacementContext context, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage);
+        void place(LevelAccessor world, PlacementContext context, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage);
 
         String getName();
 
@@ -369,7 +369,7 @@ public final class DungeonModelFeature {
         }
 
         JsonObject jsonAmount = object.getAsJsonObject("amount");
-        RandomValueRange amount = new RandomValueRange(jsonAmount.get("min").getAsInt(), jsonAmount.get("max").getAsInt());
+        Range amount = new Range(jsonAmount.get("min").getAsInt(), jsonAmount.get("max").getAsInt());
 
         DungeonModelFeature followUp = null;
 
@@ -380,18 +380,10 @@ public final class DungeonModelFeature {
         return new DungeonModelFeature(Type.TYPES.get(type), positions, amount, followUp);
     }
 
-    private static class Position {
-
-        public final Vector3i position;
-        public final Direction facing;
-
-        private Position(Vector3i position, Direction facing) {
-            this.position = position;
-            this.facing = facing;
-        }
+    private record Position(Vec3i position, Direction facing) {
 
         public static Position fromJson(JsonObject object) {
-            Vector3i position = JSONUtils.getOffset(object);
+            Vec3i position = JSONUtils.getOffset(object);
             Direction facing = object.has("facing") ?
                     Direction.valueOf(object.get("facing").getAsString().toUpperCase(Locale.ROOT))
                     : Direction.NORTH;
@@ -403,32 +395,24 @@ public final class DungeonModelFeature {
         }
 
         public BlockPos blockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
-            switch (rotation) {
-                case CLOCKWISE_90:
-                    return new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX());
-                case CLOCKWISE_180:
-                    return new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + model.width - position.getX() - 1);
-                case COUNTERCLOCKWISE_90:
-                    return new BlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1);
-                default:
-                    return new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
-            }
+            return switch (rotation) {
+                case CLOCKWISE_90 -> new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX());
+                case CLOCKWISE_180 -> new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + model.width - position.getX() - 1);
+                case COUNTERCLOCKWISE_90 -> new BlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1);
+                default -> new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
+            };
         }
 
         public DirectionalBlockPos translate(int x, int y, int z, Rotation rotation, DungeonModel model) {
-            switch (rotation) {
-                case CLOCKWISE_90:
-                    return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(),
-                            facing.getAxis() != Direction.Axis.Y ? facing.getClockWise() : facing);
-                case CLOCKWISE_180:
-                    return new DirectionalBlockPos(x + model.width - position.getX() - 1, y + position.getY(), z + model.length - position.getZ() - 1,
-                            facing.getAxis() != Direction.Axis.Y ? facing.getOpposite() : facing);
-                case COUNTERCLOCKWISE_90:
-                    return new DirectionalBlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1,
-                            facing.getAxis() != Direction.Axis.Y ? facing.getCounterClockWise() : facing);
-                default:
-                    return new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
-            }
+            return switch (rotation) {
+                case CLOCKWISE_90 -> new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(),
+                        facing.getAxis() != Direction.Axis.Y ? facing.getClockWise() : facing);
+                case CLOCKWISE_180 -> new DirectionalBlockPos(x + model.width - position.getX() - 1, y + position.getY(), z + model.length - position.getZ() - 1,
+                        facing.getAxis() != Direction.Axis.Y ? facing.getOpposite() : facing);
+                case COUNTERCLOCKWISE_90 -> new DirectionalBlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1,
+                        facing.getAxis() != Direction.Axis.Y ? facing.getCounterClockWise() : facing);
+                default -> new DirectionalBlockPos(x + position.getX(), y + position.getY(), z + position.getZ(), facing);
+            };
         }
 
     }

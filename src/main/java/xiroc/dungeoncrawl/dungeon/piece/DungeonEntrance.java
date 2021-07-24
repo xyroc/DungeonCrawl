@@ -18,17 +18,17 @@
 
 package xiroc.dungeoncrawl.dungeon.piece;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.structure.StructureManager;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -50,7 +50,7 @@ public class DungeonEntrance extends DungeonPiece {
         super(StructurePieceTypes.ENTRANCE);
     }
 
-    public DungeonEntrance(TemplateManager manager, CompoundNBT nbt) {
+    public DungeonEntrance(ServerLevel serverLevel, CompoundTag nbt) {
         super(StructurePieceTypes.ENTRANCE, nbt);
     }
 
@@ -61,13 +61,13 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return true;
         }
 
-        Vector3i offset = model.getOffset(rotation);
+        Vec3i offset = model.getOffset(rotation);
 
         int height = worldIn.getHeight(context.heightmapType, x + offset.getX() + 4, z + offset.getZ() + 4);
         int cursorHeight = y;
@@ -93,7 +93,7 @@ public class DungeonEntrance extends DungeonPiece {
         //  since the ground height is unknown up the point of actual generation.
         // And because we dont want the decorations to decorate everything from top to bottom,
         //  we use a custom bounding box for them.
-        MutableBoundingBox populationBox = model.createBoundingBox(pos, rotation);
+        BoundingBox populationBox = model.createBoundingBox(pos, rotation);
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model);
         return true;
     }
@@ -101,21 +101,16 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public void setupBoundingBox() {
         if (model != null) {
-            Vector3i offset = model.getOffset(rotation);
+            Vec3i offset = model.getOffset(rotation);
             int x = this.x + 4 + offset.getX();
             int z = this.z + 4 + offset.getZ();
             switch (rotation) {
-                case NONE:
-                case CLOCKWISE_180:
-                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
-                    break;
-                case CLOCKWISE_90:
-                case COUNTERCLOCKWISE_90:
-                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.length - 1, 256, z + model.width - 1);
-                    break;
-                default:
+                case NONE, CLOCKWISE_180 -> this.boundingBox = new BoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
+                case CLOCKWISE_90, COUNTERCLOCKWISE_90 -> this.boundingBox = new BoundingBox(x, 0, z, x + model.length - 1, 256, z + model.width - 1);
+                default -> {
                     DungeonCrawl.LOGGER.warn("Unknown entrance rotation: {}", rotation);
-                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
+                    this.boundingBox = new BoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
+                }
             }
         }
     }
@@ -125,12 +120,7 @@ public class DungeonEntrance extends DungeonPiece {
         return 6;
     }
 
-    @Override
-    public void addAdditionalSaveData(CompoundNBT tagCompound) {
-        super.addAdditionalSaveData(tagCompound);
-    }
-
-    public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
+    public void build(DungeonModel model, LevelAccessor world, BoundingBox boundsIn, BlockPos pos, Theme theme,
                       SecondaryTheme secondaryTheme, int lootLevel, PlacementContext context, boolean fillAir) {
         if (Config.EXTENDED_DEBUG.get()) {
             DungeonCrawl.LOGGER.debug("Building {} at ({} | {} | {})", model.getKey(), pos.getX(), pos.getY(), pos.getZ());

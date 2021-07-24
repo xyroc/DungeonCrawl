@@ -18,9 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -63,8 +63,8 @@ public class DefaultLayerGenerator extends LayerGenerator {
     @Override
     public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
         super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
-        this.nodesLeft = settings.nodes.getInt(rand);
-        this.roomsLeft = settings.rooms.getInt(rand);
+        this.nodesLeft = settings.nodes.nextInt(rand);
+        this.roomsLeft = settings.rooms.nextInt(rand);
         this.secretRoom = false;
         this.farthestRoom = null;
         this.corridors.clear();
@@ -73,7 +73,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
 
     @Override
     public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start) {
-        DungeonStairs startPiece = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).bottom();
+        DungeonStairs startPiece = new DungeonStairs().bottom();
         startPiece.setGridPosition(start.x, start.z);
         dungeonLayer.grid[startPiece.gridPosition.x][startPiece.gridPosition.z] = new Tile(startPiece).addFlag(Tile.Flag.FIXED_ROTATION);
 
@@ -106,14 +106,8 @@ public class DefaultLayerGenerator extends LayerGenerator {
         }
 
         //  The corridor list is likely to be modified starting from here!
-        if (secretRoom && !this.corridors.isEmpty()) {
-            for (int i = 0; i < 8; i++) {
-                DungeonCorridor corridor = this.corridors.get(rand.nextInt(corridors.size()));
-                if (corridor.isStraight() && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, rand)) {
-                    break;
-                }
-                this.corridors.remove(corridor);
-            }
+        if (secretRoom) {
+            tryCreateSecretRoom(dungeonLayer, this.corridors, 8, rand);
         }
     }
 
@@ -136,7 +130,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
 
             dungeonLayer.end = currentPosition;
 
-            DungeonStairs stairs = new DungeonStairs(null, DungeonPiece.DEFAULT_NBT).top();
+            DungeonStairs stairs = new DungeonStairs().top();
             stairs.openSide(toLast);
             stairs.setGridPosition(dungeonLayer.end.x, dungeonLayer.end.z);
             dungeonLayer.grid[stairs.gridPosition.x][stairs.gridPosition.z] = new Tile(stairs).addFlag(Tile.Flag.FIXED_ROTATION);
@@ -190,7 +184,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
         }
 
         if (depth <= settings.maxRoomDepth && depth >= settings.minRoomDepth && roomsLeft > 0) {
-            DungeonRoom room = new DungeonRoom(null, DungeonPiece.DEFAULT_NBT);
+            DungeonRoom room = new DungeonRoom();
             room.setGridPosition(currentPosition);
             dungeonLayer.grid[currentPosition.x][currentPosition.z] = new Tile(room);
             this.roomsLeft--;

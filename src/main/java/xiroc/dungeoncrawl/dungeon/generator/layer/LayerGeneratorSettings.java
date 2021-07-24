@@ -19,9 +19,9 @@
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import com.google.gson.JsonObject;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.Range;
 
 public class LayerGeneratorSettings {
 
@@ -29,13 +29,13 @@ public class LayerGeneratorSettings {
      * The minimum and maximum amount of rooms
      */
     public final int minRooms, maxRooms;
-    public final RandomValueRange rooms;
+    public final Range rooms;
 
     /**
      * The minimum and maximum amount of nodes
      */
     public final int minNodes, maxNodes;
-    public final RandomValueRange nodes;
+    public final Range nodes;
 
     /**
      * The minimum and maximum distance between rooms.
@@ -67,11 +67,11 @@ public class LayerGeneratorSettings {
                                   int maxDepth, int minDistance, int maxDistance) {
         this.minRooms = minRooms;
         this.maxRooms = maxRooms;
-        this.rooms = new RandomValueRange(minRooms, maxRooms);
+        this.rooms = new Range(minRooms, maxRooms);
 
         this.minNodes = minNodes;
         this.maxNodes = maxNodes;
-        this.nodes = new RandomValueRange(minNodes, maxNodes);
+        this.nodes = new Range(minNodes, maxNodes);
 
         this.minRoomDepth = minRoomDepth;
         this.maxRoomDepth = maxRoomDepth;

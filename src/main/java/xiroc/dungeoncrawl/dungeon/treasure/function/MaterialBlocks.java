@@ -20,18 +20,18 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
@@ -40,36 +40,36 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
 
-public class MaterialBlocks extends LootFunction {
+public class MaterialBlocks extends LootItemConditionalFunction {
 
-    public MaterialBlocks(ILootCondition[] conditionsIn) {
+    public MaterialBlocks(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
     }
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-        TileEntity chest = context.getParamOrNull(LootParameters.BLOCK_ENTITY);
-        if (context.hasParam(LootParameters.ORIGIN) && chest != null && chest.hasLevel() & chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
+        BlockEntity chest = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+        if (context.hasParam(LootContextParams.ORIGIN) && chest != null && chest.hasLevel() & chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
             Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
-            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), chest.getLevel(), new BlockPos(context.getParamOrNull(LootParameters.ORIGIN)), context.getRandom())),
+            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), chest.getLevel(), new BlockPos(context.getParamOrNull(LootContextParams.ORIGIN)), context.getRandom())),
                     16 + context.getRandom().nextInt(49));
         } else {
             return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
         }
     }
 
-    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {
+    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
         return rand.nextBoolean()
                 ? theme.material.get(world, pos).getBlock().getRegistryName()
                 : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();
     }
 
     @Override
-    public LootFunctionType getType() {
+    public LootItemFunctionType getType() {
         return Treasure.MATERIAL_BLOCKS;
     }
 
-    public static class Serializer extends LootFunction.Serializer<MaterialBlocks> {
+    public static class Serializer extends LootItemConditionalFunction.Serializer<MaterialBlocks> {
 
         public Serializer() {
             super();
@@ -77,7 +77,7 @@ public class MaterialBlocks extends LootFunction {
 
         @Override
         public MaterialBlocks deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                          ILootCondition[] conditionsIn) {
+                                          LootItemCondition[] conditionsIn) {
             return new MaterialBlocks(conditionsIn);
         }
 

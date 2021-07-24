@@ -18,31 +18,12 @@
 
 package xiroc.dungeoncrawl.util;
 
-import com.google.gson.JsonObject;
+import net.minecraft.util.Mth;
 
-import java.io.File;
-import java.util.HashMap;
+import java.util.Random;
 
-/**
- * This is a part of the json config system. All instances of this interface
- * should be manually added to the static initialization block of JsonConfig.
- */
-public interface IJsonConfigurable {
-
-    public File getFile();
-
-    public void load(JsonObject object, File file);
-
-    public JsonObject create(JsonObject object);
-
-    public HashMap<String, Object> getDefaults();
-
-    public String[] getKeys();
-
-    public int getVersion();
-
-    public default boolean deleteOldVersions() {
-        return false;
+public record Range(int min, int max) {
+    public int nextInt(Random random) {
+        return Mth.nextInt(random, min, max);
     }
-
 }

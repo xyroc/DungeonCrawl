@@ -18,9 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
 import xiroc.dungeoncrawl.util.ItemProcessor;
 
 import java.util.Random;
@@ -30,23 +30,23 @@ public class TreasureItem {
     public ResourceLocation item;
     public String resourceName;
 
-    private ItemProcessor<IWorld, Random, Integer> itemProcessor;
+    private ItemProcessor<LevelAccessor, Random, Integer> itemProcessor;
 
     public TreasureItem(String resourceName) {
         this.resourceName = resourceName;
     }
 
-    public TreasureItem(String resourceName, ItemProcessor<IWorld, Random, Integer> itemProcessor) {
+    public TreasureItem(String resourceName, ItemProcessor<LevelAccessor, Random, Integer> itemProcessor) {
         this.resourceName = resourceName;
         this.itemProcessor = itemProcessor;
     }
 
-    public TreasureItem setProcessor(ItemProcessor<IWorld, Random, Integer> itemProcessor) {
+    public TreasureItem setProcessor(ItemProcessor<LevelAccessor, Random, Integer> itemProcessor) {
         this.itemProcessor = itemProcessor;
         return this;
     }
 
-    public ItemStack createItem(IWorld world, Random rand, int lootLevel) {
+    public ItemStack createItem(LevelAccessor world, Random rand, int lootLevel) {
         if (itemProcessor != null)
             return itemProcessor.generate(world, rand,lootLevel);
         return ItemStack.EMPTY;

@@ -18,17 +18,17 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.io.File;
@@ -41,7 +41,7 @@ public class ModelHandler {
 
     public static final byte LATEST_MODEL_FORMAT = 1;
 
-    public static void readAndSaveModelToFile(String name, ModelBlockDefinition definition, World world, BlockPos pos, int width, int height, int length) {
+    public static void readAndSaveModelToFile(String name, ModelBlockDefinition definition, Level world, BlockPos pos, int width, int height, int length) {
         DungeonCrawl.LOGGER.info("Reading and saving {} to disk. Size: {}, {}, {}", name, width, height, length);
 
         List<DungeonModelBlock> blocks = new ArrayList<>();
@@ -56,41 +56,37 @@ public class ModelHandler {
                     if (block == Blocks.BARRIER) {
                         continue;
                     }
-                    blocks.add(DungeonModelBlock.fromBlockState(state, DungeonModelBlockType.get(block, definition), new Vector3i(x, y, z)));
+                    blocks.add(DungeonModelBlock.fromBlockState(state, DungeonModelBlockType.get(block, definition), new Vec3i(x, y, z)));
                 }
             }
         }
         writeToFile(toNbt(blocks, width, height, length),
-                ((ServerWorld) world).getServer().getServerDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
+                ((ServerLevel) world).getServer().getServerDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
         DungeonCrawl.LOGGER.info("Done.");
     }
 
-    public static void writeToFile(CompoundNBT nbt, String path) {
+    public static void writeToFile(CompoundTag nbt, String path) {
         try {
             DungeonCrawl.LOGGER.info("Writing a model to disk at {}. ", path);
             File file = new File(path);
             Files.createDirectories(file.getParentFile().toPath());
             Files.deleteIfExists(file.toPath());
             Files.createFile(file.toPath());
-            CompressedStreamTools.writeCompressed(nbt, new FileOutputStream(file));
+            NbtIo.writeCompressed(nbt, new FileOutputStream(file));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static CompoundNBT toNbt(DungeonModel model) {
-        return toNbt(model.blocks, model.width, model.height, model.length);
-    }
-
-    public static CompoundNBT toNbt(List<DungeonModelBlock> blocks, int width, int height, int length) {
-        CompoundNBT nbt = new CompoundNBT();
+    public static CompoundTag toNbt(List<DungeonModelBlock> blocks, int width, int height, int length) {
+        CompoundTag nbt = new CompoundTag();
         nbt.putByte("format", LATEST_MODEL_FORMAT);
 
         nbt.putByte("width", (byte) width);
         nbt.putByte("height", (byte) height);
         nbt.putByte("length", (byte) length);
 
-        ListNBT _blocks = new ListNBT();
+        ListTag _blocks = new ListTag();
 
         blocks.forEach((block) -> _blocks.add(block.toNBT()));
 
@@ -98,17 +94,13 @@ public class ModelHandler {
         return nbt;
     }
 
-    public static DungeonModel loadModelFromNBT(CompoundNBT nbt, ResourceLocation file, ResourceLocation key) {
+    public static DungeonModel loadModelFromNBT(CompoundTag nbt, ResourceLocation file, ResourceLocation key) {
         int format = nbt.getInt("format");
 
         if (format == 1) {
             return ModelLoader.VERSION_1.load(nbt, file, key);
         }
         return ModelLoader.LEGACY.load(nbt, file, key);
-    }
-
-    public static DungeonModel getModelFromJigsawNBT(CompoundNBT nbt) {
-        return null;
     }
 
 }

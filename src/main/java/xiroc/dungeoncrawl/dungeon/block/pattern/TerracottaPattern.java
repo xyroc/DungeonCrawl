@@ -1,25 +1,19 @@
 package xiroc.dungeoncrawl.dungeon.block.pattern;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 
-public class TerracottaPattern implements IBlockStateProvider {
-
-    private final IBlockStateProvider block;
-
-    public TerracottaPattern(IBlockStateProvider block) {
-        this.block = block;
-    }
+public record TerracottaPattern(IBlockStateProvider block) implements IBlockStateProvider {
 
     @Override
-    public BlockState get(IWorld world, BlockPos pos, Rotation rotation) {
+    public BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation) {
         BlockState state = block.get(world, pos, rotation);
         if ((pos.getX() & 1) == 0) {
             if ((pos.getZ() & 1) == 0) {

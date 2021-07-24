@@ -19,11 +19,11 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -36,7 +36,7 @@ public class DungeonModels {
     public static final Hashtable<ResourceLocation, DungeonModel> KEY_TO_MODEL = new Hashtable<>();
     public static final Hashtable<Integer, DungeonModel> ID_TO_MODEL = new Hashtable<>();
 
-    public static final Vector3i NO_OFFSET = new Vector3i(0, 0, 0);
+    public static final Vec3i NO_OFFSET = new Vec3i(0, 0, 0);
 
     public static final ResourceLocation SECRET_ROOM_ENTRANCE = DungeonCrawl.locate("default/corridor/secret_room_entrance");
     public static final ResourceLocation STARTER_ROOM = DungeonCrawl.locate("default/room/starter_room");
@@ -53,7 +53,7 @@ public class DungeonModels {
 
     private static final String DIRECTORY = "models";
 
-    public static synchronized void load(IResourceManager resourceManager) {
+    public static synchronized void load(ResourceManager resourceManager) {
         ID_TO_MODEL.clear();
         KEY_TO_MODEL.clear();
 
@@ -65,7 +65,7 @@ public class DungeonModels {
         KEYS = keySetBuilder.build();
     }
 
-    private static void load(ResourceLocation resource, IResourceManager resourceManager) {
+    private static void load(ResourceLocation resource, ResourceManager resourceManager) {
         DungeonModel model = loadModel(resource, resourceManager);
         ResourceLocation metadata = new ResourceLocation(resource.getNamespace(),
                 resource.getPath().substring(0, resource.getPath().indexOf(".nbt")) + ".json");
@@ -81,11 +81,11 @@ public class DungeonModels {
         }
     }
 
-    private static DungeonModel loadModel(ResourceLocation resource, IResourceManager resourceManager) {
+    private static DungeonModel loadModel(ResourceLocation resource, ResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", resource);
 
         try {
-            CompoundNBT nbt = CompressedStreamTools.readCompressed(resourceManager.getResource(resource).getInputStream());
+            CompoundTag nbt = NbtIo.readCompressed(resourceManager.getResource(resource).getInputStream());
 
             ResourceLocation key = DungeonCrawl.key(resource, DIRECTORY, ".nbt");
             DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource, key);

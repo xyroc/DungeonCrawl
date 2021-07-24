@@ -19,17 +19,17 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.generator.DefaultDungeonGenerator;
@@ -58,7 +58,7 @@ public class DungeonBuilder {
     public ChunkGenerator chunkGenerator;
     public Biome biome;
 
-    private final DynamicRegistries dynamicRegistries;
+    private final RegistryAccess registryAccess;
 
     public Theme theme, catacombsTheme, lowerCatacombsTheme, bottomTheme;
     public Theme.SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
@@ -66,8 +66,8 @@ public class DungeonBuilder {
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
      */
-    public DungeonBuilder(DynamicRegistries dynamicRegistries, ChunkGenerator chunkGenerator, ChunkPos pos, Random rand) {
-        this.dynamicRegistries = dynamicRegistries;
+    public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, ChunkPos pos, Random rand) {
+        this.registryAccess = registryAccess;
         this.chunkGenerator = chunkGenerator;
         this.rand = rand;
 
@@ -82,8 +82,8 @@ public class DungeonBuilder {
     /**
      * Instantiates a Dungeon Builder for post world gen usage like a manual dungeon spawn by command.
      */
-    public DungeonBuilder(ServerWorld world, BlockPos pos, Random rand) {
-        this.dynamicRegistries = world.registryAccess();
+    public DungeonBuilder(ServerLevel world, BlockPos pos, Random rand) {
+        this.registryAccess = world.registryAccess();
         this.chunkGenerator = world.getChunkSource().getGenerator();
         this.rand = rand;
 
@@ -109,7 +109,7 @@ public class DungeonBuilder {
         entrance.setWorldPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
-        entrance.model = type.entrances.roll(rand);
+        entrance.model = type.entrances().roll(rand);
         entrance.setupBoundingBox();
 
         determineThemes();
@@ -140,7 +140,7 @@ public class DungeonBuilder {
         }
 
         for (int layer = 0; layer < layers.length; layer++) {
-            generator.initializeLayer(type.getLayer(layer).settings, this, rand, layer, layer == layerCount - 1);
+            generator.initializeLayer(type.getLayer(layer).settings(), this, rand, layer, layer == layerCount - 1);
             generator.generateLayer(this, layers[layer], layer, rand, (layer == 0) ? this.start : layers[layer - 1].end);
         }
 
@@ -165,7 +165,7 @@ public class DungeonBuilder {
     }
 
     private void determineThemes() {
-        ResourceLocation registryName = dynamicRegistries.registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
+        ResourceLocation registryName = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
 
         if (registryName != null) {
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), rand);
@@ -219,23 +219,21 @@ public class DungeonBuilder {
     private void postProcessDungeon(List<DungeonPiece> pieces, DungeonType type, Random rand) {
         for (int i = 0; i < layers.length; i++) {
             DungeonLayer layer = layers[i];
-            ModelSelector modelSelector = type.getLayer(i).modelSelector;
+            ModelSelector modelSelector = type.getLayer(i).modelSelector();
             for (int x = 0; x < layer.width; x++)
                 for (int z = 0; z < layer.length; z++) {
                     Tile tile = layer.grid[x][z];
                     if (tile != null && !tile.hasFlag(Tile.Flag.PLACEHOLDER)) {
                         switch (i) {
-                            case 2: {
+                            case 2 -> {
                                 tile.piece.theme = catacombsTheme;
                                 tile.piece.secondaryTheme = catacombsSecondaryTheme;
-                                break;
                             }
-                            case 3: {
+                            case 3 -> {
                                 tile.piece.theme = lowerCatacombsTheme;
                                 tile.piece.secondaryTheme = lowerCatacombsSecondaryTheme;
-                                break;
                             }
-                            default: {
+                            default -> {
                                 if (i >= 4) {
                                     tile.piece.theme = bottomTheme;
                                     tile.piece.secondaryTheme = bottomSecondaryTheme;
@@ -272,7 +270,7 @@ public class DungeonBuilder {
         }
     }
 
-    public static boolean isBlockProtected(IWorld world, BlockPos pos, PlacementContext context) {
+    public static boolean isBlockProtected(LevelAccessor world, BlockPos pos, PlacementContext context) {
         BlockState state = world.getBlockState(pos);
         return state.getDestroySpeed(world, pos) < 0 || context.protectedBlocks.contains(pos) || BlockTags.PORTALS.contains(state.getBlock());
     }

@@ -25,10 +25,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 
@@ -37,13 +37,13 @@ import java.util.concurrent.CompletableFuture;
 public class DungeonModelArgument implements ArgumentType<DungeonModel> {
 
     public static final DynamicCommandExceptionType MODEL_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) ->
-            new TranslationTextComponent("Unknown model: {0}", p_208663_0_));
+            new TranslatableComponent("Unknown model: {0}", p_208663_0_));
 
     public static DungeonModelArgument modelArgument() {
         return new DungeonModelArgument();
     }
 
-    public static DungeonModel getModel(CommandContext<CommandSource> context, String name) {
+    public static DungeonModel getModel(CommandContext<CommandSourceStack> context, String name) {
         return context.getArgument(name, DungeonModel.class);
     }
 
@@ -59,7 +59,7 @@ public class DungeonModelArgument implements ArgumentType<DungeonModel> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggestResource(DungeonModels.getKeys(), builder);
+        return SharedSuggestionProvider.suggestResource(DungeonModels.getKeys(), builder);
     }
 
 }

@@ -20,8 +20,8 @@ package xiroc.dungeoncrawl.util;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 
@@ -34,11 +34,11 @@ public class BossEntry {
         this.nbt = nbt;
     }
 
-    public CompoundNBT createTag() {
+    public CompoundTag createTag() {
         if (nbt == null)
             return null;
         try {
-            return new JsonToNBT(new StringReader(nbt)).readStruct();
+            return new TagParser(new StringReader(nbt)).readStruct();
         } catch (CommandSyntaxException e) {
             DungeonCrawl.LOGGER.error("Failed to read a boss nbt tag.");
             e.printStackTrace();

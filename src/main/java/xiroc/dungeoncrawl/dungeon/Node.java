@@ -18,7 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import net.minecraft.util.Rotation;
+import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 
 import java.util.Random;
@@ -41,16 +41,12 @@ public class Node {
     }
 
     public Node rotate(Rotation rotation) {
-        switch (rotation) {
-            case CLOCKWISE_90:
-                return new Node(sides[3], sides[0], sides[1], sides[2]);
-            case COUNTERCLOCKWISE_90:
-                return new Node(sides[1], sides[2], sides[3], sides[0]);
-            case CLOCKWISE_180:
-                return new Node(sides[2], sides[3], sides[0], sides[1]);
-            default:
-                return this;
-        }
+        return switch (rotation) {
+            case CLOCKWISE_90 -> new Node(sides[3], sides[0], sides[1], sides[2]);
+            case COUNTERCLOCKWISE_90 -> new Node(sides[1], sides[2], sides[3], sides[0]);
+            case CLOCKWISE_180 -> new Node(sides[2], sides[3], sides[0], sides[1]);
+            default -> this;
+        };
     }
 
     /**

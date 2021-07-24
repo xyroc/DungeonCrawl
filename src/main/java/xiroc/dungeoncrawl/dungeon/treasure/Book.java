@@ -18,11 +18,11 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import xiroc.dungeoncrawl.dungeon.DungeonStatTracker;
 
 import java.util.ArrayList;
@@ -31,17 +31,17 @@ public class Book {
 
     public static ItemStack createStatBook(String title, DungeonStatTracker statTracker) {
         ItemStack book = new ItemStack(Items.WRITTEN_BOOK);
-        CompoundNBT tag = new CompoundNBT();
-        ListNBT pages = new ListNBT();
-        pages.add(StringNBT.valueOf("----  Statistics  ----\n  Objectives: " + statTracker.totalObjectives + "\n  Layers: "
+        CompoundTag tag = new CompoundTag();
+        ListTag pages = new ListTag();
+        pages.add(StringTag.valueOf("----  Statistics  ----\n  Objectives: " + statTracker.totalObjectives + "\n  Layers: "
                 + statTracker.stats.length + "\n  Chests: " + statTracker.chests + "\n  Spawners: "
                 + statTracker.spawners));
         ArrayList<String> lines = statTracker.getObjectives();
         if (lines.size() > 14) {
             for (int i = 0; i < lines.size() / 14 + 1; i++)
-                pages.add(createStatPage(lines, i * 14));
+                pages.add(createPage(lines, i * 14));
         } else {
-            pages.add(createStatPage(lines, 0));
+            pages.add(createPage(lines, 0));
         }
         tag.put("pages", pages);
         tag.putString("author", "XIROC");
@@ -51,11 +51,11 @@ public class Book {
         return book;
     }
 
-    public static StringNBT createStatPage(ArrayList<String> lines, int start) {
-        String text = "";
+    public static StringTag createPage(ArrayList<String> lines, int start) {
+        StringBuilder text = new StringBuilder();
         for (int i = start; i < Math.max(lines.size(), 14); i++)
-            text += lines.get(i) + "\n";
-        return StringNBT.valueOf(text);
+            text.append(lines.get(i)).append("\n");
+        return StringTag.valueOf(text.toString());
     }
 
 }

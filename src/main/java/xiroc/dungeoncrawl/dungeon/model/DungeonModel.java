@@ -22,12 +22,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
@@ -53,7 +53,7 @@ public class DungeonModel {
 
     private int entranceType;
 
-    private Vector3i offset, rotatedOffset;
+    private Vec3i offset, rotatedOffset;
     @Nullable
     private DungeonModelFeature[] features;
 
@@ -87,7 +87,7 @@ public class DungeonModel {
             JsonObject offset = object.getAsJsonObject("offset");
             this.offset = JSONUtils.getOffset(offset);
             if (offset.has("rotate") && offset.get("rotate").getAsBoolean()) {
-                this.rotatedOffset = new Vector3i(this.offset.getZ(), this.offset.getY(), this.offset.getX());
+                this.rotatedOffset = new Vec3i(this.offset.getZ(), this.offset.getY(), this.offset.getX());
             } else {
                 this.rotatedOffset = this.offset;
             }
@@ -115,10 +115,10 @@ public class DungeonModel {
         if (object.has("loot")) {
             JsonArray array = object.getAsJsonArray("loot");
             if (array.size() > 0) {
-                ArrayList<Tuple<Vector3i, ResourceLocation>> loot = new ArrayList<>();
+                ArrayList<Tuple<Vec3i, ResourceLocation>> loot = new ArrayList<>();
                 array.forEach((element) -> {
                     JsonObject instance = element.getAsJsonObject();
-                    Vector3i pos = JSONUtils.getOffset(instance.getAsJsonObject("pos"));
+                    Vec3i pos = JSONUtils.getOffset(instance.getAsJsonObject("pos"));
                     ResourceLocation lootTable = new ResourceLocation(instance.get("loot_table").getAsString());
                     loot.add(new Tuple<>(pos, lootTable));
                 });
@@ -172,41 +172,41 @@ public class DungeonModel {
         return entranceType;
     }
 
-    public MutableBoundingBox createBoundingBox(int x, int y, int z, Rotation rotation) {
+    public BoundingBox createBoundingBox(int x, int y, int z, Rotation rotation) {
         switch (rotation) {
             case NONE:
             case CLOCKWISE_180:
-                return new MutableBoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
+                return new BoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
             case CLOCKWISE_90:
             case COUNTERCLOCKWISE_90:
-                return new MutableBoundingBox(x, y, z, x + length - 1, y + height - 1, z + width - 1);
+                return new BoundingBox(x, y, z, x + length - 1, y + height - 1, z + width - 1);
             default:
                 DungeonCrawl.LOGGER.warn("Unknown piece rotation: {}", rotation);
-                return new MutableBoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
+                return new BoundingBox(x, y, z, x + width - 1, y + height - 1, z + length - 1);
         }
     }
 
-    public MutableBoundingBox createBoundingBoxWithOffset(int x, int y, int z, Rotation rotation) {
-        Vector3i offset = getOffset(rotation);
+    public BoundingBox createBoundingBoxWithOffset(int x, int y, int z, Rotation rotation) {
+        Vec3i offset = getOffset(rotation);
         return createBoundingBox(x + offset.getX(), y + offset.getY(), z + offset.getZ(), rotation);
     }
 
-    public MutableBoundingBox createBoundingBox(BlockPos origin, Rotation rotation) {
+    public BoundingBox createBoundingBox(BlockPos origin, Rotation rotation) {
         switch (rotation) {
             case NONE:
             case CLOCKWISE_180:
-                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width - 1, origin.getY() + height - 1, origin.getZ() + length - 1);
+                return new BoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width - 1, origin.getY() + height - 1, origin.getZ() + length - 1);
             case CLOCKWISE_90:
             case COUNTERCLOCKWISE_90:
-                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + length - 1, origin.getY() + height - 1, origin.getZ() + width - 1);
+                return new BoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + length - 1, origin.getY() + height - 1, origin.getZ() + width - 1);
             default:
                 DungeonCrawl.LOGGER.warn("Unknown piece rotation: {}", rotation);
-                return new MutableBoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width - 1, origin.getY() + height - 1, origin.getZ() + length - 1);
+                return new BoundingBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + width - 1, origin.getY() + height - 1, origin.getZ() + length - 1);
         }
     }
 
 
-    public Vector3i getOffset(Rotation rotation) {
+    public Vec3i getOffset(Rotation rotation) {
         if ((rotation.ordinal() & 1) == 1) {
             return rotatedOffset;
         } else {

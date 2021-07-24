@@ -18,17 +18,17 @@
 
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface IBlockStateProvider {
 
-    default BlockState get(IWorld world, BlockPos pos) {
+    default BlockState get(LevelAccessor world, BlockPos pos) {
         return get(world, pos, Rotation.NONE);
     }
 
-    BlockState get(IWorld world, BlockPos pos, Rotation rotation);
+    BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation);
 
 }

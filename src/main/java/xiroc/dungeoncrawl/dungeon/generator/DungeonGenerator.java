@@ -18,7 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.level.ChunkPos;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGenerator;

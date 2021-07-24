@@ -18,16 +18,14 @@
 
 package xiroc.dungeoncrawl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.FlatChunkGenerator;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.FlatLevelSource;
+import net.minecraft.world.level.levelgen.StructureSettings;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -37,9 +35,9 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
@@ -63,7 +61,6 @@ public class DungeonCrawl {
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final JsonParser JSON_PARSER = new JsonParser();
 
     public DungeonCrawl() {
@@ -71,7 +68,7 @@ public class DungeonCrawl {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addGenericListener(Structure.class, this::onRegisterStructures);
+        modEventBus.addGenericListener(StructureFeature.class, this::onRegisterStructures);
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
@@ -100,7 +97,7 @@ public class DungeonCrawl {
         IBlockPlacementHandler.init();
     }
 
-    private void onRegisterStructures(final RegistryEvent.Register<Structure<?>> event) {
+    private void onRegisterStructures(final RegistryEvent.Register<StructureFeature<?>> event) {
         Dungeon.register();
     }
 
@@ -112,16 +109,15 @@ public class DungeonCrawl {
     }
 
     private void onWorldLoad(final WorldEvent.Load event) {
-        if (event.getWorld() instanceof ServerWorld) {
+        if (event.getWorld() instanceof ServerLevel serverWorld) {
 
-            ServerWorld serverWorld = (ServerWorld) event.getWorld();
-            if (serverWorld.getChunkSource().getGenerator() instanceof FlatChunkGenerator &&
-                    serverWorld.dimension().equals(World.OVERWORLD)) {
+            if (serverWorld.getChunkSource().getGenerator() instanceof FlatLevelSource &&
+                    serverWorld.dimension().equals(Level.OVERWORLD)) {
                 return;
             }
 
-            Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkSource().generator.getSettings().structureConfig());
-            tempMap.putIfAbsent(Dungeon.DUNGEON, DimensionStructuresSettings.DEFAULTS.get(Dungeon.DUNGEON));
+            Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(serverWorld.getChunkSource().generator.getSettings().structureConfig());
+            tempMap.putIfAbsent(Dungeon.DUNGEON, StructureSettings.DEFAULTS.get(Dungeon.DUNGEON));
             serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
         } else {
             LOGGER.info("Skipping world {}", event.getWorld().getClass());

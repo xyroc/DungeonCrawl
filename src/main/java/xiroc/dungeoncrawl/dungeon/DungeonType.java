@@ -23,12 +23,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.lwjgl.system.CallbackI;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGeneratorSettings;
@@ -48,7 +47,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
-public class DungeonType {
+public record DungeonType(ResourceLocation source,
+                          DungeonGeneratorSettings dungeonSettings,
+                          xiroc.dungeoncrawl.dungeon.DungeonType.Layer[] layers,
+                          WeightedRandom<DungeonModel> entrances) {
 
     private static final Hashtable<ResourceLocation, DungeonType> KEY_TO_TYPE = new Hashtable<>();
 
@@ -58,24 +60,11 @@ public class DungeonType {
     private static final String TYPES_DIRECTORY = "dungeon/types";
     private static final String MAPPINGS_DIRECTORY = "dungeon/biome_mappings";
 
-    public final ResourceLocation source;
-    public final DungeonGeneratorSettings dungeonSettings;
-    public final WeightedRandom<DungeonModel> entrances;
-
-    public final Layer[] layers;
-
-    private DungeonType(ResourceLocation source, DungeonGeneratorSettings dungeonSettings, Layer[] layers, WeightedRandom<DungeonModel> entrances) {
-        this.source = source;
-        this.dungeonSettings = dungeonSettings;
-        this.layers = layers;
-        this.entrances = entrances;
-    }
-
     public Layer getLayer(int layer) {
         return layers[Math.min(layers.length - 1, layer)];
     }
 
-    public static void load(IResourceManager resourceManager) {
+    public static void load(ResourceManager resourceManager) {
         resourceManager.listResources(TYPES_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", resource);
@@ -198,14 +187,13 @@ public class DungeonType {
                 if (DungeonModels.KEY_TO_MODEL.containsKey(target)) {
                     String action = object.get("action").getAsString();
                     switch (action) {
-                        case "override": {
+                        case "override" -> {
                             List<MultipartModelData> multipartData = DungeonModel.parseMultipartData(object.getAsJsonObject("data"), file);
                             if (multipartData != null) {
                                 builder.put(target, multipartData);
                             }
-                            break;
                         }
-                        case "add": {
+                        case "add" -> {
                             HashMap<String, Tuple<List<Tuple<MultipartModelData.Instance, Integer>>, List<Tuple<MultipartModelData.Instance, Integer>>>> additions = new HashMap<>();
                             object.getAsJsonObject("additions").entrySet().forEach(((entry1) -> {
                                 JsonObject object1 = entry1.getValue().getAsJsonObject();
@@ -234,10 +222,8 @@ public class DungeonType {
                             } else {
                                 DungeonCrawl.LOGGER.warn(target + " doesn't have multipart data, but " + file + " adds to it.");
                             }
-                            break;
                         }
-                        default:
-                            throw new DatapackLoadException("Unknown multipart action " + action + " in " + file);
+                        default -> throw new DatapackLoadException("Unknown multipart action " + action + " in " + file);
                     }
                 } else {
                     throw new DatapackLoadException("Cannot resolve model key " + entry.getKey() + " in " + file);
@@ -249,21 +235,10 @@ public class DungeonType {
         }
     }
 
-    public static class Layer {
-
-        public final DungeonLayerType layerType;
-        public final LayerGeneratorSettings settings;
-        public final ModelSelector modelSelector;
-
-        // Custom multipart data for models on this layer.
-        private final ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides;
-
-        private Layer(DungeonLayerType layerType, LayerGeneratorSettings settings, ModelSelector modelSelector, ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides) {
-            this.layerType = layerType;
-            this.settings = settings;
-            this.modelSelector = modelSelector;
-            this.multipartOverrides = multipartOverrides;
-        }
+    public record Layer(DungeonLayerType layerType,
+                        LayerGeneratorSettings settings,
+                        ModelSelector modelSelector,
+                        ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides) {
 
         public boolean hasMultipartOverride(DungeonModel model) {
             return multipartOverrides.containsKey(model.getKey());

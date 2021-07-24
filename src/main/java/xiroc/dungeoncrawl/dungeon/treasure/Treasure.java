@@ -18,11 +18,11 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import net.minecraft.loot.ILootSerializer;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
@@ -34,12 +34,12 @@ import java.util.HashMap;
 
 public class Treasure {
 
-    public static final LootFunctionType ENCHANTED_BOOK = register("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
-    public static final LootFunctionType MATERIAL_BLOCKS = register("dungeoncrawl:material_blocks", new MaterialBlocks.Serializer());
-    public static final LootFunctionType RANDOM_ITEM = register("dungeoncrawl:random_item", new RandomItem.Serializer());
-    public static final LootFunctionType RANDOM_POTION = register("dungeoncrawl:random_potion", new RandomPotion.Serializer());
-    public static final LootFunctionType SHIELD = register("dungeoncrawl:shield", new Shield.Serializer());
-    public static final LootFunctionType SUSPICIOUS_STEW = register("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());
+    public static final LootItemFunctionType ENCHANTED_BOOK = register("dungeoncrawl:enchanted_book", new EnchantedBook.Serializer());
+    public static final LootItemFunctionType MATERIAL_BLOCKS = register("dungeoncrawl:material_blocks", new MaterialBlocks.Serializer());
+    public static final LootItemFunctionType RANDOM_ITEM = register("dungeoncrawl:random_item", new RandomItem.Serializer());
+    public static final LootItemFunctionType RANDOM_POTION = register("dungeoncrawl:random_potion", new RandomPotion.Serializer());
+    public static final LootItemFunctionType SHIELD = register("dungeoncrawl:shield", new Shield.Serializer());
+    public static final LootItemFunctionType SUSPICIOUS_STEW = register("dungeoncrawl:suspicious_stew", new SuspiciousStew.Serializer());
 
     public static final HashMap<Treasure.Type, ResourceLocation> SPECIAL_LOOT_TABLES = new HashMap<>();
 
@@ -79,18 +79,10 @@ public class Treasure {
             INT_TO_TYPE_MAP.forEach((key, value) -> TYPE_TO_INT_MAP.put(value, key));
         }
 
-        public static Type fromInt(int typeID) {
-            return INT_TO_TYPE_MAP.getOrDefault(typeID, DEFAULT);
-        }
-
-        public static int toInt(Type type) {
-            return TYPE_TO_INT_MAP.get(type);
-        }
-
     }
 
-    private static LootFunctionType register(String p_237451_0_, ILootSerializer<? extends ILootFunction> p_237451_1_) {
-        return Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(p_237451_0_), new LootFunctionType(p_237451_1_));
+    private static LootItemFunctionType register(String p_237451_0_, Serializer<? extends LootItemFunction> p_237451_1_) {
+        return Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(p_237451_0_), new LootItemFunctionType(p_237451_1_));
     }
 
 }

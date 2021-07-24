@@ -18,16 +18,16 @@
 
 package xiroc.dungeoncrawl.dungeon.block;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.RandomValueRange;
-import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.tileentity.SmokerTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.SmokerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -40,31 +40,31 @@ public class Furnace implements IBlockPlacementHandler {
     private static final Item[] FOOD = {Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_MUTTON,
             Items.COOKED_COD, Items.COOKED_PORKCHOP, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.BAKED_POTATO};
 
-    public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(4, 16);
-
     @Override
-    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context
-            , Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
+    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+                      Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
         world.setBlock(pos, state, 2);
-        TileEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof FurnaceTileEntity) {
-            FurnaceTileEntity furnace = (FurnaceTileEntity) tile;
-            furnace.setItem(1, new ItemStack(Items.COAL, COAL_AMOUNT.getInt(rand)));
+        BlockEntity tile = world.getBlockEntity(pos);
+        if (tile instanceof FurnaceBlockEntity furnace) {
+            furnace.setItem(1, new ItemStack(Items.COAL, coalAmount(rand)));
         } else {
             DungeonCrawl.LOGGER.warn("Failed to fetch a furnace entity at {}", pos.toString());
         }
     }
 
+    private static int coalAmount(Random rand) {
+        return Mth.nextInt(rand, 2, 8);
+    }
+
     public static class Smoker implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                           Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, state, 2);
-            TileEntity tile = world.getBlockEntity(pos);
-            if (tile instanceof SmokerTileEntity) {
-                SmokerTileEntity smoker = (SmokerTileEntity) tile;
-                smoker.setItem(1, new ItemStack(Items.CHARCOAL, COAL_AMOUNT.getInt(rand)));
+            BlockEntity tile = world.getBlockEntity(pos);
+            if (tile instanceof SmokerBlockEntity smoker) {
+                smoker.setItem(1, new ItemStack(Items.CHARCOAL, coalAmount(rand)));
                 smoker.setItem(2, new ItemStack(FOOD[rand.nextInt(FOOD.length)], 1 + rand.nextInt(16)));
             } else {
                 DungeonCrawl.LOGGER.warn("Failed to fetch a smoker entity at {}", pos.toString());

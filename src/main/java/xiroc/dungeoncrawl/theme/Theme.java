@@ -21,10 +21,10 @@ package xiroc.dungeoncrawl.theme;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.block.Blocks;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.level.block.Blocks;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
@@ -286,7 +286,7 @@ public class Theme {
 
     }
 
-    public static void loadJson(IResourceManager resourceManager) {
+    public static void loadJson(ResourceManager resourceManager) {
         ID_TO_THEME.clear();
         ID_TO_SECONDARY_THEME.clear();
         KEY_TO_THEME.clear();
@@ -392,7 +392,7 @@ public class Theme {
         HELL_SECONDARY_THEME = hell.getB();
     }
 
-    private static Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> loadRandomThemeFiles(String directory, IResourceManager resourceManager) {
+    private static Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> loadRandomThemeFiles(String directory, ResourceManager resourceManager) {
         WeightedRandom.Builder<Theme> primary = new WeightedRandom.Builder<>();
         WeightedRandom.Builder<SecondaryTheme> secondary = new WeightedRandom.Builder<>();
         for (ResourceLocation resource : resourceManager.listResources(directory, (s) -> s.endsWith(".json"))) {

@@ -18,10 +18,10 @@
 
 package xiroc.dungeoncrawl.util;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Rotation;
 
 import java.util.Locale;
 
@@ -47,7 +47,7 @@ public class DirectionalBlockPos {
         return this;
     }
 
-    public void writeToNBT(CompoundNBT nbt) {
+    public void writeToNBT(CompoundTag nbt) {
         nbt.putInt("x", position.getX());
         nbt.putInt("y", position.getY());
         nbt.putInt("z", position.getZ());
@@ -57,7 +57,7 @@ public class DirectionalBlockPos {
         }
     }
 
-    public static DirectionalBlockPos fromNBT(CompoundNBT nbt) {
+    public static DirectionalBlockPos fromNBT(CompoundTag nbt) {
         return new DirectionalBlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"),
                 Direction.from3DDataValue(nbt.getInt("direction")), nbt.contains("rotation") ? Rotation.valueOf(nbt.getString("rotation")) : null);
     }

@@ -18,14 +18,14 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.Random;
 
@@ -56,21 +56,21 @@ public class TreasureItems {
 
     static {
         {
-            CompoundNBT nbt = new CompoundNBT();
-            ListNBT customPotionEffects = new ListNBT();
-            CompoundNBT nausea = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
+            ListTag customPotionEffects = new ListTag();
+            CompoundTag nausea = new CompoundTag();
             nausea.putInt("Id", 9);
             nausea.putInt("Duration", 100);
-            CompoundNBT blindness = new CompoundNBT();
+            CompoundTag blindness = new CompoundTag();
             blindness.putInt("Id", 15);
             blindness.putInt("Duration", 100);
-            CompoundNBT weakness = new CompoundNBT();
+            CompoundTag weakness = new CompoundTag();
             weakness.putInt("Id", 18);
             weakness.putInt("Duration", 100);
-            CompoundNBT miningFatique = new CompoundNBT();
+            CompoundTag miningFatique = new CompoundTag();
             miningFatique.putInt("Id", 4);
             miningFatique.putInt("Duration", 100);
-            CompoundNBT regeneration = new CompoundNBT();
+            CompoundTag regeneration = new CompoundTag();
             regeneration.putInt("Id", 10);
             regeneration.putInt("Amplifier", 1);
             regeneration.putInt("Duration", 160);
@@ -83,27 +83,27 @@ public class TreasureItems {
             nbt.putInt("CustomPotionColor", 7014144);
             //nbt.putInt("CustomPotionColor", 0xca03fc);
             nbt.putInt("HideFlags", 32);
-            CompoundNBT display = new CompoundNBT();
-            ListNBT lore = new ListNBT();
-            lore.add(StringNBT.valueOf(
-                    ITextComponent.Serializer.toJson(new StringTextComponent("A medicinal tincture."))));
+            CompoundTag display = new CompoundTag();
+            ListTag lore = new ListTag();
+            lore.add(StringTag.valueOf(
+                    Component.Serializer.toJson(new TextComponent("A medicinal tincture."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("Laudanum"))));
+                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Laudanum"))));
             nbt.put("display", display);
             LAUDANUM = new ItemStack(Items.POTION);
             LAUDANUM.setTag(nbt);
         }
         {
-            CompoundNBT nbt = new CompoundNBT();
-            ListNBT customPotionEffects = new ListNBT();
-            CompoundNBT wither = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
+            ListTag customPotionEffects = new ListTag();
+            CompoundTag wither = new CompoundTag();
             wither.putInt("Id", 20);
             wither.putInt("Duration", 40);
-            CompoundNBT blindness = new CompoundNBT();
+            CompoundTag blindness = new CompoundTag();
             blindness.putInt("Id", 15);
             blindness.putInt("Duration", 40);
-            CompoundNBT strength = new CompoundNBT();
+            CompoundTag strength = new CompoundTag();
             strength.putInt("Id", 5);
             strength.putInt("Duration", 800);
             customPotionEffects.add(strength);
@@ -112,27 +112,27 @@ public class TreasureItems {
             nbt.put("CustomPotionEffects", customPotionEffects);
             nbt.putInt("CustomPotionColor", 13050390);
             nbt.putInt("HideFlags", 32);
-            CompoundNBT display = new CompoundNBT();
-            ListNBT lore = new ListNBT();
-            lore.add(StringNBT
-                    .valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("An unstable mixture."))));
+            CompoundTag display = new CompoundTag();
+            ListTag lore = new ListTag();
+            lore.add(StringTag
+                    .valueOf(Component.Serializer.toJson(new TextComponent("An unstable mixture."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("Animus"))));
+                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Animus"))));
             nbt.put("display", display);
             ANIMUS = new ItemStack(Items.POTION);
             ANIMUS.setTag(nbt);
         }
         {
-            CompoundNBT nbt = new CompoundNBT();
-            ListNBT customPotionEffects = new ListNBT();
-            CompoundNBT resistance = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
+            ListTag customPotionEffects = new ListTag();
+            CompoundTag resistance = new CompoundTag();
             resistance.putInt("Id", 11);
             resistance.putInt("Duration", 400);
-            CompoundNBT blindness = new CompoundNBT();
+            CompoundTag blindness = new CompoundTag();
             blindness.putInt("Id", 15);
             blindness.putInt("Duration", 100);
-            CompoundNBT absorption = new CompoundNBT();
+            CompoundTag absorption = new CompoundTag();
             absorption.putInt("Id", 22);
             absorption.putInt("Amplifier", 14);
             absorption.putInt("Duration", 600);
@@ -142,28 +142,28 @@ public class TreasureItems {
             nbt.put("CustomPotionEffects", customPotionEffects);
             nbt.putInt("CustomPotionColor", 15446551);
             nbt.putInt("HideFlags", 32);
-            CompoundNBT display = new CompoundNBT();
-            ListNBT lore = new ListNBT();
-            lore.add(StringNBT
-                    .valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("A floral extract."))));
+            CompoundTag display = new CompoundTag();
+            ListTag lore = new ListTag();
+            lore.add(StringTag
+                    .valueOf(Component.Serializer.toJson(new TextComponent("A floral extract."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("Nectar"))));
+                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Nectar"))));
             nbt.put("display", display);
             NECTAR = new ItemStack(Items.POTION);
             NECTAR.setTag(nbt);
         }
         {
-            CompoundNBT nbt = new CompoundNBT();
-            ListNBT customPotionEffects = new ListNBT();
-            CompoundNBT speed = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
+            ListTag customPotionEffects = new ListTag();
+            CompoundTag speed = new CompoundTag();
             speed.putInt("Id", 1);
             speed.putInt("Amplifier", 1);
             speed.putInt("Duration", 400);
-            CompoundNBT blindness = new CompoundNBT();
+            CompoundTag blindness = new CompoundTag();
             blindness.putInt("Id", 15);
             blindness.putInt("Duration", 40);
-            CompoundNBT haste = new CompoundNBT();
+            CompoundTag haste = new CompoundTag();
             haste.putInt("Id", 3);
             haste.putInt("Duration", 400);
             customPotionEffects.add(speed);
@@ -172,32 +172,32 @@ public class TreasureItems {
             nbt.put("CustomPotionEffects", customPotionEffects);
             nbt.putInt("CustomPotionColor", 65327);
             nbt.putInt("HideFlags", 32);
-            CompoundNBT display = new CompoundNBT();
-            ListNBT lore = new ListNBT();
-            lore.add(StringNBT.valueOf(
-                    ITextComponent.Serializer.toJson(new StringTextComponent("An energetic beverage."))));
+            CompoundTag display = new CompoundTag();
+            ListTag lore = new ListTag();
+            lore.add(StringTag.valueOf(
+                    Component.Serializer.toJson(new TextComponent("An energetic beverage."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("Velocitas"))));
+                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Velocitas"))));
             nbt.put("display", display);
             VELOCITAS = new ItemStack(Items.POTION);
             VELOCITAS.setTag(nbt);
         }
         {
-            CompoundNBT nbt = new CompoundNBT();
-            ListNBT customPotionEffects = new ListNBT();
-            CompoundNBT glowing = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
+            ListTag customPotionEffects = new ListTag();
+            CompoundTag glowing = new CompoundTag();
             glowing.putInt("Id", 24);
             glowing.putInt("Duration", 12000);
             customPotionEffects.add(glowing);
             nbt.put("CustomPotionEffects", customPotionEffects);
             nbt.putInt("CustomPotionColor", 16448000);
             nbt.putInt("HideFlags", 32);
-            CompoundNBT display = new CompoundNBT();
-            ListNBT lore = new ListNBT();
-            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("A glowstone extract."))));
+            CompoundTag display = new CompoundTag();
+            ListTag lore = new ListTag();
+            lore.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent("A glowstone extract."))));
             display.put("Lore", lore);
-            display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent("Luma"))));
+            display.put("Name", StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Luma"))));
             nbt.put("display", display);
             LUMA = new ItemStack(Items.POTION);
             LUMA.setTag(nbt);
@@ -220,31 +220,31 @@ public class TreasureItems {
         SPECIAL_POTIONS = new ItemStack[]{LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS};
     }
 
-    public static CompoundNBT createDisplayTag(String name, String... loreEntries) {
-        CompoundNBT display = new CompoundNBT();
-        display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(name))));
-        ListNBT lore = new ListNBT();
+    public static CompoundTag createDisplayTag(String name, String... loreEntries) {
+        CompoundTag display = new CompoundTag();
+        display.put("Name", StringTag.valueOf(Component.Serializer.toJson(new TextComponent(name))));
+        ListTag lore = new ListTag();
         for (String line : loreEntries)
-            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(line))));
+            lore.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent(line))));
         if (lore.size() > 0)
             display.put("Lore", lore);
         return display;
     }
 
-    public static CompoundNBT createPotionTag(String potionName) {
-        CompoundNBT potion = new CompoundNBT();
+    public static CompoundTag createPotionTag(String potionName) {
+        CompoundTag potion = new CompoundTag();
         potion.putString("Potion", potionName);
         return potion;
     }
 
-    public static CompoundNBT createEnchantmentTag(String enchantment, int level) {
-        CompoundNBT enchantmentTag = new CompoundNBT();
+    public static CompoundTag createEnchantmentTag(String enchantment, int level) {
+        CompoundTag enchantmentTag = new CompoundTag();
         enchantmentTag.putString("id", enchantment);
         enchantmentTag.putInt("lvl", level);
         return enchantmentTag;
     }
 
-    public static ItemStack createItemWithNbt(Item item, CompoundNBT nbt) {
+    public static ItemStack createItemWithNbt(Item item, CompoundTag nbt) {
         ItemStack stack = new ItemStack(item);
         stack.setTag(nbt);
         return stack;

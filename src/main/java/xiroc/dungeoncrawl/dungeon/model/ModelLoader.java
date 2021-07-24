@@ -19,17 +19,17 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 
 public interface ModelLoader {
 
     ModelLoader VERSION_1 = (nbt, file, key) -> {
         ImmutableList.Builder<DungeonModelBlock> modelBlocks = new ImmutableList.Builder<>();
 
-        ListNBT blocks = nbt.getList("blocks", 10);
+        ListTag blocks = nbt.getList("blocks", 10);
 
         for (int i = 0; i < blocks.size(); i++) {
             modelBlocks.add(DungeonModelBlock.fromNBT(blocks.getCompound(i)));
@@ -41,16 +41,16 @@ public interface ModelLoader {
     ModelLoader LEGACY = (nbt, file, key) -> {
         int width = nbt.getInt("width"), height = nbt.getInt("height"), length = nbt.getInt("length");
 
-        ListNBT blocks = nbt.getList("model", 9);
+        ListTag blocks = nbt.getList("model", 9);
 
         ImmutableList.Builder<DungeonModelBlock> modelBlocks = new ImmutableList.Builder<>();
 
         for (int x = 0; x < width; x++) {
-            ListNBT blocks2 = blocks.getList(x);
+            ListTag blocks2 = blocks.getList(x);
             for (int y = 0; y < height; y++) {
-                ListNBT blocks3 = blocks2.getList(y);
+                ListTag blocks3 = blocks2.getList(y);
                 for (int z = 0; z < length; z++) {
-                    modelBlocks.add(DungeonModelBlock.fromNBT(blocks3.getCompound(z), new Vector3i(x, y, z)));
+                    modelBlocks.add(DungeonModelBlock.fromNBT(blocks3.getCompound(z), new Vec3i(x, y, z)));
                 }
             }
         }
@@ -58,6 +58,6 @@ public interface ModelLoader {
         return new DungeonModel(key, modelBlocks.build(), width, height, length);
     };
 
-    DungeonModel load(CompoundNBT nbt, ResourceLocation file, ResourceLocation key);
+    DungeonModel load(CompoundTag nbt, ResourceLocation file, ResourceLocation key);
 
 }

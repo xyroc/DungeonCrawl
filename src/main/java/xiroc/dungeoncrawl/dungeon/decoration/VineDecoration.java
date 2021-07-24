@@ -18,12 +18,12 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -33,7 +33,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 public class VineDecoration implements IDungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage) {
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, PlacementContext context, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece, int stage) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
         int maxX = ew ? width : length;
         int maxZ = ew ? length : width;

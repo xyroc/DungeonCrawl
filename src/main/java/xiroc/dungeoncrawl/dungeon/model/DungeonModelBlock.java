@@ -32,7 +32,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +47,7 @@ public class DungeonModelBlock {
     public final boolean hasProperties;
     @Nullable
     public final Integer variation;
-    private final Block block;
+    public final Block block;
     @Nullable
     public final ResourceLocation blockName;
     // A custom loot table, can be defined in model metadata.

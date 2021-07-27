@@ -8,7 +8,7 @@
       },
       "entries": [
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 3,
           "functions": [
@@ -22,7 +22,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:ink_sac",
           "weight": 1,
           "functions": [
@@ -36,7 +36,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:feather",
           "weight": 2,
           "functions": [
@@ -50,7 +50,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:writable_book",
           "weight": 2,
           "functions": [
@@ -64,7 +64,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cobweb",
           "weight": 6,
           "functions": [
@@ -78,7 +78,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 5,
           "functions": [

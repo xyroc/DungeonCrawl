@@ -8,7 +8,7 @@
       },
       "entries": [
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:coal",
           "functions": [
             {
@@ -30,7 +30,7 @@
       },
       "entries": [
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
           "functions": [
             {
@@ -43,7 +43,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_helmet",
           "functions": [
             {
@@ -53,7 +53,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_chestplate",
           "functions": [
             {
@@ -63,7 +63,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_leggings",
           "functions": [
             {
@@ -73,7 +73,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_boots",
           "functions": [
             {
@@ -83,7 +83,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:chainmail_helmet",
           "functions": [
             {
@@ -93,7 +93,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:chainmail_chestplate",
           "functions": [
             {
@@ -103,7 +103,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:chainmail_leggings",
           "functions": [
             {
@@ -113,7 +113,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:chainmail_boots",
           "functions": [
             {
@@ -123,15 +123,15 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_block"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_sword"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:air",
           "functions": [
             {

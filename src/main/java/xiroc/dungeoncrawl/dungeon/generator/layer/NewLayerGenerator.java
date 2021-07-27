@@ -51,6 +51,9 @@ public class NewLayerGenerator extends LayerGenerator {
     private ArrayList<LayerElement> newElements;
     private boolean placeStairs;
 
+    private static final Consumer<NewLayerGenerator> NOOP = (generator) -> {
+    };
+
     private static final Consumer<NewLayerGenerator> ON_ROOM_PLACED = (generator) -> {
         generator.roomsLeft--;
         generator.rooms++;
@@ -100,7 +103,7 @@ public class NewLayerGenerator extends LayerGenerator {
         if (secretRoom && !this.corridors.isEmpty()) {
             for (int i = 0; i < 8; i++) {
                 DungeonCorridor corridor = this.corridors.get(rand.nextInt(corridors.size()));
-                if (corridor.isStraight() && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, rand)) {
+                if (corridor.isStraight() && corridor.connectedSides == 2 && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, rand)) {
                     break;
                 }
                 this.corridors.remove(corridor);
@@ -136,7 +139,6 @@ public class NewLayerGenerator extends LayerGenerator {
                     LayerElement element = nextElement(dungeonLayer, nextPos, direction.getOpposite(), rand, depth);
                     if (element != null) {
                         boolean canConnect = canConnectStraight(dungeonLayer, cursor, element);
-//                        DungeonCrawl.LOGGER.info("Can connect: {}", canConnect);
                         if (canConnect) {
                             element.place(dungeonLayer);
                             element.onPlaced.accept(this); // Update room / node counts.
@@ -162,6 +164,9 @@ public class NewLayerGenerator extends LayerGenerator {
                 }
             }
             if (depth <= settings.maxRoomDepth && roomsLeft > 0) {
+                if (depth < 3 && rand.nextFloat() < 0.45) {
+                    return new GenericElement(new DungeonCorridor(), pos, toOrigin, NOOP, depth);
+                }
                 return new GenericElement(new DungeonRoom(), pos, toOrigin, ON_ROOM_PLACED, depth);
             }
         }

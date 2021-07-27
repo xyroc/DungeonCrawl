@@ -37,16 +37,36 @@
     "minecraft:modified_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
     "minecraft:modified_wooded_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
 
-    "minecraft:mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:snowy_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:gravelly_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:modified_gravelly_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:wooded_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:mountain_edge": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:taiga_hills": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:snowy_taiga_hills": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:taiga_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
-    "minecraft:snowy_taiga_mountains": [{"key": "dungeoncrawl:vanilla/mountains/default"}],
+    "minecraft:mountains": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
+    "minecraft:snowy_mountains": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
+    "minecraft:gravelly_mountains": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
+    "minecraft:modified_gravelly_mountains": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
+    "minecraft:wooded_mountains": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
+    "minecraft:mountain_edge": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
+    "minecraft:taiga_hills": [
+      {"key": "dungeoncrawl:vanilla/mountains/default"}, {"key": "dungeoncrawl:vanilla/default", "weight": 2}
+    ],
+    "minecraft:snowy_taiga_hills": [
+      {"key": "dungeoncrawl:vanilla/mountains/default"}, {"key": "dungeoncrawl:vanilla/default", "weight": 2}
+    ],
+    "minecraft:taiga_mountains": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
+    "minecraft:snowy_taiga_mountains": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 2}, {"key": "dungeoncrawl:vanilla/default"}
+    ],
 
     "minecraft:swamp": [{"key": "dungeoncrawl:vanilla/catacombs/mossy"}],
     "minecraft:swamp_hills": [{"key": "dungeoncrawl:vanilla/catacombs/mossy"}]

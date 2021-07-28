@@ -96,6 +96,14 @@
           "weight": 2
         }
       ]
+    },
+    "fencing": {
+      "type": "block",
+      "block": "minecraft:iron_bars"
+    },
+    "fluid": {
+      "type": "block",
+      "block": "minecraft:water"
     }
   }
 }

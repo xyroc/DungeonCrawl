@@ -18,8 +18,6 @@
 
 package xiroc.dungeoncrawl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -47,7 +45,6 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
 
@@ -63,7 +60,6 @@ public class DungeonCrawl {
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final JsonParser JSON_PARSER = new JsonParser();
 
     public DungeonCrawl() {
@@ -97,7 +93,6 @@ public class DungeonCrawl {
             MinecraftForge.EVENT_BUS.register(new Tools());
         }
 
-        IBlockPlacementHandler.init();
     }
 
     private void onRegisterStructures(final RegistryEvent.Register<Structure<?>> event) {

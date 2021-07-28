@@ -1,21 +1,17 @@
 {
   "id": 80,
-  "decorations": [
-    {
-      "type": "vines"
-    }
-  ],
   "theme": {
     "generic": {
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:mossy_cobblestone",
-          "weight": 3
+          "block": "minecraft:mossy_cobblestone"
         },
         {
-          "block": "minecraft:mossy_stone_bricks",
-          "weight": 3
+          "block": "minecraft:mossy_stone_bricks"
+        },
+        {
+          "block": "minecraft:stone_bricks"
         },
         {
           "block": "minecraft:cracked_stone_bricks"
@@ -27,17 +23,20 @@
       "blocks": [
         {
           "block": "minecraft:mossy_stone_bricks",
-          "weight": 3
+          "weight": 2
         },
         {
-          "block": "minecraft:cracked_stone_bricks"
+          "block": "minecraft:cracked_stone_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:stone_bricks"
         },
         {
           "block": "minecraft:chiseled_stone_bricks"
         },
         {
-          "block": "minecraft:mossy_cobblestone",
-          "weight": 2
+          "block": "minecraft:mossy_cobblestone"
         }
       ]
     },
@@ -47,6 +46,9 @@
         {
           "block": "minecraft:mossy_stone_bricks",
           "weight": 3
+        },
+        {
+          "block": "minecraft:stone_bricks"
         },
         {
           "block": "minecraft:cracked_stone_bricks"
@@ -63,11 +65,14 @@
           "block": "minecraft:gravel"
         },
         {
-          "block": "minecraft:mossy_cobblestone",
-          "weight": 3
+          "block": "minecraft:mossy_cobblestone"
         },
         {
-          "block": "minecraft:mossy_stone_bricks"
+          "block": "minecraft:mossy_stone_bricks",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:stone_bricks"
         }
       ]
     },
@@ -75,15 +80,15 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:mossy_cobblestone_stairs",
-          "weight": 3
+          "block": "minecraft:mossy_cobblestone_stairs"
         },
         {
           "block": "minecraft:mossy_stone_brick_stairs",
           "weight": 2
         },
         {
-          "block": "minecraft:stone_brick_stairs"
+          "block": "minecraft:stone_brick_stairs",
+          "weight": 2
         }
       ]
     },
@@ -91,15 +96,15 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:mossy_cobblestone_stairs",
-          "weight": 2
+          "block": "minecraft:mossy_cobblestone_stairs"
         },
         {
           "block": "minecraft:mossy_stone_brick_stairs",
-          "weight": 3
+          "weight": 2
         },
         {
-          "block": "minecraft:stone_brick_stairs"
+          "block": "minecraft:stone_brick_stairs",
+          "weight": 2
         }
       ]
     },
@@ -114,8 +119,10 @@
           "block": "minecraft:cracked_stone_bricks"
         },
         {
-          "block": "minecraft:mossy_cobblestone",
-          "weight": 2
+          "block": "minecraft:stone_bricks"
+        },
+        {
+          "block": "minecraft:mossy_cobblestone"
         }
       ]
     },
@@ -123,8 +130,7 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:mossy_cobblestone_slab",
-          "weight": 3
+          "block": "minecraft:mossy_cobblestone_slab"
         },
         {
           "block": "minecraft:mossy_stone_brick_slab",
@@ -139,8 +145,7 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:mossy_cobblestone_slab",
-          "weight": 2
+          "block": "minecraft:mossy_cobblestone_slab"
         },
         {
           "block": "minecraft:mossy_stone_brick_slab",
@@ -155,8 +160,7 @@
       "type": "random_block",
       "blocks": [
         {
-          "block": "minecraft:mossy_cobblestone_wall",
-          "weight": 2
+          "block": "minecraft:mossy_cobblestone_wall"
         },
         {
           "block": "minecraft:mossy_stone_brick_wall",
@@ -166,6 +170,14 @@
           "block": "minecraft:stone_brick_wall"
         }
       ]
+    },
+    "fencing": {
+      "type": "block",
+      "block": "minecraft:iron_bars"
+    },
+    "fluid": {
+      "type": "block",
+      "block": "minecraft:water"
     }
   }
 }

@@ -62,7 +62,13 @@ public class JsonTheming {
 
         IBlockStateProvider pillar = JsonTheming.deserialize(themeObject, "pillar", file);
 
+        IBlockStateProvider fencing = JsonTheming.deserialize(themeObject, "fencing", file);
+
         IBlockStateProvider floor = JsonTheming.deserialize(themeObject, "floor", file);
+
+        IBlockStateProvider fluid = JsonTheming.deserialize(themeObject, "fluid", file);
+
+        IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
 
         IBlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
         IBlockStateProvider solidStairs = JsonTheming.deserialize(themeObject, "solid_stairs", file);
@@ -70,10 +76,9 @@ public class JsonTheming {
         IBlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
         IBlockStateProvider solidSlab = JsonTheming.deserialize(themeObject, "solid_slab", file);
 
-        IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
         IBlockStateProvider vanillaWall = JsonTheming.deserialize(themeObject, "wall", file);
 
-        Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, vanillaWall, slab, solidSlab);
+        Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, vanillaWall, slab, solidSlab, fencing, fluid);
 
         if (object.has("decorations")) {
             JsonArray array = object.getAsJsonArray("decorations");

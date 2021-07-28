@@ -114,11 +114,13 @@ public class Tools {
                         BlockPos pos2 = new BlockPos(Math.max(context.pos1.getX(), context.pos2.getX()),
                                 Math.max(context.pos1.getY(), context.pos2.getY()),
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
-                        ModelHandler.readAndSaveModelToFile(StringArgumentType.getString(command, "name"),
+                        String name = StringArgumentType.getString(command, "name");
+                        ModelHandler.readAndSaveModelToFile(name,
                                 blockDefinition,
                                 command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendSuccess(new TextComponent("Saving a model..."), true);
+
+                        command.getSource().sendSuccess(new TextComponent("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
                         command.getSource().sendSuccess(

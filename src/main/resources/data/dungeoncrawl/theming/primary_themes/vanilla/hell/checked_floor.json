@@ -122,6 +122,14 @@
           "block": "minecraft:red_nether_brick_slab"
         }
       ]
+    },
+    "fencing": {
+      "type": "block",
+      "block": "minecraft:nether_brick_fence"
+    },
+    "fluid": {
+      "type": "block",
+      "block": "minecraft:lava"
     }
   }
 }

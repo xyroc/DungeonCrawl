@@ -98,6 +98,14 @@
           "block": "create:paved_andesite_wall"
         }
       ]
+    },
+    "fencing": {
+      "type": "block",
+      "block": "minecraft:iron_bars"
+    },
+    "fluid": {
+      "type": "block",
+      "block": "minecraft:water"
     }
   }
 }

@@ -186,6 +186,14 @@
           "block": "minecraft:stone_brick_wall"
         }
       ]
+    },
+    "fencing": {
+      "type": "block",
+      "block": "minecraft:nether_brick_fence"
+    },
+    "fluid": {
+      "type": "block",
+      "block": "minecraft:lava"
     }
   }
 }

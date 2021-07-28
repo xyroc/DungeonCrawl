@@ -62,6 +62,8 @@ public class ModelBlockDefinition {
         DEFAULT.put(Blocks.STONE_BRICKS, DungeonModelBlockType.SOLID);
         DEFAULT.put(Blocks.STONE_BRICK_WALL, DungeonModelBlockType.WALL);
         DEFAULT.put(Blocks.PURPUR_PILLAR, DungeonModelBlockType.SOLID_PILLAR);
+        DEFAULT.put(Blocks.IRON_BARS, DungeonModelBlockType.FENCING);
+        DEFAULT.put(Blocks.WATER, DungeonModelBlockType.FLUID);
 
         DEFAULT.put(Blocks.OAK_LOG, DungeonModelBlockType.PILLAR);
         DEFAULT.put(Blocks.OAK_PLANKS, DungeonModelBlockType.MATERIAL);

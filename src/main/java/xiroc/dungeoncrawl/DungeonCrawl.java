@@ -44,7 +44,6 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
 
@@ -86,8 +85,6 @@ public class DungeonCrawl {
         if (Config.ENABLE_TOOLS.get()) {
             MinecraftForge.EVENT_BUS.register(new Tools());
         }
-
-        IBlockPlacementHandler.init();
 
         DungeonCrawl.LOGGER.info("Adding features and structures");
 

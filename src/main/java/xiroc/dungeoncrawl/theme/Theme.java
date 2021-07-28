@@ -41,8 +41,8 @@ import java.util.Random;
 public class Theme {
 
     /**
-     * These builtin themes will only be used as a last resort,
-     * in case a theme can't be found and the default theme can't be found either.
+     * These builtin themes will only be used in case a theme can't be found
+     * and the default theme can't be found either.
      */
     public static final Theme BUILTIN_DEFAULT_THEME = new Theme(
             (pos, rotation) -> Blocks.STONE_BRICKS.getDefaultState(),
@@ -54,7 +54,9 @@ public class Theme {
             (pos, rotation) -> Blocks.COBBLESTONE.getDefaultState(),
             (pos, rotation) -> Blocks.COBBLESTONE_WALL.getDefaultState(),
             (pos, rotation) -> Blocks.COBBLESTONE_SLAB.getDefaultState(),
-            (pos, rotation) -> Blocks.STONE_BRICK_SLAB.getDefaultState());
+            (pos, rotation) -> Blocks.STONE_BRICK_SLAB.getDefaultState(),
+            (pos, rotation) -> Blocks.IRON_BARS.getDefaultState(),
+            (pos, rotation) -> Blocks.WATER.getDefaultState());
 
     public static final SecondaryTheme BUILTIN_DEFAULT_SECONDARY_THEME = new SecondaryTheme(
             (pos, rotation) -> Blocks.OAK_LOG.getDefaultState(),
@@ -126,7 +128,7 @@ public class Theme {
         KEY_TO_SECONDARY_THEME.put(BUILTIN_DEFAULT_SECONDARY_THEME.key, BUILTIN_DEFAULT_SECONDARY_THEME);
     }
 
-    public final IBlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab;
+    public final IBlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid;
 
     public IRandom<SecondaryTheme> subTheme;
 
@@ -143,7 +145,9 @@ public class Theme {
                  IBlockStateProvider material,
                  IBlockStateProvider wall,
                  IBlockStateProvider slab,
-                 IBlockStateProvider solidSlab) {
+                 IBlockStateProvider solidSlab,
+                 IBlockStateProvider fencing,
+                 IBlockStateProvider fluid) {
         this.solid = solid;
         this.material = material;
         this.generic = generic;
@@ -154,6 +158,8 @@ public class Theme {
         this.slab = slab;
         this.solidSlab = solidSlab;
         this.wall = wall;
+        this.fencing = fencing;
+        this.fluid = fluid;
     }
 
     public void setDecorations(IDungeonDecoration[] decorations) {
@@ -184,8 +190,16 @@ public class Theme {
         return generic;
     }
 
+    public IBlockStateProvider getFencing() {
+        return fencing;
+    }
+
     public IBlockStateProvider getFloor() {
         return floor;
+    }
+
+    public IBlockStateProvider getFluid() {
+        return fluid;
     }
 
     public IBlockStateProvider getSolidStairs() {

@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.util;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,14 +32,20 @@ import xiroc.dungeoncrawl.dungeon.block.Plants;
 import xiroc.dungeoncrawl.dungeon.block.Spawner;
 import xiroc.dungeoncrawl.theme.Theme;
 
-import java.util.Hashtable;
 import java.util.Random;
 
 public interface IBlockPlacementHandler {
 
     IBlockPlacementHandler SPAWNER = new Spawner();
 
-    Hashtable<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new Hashtable<>();
+    ImmutableMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new ImmutableMap.Builder<Block, IBlockPlacementHandler>()
+            .put(Blocks.FURNACE, new Furnace())
+            .put(Blocks.SMOKER, new Furnace.Smoker())
+            .put(Blocks.SPAWNER, SPAWNER)
+            .put(Blocks.FARMLAND, new Plants.Farmland())
+            .put(Blocks.FLOWER_POT, new Plants.FlowerPot())
+            .put(Blocks.PODZOL, new Plants.Podzol())
+            .build();
 
     IBlockPlacementHandler DEFAULT = (world, state, pos, rand, context, theme, subTheme, lootLevel) -> {
         if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
@@ -46,19 +53,6 @@ public interface IBlockPlacementHandler {
         }
         world.setBlockState(pos, state, 2);
     };
-
-    static void init() {
-//        PLACEMENT_HANDLERS.put(Blocks.CHEST, CHEST);
-//        PLACEMENT_HANDLERS.put(Blocks.TRAPPED_CHEST, TRAPPED_CHEST);
-//        PLACEMENT_HANDLERS.put(Blocks.BARREL, CHEST);
-        PLACEMENT_HANDLERS.put(Blocks.FURNACE, new Furnace());
-        PLACEMENT_HANDLERS.put(Blocks.SMOKER, new Furnace.Smoker());
-        PLACEMENT_HANDLERS.put(Blocks.SPAWNER, SPAWNER);
-//        PLACEMENT_HANDLERS.put(Blocks.DISPENSER, new Dispenser());
-        PLACEMENT_HANDLERS.put(Blocks.FARMLAND, new Plants.Farmland());
-        PLACEMENT_HANDLERS.put(Blocks.FLOWER_POT, new Plants.FlowerPot());
-        PLACEMENT_HANDLERS.put(Blocks.PODZOL, new Plants.Podzol());
-    }
 
     void place(IWorld world, BlockState state, BlockPos pos, Random rand,
                PlacementContext context, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel);

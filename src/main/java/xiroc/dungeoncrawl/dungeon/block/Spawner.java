@@ -22,8 +22,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.RandomValueRange;
 import net.minecraft.nbt.CompoundNBT;
@@ -58,11 +56,9 @@ public class Spawner implements IBlockPlacementHandler {
     @Override
     public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                       Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-        if (world.isEmptyBlock(pos.below())) {
-            return;
-        }
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
         TileEntity tileentity = world.getBlockEntity(pos);
+
         if (tileentity instanceof MobSpawnerTileEntity) {
             MobSpawnerTileEntity tile = (MobSpawnerTileEntity) tileentity;
             EntityType<?> type = RandomMonster.randomMonster(rand, stage);
@@ -148,37 +144,6 @@ public class Spawner implements IBlockPlacementHandler {
             RandomMonster.NBT_PATCHERS.get(type).patch(spawnData, rand, stage);
         }
         return spawnData;
-    }
-
-    public static void equipMonster(MonsterEntity entity, Random rand, int stage) {
-        if (INVENTORY_ENTITIES.contains(entity.getType())) {
-            ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
-            entity.setItemSlot(EquipmentSlotType.FEET, armor[0]);
-            entity.setItemSlot(EquipmentSlotType.LEGS, armor[1]);
-            entity.setItemSlot(EquipmentSlotType.CHEST, armor[2]);
-            entity.setItemSlot(EquipmentSlotType.HEAD, armor[3]);
-
-            ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(entity.getType())
-                    ? RandomEquipment.getRangedWeapon(DungeonBlocks.RANDOM, stage)
-                    : RandomEquipment.getMeleeWeapon(DungeonBlocks.RANDOM, stage);
-            entity.setItemSlot(EquipmentSlotType.MAINHAND, mainHand);
-
-            if (rand.nextDouble() < Config.SHIELD_PROBABILITY.get())
-                entity.setItemSlot(EquipmentSlotType.OFFHAND, RandomItems.createShield(rand, stage));
-
-            RandomPotionEffect.applyPotionEffects(entity, rand, stage);
-
-            if (!Config.NATURAL_DESPAWN.get()) {
-                entity.setPersistenceRequired();
-            }
-
-            if (RandomMonster.NBT_PATCHERS.containsKey(entity.getType())) {
-                CompoundNBT nbt = new CompoundNBT();
-                entity.addAdditionalSaveData(nbt);
-                RandomMonster.NBT_PATCHERS.get(entity.getType()).patch(nbt, rand, stage);
-                entity.readAdditionalSaveData(nbt);
-            }
-        }
     }
 
 }

@@ -3,8 +3,8 @@
     {
       "name": "treasure",
       "rolls": {
-        "min": 10,
-        "max": 10
+        "min": 5,
+        "max": 7
       },
       "entries": [
         {
@@ -16,7 +16,7 @@
               "function": "set_count",
               "count": {
                 "min": 5,
-                "max": 20
+                "max": 10
               }
             }
           ]
@@ -29,7 +29,7 @@
             {
               "function": "set_count",
               "count": {
-                "min": 10,
+                "min": 5,
                 "max": 20
               }
             }
@@ -37,22 +37,8 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:gold_block",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "set_count",
-              "count": {
-                "min": 2,
-                "max": 8
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:diamond",
-          "weight": 4,
+          "weight": 3,
           "functions": [
             {
               "function": "set_count",
@@ -151,8 +137,8 @@
             {
               "function": "set_count",
               "count": {
-                "min": 4,
-                "max": 8
+                "min": 2,
+                "max": 6
               }
             }
           ]
@@ -165,7 +151,7 @@
             {
               "function": "set_count",
               "count": {
-                "min": 6,
+                "min": 4,
                 "max": 12
               }
             }
@@ -179,8 +165,8 @@
             {
               "function": "set_count",
               "count": {
-                "min": 4,
-                "max": 12
+                "min": 2,
+                "max": 6
               }
             }
           ]

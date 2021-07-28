@@ -1,0 +1,6 @@
+{
+  "loot": "dungeoncrawl:chests/treasure",
+  "offset": {
+    "y": -1
+  }
+}

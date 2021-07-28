@@ -100,6 +100,10 @@ public class NewLayerGenerator extends LayerGenerator {
             lastElements = newElements;
         } while (!lastElements.isEmpty());
 
+        if (layer == 0) {
+            createStarterRoom(dungeonLayer, rand, layer);
+        }
+
         if (secretRoom && !this.corridors.isEmpty()) {
             for (int i = 0; i < 8; i++) {
                 DungeonCorridor corridor = this.corridors.get(rand.nextInt(corridors.size()));

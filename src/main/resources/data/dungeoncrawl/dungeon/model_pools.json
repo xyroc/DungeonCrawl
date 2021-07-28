@@ -14,25 +14,20 @@
       {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
       {"key": "dungeoncrawl:default/corridor/corridor_2", "weight": 4},
       {"key": "dungeoncrawl:default/corridor/corridor_3", "weight": 4},
-      {"key": "dungeoncrawl:default/corridor/corridor_fire", "weight": 1},
       {"key": "dungeoncrawl:default/corridor/corridor_light", "weight": 1}
     ],
     "corridors:catacombs": [
-      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
-      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 4},
-      {"key": "dungeoncrawl:default/corridor/corridor_fire", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 6},
+      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 6},
       {"key": "dungeoncrawl:default/corridor/corridor_light", "weight": 1}
     ],
     "corridors:lower_catacombs": [
-      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
-      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 4},
-      {"key": "dungeoncrawl:default/corridor/corridor_fire", "weight": 1},
-      {"key": "dungeoncrawl:default/corridor/corridor_light", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 1}
     ],
     "corridors:hell": [
-      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 4},
-      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 4},
-      {"key": "dungeoncrawl:default/corridor/corridor_fire", "weight": 1}
+      {"key": "dungeoncrawl:default/corridor/corridor", "weight": 1},
+      {"key": "dungeoncrawl:default/corridor/stone_corridor", "weight": 1}
     ],
     "rooms:top": [
       {"key": "dungeoncrawl:default/room/spawner_room", "weight": 1},
@@ -85,7 +80,9 @@
       {"key": "dungeoncrawl:catacombs/node/prison_fork", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room_2", "weight": 1},
-      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
+      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/lava_hall", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/small_loot_room", "weight": 2}
     ],
     "nodes:fork:top": [
       {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
@@ -125,7 +122,9 @@
       {"key": "dungeoncrawl:catacombs/node/prison_fork", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room_2", "weight": 1},
-      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
+      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/lava_hall", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/small_loot_room", "weight": 2}
     ],
     "nodes:straight:top": [
       {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
@@ -167,7 +166,8 @@
       {"key": "dungeoncrawl:catacombs/node/prison_fork", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room_2", "weight": 1},
-      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
+      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/lava_hall", "weight": 1}
     ],
     "nodes:turn:top": [
       {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
@@ -212,7 +212,9 @@
       {"key": "dungeoncrawl:catacombs/node/prison_fork", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room_2", "weight": 1},
-      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
+      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/lava_hall", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/small_loot_room", "weight": 2}
     ],
     "nodes:dead_end:top": [
       {"key": "dungeoncrawl:default/node/fire_hall", "weight": 1},
@@ -261,7 +263,9 @@
       {"key": "dungeoncrawl:catacombs/node/prison_fork", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room", "weight": 1},
       {"key": "dungeoncrawl:catacombs/node/room_2", "weight": 1},
-      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1}
+      {"key": "dungeoncrawl:catacombs/node/sarcophagus", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/lava_hall", "weight": 1},
+      {"key": "dungeoncrawl:hell/node/small_loot_room", "weight": 2}
     ],
     "node_connectors:top": [
       {"key": "dungeoncrawl:default/node/connector/connector", "weight": 1},

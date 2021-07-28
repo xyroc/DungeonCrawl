@@ -58,9 +58,6 @@ public class Spawner implements IBlockPlacementHandler {
     @Override
     public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                       Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-        if (world.isAirBlock(pos.down())) {
-            return;
-        }
         world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 2);
         TileEntity tileentity = world.getTileEntity(pos);
         if (tileentity instanceof MobSpawnerTileEntity) {

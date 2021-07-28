@@ -31,7 +31,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
@@ -88,8 +87,8 @@ public class ModelBlockDefinition {
     }
 
     public ModelBlockDefinition fallback;
-    public Hashtable<Block, DungeonModelBlockType> definition;
-    public Hashtable<DungeonModelBlockType, Block> invertedDefinition;
+    private final Hashtable<Block, DungeonModelBlockType> definition;
+    private final Hashtable<DungeonModelBlockType, Block> invertedDefinition;
 
     private static ImmutableSet<ResourceLocation> KEYS;
     private static ImmutableSet.Builder<ResourceLocation> keySetBuilder;
@@ -100,12 +99,23 @@ public class ModelBlockDefinition {
         this.definition.forEach((block, type) -> this.invertedDefinition.put(type, block));
     }
 
-    @Nullable
+    public boolean containsBlock(Block block) {
+        return definition.containsKey(block);
+    }
+
+    public DungeonModelBlockType getType(Block block) {
+        return definition.getOrDefault(block, DungeonModelBlockType.OTHER);
+    }
+
     public Block getBlock(DungeonModelBlock block) {
         if (block.type == DungeonModelBlockType.OTHER) {
             return ForgeRegistries.BLOCKS.getValue(block.blockName);
-        } else if (block.type == DungeonModelBlockType.CARPET && block.variation != null) {
-            return DungeonBlocks.CARPET[block.variation];
+        } else if (block.type == DungeonModelBlockType.CARPET) {
+            if (block.block != null) {
+                return block.block;
+            } else {
+                return Blocks.WHITE_CARPET;
+            }
         }
         if (invertedDefinition.containsKey(block.type)) {
             return invertedDefinition.get(block.type);

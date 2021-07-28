@@ -8,7 +8,7 @@
       },
       "entries": [
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:apple",
           "weight": 3,
           "functions": [
@@ -22,12 +22,12 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:mushroom_stew",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:bread",
           "weight": 2,
           "functions": [
@@ -41,7 +41,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:porkchop",
           "weight": 3,
           "functions": [
@@ -55,7 +55,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cooked_porkchop",
           "weight": 1,
           "functions": [
@@ -69,7 +69,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cod",
           "weight": 1,
           "functions": [
@@ -83,7 +83,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:salmon",
           "weight": 1,
           "functions": [
@@ -97,7 +97,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:pufferfish",
           "weight": 1,
           "functions": [
@@ -111,7 +111,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cooked_cod",
           "weight": 1,
           "functions": [
@@ -125,7 +125,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cookie",
           "weight": 4,
           "functions": [
@@ -139,12 +139,12 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cake",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:melon_slice",
           "weight": 2,
           "functions": [
@@ -158,12 +158,12 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:dried_kelp",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:beef",
           "weight": 3,
           "functions": [
@@ -177,7 +177,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cooked_beef",
           "weight": 1,
           "functions": [
@@ -191,7 +191,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:chicken",
           "weight": 2,
           "functions": [
@@ -205,7 +205,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cooked_chicken",
           "weight": 1,
           "functions": [
@@ -219,7 +219,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:rotten_flesh",
           "weight": 16,
           "functions": [
@@ -233,7 +233,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:spider_eye",
           "weight": 8,
           "functions": [
@@ -247,7 +247,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:carrot",
           "weight": 3,
           "functions": [
@@ -261,7 +261,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:potato",
           "weight": 3,
           "functions": [
@@ -275,7 +275,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:baked_potato",
           "weight": 1,
           "functions": [
@@ -289,7 +289,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:poisonous_potato",
           "weight": 9,
           "functions": [
@@ -303,12 +303,12 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:pumpkin_pie",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:rabbit",
           "weight": 2,
           "functions": [
@@ -322,17 +322,17 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cooked_rabbit",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:rabbit_stew",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:mutton",
           "weight": 2,
           "functions": [
@@ -346,12 +346,12 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cooked_mutton",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:beetroot",
           "weight": 5,
           "functions": [
@@ -365,12 +365,12 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:beetroot_soup",
           "weight": 3
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:sweet_berries",
           "weight": 2,
           "functions": [
@@ -384,7 +384,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:suspicious_stew",
           "weight": 6,
           "functions": [

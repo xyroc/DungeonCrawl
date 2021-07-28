@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3i;
@@ -56,6 +55,9 @@ public class DungeonModel {
     private Vector3i offset, rotatedOffset;
     @Nullable
     private DungeonModelFeature[] features;
+
+    @Nullable
+    private ResourceLocation lootTable;
 
     private boolean hasId = false;
     private boolean hasFeatures = false;
@@ -113,24 +115,7 @@ public class DungeonModel {
         }
 
         if (object.has("loot")) {
-            JsonArray array = object.getAsJsonArray("loot");
-            if (array.size() > 0) {
-                ArrayList<Tuple<Vector3i, ResourceLocation>> loot = new ArrayList<>();
-                array.forEach((element) -> {
-                    JsonObject instance = element.getAsJsonObject();
-                    Vector3i pos = JSONUtils.getOffset(instance.getAsJsonObject("pos"));
-                    ResourceLocation lootTable = new ResourceLocation(instance.get("loot_table").getAsString());
-                    loot.add(new Tuple<>(pos, lootTable));
-                });
-                loot.forEach((l) -> {
-                    for (DungeonModelBlock block : blocks) {
-                        if (block.position.equals(l.getA())) {
-                            block.lootTable = l.getB();
-                            return;
-                        }
-                    }
-                });
-            }
+            this.lootTable = new ResourceLocation(object.get("loot").getAsString());
         }
 
         if (object.has("multipart")) {
@@ -170,6 +155,15 @@ public class DungeonModel {
 
     public int getEntranceType() {
         return entranceType;
+    }
+
+    public boolean hasLootTable() {
+        return lootTable != null;
+    }
+
+    @Nullable
+    public ResourceLocation getLootTable() {
+        return lootTable;
     }
 
     public MutableBoundingBox createBoundingBox(int x, int y, int z, Rotation rotation) {

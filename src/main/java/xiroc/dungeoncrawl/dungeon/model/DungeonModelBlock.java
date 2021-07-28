@@ -52,7 +52,7 @@ public class DungeonModelBlock {
     @Nullable
 
     public final Integer variation;
-    private final Block block;
+    public final Block block;
     @Nullable
     public final ResourceLocation blockName;
     // A custom loot table, can be defined in model metadata.

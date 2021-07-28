@@ -8,7 +8,7 @@
       },
       "entries": [
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:apple",
           "weight": 2,
           "functions": [
@@ -22,7 +22,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:potato",
           "weight": 2,
           "functions": [
@@ -36,7 +36,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:baked_potato",
           "weight": 2,
           "functions": [
@@ -50,7 +50,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:carrot",
           "weight": 2,
           "functions": [
@@ -64,7 +64,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:coal",
           "functions": [
             {
@@ -78,7 +78,7 @@
           "weight": 3
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
           "functions": [
             {
@@ -92,7 +92,7 @@
           "weight": 2
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:gold_ingot",
           "functions": [
             {
@@ -106,7 +106,7 @@
           "weight": 2
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:arrow",
           "weight": 2,
           "functions": [
@@ -120,7 +120,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cobweb",
           "functions": [
             {
@@ -134,7 +134,7 @@
           "weight": 2
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:bone",
           "functions": [
             {
@@ -148,7 +148,7 @@
           "weight": 4
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:rotten_flesh",
           "functions": [
             {
@@ -162,7 +162,7 @@
           "weight": 3
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:stick",
           "weight": 2,
           "functions": [
@@ -176,7 +176,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:feather",
           "weight": 1,
           "functions": [
@@ -190,7 +190,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:bone_meal",
           "weight": 1,
           "functions": [
@@ -204,7 +204,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:gold_nugget",
           "weight": 2,
           "functions": [
@@ -218,7 +218,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_nugget",
           "weight": 2,
           "functions": [
@@ -232,7 +232,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:clay_ball",
           "weight": 1,
           "functions": [
@@ -246,7 +246,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:flint",
           "weight": 1,
           "functions": [
@@ -260,7 +260,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:string",
           "weight": 3,
           "functions": [
@@ -274,7 +274,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:gunpowder",
           "weight": 3,
           "functions": [
@@ -288,7 +288,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:ink_sac",
           "weight": 1,
           "functions": [
@@ -302,7 +302,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:tnt",
           "weight": 1,
           "functions": [
@@ -316,7 +316,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:glass_bottle",
           "weight": 2,
           "functions": [
@@ -330,7 +330,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:melon",
           "weight": 1,
           "functions": [
@@ -344,7 +344,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:pumpkin",
           "weight": 1,
           "functions": [
@@ -358,7 +358,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:egg",
           "weight": 1,
           "functions": [
@@ -372,7 +372,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:brick",
           "weight": 1,
           "functions": [
@@ -386,97 +386,97 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:carrot_on_a_stick",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:minecart",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:tnt_minecart",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:cauldron",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:map",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:rabbit_hide",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:phantom_membrane",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:leather_horse_armor",
           "weight": 2
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:ender_pearl",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_sword",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:iron_axe",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:golden_sword",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:golden_axe",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:saddle",
           "weight:": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:golden_apple",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:music_disc_13",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:music_disc_cat",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:name_tag",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:book",
           "weight": 1,
           "functions": [
@@ -488,7 +488,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:torch",
           "weight": 8,
           "functions": [
@@ -502,7 +502,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:brown_mushroom",
           "weight": 7,
           "functions": [
@@ -516,7 +516,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:red_mushroom",
           "weight": 7,
           "functions": [
@@ -530,32 +530,32 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:bowl",
           "weight": 6
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:clock",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:compass",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:lead",
           "weight": 1
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:fermented_spider_eye",
           "weight": 4
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:spider_eye",
           "weight": 8,
           "functions": [
@@ -569,7 +569,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:air",
           "weight": 3,
           "functions": [
@@ -580,7 +580,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:air",
           "weight": 9,
           "functions": [
@@ -591,7 +591,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:air",
           "weight": 4,
           "functions": [
@@ -601,7 +601,7 @@
           ]
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "name": "minecraft:shield",
           "weight": 2,
           "functions": [

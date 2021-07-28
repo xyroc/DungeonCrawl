@@ -71,22 +71,6 @@ public class DungeonSecretRoom extends DungeonPiece {
         this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.SECRET_ROOM);
     }
 
-    // TODO: Why is this necessary?
-    @Override
-    public void setWorldPosition(int x, int y, int z) {
-        switch (rotation) {
-            case NONE:
-                super.setWorldPosition(x + 1, y, z);
-                break;
-            case CLOCKWISE_90:
-                super.setWorldPosition(x, y, z + 1);
-                break;
-            default:
-                super.setWorldPosition(x, y, z);
-                break;
-        }
-    }
-
     @Override
     public void setupBoundingBox() {
         if (model != null) {

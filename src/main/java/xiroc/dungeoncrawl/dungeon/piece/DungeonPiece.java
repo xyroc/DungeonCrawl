@@ -301,8 +301,8 @@ public abstract class DungeonPiece extends StructurePiece {
 
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof RandomizableContainerBlockEntity) {
-            if (block.lootTable != null) {
-                Loot.setLoot((RandomizableContainerBlockEntity) tile, block.lootTable, theme, secondaryTheme, rand);
+            if (model.hasLootTable()) {
+                Loot.setLoot((RandomizableContainerBlockEntity) tile, model.getLootTable(), theme, secondaryTheme, rand);
             } else {
                 Loot.setLoot((RandomizableContainerBlockEntity) tile, Loot.getLootTable(stage, rand), theme, secondaryTheme, rand);
             }

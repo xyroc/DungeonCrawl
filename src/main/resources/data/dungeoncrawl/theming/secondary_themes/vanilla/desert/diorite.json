@@ -7,7 +7,7 @@
           "block": "minecraft:diorite"
         },
         {
-          "block": "minecraft:diorite_granite",
+          "block": "minecraft:polished_diorite",
           "weight": 3
         }
       ]
@@ -41,7 +41,7 @@
           "block": "minecraft:diorite_stairs"
         },
         {
-          "block": "minecraft:diorite_granite_stairs"
+          "block": "minecraft:polished_diorite_stairs"
         }
       ]
     },

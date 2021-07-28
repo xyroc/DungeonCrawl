@@ -41,29 +41,29 @@ public enum DungeonModelBlockType {
     AIR((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> DungeonBlocks.CAVE_AIR),
 
     // Types with Theme Factories
-    SOLID                   (tFactory(Theme::getSolid), PlacementBehaviour.SOLID),
-    SOLID_STAIRS            (tFactory(Theme::getSolidStairs), PlacementBehaviour.SOLID),
-    SOLID_SLAB              (tFactory(Theme::getSolidSlab), PlacementBehaviour.SOLID),
-    GENERIC                 (tFactory(Theme::getGeneric)),
-    SLAB                    (tFactory(Theme::getSlab)),
-    SOLID_PILLAR            (tFactory(Theme::getPillar), PlacementBehaviour.SOLID, true),
-    SOLID_FLOOR             (tFactory(Theme::getFloor), PlacementBehaviour.SOLID),
-    FLOOR                   (tFactory(Theme::getFloor), PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
-    LOOSE_GROUND            (tFactory(Theme::getFloor)),
-    STAIRS                  (tFactory(Theme::getStairs)),
-    WALL                    (tFactory(Theme::getWall)),
+    SOLID           (tFactory(Theme::getSolid), PlacementBehaviour.SOLID),
+    SOLID_STAIRS    (tFactory(Theme::getSolidStairs), PlacementBehaviour.SOLID),
+    SOLID_SLAB      (tFactory(Theme::getSolidSlab), PlacementBehaviour.SOLID),
+    GENERIC         (tFactory(Theme::getGeneric)),
+    SLAB            (tFactory(Theme::getSlab)),
+    SOLID_PILLAR    (tFactory(Theme::getPillar), PlacementBehaviour.SOLID, true),
+    SOLID_FLOOR     (tFactory(Theme::getFloor), PlacementBehaviour.SOLID),
+    FLOOR           (tFactory(Theme::getFloor), PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
+    LOOSE_GROUND    (tFactory(Theme::getFloor)),
+    STAIRS          (tFactory(Theme::getStairs)),
+    WALL            (tFactory(Theme::getWall)),
 
     // Types with Sub-Theme Factories
-    PILLAR                  (sFactory(Theme.SecondaryTheme::getPillar), true),
-    MATERIAL_STAIRS         (sFactory(Theme.SecondaryTheme::getStairs)),
-    TRAPDOOR                (sFactory(Theme.SecondaryTheme::getTrapDoor)),
-    DOOR                    (sFactory(Theme.SecondaryTheme::getDoor)),
-    FENCE                   (sFactory(Theme.SecondaryTheme::getFence)),
-    FENCE_GATE              (sFactory(Theme.SecondaryTheme::getFenceGate)),
-    MATERIAL_SLAB           (sFactory(Theme.SecondaryTheme::getSlab)),
-    MATERIAL_BUTTON         (sFactory(Theme.SecondaryTheme::getButton)),
-    MATERIAL_PRESSURE_PLATE (sFactory(Theme.SecondaryTheme::getPressurePlate)),
-    MATERIAL                (sFactory(Theme.SecondaryTheme::getMaterial)),
+    PILLAR                      (sFactory(Theme.SecondaryTheme::getPillar), true),
+    MATERIAL_STAIRS             (sFactory(Theme.SecondaryTheme::getStairs)),
+    TRAPDOOR                    (sFactory(Theme.SecondaryTheme::getTrapDoor)),
+    DOOR                        (sFactory(Theme.SecondaryTheme::getDoor)),
+    FENCE                       (sFactory(Theme.SecondaryTheme::getFence)),
+    FENCE_GATE                  (sFactory(Theme.SecondaryTheme::getFenceGate)),
+    MATERIAL_SLAB               (sFactory(Theme.SecondaryTheme::getSlab)),
+    MATERIAL_BUTTON             (sFactory(Theme.SecondaryTheme::getButton)),
+    MATERIAL_PRESSURE_PLATE     (sFactory(Theme.SecondaryTheme::getPressurePlate)),
+    MATERIAL                    (sFactory(Theme.SecondaryTheme::getMaterial)),
 
     // Other
 
@@ -89,7 +89,7 @@ public enum DungeonModelBlockType {
     }),
     CARPET((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
         Block b = block.variation != null && variation != null ?
-                DungeonBlocks.CARPET[(block.variation + variation[block.variation]) % DungeonBlocks.CARPET.length]
+                DungeonBlocks.CARPET[(block.variation + variation[block.variation % variation.length]) % DungeonBlocks.CARPET.length]
                 : ForgeRegistries.BLOCKS.getValue(block.blockName);
         if (b == null) {
             b = DungeonBlocks.CARPET[rand.nextInt(DungeonBlocks.CARPET.length)];
@@ -159,10 +159,10 @@ public enum DungeonModelBlockType {
     }
 
     public static DungeonModelBlockType get(Block block, ModelBlockDefinition definition) {
-        if (definition.definition.containsKey(block)) {
-            return definition.definition.get(block);
-        } else if (definition.fallback != null && definition.fallback.definition.containsKey(block)) {
-            return definition.fallback.definition.get(block);
+        if (definition.containsBlock(block)) {
+            return definition.getType(block);
+        } else if (definition.fallback != null && definition.fallback.containsBlock(block)) {
+            return definition.fallback.getType(block);
         }
         if (BlockTags.CARPETS.contains(block)) {
             return CARPET;
@@ -178,7 +178,7 @@ public enum DungeonModelBlockType {
     public interface BlockFactory {
 
         BlockState get(DungeonModelBlock block, Rotation rotation, LevelAccessor world, BlockPos pos, Theme theme,
-                                       Theme.SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
+                       Theme.SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
 
     }
 

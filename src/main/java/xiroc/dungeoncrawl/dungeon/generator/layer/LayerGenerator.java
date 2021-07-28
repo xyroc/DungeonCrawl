@@ -79,7 +79,7 @@ public abstract class LayerGenerator {
         if (!corridors.isEmpty()) {
             for (int i = 0; i < maxAttempts; i++) {
                 DungeonCorridor corridor = corridors.get(random.nextInt(corridors.size()));
-                if (corridor.isStraight() && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, random)) {
+                if (corridor.isStraight() && corridor.connectedSides == 2 && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, random)) {
                     break;
                 }
                 corridors.remove(corridor);

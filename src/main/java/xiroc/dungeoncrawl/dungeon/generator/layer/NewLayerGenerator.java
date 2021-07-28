@@ -51,6 +51,9 @@ public class NewLayerGenerator extends LayerGenerator {
     private ArrayList<LayerElement> newElements;
     private boolean placeStairs;
 
+    private static final Consumer<NewLayerGenerator> NOOP = (generator) -> {
+    };
+
     private static final Consumer<NewLayerGenerator> ON_ROOM_PLACED = (generator) -> {
         generator.roomsLeft--;
         generator.rooms++;
@@ -97,6 +100,7 @@ public class NewLayerGenerator extends LayerGenerator {
 
         if (secretRoom) {
             tryCreateSecretRoom(dungeonLayer, this.corridors, 8, rand);
+
         }
 
         corridors.clear();
@@ -128,7 +132,6 @@ public class NewLayerGenerator extends LayerGenerator {
                     LayerElement element = nextElement(dungeonLayer, nextPos, direction.getOpposite(), rand, depth);
                     if (element != null) {
                         boolean canConnect = canConnectStraight(dungeonLayer, cursor, element);
-//                        DungeonCrawl.LOGGER.info("Can connect: {}", canConnect);
                         if (canConnect) {
                             element.place(dungeonLayer);
                             element.onPlaced.accept(this); // Update room / node counts.
@@ -154,6 +157,9 @@ public class NewLayerGenerator extends LayerGenerator {
                 }
             }
             if (depth <= settings.maxRoomDepth && roomsLeft > 0) {
+                if (depth < 3 && rand.nextFloat() < 0.45) {
+                    return new GenericElement(new DungeonCorridor(), pos, toOrigin, NOOP, depth);
+                }
                 return new GenericElement(new DungeonRoom(), pos, toOrigin, ON_ROOM_PLACED, depth);
             }
         }

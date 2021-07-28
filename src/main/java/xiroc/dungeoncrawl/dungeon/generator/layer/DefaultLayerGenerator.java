@@ -35,6 +35,7 @@ import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -50,14 +51,13 @@ public class DefaultLayerGenerator extends LayerGenerator {
      */
     private boolean secretRoom;
 
+    @Nullable
     private DungeonPiece farthestRoom;
     private final List<DungeonCorridor> corridors;
-    private final List<DungeonRoom> rooms; // currently unused
 
     public DefaultLayerGenerator() {
         super();
         this.corridors = new ArrayList<>();
-        this.rooms = new ArrayList<>();
     }
 
     @Override
@@ -68,7 +68,6 @@ public class DefaultLayerGenerator extends LayerGenerator {
         this.secretRoom = false;
         this.farthestRoom = null;
         this.corridors.clear();
-        this.rooms.clear();
     }
 
     @Override
@@ -108,6 +107,7 @@ public class DefaultLayerGenerator extends LayerGenerator {
         //  The corridor list is likely to be modified starting from here!
         if (secretRoom) {
             tryCreateSecretRoom(dungeonLayer, this.corridors, 8, rand);
+
         }
     }
 
@@ -188,7 +188,6 @@ public class DefaultLayerGenerator extends LayerGenerator {
             room.setGridPosition(currentPosition);
             dungeonLayer.grid[currentPosition.x][currentPosition.z] = new Tile(room);
             this.roomsLeft--;
-            this.rooms.add(room);
 
             if (farthestRoom == null || dungeonLayer.distance(currentPosition, dungeonLayer.start) > dungeonLayer.distance(farthestRoom.gridPosition, dungeonLayer.start)) {
                 farthestRoom = room;

@@ -101,22 +101,22 @@ public class DungeonStairs extends DungeonPiece {
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(new BlockPos(x + x0, y + y0, z)), x + x0, y + y0, z, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z)), x + x0, y + y0, z, bounds, context);
         }
         if (sides[1]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(new BlockPos(x + model.width, y + y0, z + z0)), x + model.width - 1, y + y0, z + z0, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + model.width, y + y0, z + z0)), x + model.width - 1, y + y0, z + z0, bounds, context);
         }
         if (sides[2]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(new BlockPos(x + x0, y + y0, z + model.length)), x + x0, y + y0, z + model.length - 1, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z + model.length)), x + x0, y + y0, z + model.length - 1, bounds, context);
         }
         if (sides[3]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(new BlockPos(x, y + y0, z + z0)), x, y + y0, z + z0, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x, y + y0, z + z0)), x, y + y0, z + z0, bounds, context);
         }
 
     }

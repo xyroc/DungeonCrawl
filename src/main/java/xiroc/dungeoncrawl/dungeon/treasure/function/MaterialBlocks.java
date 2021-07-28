@@ -48,14 +48,16 @@ public class MaterialBlocks extends LootFunction {
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-        TileEntity chest = context.getParamOrNull(LootParameters.BLOCK_ENTITY);
-        if (context.hasParam(LootParameters.ORIGIN) && chest != null && chest.hasLevel() & chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
-            Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
-            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), chest.getLevel(), new BlockPos(context.getParamOrNull(LootParameters.ORIGIN)), context.getRandom())),
-                    16 + context.getRandom().nextInt(49));
-        } else {
-            return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
+        if (context.hasParam(LootParameters.ORIGIN)) {
+            BlockPos pos = new BlockPos(context.getParamOrNull(LootParameters.ORIGIN));
+            TileEntity chest = context.getLevel().getBlockEntity(pos);
+            if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
+                Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom())),
+                        16 + context.getRandom().nextInt(49));
+            }
         }
+        return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
     }
 
     private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {

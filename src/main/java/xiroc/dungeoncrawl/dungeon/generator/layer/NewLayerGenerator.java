@@ -101,6 +101,10 @@ public class NewLayerGenerator extends LayerGenerator {
         if (secretRoom) {
             tryCreateSecretRoom(dungeonLayer, this.corridors, 8, rand);
 
+        if (layer == 0) {
+            createStarterRoom(dungeonLayer, rand, layer);
+        }
+
         }
 
         corridors.clear();

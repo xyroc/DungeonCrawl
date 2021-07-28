@@ -56,16 +56,13 @@ public class Spawner implements IBlockPlacementHandler {
     @Override
     public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
                       Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
-        if (world.isEmptyBlock(pos.below())) {
-            return;
-        }
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof SpawnerBlockEntity spawner) {
             EntityType<?> type = RandomMonster.randomMonster(rand, stage);
             spawner.getSpawner().setEntityId(type);
             if (!Config.VANILLA_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
-                CompoundTag spawnerNBT = spawner.getSpawner().save(spawner.getLevel(), pos,  new CompoundTag());
+                CompoundTag spawnerNBT = spawner.getSpawner().save(spawner.getLevel(), pos, new CompoundTag());
                 ListTag potentialSpawns = new ListTag();
                 for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
                     CompoundTag nbt = new CompoundTag();

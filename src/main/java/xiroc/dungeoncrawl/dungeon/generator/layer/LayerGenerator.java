@@ -19,11 +19,15 @@
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import net.minecraft.core.Direction;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.Tile;
+import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -65,7 +69,7 @@ public abstract class LayerGenerator {
         dungeonLayer.grid[center.x][center.z] = new Tile(nodeRoom);
     }
 
-    public static DungeonCorridor  createCorridor(DungeonLayer dungeonLayer, int x, int z, Direction from, Direction to) {
+    public static DungeonCorridor createCorridor(DungeonLayer dungeonLayer, int x, int z, Direction from, Direction to) {
         DungeonCorridor corridor = new DungeonCorridor();
         corridor.setGridPosition(x, z);
         corridor.openSide(from);
@@ -87,17 +91,42 @@ public abstract class LayerGenerator {
         }
     }
 
+    public static void createStarterRoom(DungeonLayer dungeonLayer, Random rand, int layer) {
+        Tuple<Position2D, Rotation> sideRoomData = dungeonLayer.findStarterRoomData(dungeonLayer.start, rand);
+        if (sideRoomData != null) {
+            DungeonSideRoom room = new DungeonSideRoom();
+
+            Direction dir = sideRoomData.getB().rotate(Direction.WEST);
+            room.openSide(dir);
+            room.setGridPosition(sideRoomData.getA().x, sideRoomData.getA().z);
+            room.setRotation(sideRoomData.getB());
+            room.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STARTER_ROOM);
+            room.stage = layer;
+
+            dungeonLayer.map.markPositionAsOccupied(sideRoomData.getA());
+            dungeonLayer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new Tile(room).addFlag(Tile.Flag.FIXED_MODEL);
+
+            Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
+            if (dungeonLayer.grid[connectedSegment.x][connectedSegment.z] != null) {
+                dungeonLayer.grid[connectedSegment.x][connectedSegment.z].piece.openSide(dir.getOpposite());
+                dungeonLayer.rotatePiece(dungeonLayer.grid[connectedSegment.x][connectedSegment.z], rand);
+            }
+        }
+    }
+
     /**
      * Used to (re-)initialize the layer generator. Called before every layer generation.
      */
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer,  boolean isLastLayer) {
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand,
+                                int layer, boolean isLastLayer) {
         this.settings = settings;
     }
 
     /**
      * Generates a specific layer
      */
-    public abstract void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start);
+    public abstract void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random
+            rand, Position2D start);
 
     public void enableSecretRoom() {
     }

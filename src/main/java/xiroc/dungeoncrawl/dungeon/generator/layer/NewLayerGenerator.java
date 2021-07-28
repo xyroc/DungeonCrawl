@@ -157,7 +157,7 @@ public class NewLayerGenerator extends LayerGenerator {
                 }
             }
             if (depth <= settings.maxRoomDepth && roomsLeft > 0) {
-                if (depth < 3 && rand.nextFloat() < 0.45) {
+                if (depth < 2 && rand.nextFloat() < 0.5) {
                     return new GenericElement(new DungeonCorridor(), pos, toOrigin, NOOP, depth);
                 }
                 return new GenericElement(new DungeonRoom(), pos, toOrigin, ON_ROOM_PLACED, depth);

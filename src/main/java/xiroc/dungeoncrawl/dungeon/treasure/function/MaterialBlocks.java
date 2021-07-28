@@ -37,10 +37,13 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.Range;
 
 import java.util.Random;
 
 public class MaterialBlocks extends LootItemConditionalFunction {
+
+    private static final Range AMOUNT = new Range(16, 64);
 
     public MaterialBlocks(LootItemCondition[] conditionsIn) {
         super(conditionsIn);
@@ -48,14 +51,16 @@ public class MaterialBlocks extends LootItemConditionalFunction {
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-        BlockEntity chest = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-        if (context.hasParam(LootContextParams.ORIGIN) && chest != null && chest.hasLevel() & chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
-            Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
-            return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), chest.getLevel(), new BlockPos(context.getParamOrNull(LootContextParams.ORIGIN)), context.getRandom())),
-                    16 + context.getRandom().nextInt(49));
-        } else {
-            return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
+        if (context.hasParam(LootContextParams.ORIGIN)) {
+            BlockPos pos = new BlockPos(context.getParamOrNull(LootContextParams.ORIGIN));
+            BlockEntity chest = context.getLevel().getBlockEntity(pos);
+            if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
+                Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom())),
+                        AMOUNT.nextInt(context.getRandom()));
+            }
         }
+        return new ItemStack(Blocks.STONE_BRICKS, AMOUNT.nextInt(context.getRandom()));
     }
 
     private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {

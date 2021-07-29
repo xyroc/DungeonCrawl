@@ -71,7 +71,7 @@ public class DungeonEntrance extends DungeonPiece {
 
         DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE);
 
-        int maxBuried = model.height / 4;
+        int maxBuried = Math.min(model.height / 4, 4);
         while (cursorHeight < height) {
             if (height - cursorHeight <= maxBuried) {
                 break;

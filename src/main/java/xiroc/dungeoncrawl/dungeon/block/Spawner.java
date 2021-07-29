@@ -61,9 +61,10 @@ public class Spawner implements IBlockPlacementHandler {
         if (tile instanceof SpawnerBlockEntity spawner) {
             EntityType<?> type = RandomMonster.randomMonster(rand, stage);
             spawner.getSpawner().setEntityId(type);
-            if (!Config.VANILLA_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
+            if (Config.CUSTOM_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
                 CompoundTag spawnerNBT = spawner.getSpawner().save(spawner.getLevel(), pos, new CompoundTag());
                 ListTag potentialSpawns = new ListTag();
+
                 for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
                     CompoundTag nbt = new CompoundTag();
                     CompoundTag spawnData = createSpawnData(type, null, rand, stage);
@@ -122,7 +123,7 @@ public class Spawner implements IBlockPlacementHandler {
                 handItems.add(mainHand.save(new CompoundTag()));
             }
 
-            handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
+            handItems.add(rand.nextDouble() < 0.25
                     ? RandomItems.createShield(rand, stage).save(new CompoundTag())
                     : ItemStack.EMPTY.save(new CompoundTag()));
 

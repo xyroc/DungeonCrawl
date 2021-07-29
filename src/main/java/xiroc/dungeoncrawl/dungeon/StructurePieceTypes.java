@@ -20,8 +20,6 @@ package xiroc.dungeoncrawl.dungeon;
 
 import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.piece.DummyStructurePiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
@@ -61,26 +59,6 @@ public class StructurePieceTypes {
         SECRET_ROOM = StructurePieceType.setPieceId(DungeonSecretRoom::new, createKey("secret_room"));
         SPIDER_ROOM = StructurePieceType.setPieceId(DungeonSpiderRoom::new, createKey("spider_room"));
         MULTIPART_MODEL_PIECE = StructurePieceType.setPieceId(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));
-
-        if (Config.ENABLE_DUMMY_PIECES.get()) {
-            DungeonCrawl.LOGGER.info("Registering Dummy Structure Pieces");
-            DUMMY  = StructurePieceType.setPieceId(DummyStructurePiece::new, createKey("dummy"));
-
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_ENTR_BLDR");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_ROOM");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_CRRDR");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STTP");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STRS");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_STBT");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_HOLE");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_CRRDR_ROOM");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_TRAP");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_PART");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_HOLE_TRAP");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_SIDE_ROOM");
-            StructurePieceType.setPieceId(DummyStructurePiece::new, "DUNGEON_PART_WITH_ENTITY");
-        }
-
     }
 
     private static String createKey(String path) {

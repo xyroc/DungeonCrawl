@@ -83,7 +83,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
         ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkX, chunkZ);
         if (chunkX == chunkpos.x && chunkZ == chunkpos.z && p_225558_6_.hasStructure(Dungeon.DUNGEON)) {
             for (Biome biome : chunkGen.getBiomeProvider().getBiomes((chunkX << 4) + 9, chunkGen.getSeaLevel(), (chunkZ << 4) + 9, 64)) {
-                if (!biome.hasStructure(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get()) {
+                if (!biome.hasStructure(this)) {
                     return false;
                 }
             }
@@ -130,13 +130,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
         @Override
         public void generateStructure(IWorld worldIn, ChunkGenerator<?> chunkGen, Random rand, MutableBoundingBox structurebb, ChunkPos pos) {
-            if (!Config.IGNORE_DIMENSION.get() && !(worldIn.getDimension().getType() == DimensionType.OVERWORLD)) {
-                DungeonCrawl.LOGGER.info(
-                        "Cancelling the generation of an existing Dungeon because it is not in the overworld. To avoid this, set \"ignore_dimension\" in the config to true. Dimension: {}",
-                        worldIn.getDimension().getType());
-                return;
-            }
-
             if (Config.EXTENDED_DEBUG.get()) {
                 DungeonCrawl.LOGGER.debug("Starting dungeon generation in chunk [{},{}]", pos.x, pos.z);
             }

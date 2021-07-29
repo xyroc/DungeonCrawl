@@ -20,8 +20,6 @@ package xiroc.dungeoncrawl.dungeon;
 
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.piece.DummyStructurePiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
@@ -61,26 +59,6 @@ public class StructurePieceTypes {
         SECRET_ROOM = IStructurePieceType.register(DungeonSecretRoom::new, createKey("secret_room"));
         SPIDER_ROOM = IStructurePieceType.register(DungeonSpiderRoom::new, createKey("spider_room"));
         MULTIPART_MODEL_PIECE = IStructurePieceType.register(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));
-
-        if (Config.ENABLE_DUMMY_PIECES.get()) {
-            DungeonCrawl.LOGGER.info("Registering Dummy Structure Pieces");
-            DUMMY  = IStructurePieceType.register(DummyStructurePiece::new, createKey("dummy"));
-
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_ENTR_BLDR");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_ROOM");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_CRRDR");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_STTP");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_STRS");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_STBT");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_HOLE");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_CRRDR_ROOM");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_TRAP");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_PART");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_HOLE_TRAP");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_SIDE_ROOM");
-            IStructurePieceType.register(DummyStructurePiece::new, "DUNGEON_PART_WITH_ENTITY");
-        }
-
     }
 
     private static String createKey(String path) {

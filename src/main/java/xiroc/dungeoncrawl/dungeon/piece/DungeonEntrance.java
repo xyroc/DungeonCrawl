@@ -53,10 +53,7 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
-        // TODO: use model selector
-        this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.ROGUELIKE_TOWER);
-    }
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {}
 
     @Override
     public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGenerator, Random randomIn, MutableBoundingBox structureBoundingBoxIn,
@@ -73,8 +70,9 @@ public class DungeonEntrance extends DungeonPiece {
 
         DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE);
 
+        int maxBuried = model.height / 4;
         while (cursorHeight < height) {
-            if (height - cursorHeight < 4) {
+            if (height - cursorHeight <= maxBuried) {
                 break;
             }
             super.build(staircase, worldIn, structureBoundingBoxIn,

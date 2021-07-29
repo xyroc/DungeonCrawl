@@ -33,13 +33,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
@@ -103,11 +101,6 @@ public class DungeonCrawl {
     @SubscribeEvent
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         event.getServer().getResourceManager().addReloadListener(new ResourceReloadHandler());
-    }
-
-    @SubscribeEvent
-    public void onServerStart(FMLServerStartingEvent event) {
-        SpawnDungeonCommand.register(event.getCommandDispatcher());
     }
 
     public static ResourceLocation locate(String path) {

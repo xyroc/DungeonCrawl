@@ -38,7 +38,6 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.storage.loot.RandomValueRange;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
@@ -301,21 +300,21 @@ public final class DungeonModelFeature {
                 buildDown(world, context, west.south(), bounds, inner);
 
                 // Walls
-                buildDown(world, context, east.east(), bounds, theme.floor);
-                buildDown(world, context, east.east().north(), bounds, theme.floor);
-                buildDown(world, context, east.east().south(), bounds, theme.floor);
+                buildDown(world, context, east.east(), bounds, theme.generic);
+                buildDown(world, context, east.east().north(), bounds, theme.generic);
+                buildDown(world, context, east.east().south(), bounds, theme.generic);
 
-                buildDown(world, context, south.south(), bounds, theme.floor);
-                buildDown(world, context, south.south().east(), bounds, theme.floor);
-                buildDown(world, context, south.south().west(), bounds, theme.floor);
+                buildDown(world, context, south.south(), bounds, theme.generic);
+                buildDown(world, context, south.south().east(), bounds, theme.generic);
+                buildDown(world, context, south.south().west(), bounds, theme.generic);
 
-                buildDown(world, context, west.west(), bounds, theme.floor);
-                buildDown(world, context, west.west().north(), bounds, theme.floor);
-                buildDown(world, context, west.west().south(), bounds, theme.floor);
+                buildDown(world, context, west.west(), bounds, theme.generic);
+                buildDown(world, context, west.west().north(), bounds, theme.generic);
+                buildDown(world, context, west.west().south(), bounds, theme.generic);
 
-                buildDown(world, context, north.north(), bounds, theme.floor);
-                buildDown(world, context, north.north().east(), bounds, theme.floor);
-                buildDown(world, context, north.north().west(), bounds, theme.floor);
+                buildDown(world, context, north.north(), bounds, theme.generic);
+                buildDown(world, context, north.north().east(), bounds, theme.generic);
+                buildDown(world, context, north.north().west(), bounds, theme.generic);
             }
 
             @Override

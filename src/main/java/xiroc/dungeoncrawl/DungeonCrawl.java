@@ -40,7 +40,6 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
@@ -73,7 +72,6 @@ public class DungeonCrawl {
         forgeEventBus.addListener(this::onAddReloadListener);
         forgeEventBus.addListener(this::onWorldLoad);
         forgeEventBus.addListener(EventPriority.HIGH, this::onBiomeLoad);
-        forgeEventBus.addListener(this::onServerStart);
 
         Treasure.init();
     }
@@ -124,10 +122,6 @@ public class DungeonCrawl {
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {
         event.addListener(new ResourceReloadHandler());
-    }
-
-    private void onServerStart(FMLServerStartingEvent event) {
-        SpawnDungeonCommand.register(event.getServer().getCommands().getDispatcher());
     }
 
     public static ResourceLocation locate(String path) {

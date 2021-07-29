@@ -58,12 +58,11 @@ public class Spawner implements IBlockPlacementHandler {
                       Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
         TileEntity tileentity = world.getBlockEntity(pos);
-
         if (tileentity instanceof MobSpawnerTileEntity) {
             MobSpawnerTileEntity tile = (MobSpawnerTileEntity) tileentity;
             EntityType<?> type = RandomMonster.randomMonster(rand, stage);
             tile.getSpawner().setEntityId(type);
-            if (!Config.VANILLA_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
+            if (Config.CUSTOM_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
                 CompoundNBT spawnerNBT = tile.getSpawner().save(new CompoundNBT());
                 ListNBT potentialSpawns = new ListNBT();
                 for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
@@ -124,7 +123,7 @@ public class Spawner implements IBlockPlacementHandler {
                 handItems.add(mainHand.save(new CompoundNBT()));
             }
 
-            handItems.add(rand.nextDouble() < Config.SHIELD_PROBABILITY.get()
+            handItems.add(rand.nextDouble() < 0.25
                     ? RandomItems.createShield(rand, stage).save(new CompoundNBT())
                     : ItemStack.EMPTY.save(new CompoundNBT()));
 

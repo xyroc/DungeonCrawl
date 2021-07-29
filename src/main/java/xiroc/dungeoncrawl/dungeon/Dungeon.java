@@ -49,8 +49,6 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
-import net.minecraft.world.gen.feature.structure.Structure.IStartFactory;
-
 public class Dungeon extends Structure<NoFeatureConfig> {
 
     public static final Set<Biome.Category> ALLOWED_CATEGORIES = ImmutableSet.<Biome.Category>builder()
@@ -83,6 +81,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
         if (Config.SPACING.get() > Config.SEPARATION.get() && Config.SEPARATION.get() >= 0) {
             separationSettings = new StructureSeparationSettings(Config.SPACING.get(), Config.SEPARATION.get(), 10387313);
+
         } else {
             throw new IllegalArgumentException("Invalid dungeon spacing/separation settings in the config.");
         }
@@ -112,7 +111,7 @@ public class Dungeon extends Structure<NoFeatureConfig> {
     @Override
     protected boolean isFeatureChunk(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
         for (Biome biome : p_230363_2_.getBiomesWithin(p_230363_6_ * 16, p_230363_1_.getSpawnHeight(), p_230363_7_ * 16, 64)) {
-            if (!biome.getGenerationSettings().isValidStart(this) && !Config.IGNORE_OVERWORLD_BLACKLIST.get())
+            if (!biome.getGenerationSettings().isValidStart(this))
                 return false;
         }
         return true;

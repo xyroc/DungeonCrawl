@@ -22,7 +22,6 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 import java.nio.file.Path;
@@ -40,14 +39,10 @@ public class Config {
 
     public static final IntValue SPAWNER_ENTITIES, SPAWNER_RANGE, SPACING, SEPARATION;
 
-    public static final DoubleValue SHIELD_PROBABILITY;
-
-    public static final BooleanValue IGNORE_OVERWORLD_BLACKLIST,
-            IGNORE_DIMENSION,
-            VANILLA_SPAWNERS,
+    public static final BooleanValue
+            CUSTOM_SPAWNERS,
             NO_NETHER_STUFF,
             ENABLE_TOOLS,
-            ENABLE_DUMMY_PIECES,
             SOLID,
             NATURAL_DESPAWN,
             EXTENDED_DEBUG,
@@ -59,15 +54,11 @@ public class Config {
         BUILDER.comment("General Settings").push(GENERAL);
 
         ENABLE_TOOLS = BUILDER.comment("Enables the dungeon crawl developer tools.").define("enable_tools", false);
-        ENABLE_DUMMY_PIECES = BUILDER.comment("This option will make pre-2.0.0 worlds playable with version 2.0.0 and later.").define("enable_dummy_pieces", false);
         EXTENDED_DEBUG = BUILDER.comment("Enables extended debug logging to help detecting potential errors. This is enabled by default.").define("extended_debug", true);
 
         BUILDER.pop();
 
         BUILDER.comment("World Generation Settings").push(WORLD_GENERATION);
-        IGNORE_DIMENSION = BUILDER.comment(
-                "If this is set to false, no dungeons can be generated outside the overworld.")
-                .define("ignore_dimension", false);
         SOLID = BUILDER.comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.").define("solid", false);
         TICK_FALLING_BLOCKS = BUILDER.comment("Whether falling blocks like sand or gravel should drop down after being placed during dungeon generation.")
                 .define("tick_falling_blocks", true);
@@ -92,14 +83,9 @@ public class Config {
         SPAWNER_ENTITIES = BUILDER.comment(
                 "The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
                 .defineInRange("spawner_entities", 6, 1, 128);
-        IGNORE_OVERWORLD_BLACKLIST = BUILDER.comment(
-                "If set to true, the dungeon generation will ignore the biome blacklist and generate dungeons in any overworld biome.")
-                .define("ignore_overworld_blacklist", false);
-        SHIELD_PROBABILITY = BUILDER.comment("The Probability of a spawner entity having a shield in the offhand.")
-                .defineInRange("shield_probability", 0.25, 0.01, 1.0);
-        VANILLA_SPAWNERS = BUILDER.comment(
-                "Determines if vanilla spawners or modified spawners with armor, weapons etc... should be used.")
-                .define("use_vanilla_spawners", false);
+        CUSTOM_SPAWNERS = BUILDER.comment(
+                "Whether custom mob spawners with equipment, etc.. should be used.")
+                .define("custom_spawners", true);
         NATURAL_DESPAWN = BUILDER.comment("Whether mobs from spawners should despawn naturally or not.").define("natural_despawn", true);
 
         BUILDER.pop();

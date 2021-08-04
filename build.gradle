@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = '2.3.0'
+version = '2.3.1'
 group = 'xiroc.dungeoncrawl'
 archivesBaseName = 'DungeonCrawl-1.17.1'
 

@@ -105,7 +105,7 @@ public class RandomPotionEffect {
                                 new Range(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
                                         effect.getAsJsonObject("amplifier").get("max").getAsInt())
                                 : new Range(0, 0);
-                        GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.POTIONS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
+                        GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
                                 effect.get("duration").getAsInt(), amplifier);
                     }
                 }

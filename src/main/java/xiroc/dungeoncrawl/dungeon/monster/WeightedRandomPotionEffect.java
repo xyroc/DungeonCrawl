@@ -48,7 +48,7 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
         int i = 0;
         for (Builder.Entry entry : entries) {
             float weight = (float) entry.weight / (float) totalWeight;
-            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(ForgeRegistries.POTIONS.getValue(new ResourceLocation(entry.effect)), entry.duration, entry.amplifier, weight + f);
+            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(entry.effect)), entry.duration, entry.amplifier, weight + f);
             f += weight;
             i++;
         }

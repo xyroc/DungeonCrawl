@@ -95,10 +95,6 @@ public class DungeonBuilder {
                 + startPos.getZ() + ").");
     }
 
-    public static boolean isWorldEligible(ChunkGenerator chunkGenerator) {
-        return chunkGenerator.getSeaLevel() > 32;
-    }
-
     public List<DungeonPiece> build() {
         this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(chunkPos.x << 2, chunkGenerator.getSeaLevel() >> 4, chunkPos.z << 2);
         DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
@@ -140,6 +136,12 @@ public class DungeonBuilder {
         }
 
         for (int layer = 0; layer < layers.length; layer++) {
+
+            if (layer > 0 && layers[layer - 1].end == null) {
+                // This is an abnormal state and means that the previous layer is unfinished.
+                // Layer generation cannot continue at this point.
+                break;
+            }
             generator.initializeLayer(type.getLayer(layer).settings(), this, rand, layer, layer == layerCount - 1);
             generator.generateLayer(this, layers[layer], layer, rand, (layer == 0) ? this.start : layers[layer - 1].end);
         }

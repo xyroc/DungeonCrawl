@@ -18,12 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.StructureFeatureManager;
@@ -32,69 +28,36 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
-import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 
-import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
 public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
 
-    public static final Set<Biome.BiomeCategory> ALLOWED_CATEGORIES = ImmutableSet.<Biome.BiomeCategory>builder()
-            .add(Biome.BiomeCategory.BEACH).add(Biome.BiomeCategory.DESERT).add(Biome.BiomeCategory.EXTREME_HILLS)
-            .add(Biome.BiomeCategory.FOREST).add(Biome.BiomeCategory.ICY).add(Biome.BiomeCategory.JUNGLE).add(Biome.BiomeCategory.MESA)
-            .add(Biome.BiomeCategory.PLAINS).add(Biome.BiomeCategory.RIVER).add(Biome.BiomeCategory.SAVANNA).add(Biome.BiomeCategory.SWAMP)
-            .add(Biome.BiomeCategory.TAIGA).add(Biome.BiomeCategory.RIVER).build();
+    public static Set<Biome.BiomeCategory> biomeCategories = ImmutableSet.<Biome.BiomeCategory>builder()
+            .add(Biome.BiomeCategory.DESERT).add(Biome.BiomeCategory.EXTREME_HILLS).add(Biome.BiomeCategory.FOREST)
+            .add(Biome.BiomeCategory.ICY).add(Biome.BiomeCategory.JUNGLE).add(Biome.BiomeCategory.MESA)
+            .add(Biome.BiomeCategory.PLAINS).add(Biome.BiomeCategory.SAVANNA)
+            .add(Biome.BiomeCategory.SWAMP).add(Biome.BiomeCategory.TAIGA).build();
+
+    public static ImmutableSet<String> whitelistedDimensions = ImmutableSet.of("minecraft:overworld");
+    public static ImmutableSet<String> whitelistedBiomes = ImmutableSet.of();
+    public static ImmutableSet<String> blacklistedBiomes = ImmutableSet.of();
 
     public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
-
-    public static final StructureFeature<NoneFeatureConfiguration> DUNGEON = new Dungeon();
-    public static final ConfiguredStructureFeature<NoneFeatureConfiguration, ? extends StructureFeature<NoneFeatureConfiguration>> CONFIGURED_DUNGEON = DUNGEON.configured(NoneFeatureConfiguration.NONE);
 
     public static final int SIZE = 15;
 
     public Dungeon() {
         super(NoneFeatureConfiguration.CODEC);
-    }
-
-    public static void register() {
-        ResourceLocation registryName = new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT));
-
-        DUNGEON.setRegistryName(registryName);
-        StructureFeature.STRUCTURES_REGISTRY.put(registryName.toString().toLowerCase(Locale.ROOT), DUNGEON);
-
-        ForgeRegistries.STRUCTURE_FEATURES.register(DUNGEON);
-
-        StructureFeatureConfiguration separationSettings;
-
-        if (Config.SPACING.get() > Config.SEPARATION.get() && Config.SEPARATION.get() >= 0) {
-            separationSettings = new StructureFeatureConfiguration(Config.SPACING.get(), Config.SEPARATION.get(), 10387313);
-        } else {
-            throw new IllegalArgumentException("Invalid dungeon spacing/separation settings in the config.");
-        }
-
-        StructureSettings.DEFAULTS =
-                ImmutableMap.<StructureFeature<?>, StructureFeatureConfiguration>builder()
-                        .putAll(StructureSettings.DEFAULTS)
-                        .put(DUNGEON, separationSettings)
-                        .build();
-
-        Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
-        Registry.register(registry, registryName, CONFIGURED_DUNGEON);
-
-        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(DUNGEON, CONFIGURED_DUNGEON);
     }
 
     @Override

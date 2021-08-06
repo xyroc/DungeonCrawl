@@ -18,84 +18,47 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 
-import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
 public class Dungeon extends Structure<NoFeatureConfig> {
 
-    public static final Set<Biome.Category> ALLOWED_CATEGORIES = ImmutableSet.<Biome.Category>builder()
-            .add(Biome.Category.BEACH).add(Biome.Category.DESERT).add(Biome.Category.EXTREME_HILLS)
-            .add(Biome.Category.FOREST).add(Biome.Category.ICY).add(Biome.Category.JUNGLE).add(Biome.Category.MESA)
-            .add(Biome.Category.PLAINS).add(Biome.Category.RIVER).add(Biome.Category.SAVANNA).add(Biome.Category.SWAMP)
-            .add(Biome.Category.TAIGA).add(Biome.Category.RIVER).build();
+    public static Set<Biome.Category> biomeCategories = ImmutableSet.<Biome.Category>builder()
+            .add(Biome.Category.DESERT).add(Biome.Category.EXTREME_HILLS).add(Biome.Category.FOREST)
+            .add(Biome.Category.ICY).add(Biome.Category.JUNGLE).add(Biome.Category.MESA)
+            .add(Biome.Category.PLAINS).add(Biome.Category.SAVANNA)
+            .add(Biome.Category.SWAMP).add(Biome.Category.TAIGA).build();
+
+    public static ImmutableSet<String> whitelistedDimensions = ImmutableSet.of("minecraft:overworld");
+    public static ImmutableSet<String> whitelistedBiomes = ImmutableSet.of();
+    public static ImmutableSet<String> blacklistedBiomes = ImmutableSet.of();
 
     public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
-
-    public static final Structure<NoFeatureConfig> DUNGEON = new Dungeon();
-    public static final StructureFeature<NoFeatureConfig, ? extends Structure<NoFeatureConfig>> CONFIGURED_DUNGEON = DUNGEON.configured(NoFeatureConfig.NONE);
-
 
     public static final int SIZE = 15;
 
     public Dungeon() {
         super(NoFeatureConfig.CODEC);
-    }
-
-    public static void register() {
-        ResourceLocation registryName = new ResourceLocation(Dungeon.NAME.toLowerCase(Locale.ROOT));
-
-        DUNGEON.setRegistryName(registryName);
-        Structure.STRUCTURES_REGISTRY.put(registryName.toString().toLowerCase(Locale.ROOT), DUNGEON);
-
-        ForgeRegistries.STRUCTURE_FEATURES.register(DUNGEON);
-
-        StructureSeparationSettings separationSettings;
-
-        if (Config.SPACING.get() > Config.SEPARATION.get() && Config.SEPARATION.get() >= 0) {
-            separationSettings = new StructureSeparationSettings(Config.SPACING.get(), Config.SEPARATION.get(), 10387313);
-
-        } else {
-            throw new IllegalArgumentException("Invalid dungeon spacing/separation settings in the config.");
-        }
-
-        DimensionStructuresSettings.DEFAULTS =
-                ImmutableMap.<Structure<?>, StructureSeparationSettings>builder()
-                        .putAll(DimensionStructuresSettings.DEFAULTS)
-                        .put(DUNGEON, separationSettings)
-                        .build();
-
-        Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
-        Registry.register(registry, registryName, CONFIGURED_DUNGEON);
-
-        FlatGenerationSettings.STRUCTURE_FEATURES.put(DUNGEON, CONFIGURED_DUNGEON);
     }
 
     @Override

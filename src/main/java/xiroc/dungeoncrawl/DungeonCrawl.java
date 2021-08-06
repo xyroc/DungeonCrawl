@@ -18,36 +18,31 @@
 
 package xiroc.dungeoncrawl;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonParser;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.FlatChunkGenerator;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.Dungeon;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
@@ -65,14 +60,16 @@ public class DungeonCrawl {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addGenericListener(Structure.class, this::onRegisterStructures);
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
         forgeEventBus.addListener(this::onWorldLoad);
-        forgeEventBus.addListener(EventPriority.HIGH, this::onBiomeLoad);
 
-        Treasure.init();
+        init();
+    }
+
+    private void init() {
+        ModStructures.init();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -80,43 +77,32 @@ public class DungeonCrawl {
         //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
 
-        if (Config.SPACING.get() <= Config.SEPARATION.get()) {
-            throw new IllegalArgumentException("Invalid spacing/separation setting in the config.");
-        }
-
-        StructurePieceTypes.register();
-
         if (Config.ENABLE_TOOLS.get()) {
             MinecraftForge.EVENT_BUS.register(new Tools());
         }
 
+        event.enqueueWork(() -> {
+            Treasure.init();
+            StructurePieceTypes.register();
+            ModStructures.register();
+        });
     }
 
-    private void onRegisterStructures(final RegistryEvent.Register<Structure<?>> event) {
-        Dungeon.register();
-    }
-
-    private void onBiomeLoad(final BiomeLoadingEvent event) {
-        if (Dungeon.ALLOWED_CATEGORIES.contains(event.getCategory())) {
-            LOGGER.debug("Generation Biome: {}", event.getName());
-            event.getGeneration().addStructureStart(Dungeon.CONFIGURED_DUNGEON);
-        }
-    }
-
-    private void onWorldLoad(final WorldEvent.Load event) {
-        if (event.getWorld() instanceof ServerWorld) {
-
-            ServerWorld serverWorld = (ServerWorld) event.getWorld();
-            if (serverWorld.getChunkSource().getGenerator() instanceof FlatChunkGenerator &&
-                    serverWorld.dimension().equals(World.OVERWORLD)) {
-                return;
-            }
-
-            Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkSource().generator.getSettings().structureConfig());
-            tempMap.putIfAbsent(Dungeon.DUNGEON, DimensionStructuresSettings.DEFAULTS.get(Dungeon.DUNGEON));
-            serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
-        } else {
-            LOGGER.info("Skipping world {}", event.getWorld().getClass());
+    private void onWorldLoad(WorldEvent.Load event) {
+        if (Config.PRINT_BIOME_CATEGORIES.get()
+                && event.getWorld() instanceof ServerWorld
+                && ((ServerWorld) event.getWorld()).dimension().equals(World.OVERWORLD)) {
+            HashMap<String, List<String>> biomes = new HashMap<>();
+            ForgeRegistries.BIOMES.getEntries().forEach((entry) -> {
+                ResourceLocation registryName = entry.getValue().getRegistryName();
+                if (registryName != null) {
+                    biomes.computeIfAbsent(entry.getValue().getBiomeCategory().getName(), (key) -> Lists.newArrayList()).add(registryName.toString());
+                }
+            });
+            biomes.forEach((key, value) -> {
+                LOGGER.info("Biome Category '{}' contains the following biomes:", key);
+                value.forEach(LOGGER::info);
+            });
         }
     }
 

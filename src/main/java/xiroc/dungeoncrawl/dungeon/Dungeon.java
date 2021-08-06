@@ -96,8 +96,8 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         }
 
         @Override
-        public void generatePieces(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, StructureManager p_163617_, ChunkPos chunkPos, Biome p_163619_, NoneFeatureConfiguration p_163620_, LevelHeightAccessor p_163621_) {
-            DungeonBuilder builder = new DungeonBuilder(registryAccess, chunkGenerator, chunkPos, random);
+        public void generatePieces(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, StructureManager p_163617_, ChunkPos chunkPos, Biome p_163619_, NoneFeatureConfiguration p_163620_, LevelHeightAccessor heightAccessor) {
+            DungeonBuilder builder = new DungeonBuilder(registryAccess, chunkGenerator, heightAccessor, chunkPos, random);
             this.pieces.addAll(builder.build());
             DungeonCrawl.LOGGER.debug("Created the dungeon layout for [{}, {}] with a total of {} pieces.", chunkPos.x, chunkPos.z, this.pieces.size());
         }

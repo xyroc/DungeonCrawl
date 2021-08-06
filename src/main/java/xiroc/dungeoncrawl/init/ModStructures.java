@@ -128,6 +128,11 @@ public class ModStructures {
                 return;
             }
 
+            if (serverWorld.getChunkSource().generator.getSpawnHeight() < 32) {
+                DungeonCrawl.LOGGER.info("Ignoring dimension {} because it's spawn height is too low.", serverWorld.dimension().location());
+                return;
+            }
+
             DungeonCrawl.LOGGER.debug("Generating in dimension: {}", serverWorld.dimension().location());
 
             Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkSource().generator.getSettings().structureConfig());

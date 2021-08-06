@@ -72,7 +72,7 @@ public class DungeonBuilder {
         this.rand = rand;
 
         this.chunkPos = pos;
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getSeaLevel() - 15,
+        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getSpawnHeight() - 15,
                 pos.z * 16 - Dungeon.SIZE / 2 * 9);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
@@ -88,7 +88,7 @@ public class DungeonBuilder {
         this.rand = rand;
 
         this.chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
-        this.startPos = new BlockPos(pos.getX() - Dungeon.SIZE / 2 * 9, world.getSeaLevel() - 15,
+        this.startPos = new BlockPos(pos.getX() - Dungeon.SIZE / 2 * 9, world.getChunkSource().generator.getSpawnHeight() - 15,
                 pos.getZ() - Dungeon.SIZE / 2 * 9);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
@@ -96,6 +96,9 @@ public class DungeonBuilder {
     }
 
     public List<DungeonPiece> build() {
+        if (startPos.getY() < 16) {
+            return Lists.newArrayList();
+        }
         this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(chunkPos.x << 2, chunkGenerator.getSeaLevel() >> 4, chunkPos.z << 2);
         DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
         generateLayout(type, DEFAULT_GENERATOR);

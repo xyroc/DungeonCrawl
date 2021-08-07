@@ -104,8 +104,11 @@ public class NewLayerGenerator extends LayerGenerator {
             createStarterRoom(dungeonLayer, rand, layer);
         }
 
-        if (secretRoom && !this.corridors.isEmpty()) {
+        if (secretRoom) {
             for (int i = 0; i < 8; i++) {
+                if (this.corridors.isEmpty()) {
+                    break;
+                }
                 DungeonCorridor corridor = this.corridors.get(rand.nextInt(corridors.size()));
                 if (corridor.isStraight() && corridor.connectedSides == 2 && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, rand)) {
                     break;

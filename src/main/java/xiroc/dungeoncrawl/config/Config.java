@@ -55,93 +55,111 @@ public class Config {
             SECRET_ROOMS,
             PRINT_BIOME_CATEGORIES;
 
+    private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------#";
+
     static {
         BUILDER.push("Miscellaneous Settings");
         ENABLE_TOOLS = BUILDER
-                .comment("Enables the dungeon crawl developer tools. Do not use this for normal gameplay.")
+                .comment(SEPARATOR_LINE +
+                        "\nEnables the dungeon crawl developer tools. Do not use this for normal gameplay.\n")
                 .define("enable_tools", false);
         EXTENDED_DEBUG = BUILDER
-                .comment("Enables extended debug logging to help detecting errors. Enabled by default.")
+                .comment(SEPARATOR_LINE +
+                        "\nEnables extended debug logging to help detecting errors. Enabled by default.\n")
                 .define("extended_debug", true);
         PRINT_BIOME_CATEGORIES = BUILDER
-                .comment("Prints all biome categories and their biomes to the console when entering a world.\n"
-                        + "Might be useful for modpack creators. Ignore this for normal gameplay.")
+                .comment(SEPARATOR_LINE +
+                        "\nPrints all biome categories and their biomes to the console when entering a world.\n"
+                        + "Might be useful for modpack creators. Ignore this for normal gameplay.\n")
                 .define("Print Biome Categories", false);
         BUILDER.pop();
 
         BUILDER.push("World Generation");
         SOLID = BUILDER
-                .comment("Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.")
+                .comment(SEPARATOR_LINE +
+                        "\nMakes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.\n")
                 .define("solid", false);
         TICK_FALLING_BLOCKS = BUILDER
-                .comment("Whether falling blocks like sand or gravel should drop down after being placed during dungeon generation.")
+                .comment(SEPARATOR_LINE +
+                        "\nWhether falling blocks like sand or gravel should drop down after being placed during dungeon generation.\n")
                 .define("tick_falling_blocks", true);
         BUILDER.pop();
 
         BUILDER.push("Dungeon Placement");
         SPACING = BUILDER
-                .comment("The cell size of the grid used to generate the dungeons in chunks. Each cell of this grid can only contain one dungeon.\n" +
+                .comment(SEPARATOR_LINE +
+                        "\nThe cell size of the grid used to generate the dungeons in chunks. Each cell of this grid can only contain one dungeon.\n" +
                         "You can also interpret this as the average distance between two adjacent dungeons in chunks.\n" +
-                        "Has to be higher than the separation!")
+                        "Has to be higher than the separation!\n")
                 .defineInRange("spacing", 24, 9, 8192);
         SEPARATION = BUILDER
-                .comment("The minimum distance between the dungeons in chunks. Has to be lower than the spacing!\n" +
+                .comment(SEPARATOR_LINE +
+                        "\nThe minimum distance between the dungeons in chunks. Has to be lower than the spacing!\n" +
                         "The closer the separation is to the spacing, the more grid-aligned and predictable the dungeon placement will be.\n" +
-                        "Generally, bigger values allow for less, and smaller values for more randomness.")
+                        "Generally, bigger values allow for less, and smaller values for more randomness.\n")
                 .defineInRange("separation", 12, 8, 8191);
 
         BUILDER.push("Biomes");
         BIOME_WHITELIST = BUILDER
-                .comment("List of biomes the dungeons should spawn in.\n" +
+                .comment(SEPARATOR_LINE +
+                        "\nList of biomes the dungeons should spawn in.\n" +
                         "Entries have to be comma-separated.\n" +
-                        "You can use this together with the Biome Categories.")
+                        "You can use this together with the Biome Categories.\n")
                 .define("Biome Whitelist", "");
         BIOME_BLACKLIST = BUILDER
-                .comment("List of biomes that should never contain dungeons.\n" +
-                        "Entries must be comma-separated.")
+                .comment(SEPARATOR_LINE +
+                        "\nList of biomes that should never contain dungeons.\n")
                 .define("Biome Blacklist", "");
         BIOME_CATEGORIES = BUILDER
-                .comment("List of biome categories the dungeons should spawn in.\n" +
+                .comment(SEPARATOR_LINE +
+                        "\nList of biome categories the dungeons should spawn in.\n" +
                         "Entries have to be comma-separated.\n" +
-                        "Biome Categories are groupings of biomes of specific types. Using these allows Dungeon Crawl to automatically generate in suitable mod biomes\n" +
-                        " and to ignore unsuitable ones like ocean biomes.\n" +
-                        "You can use this together with the Biome Whitelist\n" +
-                        " and you can blacklist specific biomes with the Biome Blacklist.\n" +
+                        "Biome Categories are groupings of biomes of specific types. Using these allows Dungeon Crawl to\n" +
+                        "  automatically generate in suitable mod biomes and to ignore unsuitable ones like ocean biomes.\n" +
+                        "You can use this together with the Biome Whitelist and you can blacklist specific biomes with the Biome Blacklist.\n" +
                         "All categories: beach, desert, extreme_hills, forest, icy, jungle, mesa, mushroom, nether, none, ocean, plains, river, savanna, swamp, taiga, the_end\n" +
-                        "To receive a list of all categories and their respective biomes (including biomes of mods you have installed), enable the 'Print Biome Categories' option.'")
+                        "To receive a list of all categories and their respective biomes (including biomes of mods you have installed), enable the 'Print Biome Categories' option.\n")
                 .define("Biome Categories", "desert, extreme_hills, forest, icy, jungle, mesa, plains, savanna, swamp, taiga");
         BUILDER.pop();
 
         BUILDER.push("Dimensions");
         DIMENSION_WHITELIST = BUILDER
-                .comment("List of dimensions the dungeons should spawn in.\n" +
-                        "Entries have to be comma-separated.")
+                .comment(SEPARATOR_LINE +
+                        "\nList of dimensions the dungeons should spawn in.\n" +
+                        "Entries have to be comma-separated.\n")
                 .define("Dimension Whitelist", "minecraft:overworld");
         BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Dungeon Settings");
         SECRET_ROOMS = BUILDER
-                .comment("Whether the dungeons should have secret rooms or not.")
+                .comment(SEPARATOR_LINE +
+                        "\nWhether the dungeons should have secret rooms or not.\n")
                 .define("secret_rooms", true);
         OVERWRITE_ENTITY_LOOT_TABLES = BUILDER.
-                comment("Whether loot tables of certain spawner entities should be overwritten.\n" +
-                        "For example, wither skeletons from dungeon spawners will never drop skulls if this is enabled.")
+                comment(SEPARATOR_LINE +
+                        "\nWhether loot tables of certain spawner entities should be overwritten.\n" +
+                        "For example, wither skeletons from dungeon spawners will never drop skulls if this is enabled.\n")
                 .define("overwrite_entity_loot_tables", true);
         NO_NETHER_STUFF = BUILDER
-                .comment("Whether the hell stage should be built with blocks from the overworld instead from the nether.")
-                .define("no_nether_stuff", false);
+                .comment(SEPARATOR_LINE +
+                        "\nWhether the hell stage should be built with blocks from the overworld instead from the nether.\n")
+                .define("no_nether_blocks", false);
         SPAWNER_RANGE = BUILDER
-                .comment("The activation range for the spawners in the dungeons.")
+                .comment(SEPARATOR_LINE +
+                        "\nThe activation range for the spawners in the dungeons.\n")
                 .defineInRange("spawner_activation_range", 12, 1, 64);
         SPAWNER_ENTITIES = BUILDER
-                .comment("The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.")
+                .comment(SEPARATOR_LINE +
+                        "\nThe number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.\n")
                 .defineInRange("spawner_entities", 6, 1, 128);
         CUSTOM_SPAWNERS = BUILDER
-                .comment("Whether custom mob spawners with equipment, etc.. should be used.")
+                .comment(SEPARATOR_LINE +
+                        "\nWhether custom mob spawners with equipment, etc.. should be used.\n")
                 .define("custom_spawners", true);
         NATURAL_DESPAWN = BUILDER
-                .comment("Whether mobs from spawners should despawn naturally or not.")
+                .comment(SEPARATOR_LINE +
+                        "\nWhether mobs from spawners should despawn naturally or not.\n")
                 .define("natural_despawn", true);
         BUILDER.pop();
 

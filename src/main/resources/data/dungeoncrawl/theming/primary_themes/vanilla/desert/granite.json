@@ -9,35 +9,20 @@
         },
         {
           "block": "minecraft:cut_sandstone"
-        }
-      ]
-    },
-    "solid": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:sandstone"
-        },
-        {
-          "block": "minecraft:cut_sandstone",
-          "weight": 2
         },
         {
           "block": "minecraft:chiseled_sandstone"
         }
       ]
     },
+    "solid": {
+      "type": "block",
+      "block": "minecraft:polished_granite"
+    },
     "pillar": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:granite"
-        },
-        {
-          "block": "minecraft:polished_granite",
-          "weight": 3
-        }
-      ]
+      "type": "block",
+      "block": "minecraft:polished_granite"
+
     },
     "floor": {
       "type": "random_block",
@@ -51,27 +36,12 @@
       ]
     },
     "stairs": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:sandstone_stairs"
-        },
-        {
-          "block": "minecraft:smooth_sandstone_stairs"
-        }
-      ]
+      "type": "block",
+      "block": "minecraft:sandstone_stairs"
     },
     "solid_stairs": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:granite_stairs"
-        },
-        {
-          "block": "minecraft:polished_granite_stairs",
-          "weight": 3
-        }
-      ]
+      "type": "block",
+      "block": "minecraft:polished_granite_stairs"
     },
     "slab": {
       "type": "random_block",
@@ -105,7 +75,7 @@
           "block": "minecraft:cut_sandstone"
         },
         {
-          "block": "minecraft:smooth_sandstone"
+          "block": "minecraft:chiseled_sandstone"
         }
       ]
     },

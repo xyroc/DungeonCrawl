@@ -80,14 +80,15 @@ public abstract class LayerGenerator {
     }
 
     public static void tryCreateSecretRoom(DungeonLayer dungeonLayer, List<DungeonCorridor> corridors, int maxAttempts, Random random) {
-        if (!corridors.isEmpty()) {
-            for (int i = 0; i < maxAttempts; i++) {
-                DungeonCorridor corridor = corridors.get(random.nextInt(corridors.size()));
-                if (corridor.isStraight() && corridor.connectedSides == 2 && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, random)) {
-                    break;
-                }
-                corridors.remove(corridor);
+        for (int i = 0; i < maxAttempts; i++) {
+            if (corridors.isEmpty()) {
+                break;
             }
+            DungeonCorridor corridor = corridors.get(random.nextInt(corridors.size()));
+            if (corridor.isStraight() && corridor.connectedSides == 2 && dungeonLayer.placeSecretRoom(corridor, corridor.gridPosition, random)) {
+                break;
+            }
+            corridors.remove(corridor);
         }
     }
 

@@ -61,7 +61,7 @@ public class DungeonNodeConnector extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 11;
+        return NODE_CONNECTOR;
     }
 
     @Override

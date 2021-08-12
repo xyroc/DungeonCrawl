@@ -16,7 +16,7 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon.piece;
+package xiroc.dungeoncrawl.dungeon.piece.room;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -31,33 +31,40 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 import java.util.List;
 import java.util.Random;
 
-public class DungeonCorridor extends DungeonPiece {
+public class DungeonMegaNodePart extends DungeonPiece {
 
-    public DungeonCorridor() {
-        this(null, DEFAULT_NBT);
+    public DungeonMegaNodePart() {
+        super(StructurePieceTypes.MEGA_NODE_PART);
     }
 
-    public DungeonCorridor(TemplateManager manager, CompoundNBT p_i51343_2_) {
-        super(StructurePieceTypes.CORRIDOR, p_i51343_2_);
+    public DungeonMegaNodePart(TemplateManager manager, CompoundNBT nbt) {
+        super(StructurePieceTypes.MEGA_NODE_PART, nbt);
+    }
+
+    @Override
+    public int getDungeonPieceType() {
+        return MEGA_NODE_PART;
     }
 
     @Override
     public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
-        if (connectedSides == 2 && isStraight()) {
-            this.model = modelSelector.corridors.roll(rand);
-        } else {
-            this.model = modelSelector.corridorLinkers.roll(rand);
-        }
+        this.model = modelSelector.fullNodes.roll(rand);
     }
 
+    @Override
+    public void setWorldPosition(int x, int y, int z) {
+        super.setWorldPosition(x - 4, y, z - 4);
+    }
 
+    @Override
     public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
-            DungeonCrawl.LOGGER.warn("Missing model for {}", this);
+            DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
             return true;
         }
 
@@ -65,33 +72,10 @@ public class DungeonCorridor extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
-        if (connectedSides != 2 || !isStraight()) {
-            entrances(worldIn, structureBoundingBoxIn, model);
-        }
+        entrances(worldIn, structureBoundingBoxIn, model);
         placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
         return true;
-    }
-
-    @Override
-    public void setupBoundingBox() {
-        if (model != null) {
-            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
-        }
-    }
-
-    @Override
-    public int getDungeonPieceType() {
-        return CORRIDOR;
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundNBT tagCompound) {
-        super.addAdditionalSaveData(tagCompound);
-    }
-
-    public boolean isStraight() {
-        return sides[0] && sides[2] || sides[1] && sides[3];
     }
 
 }

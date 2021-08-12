@@ -59,7 +59,7 @@ public class DungeonSecretRoom extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 14;
+        return SECRET_ROOM;
     }
 
     @Override

@@ -74,7 +74,7 @@ public class DungeonSideRoom extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 9;
+        return SIDE_ROOM;
     }
 
 }

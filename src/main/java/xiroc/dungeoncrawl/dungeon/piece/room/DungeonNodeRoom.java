@@ -89,7 +89,6 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public boolean postProcess(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
             return true;
@@ -106,15 +105,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupBoundingBox() {
-        if (model != null) {
-            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
-        }
-    }
-
-    @Override
     public int getDungeonPieceType() {
-        return 10;
+        return NODE_ROOM;
     }
 
     @Override

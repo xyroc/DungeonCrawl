@@ -42,7 +42,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 16;
+        return MULTIPART_PIECE;
     }
 
     @Override

@@ -151,7 +151,7 @@ public class DungeonStairs extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 1;
+        return STAIRS;
     }
 
 }

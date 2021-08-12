@@ -74,15 +74,8 @@ public class DungeonRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupBoundingBox() {
-        if (model != null) {
-            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
-        }
-    }
-
-    @Override
     public int getDungeonPieceType() {
-        return 8;
+        return ROOM;
     }
 
 }

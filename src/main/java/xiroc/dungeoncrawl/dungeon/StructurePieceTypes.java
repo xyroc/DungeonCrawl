@@ -25,6 +25,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
+import xiroc.dungeoncrawl.dungeon.piece.room.DungeonMegaNodePart;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
@@ -43,6 +44,7 @@ public class StructurePieceTypes {
     public static IStructurePieceType SECRET_ROOM;
     public static IStructurePieceType SPIDER_ROOM;
     public static IStructurePieceType MULTIPART_MODEL_PIECE;
+    public static IStructurePieceType MEGA_NODE_PART;
 
     public static IStructurePieceType DUMMY;
 
@@ -59,6 +61,7 @@ public class StructurePieceTypes {
         SECRET_ROOM = IStructurePieceType.setPieceId(DungeonSecretRoom::new, createKey("secret_room"));
         SPIDER_ROOM = IStructurePieceType.setPieceId(DungeonSpiderRoom::new, createKey("spider_room"));
         MULTIPART_MODEL_PIECE = IStructurePieceType.setPieceId(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));
+        MEGA_NODE_PART = IStructurePieceType.setPieceId(DungeonMegaNodePart::new, createKey("mega_node_part"));
     }
 
     private static String createKey(String path) {

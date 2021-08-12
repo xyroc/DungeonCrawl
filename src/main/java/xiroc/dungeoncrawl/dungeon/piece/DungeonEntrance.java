@@ -120,7 +120,7 @@ public class DungeonEntrance extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 6;
+        return ENTRANCE;
     }
 
     @Override

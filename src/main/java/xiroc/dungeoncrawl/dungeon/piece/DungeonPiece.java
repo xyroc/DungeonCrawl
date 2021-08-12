@@ -65,6 +65,18 @@ import java.util.Random;
 
 public abstract class DungeonPiece extends StructurePiece {
 
+    public static final int CORRIDOR = 0;
+    public static final int STAIRS = 1;
+    public static final int ENTRANCE = 6;
+    public static final int ROOM = 8;
+    public static final int SIDE_ROOM = 9;
+    public static final int NODE_ROOM = 10;
+    public static final int NODE_CONNECTOR = 11;
+    public static final int MEGA_NODE_PART = 12;
+    public static final int SECRET_ROOM = 14;
+    public static final int SPIDER_ROOM = 15;
+    public static final int MULTIPART_PIECE = 16;
+
     public static final CompoundNBT DEFAULT_NBT;
 
     static {
@@ -197,7 +209,11 @@ public abstract class DungeonPiece extends StructurePiece {
      */
     public abstract void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand);
 
-    public abstract void setupBoundingBox();
+    public void setupBoundingBox() {
+        if (model != null) {
+            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
+        }
+    }
 
     public void openSide(Direction side) {
         switch (side) {

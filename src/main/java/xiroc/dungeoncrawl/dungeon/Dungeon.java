@@ -19,8 +19,6 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
@@ -73,10 +71,6 @@ public class Dungeon extends Structure<NoFeatureConfig> {
 
     @Override
     protected boolean isFeatureChunk(ChunkGenerator p_230363_1_, BiomeProvider p_230363_2_, long p_230363_3_, SharedSeedRandom p_230363_5_, int p_230363_6_, int p_230363_7_, Biome p_230363_8_, ChunkPos p_230363_9_, NoFeatureConfig p_230363_10_) {
-        for (Biome biome : p_230363_2_.getBiomesWithin(p_230363_6_ * 16, p_230363_1_.getSpawnHeight(), p_230363_7_ * 16, 64)) {
-            if (!biome.getGenerationSettings().isValidStart(this))
-                return false;
-        }
         return true;
     }
 

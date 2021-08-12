@@ -113,23 +113,4 @@ public class Position2D {
         }
     }
 
-    /**
-     * Creates a new position instance that is shifted by the given amount into the
-     * given direction.
-     */
-    public static Position2D shift(int x, int z, Direction direction, int amount) {
-        switch (direction) {
-            case NORTH:
-                return new Position2D(x, z - amount);
-            case EAST:
-                return new Position2D(x + amount, z);
-            case SOUTH:
-                return new Position2D(x, z + amount);
-            case WEST:
-                return new Position2D(x - amount, z);
-            default:
-                return new Position2D(x, z);
-        }
-    }
-
 }

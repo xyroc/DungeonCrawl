@@ -97,7 +97,7 @@ public final class DungeonModelFeature {
         world.setBlock(pos, chest, 2);
         TileEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof LockableLootTileEntity) {
-            Loot.setLoot((LockableLootTileEntity) tileEntity, Loot.getLootTable(lootLevel, rand), theme, secondaryTheme, rand);
+            Loot.setLoot(world, pos, (LockableLootTileEntity) tileEntity, Loot.getLootTable(lootLevel, rand), theme, secondaryTheme, rand);
         }
     }
 

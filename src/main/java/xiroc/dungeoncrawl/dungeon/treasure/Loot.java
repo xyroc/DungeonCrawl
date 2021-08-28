@@ -21,8 +21,11 @@ package xiroc.dungeoncrawl.dungeon.treasure;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -57,8 +60,8 @@ public class Loot {
 
     public static final ResourceLocation WITHER_SKELETON = DungeonCrawl.locate("monster_overrides/wither_skeleton");
 
-    public static void setLoot(LockableLootTileEntity tile, ResourceLocation lootTable, Theme theme, Theme.SecondaryTheme secondaryTheme, Random rand) {
-        tile.setLootTable(lootTable, rand.nextLong());
+    public static void setLoot(IWorld world, BlockPos pos, LockableLootTileEntity tile, ResourceLocation lootTable, Theme theme, Theme.SecondaryTheme secondaryTheme, Random rand) {
+        LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
         setLootInformation(tile.getTileData(), theme, secondaryTheme);
     }
 

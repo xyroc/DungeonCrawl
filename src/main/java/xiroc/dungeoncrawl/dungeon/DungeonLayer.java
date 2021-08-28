@@ -238,7 +238,7 @@ public class DungeonLayer {
      * Rotates a node piece according to its connections.
      * This is necessary to ensure that the model for this piece matches its connections.
      *
-     * @param placeHolder the place holder of the node
+     * @param placeHolder the placeholder of the node
      * @param rand        an instance of Random which will be used to choose in which direction (clockwise or counterclockwise)
      *                    the algorithm rotates the node until it matches to create more randomness.
      */
@@ -246,9 +246,10 @@ public class DungeonLayer {
         if (placeHolder.hasFlag(Tile.Flag.FIXED_ROTATION))
             return;
         DungeonNodeRoom node = (DungeonNodeRoom) placeHolder.piece;
-        Rotation rotation = Node.getForNodeRoom(node).compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
+        Rotation randomization = Rotation.getRandom(rand);
+        Rotation rotation = Node.ofNodeRoom(node).rotate(randomization).compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
         if (rotation != null) {
-            node.rotation = rotation;
+            node.rotation = rotation.getRotated(randomization);
         } else {
             DungeonCrawl.LOGGER.error("Could not find a proper node rotation for [{} {} {} {}].", node.sides[0],
                     node.sides[1], node.sides[2], node.sides[3]);

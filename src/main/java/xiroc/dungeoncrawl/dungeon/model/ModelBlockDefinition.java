@@ -29,7 +29,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -18,8 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.piece;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +30,6 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -42,8 +39,6 @@ import java.util.List;
 import java.util.Random;
 
 public class DungeonStairs extends DungeonPiece {
-
-    private static final BlockState IRON_BARS = Blocks.IRON_BARS.defaultBlockState();
 
     public int stairType; // 0: bottom stairs, 1: top stairs
 
@@ -76,17 +71,17 @@ public class DungeonStairs extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
         switch (stairType) {
             case 0: {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
-                ironBars(worldIn, structureBoundingBoxIn, model, context);
-                placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
-                decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, worldGen, false, false);
+                ironBars(worldIn, structureBoundingBoxIn, model, worldGen);
+                placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
                 return true;
             }
             case 1: {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, false);
-                entrances(worldIn, structureBoundingBoxIn, model);
-                placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
-                decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, worldGen, false, false);
+                entrances(worldIn, structureBoundingBoxIn, model, worldGen);
+                placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
                 return true;
             }
             default:
@@ -95,28 +90,28 @@ public class DungeonStairs extends DungeonPiece {
 
     }
 
-    public void ironBars(IWorld world, MutableBoundingBox bounds, DungeonModel model, PlacementContext context) {
+    public void ironBars(IWorld world, MutableBoundingBox bounds, DungeonModel model, boolean worldGen) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
 
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z)), x + x0, y + y0, z, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z)), x + x0, y + y0, z, bounds, worldGen);
         }
         if (sides[1]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + model.width, y + y0, z + z0)), x + model.width - 1, y + y0, z + z0, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + model.width, y + y0, z + z0)), x + model.width - 1, y + y0, z + z0, bounds, worldGen);
         }
         if (sides[2]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z + model.length)), x + x0, y + y0, z + model.length - 1, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z + model.length)), x + x0, y + y0, z + model.length - 1, bounds, worldGen);
         }
         if (sides[3]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x, y + y0, z + z0)), x, y + y0, z + z0, bounds, context);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x, y + y0, z + z0)), x, y + y0, z + z0, bounds, worldGen);
         }
 
     }

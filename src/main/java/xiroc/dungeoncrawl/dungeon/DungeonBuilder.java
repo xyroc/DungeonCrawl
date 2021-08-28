@@ -276,9 +276,9 @@ public class DungeonBuilder {
         }
     }
 
-    public static boolean isBlockProtected(IWorld world, BlockPos pos, PlacementContext context) {
+    public static boolean isBlockProtected(IWorld world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        return state.getDestroySpeed(world, pos) < 0 || context.protectedBlocks.contains(pos) || BlockTags.PORTALS.contains(state.getBlock());
+        return state.getDestroySpeed(world, pos) < 0 || BlockTags.PORTALS.contains(state.getBlock());
     }
 
 }

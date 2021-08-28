@@ -33,7 +33,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
@@ -54,8 +53,7 @@ public class Spawner implements IBlockPlacementHandler {
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
     @Override
-    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                      Theme theme, Theme.SecondaryTheme secondaryTheme, int stage) {
+    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
         TileEntity tileentity = world.getBlockEntity(pos);
         if (tileentity instanceof MobSpawnerTileEntity) {

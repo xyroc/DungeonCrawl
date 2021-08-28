@@ -20,25 +20,46 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
+import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.function.BiFunction;
 
-public enum PlacementBehaviour {
+public class PlacementBehaviour {
 
-    NON_SOLID((world, pos, rand, rx, ry, rz) -> false),
-    RANDOM_IF_SOLID_NEARBY((world, pos, rand, rx, ry, rz)
+    public static final PlacementBehaviour NON_SOLID = new PlacementBehaviour((world, pos, rand) -> false);
+    public static final PlacementBehaviour SOLID = new PlacementBehaviour((world, pos, rand) -> true);
+    public static final PlacementBehaviour RANDOM_IF_SOLID_NEARBY = new PlacementBehaviour((world, pos, rand)
             -> {
         if (isSolid(world, pos.north()) || isSolid(world, pos.east()) || isSolid(world, pos.south()) || isSolid(world, pos.west())) {
             return rand.nextFloat() < 0.6F;
         } else {
             return false;
         }
-    }), SOLID((world, pos, rand, rx, ry, rz) -> true);
+    });
 
-    public final PlacementFunction function;
+    private final PlacementFunction function;
+    @Nullable
+    public final BiFunction<Theme, Theme.SecondaryTheme, IBlockStateProvider> airBlock;
 
-    PlacementBehaviour(PlacementFunction function) {
+    public PlacementBehaviour(PlacementFunction function) {
+        this(function, null);
+    }
+
+    public PlacementBehaviour(PlacementFunction function, BiFunction<Theme, Theme.SecondaryTheme, IBlockStateProvider> airBlock) {
         this.function = function;
+        this.airBlock = airBlock;
+    }
+
+    public PlacementBehaviour withAirBlock(BiFunction<Theme, Theme.SecondaryTheme, IBlockStateProvider> airBlock) {
+        return new PlacementBehaviour(this.function, airBlock);
+    }
+
+    public boolean isSolid(IWorld world, BlockPos pos, Random rand) {
+        return function.isSolid(world, pos, rand);
     }
 
     private static boolean isSolid(IWorld world, BlockPos pos) {
@@ -51,7 +72,7 @@ public enum PlacementBehaviour {
 
     public interface PlacementFunction {
 
-        boolean isSolid(IWorld world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ);
+        boolean isSolid(IWorld world, BlockPos pos, Random rand);
 
     }
 

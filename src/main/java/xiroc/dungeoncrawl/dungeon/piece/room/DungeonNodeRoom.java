@@ -97,10 +97,10 @@ public class DungeonNodeRoom extends DungeonPiece {
         Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
-        entrances(worldIn, structureBoundingBoxIn, model);
-        placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
-        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, worldGen, false, false);
+        entrances(worldIn, structureBoundingBoxIn, model, worldGen);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
         return true;
     }
 

@@ -81,10 +81,9 @@ public class SpawnDungeonCommand {
             builder.theme = theme;
             builder.secondaryTheme = secondaryTheme;
             List<DungeonPiece> pieces = builder.build();
-            pieces.forEach((piece) -> {
-                piece.context.heightmapType = Heightmap.Type.WORLD_SURFACE;
-                piece.context.postProcessing = false;
 
+            pieces.forEach((piece) -> {
+                piece.worldGen = false;
                 if (piece instanceof DungeonEntrance) {
                     Vector3i offset = piece.model.getOffset(piece.rotation);
                     int x = piece.x + 4 + offset.getX(), z = piece.z + 4 + offset.getZ();

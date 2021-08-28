@@ -25,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.JsonTheming;
@@ -34,7 +33,8 @@ import xiroc.dungeoncrawl.util.IBlockStateProvider;
 @FunctionalInterface
 public interface IDungeonDecoration {
 
-    void decorate(DungeonModel model, IWorld world, BlockPos pos, PlacementContext context, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece, int stage);
+    void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds,
+                  DungeonPiece piece, int stage, boolean worldGen);
 
     static IDungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
         if (object.has("type")) {

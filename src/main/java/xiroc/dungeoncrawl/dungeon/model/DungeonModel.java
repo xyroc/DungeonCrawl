@@ -199,6 +199,9 @@ public class DungeonModel {
         }
     }
 
+    public Vector3i getOffset() {
+        return offset;
+    }
 
     public Vector3i getOffset(Rotation rotation) {
         if ((rotation.ordinal() & 1) == 1) {

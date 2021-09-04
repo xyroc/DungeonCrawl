@@ -22,7 +22,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
@@ -33,10 +32,12 @@ public record FloorDecoration(IBlockStateProvider blockStateProvider,
                               float chance) implements IDungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, PlacementContext context, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece, int stage) {
+
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
+                         DungeonPiece piece, int stage, boolean worldGen) {
         model.blocks.forEach((block) -> {
             BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
-            if (!DungeonBuilder.isBlockProtected(world, origin, context)
+            if (!DungeonBuilder.isBlockProtected(world, origin)
                     && block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
                     && worldGenBounds.isInside(pos)
                     && structureBounds.isInside(pos)
@@ -56,7 +57,8 @@ public record FloorDecoration(IBlockStateProvider blockStateProvider,
                               float chance) implements IDungeonDecoration {
 
         @Override
-        public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, PlacementContext context, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece, int stage) {
+        public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
+                             DungeonPiece piece, int stage, boolean worldGen) {
             model.blocks.forEach((block) -> {
                 if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1) {
                     BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
@@ -64,7 +66,7 @@ public record FloorDecoration(IBlockStateProvider blockStateProvider,
                     if (worldGenBounds.isInside(pos)
                             && structureBounds.isInside(pos) && world.isEmptyBlock(pos)
                             && world.getBlockState(pos.below()).canOcclude()
-                            && !DungeonBuilder.isBlockProtected(world, pos, context)
+                            && !DungeonBuilder.isBlockProtected(world, pos)
                             && (checkSolid(world, pos.north(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.east(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.south(), worldGenBounds, structureBounds)

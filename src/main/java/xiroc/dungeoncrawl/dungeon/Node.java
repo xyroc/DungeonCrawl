@@ -70,7 +70,7 @@ public class Node {
         return currentRotation;
     }
 
-    public static Node getForNodeRoom(DungeonNodeRoom nodeRoom) {
+    public static Node ofNodeRoom(DungeonNodeRoom nodeRoom) {
         switch (nodeRoom.connectedSides) {
             case 1:
                 return DEAD_END;

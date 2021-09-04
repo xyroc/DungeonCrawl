@@ -34,6 +34,9 @@ public class Tile {
     public final DungeonPiece piece;
     private int flags;
 
+    // Used to determine whether multiple mega node parts belong to the same mega node
+    private int id;
+
     public Tile(@Nonnull DungeonPiece piece) {
         this.piece = piece;
         this.flags = 0;
@@ -42,6 +45,14 @@ public class Tile {
     public Tile addFlag(Flag flag) {
         flags = flags | flag.value;
         return this;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public boolean hasFlag(Flag flag) {

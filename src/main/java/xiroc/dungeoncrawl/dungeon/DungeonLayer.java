@@ -81,6 +81,16 @@ public class DungeonLayer {
     }
 
     /**
+     * Returns whether the tile at the given coordinates in the layout grid is free or not.
+     * The given position is expected to be within the grid bounds.
+     *
+     * @return True if the selected tile in the layout grid is free, false if not.
+     */
+    public boolean isTileFree(int x, int z) {
+        return grid[x][z] == null && map.isPositionFree(x, z);
+    }
+
+    /**
      * Calculates a distance value for the two positions by adding
      * the absolute values of the differences of their coordinates
      * together. The result is the amount of tiles you have to move
@@ -130,7 +140,7 @@ public class DungeonLayer {
             for (int j = 0; j < 2; j++) {
                 Position2D current = start.shift(Orientation.HORIZONTAL_FACINGS[index], j + 1);
                 if (current.isValid(Dungeon.SIZE) && grid[current.x][current.z] != null
-                        && grid[current.x][current.z].piece.getDungeonPieceType() == 0
+                        && grid[current.x][current.z].piece.getDungeonPieceType() == DungeonPiece.CORRIDOR
                         && grid[current.x][current.z].piece.connectedSides < 4) {
                     Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(current.x, current.z), rand);
                     if (data != null) {
@@ -223,7 +233,7 @@ public class DungeonLayer {
      * Rotates a node piece according to its connections.
      * This is necessary to ensure that the model for this piece matches its connections.
      *
-     * @param placeHolder the place holder of the node
+     * @param placeHolder the placeholder of the node
      * @param rand        an instance of Random which will be used to choose in which direction (clockwise or counterclockwise)
      *                    the algorithm rotates the node until it matches to create more randomness.
      */
@@ -231,9 +241,10 @@ public class DungeonLayer {
         if (placeHolder.hasFlag(Tile.Flag.FIXED_ROTATION))
             return;
         DungeonNodeRoom node = (DungeonNodeRoom) placeHolder.piece;
-        Rotation rotation = Node.getForNodeRoom(node).compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
+        Rotation randomization = Rotation.getRandom(rand);
+        Rotation rotation = Node.ofNodeRoom(node).rotate(randomization).compare(new Node(node.sides[0], node.sides[1], node.sides[2], node.sides[3]), rand);
         if (rotation != null) {
-            node.rotation = rotation;
+            node.rotation = rotation.getRotated(randomization);
         } else {
             DungeonCrawl.LOGGER.error("Could not find a proper node rotation for [{} {} {} {}].", node.sides[0],
                     node.sides[1], node.sides[2], node.sides[3]);

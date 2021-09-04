@@ -23,23 +23,18 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
-import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 
 import java.util.List;
 import java.util.Random;
@@ -55,7 +50,8 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {}
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+    }
 
     @Override
     public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
@@ -64,36 +60,44 @@ public class DungeonEntrance extends DungeonPiece {
             return true;
         }
 
-        Vec3i offset = model.getOffset(rotation);
+        Heightmap.Types heightmapType = worldGen ? Heightmap.Types.WORLD_SURFACE_WG : Heightmap.Types.WORLD_SURFACE;
 
-        int height = worldIn.getHeight(context.heightmapType, x + offset.getX() + 4, z + offset.getZ() + 4);
+        int height = worldIn.getHeight(heightmapType, x + 4, z + 4);
+        DungeonCrawl.LOGGER.info("Entrance Height of ({},{}) is {}", x, z, height);
         int cursorHeight = y;
 
-        DungeonModel staircase = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE);
-
-        int maxBuried = Math.min(model.height / 4, 4);
+        DungeonModel staircaseLayer = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE_LAYER);
+        Rotation layerRotation = Rotation.NONE;
         while (cursorHeight < height) {
-            if (height - cursorHeight <= maxBuried) {
-                break;
-            }
-            super.build(staircase, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), theme, secondaryTheme, stage, context, true);
-            cursorHeight += 8;
+            buildRotated(staircaseLayer, worldIn, structureBoundingBoxIn,
+                    new BlockPos(x + 2, cursorHeight, z + 2), theme, secondaryTheme, stage, layerRotation, worldGen, true, false);
+            layerRotation = layerRotation.getRotated(Rotation.CLOCKWISE_90);
+            cursorHeight++;
         }
 
-        BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).offset(offset);
+        BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).offset(rotatedOffset(model.getOffset(), layerRotation, model));
 
-        build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, context, true);
-        placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, layerRotation, worldGen, true, true);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
 
         // A custom bounding box for decorations (eg. vines placement).
         // The original bounding box of this piece goes from the bottom to the top of the world,
         //  since the ground height is unknown up the point of actual generation.
         // And because we dont want the decorations to decorate everything from top to bottom,
         //  we use a custom bounding box for them.
+
         BoundingBox populationBox = model.createBoundingBox(pos, rotation);
-        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model, worldGen);
         return true;
+    }
+
+    private static Vec3i rotatedOffset(Vec3i offset, Rotation rotation, DungeonModel model) {
+        return switch (rotation) {
+            case CLOCKWISE_90 -> new Vec3i(-model.length - offset.getZ() + 1, offset.getY(), offset.getX());
+            case CLOCKWISE_180 -> new Vec3i(-model.width - offset.getX() + 1, offset.getY(), -model.length - offset.getZ() + 1);
+            case COUNTERCLOCKWISE_90 -> new Vec3i(offset.getZ(), offset.getY(), -model.width - offset.getX() + 1);
+            default -> offset;
+        };
     }
 
     @Override
@@ -115,36 +119,7 @@ public class DungeonEntrance extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 6;
-    }
-
-    public void build(DungeonModel model, LevelAccessor world, BoundingBox boundsIn, BlockPos pos, Theme theme,
-                      SecondaryTheme secondaryTheme, int lootLevel, PlacementContext context, boolean fillAir) {
-        if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Building {} at ({} | {} | {})", model.getKey(), pos.getX(), pos.getY(), pos.getZ());
-        }
-
-        model.blocks.forEach((block) -> {
-            BlockPos position = pos.offset(block.position);
-            if (boundsIn.isInside(position)) {
-                BlockState state = block.type.blockFactory.get(block, rotation, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
-
-                if (state == null)
-                    return;
-
-                placeBlock(block, world, context, theme, secondaryTheme, lootLevel, fillAir, position, state);
-
-                if (block.type == DungeonModelBlockType.SOLID
-                        && block.position.getY() == 0
-                        && world.isEmptyBlock(position.below())) {
-                    buildPillar(world, position.below());
-                }
-            }
-        });
-
-        if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Finished building {} at ({} | {} | {})", model.getKey(), pos.getX(), pos.getY(), pos.getZ());
-        }
+        return ENTRANCE;
     }
 
 }

@@ -89,7 +89,6 @@ public class DungeonNodeRoom extends DungeonPiece {
 
     @Override
     public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
             return true;
@@ -98,23 +97,16 @@ public class DungeonNodeRoom extends DungeonPiece {
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, context, false);
-        entrances(worldIn, structureBoundingBoxIn, model);
-        placeFeatures(worldIn, context, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
-        decorate(worldIn, pos, context, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model);
+        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, worldGen, false, false);
+        entrances(worldIn, structureBoundingBoxIn, model, worldGen);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
         return true;
     }
 
     @Override
-    public void setupBoundingBox() {
-        if (model != null) {
-            this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
-        }
-    }
-
-    @Override
     public int getDungeonPieceType() {
-        return 10;
+        return NODE_ROOM;
     }
 
     @Override

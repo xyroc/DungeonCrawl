@@ -86,7 +86,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
 
     @Override
     public int getDungeonPieceType() {
-        return 15;
+        return SPIDER_ROOM;
     }
 
     @Override

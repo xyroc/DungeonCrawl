@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockStateProvider;
@@ -41,19 +40,20 @@ public enum DungeonModelBlockType {
     AIR((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> DungeonBlocks.CAVE_AIR),
 
     // Types with Theme Factories
-    SOLID           (tFactory(Theme::getSolid), PlacementBehaviour.SOLID),
-    SOLID_STAIRS    (tFactory(Theme::getSolidStairs), PlacementBehaviour.SOLID),
-    SOLID_SLAB      (tFactory(Theme::getSolidSlab), PlacementBehaviour.SOLID),
-    GENERIC         (tFactory(Theme::getGeneric)),
-    SLAB            (tFactory(Theme::getSlab)),
-    SOLID_PILLAR    (tFactory(Theme::getPillar), PlacementBehaviour.SOLID, true),
-    SOLID_FLOOR     (tFactory(Theme::getFloor), PlacementBehaviour.SOLID),
-    FENCING         (tFactory(Theme::getFencing)),
-    FLOOR           (tFactory(Theme::getFloor), PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
-    FLUID           (tFactory(Theme::getFluid)),
-    LOOSE_GROUND    (tFactory(Theme::getFloor)),
-    STAIRS          (tFactory(Theme::getStairs)),
-    WALL            (tFactory(Theme::getWall)),
+    SOLID               (tFactory(Theme::getSolid), PlacementBehaviour.SOLID),
+    SOLID_STAIRS        (tFactory(Theme::getSolidStairs), PlacementBehaviour.SOLID),
+    SOLID_SLAB          (tFactory(Theme::getSolidSlab), PlacementBehaviour.SOLID),
+    GENERIC             (tFactory(Theme::getGeneric)),
+    GENERIC_OR_FENCING  (tFactory(Theme::getGeneric), PlacementBehaviour.NON_SOLID.withAirBlock((theme, secondaryTheme) -> theme.getFencing())),
+    SLAB                (tFactory(Theme::getSlab)),
+    SOLID_PILLAR        (tFactory(Theme::getPillar), PlacementBehaviour.SOLID, true),
+    SOLID_FLOOR         (tFactory(Theme::getFloor), PlacementBehaviour.SOLID),
+    FENCING             (tFactory(Theme::getFencing)),
+    FLOOR               (tFactory(Theme::getFloor), PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
+    FLUID               (tFactory(Theme::getFluid)),
+    LOOSE_GROUND        (tFactory(Theme::getFloor)),
+    STAIRS              (tFactory(Theme::getStairs)),
+    WALL                (tFactory(Theme::getWall)),
 
     // Types with Sub-Theme Factories
     PILLAR                      (sFactory(Theme.SecondaryTheme::getPillar), true),
@@ -156,10 +156,6 @@ public enum DungeonModelBlockType {
         return isPillar;
     }
 
-    public boolean isSolid(LevelAccessor world, BlockPos pos, Random rand, int relativeX, int relativeY, int relativeZ) {
-        return Config.SOLID.get() || placementBehavior.function.isSolid(world, pos, rand, relativeX, relativeY, relativeZ);
-    }
-
     public static DungeonModelBlockType get(Block block, ModelBlockDefinition definition) {
         if (definition.containsBlock(block)) {
             return definition.getType(block);
@@ -192,11 +188,6 @@ public enum DungeonModelBlockType {
      */
     private static BlockFactory tFactory(Function<Theme, IBlockStateProvider> blockSelector) {
         return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(world, pos, rotation), world, pos, rotation);
-    }
-
-    /**
-     * Creates a block factory that pulls from a sub-theme
-        return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(pos, rotation), rotation);
     }
 
     /**

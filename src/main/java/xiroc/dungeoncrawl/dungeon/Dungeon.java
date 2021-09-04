@@ -72,10 +72,6 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
 
     @Override
     protected boolean isFeatureChunk(ChunkGenerator p_160455_, BiomeSource p_160456_, long p_160457_, WorldgenRandom p_160458_, ChunkPos p_160459_, Biome p_160460_, ChunkPos p_160461_, NoneFeatureConfiguration p_160462_, LevelHeightAccessor p_160463_) {
-        for (Biome biome : p_160456_.getBiomesWithin(p_160459_.x * 16, p_160455_.getSpawnHeight(p_160463_), p_160459_.z * 16, 64)) {
-            if (!biome.getGenerationSettings().isValidStart(this))
-                return false;
-        }
         return true;
     }
 

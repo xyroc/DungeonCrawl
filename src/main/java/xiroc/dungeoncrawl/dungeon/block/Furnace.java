@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.SmokerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -41,8 +40,8 @@ public class Furnace implements IBlockPlacementHandler {
             Items.COOKED_COD, Items.COOKED_PORKCHOP, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.BAKED_POTATO};
 
     @Override
-    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                      Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
+    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme,
+                      int lootLevel, boolean worldGen) {
         world.setBlock(pos, state, 2);
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof FurnaceBlockEntity furnace) {
@@ -59,8 +58,8 @@ public class Furnace implements IBlockPlacementHandler {
     public static class Smoker implements IBlockPlacementHandler {
 
         @Override
-        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PlacementContext context,
-                          Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel) {
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme,
+                          int lootLevel, boolean worldGen) {
             world.setBlock(pos, state, 2);
             BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof SmokerBlockEntity smoker) {

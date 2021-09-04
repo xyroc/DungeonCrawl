@@ -42,6 +42,7 @@ public class DungeonModels {
     public static final ResourceLocation STARTER_ROOM = DungeonCrawl.locate("default/room/starter_room");
     public static final ResourceLocation ROGUELIKE_TOWER = DungeonCrawl.locate("default/entrance/roguelike/rogue_tower");
     public static final ResourceLocation STAIRCASE = DungeonCrawl.locate("default/staircase");
+    public static final ResourceLocation STAIRCASE_LAYER = DungeonCrawl.locate("default/staircase_layer");
     public static final ResourceLocation BOTTOM_STAIRS = DungeonCrawl.locate("default/stairs_bottom");
     public static final ResourceLocation BOTTOM_STAIRS_2 = DungeonCrawl.locate("default/stairs_bottom_2");
     public static final ResourceLocation TOP_STAIRS = DungeonCrawl.locate("default/stairs_top");

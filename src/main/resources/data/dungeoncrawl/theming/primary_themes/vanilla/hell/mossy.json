@@ -1,5 +1,6 @@
 {
   "id": 81,
+  "secondary_theme": [{"key": "dungeoncrawl:vanilla/catacombs/overgrown"}],
   "decorations": [
     {
       "type": "vines"
@@ -189,11 +190,11 @@
     },
     "fencing": {
       "type": "block",
-      "block": "minecraft:nether_brick_fence"
+      "block": "minecraft:iron_bars"
     },
     "fluid": {
       "type": "block",
-      "block": "minecraft:lava"
+      "block": "minecraft:water"
     }
   }
 }

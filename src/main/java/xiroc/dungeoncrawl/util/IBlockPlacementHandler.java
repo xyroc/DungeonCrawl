@@ -20,13 +20,17 @@ package xiroc.dungeoncrawl.util;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.PlacementContext;
 import xiroc.dungeoncrawl.dungeon.block.Furnace;
 import xiroc.dungeoncrawl.dungeon.block.Plants;
 import xiroc.dungeoncrawl.dungeon.block.Spawner;
@@ -38,6 +42,22 @@ public interface IBlockPlacementHandler {
 
     IBlockPlacementHandler SPAWNER = new Spawner();
 
+    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, theme, secondaryTheme, lootLevel, worldGen) -> {
+        if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
+            world.getChunk(pos).getBlockTicks().scheduleTick(pos, state.getBlock(), 1);
+        }
+        world.setBlock(pos, state, 2);
+    };
+
+    IBlockPlacementHandler LECTERN = (world, state, pos, rand, theme, secondaryTheme, lootLevel, worldGen) -> {
+        world.setBlock(pos, state, 2);
+        BlockEntity tile = world.getBlockEntity(pos);
+        DungeonCrawl.LOGGER.info("Lectern at {}, tile: {}", pos, tile);
+        if (tile instanceof LecternBlockEntity lectern) {
+            lectern.setBook(new ItemStack(Items.BOOK));
+        }
+    };
+
     ImmutableMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new ImmutableMap.Builder<Block, IBlockPlacementHandler>()
             .put(Blocks.FURNACE, new Furnace())
             .put(Blocks.SMOKER, new Furnace.Smoker())
@@ -45,18 +65,10 @@ public interface IBlockPlacementHandler {
             .put(Blocks.FARMLAND, new Plants.Farmland())
             .put(Blocks.FLOWER_POT, new Plants.FlowerPot())
             .put(Blocks.PODZOL, new Plants.Podzol())
+            .put(Blocks.LECTERN, LECTERN)
             .build();
 
-    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, context, theme, subTheme, lootLevel) -> {
-        if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
-            world.getChunk(pos).getBlockTicks().scheduleTick(pos, state.getBlock(), 1);
-        }
-        world.setBlock(pos, state, 2);
-    };
-
-    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand,
-
-               PlacementContext context, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel);
+    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel, boolean worldGen);
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

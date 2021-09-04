@@ -55,7 +55,7 @@ public class Config {
             SECRET_ROOMS,
             PRINT_BIOME_CATEGORIES;
 
-    private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------#";
+    private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------+";
 
     static {
         BUILDER.push("Miscellaneous Settings");
@@ -96,7 +96,8 @@ public class Config {
                 .comment(SEPARATOR_LINE +
                         "\nThe minimum distance between the dungeons in chunks. Has to be lower than the spacing!\n" +
                         "The closer the separation is to the spacing, the more grid-aligned and predictable the dungeon placement will be.\n" +
-                        "Generally, bigger values allow for less, and smaller values for more randomness.\n")
+                        "Generally, bigger values allow for less, and smaller values for more randomness.\n" +
+                        "Has to be lower than the spacing!\n")
                 .defineInRange("separation", 12, 8, 8191);
 
         BUILDER.push("Biomes");

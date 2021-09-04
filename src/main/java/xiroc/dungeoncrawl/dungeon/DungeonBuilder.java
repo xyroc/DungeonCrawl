@@ -162,7 +162,7 @@ public class DungeonBuilder {
                 if (layer.grid[x][z] != null) {
                     if (!layer.grid[x][z].hasFlag(Tile.Flag.PLACEHOLDER)) {
                         layer.grid[x][z].piece.stage = stage;
-                        if (layer.grid[x][z].piece.getDungeonPieceType() == 0)
+                        if (layer.grid[x][z].piece.getDungeonPieceType() == DungeonPiece.CORRIDOR)
                             DungeonFeatures.processCorridor(this, layer, x, z, rand, lyr, stage, startPos);
                     }
                 }
@@ -261,7 +261,7 @@ public class DungeonBuilder {
 
                         tile.piece.setupBoundingBox();
 
-                        if (tile.piece.getDungeonPieceType() == 10) {
+                        if (tile.piece.getDungeonPieceType() == DungeonPiece.NODE_ROOM) {
                             layer.rotateNode(tile, rand);
                         }
 
@@ -276,9 +276,9 @@ public class DungeonBuilder {
         }
     }
 
-    public static boolean isBlockProtected(LevelAccessor world, BlockPos pos, PlacementContext context) {
+    public static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        return state.getDestroySpeed(world, pos) < 0 || context.protectedBlocks.contains(pos) || BlockTags.PORTALS.contains(state.getBlock());
+        return state.getDestroySpeed(world, pos) < 0 || BlockTags.PORTALS.contains(state.getBlock());
     }
 
 }

@@ -24,11 +24,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FarmlandBlock;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.loot.RandomValueRange;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -300,21 +302,21 @@ public final class DungeonModelFeature {
                 buildDown(world, west.south(), bounds, inner);
 
                 // Walls
-                buildDown(world, east.east(), bounds, theme.generic);
-                buildDown(world, east.east().north(), bounds, theme.generic);
-                buildDown(world, east.east().south(), bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, 0), bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, -1), bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, 1), bounds, theme.generic);
 
-                buildDown(world, south.south(), bounds, theme.generic);
-                buildDown(world, south.south().east(), bounds, theme.generic);
-                buildDown(world, south.south().west(), bounds, theme.generic);
+                buildDown(world, south.offset(0, -1, 1), bounds, theme.generic);
+                buildDown(world, south.offset(1, -1, 1), bounds, theme.generic);
+                buildDown(world, south.offset(-1, -1, 1), bounds, theme.generic);
 
-                buildDown(world, west.west(), bounds, theme.generic);
-                buildDown(world, west.west().north(), bounds, theme.generic);
-                buildDown(world, west.west().south(), bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, 0), bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, -1), bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, 1), bounds, theme.generic);
 
-                buildDown(world, north.north(), bounds, theme.generic);
-                buildDown(world, north.north().east(), bounds, theme.generic);
-                buildDown(world, north.north().west(), bounds, theme.generic);
+                buildDown(world, north.offset(0, -1, -1), bounds, theme.generic);
+                buildDown(world, north.offset(1, -1, -1), bounds, theme.generic);
+                buildDown(world, north.offset(-1, -1, -1), bounds, theme.generic);
             }
 
             @Override
@@ -334,6 +336,23 @@ public final class DungeonModelFeature {
             }
         };
 
+        Type CROPS = new Type() {
+            @Override
+            public void place(IWorld world, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
+                if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmlandBlock) {
+                    BlockState crop = BlockTags.CROPS.getRandomElement(rand).defaultBlockState();
+                    if (crop.hasProperty(BlockStateProperties.AGE_7))
+                        crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
+                    world.setBlock(pos, crop, 2);
+                }
+            }
+
+            @Override
+            public String getName() {
+                return "crops";
+            }
+        };
+
         ImmutableMap<String, Type> TYPES = new ImmutableMap.Builder<String, Type>()
                 .put(CHEST.getName(), CHEST)
                 .put(TNT_CHEST.getName(), TNT_CHEST)
@@ -342,6 +361,7 @@ public final class DungeonModelFeature {
                 .put(SPAWNER.getName(), SPAWNER)
                 .put(STAIRS.getName(), STAIRS)
                 .put(SEWER_HOLE.getName(), SEWER_HOLE)
+                .put(CROPS.getName(), CROPS)
                 .build();
 
         void place(IWorld world, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen);

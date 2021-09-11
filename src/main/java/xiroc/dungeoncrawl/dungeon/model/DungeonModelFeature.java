@@ -28,8 +28,10 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -300,21 +302,21 @@ public final class DungeonModelFeature {
                 buildDown(world, west.south(), bounds, inner);
 
                 // Walls
-                buildDown(world, east.east(), bounds, theme.generic);
-                buildDown(world, east.east().north(), bounds, theme.generic);
-                buildDown(world, east.east().south(), bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, 0), bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, -1), bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, 1), bounds, theme.generic);
 
-                buildDown(world, south.south(), bounds, theme.generic);
-                buildDown(world, south.south().east(), bounds, theme.generic);
-                buildDown(world, south.south().west(), bounds, theme.generic);
+                buildDown(world, south.offset(0, -1, 1), bounds, theme.generic);
+                buildDown(world, south.offset(1, -1, 1), bounds, theme.generic);
+                buildDown(world, south.offset(-1, -1, 1), bounds, theme.generic);
 
-                buildDown(world, west.west(), bounds, theme.generic);
-                buildDown(world, west.west().north(), bounds, theme.generic);
-                buildDown(world, west.west().south(), bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, 0), bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, -1), bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, 1), bounds, theme.generic);
 
-                buildDown(world, north.north(), bounds, theme.generic);
-                buildDown(world, north.north().east(), bounds, theme.generic);
-                buildDown(world, north.north().west(), bounds, theme.generic);
+                buildDown(world, north.offset(0, -1, -1), bounds, theme.generic);
+                buildDown(world, north.offset(1, -1, -1), bounds, theme.generic);
+                buildDown(world, north.offset(-1, -1, -1), bounds, theme.generic);
             }
 
             @Override
@@ -334,6 +336,23 @@ public final class DungeonModelFeature {
             }
         };
 
+        Type CROPS = new Type() {
+            @Override
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
+                if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmBlock) {
+                    BlockState crop = BlockTags.CROPS.getRandomElement(rand).defaultBlockState();
+                    if (crop.hasProperty(BlockStateProperties.AGE_7))
+                        crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
+                    world.setBlock(pos, crop, 2);
+                }
+            }
+
+            @Override
+            public String getName() {
+                return "crops";
+            }
+        };
+
         ImmutableMap<String, Type> TYPES = new ImmutableMap.Builder<String, Type>()
                 .put(CHEST.getName(), CHEST)
                 .put(TNT_CHEST.getName(), TNT_CHEST)
@@ -342,6 +361,7 @@ public final class DungeonModelFeature {
                 .put(SPAWNER.getName(), SPAWNER)
                 .put(STAIRS.getName(), STAIRS)
                 .put(SEWER_HOLE.getName(), SEWER_HOLE)
+                .put(CROPS.getName(), CROPS)
                 .build();
 
         void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen);

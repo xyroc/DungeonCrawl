@@ -32,12 +32,12 @@ import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.block.pattern.CheckedPattern;
-import xiroc.dungeoncrawl.dungeon.block.pattern.TerracottaPattern;
+import xiroc.dungeoncrawl.dungeon.block.provider.pattern.ChessBoardPattern;
+import xiroc.dungeoncrawl.dungeon.block.provider.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
@@ -57,28 +57,19 @@ public class JsonTheming {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
         IBlockStateProvider solid = JsonTheming.deserialize(themeObject, "solid", file);
-
         IBlockStateProvider generic = JsonTheming.deserialize(themeObject, "generic", file);
-
         IBlockStateProvider pillar = JsonTheming.deserialize(themeObject, "pillar", file);
-
         IBlockStateProvider fencing = JsonTheming.deserialize(themeObject, "fencing", file);
-
         IBlockStateProvider floor = JsonTheming.deserialize(themeObject, "floor", file);
-
         IBlockStateProvider fluid = JsonTheming.deserialize(themeObject, "fluid", file);
-
         IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
-
         IBlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
         IBlockStateProvider solidStairs = JsonTheming.deserialize(themeObject, "solid_stairs", file);
-
         IBlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
         IBlockStateProvider solidSlab = JsonTheming.deserialize(themeObject, "solid_slab", file);
+        IBlockStateProvider wall = JsonTheming.deserialize(themeObject, "wall", file);
 
-        IBlockStateProvider vanillaWall = JsonTheming.deserialize(themeObject, "wall", file);
-
-        Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, vanillaWall, slab, solidSlab, fencing, fluid);
+        Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid);
 
         if (object.has("decorations")) {
             JsonArray array = object.getAsJsonArray("decorations");
@@ -120,18 +111,18 @@ public class JsonTheming {
 
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider wallLog = JsonTheming.deserialize(themeObject, "pillar", file);
-        IBlockStateProvider trapDoor = JsonTheming.deserialize(themeObject, "trapdoor", file);
+        IBlockStateProvider pillar = JsonTheming.deserialize(themeObject, "pillar", file);
+        IBlockStateProvider trapdoor = JsonTheming.deserialize(themeObject, "trapdoor", file);
         IBlockStateProvider door = JsonTheming.deserialize(themeObject, "door", file);
         IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
         IBlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
         IBlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
         IBlockStateProvider fence = JsonTheming.deserialize(themeObject, "fence", file);
-        IBlockStateProvider fenceGate = JsonTheming.deserialize(themeObject, "fence_gate", file);
+        IBlockStateProvider fence_gate = JsonTheming.deserialize(themeObject, "fence_gate", file);
         IBlockStateProvider button = JsonTheming.deserialize(themeObject, "button", file);
-        IBlockStateProvider pressurePlate = JsonTheming.deserialize(themeObject, "pressure_plate", file);
+        IBlockStateProvider pressure_plate = JsonTheming.deserialize(themeObject, "pressure_plate", file);
 
-        SecondaryTheme secondaryTheme = new SecondaryTheme(wallLog, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
+        SecondaryTheme secondaryTheme = new SecondaryTheme(pillar, trapdoor, door, material, stairs, slab, fence, fence_gate, button, pressure_plate);
 
         if (object.has("id")) {
             Theme.ID_TO_SECONDARY_THEME.put(object.get("id").getAsInt(), secondaryTheme);
@@ -277,8 +268,8 @@ public class JsonTheming {
                 }
             } else if (type.equalsIgnoreCase("pattern")) {
                 switch (object.get("pattern_type").getAsString().toLowerCase(Locale.ROOT)) {
-                    case "checked":
-                        return new CheckedPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
+                    case "chess_board":
+                        return new ChessBoardPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
                     case "terracotta":
                         return new TerracottaPattern(deserialize(object, "block", file));
                     default:

@@ -54,7 +54,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 

@@ -20,9 +20,8 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 
 import javax.annotation.Nullable;
 import java.util.Random;

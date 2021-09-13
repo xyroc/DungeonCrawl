@@ -28,10 +28,9 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 
 import java.util.Random;
 import java.util.function.Function;

@@ -48,7 +48,7 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import javax.annotation.Nullable;

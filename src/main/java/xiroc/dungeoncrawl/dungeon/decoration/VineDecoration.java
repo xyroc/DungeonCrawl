@@ -31,6 +31,12 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 public class VineDecoration implements IDungeonDecoration {
 
+    private final float chance;
+
+    public VineDecoration(float chance) {
+        this.chance = chance;
+    }
+
     @Override
     public void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds,
                          DungeonPiece piece, int stage, boolean worldGen) {
@@ -41,9 +47,9 @@ public class VineDecoration implements IDungeonDecoration {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < maxZ; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (!DungeonBuilder.isBlockProtected(world, currentPos)
-                            && worldGenBounds.isInside(currentPos)
+                    if (worldGenBounds.isInside(currentPos)
                             && structureBounds.isInside(currentPos)
+                            && !DungeonBuilder.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)) {
                         BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
                         BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
@@ -57,7 +63,7 @@ public class VineDecoration implements IDungeonDecoration {
                         boolean _west = worldGenBounds.isInside(west) && structureBounds.isInside(west) && world.getBlockState(west).isRedstoneConductor(world, east) && !world.isEmptyBlock(west);
                         boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).isRedstoneConductor(world, up) && !world.isEmptyBlock(up);
 
-                        if ((_north || _east || _south || _west || _up) && DungeonBlocks.RANDOM.nextFloat() < 0.35F) {
+                        if ((_north || _east || _south || _west || _up) && DungeonBlocks.RANDOM.nextFloat() < chance) {
                             BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
                             world.setBlock(p, Blocks.VINE.defaultBlockState().setValue(BlockStateProperties.NORTH, _north)
                                     .setValue(BlockStateProperties.EAST, _east).setValue(BlockStateProperties.SOUTH, _south)

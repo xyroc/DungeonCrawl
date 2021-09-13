@@ -20,6 +20,25 @@ archivesBaseName = 'DungeonCrawl-1.16.5'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = [
+                    "$rootDir/src/main/resources",
+                    "$rootDir/src/generated/resources"
+            ]
+        }
+    }
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+    test {}
+}
+
 minecraft {
     // The mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   Snapshot are built nightly.
@@ -82,6 +101,7 @@ minecraft {
             mods {
                 dungeoncrawl {
                     source sourceSets.main
+                    source sourceSets.datagen
                 }
             }
         }

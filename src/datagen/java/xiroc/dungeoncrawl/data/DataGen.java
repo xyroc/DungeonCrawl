@@ -16,19 +16,26 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.data;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.data.DataGenerator;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
+import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
 
-public interface IBlockStateProvider {
+@Mod.EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public class DataGen {
 
-    default BlockState get(IWorld world, BlockPos pos) {
-        return get(world, pos, Rotation.NONE);
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
+        if (event.includeServer()) {
+            DataGenerator generator = event.getGenerator();
+            generator.addProvider(new PrimaryThemes(generator));
+            generator.addProvider(new SecondaryThemes(generator));
+        }
     }
-
-    BlockState get(IWorld world, BlockPos pos, Rotation rotation);
 
 }

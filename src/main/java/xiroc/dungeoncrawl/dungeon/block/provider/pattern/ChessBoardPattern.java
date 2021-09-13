@@ -1,16 +1,16 @@
-package xiroc.dungeoncrawl.dungeon.block.pattern;
+package xiroc.dungeoncrawl.dungeon.block.provider.pattern;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 
-public class CheckedPattern implements IBlockStateProvider {
+public class ChessBoardPattern implements IBlockStateProvider {
 
     private final IBlockStateProvider block1, block2;
 
-    public CheckedPattern(IBlockStateProvider block1, IBlockStateProvider block2) {
+    public ChessBoardPattern(IBlockStateProvider block1, IBlockStateProvider block2) {
         this.block1 = block1;
         this.block2 = block2;
     }

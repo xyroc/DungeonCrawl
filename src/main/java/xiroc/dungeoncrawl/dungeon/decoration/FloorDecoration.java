@@ -26,7 +26,7 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 
 public class FloorDecoration implements IDungeonDecoration {
 
@@ -44,10 +44,10 @@ public class FloorDecoration implements IDungeonDecoration {
                          DungeonPiece piece, int stage, boolean worldGen) {
         model.blocks.forEach((block) -> {
             BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
-            if (!DungeonBuilder.isBlockProtected(world, origin)
-                    && block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
+            if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
                     && worldGenBounds.isInside(pos)
                     && structureBounds.isInside(pos)
+                    && !DungeonBuilder.isBlockProtected(world, origin)
                     && world.isEmptyBlock(origin.offset(block.position).above())
                     && checkSolid(world, origin.offset(block.position), worldGenBounds, structureBounds)
                     && DungeonBlocks.RANDOM.nextFloat() < chance) {

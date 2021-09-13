@@ -25,13 +25,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.JsonTheming;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
 @FunctionalInterface
 public interface IDungeonDecoration {
+
+    String VINE_DECORATION = "vines";
+    String SCATTERED_DECORATION = "scattered";
+    String FLOOR_DECORATION = "floor";
+    String FLOOR_NEXT_TO_SOLID_DECORATION = "floor_next_to_solid";
 
     void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds,
                   DungeonPiece piece, int stage, boolean worldGen);
@@ -40,9 +45,9 @@ public interface IDungeonDecoration {
         if (object.has("type")) {
             String type = object.get("type").getAsString().toLowerCase();
             switch (type) {
-                case "vines":
-                    return new VineDecoration();
-                case "scattered": {
+                case VINE_DECORATION:
+                    return new VineDecoration(object.has("chance") ? object.get("chance").getAsFloat() : 0.35F);
+                case SCATTERED_DECORATION: {
                     float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.25F;
                     IBlockStateProvider blockStateProvider;
 
@@ -56,7 +61,7 @@ public interface IDungeonDecoration {
                         return null;
                     }
                 }
-                case "floor": {
+                case FLOOR_DECORATION: {
                     float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.5F;
                     IBlockStateProvider blockStateProvider;
 
@@ -70,7 +75,7 @@ public interface IDungeonDecoration {
                         return null;
                     }
                 }
-                case "floor_next_to_solid": {
+                case FLOOR_NEXT_TO_SOLID_DECORATION: {
                     float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.5F;
                     IBlockStateProvider blockStateProvider;
 

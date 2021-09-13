@@ -29,7 +29,7 @@ import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;

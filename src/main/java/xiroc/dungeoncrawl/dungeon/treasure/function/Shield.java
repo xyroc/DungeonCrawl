@@ -20,13 +20,14 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.conditions.ILootCondition;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 
 public class Shield extends LootFunction {
 
@@ -42,9 +43,13 @@ public class Shield extends LootFunction {
         return RandomItems.createShield(context.getRandom(), lootLevel);
     }
 
+    public static LootFunction.Builder<?> shield(int lootLevel) {
+        return simpleBuilder(conditions -> new Shield(conditions, lootLevel));
+    }
+
     @Override
     public LootFunctionType getType() {
-        return Treasure.SHIELD;
+        return Loot.SHIELD;
     }
 
     public static class Serializer extends LootFunction.Serializer<Shield> {
@@ -54,9 +59,15 @@ public class Shield extends LootFunction {
         }
 
         @Override
+        public void serialize(JsonObject p_230424_1_, Shield p_230424_2_, JsonSerializationContext p_230424_3_) {
+            super.serialize(p_230424_1_, p_230424_2_, p_230424_3_);
+            p_230424_1_.addProperty(Loot.LOOT_LEVEL, p_230424_2_.lootLevel);
+        }
+
+        @Override
         public Shield deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                   ILootCondition[] conditionsIn) {
-            return new Shield(conditionsIn, object.has("loot_level") ? object.get("loot_level").getAsInt(): 0);
+            return new Shield(conditionsIn, object.get(Loot.LOOT_LEVEL).getAsInt());
         }
 
     }

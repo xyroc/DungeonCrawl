@@ -27,7 +27,7 @@ import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 import java.util.Random;
 
@@ -122,9 +122,13 @@ public class SuspiciousStew extends LootFunction {
         return stack;
     }
 
+    public static LootFunction.Builder<?> suspiciousStew() {
+        return simpleBuilder(SuspiciousStew::new);
+    }
+
     @Override
     public LootFunctionType getType() {
-        return Treasure.SUSPICIOUS_STEW;
+        return Loot.SUSPICIOUS_STEW;
     }
 
     public static class Serializer extends LootFunction.Serializer<SuspiciousStew> {

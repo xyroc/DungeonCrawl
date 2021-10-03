@@ -23,6 +23,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.data.loot.LootTables;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
 
@@ -33,6 +34,7 @@ public class DataGen {
     public static void gatherData(GatherDataEvent event) {
         if (event.includeServer()) {
             DataGenerator generator = event.getGenerator();
+            generator.addProvider(new LootTables(generator));
             generator.addProvider(new PrimaryThemes(generator));
             generator.addProvider(new SecondaryThemes(generator));
         }

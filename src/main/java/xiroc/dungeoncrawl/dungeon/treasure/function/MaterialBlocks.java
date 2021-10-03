@@ -35,7 +35,6 @@ import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
@@ -66,9 +65,13 @@ public class MaterialBlocks extends LootFunction {
                 : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();
     }
 
+    public static LootFunction.Builder<?> materialBlocks() {
+        return simpleBuilder(MaterialBlocks::new);
+    }
+
     @Override
     public LootFunctionType getType() {
-        return Treasure.MATERIAL_BLOCKS;
+        return Loot.MATERIAL_BLOCKS;
     }
 
     public static class Serializer extends LootFunction.Serializer<MaterialBlocks> {

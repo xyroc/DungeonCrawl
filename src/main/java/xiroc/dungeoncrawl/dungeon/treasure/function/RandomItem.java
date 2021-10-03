@@ -27,14 +27,8 @@ import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
-import xiroc.dungeoncrawl.theme.Theme;
 
 public class RandomItem extends LootFunction {
 
@@ -54,9 +48,13 @@ public class RandomItem extends LootFunction {
         }
     }
 
+    public static LootFunction.Builder<?> randomItem(int lootLevel) {
+        return simpleBuilder(conditions -> new RandomItem(conditions, lootLevel));
+    }
+
     @Override
     public LootFunctionType getType() {
-        return Treasure.RANDOM_ITEM;
+        return Loot.RANDOM_ITEM;
     }
 
     public static class Serializer extends LootFunction.Serializer<RandomItem> {
@@ -68,13 +66,13 @@ public class RandomItem extends LootFunction {
         @Override
         public void serialize(JsonObject p_230424_1_, RandomItem p_230424_2_, JsonSerializationContext p_230424_3_) {
             super.serialize(p_230424_1_, p_230424_2_, p_230424_3_);
-            p_230424_1_.addProperty("loot_level", p_230424_2_.lootLevel);
+            p_230424_1_.addProperty(Loot.LOOT_LEVEL, p_230424_2_.lootLevel);
         }
 
         @Override
         public RandomItem deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                       ILootCondition[] conditionsIn) {
-            return new RandomItem(conditionsIn, object.get("loot_level").getAsInt());
+            return new RandomItem(conditionsIn, object.get(Loot.LOOT_LEVEL).getAsInt());
         }
 
     }

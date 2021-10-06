@@ -39,18 +39,16 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-import net.minecraft.resources.IFutureReloadListener.IStage;
-
 public class ResourceReloadHandler implements IFutureReloadListener {
 
     /**
      * A list of all objects that need to get updated after the data pack files have been loaded.
      */
-    public static final ArrayList<Updateable> UPDATEABLES = new ArrayList<>();
+    public static final ArrayList<Updatable> PENDING_UPDATES = new ArrayList<>();
 
     public void reload(IResourceManager resourceManager) {
         DungeonCrawl.LOGGER.info("Loading data...");
-        UPDATEABLES.clear();
+        PENDING_UPDATES.clear();
 
         DungeonModels.load(resourceManager);
         ModelPools.load(resourceManager);
@@ -67,9 +65,9 @@ public class ResourceReloadHandler implements IFutureReloadListener {
             ModelBlockDefinition.loadJson(resourceManager);
         }
 
-        DungeonCrawl.LOGGER.debug("Finishing...");
-        UPDATEABLES.forEach(Updateable::update);
-        UPDATEABLES.clear();
+        DungeonCrawl.LOGGER.debug("Completing...");
+        PENDING_UPDATES.forEach(Updatable::update);
+        PENDING_UPDATES.clear();
 
         DungeonCrawl.LOGGER.info("Done.");
     }

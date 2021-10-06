@@ -63,7 +63,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
         return true;
     }
 
-    public void setupBoundingBox() {
+    public void createBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBox(x, y, z, rotation);
         }

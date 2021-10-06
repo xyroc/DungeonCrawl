@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
+import xiroc.dungeoncrawl.data.ProviderJsonFile;
 import xiroc.dungeoncrawl.data.ProviderJsonObject;
 import xiroc.dungeoncrawl.data.themes.decoration.Decoration;
 
@@ -32,29 +33,9 @@ import java.util.function.Supplier;
 
 public interface ProviderTheme extends Supplier<JsonObject> {
 
-    abstract class AbstractTheme extends ProviderJsonObject {
+    abstract class AbstractTheme extends ProviderJsonFile {
         Integer legacyId = null;
         ProviderJsonObject theme = new ProviderJsonObject();
-
-        public AbstractTheme require(String[] present, String[] absent) {
-            JsonObject requirements = new JsonObject();
-            if (present != null) {
-                JsonArray array = new JsonArray();
-                for (String s : present) {
-                    array.add(s);
-                }
-                requirements.add("present", array);
-            }
-            if (absent != null) {
-                JsonArray array = new JsonArray();
-                for (String s : absent) {
-                    array.add(s);
-                }
-                requirements.add("absent", array);
-            }
-            data.put("requirements", () -> requirements);
-            return this;
-        }
 
         public AbstractTheme legacyId(int id) {
             this.legacyId = id;

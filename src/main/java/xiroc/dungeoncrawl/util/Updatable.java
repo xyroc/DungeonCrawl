@@ -1,6 +1,6 @@
 package xiroc.dungeoncrawl.util;
 
-public interface Updateable {
+public interface Updatable {
 
     void update();
 

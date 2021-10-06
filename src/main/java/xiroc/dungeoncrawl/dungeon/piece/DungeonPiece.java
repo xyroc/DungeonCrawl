@@ -157,7 +157,7 @@ public abstract class DungeonPiece extends StructurePiece {
             this.variation = p_i51343_2_.getByteArray("variation");
         }
 
-        setupBoundingBox();
+        createBoundingBox();
     }
 
     @Override
@@ -206,7 +206,7 @@ public abstract class DungeonPiece extends StructurePiece {
      */
     public abstract void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand);
 
-    public void setupBoundingBox() {
+    public void createBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }

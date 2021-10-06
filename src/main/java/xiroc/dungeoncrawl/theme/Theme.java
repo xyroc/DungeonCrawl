@@ -45,7 +45,6 @@ public class Theme {
      * and the default theme can't be found either.
      */
     public static final Theme BUILTIN_DEFAULT_THEME = new Theme(
-
             (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
             (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
             (world, pos, rotation) -> Blocks.COBBLESTONE.defaultBlockState(),

@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class ModelBlockDefinition {
 
-    private static final String DIRECTORY = "block_definitions";
+    private static final String DIRECTORY = "dev/block_definitions";
 
     public static final Hashtable<ResourceLocation, ModelBlockDefinition> DEFINITIONS = new Hashtable<>();
 

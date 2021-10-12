@@ -43,12 +43,12 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.Heightmap;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import javax.annotation.Nullable;
@@ -79,12 +79,12 @@ public final class DungeonModelFeature {
         if (positions.isEmpty()) return;
         int count = amount.getInt(rand);
         if (count >= positions.size()) {
-            features.add(new Instance(type, positions.stream().map((pos) -> pos.translate(x, y, z, rotation, model)).toArray(DirectionalBlockPos[]::new)));
+            features.add(new Instance(type, positions.stream().map((pos) -> pos.worldPos(x, y, z, rotation, model)).toArray(DirectionalBlockPos[]::new)));
         } else {
             DirectionalBlockPos[] resultingPositions = new DirectionalBlockPos[count];
             for (int i = 0; i < count; i++) {
                 Position pos = positions.get(rand.nextInt(positions.size()));
-                DirectionalBlockPos position = pos.translate(x, y, z, rotation, model);
+                DirectionalBlockPos position = pos.worldPos(x, y, z, rotation, model);
                 positions.remove(pos);
                 resultingPositions[i] = position;
             }
@@ -418,24 +418,7 @@ public final class DungeonModelFeature {
             return new Position(position, facing);
         }
 
-        public BlockPos blockPos(BlockPos base) {
-            return base.offset(position);
-        }
-
-        public BlockPos blockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
-            switch (rotation) {
-                case CLOCKWISE_90:
-                    return new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX());
-                case CLOCKWISE_180:
-                    return new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + model.width - position.getX() - 1);
-                case COUNTERCLOCKWISE_90:
-                    return new BlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1);
-                default:
-                    return new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
-            }
-        }
-
-        public DirectionalBlockPos translate(int x, int y, int z, Rotation rotation, DungeonModel model) {
+        public DirectionalBlockPos worldPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
             switch (rotation) {
                 case CLOCKWISE_90:
                     return new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(),

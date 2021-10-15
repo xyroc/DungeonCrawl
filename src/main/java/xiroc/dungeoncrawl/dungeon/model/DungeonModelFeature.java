@@ -195,6 +195,22 @@ public final class DungeonModelFeature {
             }
         };
 
+        Type CEILING_SPAWNER = new Type() {
+            @Override
+            public void place(IWorld world, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
+                if (bounds.isInside(pos)
+                        && !DungeonBuilder.isBlockProtected(world, pos)
+                        && world.getBlockState(pos.above()).canOcclude()) {
+                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, pos, rand, theme, secondaryTheme, stage, worldGen);
+                }
+            }
+
+            @Override
+            public String getName() {
+                return "ceiling_spawner";
+            }
+        };
+
         Type SPAWNER_GRAVE = new Type() {
             @Override
             public void place(IWorld world, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
@@ -359,6 +375,7 @@ public final class DungeonModelFeature {
                 .put(SPAWNER_GRAVE.getName(), SPAWNER_GRAVE)
                 .put(EMPTY_GRAVE.getName(), EMPTY_GRAVE)
                 .put(SPAWNER.getName(), SPAWNER)
+                .put(CEILING_SPAWNER.getName(), CEILING_SPAWNER)
                 .put(STAIRS.getName(), STAIRS)
                 .put(SEWER_HOLE.getName(), SEWER_HOLE)
                 .put(CROPS.getName(), CROPS)

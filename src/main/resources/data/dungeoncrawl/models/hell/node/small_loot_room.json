@@ -2,5 +2,20 @@
   "loot": "dungeoncrawl:chests/treasure",
   "offset": {
     "y": -1
-  }
+  },
+  "features": [
+    {
+      "type": "ceiling_spawner",
+      "positions": [
+        {"x": 4, "y": 7, "z": 4},
+        {"x": 12, "y": 7, "z": 4},
+        {"x": 4, "y": 7, "z": 12},
+        {"x": 12, "y": 7, "z": 12}
+      ],
+      "amount": {
+        "min": 2,
+        "max": 2
+      }
+    }
+  ]
 }

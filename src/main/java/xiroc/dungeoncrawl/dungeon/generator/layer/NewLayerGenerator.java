@@ -173,7 +173,7 @@ public class NewLayerGenerator extends LayerGenerator {
                 dungeonLayer.end = pos;
                 return new GenericElement(new DungeonStairs().top(), pos, toOrigin, ON_STAIRS_PLACED, depth);
             }
-            if (depth <= settings.maxNodeDepth && nodesLeft > 0 && rand.nextFloat() < 0.65F) {
+            if (depth <= settings.maxNodeDepth && nodesLeft > 0 && (roomsLeft == 0 || depth > settings.maxRoomDepth || rand.nextFloat() < 0.65F)) {
                 if (dungeonLayer.canPlaceNode(pos)) {
                     return new NodeElement(pos, toOrigin, depth);
                 }

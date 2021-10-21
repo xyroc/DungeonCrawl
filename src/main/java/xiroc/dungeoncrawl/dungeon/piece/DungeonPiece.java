@@ -41,6 +41,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
+import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
@@ -54,7 +55,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -370,7 +370,10 @@ public abstract class DungeonPiece extends StructurePiece {
             return;
 
         placeBlock(world, state, position, block, theme, secondaryTheme, lootLevel, fillAir, worldGen);
-        tryBuildFancyPillarPart(world, block, position);
+
+        if (block.type == DungeonModelBlockType.PILLAR) {
+            tryBuildFancyPillarPart(world, block, position);
+        }
 
         if (expandDownwards && block.position.getY() == 0 && !world.getBlockState(position.below()).canOcclude()) {
             buildPillar(world, position.below());
@@ -475,11 +478,8 @@ public abstract class DungeonPiece extends StructurePiece {
     protected void tryBuildFancyPillarPart(IWorld world, DungeonModelBlock block, BlockPos blockPos) {
         if (world.getBlockState(blockPos).canOcclude()) {
             BlockPos pos = blockPos.below(block.position.getY() + 1);
-            if (world.getBlockState(pos).canOcclude()) return;
-            if (block.type.isPillar() && block.position.getY() < 2) {
+            if (!world.getBlockState(pos).canOcclude() && block.position.getY() == 0) {
                 buildPillar(world, pos);
-            } else if ((block.type == DungeonModelBlockType.FLOOR)) {
-                buildFancyPillarPart(world, pos);
             }
         }
     }

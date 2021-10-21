@@ -169,7 +169,7 @@ public class NewLayerGenerator extends LayerGenerator {
     @Nullable
     private LayerElement nextElement(DungeonLayer dungeonLayer, Position2D pos, Direction toOrigin, Random rand, int depth) {
         if (dungeonLayer.isTileFree(pos)) {
-            if (placeStairs && depth <= settings.minStairsDepth) {
+            if (placeStairs && depth >= settings.minStairsDepth) {
                 dungeonLayer.end = pos;
                 return new GenericElement(new DungeonStairs().top(), pos, toOrigin, ON_STAIRS_PLACED, depth);
             }
@@ -416,7 +416,7 @@ public class NewLayerGenerator extends LayerGenerator {
         }
 
         public void update(NewLayerGenerator layerGenerator, DungeonLayer dungeonLayer, Random rand) {
-            layerGenerator.generationStep(this, dungeonLayer, toOrigin, rand, this.depth);
+            layerGenerator.generationStep(this, dungeonLayer, toOrigin, rand, this.depth + 1);
         }
 
         public abstract Position2D getConnectionPoint(Direction connectionSide);

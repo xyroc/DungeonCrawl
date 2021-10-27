@@ -89,6 +89,47 @@
         "max_depth": 8,
         "min_distance": 1,
         "max_distance": 3
+      },
+      "multipart": {
+        "dungeoncrawl:default/corridor/corridor": {
+          "action": "add",
+          "additions": {
+            "left": {
+              "models": [
+                {
+                  "offset": {"x": 2, "z": -4},
+                  "model": "dungeoncrawl:default/multipart/corridor/spawner_room",
+                  "weight": 12
+                }
+              ]
+            },
+            "right": {
+              "models": [
+                {
+                  "offset": {"x": 2, "z": 5},
+                  "rotation": "clockwise_180",
+                  "model": "dungeoncrawl:default/multipart/corridor/spawner_room",
+                  "weight": 12
+                }
+              ]
+            }
+          }
+        },
+        "dungeoncrawl:default/corridor/corridor_light": {
+          "action": "add",
+          "additions": {
+            "right": {
+              "models": [
+                {
+                  "offset": {"x": 2, "z": 5},
+                  "rotation": "clockwise_180",
+                  "model": "dungeoncrawl:default/multipart/corridor/spawner_room",
+                  "weight": 12
+                }
+              ]
+            }
+          }
+        }
       }
     },
     {
@@ -117,6 +158,47 @@
         "max_depth": 8,
         "min_distance": 1,
         "max_distance": 3
+      },
+      "multipart": {
+        "dungeoncrawl:default/corridor/corridor": {
+          "action": "add",
+          "additions": {
+            "left": {
+              "models": [
+                {
+                  "offset": {"x": 2, "z": -4},
+                  "model": "dungeoncrawl:default/multipart/corridor/spawner_room",
+                  "weight": 12
+                }
+              ]
+            },
+            "right": {
+              "models": [
+                {
+                  "offset": {"x": 2, "z": 5},
+                  "rotation": "clockwise_180",
+                  "model": "dungeoncrawl:default/multipart/corridor/spawner_room",
+                  "weight": 12
+                }
+              ]
+            }
+          }
+        },
+        "dungeoncrawl:default/corridor/corridor_light": {
+          "action": "add",
+          "additions": {
+            "right": {
+              "models": [
+                {
+                  "offset": {"x": 2, "z": 5},
+                  "rotation": "clockwise_180",
+                  "model": "dungeoncrawl:default/multipart/corridor/spawner_room",
+                  "weight": 12
+                }
+              ]
+            }
+          }
+        }
       }
     },
     {

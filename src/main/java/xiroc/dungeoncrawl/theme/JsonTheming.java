@@ -32,7 +32,7 @@ import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.block.provider.pattern.ChessBoardPattern;
+import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
 import xiroc.dungeoncrawl.dungeon.block.provider.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -268,8 +268,8 @@ public class JsonTheming {
                 }
             } else if (type.equalsIgnoreCase("pattern")) {
                 switch (object.get("pattern_type").getAsString().toLowerCase(Locale.ROOT)) {
-                    case "chess_board":
-                        return new ChessBoardPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
+                    case "checkerboard":
+                        return new CheckerboardPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
                     case "terracotta":
                         return new TerracottaPattern(deserialize(object, "block", file));
                     default:

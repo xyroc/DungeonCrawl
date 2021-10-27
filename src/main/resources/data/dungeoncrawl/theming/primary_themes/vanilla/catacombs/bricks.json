@@ -30,7 +30,7 @@
     },
     "floor": {
       "type": "pattern",
-      "pattern_type": "checked",
+      "pattern_type": "checkerboard",
       "block_1": {
         "type": "block",
         "block": "minecraft:red_terracotta"

@@ -6,11 +6,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 
-public class ChessBoardPattern implements IBlockStateProvider {
+public class CheckerboardPattern implements IBlockStateProvider {
 
     private final IBlockStateProvider block1, block2;
 
-    public ChessBoardPattern(IBlockStateProvider block1, IBlockStateProvider block2) {
+    public CheckerboardPattern(IBlockStateProvider block1, IBlockStateProvider block2) {
         this.block1 = block1;
         this.block2 = block2;
     }

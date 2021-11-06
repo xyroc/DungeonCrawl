@@ -42,12 +42,12 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Range;
 
@@ -79,12 +79,12 @@ public final class DungeonModelFeature {
         if (positions.isEmpty()) return;
         int count = amount.nextInt(rand);
         if (count >= positions.size()) {
-            features.add(new Instance(type, positions.stream().map((pos) -> pos.translate(x, y, z, rotation, model)).toArray(DirectionalBlockPos[]::new)));
+            features.add(new Instance(type, positions.stream().map((pos) -> pos.worldPos(x, y, z, rotation, model)).toArray(DirectionalBlockPos[]::new)));
         } else {
             DirectionalBlockPos[] resultingPositions = new DirectionalBlockPos[count];
             for (int i = 0; i < count; i++) {
                 Position pos = positions.get(rand.nextInt(positions.size()));
-                DirectionalBlockPos position = pos.translate(x, y, z, rotation, model);
+                DirectionalBlockPos position = pos.worldPos(x, y, z, rotation, model);
                 positions.remove(pos);
                 resultingPositions[i] = position;
             }
@@ -195,6 +195,22 @@ public final class DungeonModelFeature {
             }
         };
 
+        Type CEILING_SPAWNER = new Type() {
+            @Override
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
+                if (bounds.isInside(pos)
+                        && !DungeonBuilder.isBlockProtected(world, pos)
+                        && world.getBlockState(pos.above()).canOcclude()) {
+                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, pos, rand, theme, secondaryTheme, stage, worldGen);
+                }
+            }
+
+            @Override
+            public String getName() {
+                return "ceiling_spawner";
+            }
+        };
+
         Type SPAWNER_GRAVE = new Type() {
             @Override
             public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
@@ -267,19 +283,19 @@ public final class DungeonModelFeature {
         };
 
         Type SEWER_HOLE = new Type() {
-            private final IBlockStateProvider AIR_WATER = (world, pos, rotation) -> {
+            private final BlockStateProvider AIR_WATER = (world, pos, rotation) -> {
                 if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
                 return Blocks.WATER.defaultBlockState();
             };
 
-            private final IBlockStateProvider AIR_LAVA = (world, pos, rotation) -> {
+            private final BlockStateProvider AIR_LAVA = (world, pos, rotation) -> {
                 if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
                 return Blocks.LAVA.defaultBlockState();
             };
 
             @Override
             public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
-                IBlockStateProvider inner = stage < 4 ? AIR_WATER : AIR_LAVA;
+                BlockStateProvider inner = stage < 4 ? AIR_WATER : AIR_LAVA;
 
                 buildDown(world, pos, bounds, inner);
 
@@ -324,7 +340,7 @@ public final class DungeonModelFeature {
                 return "sewer_hole";
             }
 
-            private void buildDown(LevelAccessor world, BlockPos pos, BoundingBox bounds, IBlockStateProvider blockStateProvider) {
+            private void buildDown(LevelAccessor world, BlockPos pos, BoundingBox bounds, BlockStateProvider blockStateProvider) {
                 if (!bounds.isInside(pos)) return;
                 for (; pos.getY() > 0; pos = pos.below()) {
                     if (!DungeonBuilder.isBlockProtected(world, pos) && !world.isEmptyBlock(pos)) {
@@ -359,6 +375,7 @@ public final class DungeonModelFeature {
                 .put(SPAWNER_GRAVE.getName(), SPAWNER_GRAVE)
                 .put(EMPTY_GRAVE.getName(), EMPTY_GRAVE)
                 .put(SPAWNER.getName(), SPAWNER)
+                .put(CEILING_SPAWNER.getName(), CEILING_SPAWNER)
                 .put(STAIRS.getName(), STAIRS)
                 .put(SEWER_HOLE.getName(), SEWER_HOLE)
                 .put(CROPS.getName(), CROPS)
@@ -410,20 +427,7 @@ public final class DungeonModelFeature {
             return new Position(position, facing);
         }
 
-        public BlockPos blockPos(BlockPos base) {
-            return base.offset(position);
-        }
-
-        public BlockPos blockPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
-            return switch (rotation) {
-                case CLOCKWISE_90 -> new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX());
-                case CLOCKWISE_180 -> new BlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + model.width - position.getX() - 1);
-                case COUNTERCLOCKWISE_90 -> new BlockPos(x + position.getZ(), y + position.getY(), z + model.width - position.getX() - 1);
-                default -> new BlockPos(x + position.getX(), y + position.getY(), z + position.getZ());
-            };
-        }
-
-        public DirectionalBlockPos translate(int x, int y, int z, Rotation rotation, DungeonModel model) {
+        public DirectionalBlockPos worldPos(int x, int y, int z, Rotation rotation, DungeonModel model) {
             return switch (rotation) {
                 case CLOCKWISE_90 -> new DirectionalBlockPos(x + model.length - position.getZ() - 1, y + position.getY(), z + position.getX(),
                         facing.getAxis() != Direction.Axis.Y ? facing.getClockWise() : facing);

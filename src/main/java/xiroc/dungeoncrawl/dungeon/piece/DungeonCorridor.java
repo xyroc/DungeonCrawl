@@ -74,7 +74,7 @@ public class DungeonCorridor extends DungeonPiece {
     }
 
     @Override
-    public void setupBoundingBox() {
+    public void createBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }

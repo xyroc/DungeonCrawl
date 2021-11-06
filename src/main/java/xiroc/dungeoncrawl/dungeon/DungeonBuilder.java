@@ -109,8 +109,9 @@ public class DungeonBuilder {
         entrance.setWorldPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
                 startPos.getZ() + layers[0].start.z * 9);
         entrance.stage = 0;
+
         entrance.model = type.entrances().roll(rand);
-        entrance.setupBoundingBox();
+        entrance.createBoundingBox();
 
         determineThemes();
 
@@ -259,7 +260,7 @@ public class DungeonBuilder {
                                     startPos.getY() - i * 9, startPos.getZ() + z * 9);
                         }
 
-                        tile.piece.setupBoundingBox();
+                        tile.piece.createBoundingBox();
 
                         if (tile.piece.getDungeonPieceType() == DungeonPiece.NODE_ROOM) {
                             layer.rotateNode(tile, rand);

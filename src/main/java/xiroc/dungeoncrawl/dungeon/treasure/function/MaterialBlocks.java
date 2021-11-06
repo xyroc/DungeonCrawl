@@ -35,7 +35,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Range;
 
@@ -69,9 +68,13 @@ public class MaterialBlocks extends LootItemConditionalFunction {
                 : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();
     }
 
+    public static LootItemConditionalFunction.Builder<?> materialBlocks() {
+        return simpleBuilder(MaterialBlocks::new);
+    }
+
     @Override
     public LootItemFunctionType getType() {
-        return Treasure.MATERIAL_BLOCKS;
+        return Loot.MATERIAL_BLOCKS;
     }
 
     public static class Serializer extends LootItemConditionalFunction.Serializer<MaterialBlocks> {

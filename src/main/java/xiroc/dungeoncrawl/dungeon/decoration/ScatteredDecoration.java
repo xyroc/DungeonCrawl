@@ -24,12 +24,12 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
 
-public record ScatteredDecoration(IBlockStateProvider blockStateProvider,
-                                  float chance) implements IDungeonDecoration {
+public record ScatteredDecoration(BlockStateProvider blockStateProvider,
+                                  float chance) implements DungeonDecoration {
 
     @Override
     public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
@@ -41,9 +41,9 @@ public record ScatteredDecoration(IBlockStateProvider blockStateProvider,
             for (int y = 0; y < height; y++) {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (!DungeonBuilder.isBlockProtected(world, currentPos)
-                            && worldGenBounds.isInside(currentPos)
+                    if (worldGenBounds.isInside(currentPos)
                             && structureBounds.isInside(currentPos)
+                            && !DungeonBuilder.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)
                             && DungeonBlocks.RANDOM.nextFloat() < chance) {
 

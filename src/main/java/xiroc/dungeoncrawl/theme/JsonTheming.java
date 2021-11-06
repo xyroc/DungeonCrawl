@@ -32,12 +32,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.block.pattern.CheckedPattern;
-import xiroc.dungeoncrawl.dungeon.block.pattern.TerracottaPattern;
-import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
+import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
+import xiroc.dungeoncrawl.dungeon.block.provider.pattern.TerracottaPattern;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
@@ -56,35 +56,26 @@ public class JsonTheming {
     protected static Theme deserializeTheme(JsonObject object, ResourceLocation file) {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider solid = JsonTheming.deserialize(themeObject, "solid", file);
+        BlockStateProvider solid = JsonTheming.deserialize(themeObject, "solid", file);
+        BlockStateProvider generic = JsonTheming.deserialize(themeObject, "generic", file);
+        BlockStateProvider pillar = JsonTheming.deserialize(themeObject, "pillar", file);
+        BlockStateProvider fencing = JsonTheming.deserialize(themeObject, "fencing", file);
+        BlockStateProvider floor = JsonTheming.deserialize(themeObject, "floor", file);
+        BlockStateProvider fluid = JsonTheming.deserialize(themeObject, "fluid", file);
+        BlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
+        BlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
+        BlockStateProvider solidStairs = JsonTheming.deserialize(themeObject, "solid_stairs", file);
+        BlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
+        BlockStateProvider solidSlab = JsonTheming.deserialize(themeObject, "solid_slab", file);
+        BlockStateProvider wall = JsonTheming.deserialize(themeObject, "wall", file);
 
-        IBlockStateProvider generic = JsonTheming.deserialize(themeObject, "generic", file);
-
-        IBlockStateProvider pillar = JsonTheming.deserialize(themeObject, "pillar", file);
-
-        IBlockStateProvider fencing = JsonTheming.deserialize(themeObject, "fencing", file);
-
-        IBlockStateProvider floor = JsonTheming.deserialize(themeObject, "floor", file);
-
-        IBlockStateProvider fluid = JsonTheming.deserialize(themeObject, "fluid", file);
-
-        IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
-
-        IBlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
-        IBlockStateProvider solidStairs = JsonTheming.deserialize(themeObject, "solid_stairs", file);
-
-        IBlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
-        IBlockStateProvider solidSlab = JsonTheming.deserialize(themeObject, "solid_slab", file);
-
-        IBlockStateProvider vanillaWall = JsonTheming.deserialize(themeObject, "wall", file);
-
-        Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, vanillaWall, slab, solidSlab, fencing, fluid);
+        Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid);
 
         if (object.has("decorations")) {
             JsonArray array = object.getAsJsonArray("decorations");
-            IDungeonDecoration[] decorations = new IDungeonDecoration[array.size()];
+            DungeonDecoration[] decorations = new DungeonDecoration[array.size()];
             for (int i = 0; i < decorations.length; i++) {
-                decorations[i] = IDungeonDecoration.fromJson(array.get(i).getAsJsonObject(), file);
+                decorations[i] = DungeonDecoration.fromJson(array.get(i).getAsJsonObject(), file);
             }
             theme.setDecorations(decorations);
         }
@@ -120,18 +111,18 @@ public class JsonTheming {
 
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
-        IBlockStateProvider wallLog = JsonTheming.deserialize(themeObject, "pillar", file);
-        IBlockStateProvider trapDoor = JsonTheming.deserialize(themeObject, "trapdoor", file);
-        IBlockStateProvider door = JsonTheming.deserialize(themeObject, "door", file);
-        IBlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
-        IBlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
-        IBlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
-        IBlockStateProvider fence = JsonTheming.deserialize(themeObject, "fence", file);
-        IBlockStateProvider fenceGate = JsonTheming.deserialize(themeObject, "fence_gate", file);
-        IBlockStateProvider button = JsonTheming.deserialize(themeObject, "button", file);
-        IBlockStateProvider pressurePlate = JsonTheming.deserialize(themeObject, "pressure_plate", file);
+        BlockStateProvider pillar = JsonTheming.deserialize(themeObject, "pillar", file);
+        BlockStateProvider trapdoor = JsonTheming.deserialize(themeObject, "trapdoor", file);
+        BlockStateProvider door = JsonTheming.deserialize(themeObject, "door", file);
+        BlockStateProvider material = JsonTheming.deserialize(themeObject, "material", file);
+        BlockStateProvider stairs = JsonTheming.deserialize(themeObject, "stairs", file);
+        BlockStateProvider slab = JsonTheming.deserialize(themeObject, "slab", file);
+        BlockStateProvider fence = JsonTheming.deserialize(themeObject, "fence", file);
+        BlockStateProvider fence_gate = JsonTheming.deserialize(themeObject, "fence_gate", file);
+        BlockStateProvider button = JsonTheming.deserialize(themeObject, "button", file);
+        BlockStateProvider pressure_plate = JsonTheming.deserialize(themeObject, "pressure_plate", file);
 
-        SecondaryTheme secondaryTheme = new SecondaryTheme(wallLog, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate);
+        SecondaryTheme secondaryTheme = new SecondaryTheme(pillar, trapdoor, door, material, stairs, slab, fence, fence_gate, button, pressure_plate);
 
         if (object.has("id")) {
             Theme.ID_TO_SECONDARY_THEME.put(object.get("id").getAsInt(), secondaryTheme);
@@ -241,7 +232,7 @@ public class JsonTheming {
         }
     }
 
-    public static IBlockStateProvider deserialize(JsonObject base, String name, ResourceLocation file) {
+    public static BlockStateProvider deserialize(JsonObject base, String name, ResourceLocation file) {
         if (!base.has(name)) {
             DungeonCrawl.LOGGER.warn("Missing BlockState Provider \"{}\" in {}", name, file.toString());
             return null;
@@ -277,8 +268,8 @@ public class JsonTheming {
                 }
             } else if (type.equalsIgnoreCase("pattern")) {
                 switch (object.get("pattern_type").getAsString().toLowerCase(Locale.ROOT)) {
-                    case "checked":
-                        return new CheckedPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
+                    case "checkerboard":
+                        return new CheckerboardPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
                     case "terracotta":
                         return new TerracottaPattern(deserialize(object, "block", file));
                     default:
@@ -296,7 +287,7 @@ public class JsonTheming {
     }
 
     private record WeightedRandomBlock(
-            WeightedRandom<BlockState> randomBlockState) implements IBlockStateProvider {
+            WeightedRandom<BlockState> randomBlockState) implements BlockStateProvider {
 
         @Override
         public BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation) {

@@ -32,7 +32,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
-import xiroc.dungeoncrawl.util.Updateable;
+import xiroc.dungeoncrawl.util.Updatable;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import javax.annotation.Nullable;
@@ -141,7 +141,7 @@ public class MultipartModelData {
             MultipartModelData.Instance data = MultipartModelData.Instance.fromJson(object1, file);
             list.add(new Tuple<>(data, JSONUtils.getWeight(object1)));
             if (data != MultipartModelData.Instance.EMPTY) {
-                ResourceReloadHandler.UPDATEABLES.add(data); // Enqueue reference update
+                ResourceReloadHandler.PENDING_UPDATES.add(data); // Enqueue reference update
             }
         });
         return list;
@@ -150,7 +150,7 @@ public class MultipartModelData {
     public boolean checkConditions(DungeonPiece piece) {
         if (!conditions.isEmpty()) {
             for (Condition<?> condition : conditions) {
-                if (!condition.check(piece)) {
+                if (!condition.isMet(piece)) {
                     return false;
                 }
             }
@@ -158,7 +158,7 @@ public class MultipartModelData {
         return true;
     }
 
-    public static class Instance implements Updateable {
+    public static class Instance implements Updatable {
 
         public static final Instance EMPTY = new Instance(null, null, DungeonModels.NO_OFFSET, Rotation.NONE);
 
@@ -194,7 +194,7 @@ public class MultipartModelData {
                 piece.stage = parentPiece.stage;
                 piece.theme = parentPiece.theme;
                 piece.secondaryTheme = parentPiece.secondaryTheme;
-                piece.setupBoundingBox();
+                piece.createBoundingBox();
                 piece.customSetup(rand);
                 return piece;
             } else {
@@ -239,6 +239,10 @@ public class MultipartModelData {
                 case "rotated_east" -> new Condition<>(Property.ROTATED_EAST, element.getAsBoolean());
                 case "rotated_south" -> new Condition<>(Property.ROTATED_SOUTH, element.getAsBoolean());
                 case "rotated_west" -> new Condition<>(Property.ROTATED_WEST, element.getAsBoolean());
+                case "multipart_north" -> new Condition<>(Property.MULTIPART_NORTH, element.getAsBoolean());
+                case "multipart_east" -> new Condition<>(Property.MULTIPART_EAST, element.getAsBoolean());
+                case "multipart_south" -> new Condition<>(Property.MULTIPART_SOUTH, element.getAsBoolean());
+                case "multipart_west" -> new Condition<>(Property.MULTIPART_WEST, element.getAsBoolean());
                 case "straight" -> new Condition<>(Property.STRAIGHT, element.getAsBoolean());
                 case "connections" -> new Condition<>(Property.CONNECTIONS, element.getAsInt());
                 case "stage" -> new Condition<>(Property.STAGE, element.getAsInt());
@@ -246,7 +250,7 @@ public class MultipartModelData {
             };
         }
 
-        public boolean check(DungeonPiece piece) {
+        public boolean isMet(DungeonPiece piece) {
             T t = property.get(piece);
             return t != null && t.equals(value);
         }
@@ -265,6 +269,11 @@ public class MultipartModelData {
         Property<Boolean> ROTATED_EAST = (piece) -> piece.sides[(1 + Orientation.rotationAsInt(piece.rotation)) % 4];
         Property<Boolean> ROTATED_SOUTH = (piece) -> piece.sides[(2 + Orientation.rotationAsInt(piece.rotation)) % 4];
         Property<Boolean> ROTATED_WEST = (piece) -> piece.sides[(3 + Orientation.rotationAsInt(piece.rotation)) % 4];
+
+        Property<Boolean> MULTIPART_NORTH = (piece) -> false;
+        Property<Boolean> MULTIPART_EAST = (piece) -> false;
+        Property<Boolean> MULTIPART_SOUTH = (piece) -> false;
+        Property<Boolean> MULTIPART_WEST = (piece) -> false;
 
         Property<Boolean> STRAIGHT = (piece) -> (piece.sides[0] && piece.sides[2]) || (piece.sides[1] && piece.sides[3]);
 

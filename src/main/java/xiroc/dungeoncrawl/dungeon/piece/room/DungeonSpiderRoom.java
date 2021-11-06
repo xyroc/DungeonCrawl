@@ -94,7 +94,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupBoundingBox() {
+    public void createBoundingBox() {
         this.boundingBox = new BoundingBox(x, y, z, x + 8, y + 8, z + 8);
     }
 

@@ -31,12 +31,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
@@ -65,12 +67,14 @@ public class DungeonCrawl {
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
         forgeEventBus.addListener(this::onWorldLoad);
+        forgeEventBus.addListener(this::onServerStarting);
 
         init();
     }
 
     private void init() {
         ModStructures.init();
+        Loot.init();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -83,10 +87,13 @@ public class DungeonCrawl {
         }
 
         event.enqueueWork(() -> {
-            Treasure.init();
             StructurePieceTypes.register();
             ModStructures.register();
         });
+    }
+
+    private void onServerStarting(FMLServerStartingEvent event) {
+        SpawnDungeonCommand.register(event.getServer().getCommands().getDispatcher());
     }
 
     private void onWorldLoad(WorldEvent.Load event) {

@@ -41,7 +41,8 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
@@ -54,7 +55,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.Theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -143,7 +143,7 @@ public abstract class DungeonPiece extends StructurePiece {
             this.variation = p_i51343_2_.getByteArray("variation");
         }
 
-        setupBoundingBox();
+        createBoundingBox();
     }
 
     @Override
@@ -192,7 +192,7 @@ public abstract class DungeonPiece extends StructurePiece {
      */
     public abstract void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand);
 
-    public void setupBoundingBox() {
+    public void createBoundingBox() {
         if (model != null) {
             this.boundingBox = model.createBoundingBoxWithOffset(x, y, z, rotation);
         }
@@ -359,7 +359,10 @@ public abstract class DungeonPiece extends StructurePiece {
             return;
 
         placeBlock(world, state, position, block, theme, secondaryTheme, lootLevel, fillAir, worldGen);
-        tryBuildFancyPillarPart(world, block, position);
+
+        if (block.type == DungeonModelBlockType.PILLAR) {
+            tryBuildFancyPillarPart(world, block, position);
+        }
 
         if (expandDownwards && block.position.getY() == 0 && !world.getBlockState(position.below()).canOcclude()) {
             buildPillar(world, position.below());
@@ -458,11 +461,8 @@ public abstract class DungeonPiece extends StructurePiece {
     protected void tryBuildFancyPillarPart(LevelAccessor world, DungeonModelBlock block, BlockPos blockPos) {
         if (world.getBlockState(blockPos).canOcclude()) {
             BlockPos pos = blockPos.below(block.position.getY() + 1);
-            if (world.getBlockState(pos).canOcclude()) return;
-            if (block.type.isPillar() && block.position.getY() < 2) {
+            if (!world.getBlockState(pos).canOcclude() && block.position.getY() == 0) {
                 buildPillar(world, pos);
-            } else if ((block.type == DungeonModelBlockType.FLOOR)) {
-                buildFancyPillarPart(world, pos);
             }
         }
     }
@@ -520,7 +520,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
             replaceBlockState(world, CAVE_AIR, pos.getX() + pathStartX + 1, pos.getY() + 3, pos.getZ(), bounds, worldGen);
 
-            IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
+            BlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX() + pathStartX, pos.getY() + 3, pos.getZ());
             BlockState stair1 = stateProvider.get(world, pos1);
@@ -543,7 +543,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
             replaceBlockState(world, CAVE_AIR, pos.getX() + model.width - 1, pos.getY() + 3, pos.getZ() + pathStartZ + 1, bounds, worldGen);
 
-            IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
+            BlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX() + model.width - 1, pos.getY() + 3, pos.getZ() + pathStartZ);
             BlockState stair1 = stateProvider.get(world, pos1);
@@ -565,7 +565,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
             replaceBlockState(world, CAVE_AIR, pos.getX() + pathStartX + 1, pos.getY() + 3, pos.getZ() + model.length - 1, bounds, worldGen);
 
-            IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
+            BlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX() + pathStartX, pos.getY() + 3, pos.getZ() + model.length - 1);
             BlockState stair1 = stateProvider.get(world, pos1);
@@ -587,7 +587,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
             replaceBlockState(world, CAVE_AIR, pos.getX(), pos.getY() + 3, pos.getZ() + pathStartZ + 1, bounds, worldGen);
 
-            IBlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
+            BlockStateProvider stateProvider = model.getEntranceType() == 0 ? theme.stairs : secondaryTheme.stairs;
 
             BlockPos pos1 = new BlockPos(pos.getX(), pos.getY() + 3, pos.getZ() + pathStartZ);
             BlockState stair1 = stateProvider.get(world, pos1);
@@ -607,7 +607,7 @@ public abstract class DungeonPiece extends StructurePiece {
     protected void decorate(LevelAccessor world, BlockPos pos, int width, int height, int length, Theme theme, BoundingBox worldGenBounds, BoundingBox structureBounds,
                             DungeonModel model, boolean worldGen) {
         if (theme.hasDecorations()) {
-            for (IDungeonDecoration decoration : theme.getDecorations()) {
+            for (DungeonDecoration decoration : theme.getDecorations()) {
                 if (Config.EXTENDED_DEBUG.get()) {
                     DungeonCrawl.LOGGER.debug("Running decoration {} for {} at ({} | {} | {})", decoration.toString(), model.getKey(), pos.getX(), pos.getY(), pos.getZ());
                 }

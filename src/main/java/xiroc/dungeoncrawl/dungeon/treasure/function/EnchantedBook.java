@@ -28,7 +28,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 public class EnchantedBook extends LootItemConditionalFunction {
 
@@ -45,9 +45,13 @@ public class EnchantedBook extends LootItemConditionalFunction {
                 10 + lootLevel * 3, lootLevel > 2);
     }
 
+    public static LootItemConditionalFunction.Builder<?> enchantedBook(int lootLevel) {
+        return simpleBuilder(conditions -> new EnchantedBook(conditions, lootLevel));
+    }
+
     @Override
     public LootItemFunctionType getType() {
-        return Treasure.ENCHANTED_BOOK;
+        return Loot.ENCHANTED_BOOK;
     }
 
     public static class Serializer extends LootItemConditionalFunction.Serializer<EnchantedBook> {
@@ -59,14 +63,14 @@ public class EnchantedBook extends LootItemConditionalFunction {
         @Override
         public void serialize(JsonObject p_230424_1_, EnchantedBook p_230424_2_, JsonSerializationContext p_230424_3_) {
             super.serialize(p_230424_1_, p_230424_2_, p_230424_3_);
-            p_230424_1_.addProperty("stage", p_230424_2_.lootLevel);
+            p_230424_1_.addProperty(Loot.LOOT_LEVEL, p_230424_2_.lootLevel);
         }
 
 
         @Override
         public EnchantedBook deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
                                          LootItemCondition[] conditionsIn) {
-            return new EnchantedBook(conditionsIn, object.get("loot_level").getAsInt());
+            return new EnchantedBook(conditionsIn, object.get(Loot.LOOT_LEVEL).getAsInt());
         }
 
     }

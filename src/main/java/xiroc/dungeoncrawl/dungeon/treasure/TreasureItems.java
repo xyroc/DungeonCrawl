@@ -134,7 +134,7 @@ public class TreasureItems {
             blindness.putInt("Duration", 100);
             CompoundTag absorption = new CompoundTag();
             absorption.putInt("Id", 22);
-            absorption.putInt("Amplifier", 14);
+            absorption.putInt("Amplifier", 8);
             absorption.putInt("Duration", 600);
             customPotionEffects.add(absorption);
             customPotionEffects.add(resistance);

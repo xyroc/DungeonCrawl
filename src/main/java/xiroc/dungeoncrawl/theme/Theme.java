@@ -27,9 +27,9 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Blocks;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.decoration.IDungeonDecoration;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -45,7 +45,6 @@ public class Theme {
      * and the default theme can't be found either.
      */
     public static final Theme BUILTIN_DEFAULT_THEME = new Theme(
-
             (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
             (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
             (world, pos, rotation) -> Blocks.COBBLESTONE.defaultBlockState(),
@@ -129,26 +128,26 @@ public class Theme {
         KEY_TO_SECONDARY_THEME.put(BUILTIN_DEFAULT_SECONDARY_THEME.key, BUILTIN_DEFAULT_SECONDARY_THEME);
     }
 
-    public final IBlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid;
+    public final BlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid;
 
     public IRandom<SecondaryTheme> subTheme;
 
     private ResourceLocation key;
 
-    private IDungeonDecoration[] decorations;
+    private DungeonDecoration[] decorations;
 
-    public Theme(IBlockStateProvider pillar,
-                 IBlockStateProvider solid,
-                 IBlockStateProvider generic,
-                 IBlockStateProvider floor,
-                 IBlockStateProvider solidStairs,
-                 IBlockStateProvider stairs,
-                 IBlockStateProvider material,
-                 IBlockStateProvider wall,
-                 IBlockStateProvider slab,
-                 IBlockStateProvider solidSlab,
-                 IBlockStateProvider fencing,
-                 IBlockStateProvider fluid) {
+    public Theme(BlockStateProvider pillar,
+                 BlockStateProvider solid,
+                 BlockStateProvider generic,
+                 BlockStateProvider floor,
+                 BlockStateProvider solidStairs,
+                 BlockStateProvider stairs,
+                 BlockStateProvider material,
+                 BlockStateProvider wall,
+                 BlockStateProvider slab,
+                 BlockStateProvider solidSlab,
+                 BlockStateProvider fencing,
+                 BlockStateProvider fluid) {
         this.solid = solid;
         this.material = material;
         this.generic = generic;
@@ -163,7 +162,7 @@ public class Theme {
         this.fluid = fluid;
     }
 
-    public void setDecorations(IDungeonDecoration[] decorations) {
+    public void setDecorations(DungeonDecoration[] decorations) {
         this.decorations = decorations;
     }
 
@@ -175,74 +174,74 @@ public class Theme {
         return key;
     }
 
-    public IDungeonDecoration[] getDecorations() {
+    public DungeonDecoration[] getDecorations() {
         return decorations;
     }
 
-    public IBlockStateProvider getPillar() {
+    public BlockStateProvider getPillar() {
         return pillar;
     }
 
-    public IBlockStateProvider getSolid() {
+    public BlockStateProvider getSolid() {
         return solid;
     }
 
-    public IBlockStateProvider getGeneric() {
+    public BlockStateProvider getGeneric() {
         return generic;
     }
 
-    public IBlockStateProvider getFencing() {
+    public BlockStateProvider getFencing() {
         return fencing;
     }
 
-    public IBlockStateProvider getFloor() {
+    public BlockStateProvider getFloor() {
         return floor;
     }
 
-    public IBlockStateProvider getFluid() {
+    public BlockStateProvider getFluid() {
         return fluid;
     }
 
-    public IBlockStateProvider getSolidStairs() {
+    public BlockStateProvider getSolidStairs() {
         return solidStairs;
     }
 
-    public IBlockStateProvider getStairs() {
+    public BlockStateProvider getStairs() {
         return stairs;
     }
 
-    public IBlockStateProvider getMaterial() {
+    public BlockStateProvider getMaterial() {
         return material;
     }
 
-    public IBlockStateProvider getWall() {
+    public BlockStateProvider getWall() {
         return wall;
     }
 
-    public IBlockStateProvider getSlab() {
+    public BlockStateProvider getSlab() {
         return slab;
     }
 
-    public IBlockStateProvider getSolidSlab() {
+    public BlockStateProvider getSolidSlab() {
         return solidSlab;
     }
 
     public static class SecondaryTheme {
 
-        public final IBlockStateProvider pillar, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate;
+        public final BlockStateProvider pillar, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate;
 
         private ResourceLocation key;
 
-        public SecondaryTheme(IBlockStateProvider pillar,
-                              IBlockStateProvider trapDoor,
-                              IBlockStateProvider door,
-                              IBlockStateProvider material,
-                              IBlockStateProvider stairs,
-                              IBlockStateProvider slab,
-                              IBlockStateProvider fence,
-                              IBlockStateProvider fenceGate,
-                              IBlockStateProvider button,
-                              IBlockStateProvider pressurePlate) {
+        public SecondaryTheme(BlockStateProvider pillar,
+                              BlockStateProvider trapDoor,
+                              BlockStateProvider door,
+                              BlockStateProvider material,
+                              BlockStateProvider stairs,
+                              BlockStateProvider slab,
+                              BlockStateProvider fence,
+                              BlockStateProvider fenceGate,
+                              BlockStateProvider button,
+                              BlockStateProvider pressurePlate) {
             this.pillar = pillar;
             this.trapDoor = trapDoor;
             this.door = door;
@@ -259,43 +258,43 @@ public class Theme {
             return key;
         }
 
-        public IBlockStateProvider getPillar() {
+        public BlockStateProvider getPillar() {
             return pillar;
         }
 
-        public IBlockStateProvider getTrapDoor() {
+        public BlockStateProvider getTrapDoor() {
             return trapDoor;
         }
 
-        public IBlockStateProvider getDoor() {
+        public BlockStateProvider getDoor() {
             return door;
         }
 
-        public IBlockStateProvider getMaterial() {
+        public BlockStateProvider getMaterial() {
             return material;
         }
 
-        public IBlockStateProvider getStairs() {
+        public BlockStateProvider getStairs() {
             return stairs;
         }
 
-        public IBlockStateProvider getSlab() {
+        public BlockStateProvider getSlab() {
             return slab;
         }
 
-        public IBlockStateProvider getFence() {
+        public BlockStateProvider getFence() {
             return fence;
         }
 
-        public IBlockStateProvider getFenceGate() {
+        public BlockStateProvider getFenceGate() {
             return fenceGate;
         }
 
-        public IBlockStateProvider getButton() {
+        public BlockStateProvider getButton() {
             return button;
         }
 
-        public IBlockStateProvider getPressurePlate() {
+        public BlockStateProvider getPressurePlate() {
             return pressurePlate;
         }
 

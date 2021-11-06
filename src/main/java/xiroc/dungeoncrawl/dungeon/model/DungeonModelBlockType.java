@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.util.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
 import java.util.Random;
 import java.util.function.Function;
@@ -186,7 +186,7 @@ public enum DungeonModelBlockType {
      * @param blockSelector a function that selects the desired field from the theme
      * @return the block factory
      */
-    private static BlockFactory tFactory(Function<Theme, IBlockStateProvider> blockSelector) {
+    private static BlockFactory tFactory(Function<Theme, BlockStateProvider> blockSelector) {
         return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(world, pos, rotation), world, pos, rotation);
     }
 
@@ -196,7 +196,7 @@ public enum DungeonModelBlockType {
      * @param blockSelector a function that selects the desired field from the sub-theme
      * @return the block factory
      */
-    private static BlockFactory sFactory(Function<Theme.SecondaryTheme, IBlockStateProvider> blockSelector) {
+    private static BlockFactory sFactory(Function<Theme.SecondaryTheme, BlockStateProvider> blockSelector) {
         return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(subTheme).get(world, pos, rotation), world, pos, rotation);
     }
 

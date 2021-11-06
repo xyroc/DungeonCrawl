@@ -101,7 +101,7 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public void setupBoundingBox() {
+    public void createBoundingBox() {
         if (model != null) {
             Vec3i offset = model.getOffset(rotation);
             int x = this.x + 4 + offset.getX();

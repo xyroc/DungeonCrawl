@@ -19,18 +19,39 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
+import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
+import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
+import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
+import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
+import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
 
 public class Loot {
+
+    public static final String LOOT_LEVEL = "loot_level";
+
+    /* ************************************************************************************** */
+    /*                                    LOOT FUNCTIONS                                      */
+    /* ************************************************************************************** */
+
+    public static final LootItemFunctionType ENCHANTED_BOOK = new LootItemFunctionType(new EnchantedBook.Serializer());
+    public static final LootItemFunctionType MATERIAL_BLOCKS = new LootItemFunctionType(new MaterialBlocks.Serializer());
+    public static final LootItemFunctionType RANDOM_ITEM = new LootItemFunctionType(new RandomItem.Serializer());
+    public static final LootItemFunctionType RANDOM_POTION = new LootItemFunctionType(new RandomPotion.Serializer());
+    public static final LootItemFunctionType SHIELD = new LootItemFunctionType(new Shield.Serializer());
+    public static final LootItemFunctionType SUSPICIOUS_STEW = new LootItemFunctionType(new SuspiciousStew.Serializer());
 
     /* ************************************************************************************** */
     /*                                      LOOT TABLES                                       */
@@ -42,23 +63,24 @@ public class Loot {
     public static final ResourceLocation CHEST_STAGE_4 = DungeonCrawl.locate("chests/stage_4");
     public static final ResourceLocation CHEST_STAGE_5 = DungeonCrawl.locate("chests/stage_5");
 
-    public static final ResourceLocation FORGE = DungeonCrawl.locate("chests/forge");
-    public static final ResourceLocation FOOD = DungeonCrawl.locate("chests/food");
-    public static final ResourceLocation TREASURE_ROOM = DungeonCrawl.locate("chests/treasure_room");
-    public static final ResourceLocation SUPPLY_CHEST = DungeonCrawl.locate("chests/supply_chest");
-    public static final ResourceLocation LIBRARY = DungeonCrawl.locate("chests/library");
-    public static final ResourceLocation SECRET_ROOM = DungeonCrawl.locate("chests/secret_room");
-
-    public static final ResourceLocation DISPENSER_STAGE_1 = DungeonCrawl.locate("misc/dispenser_1");
-    public static final ResourceLocation DISPENSER_STAGE_2 = DungeonCrawl.locate("misc/dispenser_2");
-    public static final ResourceLocation DISPENSER_STAGE_3 = DungeonCrawl.locate("misc/dispenser_3");
-
     /* ************************************************************************************** */
     /*                                   ENTITY LOOT TABLES                                   */
     /* ************************************************************************************** */
 
     public static final ResourceLocation WITHER_SKELETON = DungeonCrawl.locate("monster_overrides/wither_skeleton");
 
+        private static void registerLootFunctionType(ResourceLocation registryName, LootItemFunctionType type) {
+            Registry.register(Registry.LOOT_FUNCTION_TYPE, registryName, type);
+        }
+
+    public static void init() {
+        registerLootFunctionType(DungeonCrawl.locate("enchanted_book"), ENCHANTED_BOOK);
+        registerLootFunctionType(DungeonCrawl.locate("material_blocks"), MATERIAL_BLOCKS);
+        registerLootFunctionType(DungeonCrawl.locate("random_item"), RANDOM_ITEM);
+        registerLootFunctionType(DungeonCrawl.locate("random_potion"), RANDOM_POTION);
+        registerLootFunctionType(DungeonCrawl.locate("shield"), SHIELD);
+        registerLootFunctionType(DungeonCrawl.locate("suspicious_stew"), SUSPICIOUS_STEW);
+    }
 
     public static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, Theme.SecondaryTheme secondaryTheme, Random rand) {
         RandomizableContainerBlockEntity.setLootTable(world, rand, pos, lootTable);

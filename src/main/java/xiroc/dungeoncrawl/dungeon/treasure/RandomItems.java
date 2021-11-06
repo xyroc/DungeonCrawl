@@ -184,25 +184,25 @@ public class RandomItems {
     }
 
     public static ItemStack generate(ServerLevel world, Random rand, Integer lootLevel) {
-        switch (lootLevel) {
-            case 0:
-                return STAGE_1.roll(rand).createItem(world, rand, lootLevel);
-            case 1:
-                return STAGE_2.roll(rand).createItem(world, rand, lootLevel);
-            case 2:
-                return STAGE_3.roll(rand).createItem(world, rand, lootLevel);
-            case 3:
-                return STAGE_4.roll(rand).createItem(world, rand, lootLevel);
-            default:
-                return STAGE_5.roll(rand).createItem(world, rand, lootLevel);
-        }
+        return switch (lootLevel) {
+            case 0 -> STAGE_1.roll(rand).createItem(world, rand, lootLevel);
+            case 1 -> STAGE_2.roll(rand).createItem(world, rand, lootLevel);
+            case 2 -> STAGE_3.roll(rand).createItem(world, rand, lootLevel);
+            case 3 -> STAGE_4.roll(rand).createItem(world, rand, lootLevel);
+            default -> STAGE_5.roll(rand).createItem(world, rand, lootLevel);
+        };
     }
 
     public static TreasureItem createEnchantedSpecialItem(String itemName) {
         return new TreasureItem("minecraft:air").setProcessor((world, rand, lootLevel) -> {
             Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
             if (item != null) {
-                return EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * lootLevel, lootLevel > 2);
+                ItemStack stack = new ItemStack(item);
+                if (rand.nextFloat() < 0.5F + 0.1F * lootLevel) {
+                    return EnchantmentHelper.enchantItem(rand, stack, 10 + 3 * lootLevel, lootLevel > 2);
+                } else {
+                    return stack;
+                }
             } else {
                 DungeonCrawl.LOGGER.error("The item {} does not exist.", itemName);
                 return ItemStack.EMPTY;
@@ -217,12 +217,12 @@ public class RandomItems {
         ItemStack shield = new ItemStack(Items.SHIELD);
         lootLevel = Math.min(4, lootLevel);
         float f = rand.nextFloat();
-        if (f < 0.12f + lootLevel * 0.02f) {
+        if (f < 0.12F + lootLevel * 0.02F) {
             shield.enchant(Enchantments.UNBREAKING, UNBREAKING_LEVELS[Mth.clamp(lootLevel, 0, 4)].nextInt(rand));
-            if (f < 0.04 + lootLevel * 0.01) {
+            if (f < 0.04F + lootLevel * 0.01F) {
                 shield.enchant(Enchantments.MENDING, 1);
             }
-            if (rand.nextFloat() < 0.75) {
+            if (rand.nextFloat() < 0.75F) {
                 shield.enchant(Enchantments.VANISHING_CURSE, 1);
             }
         }

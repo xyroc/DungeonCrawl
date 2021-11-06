@@ -92,22 +92,6 @@
           "rotation": "clockwise_180",
           "model": "dungeoncrawl:default/multipart/corridor/spawner",
           "weight": 4
-        },
-        {
-          "offset": {
-            "x": 2,
-            "z": 5
-          },
-          "rotation": "clockwise_180",
-          "model": "dungeoncrawl:default/multipart/corridor/empty_room"
-        },
-        {
-          "offset": {
-            "x": 2,
-            "z": 5
-          },
-          "rotation": "clockwise_180",
-          "model": "dungeoncrawl:default/multipart/corridor/empty_room_2"
         }
       ]
     }

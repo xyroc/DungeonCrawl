@@ -21,6 +21,25 @@ archivesBaseName = 'DungeonCrawl-1.17.1'
 java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = [
+                    "$rootDir/src/main/resources",
+                    "$rootDir/src/generated/resources"
+            ]
+        }
+    }
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+    test {}
+}
+
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
     // Channel:   Version:
@@ -105,6 +124,7 @@ minecraft {
             mods {
                 dungeoncrawl {
                     source sourceSets.main
+                    source sourceSets.datagen
                 }
             }
         }

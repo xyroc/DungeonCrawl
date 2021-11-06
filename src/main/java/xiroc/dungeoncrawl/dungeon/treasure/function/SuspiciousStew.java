@@ -27,7 +27,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import xiroc.dungeoncrawl.dungeon.treasure.Treasure;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 import java.util.Random;
 
@@ -122,9 +122,13 @@ public class SuspiciousStew extends LootItemConditionalFunction {
         return stack;
     }
 
+    public static LootItemConditionalFunction.Builder<?> suspiciousStew() {
+        return simpleBuilder(SuspiciousStew::new);
+    }
+
     @Override
     public LootItemFunctionType getType() {
-        return Treasure.SUSPICIOUS_STEW;
+        return Loot.SUSPICIOUS_STEW;
     }
 
     public static class Serializer extends LootItemConditionalFunction.Serializer<SuspiciousStew> {

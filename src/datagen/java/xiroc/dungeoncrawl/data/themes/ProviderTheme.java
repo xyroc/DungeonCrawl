@@ -21,7 +21,7 @@ package xiroc.dungeoncrawl.data.themes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.data.ProviderJsonFile;
 import xiroc.dungeoncrawl.data.ProviderJsonObject;

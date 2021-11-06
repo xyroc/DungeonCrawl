@@ -20,8 +20,8 @@ package xiroc.dungeoncrawl.data.themes.provider;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import xiroc.dungeoncrawl.data.themes.PropertyHolder;
 
 public class BlockProvider implements AbstractProvider {

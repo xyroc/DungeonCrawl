@@ -24,6 +24,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -57,7 +59,7 @@ public class LootTables extends LootTableProvider {
     }
 
     @Override
-    public void run(DirectoryCache p_200398_1_) {
+    public void run(HashCache p_200398_1_) {
         Path path = this.generator.getOutputFolder();
         Map<ResourceLocation, LootTable> map = Maps.newHashMap();
         this.getTables().forEach((p_218438_1_) -> {
@@ -72,7 +74,7 @@ public class LootTables extends LootTableProvider {
             Path path1 = createPath(path, p_229441_2_);
 
             try {
-                IDataProvider.save(GSON, p_200398_1_, LootTableManager.serialize(p_229441_3_), path1);
+                DataProvider.save(GSON, p_200398_1_, net.minecraft.world.level.storage.loot.LootTables.serialize(p_229441_3_), path1);
             } catch (IOException ioexception) {
                 LOGGER.error("Couldn't save loot table {}", path1, ioexception);
             }
@@ -85,7 +87,7 @@ public class LootTables extends LootTableProvider {
     }
 
     @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
+    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
         return subProviders;
     }
 

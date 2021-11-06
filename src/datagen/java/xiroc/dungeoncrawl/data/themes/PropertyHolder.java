@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.state.Property;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.HashMap;
 import java.util.function.Supplier;

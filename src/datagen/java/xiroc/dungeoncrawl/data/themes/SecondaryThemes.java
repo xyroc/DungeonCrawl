@@ -20,11 +20,11 @@ package xiroc.dungeoncrawl.data.themes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -36,7 +36,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-public class SecondaryThemes implements IDataProvider {
+public class SecondaryThemes implements DataProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final DataGenerator generator;
@@ -48,7 +48,7 @@ public class SecondaryThemes implements IDataProvider {
     }
 
     @Override
-    public void run(DirectoryCache directoryCache) {
+    public void run(HashCache directoryCache) {
         Path path = this.generator.getOutputFolder();
 
         HashMap<ResourceLocation, ProviderTheme.Secondary> themes = new HashMap<>();
@@ -62,7 +62,7 @@ public class SecondaryThemes implements IDataProvider {
         themes.forEach(((resourceLocation, theme) -> {
             Path filePath = createPath(path, resourceLocation);
             try {
-                IDataProvider.save(GSON, directoryCache, theme.get(), filePath);
+                DataProvider.save(GSON, directoryCache, theme.get(), filePath);
             } catch (IOException exception) {
                 LOGGER.error("Failed to save {}", resourceLocation);
             }

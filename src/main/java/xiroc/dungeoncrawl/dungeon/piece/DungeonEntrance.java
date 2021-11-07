@@ -63,7 +63,6 @@ public class DungeonEntrance extends DungeonPiece {
         Heightmap.Types heightmapType = worldGen ? Heightmap.Types.WORLD_SURFACE_WG : Heightmap.Types.WORLD_SURFACE;
 
         int height = worldIn.getHeight(heightmapType, x + 4, z + 4);
-        DungeonCrawl.LOGGER.info("Entrance Height of ({},{}) is {}", x, z, height);
         int cursorHeight = y;
 
         DungeonModel staircaseLayer = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE_LAYER);

@@ -13,8 +13,8 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '2.3.2'
-group = 'xiroc.DungeonCrawl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = '2.3.3'
+group = 'xiroc.dungeoncrawl'
 archivesBaseName = 'DungeonCrawl-1.17.1'
 
 // Mojang ships Java 16 to end users in 1.17+ instead of Java 8 in 1.16 or lower, so your mod should target Java 16.

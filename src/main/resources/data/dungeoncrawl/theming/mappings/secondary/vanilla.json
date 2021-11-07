@@ -1,5 +1,5 @@
 {
-  "default": [{"key": "dungeoncrawl:vanilla/oak"}],
+  "default": [{"key": "dungeoncrawl:vanilla/oak", "weight":  3}, {"key": "dungeoncrawl:vanilla/spruce"}],
   "mapping": {
     "minecraft:jungle": [{"key": "dungeoncrawl:vanilla/jungle"}],
     "minecraft:jungle_edge": [{"key": "dungeoncrawl:vanilla/jungle"}],

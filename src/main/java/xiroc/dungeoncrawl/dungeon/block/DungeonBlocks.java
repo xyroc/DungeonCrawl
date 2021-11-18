@@ -22,8 +22,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
-import net.minecraft.util.Tuple;
-
 
 import java.util.Random;
 

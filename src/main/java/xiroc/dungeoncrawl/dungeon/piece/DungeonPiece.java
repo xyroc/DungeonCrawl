@@ -375,7 +375,7 @@ public abstract class DungeonPiece extends StructurePiece {
             tryBuildFancyPillarPart(world, block, position);
         }
 
-        if (expandDownwards && block.position.getY() == 0 && !world.getBlockState(position.below()).canOcclude()) {
+        if (expandDownwards && block.type.isExpandable() &&block.position.getY() == 0 && !world.getBlockState(position.below()).canOcclude()) {
             buildPillar(world, position.below());
         }
     }

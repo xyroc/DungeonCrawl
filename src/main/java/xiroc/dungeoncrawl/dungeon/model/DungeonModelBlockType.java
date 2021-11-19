@@ -29,9 +29,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.theme.Theme;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -40,23 +41,23 @@ public enum DungeonModelBlockType {
     AIR((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> DungeonBlocks.CAVE_AIR),
 
     // Types with Theme Factories
-    SOLID               (tFactory(Theme::getSolid), PlacementBehaviour.SOLID),
-    SOLID_STAIRS        (tFactory(Theme::getSolidStairs), PlacementBehaviour.SOLID),
-    SOLID_SLAB          (tFactory(Theme::getSolidSlab), PlacementBehaviour.SOLID),
-    GENERIC             (tFactory(Theme::getGeneric)),
-    GENERIC_OR_FENCING  (tFactory(Theme::getGeneric), PlacementBehaviour.NON_SOLID.withAirBlock((theme, secondaryTheme) -> theme.getFencing())),
+    SOLID               (tFactory(Theme::getSolid),         new TypeBuilder().expandable().placement(PlacementBehaviour.SOLID)),
+    SOLID_STAIRS        (tFactory(Theme::getSolidStairs),   new TypeBuilder().placement(PlacementBehaviour.SOLID)),
+    SOLID_SLAB          (tFactory(Theme::getSolidSlab),     new TypeBuilder().placement(PlacementBehaviour.SOLID)),
+    GENERIC             (tFactory(Theme::getGeneric),       new TypeBuilder().expandable()),
+    GENERIC_OR_FENCING  (tFactory(Theme::getGeneric),       new TypeBuilder().placement(PlacementBehaviour.NON_SOLID.withAirBlock((theme, secondaryTheme) -> theme.getFencing()))),
     SLAB                (tFactory(Theme::getSlab)),
-    SOLID_PILLAR        (tFactory(Theme::getPillar), PlacementBehaviour.SOLID, true),
-    SOLID_FLOOR         (tFactory(Theme::getFloor), PlacementBehaviour.SOLID),
+    SOLID_PILLAR        (tFactory(Theme::getPillar),        new TypeBuilder().expandable().pillar().placement(PlacementBehaviour.SOLID)),
+    SOLID_FLOOR         (tFactory(Theme::getFloor),         new TypeBuilder().expandable().placement(PlacementBehaviour.SOLID)),
     FENCING             (tFactory(Theme::getFencing)),
-    FLOOR               (tFactory(Theme::getFloor), PlacementBehaviour.RANDOM_IF_SOLID_NEARBY),
+    FLOOR               (tFactory(Theme::getFloor),         new TypeBuilder().placement(PlacementBehaviour.RANDOM_IF_SOLID_NEARBY)),
     FLUID               (tFactory(Theme::getFluid)),
     LOOSE_GROUND        (tFactory(Theme::getFloor)),
     STAIRS              (tFactory(Theme::getStairs)),
     WALL                (tFactory(Theme::getWall)),
 
-    // Types with Sub-Theme Factories
-    PILLAR                      (sFactory(Theme.SecondaryTheme::getPillar), true),
+    // Types with Secondary-Theme Factories
+    PILLAR                      (sFactory(Theme.SecondaryTheme::getPillar), new TypeBuilder().expandable().pillar()),
     MATERIAL_STAIRS             (sFactory(Theme.SecondaryTheme::getStairs)),
     TRAPDOOR                    (sFactory(Theme.SecondaryTheme::getTrapDoor)),
     DOOR                        (sFactory(Theme.SecondaryTheme::getDoor)),
@@ -65,7 +66,7 @@ public enum DungeonModelBlockType {
     MATERIAL_SLAB               (sFactory(Theme.SecondaryTheme::getSlab)),
     MATERIAL_BUTTON             (sFactory(Theme.SecondaryTheme::getButton)),
     MATERIAL_PRESSURE_PLATE     (sFactory(Theme.SecondaryTheme::getPressurePlate)),
-    MATERIAL                    (sFactory(Theme.SecondaryTheme::getMaterial)),
+    MATERIAL                    (sFactory(Theme.SecondaryTheme::getMaterial), new TypeBuilder().expandable()),
 
     // Other
 
@@ -132,28 +133,26 @@ public enum DungeonModelBlockType {
     public final BlockFactory blockFactory;
     public final PlacementBehaviour placementBehavior;
 
-    private final boolean isPillar;
+    private final boolean isPillar; // Whether this block type represents a pillar.
+    private final boolean expandable; // Whether this block type supports generation of pillars below it or not.
 
     DungeonModelBlockType(BlockFactory blockFactory) {
-        this(blockFactory, PlacementBehaviour.NON_SOLID);
+        this(blockFactory, new TypeBuilder());
     }
 
-    DungeonModelBlockType(BlockFactory blockFactory, boolean isPillar) {
-        this(blockFactory, PlacementBehaviour.NON_SOLID, isPillar);
-    }
-
-    DungeonModelBlockType(BlockFactory blockFactory, PlacementBehaviour placementBehavior) {
-        this(blockFactory, placementBehavior, false);
-    }
-
-    DungeonModelBlockType(BlockFactory blockFactory, PlacementBehaviour placementBehavior, boolean isPillar) {
+    DungeonModelBlockType(BlockFactory blockFactory, TypeBuilder typeBuilder) {
         this.blockFactory = blockFactory;
-        this.placementBehavior = placementBehavior;
-        this.isPillar = isPillar;
+        this.placementBehavior = typeBuilder.placementBehaviour;
+        this.isPillar = typeBuilder.isPillar;
+        this.expandable = typeBuilder.expandable;
     }
 
     public boolean isPillar() {
         return isPillar;
+    }
+
+    public boolean isExpandable() {
+        return expandable;
     }
 
     public static DungeonModelBlockType get(Block block, ModelBlockDefinition definition) {
@@ -199,5 +198,41 @@ public enum DungeonModelBlockType {
     private static BlockFactory sFactory(Function<Theme.SecondaryTheme, BlockStateProvider> blockSelector) {
         return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(subTheme).get(world, pos, rotation), world, pos, rotation);
     }
+
+    /**
+     * A builder used to define properties of model block types in a clean and readable way.
+     */
+    private static class TypeBuilder {
+
+        private PlacementBehaviour placementBehaviour;
+
+        private boolean expandable;
+        private boolean isPillar;
+
+        private TypeBuilder() {
+            this.placementBehaviour = PlacementBehaviour.NON_SOLID;
+            this.expandable = false;
+            this.isPillar = false;
+        }
+
+        public TypeBuilder placement(@Nonnull PlacementBehaviour placementBehaviour) {
+            this.placementBehaviour = placementBehaviour;
+            return this;
+        }
+
+        public TypeBuilder expandable() {
+            this.expandable = true;
+            return this;
+        }
+
+
+        public TypeBuilder pillar() {
+            this.isPillar = true;
+            return this;
+        }
+
+    }
+
+
 
 }

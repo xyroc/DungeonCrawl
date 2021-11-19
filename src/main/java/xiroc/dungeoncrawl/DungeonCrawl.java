@@ -35,7 +35,6 @@ import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import xiroc.dungeoncrawl.command.SpawnDungeonCommand;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
@@ -66,7 +65,6 @@ public class DungeonCrawl {
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
         forgeEventBus.addListener(this::onWorldLoad);
-        forgeEventBus.addListener(this::onServerStarting);
 
         init();
     }
@@ -91,9 +89,6 @@ public class DungeonCrawl {
         });
     }
 
-    private void onServerStarting(FMLServerStartingEvent event) {
-        SpawnDungeonCommand.register(event.getServer().getCommands().getDispatcher());
-    }
 
     private void onWorldLoad(WorldEvent.Load event) {
         if (Config.PRINT_BIOME_CATEGORIES.get()

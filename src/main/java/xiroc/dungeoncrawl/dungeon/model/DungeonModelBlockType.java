@@ -186,7 +186,7 @@ public enum DungeonModelBlockType {
      * @return the block factory
      */
     private static BlockFactory tFactory(Function<Theme, IBlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(world, pos, rotation), world, pos, rotation);
+        return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(world, pos, rotation), world, pos, rotation);
     }
 
     /**
@@ -196,7 +196,7 @@ public enum DungeonModelBlockType {
      * @return the block factory
      */
     private static BlockFactory sFactory(Function<Theme.SecondaryTheme, IBlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> block.create(blockSelector.apply(subTheme).get(world, pos, rotation), world, pos, rotation);
+        return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(secondaryTheme).get(world, pos, rotation), world, pos, rotation);
     }
 
     /**

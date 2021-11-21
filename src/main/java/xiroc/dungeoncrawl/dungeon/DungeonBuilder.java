@@ -178,8 +178,8 @@ public class DungeonBuilder {
         }
 
         if (secondaryTheme == null) {
-            if (theme.subTheme != null) {
-                this.secondaryTheme = theme.subTheme.roll(rand);
+            if (theme.secondaryTheme != null) {
+                this.secondaryTheme = theme.secondaryTheme.roll(rand);
             } else {
                 this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getBuiltinDefaultSecondaryTheme();
             }
@@ -190,8 +190,8 @@ public class DungeonBuilder {
         }
 
         if (catacombsSecondaryTheme == null) {
-            if (catacombsTheme.subTheme != null) {
-                this.catacombsSecondaryTheme = catacombsTheme.subTheme.roll(rand);
+            if (catacombsTheme.secondaryTheme != null) {
+                this.catacombsSecondaryTheme = catacombsTheme.secondaryTheme.roll(rand);
             } else {
                 this.catacombsSecondaryTheme = Theme.randomCatacombsSecondaryTheme(rand);
             }
@@ -202,8 +202,8 @@ public class DungeonBuilder {
         }
 
         if (lowerCatacombsSecondaryTheme == null) {
-            if (lowerCatacombsTheme.subTheme != null) {
-                this.lowerCatacombsSecondaryTheme = lowerCatacombsTheme.subTheme.roll(rand);
+            if (lowerCatacombsTheme.secondaryTheme != null) {
+                this.lowerCatacombsSecondaryTheme = lowerCatacombsTheme.secondaryTheme.roll(rand);
             } else {
                 this.lowerCatacombsSecondaryTheme = Theme.randomLowerCatacombsSecondaryTheme(rand);
             }
@@ -213,8 +213,8 @@ public class DungeonBuilder {
             this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.randomHellTheme(rand);
         }
 
-        if (bottomTheme.subTheme != null && this.bottomSecondaryTheme == null) {
-            this.bottomSecondaryTheme = bottomTheme.subTheme.roll(rand);
+        if (bottomTheme.secondaryTheme != null && this.bottomSecondaryTheme == null) {
+            this.bottomSecondaryTheme = bottomTheme.secondaryTheme.roll(rand);
         } else {
             this.bottomSecondaryTheme = Theme.randomHellSecondaryTheme(rand);
         }

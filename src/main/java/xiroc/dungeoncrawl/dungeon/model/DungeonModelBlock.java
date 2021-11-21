@@ -156,7 +156,7 @@ public class DungeonModelBlock {
     public static DungeonModelBlock fromNBT(CompoundNBT nbt, Vector3i position) {
         if (!nbt.contains("type")) { // backwards compatibility
 //            return new DungeonModelBlock(DungeonModelBlockType.AIR, null);
-            DungeonCrawl.LOGGER.info("Model block does not have a type parameter");
+            DungeonCrawl.LOGGER.warn("Model block does not have a type parameter");
             return null;
         }
 

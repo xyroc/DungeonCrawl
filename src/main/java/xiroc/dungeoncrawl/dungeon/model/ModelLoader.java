@@ -23,6 +23,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import xiroc.dungeoncrawl.DungeonCrawl;
 
 public interface ModelLoader {
 
@@ -32,7 +33,12 @@ public interface ModelLoader {
         ListTag blocks = nbt.getList("blocks", 10);
 
         for (int i = 0; i < blocks.size(); i++) {
-            modelBlocks.add(DungeonModelBlock.fromNBT(blocks.getCompound(i)));
+            DungeonModelBlock block = DungeonModelBlock.fromNBT(blocks.getCompound(i));
+            if (block != null) {
+                modelBlocks.add(block);
+            } else {
+                DungeonCrawl.LOGGER.error("Loading a block from {} (version 1) returned null", file);
+            }
         }
 
         return new DungeonModel(key, modelBlocks.build(), nbt.getInt("width"), nbt.getInt("height"), nbt.getInt("length"));
@@ -50,7 +56,12 @@ public interface ModelLoader {
             for (int y = 0; y < height; y++) {
                 ListTag blocks3 = blocks2.getList(y);
                 for (int z = 0; z < length; z++) {
-                    modelBlocks.add(DungeonModelBlock.fromNBT(blocks3.getCompound(z), new Vec3i(x, y, z)));
+                    DungeonModelBlock block = DungeonModelBlock.fromNBT(blocks3.getCompound(z), new Vec3i(x, y, z));
+                    if (block != null) {
+                        modelBlocks.add(block);
+                    } else {
+                        DungeonCrawl.LOGGER.error("Loading a block from {} (legacy) returned null", file);
+                    }
                 }
             }
         }

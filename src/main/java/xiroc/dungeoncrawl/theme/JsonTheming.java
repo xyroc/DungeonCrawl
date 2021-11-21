@@ -91,7 +91,7 @@ public class JsonTheming {
                     throw new DatapackLoadException("Unknown secondary theme key " + key + " in " + file.toString());
                 }
             });
-            theme.subTheme = builder.build();
+            theme.secondaryTheme = builder.build();
         }
 
         if (object.has("id")) {

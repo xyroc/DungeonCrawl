@@ -130,7 +130,7 @@ public class Theme {
 
     public final BlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid;
 
-    public IRandom<SecondaryTheme> subTheme;
+    public IRandom<SecondaryTheme> secondaryTheme;
 
     private ResourceLocation key;
 

@@ -59,7 +59,6 @@ public class DungeonModelBlock {
     @Nullable
     public ResourceLocation lootTable;
 
-
     private DungeonModelBlock(DungeonModelBlockType type, Vec3i position) {
         this(type, position, null, null, Blocks.CAVE_AIR, null);
     }

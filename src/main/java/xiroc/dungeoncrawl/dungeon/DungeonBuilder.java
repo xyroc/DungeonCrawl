@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -27,10 +28,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.generator.DefaultDungeonGenerator;
@@ -64,18 +65,20 @@ public class DungeonBuilder {
     public Theme theme, catacombsTheme, lowerCatacombsTheme, bottomTheme;
     public Theme.SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
 
+    private final int groundHeight;
+
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
      */
-    public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, ChunkPos pos, Random rand) {
+    public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, int startHeight, BlockPos groundPos, ChunkPos pos, Random rand) {
         this.registryAccess = registryAccess;
-        this.chunkGenerator = chunkGenerator;
         this.rand = rand;
+        this.chunkGenerator = chunkGenerator;
+        this.groundHeight = groundPos.getY();
 
         this.chunkPos = pos;
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getSpawnHeight(heightAccessor) - 15,
-                pos.z * 16 - Dungeon.SIZE / 2 * 9);
-
+        this.startPos = new BlockPos(groundPos.getX() - Dungeon.SIZE / 2 * 9, startHeight,
+                groundPos.getZ() - Dungeon.SIZE / 2 * 9);
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");
     }
@@ -87,9 +90,10 @@ public class DungeonBuilder {
         this.registryAccess = world.registryAccess();
         this.chunkGenerator = world.getChunkSource().getGenerator();
         this.rand = rand;
+        this.groundHeight = world.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ());
 
         this.chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
-        this.startPos = new BlockPos(pos.getX() - Dungeon.SIZE / 2 * 9, world.getChunkSource().generator.getSpawnHeight(world) - 15,
+        this.startPos = new BlockPos(pos.getX() - Dungeon.SIZE / 2 * 9, chunkGenerator.getSpawnHeight(world) - 15,
                 pos.getZ() - Dungeon.SIZE / 2 * 9);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
@@ -100,7 +104,7 @@ public class DungeonBuilder {
         if (startPos.getY() < 16) {
             return Lists.newArrayList();
         }
-        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(chunkPos.x << 2, chunkGenerator.getSeaLevel() >> 4, chunkPos.z << 2);
+        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(startPos.getX()), QuartPos.fromBlock(groundHeight), QuartPos.fromBlock(startPos.getZ()), chunkGenerator.climateSampler());
         DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
         generateLayout(type, DEFAULT_GENERATOR);
 

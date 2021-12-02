@@ -42,7 +42,7 @@ public class DungeonRoom extends DungeonPiece {
         super(StructurePieceTypes.ROOM);
     }
 
-    public DungeonRoom(ServerLevel serverLevel, CompoundTag p_i51343_2_) {
+    public DungeonRoom(CompoundTag p_i51343_2_) {
         super(StructurePieceTypes.ROOM, p_i51343_2_);
     }
 
@@ -52,10 +52,10 @@ public class DungeonRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
-            return true;
+            return;
         }
 
         Vec3i offset = model.getOffset(rotation);
@@ -65,12 +65,6 @@ public class DungeonRoom extends DungeonPiece {
         entrances(worldIn, structureBoundingBoxIn, model, worldGen);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-        return true;
-    }
-
-    @Override
-    public void addAdditionalSaveData(ServerLevel serverLevel, CompoundTag tagCompound) {
-        super.addAdditionalSaveData(serverLevel, tagCompound);
     }
 
     @Override

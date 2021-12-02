@@ -19,11 +19,14 @@
 package xiroc.dungeoncrawl.init;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
@@ -31,16 +34,15 @@ import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.StructureFeatureConfiguration;
-import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
@@ -91,7 +93,7 @@ public class ModStructures {
         Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
         Registry.register(registry, registryName, configuredFeature);
 
-        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(structure.get(), configuredFeature);
+//        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(structure.get(), configuredFeature);
 
         BuiltinRegistries.NOISE_GENERATOR_SETTINGS.entrySet().forEach(settings -> {
             Map<StructureFeature<?>, StructureFeatureConfiguration> structureConfiguration = settings.getValue().structureSettings().structureConfig();
@@ -107,13 +109,14 @@ public class ModStructures {
     }
 
     private static void onBiomeLoad(final BiomeLoadingEvent event) {
-        if ((Dungeon.biomeCategories.contains(event.getCategory()) || event.getName() == null || Dungeon.whitelistedBiomes.contains(event.getName().toString()))
-                && (event.getName() == null || !Dungeon.blacklistedBiomes.contains(event.getName().toString()))) {
-            DungeonCrawl.LOGGER.debug("Generating in biome {}", event.getName());
-            event.getGeneration().addStructureStart(ModStructureFeatures.CONFIGURED_DUNGEON);
-        } else {
-            DungeonCrawl.LOGGER.debug("Ignoring biome {} with category {}", event.getName(), event.getCategory().getName());
-        }
+//        if ((Dungeon.biomeCategories.contains(event.getCategory()) || event.getName() == null || Dungeon.whitelistedBiomes.contains(event.getName().toString()))
+//                && (event.getName() == null || !Dungeon.blacklistedBiomes.contains(event.getName().toString()))) {
+//            DungeonCrawl.LOGGER.debug("Generating in biome {}", event.getName());
+//            event.getGeneration().addStructureStart(ModStructureFeatures.CONFIGURED_DUNGEON);
+//
+//        } else {
+//            DungeonCrawl.LOGGER.debug("Ignoring biome {} with category {}", event.getName(), event.getCategory().getName());
+//        }
     }
 
     private static void onWorldLoad(final WorldEvent.Load event) {
@@ -128,16 +131,41 @@ public class ModStructures {
                 return;
             }
 
-            if (serverLevel.getChunkSource().generator.getSpawnHeight(serverLevel) < 32) {
+            if (serverLevel.getChunkSource().getGenerator().getSpawnHeight(serverLevel) < 32) {
                 DungeonCrawl.LOGGER.info("Ignoring dimension {} because it's spawn height is too low.", serverLevel.dimension().location());
                 return;
             }
 
             DungeonCrawl.LOGGER.debug("Generating in dimension: {}", serverLevel.dimension().location());
 
-            Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(serverLevel.getChunkSource().generator.getSettings().structureConfig());
+            Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(serverLevel.getChunkSource().getGenerator().getSettings().structureConfig());
             tempMap.putIfAbsent(DUNGEON.get(), StructureSettings.DEFAULTS.get(DUNGEON.get()));
-            serverLevel.getChunkSource().generator.getSettings().structureConfig = tempMap;
+            serverLevel.getChunkSource().getGenerator().getSettings().structureConfig = tempMap;
+
+            Map<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> configuredStructures = new HashMap<>(serverLevel.getChunkSource().getGenerator().getSettings().configuredStructures);
+            ImmutableMultimap.Builder<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> builder = ImmutableMultimap.builder();
+
+            ForgeRegistries.BIOMES.getEntries().forEach((entry) -> {
+                Biome biome = entry.getValue();
+                ResourceLocation registryName = entry.getKey().getRegistryName();
+                if ((Dungeon.biomeCategories.contains(biome.getBiomeCategory()) || Dungeon.whitelistedBiomes.contains(registryName.toString()))
+                        && (!Dungeon.blacklistedBiomes.contains(registryName.toString()))) {
+                    builder.put(ModStructureFeatures.CONFIGURED_DUNGEON, entry.getKey());
+                }
+            });
+
+            ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> configuredDungeon = builder.build();
+            configuredStructures.put(DUNGEON.get(), configuredDungeon);
+            serverLevel.getChunkSource().getGenerator().getSettings().configuredStructures = ImmutableMap.copyOf(configuredStructures);
+
+            // Debug output
+            StringBuilder stringBuilder = new StringBuilder();
+            configuredDungeon.get(ModStructureFeatures.CONFIGURED_DUNGEON).forEach((biome) -> {
+                stringBuilder.append(biome.getRegistryName());
+                stringBuilder.append(" ");
+            });
+            DungeonCrawl.LOGGER.debug("Dungeons generate in the following biomes of {} : [{}]", serverLevel.dimension().location(), stringBuilder);
+
         }
     }
 

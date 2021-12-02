@@ -38,7 +38,6 @@ public class VineDecoration implements DungeonDecoration {
     }
 
     @Override
-
     public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
                          DungeonPiece piece, int stage, boolean worldGen) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;

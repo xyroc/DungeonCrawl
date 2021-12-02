@@ -25,7 +25,7 @@ import xiroc.dungeoncrawl.util.Position2D;
 import java.util.Random;
 
 /**
- * Mimics the classic level generator from  Roguelike Dungeons.
+ * Mimics the classic level generator from Roguelike Dungeons.
  */
 public class RoguelikeLayerGenerator extends LayerGenerator {
 

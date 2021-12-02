@@ -41,7 +41,7 @@ public class DungeonCorridor extends DungeonPiece {
         super(StructurePieceTypes.CORRIDOR);
     }
 
-    public DungeonCorridor(ServerLevel serverLevel, CompoundTag p_i51343_2_) {
+    public DungeonCorridor(CompoundTag p_i51343_2_) {
         super(StructurePieceTypes.CORRIDOR, p_i51343_2_);
     }
 
@@ -54,11 +54,10 @@ public class DungeonCorridor extends DungeonPiece {
         }
     }
 
-
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
-            return true;
+            return;
         }
 
         Vec3i offset = model.getOffset(rotation);
@@ -70,7 +69,6 @@ public class DungeonCorridor extends DungeonPiece {
         }
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-        return true;
     }
 
     @Override

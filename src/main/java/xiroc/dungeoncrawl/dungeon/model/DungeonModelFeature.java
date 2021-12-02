@@ -346,7 +346,9 @@ public final class DungeonModelFeature {
                     if (!DungeonBuilder.isBlockProtected(world, pos) && !world.isEmptyBlock(pos)) {
                         world.setBlock(pos, blockStateProvider.get(world, pos), 2);
                         FluidState state = world.getFluidState(pos);
-                        if (!state.isEmpty()) world.getLiquidTicks().scheduleTick(pos, state.getType(), 0);
+                        if (!state.isEmpty()) {
+                            world.scheduleTick(pos, state.getType(), 0);
+                        }
                     }
                 }
             }

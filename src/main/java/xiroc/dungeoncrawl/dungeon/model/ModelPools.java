@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
@@ -41,7 +42,7 @@ public class ModelPools {
         DungeonCrawl.LOGGER.debug("Loading {}", FILE);
         POOLS.clear();
         try {
-            JsonObject file = DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(FILE).getInputStream())).getAsJsonObject();
+            JsonObject file = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(FILE).getInputStream())).getAsJsonObject();
             JsonObject pools = file.getAsJsonObject("pools");
 
             pools.entrySet().forEach((entry) -> {

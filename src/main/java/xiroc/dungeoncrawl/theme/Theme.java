@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.theme;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -316,7 +317,7 @@ public class Theme {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 ResourceLocation key = DungeonCrawl.key(resource, SECONDARY_THEME_DIRECTORY, ".json");
-                JsonObject json = DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject();
+                JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
                     SecondaryTheme theme = JsonTheming.deserializeSecondaryTheme(json, resource);
                     theme.key = key;
@@ -335,7 +336,7 @@ public class Theme {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
                 ResourceLocation key = DungeonCrawl.key(resource, PRIMARY_THEME_DIRECTORY, ".json");
-                JsonObject json = DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject();
+                JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
                     Theme theme = JsonTheming.deserializeTheme(json, resource);
                     theme.key = key;
@@ -358,7 +359,7 @@ public class Theme {
         for (ResourceLocation resource : resourceManager.listResources(PRIMARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), themeMappingBuilders, primaryDefaultBuilder, resource);
+                JsonTheming.deserializeThemeMapping(JsonParser.parseReader(reader).getAsJsonObject(), themeMappingBuilders, primaryDefaultBuilder, resource);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
@@ -368,7 +369,7 @@ public class Theme {
         for (ResourceLocation resource : resourceManager.listResources(SECONDARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeSecondaryThemeMapping(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(), secondaryThemeMappingBuilders, secondaryDefaultBuilder, resource);
+                JsonTheming.deserializeSecondaryThemeMapping(JsonParser.parseReader(reader).getAsJsonObject(), secondaryThemeMappingBuilders, secondaryDefaultBuilder, resource);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
@@ -412,7 +413,7 @@ public class Theme {
         for (ResourceLocation resource : resourceManager.listResources(directory, (s) -> s.endsWith(".json"))) {
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeRandomThemeFile(DungeonCrawl.JSON_PARSER.parse(reader).getAsJsonObject(),
+                JsonTheming.deserializeRandomThemeFile(JsonParser.parseReader(reader).getAsJsonObject(),
                         primary, secondary, resource);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);

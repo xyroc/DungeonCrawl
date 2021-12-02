@@ -59,20 +59,18 @@ public class RandomEquipment {
         MELEE_WEAPON = new Hashtable<>(5);
         RANGED_WEAPON = new Hashtable<>(5);
 
-        JsonParser parser = new JsonParser();
-
         try {
-            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_1.json"), parser, 0);
-            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_2.json"), parser, 1);
-            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_3.json"), parser, 2);
-            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_4.json"), parser, 3);
-            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_5.json"), parser, 4);
+            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_1.json"), 0);
+            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_2.json"), 1);
+            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_3.json"), 2);
+            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_4.json"), 3);
+            loadArmorFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/armor/stage_5.json"), 4);
 
-            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_1.json"), parser, 0);
-            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_2.json"), parser, 1);
-            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_3.json"), parser, 2);
-            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_4.json"), parser, 3);
-            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_5.json"), parser, 4);
+            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_1.json"), 0);
+            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_2.json"), 1);
+            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_3.json"), 2);
+            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_4.json"), 3);
+            loadWeaponsFromJson(resourceManager, DungeonCrawl.locate("monster/equipment/weapon/stage_5.json"), 4);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -81,11 +79,11 @@ public class RandomEquipment {
     /**
      * Convenience method to load an armor file from json.
      */
-    private static void loadArmorFromJson(ResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
+    private static void loadArmorFromJson(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-                JsonObject object = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
+                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
                 if (object.has("helmet")) {
                     HELMET.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("helmet")));
                 } else {
@@ -122,10 +120,10 @@ public class RandomEquipment {
     /**
      * Convenience method to load a weapon file from json.
      */
-    private static void loadWeaponsFromJson(ResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
+    private static void loadWeaponsFromJson(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
             DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-            JsonObject object = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
+            JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
 
             if (object.has("melee")) {
                 MELEE_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("melee")));

@@ -41,22 +41,21 @@ public class DungeonNodeConnector extends DungeonPiece {
         super(StructurePieceTypes.NODE_CONNECTOR);
     }
 
-    public DungeonNodeConnector(ServerLevel serverLevel, CompoundTag nbt) {
+    public DungeonNodeConnector(CompoundTag nbt) {
         super(StructurePieceTypes.NODE_CONNECTOR, nbt);
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
-            return true;
+            return;
         }
         BlockPos pos = new BlockPos(x, y + model.getOffset(rotation).getY(), z);
 
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, worldGen, false, false);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-        return true;
     }
 
     @Override

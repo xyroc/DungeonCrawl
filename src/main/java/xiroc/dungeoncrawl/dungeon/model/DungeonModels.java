@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonParser;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -74,7 +75,7 @@ public class DungeonModels {
         if (resourceManager.hasResource(metadata)) {
             DungeonCrawl.LOGGER.debug("Loading {}", metadata);
             try {
-                model.loadMetadata(DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
+                model.loadMetadata(JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
             } catch (Exception e) {
                 DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
                 e.printStackTrace();

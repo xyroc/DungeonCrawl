@@ -19,25 +19,18 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.StructureFeatureManager;
-import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 
-import java.util.Random;
+import java.util.Optional;
 import java.util.Set;
 
 public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
@@ -57,7 +50,27 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
     public static final int SIZE = 15;
 
     public Dungeon() {
-        super(NoneFeatureConfiguration.CODEC);
+        super(NoneFeatureConfiguration.CODEC, Dungeon::pieceGeneratorSupplier);
+    }
+
+    private static Optional<PieceGenerator<NoneFeatureConfiguration>> pieceGeneratorSupplier(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
+        int centerX = context.chunkPos().getBlockX(7);
+        int centerZ = context.chunkPos().getBlockX(7);
+        int centerHeight = context.chunkGenerator().getBaseHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
+        if (!context.validBiome().test(context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)))) {
+            DungeonCrawl.LOGGER.info("Found invalid biome {}",
+                    context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)));
+            return Optional.empty();
+        }
+        return Optional.of(((structurePiecesBuilder, generatorContext) -> {
+            DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
+                    generatorContext.chunkGenerator(),
+                    generatorContext.chunkGenerator().getSpawnHeight(generatorContext.heightAccessor()) - 10,
+                    new BlockPos(centerX, centerHeight, centerZ),
+                    generatorContext.chunkPos(),
+                    generatorContext.random());
+            builder.build().forEach((structurePiecesBuilder::addPiece));
+        }));
     }
 
     @Override
@@ -71,45 +84,8 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
     }
 
     @Override
-    protected boolean isFeatureChunk(ChunkGenerator p_160455_, BiomeSource p_160456_, long p_160457_, WorldgenRandom p_160458_, ChunkPos p_160459_, Biome p_160460_, ChunkPos p_160461_, NoneFeatureConfiguration p_160462_, LevelHeightAccessor p_160463_) {
-        return true;
-    }
-
-    @Override
-    public StructureStartFactory<NoneFeatureConfiguration> getStartFactory() {
-        return Dungeon.Start::new;
-    }
-
-    @Override
     public String getFeatureName() {
         return NAME;
-    }
-
-    public static class Start extends StructureStart<NoneFeatureConfiguration> {
-
-        public Start(StructureFeature<NoneFeatureConfiguration> p_163595_, ChunkPos p_163596_, int p_163597_, long p_163598_) {
-            super(p_163595_, p_163596_, p_163597_, p_163598_);
-        }
-
-        @Override
-        public void generatePieces(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, StructureManager p_163617_, ChunkPos chunkPos, Biome p_163619_, NoneFeatureConfiguration p_163620_, LevelHeightAccessor heightAccessor) {
-            DungeonBuilder builder = new DungeonBuilder(registryAccess, chunkGenerator, heightAccessor, chunkPos, random);
-            this.pieces.addAll(builder.build());
-            DungeonCrawl.LOGGER.debug("Created the dungeon layout for [{}, {}] with a total of {} pieces.", chunkPos.x, chunkPos.z, this.pieces.size());
-        }
-
-        @Override
-        public void placeInChunk(WorldGenLevel p_230366_1_, StructureFeatureManager p_230366_2_, ChunkGenerator p_230366_3_, Random p_230366_4_, BoundingBox p_230366_5_, ChunkPos p_230366_6_) {
-            if (Config.EXTENDED_DEBUG.get()) {
-                DungeonCrawl.LOGGER.debug("Starting dungeon generation in chunk [{},{}]", p_230366_6_.x, p_230366_6_.z);
-            }
-
-            super.placeInChunk(p_230366_1_, p_230366_2_, p_230366_3_, p_230366_4_, p_230366_5_, p_230366_6_);
-
-            if (Config.EXTENDED_DEBUG.get()) {
-                DungeonCrawl.LOGGER.debug("Finished dungeon generation in chunk [{},{}]", p_230366_6_.x, p_230366_6_.z);
-            }
-        }
     }
 
 }

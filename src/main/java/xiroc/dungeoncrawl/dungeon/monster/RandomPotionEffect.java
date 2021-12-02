@@ -54,13 +54,12 @@ public class RandomPotionEffect {
         EFFECTS = new WeightedRandomPotionEffect[5];
         GUARANTEED_EFFECTS = new PotionEffect[5][];
 
-        JsonParser parser = new JsonParser();
         try {
-            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_1.json"), parser, 0);
-            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_2.json"), parser, 1);
-            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_3.json"), parser, 2);
-            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_4.json"), parser, 3);
-            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_5.json"), parser, 4);
+            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_1.json"), 0);
+            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_2.json"), 1);
+            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_3.json"), 2);
+            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_4.json"), 3);
+            loadFile(resourceManager, DungeonCrawl.locate("monster/potion_effects/stage_5.json"), 4);
         } catch (IOException e) {
             DungeonCrawl.LOGGER.error("Failed to load the monster potion effect files.");
             e.printStackTrace();
@@ -70,11 +69,11 @@ public class RandomPotionEffect {
     /**
      * Convenience method to load a single potion effect file.
      */
-    private static void loadFile(ResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
+    private static void loadFile(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-                JsonObject object = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
+                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
 
                 if (object.has("chance")) {
                     CHANCES[stage] = object.get("chance").getAsFloat();

@@ -28,6 +28,7 @@ import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
@@ -47,7 +48,7 @@ public class DungeonStairs extends DungeonPiece {
         this.stairType = 0;
     }
 
-    public DungeonStairs(ServerLevel serverLevel, CompoundTag p_i51343_2_) {
+    public DungeonStairs(CompoundTag p_i51343_2_) {
         super(StructurePieceTypes.STAIRS, p_i51343_2_);
         this.stairType = p_i51343_2_.getInt("stairType");
     }
@@ -61,10 +62,10 @@ public class DungeonStairs extends DungeonPiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
-            return true;
+            return;
         }
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
         switch (stairType) {
@@ -73,21 +74,16 @@ public class DungeonStairs extends DungeonPiece {
                 ironBars(worldIn, structureBoundingBoxIn, model, worldGen);
                 placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
                 decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-                return true;
             }
             case 1: {
                 build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, worldGen, false, false);
                 entrances(worldIn, structureBoundingBoxIn, model, worldGen);
                 placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
                 decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-                return true;
             }
-            default:
-                return true;
         }
 
     }
-
 
     public void ironBars(LevelAccessor world, BoundingBox bounds, DungeonModel model, boolean worldGen) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
@@ -138,8 +134,8 @@ public class DungeonStairs extends DungeonPiece {
     }
 
     @Override
-    public void addAdditionalSaveData(ServerLevel serverLevel, CompoundTag tagCompound) {
-        super.addAdditionalSaveData(serverLevel, tagCompound);
+    public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+        super.addAdditionalSaveData(context, tagCompound);
         tagCompound.putInt("stairType", stairType);
     }
 

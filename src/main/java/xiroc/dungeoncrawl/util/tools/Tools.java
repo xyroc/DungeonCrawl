@@ -34,10 +34,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.command.argument.DungeonModelArgument;
 import xiroc.dungeoncrawl.command.argument.ModelBlockDefinitionArgument;
@@ -53,7 +53,7 @@ public class Tools {
     private static final Hashtable<UUID, ModelEditContext> CONTEXT_TABLE = new Hashtable<>();
 
     @SubscribeEvent
-    public void onServerStart(FMLServerStartingEvent event) {
+    public void onServerStart(ServerStartingEvent event) {
         DungeonCrawl.LOGGER.debug("Registering Commands...");
         event.getServer().getCommands().getDispatcher().register(Commands.literal("savemodel").requires((a) -> {
             try {

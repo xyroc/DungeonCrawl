@@ -114,7 +114,7 @@ public class DungeonLayer {
         for (int x = -1; x < 2; x++) {
             for (int z = -1; z < 2; z++) {
                 // If we are at the center of the node, require the position of the center to be within the grid bounds and require the position to be free in the grid.
-                // For the eight other positions, require the position to be free in the grid if it is within the grid bounds. Positions outside of the grid bounds are always valid.
+                // For the eight other positions, require the position to be free in the grid if it is within the grid bounds. Positions outside the grid bounds are always valid.
                 Position2D currentPos = new Position2D(center.x + x, center.z + z);
                 if (x == 0 && z == 0) {
                     if (!currentPos.isValid(width, length)) {
@@ -187,7 +187,7 @@ public class DungeonLayer {
 
     /**
      * Opens a side of the piece at the given position if there is one. Before the grid is accessed,
-     * the given position will be verified, hence positions outside of the grid bounds
+     * the given position will be verified, hence positions outside the grid bounds
      * and positions of empty tiles are legal arguments.
      *
      * @param position the grid position of the piece
@@ -203,7 +203,7 @@ public class DungeonLayer {
      * Rotates a dungeon piece according to its connections.
      * This is necessary to ensure that the model for this piece matches its connections.
      *
-     * @param placeHolder the place holder of the piece
+     * @param placeHolder the placeholder of the piece
      * @param rand        an instance of Random which will be used to choose a random one of the valid rotations, should there be more than one
      */
     public void rotatePiece(Tile placeHolder, Random rand) {

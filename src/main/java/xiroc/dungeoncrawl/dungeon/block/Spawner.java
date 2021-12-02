@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.checkerframework.checker.units.qual.C;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
@@ -60,18 +61,21 @@ public class Spawner implements IBlockPlacementHandler {
             EntityType<?> type = RandomMonster.randomMonster(rand, stage);
             spawner.getSpawner().setEntityId(type);
             if (Config.CUSTOM_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
-                CompoundTag spawnerNBT = spawner.getSpawner().save(spawner.getLevel(), pos, new CompoundTag());
+                CompoundTag spawnerNBT = spawner.getSpawner().save(new CompoundTag());
                 ListTag potentialSpawns = new ListTag();
 
                 for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
-                    CompoundTag nbt = new CompoundTag();
+                    CompoundTag potentialSpawn = new CompoundTag();
+                    CompoundTag data = new CompoundTag();
                     CompoundTag spawnData = createSpawnData(type, null, rand, stage);
-                    nbt.put("Entity", spawnData);
-                    nbt.putInt("Weight", 1);
+                    data.put("entity", spawnData);
+                    potentialSpawn.put("data", data);
+                    potentialSpawn.putInt("weight", 1);
                     if (i == 0)
-                        spawnerNBT.put("SpawnData", spawnData);
-                    potentialSpawns.add(nbt);
+                        spawnerNBT.put("SpawnData", data);
+                    potentialSpawns.add(potentialSpawn);
                 }
+
                 Range delay = SpawnRates.getDelay(stage);
                 spawnerNBT.put("SpawnPotentials", potentialSpawns);
                 spawnerNBT.putShort("MinSpawnDelay", (short) delay.min());

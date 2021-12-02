@@ -45,7 +45,7 @@ public class DungeonEntrance extends DungeonPiece {
         super(StructurePieceTypes.ENTRANCE);
     }
 
-    public DungeonEntrance(ServerLevel serverLevel, CompoundTag nbt) {
+    public DungeonEntrance(CompoundTag nbt) {
         super(StructurePieceTypes.ENTRANCE, nbt);
     }
 
@@ -54,10 +54,10 @@ public class DungeonEntrance extends DungeonPiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
-            return true;
+            return;
         }
 
         Heightmap.Types heightmapType = worldGen ? Heightmap.Types.WORLD_SURFACE_WG : Heightmap.Types.WORLD_SURFACE;
@@ -87,7 +87,6 @@ public class DungeonEntrance extends DungeonPiece {
 
         BoundingBox populationBox = model.createBoundingBox(pos, rotation);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model, worldGen);
-        return true;
     }
 
     private static Vec3i rotatedOffset(Vec3i offset, Rotation rotation, DungeonModel model) {

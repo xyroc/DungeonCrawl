@@ -31,7 +31,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,8 +52,6 @@ public class DungeonCrawl {
     public static final String VERSION = "2.3.4";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
-
-    public static final JsonParser JSON_PARSER = new JsonParser();
 
     public DungeonCrawl() {
         LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);

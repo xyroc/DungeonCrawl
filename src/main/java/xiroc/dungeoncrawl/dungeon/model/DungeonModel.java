@@ -36,8 +36,6 @@ import java.util.List;
 
 public class DungeonModel {
 
-    public static final DungeonModel EMPTY = new DungeonModel(DungeonCrawl.locate("empty"), ImmutableList.of(), 0, 0, 0);
-
     private final ResourceLocation key;
 
     public final int width, height, length;

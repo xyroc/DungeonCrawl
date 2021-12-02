@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -41,7 +40,7 @@ public class DungeonSideRoom extends DungeonPiece {
         super(StructurePieceTypes.SIDE_ROOM);
     }
 
-    public DungeonSideRoom(ServerLevel serverLevel, CompoundTag p_i51343_2_) {
+    public DungeonSideRoom(CompoundTag p_i51343_2_) {
         super(StructurePieceTypes.SIDE_ROOM, p_i51343_2_);
     }
 
@@ -51,10 +50,10 @@ public class DungeonSideRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
-            return true;
+            return;
         }
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
 
@@ -62,7 +61,6 @@ public class DungeonSideRoom extends DungeonPiece {
         entrances(worldIn, structureBoundingBoxIn, model, worldGen);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-        return true;
     }
 
     @Override

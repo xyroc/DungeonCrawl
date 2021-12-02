@@ -22,12 +22,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
@@ -49,7 +49,7 @@ public class DungeonNodeRoom extends DungeonPiece {
         super(StructurePieceTypes.NODE_ROOM);
     }
 
-    public DungeonNodeRoom(ServerLevel serverLevel, CompoundTag nbt) {
+    public DungeonNodeRoom(CompoundTag nbt) {
         super(StructurePieceTypes.NODE_ROOM, nbt);
         this.lootRoom = nbt.getBoolean("lootRoom");
         createBoundingBox();
@@ -88,10 +88,10 @@ public class DungeonNodeRoom extends DungeonPiece {
 
 
     @Override
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
-            return true;
+            return;
         }
 
         Vec3i offset = model.getOffset(rotation);
@@ -101,7 +101,6 @@ public class DungeonNodeRoom extends DungeonPiece {
         entrances(worldIn, structureBoundingBoxIn, model, worldGen);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-        return true;
     }
 
     @Override
@@ -177,8 +176,8 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void addAdditionalSaveData(ServerLevel serverLevel, CompoundTag tagCompound) {
-        super.addAdditionalSaveData(serverLevel, tagCompound);
+    public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+        super.addAdditionalSaveData(context, tagCompound);
         tagCompound.putBoolean("lootRoom", lootRoom);
     }
 

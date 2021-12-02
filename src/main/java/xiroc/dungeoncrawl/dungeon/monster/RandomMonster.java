@@ -113,13 +113,12 @@ public class RandomMonster {
         COMMON = new WeightedRandomEntity[5];
         RARE = new WeightedRandomEntity[5];
 
-        JsonParser parser = new JsonParser();
         try {
-            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_1.json"), parser, 0);
-            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_2.json"), parser, 1);
-            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_3.json"), parser, 2);
-            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_4.json"), parser, 3);
-            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_5.json"), parser, 4);
+            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_1.json"), 0);
+            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_2.json"), 1);
+            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_3.json"), 2);
+            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_4.json"), 3);
+            loadEntityFile(resourceManager, DungeonCrawl.locate("monster/entities/stage_5.json"), 4);
         } catch (IOException e) {
             DungeonCrawl.LOGGER.error("Failed to load the monster entity files.");
             e.printStackTrace();
@@ -129,10 +128,10 @@ public class RandomMonster {
     /**
      * Convenience method to load a single entity file.
      */
-    private static void loadEntityFile(ResourceManager resourceManager, ResourceLocation file, JsonParser parser, int stage) throws IOException {
+    private static void loadEntityFile(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
         if (resourceManager.hasResource(file)) {
             DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-            JsonObject object = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
+            JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
 
             if (object.has("common")) {
                 COMMON[stage] = WeightedRandomEntity.fromJson(object.getAsJsonArray("common"));

@@ -118,9 +118,9 @@ public class Config {
                         "Biome Categories are groupings of biomes of specific types. Using these allows Dungeon Crawl to\n" +
                         "  automatically generate in suitable mod biomes and to ignore unsuitable ones like ocean biomes.\n" +
                         "You can use this together with the Biome Whitelist and you can blacklist specific biomes with the Biome Blacklist.\n" +
-                        "All categories: beach, desert, extreme_hills, forest, icy, jungle, mesa, mushroom, nether, none, ocean, plains, river, savanna, swamp, taiga, the_end\n" +
+                        "All categories: beach, desert, extreme_hills, forest, icy, jungle, mesa, mountain, mushroom, nether, none, ocean, plains, river, savanna, swamp, taiga, the_end, underground\n" +
                         "To receive a list of all categories and their respective biomes (including biomes of mods you have installed), enable the 'Print Biome Categories' option.\n")
-                .define("Biome Categories", "desert, extreme_hills, forest, icy, jungle, mesa, plains, savanna, swamp, taiga");
+                .define("Biome Categories", "desert, extreme_hills, forest, icy, jungle, mesa, mountain, plains, savanna, swamp, taiga");
         BUILDER.pop();
 
         BUILDER.push("Dimensions");

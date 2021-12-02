@@ -27,6 +27,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 
 import java.util.Random;
@@ -45,11 +46,10 @@ public class DummyStructurePiece extends StructurePiece {
     }
 
     @Override
-    protected void addAdditionalSaveData(ServerLevel p_163551_, CompoundTag p_163552_) { }
+    protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag p_163552_) { }
 
     @Override
-    public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-        return true;
+    public void postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
     }
 
 }

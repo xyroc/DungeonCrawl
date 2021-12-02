@@ -24,7 +24,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,6 +34,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.feature.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.material.FluidState;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
@@ -66,6 +66,7 @@ import java.util.Random;
 public abstract class DungeonPiece extends StructurePiece {
 
     private static final BoundingBox EMPTY_BOX = new BoundingBox(0, 0, 0, 0, 0, 0);
+
     public static final int CORRIDOR = 0;
     public static final int STAIRS = 1;
     public static final int ENTRANCE = 6;
@@ -147,7 +148,7 @@ public abstract class DungeonPiece extends StructurePiece {
     }
 
     @Override
-    public void addAdditionalSaveData(ServerLevel serverLevel, CompoundTag tagCompound) {
+    public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
         tagCompound.putBoolean("north", sides[0]);
         tagCompound.putBoolean("east", sides[1]);
         tagCompound.putBoolean("south", sides[2]);
@@ -327,8 +328,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
         FluidState fluidState = world.getFluidState(pos);
         if (!fluidState.isEmpty()) {
-            world.getLiquidTicks().scheduleTick(pos, fluidState.getType(), 0);
-
+            world.scheduleTick(pos, fluidState.getType(), 0);
         }
     }
 
@@ -347,11 +347,10 @@ public abstract class DungeonPiece extends StructurePiece {
 
             FluidState fluidstate = worldIn.getFluidState(blockPos);
             if (!fluidstate.isEmpty()) {
-                worldIn.getLiquidTicks().scheduleTick(blockPos, fluidstate.getType(), 0);
+                worldIn.scheduleTick(blockPos, fluidstate.getType(), 0);
             }
         }
     }
-
 
     private void buildModelBlock(LevelAccessor world, BlockPos position, BlockState state, DungeonModelBlock block, Theme theme, SecondaryTheme secondaryTheme,
                                  int lootLevel, boolean worldGen, boolean fillAir, boolean expandDownwards) {
@@ -446,7 +445,6 @@ public abstract class DungeonPiece extends StructurePiece {
             DungeonCrawl.LOGGER.debug("Finished building {} with rotation {} at ({} | {} | {})", model.getKey(), rotation, pos.getX(), pos.getY(), pos.getZ());
         }
     }
-
 
     public void placeBlock(LevelAccessor world, BlockState state, BlockPos position, DungeonModelBlock block, Theme theme, SecondaryTheme secondaryTheme,
                            int lootLevel, boolean fillAir, boolean worldGen) {

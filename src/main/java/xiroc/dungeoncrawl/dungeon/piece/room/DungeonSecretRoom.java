@@ -42,15 +42,15 @@ public class DungeonSecretRoom extends DungeonPiece {
         super(StructurePieceTypes.SECRET_ROOM);
     }
 
-    public DungeonSecretRoom(ServerLevel serverLevel, CompoundTag nbt) {
+    public DungeonSecretRoom(CompoundTag nbt) {
         super(StructurePieceTypes.SECRET_ROOM, nbt);
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
-            return true;
+            return;
         }
 
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
@@ -58,7 +58,6 @@ public class DungeonSecretRoom extends DungeonPiece {
         buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, worldGen, false, false);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
-        return true;
     }
 
     @Override

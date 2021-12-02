@@ -43,7 +43,7 @@ public class SpawnRates {
         DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
         try {
             if (resourceManager.hasResource(resource)) {
-                JsonObject data = new JsonParser().parse(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
                 loadLevel(data, resource, 0);
                 loadLevel(data, resource, 1);
                 loadLevel(data, resource, 2);

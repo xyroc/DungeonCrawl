@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
@@ -49,7 +50,7 @@ import java.util.Random;
 
 public record DungeonType(ResourceLocation source,
                           DungeonGeneratorSettings dungeonSettings,
-                          xiroc.dungeoncrawl.dungeon.DungeonType.Layer[] layers,
+                          Layer[] layers,
                           WeightedRandom<DungeonModel> entrances) {
 
     private static final Hashtable<ResourceLocation, DungeonType> KEY_TO_TYPE = new Hashtable<>();
@@ -68,7 +69,7 @@ public record DungeonType(ResourceLocation source,
         resourceManager.listResources(TYPES_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", resource);
-                JsonObject file = DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
+                JsonObject file = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
 
                 DungeonType.Builder builder = new DungeonType.Builder(resource);
 //                DungeonGeneratorSettings settings = DungeonGeneratorSettings.fromJson(file.getAsJsonObject("settings"), resource);
@@ -107,7 +108,7 @@ public record DungeonType(ResourceLocation source,
         resourceManager.listResources(MAPPINGS_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
             try {
                 DungeonCrawl.LOGGER.debug("Loading {}", resource);
-                JsonObject file = DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
+                JsonObject file = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
 
                 if (file.has("conditions")) {
                     JsonObject conditions = file.getAsJsonObject("conditions");

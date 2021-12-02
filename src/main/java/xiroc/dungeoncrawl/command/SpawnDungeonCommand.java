@@ -89,12 +89,12 @@ public class SpawnDungeonCommand {
                     BoundingBox bounds = new BoundingBox(x, 0, z,
                             x + piece.model.width - 1, world.getMaxBuildHeight(), z + piece.model.length - 1);
                     Vec3i vector3i = bounds.getCenter();
-                    piece.postProcess(world, world.structureFeatureManager(), world.getChunkSource().generator, builder.rand,
+                    piece.postProcess(world, world.structureFeatureManager(), world.getChunkSource().getGenerator(), builder.rand,
                             bounds, new ChunkPos(piece.x >> 4, piece.z >> 4), new BlockPos(vector3i.getX(), bounds.minY(), vector3i.getZ()));
                 } else {
                     BoundingBox boundingBox = piece.getBoundingBox();
                     Vec3i vector3i = boundingBox.getCenter();
-                    piece.postProcess(world, world.structureFeatureManager(), world.getChunkSource().generator, builder.rand,
+                    piece.postProcess(world, world.structureFeatureManager(), world.getChunkSource().getGenerator(), builder.rand,
                             boundingBox, new ChunkPos(piece.x >> 4, piece.z >> 4), new BlockPos(vector3i.getX(), boundingBox.minY(), vector3i.getZ()));
                 }
             });

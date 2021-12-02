@@ -2,69 +2,53 @@
   "default": [{"key": "dungeoncrawl:vanilla/oak", "weight":  3}, {"key": "dungeoncrawl:vanilla/spruce"}],
   "mapping": {
     "minecraft:jungle": [{"key": "dungeoncrawl:vanilla/jungle"}],
-    "minecraft:jungle_edge": [{"key": "dungeoncrawl:vanilla/jungle"}],
-    "minecraft:jungle_hills": [{"key": "dungeoncrawl:vanilla/jungle"}],
-    "minecraft:modified_jungle": [{"key": "dungeoncrawl:vanilla/jungle"}],
-    "minecraft:modified_jungle_edge": [{"key": "dungeoncrawl:vanilla/jungle"}],
+    "minecraft:sparse_jungle": [{"key": "dungeoncrawl:vanilla/jungle"}],
     "minecraft:bamboo_jungle": [{"key": "dungeoncrawl:vanilla/jungle"}],
-    "minecraft:bamboo_jungle_hills": [{"key": "dungeoncrawl:vanilla/jungle"}],
 
     "minecraft:badlands": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
-    "minecraft:badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
-    "minecraft:wooded_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
+    "minecraft:wooded_badlands": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
     "minecraft:eroded_badlands": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
-    "minecraft:modified_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
-    "minecraft:modified_wooded_badlands_plateau": [{"key": "dungeoncrawl:vanilla/badlands/default"}],
 
     "minecraft:birch_forest": [{"key": "dungeoncrawl:vanilla/birch"}],
-    "minecraft:birch_forest_hills": [{"key": "dungeoncrawl:vanilla/birch"}],
-    "minecraft:tall_birch_forest": [{"key": "dungeoncrawl:vanilla/birch"}],
+    "minecraft:old_growth_birch_forest": [{"key": "dungeoncrawl:vanilla/birch"}],
     "minecraft:flower_forest": [{"key": "dungeoncrawl:vanilla/birch"}],
 
     "minecraft:savanna": [{"key": "dungeoncrawl:vanilla/acacia"}],
     "minecraft:savanna_plateau": [{"key": "dungeoncrawl:vanilla/acacia"}],
-    "minecraft:shattered_savanna": [{"key": "dungeoncrawl:vanilla/acacia"}],
-    "minecraft:shattered_savanna_plateau": [{"key": "dungeoncrawl:vanilla/acacia"}],
+    "minecraft:windswept_savanna": [{"key": "dungeoncrawl:vanilla/acacia"}],
 
     "minecraft:dark_forest": [{"key": "dungeoncrawl:vanilla/dark_oak"}],
-    "minecraft:dark_forest_hills": [{"key": "dungeoncrawl:vanilla/dark_oak"}],
 
-    "minecraft:mountains": [
+    "minecraft:grove": [
       {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
     ],
-    "minecraft:snowy_mountains": [
+    "minecraft:snowy_slopes": [
       {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
     ],
-    "minecraft:gravelly_mountains": [
+    "minecraft:frozen_peaks": [
       {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
     ],
-    "minecraft:modified_gravelly_mountains": [
+    "minecraft:jagged_peaks": [
       {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
     ],
-    "minecraft:wooded_mountains": [
+    "minecraft:stony_peaks": [
       {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
     ],
-    "minecraft:mountain_edge": [
+    "minecraft:windswept_hills": [
       {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
     ],
+    "minecraft:windswept_gravelly_hills": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
+    ],
+    "minecraft:windswept_forest": [
+      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
+    ],
+
     "minecraft:taiga": [{"key": "dungeoncrawl:vanilla/spruce"}],
-    "minecraft:taiga_hills": [{"key": "dungeoncrawl:vanilla/spruce"}],
-    "minecraft:snowy_tundra": [{"key": "dungeoncrawl:vanilla/spruce"}],
     "minecraft:snowy_taiga": [{"key": "dungeoncrawl:vanilla/spruce"}],
-    "minecraft:snowy_taiga_hills": [{"key": "dungeoncrawl:vanilla/spruce"}],
-    "minecraft:giant_tree_taiga": [{"key": "dungeoncrawl:vanilla/spruce"}],
-    "minecraft:giant_tree_taiga_hills": [{"key": "dungeoncrawl:vanilla/spruce"}],
-    "minecraft:taiga_mountains": [
-      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
-    ],
-    "minecraft:snowy_taiga_mountains": [
-      {"key": "dungeoncrawl:vanilla/mountains/default", "weight": 3}, {"key": "dungeoncrawl:vanilla/spruce"}
-    ],
-    "minecraft:giant_spruce_taiga": [{"key": "dungeoncrawl:vanilla/spruce"}],
-    "minecraft:giant_spruce_taiga_hills": [{"key": "dungeoncrawl:vanilla/spruce"}],
+    "minecraft:old_growth_spruce_taiga": [{"key": "dungeoncrawl:vanilla/spruce"}],
+    "minecraft:old_growth_pine_taiga": [{"key": "dungeoncrawl:vanilla/spruce"}],
 
-    "minecraft:desert": [{"key": "dungeoncrawl:vanilla/desert/default"}],
-    "minecraft:desert_hills": [{"key": "dungeoncrawl:vanilla/desert/default"}],
-    "minecraft:desert_lakes": [{"key": "dungeoncrawl:vanilla/desert/default"}]
+    "minecraft:desert": [{"key": "dungeoncrawl:vanilla/desert/default"}]
   }
 }

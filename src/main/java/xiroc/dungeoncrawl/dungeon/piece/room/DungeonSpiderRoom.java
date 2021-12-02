@@ -21,12 +21,12 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
@@ -39,7 +39,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
 
     private BlockPos[] spawners, chests;
 
-    public DungeonSpiderRoom(ServerLevel serverLevel, CompoundTag nbt) {
+    public DungeonSpiderRoom(CompoundTag nbt) {
         super(StructurePieceTypes.SPIDER_ROOM, nbt);
         if (nbt.contains("spawners")) {
             ListTag list = nbt.getList("spawners", 10);
@@ -80,8 +80,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public boolean postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-        return true;
+    public void postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
     }
 
     @Override
@@ -99,8 +98,8 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void addAdditionalSaveData(ServerLevel serverLevel, CompoundTag tagCompound) {
-        super.addAdditionalSaveData(serverLevel, tagCompound);
+    public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
+        super.addAdditionalSaveData(context, tagCompound);
         if (spawners != null) {
             ListTag list = new ListTag();
             for (BlockPos pos : spawners) {

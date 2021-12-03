@@ -55,17 +55,17 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
 
     private static Optional<PieceGenerator<NoneFeatureConfiguration>> pieceGeneratorSupplier(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
         int centerX = context.chunkPos().getBlockX(7);
-        int centerZ = context.chunkPos().getBlockX(7);
+        int centerZ = context.chunkPos().getBlockZ(7);
         int centerHeight = context.chunkGenerator().getBaseHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
         if (!context.validBiome().test(context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)))) {
-            DungeonCrawl.LOGGER.info("Found invalid biome {}",
-                    context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)));
+            DungeonCrawl.LOGGER.debug("Found invalid biome {}",
+                    context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)).getRegistryName());
             return Optional.empty();
         }
         return Optional.of(((structurePiecesBuilder, generatorContext) -> {
             DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
                     generatorContext.chunkGenerator(),
-                    generatorContext.chunkGenerator().getSpawnHeight(generatorContext.heightAccessor()) - 10,
+                    generatorContext.chunkGenerator().getSpawnHeight(generatorContext.heightAccessor()) - 12,
                     new BlockPos(centerX, centerHeight, centerZ),
                     generatorContext.chunkPos(),
                     generatorContext.random());

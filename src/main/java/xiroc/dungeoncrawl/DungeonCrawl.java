@@ -37,6 +37,7 @@ import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
+import xiroc.dungeoncrawl.init.ModStructureFeatures;
 import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
@@ -83,9 +84,9 @@ public class DungeonCrawl {
         event.enqueueWork(() -> {
             StructurePieceTypes.register();
             ModStructures.register();
+            ModStructureFeatures.register();
         });
     }
-
 
     private void onWorldLoad(WorldEvent.Load event) {
         if (Config.PRINT_BIOME_CATEGORIES.get()

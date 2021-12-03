@@ -69,13 +69,13 @@ public class DungeonStairs extends DungeonPiece {
         }
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
         switch (stairType) {
-            case 0: {
+            case 0 -> {
                 build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, worldGen, false, false);
                 ironBars(worldIn, structureBoundingBoxIn, model, worldGen);
                 placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
                 decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
             }
-            case 1: {
+            case 1 -> {
                 build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, worldGen, false, false);
                 entrances(worldIn, structureBoundingBoxIn, model, worldGen);
                 placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);

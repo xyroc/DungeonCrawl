@@ -27,6 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.StructureSettings;
 import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
@@ -90,9 +91,6 @@ public class ModStructures {
                         .put(structure.get(), separationSettings)
                         .build();
 
-        Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
-        Registry.register(registry, registryName, configuredFeature);
-
 //        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(structure.get(), configuredFeature);
 
         BuiltinRegistries.NOISE_GENERATOR_SETTINGS.entrySet().forEach(settings -> {
@@ -121,8 +119,32 @@ public class ModStructures {
 
     private static void onWorldLoad(final WorldEvent.Load event) {
         if (event.getWorld() instanceof ServerLevel serverLevel) {
+            ChunkGenerator chunkGenerator = serverLevel.getChunkSource().getGenerator();
+            StructureSettings structureSettings = chunkGenerator.getSettings();
 
-            if (serverLevel.getChunkSource().getGenerator() instanceof FlatLevelSource &&
+            Map<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> configuredStructures = new HashMap<>(structureSettings.configuredStructures);
+            ImmutableMultimap.Builder<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> builder = ImmutableMultimap.builder();
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            serverLevel.registryAccess().ownedRegistryOrThrow(Registry.BIOME_REGISTRY).entrySet().forEach((biomeEntry) -> {
+                Biome biome = biomeEntry.getValue();
+                ResourceLocation registryName = biomeEntry.getKey().getRegistryName();
+                if ((Dungeon.biomeCategories.contains(biome.getBiomeCategory()) || Dungeon.whitelistedBiomes.contains(registryName.toString()))
+                        && (!Dungeon.blacklistedBiomes.contains(registryName.toString()))) {
+                    builder.put(ModStructureFeatures.CONFIGURED_DUNGEON, biomeEntry.getKey());
+
+                    // Prepare debug output
+                    stringBuilder.append(biomeEntry.getValue().getRegistryName());
+                    stringBuilder.append(" ");
+                }
+            });
+
+            ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> configuredDungeon = builder.build();
+            configuredStructures.put(DUNGEON.get(), configuredDungeon);
+            structureSettings.configuredStructures = ImmutableMap.copyOf(configuredStructures);
+
+            if (chunkGenerator instanceof FlatLevelSource &&
                     serverLevel.dimension().equals(Level.OVERWORLD)) {
                 return;
             }
@@ -131,40 +153,19 @@ public class ModStructures {
                 return;
             }
 
-            if (serverLevel.getChunkSource().getGenerator().getSpawnHeight(serverLevel) < 32) {
+            if (chunkGenerator.getSpawnHeight(serverLevel) < 32) {
                 DungeonCrawl.LOGGER.info("Ignoring dimension {} because it's spawn height is too low.", serverLevel.dimension().location());
                 return;
             }
 
-            DungeonCrawl.LOGGER.debug("Generating in dimension: {}", serverLevel.dimension().location());
+            DungeonCrawl.LOGGER.info("Generating in dimension: {}", serverLevel.dimension().location());
 
-            Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(serverLevel.getChunkSource().getGenerator().getSettings().structureConfig());
+            Map<StructureFeature<?>, StructureFeatureConfiguration> tempMap = new HashMap<>(structureSettings.structureConfig());
             tempMap.putIfAbsent(DUNGEON.get(), StructureSettings.DEFAULTS.get(DUNGEON.get()));
-            serverLevel.getChunkSource().getGenerator().getSettings().structureConfig = tempMap;
-
-            Map<StructureFeature<?>, ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>>> configuredStructures = new HashMap<>(serverLevel.getChunkSource().getGenerator().getSettings().configuredStructures);
-            ImmutableMultimap.Builder<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> builder = ImmutableMultimap.builder();
-
-            ForgeRegistries.BIOMES.getEntries().forEach((entry) -> {
-                Biome biome = entry.getValue();
-                ResourceLocation registryName = entry.getKey().getRegistryName();
-                if ((Dungeon.biomeCategories.contains(biome.getBiomeCategory()) || Dungeon.whitelistedBiomes.contains(registryName.toString()))
-                        && (!Dungeon.blacklistedBiomes.contains(registryName.toString()))) {
-                    builder.put(ModStructureFeatures.CONFIGURED_DUNGEON, entry.getKey());
-                }
-            });
-
-            ImmutableMultimap<ConfiguredStructureFeature<?, ?>, ResourceKey<Biome>> configuredDungeon = builder.build();
-            configuredStructures.put(DUNGEON.get(), configuredDungeon);
-            serverLevel.getChunkSource().getGenerator().getSettings().configuredStructures = ImmutableMap.copyOf(configuredStructures);
+            structureSettings.structureConfig = tempMap;
 
             // Debug output
-            StringBuilder stringBuilder = new StringBuilder();
-            configuredDungeon.get(ModStructureFeatures.CONFIGURED_DUNGEON).forEach((biome) -> {
-                stringBuilder.append(biome.getRegistryName());
-                stringBuilder.append(" ");
-            });
-            DungeonCrawl.LOGGER.debug("Dungeons generate in the following biomes of {} : [{}]", serverLevel.dimension().location(), stringBuilder);
+            DungeonCrawl.LOGGER.info("Dungeons generate in the following biomes of {} : {}", serverLevel.dimension().location(), stringBuilder);
 
         }
     }

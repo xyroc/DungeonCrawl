@@ -62,10 +62,22 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
                     context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)).getRegistryName());
             return Optional.empty();
         }
+        int[] innerCornerHeights = context.getCornerHeights(centerX - 5, 10, centerZ - 5, 10);
+        int[] outerCornerHeights = context.getCornerHeights(centerX - 20, 20, centerZ - 20, 20);
+
+        int averageInnerGroundHeight = (centerHeight + innerCornerHeights[0] + innerCornerHeights[1] + innerCornerHeights[2] + innerCornerHeights[3]) / 5;
+        int averageOuterGroundHeight = (outerCornerHeights[0] + outerCornerHeights[1] + outerCornerHeights[3] + outerCornerHeights[3]) / 4;
+
+        int averageGroundHeight = Math.min(averageInnerGroundHeight, averageOuterGroundHeight);
+
+        DungeonCrawl.LOGGER.info("Average height: {} Center height: {} ({},{}) around center {} {}", averageGroundHeight, averageInnerGroundHeight, averageOuterGroundHeight, centerHeight, centerX, centerZ);
+        if (averageGroundHeight < 45) {
+            return Optional.empty();
+        }
         return Optional.of(((structurePiecesBuilder, generatorContext) -> {
             DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
                     generatorContext.chunkGenerator(),
-                    generatorContext.chunkGenerator().getSpawnHeight(generatorContext.heightAccessor()) - 12,
+                    averageGroundHeight - 16,
                     new BlockPos(centerX, centerHeight, centerZ),
                     generatorContext.chunkPos(),
                     generatorContext.random());

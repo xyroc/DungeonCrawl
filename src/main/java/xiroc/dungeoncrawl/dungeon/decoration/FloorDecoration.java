@@ -18,23 +18,24 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.google.gson.JsonObject;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
 
-public class FloorDecoration implements IDungeonDecoration {
+public class FloorDecoration implements DungeonDecoration {
 
     private final float chance;
 
-    private final IBlockStateProvider blockStateProvider;
+    private final BlockStateProvider blockStateProvider;
 
-    public FloorDecoration(IBlockStateProvider blockStateProvider, float chance) {
+    public FloorDecoration(BlockStateProvider blockStateProvider, float chance) {
         this.blockStateProvider = blockStateProvider;
         this.chance = chance;
     }
@@ -43,7 +44,7 @@ public class FloorDecoration implements IDungeonDecoration {
     public void decorate(DungeonModel model, IWorld world, BlockPos origin, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds,
                          DungeonPiece piece, int stage, boolean worldGen) {
         model.blocks.forEach((block) -> {
-            BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
+            BlockPos pos = DungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
             if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
                     && worldGenBounds.isInside(pos)
                     && structureBounds.isInside(pos)
@@ -60,13 +61,23 @@ public class FloorDecoration implements IDungeonDecoration {
         return worldGenBounds.isInside(pos) && structureBounds.isInside(pos) && world.getBlockState(pos).canOcclude();
     }
 
-    public static class NextToSolid implements IDungeonDecoration {
+    @Override
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", DungeonDecoration.FLOOR_DECORATION);
+        object.addProperty("chance", this.chance);
+
+        object.add("block", this.blockStateProvider.serialize());
+        return object;
+    }
+
+    public static class NextToSolid implements DungeonDecoration {
 
         private final float chance;
 
-        private final IBlockStateProvider blockStateProvider;
+        private final BlockStateProvider blockStateProvider;
 
-        public NextToSolid(IBlockStateProvider blockStateProvider, float chance) {
+        public NextToSolid(BlockStateProvider blockStateProvider, float chance) {
             this.blockStateProvider = blockStateProvider;
             this.chance = chance;
         }
@@ -76,7 +87,7 @@ public class FloorDecoration implements IDungeonDecoration {
                              DungeonPiece piece, int stage, boolean worldGen) {
             model.blocks.forEach((block) -> {
                 if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1) {
-                    BlockPos pos = IDungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
+                    BlockPos pos = DungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
 
                     if (worldGenBounds.isInside(pos)
                             && structureBounds.isInside(pos) && world.isEmptyBlock(pos)
@@ -93,5 +104,14 @@ public class FloorDecoration implements IDungeonDecoration {
             });
         }
 
+        @Override
+        public JsonObject serialize() {
+            JsonObject object = new JsonObject();
+            object.addProperty("type", DungeonDecoration.FLOOR_NEXT_TO_SOLID_DECORATION);
+            object.addProperty("chance", this.chance);
+
+            object.add("block", this.blockStateProvider.serialize());
+            return object;
+        }
     }
 }

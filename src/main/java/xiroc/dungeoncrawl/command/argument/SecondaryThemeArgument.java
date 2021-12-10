@@ -29,11 +29,12 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.concurrent.CompletableFuture;
 
-public class SecondaryThemeArgument implements ArgumentType<Theme.SecondaryTheme> {
+public class SecondaryThemeArgument implements ArgumentType<SecondaryTheme> {
 
     public static final DynamicCommandExceptionType THEME_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) ->
             new TranslationTextComponent("Unknown secondary theme: {0}", p_208663_0_));
@@ -42,12 +43,12 @@ public class SecondaryThemeArgument implements ArgumentType<Theme.SecondaryTheme
         return new SecondaryThemeArgument();
     }
 
-    public static Theme.SecondaryTheme getSecondaryTheme(CommandContext<CommandSource> context, String name) {
-        return context.getArgument(name, Theme.SecondaryTheme.class);
+    public static SecondaryTheme getSecondaryTheme(CommandContext<CommandSource> context, String name) {
+        return context.getArgument(name, SecondaryTheme.class);
     }
 
     @Override
-    public Theme.SecondaryTheme parse(StringReader reader) throws CommandSyntaxException {
+    public SecondaryTheme parse(StringReader reader) throws CommandSyntaxException {
         ResourceLocation resourceLocation = ResourceLocation.read(reader);
         if (Theme.KEY_TO_SECONDARY_THEME.containsKey(resourceLocation)) {
             return Theme.KEY_TO_SECONDARY_THEME.get(resourceLocation);

@@ -18,22 +18,23 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.google.gson.JsonObject;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
-public class ScatteredDecoration implements IDungeonDecoration {
+public class ScatteredDecoration implements DungeonDecoration {
 
-    private final IBlockStateProvider blockStateProvider;
+    private final BlockStateProvider blockStateProvider;
     private final float chance;
 
-    public ScatteredDecoration(IBlockStateProvider blockStateProvider, float chance) {
+    public ScatteredDecoration(BlockStateProvider blockStateProvider, float chance) {
         this.blockStateProvider = blockStateProvider;
         this.chance = chance;
     }
@@ -74,6 +75,16 @@ public class ScatteredDecoration implements IDungeonDecoration {
                 }
             }
         }
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", DungeonDecoration.SCATTERED_DECORATION);
+        object.addProperty("chance", this.chance);
+
+        object.add("block", this.blockStateProvider.serialize());
+        return object;
     }
 
 }

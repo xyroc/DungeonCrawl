@@ -16,23 +16,23 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.data;
+package xiroc.dungeoncrawl.dungeon.block.provider;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 
-import java.util.HashMap;
-import java.util.function.Supplier;
+public interface BlockStateProvider {
 
-public class ProviderJsonObject implements Supplier<JsonObject> {
-
-    public final HashMap<String, Supplier<JsonElement>> data = new HashMap<>();
-
-    @Override
-    public JsonObject get() {
-        JsonObject file = new JsonObject();
-        data.forEach((key, value) -> file.add(key, value.get()));
-        return file;
+    default BlockState get(IWorld world, BlockPos pos) {
+        return get(world, pos, Rotation.NONE);
     }
+
+    BlockState get(IWorld world, BlockPos pos, Rotation rotation);
+
+    JsonObject serialize();
 
 }

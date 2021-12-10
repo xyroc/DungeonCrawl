@@ -35,6 +35,7 @@ import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
@@ -51,7 +52,7 @@ public class MaterialBlocks extends LootFunction {
             BlockPos pos = new BlockPos(context.getParamOrNull(LootParameters.ORIGIN));
             TileEntity chest = context.getLevel().getBlockEntity(pos);
             if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
-                Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+                Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
                 return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom())),
                         16 + context.getRandom().nextInt(49));
             }
@@ -59,7 +60,7 @@ public class MaterialBlocks extends LootFunction {
         return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
     }
 
-    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {
+    private static ResourceLocation getMaterial(Theme theme, SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {
         return rand.nextBoolean()
                 ? theme.material.get(world, pos).getBlock().getRegistryName()
                 : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();

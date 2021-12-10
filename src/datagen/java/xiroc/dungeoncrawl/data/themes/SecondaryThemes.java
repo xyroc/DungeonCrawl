@@ -28,8 +28,9 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.data.themes.provider.BlockProvider;
-import xiroc.dungeoncrawl.data.themes.provider.WeightedBlockProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
+import xiroc.dungeoncrawl.dungeon.block.provider.WeightedRandomBlock;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -51,7 +52,7 @@ public class SecondaryThemes implements IDataProvider {
     public void run(DirectoryCache directoryCache) {
         Path path = this.generator.getOutputFolder();
 
-        HashMap<ResourceLocation, ProviderTheme.Secondary> themes = new HashMap<>();
+        HashMap<ResourceLocation, SecondaryTheme> themes = new HashMap<>();
         collectThemes(((resourceLocation, theme) -> {
             if (themes.containsKey(resourceLocation)) {
                 throw new IllegalStateException("Duplicate primary theme " + resourceLocation.toString());
@@ -62,7 +63,7 @@ public class SecondaryThemes implements IDataProvider {
         themes.forEach(((resourceLocation, theme) -> {
             Path filePath = createPath(path, resourceLocation);
             try {
-                IDataProvider.save(GSON, directoryCache, theme.get(), filePath);
+                IDataProvider.save(GSON, directoryCache, theme.serialize(), filePath);
             } catch (IOException exception) {
                 LOGGER.error("Failed to save {}", resourceLocation);
             }
@@ -79,30 +80,33 @@ public class SecondaryThemes implements IDataProvider {
         return "Dungeon Crawl Secondary Themes";
     }
 
-    public void collectThemes(BiConsumer<ResourceLocation, ProviderTheme.Secondary> collector) {
-        collector.accept(catacombs("crumbled"), new ProviderTheme.Secondary()
-                .pillar(new BlockProvider(Blocks.BASALT))
-                .trapdoor(new BlockProvider(Blocks.CAVE_AIR))
-                .door(new BlockProvider(Blocks.IRON_DOOR))
-                .material(new WeightedBlockProvider()
-                        .add(new BlockProvider(Blocks.GRAVEL), 2)
-                        .add(new BlockProvider(Blocks.BASALT))
-                        .add(new BlockProvider(Blocks.CRACKED_STONE_BRICKS), 1)
-                        .add(new BlockProvider(Blocks.MOSSY_STONE_BRICKS), 3)
-                        .add(new BlockProvider(Blocks.MOSSY_COBBLESTONE))
-                        .add(new BlockProvider(Blocks.COBBLESTONE), 2))
-                .stairs(new WeightedBlockProvider()
-                        .add(new BlockProvider(Blocks.COBBLESTONE_STAIRS), 2)
-                        .add(new BlockProvider(Blocks.MOSSY_COBBLESTONE_STAIRS), 2)
-                        .add(new BlockProvider(Blocks.MOSSY_STONE_BRICK_STAIRS)))
-                .slab(new WeightedBlockProvider()
-                        .add(new BlockProvider(Blocks.COBBLESTONE_SLAB), 2)
-                        .add(new BlockProvider(Blocks.MOSSY_COBBLESTONE_SLAB), 2)
-                        .add(new BlockProvider(Blocks.MOSSY_STONE_BRICK_SLAB)))
-                .fence(new BlockProvider(Blocks.CAVE_AIR))
-                .fence_gate(new BlockProvider(Blocks.CAVE_AIR))
-                .button(new BlockProvider(Blocks.STONE_BUTTON))
-                .pressure_plate(new BlockProvider(Blocks.STONE_PRESSURE_PLATE)));
+    public void collectThemes(BiConsumer<ResourceLocation, SecondaryTheme> collector) {
+        collector.accept(catacombs("crumbled"), SecondaryTheme.builder()
+                .pillar(new SingleBlock(Blocks.BASALT))
+                .trapdoor(SingleBlock.AIR)
+                .door(new SingleBlock(Blocks.IRON_DOOR))
+                .material(WeightedRandomBlock.builder()
+                        .add(Blocks.GRAVEL, 2)
+                        .add(Blocks.BASALT)
+                        .add(Blocks.CRACKED_STONE_BRICKS)
+                        .add(Blocks.MOSSY_STONE_BRICKS, 3)
+                        .add(Blocks.MOSSY_COBBLESTONE)
+                        .add(Blocks.COBBLESTONE, 2)
+                        .build())
+                .stairs(WeightedRandomBlock.builder()
+                        .add(Blocks.COBBLESTONE_STAIRS, 2)
+                        .add(Blocks.MOSSY_COBBLESTONE_STAIRS, 2)
+                        .add(Blocks.MOSSY_STONE_BRICK_STAIRS)
+                        .build())
+                .slab(WeightedRandomBlock.builder()
+                        .add(Blocks.COBBLESTONE_SLAB, 2)
+                        .add(Blocks.MOSSY_COBBLESTONE_SLAB, 2)
+                        .add(Blocks.MOSSY_STONE_BRICK_SLAB)
+                        .build())
+                .fence(SingleBlock.AIR)
+                .fenceGate(SingleBlock.AIR)
+                .button(new SingleBlock(Blocks.STONE_BUTTON))
+                .pressurePlate(new SingleBlock(Blocks.STONE_PRESSURE_PLATE)).build());
     }
 
     private static ResourceLocation catacombs(String name) {

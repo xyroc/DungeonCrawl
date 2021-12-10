@@ -34,6 +34,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
 import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
@@ -82,7 +83,7 @@ public class Loot {
         registerLootFunctionType(DungeonCrawl.locate("suspicious_stew"), SUSPICIOUS_STEW);
     }
 
-    public static void setLoot(IWorld world, BlockPos pos, LockableLootTileEntity tile, ResourceLocation lootTable, Theme theme, Theme.SecondaryTheme secondaryTheme, Random rand) {
+    public static void setLoot(IWorld world, BlockPos pos, LockableLootTileEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, Random rand) {
         LockableLootTileEntity.setLootTable(world, rand, pos, lootTable);
         setLootInformation(tile.getTileData(), theme, secondaryTheme);
     }
@@ -104,14 +105,14 @@ public class Loot {
         }
     }
 
-    public static void setLootInformation(CompoundNBT nbt, Theme theme, Theme.SecondaryTheme secondaryTheme) {
+    public static void setLootInformation(CompoundNBT nbt, Theme theme, SecondaryTheme secondaryTheme) {
         CompoundNBT data = new CompoundNBT();
         data.putString("theme", theme.getKey().toString());
         data.putString("secondaryTheme", secondaryTheme.getKey().toString());
         nbt.put(DungeonCrawl.MOD_ID, data);
     }
 
-    public static Tuple<Theme, Theme.SecondaryTheme> getLootInformation(CompoundNBT nbt) {
+    public static Tuple<Theme, SecondaryTheme> getLootInformation(CompoundNBT nbt) {
         CompoundNBT data = nbt.getCompound(DungeonCrawl.MOD_ID);
         return new Tuple<>(Theme.getTheme(new ResourceLocation(data.getString("theme"))), Theme.getSecondaryTheme(new ResourceLocation(data.getString("secondaryTheme"))));
     }

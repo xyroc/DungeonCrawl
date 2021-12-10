@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.google.gson.JsonObject;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Rotation;
@@ -29,7 +30,7 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
-public class VineDecoration implements IDungeonDecoration {
+public class VineDecoration implements DungeonDecoration {
 
     private final float chance;
 
@@ -73,5 +74,13 @@ public class VineDecoration implements IDungeonDecoration {
                 }
             }
         }
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", DungeonDecoration.VINE_DECORATION);
+        object.addProperty("chance", this.chance);
+        return object;
     }
 }

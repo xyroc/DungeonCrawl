@@ -19,19 +19,19 @@
 package xiroc.dungeoncrawl.dungeon.decoration;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.JsonTheming;
 
-@FunctionalInterface
-public interface IDungeonDecoration {
+public interface DungeonDecoration {
 
     String VINE_DECORATION = "vines";
     String SCATTERED_DECORATION = "scattered";
@@ -41,7 +41,9 @@ public interface IDungeonDecoration {
     void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds,
                   DungeonPiece piece, int stage, boolean worldGen);
 
-    static IDungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
+    JsonObject serialize();
+
+    static DungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
         if (object.has("type")) {
             String type = object.get("type").getAsString().toLowerCase();
             switch (type) {
@@ -49,7 +51,7 @@ public interface IDungeonDecoration {
                     return new VineDecoration(object.has("chance") ? object.get("chance").getAsFloat() : 0.35F);
                 case SCATTERED_DECORATION: {
                     float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.25F;
-                    IBlockStateProvider blockStateProvider;
+                    BlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
                         blockStateProvider = JsonTheming.deserialize(object, "block", file);
@@ -63,7 +65,7 @@ public interface IDungeonDecoration {
                 }
                 case FLOOR_DECORATION: {
                     float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.5F;
-                    IBlockStateProvider blockStateProvider;
+                    BlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
                         blockStateProvider = JsonTheming.deserialize(object, "block", file);
@@ -77,7 +79,7 @@ public interface IDungeonDecoration {
                 }
                 case FLOOR_NEXT_TO_SOLID_DECORATION: {
                     float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.5F;
-                    IBlockStateProvider blockStateProvider;
+                    BlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
                         blockStateProvider = JsonTheming.deserialize(object, "block", file);

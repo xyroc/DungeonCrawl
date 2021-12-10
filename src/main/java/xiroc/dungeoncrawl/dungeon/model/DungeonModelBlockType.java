@@ -29,7 +29,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import javax.annotation.Nonnull;
@@ -57,16 +58,16 @@ public enum DungeonModelBlockType {
     WALL                (tFactory(Theme::getWall)),
 
     // Types with Secondary-Theme Factories
-    PILLAR                      (sFactory(Theme.SecondaryTheme::getPillar), new TypeBuilder().expandable().pillar()),
-    MATERIAL_STAIRS             (sFactory(Theme.SecondaryTheme::getStairs)),
-    TRAPDOOR                    (sFactory(Theme.SecondaryTheme::getTrapDoor)),
-    DOOR                        (sFactory(Theme.SecondaryTheme::getDoor)),
-    FENCE                       (sFactory(Theme.SecondaryTheme::getFence)),
-    FENCE_GATE                  (sFactory(Theme.SecondaryTheme::getFenceGate)),
-    MATERIAL_SLAB               (sFactory(Theme.SecondaryTheme::getSlab)),
-    MATERIAL_BUTTON             (sFactory(Theme.SecondaryTheme::getButton)),
-    MATERIAL_PRESSURE_PLATE     (sFactory(Theme.SecondaryTheme::getPressurePlate)),
-    MATERIAL                    (sFactory(Theme.SecondaryTheme::getMaterial), new TypeBuilder().expandable()),
+    PILLAR                      (sFactory(SecondaryTheme::getPillar), new TypeBuilder().expandable().pillar()),
+    MATERIAL_STAIRS             (sFactory(SecondaryTheme::getStairs)),
+    TRAPDOOR                    (sFactory(SecondaryTheme::getTrapDoor)),
+    DOOR                        (sFactory(SecondaryTheme::getDoor)),
+    FENCE                       (sFactory(SecondaryTheme::getFence)),
+    FENCE_GATE                  (sFactory(SecondaryTheme::getFenceGate)),
+    MATERIAL_SLAB               (sFactory(SecondaryTheme::getSlab)),
+    MATERIAL_BUTTON             (sFactory(SecondaryTheme::getButton)),
+    MATERIAL_PRESSURE_PLATE     (sFactory(SecondaryTheme::getPressurePlate)),
+    MATERIAL                    (sFactory(SecondaryTheme::getMaterial), new TypeBuilder().expandable()),
 
     // Other
 
@@ -175,7 +176,7 @@ public enum DungeonModelBlockType {
     public interface BlockFactory {
 
         BlockState get(DungeonModelBlock block, Rotation rotation, IWorld world, BlockPos pos, Theme theme,
-                       Theme.SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
+                       SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
 
     }
 
@@ -185,17 +186,17 @@ public enum DungeonModelBlockType {
      * @param blockSelector a function that selects the desired field from the theme
      * @return the block factory
      */
-    private static BlockFactory tFactory(Function<Theme, IBlockStateProvider> blockSelector) {
+    private static BlockFactory tFactory(Function<Theme, BlockStateProvider> blockSelector) {
         return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(world, pos, rotation), world, pos, rotation);
     }
 
     /**
      * Creates a block factory that pulls from a secondary theme.
      *
-     * @param blockSelector a function that selects the desired field from the sub-theme
+     * @param blockSelector a function that selects the desired field from the secondary theme
      * @return the block factory
      */
-    private static BlockFactory sFactory(Function<Theme.SecondaryTheme, IBlockStateProvider> blockSelector) {
+    private static BlockFactory sFactory(Function<SecondaryTheme, BlockStateProvider> blockSelector) {
         return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(secondaryTheme).get(world, pos, rotation), world, pos, rotation);
     }
 

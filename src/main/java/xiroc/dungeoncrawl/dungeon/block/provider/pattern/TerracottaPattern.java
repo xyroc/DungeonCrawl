@@ -1,5 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.block.provider.pattern;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
@@ -7,14 +9,17 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.dungeon.block.provider.IBlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 
-public class TerracottaPattern implements IBlockStateProvider {
+public class TerracottaPattern implements BlockStateProvider {
 
-    private final IBlockStateProvider block;
+    protected static final String TYPE = "pattern";
+    protected static final String PATTERN_TYPE = "terracotta";
 
-    public TerracottaPattern(IBlockStateProvider block) {
+    private final BlockStateProvider block;
+
+    public TerracottaPattern(BlockStateProvider block) {
         this.block = block;
     }
 
@@ -34,6 +39,15 @@ public class TerracottaPattern implements IBlockStateProvider {
                 return DungeonBlocks.applyProperty(state, BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH).rotate(world, pos, Orientation.getOppositeRotation(rotation));
             }
         }
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", TYPE);
+        object.addProperty("pattern_type", PATTERN_TYPE);
+        object.add("block", block.serialize());
+        return object;
     }
 
 }

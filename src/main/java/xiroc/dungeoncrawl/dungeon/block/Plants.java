@@ -25,6 +25,7 @@ import net.minecraft.state.properties.DoubleBlockHalf;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
@@ -35,7 +36,7 @@ public class Plants {
     public static class Farmland implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme,
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
                           int lootLevel, boolean worldGen) {
             state = state.setValue(BlockStateProperties.MOISTURE, 7);
             world.setBlock(pos, state, 2);
@@ -55,7 +56,7 @@ public class Plants {
     public static class FlowerPot implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme,
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
                           int lootLevel, boolean worldGen) {
             world.setBlock(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).defaultBlockState(), 2);
         }
@@ -65,7 +66,7 @@ public class Plants {
     public static class Podzol implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme,
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
                           int lootLevel, boolean worldGen) {
             world.setBlock(pos, state, 2);
             BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).defaultBlockState();

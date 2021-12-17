@@ -30,7 +30,6 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.JsonTheming;
 
-@FunctionalInterface
 public interface DungeonDecoration {
 
     String VINE_DECORATION = "vines";
@@ -40,6 +39,8 @@ public interface DungeonDecoration {
 
     void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
                   DungeonPiece piece, int stage, boolean worldGen);
+
+    JsonObject serialize();
 
     static DungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
         if (object.has("type")) {

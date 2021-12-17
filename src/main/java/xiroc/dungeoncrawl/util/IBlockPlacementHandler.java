@@ -29,6 +29,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.Furnace;
 import xiroc.dungeoncrawl.dungeon.block.Plants;
 import xiroc.dungeoncrawl.dungeon.block.Spawner;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
@@ -53,7 +54,8 @@ public interface IBlockPlacementHandler {
             .put(Blocks.PODZOL, new Plants.Podzol())
             .build();
 
-    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme, int lootLevel, boolean worldGen);
+    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel, boolean worldGen);
+
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

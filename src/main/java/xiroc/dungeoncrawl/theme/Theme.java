@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.theme;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -31,12 +32,19 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 
 public class Theme {
@@ -46,30 +54,30 @@ public class Theme {
      * and the default theme can't be found either.
      */
     public static final Theme BUILTIN_DEFAULT_THEME = new Theme(
-            (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.STONE_BRICKS.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.GRAVEL.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.STONE_BRICK_STAIRS.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE_STAIRS.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE_WALL.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.COBBLESTONE_SLAB.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.STONE_BRICK_SLAB.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.IRON_BARS.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.WATER.defaultBlockState());
+            new SingleBlock(Blocks.STONE_BRICKS.defaultBlockState()),
+            new SingleBlock(Blocks.STONE_BRICKS.defaultBlockState()),
+            new SingleBlock(Blocks.COBBLESTONE.defaultBlockState()),
+            new SingleBlock(Blocks.GRAVEL.defaultBlockState()),
+            new SingleBlock(Blocks.STONE_BRICK_STAIRS.defaultBlockState()),
+            new SingleBlock(Blocks.COBBLESTONE_STAIRS.defaultBlockState()),
+            new SingleBlock(Blocks.COBBLESTONE.defaultBlockState()),
+            new SingleBlock(Blocks.COBBLESTONE_WALL.defaultBlockState()),
+            new SingleBlock(Blocks.COBBLESTONE_SLAB.defaultBlockState()),
+            new SingleBlock(Blocks.STONE_BRICK_SLAB.defaultBlockState()),
+            new SingleBlock(Blocks.IRON_BARS.defaultBlockState()),
+            new SingleBlock(Blocks.WATER.defaultBlockState()));
 
     public static final SecondaryTheme BUILTIN_DEFAULT_SECONDARY_THEME = new SecondaryTheme(
-            (world, pos, rotation) -> Blocks.OAK_LOG.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_TRAPDOOR.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_DOOR.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_PLANKS.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_STAIRS.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_SLAB.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_FENCE.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_FENCE_GATE.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_BUTTON.defaultBlockState(),
-            (world, pos, rotation) -> Blocks.OAK_PRESSURE_PLATE.defaultBlockState());
+            new SingleBlock(Blocks.OAK_LOG.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_TRAPDOOR.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_DOOR.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_PLANKS.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_STAIRS.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_SLAB.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_FENCE.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_FENCE_GATE.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_BUTTON.defaultBlockState()),
+            new SingleBlock(Blocks.OAK_PRESSURE_PLATE.defaultBlockState()));
 
     protected static final Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
     protected static final Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
@@ -125,17 +133,21 @@ public class Theme {
     static {
         BUILTIN_DEFAULT_THEME.key = new ResourceLocation("builtin:default");
         BUILTIN_DEFAULT_SECONDARY_THEME.key = new ResourceLocation("builtin:default");
-        KEY_TO_THEME.put(BUILTIN_DEFAULT_THEME.key, BUILTIN_DEFAULT_THEME);
-        KEY_TO_SECONDARY_THEME.put(BUILTIN_DEFAULT_SECONDARY_THEME.key, BUILTIN_DEFAULT_SECONDARY_THEME);
+        KEY_TO_THEME.put(BUILTIN_DEFAULT_THEME.getKey(), BUILTIN_DEFAULT_THEME);
+        KEY_TO_SECONDARY_THEME.put(BUILTIN_DEFAULT_SECONDARY_THEME.getKey(), BUILTIN_DEFAULT_SECONDARY_THEME);
     }
 
     public final BlockStateProvider pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid;
 
     public IRandom<SecondaryTheme> secondaryTheme;
 
-    private ResourceLocation key;
+    protected ResourceLocation key;
 
+    @Nullable
     private DungeonDecoration[] decorations;
+
+    @Nullable
+    protected Integer id;
 
     public Theme(BlockStateProvider pillar,
                  BlockStateProvider solid,
@@ -163,7 +175,7 @@ public class Theme {
         this.fluid = fluid;
     }
 
-    public void setDecorations(DungeonDecoration[] decorations) {
+    public void setDecorations(@Nullable DungeonDecoration[] decorations) {
         this.decorations = decorations;
     }
 
@@ -227,78 +239,30 @@ public class Theme {
         return solidSlab;
     }
 
-    public static class SecondaryTheme {
-
-        public final BlockStateProvider pillar, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate;
-
-        private ResourceLocation key;
-
-        public SecondaryTheme(BlockStateProvider pillar,
-                              BlockStateProvider trapDoor,
-                              BlockStateProvider door,
-                              BlockStateProvider material,
-                              BlockStateProvider stairs,
-                              BlockStateProvider slab,
-                              BlockStateProvider fence,
-                              BlockStateProvider fenceGate,
-                              BlockStateProvider button,
-                              BlockStateProvider pressurePlate) {
-            this.pillar = pillar;
-            this.trapDoor = trapDoor;
-            this.door = door;
-            this.material = material;
-            this.stairs = stairs;
-            this.slab = slab;
-            this.fence = fence;
-            this.fenceGate = fenceGate;
-            this.button = button;
-            this.pressurePlate = pressurePlate;
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        if (decorations != null) {
+            JsonArray decorations = new JsonArray();
+            for (DungeonDecoration decoration : this.decorations) {
+                decorations.add(decoration.serialize());
+            }
+            object.add("decorations", decorations);
         }
-
-        public ResourceLocation getKey() {
-            return key;
-        }
-
-        public BlockStateProvider getPillar() {
-            return pillar;
-        }
-
-        public BlockStateProvider getTrapDoor() {
-            return trapDoor;
-        }
-
-        public BlockStateProvider getDoor() {
-            return door;
-        }
-
-        public BlockStateProvider getMaterial() {
-            return material;
-        }
-
-        public BlockStateProvider getStairs() {
-            return stairs;
-        }
-
-        public BlockStateProvider getSlab() {
-            return slab;
-        }
-
-        public BlockStateProvider getFence() {
-            return fence;
-        }
-
-        public BlockStateProvider getFenceGate() {
-            return fenceGate;
-        }
-
-        public BlockStateProvider getButton() {
-            return button;
-        }
-
-        public BlockStateProvider getPressurePlate() {
-            return pressurePlate;
-        }
-
+        JsonObject theme = new JsonObject();
+        theme.add("pillar", pillar.serialize());
+        theme.add("solid", solid.serialize());
+        theme.add("generic", generic.serialize());
+        theme.add("fencing", fencing.serialize());
+        theme.add("floor", floor.serialize());
+        theme.add("fluid", fluid.serialize());
+        theme.add("solid_stairs", solidStairs.serialize());
+        theme.add("stairs", stairs.serialize());
+        theme.add("material", material.serialize());
+        theme.add("wall", wall.serialize());
+        theme.add("slab", slab.serialize());
+        theme.add("solid_slab", solidSlab.serialize());
+        object.add("theme", theme);
+        return object;
     }
 
     public static void loadJson(ResourceManager resourceManager) {
@@ -481,7 +445,7 @@ public class Theme {
         return ID_TO_THEME.getOrDefault(theme, ID_TO_THEME.getOrDefault(0, BUILTIN_DEFAULT_THEME));
     }
 
-    public static SecondaryTheme getSubThemeByID(int id) {
+    public static SecondaryTheme getSecondaryThemeByID(int id) {
         return ID_TO_SECONDARY_THEME.getOrDefault(id, ID_TO_SECONDARY_THEME.getOrDefault(0, BUILTIN_DEFAULT_SECONDARY_THEME));
     }
 
@@ -491,6 +455,118 @@ public class Theme {
 
     public static ImmutableSet<ResourceLocation> getSecondaryThemeKeys() {
         return SECONDARY_THEME_KEYS;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private BlockStateProvider pillar = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider solid = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider generic = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider floor = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider solidStairs = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider stairs = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider material = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider wall = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider slab = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider solidSlab = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider fencing = new SingleBlock(Blocks.AIR.defaultBlockState());
+        private BlockStateProvider fluid = new SingleBlock(Blocks.AIR.defaultBlockState());
+
+        private Integer id;
+        private List<DungeonDecoration> decorations = new ArrayList<>();
+        private IRandom<SecondaryTheme> secondaryTheme;
+
+        public Builder legacyId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder addDecoration(DungeonDecoration decoration) {
+            this.decorations.add(decoration);
+            return this;
+        }
+
+        public Builder secondaryTheme(IRandom<SecondaryTheme> secondaryTheme) {
+            this.secondaryTheme = secondaryTheme;
+            return this;
+        }
+
+        public Builder pillar(BlockStateProvider pillar) {
+            this.pillar = pillar;
+            return this;
+        }
+
+        public Builder solid(BlockStateProvider solid) {
+            this.solid = solid;
+            return this;
+        }
+
+        public Builder generic(BlockStateProvider generic) {
+            this.generic = generic;
+            return this;
+        }
+
+        public Builder floor(BlockStateProvider floor) {
+            this.floor = floor;
+            return this;
+        }
+
+        public Builder solidStairs(BlockStateProvider solidStairs) {
+            this.solidStairs = solidStairs;
+            return this;
+        }
+
+        public Builder stairs(BlockStateProvider stairs) {
+            this.stairs = stairs;
+            return this;
+        }
+
+        public Builder material(BlockStateProvider material) {
+            this.material = material;
+            return this;
+        }
+
+        public Builder wall(BlockStateProvider wall) {
+            this.wall = wall;
+            return this;
+        }
+
+        public Builder slab(BlockStateProvider slab) {
+            this.slab = slab;
+            return this;
+        }
+
+        public Builder solidSlab(BlockStateProvider solidSlab) {
+            this.solidSlab = solidSlab;
+            return this;
+        }
+
+        public Builder fencing(BlockStateProvider fencing) {
+            this.fencing = fencing;
+            return this;
+        }
+
+        public Builder fluid(BlockStateProvider fluid) {
+            this.fluid = fluid;
+            return this;
+        }
+
+        public Theme build() {
+            Theme theme = new Theme(pillar, solid, generic, floor, solidStairs, stairs, material, wall, slab, solidSlab, fencing, fluid);
+            if (id != null) {
+                theme.id = id;
+                Theme.ID_TO_THEME.put(id, theme);
+            }
+            if (!decorations.isEmpty()) {
+                theme.decorations = decorations.toArray(new DungeonDecoration[0]);
+            }
+            return theme;
+        }
+
     }
 
 }

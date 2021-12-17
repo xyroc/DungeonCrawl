@@ -21,14 +21,15 @@ package xiroc.dungeoncrawl.dungeon.piece;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
@@ -63,12 +64,21 @@ public class DungeonCorridor extends DungeonPiece {
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, worldGen, false, false);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.CORRIDOR, theme, secondaryTheme, stage, rotation, worldGen, false, false);
         if (connectedSides != 2 || !isStraight()) {
             entrances(worldIn, structureBoundingBoxIn, model, worldGen);
         }
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
+    }
+
+    @Override
+    protected boolean hasPillarAt(BlockPos pos) {
+        if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
+            return pos.getX() % 6 == 0 && pos.getZ() % 3 == 0;
+        } else {
+            return pos.getX() % 3 == 0 && pos.getZ() % 6 == 0;
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.block.provider.pattern;
 
+import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
@@ -11,6 +12,9 @@ import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 
 public record TerracottaPattern(BlockStateProvider block) implements BlockStateProvider {
+
+    public static final String TYPE = "pattern";
+    public static final String PATTERN_TYPE = "terracotta";
 
     @Override
     public BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation) {
@@ -28,6 +32,15 @@ public record TerracottaPattern(BlockStateProvider block) implements BlockStateP
                 return DungeonBlocks.applyProperty(state, BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH).rotate(world, pos, Orientation.getOppositeRotation(rotation));
             }
         }
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", TYPE);
+        object.addProperty("pattern_type", PATTERN_TYPE);
+        object.add("block", block.serialize());
+        return object;
     }
 
 }

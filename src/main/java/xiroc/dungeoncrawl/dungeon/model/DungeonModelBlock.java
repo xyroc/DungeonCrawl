@@ -215,6 +215,24 @@ public class DungeonModelBlock {
         return fromNBT(nbt, null);
     }
 
+    public BlockPos worldPos(DungeonModel model, Rotation rotation, BlockPos offset) {
+        return switch (rotation) {
+            case CLOCKWISE_90 -> new BlockPos(
+                    offset.getX() + model.length - position.getZ() - 1,
+                    offset.getY() + position.getY(),
+                    offset.getZ() + position.getX());
+            case COUNTERCLOCKWISE_90 -> new BlockPos(
+                    offset.getX() + position.getZ(),
+                    offset.getY() + position.getY(),
+                    offset.getZ() + model.width - position.getX() - 1);
+            case CLOCKWISE_180 -> new BlockPos(
+                    offset.getX() + model.width - position.getX() - 1,
+                    offset.getY() + position.getY(),
+                    offset.getZ() + model.length - position.getZ() - 1);
+            default -> offset.offset(position);
+        };
+    }
+
     /**
      * Applies all existing properties to the given BlockState.
      */

@@ -37,6 +37,7 @@ import xiroc.dungeoncrawl.command.argument.ThemeArgument;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public class SpawnDungeonCommand {
                         )))));
     }
 
-    private static int spawnDungeon(CommandSourceStack commandSource, ServerLevel world, BlockPos pos, Theme theme, Theme.SecondaryTheme secondaryTheme) {
+    private static int spawnDungeon(CommandSourceStack commandSource, ServerLevel world, BlockPos pos, Theme theme, SecondaryTheme secondaryTheme) {
         commandSource.sendSuccess(new TextComponent(ChatFormatting.RED + "This is an experimental feature." +
                 " Please report any bugs you encounter on the issue tracker on https://github.com/XYROC/DungeonCrawl/issues."), true);
         if (world.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ()) > 32) {

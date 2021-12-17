@@ -21,16 +21,17 @@ package xiroc.dungeoncrawl.dungeon.piece;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -56,7 +57,7 @@ public class DungeonStairs extends DungeonPiece {
     @Override
     public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
         switch (stairType) {
-            case 0 -> this.model = stage > 0 ? DungeonModels.KEY_TO_MODEL.get(DungeonModels.BOTTOM_STAIRS_2) : DungeonModels.KEY_TO_MODEL.get(DungeonModels.BOTTOM_STAIRS);
+            case 0 -> this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.BOTTOM_STAIRS);
             case 1 -> this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.TOP_STAIRS);
         }
     }
@@ -70,13 +71,13 @@ public class DungeonStairs extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
         switch (stairType) {
             case 0 -> {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, worldGen, false, false);
+                buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.BOTTOM_STAIRCASE, theme, secondaryTheme, stage, Rotation.NONE, worldGen, false, false);
                 ironBars(worldIn, structureBoundingBoxIn, model, worldGen);
                 placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
                 decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
             }
             case 1 -> {
-                build(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, worldGen, false, false);
+                buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, Rotation.NONE, worldGen, false, false);
                 entrances(worldIn, structureBoundingBoxIn, model, worldGen);
                 placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
                 decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);

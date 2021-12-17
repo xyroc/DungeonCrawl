@@ -18,21 +18,20 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
-public record FloorDecoration(BlockStateProvider blockStateProvider,
-                              float chance) implements DungeonDecoration {
+public record FloorDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
 
     @Override
-
     public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
                          DungeonPiece piece, int stage, boolean worldGen) {
         model.blocks.forEach((block) -> {
@@ -51,6 +50,16 @@ public record FloorDecoration(BlockStateProvider blockStateProvider,
 
     private static boolean checkSolid(LevelAccessor world, BlockPos pos, BoundingBox worldGenBounds, BoundingBox structureBounds) {
         return worldGenBounds.isInside(pos) && structureBounds.isInside(pos) && world.getBlockState(pos).canOcclude();
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", DungeonDecoration.FLOOR_DECORATION);
+        object.addProperty("chance", this.chance);
+
+        object.add("block", this.blockStateProvider.serialize());
+        return object;
     }
 
     public record NextToSolid(BlockStateProvider blockStateProvider,
@@ -78,5 +87,14 @@ public record FloorDecoration(BlockStateProvider blockStateProvider,
             });
         }
 
+        @Override
+        public JsonObject serialize() {
+            JsonObject object = new JsonObject();
+            object.addProperty("type", DungeonDecoration.FLOOR_NEXT_TO_SOLID_DECORATION);
+            object.addProperty("chance", this.chance);
+
+            object.add("block", this.blockStateProvider.serialize());
+            return object;
+        }
     }
 }

@@ -41,11 +41,8 @@ public class DungeonModels {
 
     public static final ResourceLocation SECRET_ROOM_ENTRANCE = DungeonCrawl.locate("default/corridor/secret_room_entrance");
     public static final ResourceLocation STARTER_ROOM = DungeonCrawl.locate("default/room/starter_room");
-    public static final ResourceLocation ROGUELIKE_TOWER = DungeonCrawl.locate("default/entrance/roguelike/rogue_tower");
-    public static final ResourceLocation STAIRCASE = DungeonCrawl.locate("default/staircase");
     public static final ResourceLocation STAIRCASE_LAYER = DungeonCrawl.locate("default/staircase_layer");
     public static final ResourceLocation BOTTOM_STAIRS = DungeonCrawl.locate("default/stairs_bottom");
-    public static final ResourceLocation BOTTOM_STAIRS_2 = DungeonCrawl.locate("default/stairs_bottom_2");
     public static final ResourceLocation TOP_STAIRS = DungeonCrawl.locate("default/stairs_top");
     public static final ResourceLocation LOOT_ROOM = DungeonCrawl.locate("default/loot_room");
     public static final ResourceLocation SECRET_ROOM = DungeonCrawl.locate("default/room/secret_room");

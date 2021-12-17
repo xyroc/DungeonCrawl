@@ -28,6 +28,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
@@ -61,7 +62,7 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
         }
         BlockPos pos = new BlockPos(x, y, z);
 
-        buildRotated(model, world, boundingBox, pos, theme, secondaryTheme, stage, rotation, worldGen, false, false);
+        buildModel(model, world, boundingBox, pos, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, rotation, worldGen, false, false);
         placeFeatures(world, boundingBox, theme, secondaryTheme, random, stage, worldGen);
         decorate(world, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
     }

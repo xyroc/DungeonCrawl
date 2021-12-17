@@ -60,7 +60,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void customSetup(Random rand) {
+    public void setup(Random rand) {
         int floor = y + 1;
         int chests = 1 + rand.nextInt(2);
         int spawners = chests + rand.nextInt(2);
@@ -101,26 +101,10 @@ public class DungeonSpiderRoom extends DungeonPiece {
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
         super.addAdditionalSaveData(context, tagCompound);
         if (spawners != null) {
-            ListTag list = new ListTag();
-            for (BlockPos pos : spawners) {
-                CompoundTag compoundNBT = new CompoundTag();
-                compoundNBT.putInt("x", pos.getX());
-                compoundNBT.putInt("y", pos.getY());
-                compoundNBT.putInt("z", pos.getZ());
-                list.add(compoundNBT);
-            }
-            tagCompound.put("spawners", list);
+            tagCompound.put("spawners", positionsToNbt(spawners));
         }
         if (chests != null) {
-            ListTag list = new ListTag();
-            for (BlockPos pos : chests) {
-                CompoundTag compoundNBT = new CompoundTag();
-                compoundNBT.putInt("x", pos.getX());
-                compoundNBT.putInt("y", pos.getY());
-                compoundNBT.putInt("z", pos.getZ());
-                list.add(compoundNBT);
-            }
-            tagCompound.put("chests", list);
+            tagCompound.put("chests", positionsToNbt(chests));
         }
     }
 }

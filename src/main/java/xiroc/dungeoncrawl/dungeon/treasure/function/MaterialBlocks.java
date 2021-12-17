@@ -35,6 +35,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Range;
 
@@ -54,7 +55,7 @@ public class MaterialBlocks extends LootItemConditionalFunction {
             BlockPos pos = new BlockPos(context.getParamOrNull(LootContextParams.ORIGIN));
             BlockEntity chest = context.getLevel().getBlockEntity(pos);
             if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
-                Tuple<Theme, Theme.SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+                Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
                 return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom())),
                         AMOUNT.nextInt(context.getRandom()));
             }
@@ -62,7 +63,7 @@ public class MaterialBlocks extends LootItemConditionalFunction {
         return new ItemStack(Blocks.STONE_BRICKS, AMOUNT.nextInt(context.getRandom()));
     }
 
-    private static ResourceLocation getMaterial(Theme theme, Theme.SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
+    private static ResourceLocation getMaterial(Theme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
         return rand.nextBoolean()
                 ? theme.material.get(world, pos).getBlock().getRegistryName()
                 : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();

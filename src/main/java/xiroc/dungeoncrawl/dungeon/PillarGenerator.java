@@ -43,7 +43,7 @@ public final class PillarGenerator {
     }
 
     private static void placeTopStair(IWorld world, BlockPos pos, Direction toCenter, Theme primaryTheme) {
-        if (world.getBlockState(pos.above()).canOcclude()) {
+        if (world.isEmptyBlock(pos) && world.getBlockState(pos.above()).canOcclude()) {
             BlockState stair = DungeonBlocks.applyProperty(primaryTheme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, toCenter);
             stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
             world.setBlock(pos, stair, 2);

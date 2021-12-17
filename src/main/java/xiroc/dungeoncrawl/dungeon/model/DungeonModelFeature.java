@@ -229,7 +229,7 @@ public final class DungeonModelFeature {
                 }
 
                 BlockPos p = pos.relative(direction, 2);
-                if (bounds.isInside(p)) {
+                if (bounds.isInside(p) &&  world.getBlockState(p.below()).canOcclude()) {
                     world.setBlock(p, Blocks.QUARTZ_BLOCK.defaultBlockState(), 2);
                 }
             }
@@ -244,7 +244,7 @@ public final class DungeonModelFeature {
             @Override
             public void place(IWorld world, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
                 BlockPos position = pos.relative(direction, 2);
-                if (bounds.isInside(position)) {
+                if (bounds.isInside(position) && world.getBlockState(position.below()).canOcclude()) {
                     world.setBlock(position, Blocks.QUARTZ_BLOCK.defaultBlockState(), 2);
                 }
             }

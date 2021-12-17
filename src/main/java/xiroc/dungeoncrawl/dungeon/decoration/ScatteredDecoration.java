@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
@@ -30,7 +31,6 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 public record ScatteredDecoration(BlockStateProvider blockStateProvider,
                                   float chance) implements DungeonDecoration {
-
     @Override
     public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
                          DungeonPiece piece, int stage, boolean worldGen) {
@@ -67,6 +67,16 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider,
                 }
             }
         }
+    }
+
+    @Override
+    public JsonObject serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", DungeonDecoration.SCATTERED_DECORATION);
+        object.addProperty("chance", this.chance);
+
+        object.add("block", this.blockStateProvider.serialize());
+        return object;
     }
 
 }

@@ -1,20 +1,14 @@
 {
+  "decorations": [
+    {
+      "type": "vines",
+      "chance": 0.5
+    }
+  ],
   "theme": {
-    "solid_slab": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:cobblestone_slab",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_slab",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_slab"
-        }
-      ]
+    "pillar": {
+      "type": "block",
+      "block": "minecraft:basalt"
     },
     "solid": {
       "type": "random_block",
@@ -28,22 +22,20 @@
           "weight": 2
         },
         {
-          "block": "minecraft:cracked_stone_bricks"
+          "block": "minecraft:cracked_stone_bricks",
+          "weight": 1
         },
         {
           "block": "minecraft:mossy_stone_bricks",
           "weight": 3
         },
         {
-          "block": "minecraft:mossy_cobblestone"
+          "block": "minecraft:mossy_cobblestone",
+          "weight": 1
         }
       ]
     },
-    "pillar": {
-      "type": "block",
-      "block": "minecraft:basalt"
-    },
-    "material": {
+    "generic": {
       "type": "random_block",
       "blocks": [
         {
@@ -51,59 +43,26 @@
           "weight": 2
         },
         {
-          "block": "minecraft:basalt"
+          "block": "minecraft:cobblestone",
+          "weight": 2
         },
         {
-          "block": "minecraft:cracked_stone_bricks"
+          "block": "minecraft:cracked_stone_bricks",
+          "weight": 1
         },
         {
           "block": "minecraft:mossy_stone_bricks",
           "weight": 3
         },
         {
-          "block": "minecraft:mossy_cobblestone"
-        },
-        {
-          "block": "minecraft:cobblestone",
-          "weight": 2
+          "block": "minecraft:mossy_cobblestone",
+          "weight": 1
         }
       ]
     },
-    "stairs": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:cobblestone_stairs",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_stairs",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_stairs"
-        }
-      ]
-    },
-    "solid_stairs": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:cobblestone_stairs",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_cobblestone_stairs",
-          "weight": 2
-        },
-        {
-          "block": "minecraft:mossy_stone_brick_stairs"
-        }
-      ]
-    },
-    "fluid": {
+    "fencing": {
       "type": "block",
-      "block": "minecraft:water"
+      "block": "minecraft:cave_air"
     },
     "floor": {
       "type": "random_block",
@@ -113,7 +72,8 @@
           "weight": 2
         },
         {
-          "block": "minecraft:polished_basalt"
+          "block": "minecraft:polished_basalt",
+          "weight": 1
         },
         {
           "block": "minecraft:gravel",
@@ -129,11 +89,45 @@
         }
       ]
     },
-    "wall": {
+    "fluid": {
       "type": "block",
-      "block": "minecraft:mossy_stone_brick_wall"
+      "block": "minecraft:air"
     },
-    "generic": {
+    "solid_stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cobblestone_stairs",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_stairs",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_stairs",
+          "weight": 1
+        }
+      ]
+    },
+    "stairs": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cobblestone_stairs",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_stairs",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_stairs",
+          "weight": 1
+        }
+      ]
+    },
+    "material": {
       "type": "random_block",
       "blocks": [
         {
@@ -141,24 +135,30 @@
           "weight": 2
         },
         {
-          "block": "minecraft:cobblestone",
-          "weight": 2
+          "block": "minecraft:basalt",
+          "weight": 1
         },
         {
-          "block": "minecraft:cracked_stone_bricks"
+          "block": "minecraft:cracked_stone_bricks",
+          "weight": 1
         },
         {
           "block": "minecraft:mossy_stone_bricks",
           "weight": 3
         },
         {
-          "block": "minecraft:mossy_cobblestone"
+          "block": "minecraft:mossy_cobblestone",
+          "weight": 1
+        },
+        {
+          "block": "minecraft:cobblestone",
+          "weight": 2
         }
       ]
     },
-    "fencing": {
+    "wall": {
       "type": "block",
-      "block": "minecraft:cave_air"
+      "block": "minecraft:mossy_stone_brick_wall"
     },
     "slab": {
       "type": "random_block",
@@ -168,19 +168,31 @@
           "weight": 2
         },
         {
-          "block": "minecraft:mossy_cobblestone_slab",
+          "block": "minecraft:mossy_stone_brick_slab",
           "weight": 2
         },
         {
-          "block": "minecraft:mossy_stone_brick_slab"
+          "block": "minecraft:mossy_stone_brick_slab",
+          "weight": 1
+        }
+      ]
+    },
+    "solid_slab": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:cobblestone_slab",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_slab",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:mossy_stone_brick_slab",
+          "weight": 1
         }
       ]
     }
-  },
-  "decorations": [
-    {
-      "type": "vines",
-      "chance": 0.5
-    }
-  ]
+  }
 }

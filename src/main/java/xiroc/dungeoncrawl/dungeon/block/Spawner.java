@@ -37,6 +37,7 @@ import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Range;
@@ -53,7 +54,7 @@ public class Spawner implements IBlockPlacementHandler {
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
     @Override
-    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, Theme.SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
+    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof SpawnerBlockEntity spawner) {

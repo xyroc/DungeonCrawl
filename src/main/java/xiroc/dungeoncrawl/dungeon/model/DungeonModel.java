@@ -39,9 +39,7 @@ public class DungeonModel {
     public static final DungeonModel EMPTY = new DungeonModel(DungeonCrawl.locate("empty"), ImmutableList.of(), 0, 0, 0);
 
     private final ResourceLocation key;
-
     public final int width, height, length;
-
     public final ImmutableList<DungeonModelBlock> blocks;
 
     @Nullable
@@ -141,12 +139,6 @@ public class DungeonModel {
         } else {
             return null;
         }
-    }
-
-    public DungeonModel setId(int id) {
-        DungeonModels.ID_TO_MODEL.put(id, this);
-        this.id = id;
-        return this;
     }
 
     public ResourceLocation getKey() {

@@ -38,6 +38,7 @@ import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -62,7 +63,7 @@ public class DungeonBuilder {
     private final RegistryAccess registryAccess;
 
     public Theme theme, catacombsTheme, lowerCatacombsTheme, bottomTheme;
-    public Theme.SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
+    public SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
 
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
@@ -270,7 +271,7 @@ public class DungeonBuilder {
                             tile.piece.addChildPieces(pieces, this, type, modelSelector, i, rand);
                         }
 
-                        tile.piece.customSetup(rand);
+                        tile.piece.setup(rand);
                         pieces.add(tile.piece);
                     }
                 }

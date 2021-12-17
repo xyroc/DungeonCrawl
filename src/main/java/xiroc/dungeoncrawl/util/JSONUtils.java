@@ -52,7 +52,7 @@ public class JSONUtils {
         return true;
     }
 
-    public static BlockState getBlockState(Block block, JsonObject element) {
+    public static BlockState deserializeBlockStateProperties(Block block, JsonObject element) {
         BlockState state = block.defaultBlockState();
         if (element.has("properties")) {
             JsonObject data = element.get("properties").getAsJsonObject();
@@ -101,6 +101,34 @@ public class JSONUtils {
             DungeonCrawl.LOGGER.warn("Couldn't apply property {} with value {} to {}", property.getName(), value, state.getBlock().getRegistryName());
         }
         return state;
+    }
+
+    /**
+     * Serializes the given block state and stores it in the given json object.
+     *
+     * @param object the serialized block state will be stored here
+     * @param state  the block state
+     * @return the json object containing the serialized form of the block state
+     */
+    public static JsonObject serializeBlockState(JsonObject object, BlockState state) {
+        Block block = state.getBlock();
+        if (block.getRegistryName() == null) {
+            DungeonCrawl.LOGGER.error("No registry name found for block {} ({})", block, block.getClass());
+            return new JsonObject();
+        }
+        object.addProperty("block", block.getRegistryName().toString());
+
+        BlockState defaultState = block.defaultBlockState();
+        JsonObject properties = new JsonObject();
+        state.getProperties().forEach((property) -> {
+            if (!state.getValue(property).equals(defaultState.getValue(property))) {
+                properties.addProperty(property.getName(), state.getValue(property).toString());
+            }
+        });
+        if (properties.size() > 0) {
+            object.add("properties", properties);
+        }
+        return object;
     }
 
 }

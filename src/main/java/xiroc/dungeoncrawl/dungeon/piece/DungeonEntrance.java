@@ -31,6 +31,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -68,15 +69,15 @@ public class DungeonEntrance extends DungeonPiece {
         DungeonModel staircaseLayer = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE_LAYER);
         Rotation layerRotation = Rotation.NONE;
         while (cursorHeight < height) {
-            buildRotated(staircaseLayer, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), theme, secondaryTheme, stage, layerRotation, worldGen, true, false);
+            buildModel(staircaseLayer, worldIn, structureBoundingBoxIn,
+                    new BlockPos(x + 2, cursorHeight, z + 2), PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, false);
             layerRotation = layerRotation.getRotated(Rotation.CLOCKWISE_90);
             cursorHeight++;
         }
 
         BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).offset(rotatedOffset(model.getOffset(), layerRotation, model));
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, layerRotation, worldGen, true, true);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, true);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
 
         // A custom bounding box for decorations (eg. vines placement).

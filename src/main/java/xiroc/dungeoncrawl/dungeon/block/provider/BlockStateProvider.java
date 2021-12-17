@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.block.provider;
 
+import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
@@ -30,5 +31,7 @@ public interface BlockStateProvider {
     }
 
     BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation);
+
+    JsonObject serialize();
 
 }

@@ -18,11 +18,13 @@
 
 package xiroc.dungeoncrawl.dungeon.model;
 
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -30,16 +32,50 @@ import java.util.function.BiFunction;
 
 public class PlacementBehaviour {
 
-    public static final PlacementBehaviour NON_SOLID = new PlacementBehaviour((world, pos, rand) -> false);
-    public static final PlacementBehaviour SOLID = new PlacementBehaviour((world, pos, rand) -> true);
-    public static final PlacementBehaviour RANDOM_IF_SOLID_NEARBY = new PlacementBehaviour((world, pos, rand)
-            -> {
+    public static final PlacementBehaviour NON_SOLID = new PlacementBehaviour((world, pos, rotation, rand) -> false);
+    public static final PlacementBehaviour SOLID = new PlacementBehaviour((world, pos, rotation, rand) -> true);
+    public static final PlacementBehaviour RANDOM_IF_SOLID_NEARBY = new PlacementBehaviour((world, pos, rotation, rand) -> {
         if (isSolid(world, pos.north()) || isSolid(world, pos.east()) || isSolid(world, pos.south()) || isSolid(world, pos.west())) {
             return rand.nextFloat() < 0.6F;
         } else {
             return false;
         }
     });
+    public static PlacementBehaviour STRIPES = new PlacementBehaviour((world, pos, rotation, rand) -> {
+        if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
+            switch (pos.getZ() % 3) {
+                case 0:
+                    return rand.nextFloat() < 0.9F;
+                case 1:
+                case -1:
+                    return rand.nextFloat() < 0.5F;
+                case 2:
+                case -2:
+                    return rand.nextFloat() < 0.25F;
+                default:
+                    return false;
+            }
+        } else {
+            switch (pos.getX() % 3) {
+                case 0:
+                    return rand.nextFloat() < 0.9F;
+                case 1:
+                case -1:
+                    return rand.nextFloat() < 0.5F;
+                case 2:
+                case -2:
+                    return rand.nextFloat() < 0.25F;
+                default:
+                    return false;
+            }
+        }
+    });
+
+    public static PlacementBehaviour SMALL_GRID = new PlacementBehaviour((world, pos, rotation, rand) ->
+            rand.nextFloat() < (0.95F - (Math.abs(pos.getX() % 3) * 0.2F) - (Math.abs(pos.getZ() % 3) * 0.2F)));
+
+    public static PlacementBehaviour LARGE_GRID = new PlacementBehaviour((world, pos, rotation, rand) ->
+            rand.nextFloat() < (1F - (Math.abs(pos.getX() % 6) * 0.1F) - (Math.abs(pos.getZ() % 6) * 0.1F)));
 
     private final PlacementFunction function;
     @Nullable
@@ -58,8 +94,8 @@ public class PlacementBehaviour {
         return new PlacementBehaviour(this.function, airBlock);
     }
 
-    public boolean isSolid(IWorld world, BlockPos pos, Random rand) {
-        return function.isSolid(world, pos, rand);
+    public boolean isSolid(IWorld world, BlockPos pos, Rotation pieceRotation, Random rand) {
+        return function.isSolid(world, pos, pieceRotation, rand);
     }
 
     private static boolean isSolid(IWorld world, BlockPos pos) {
@@ -72,7 +108,7 @@ public class PlacementBehaviour {
 
     public interface PlacementFunction {
 
-        boolean isSolid(IWorld world, BlockPos pos, Random rand);
+        boolean isSolid(IWorld world, BlockPos pos, Rotation rotation, Random rand);
 
     }
 

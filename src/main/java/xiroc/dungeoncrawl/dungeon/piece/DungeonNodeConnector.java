@@ -29,6 +29,7 @@ import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
@@ -53,7 +54,7 @@ public class DungeonNodeConnector extends DungeonPiece {
         }
         BlockPos pos = new BlockPos(x, y + model.getOffset(rotation).getY(), z);
 
-        buildRotated(model, worldIn, structureBoundingBoxIn, pos, theme, secondaryTheme, stage, rotation, worldGen, false, false);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.CORRIDOR, theme, secondaryTheme, stage, rotation, worldGen, false, false);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
         return true;
@@ -67,6 +68,15 @@ public class DungeonNodeConnector extends DungeonPiece {
     @Override
     public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
         this.model = modelSelector.nodeConnectors.roll(rand);
+    }
+
+    @Override
+    protected boolean hasPillarAt(BlockPos pos) {
+        if (rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180) {
+            return pos.getX() % 6 == 0 && pos.getZ() % 3 == 0;
+        } else {
+            return pos.getX() % 3 == 0 && pos.getZ() % 6 == 0;
+        }
     }
 
     public void adjustPositionAndBounds() {

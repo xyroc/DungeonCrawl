@@ -441,7 +441,7 @@ public class Theme {
         return ID_TO_THEME.getOrDefault(theme, ID_TO_THEME.getOrDefault(0, BUILTIN_DEFAULT_THEME));
     }
 
-    public static SecondaryTheme getSubThemeByID(int id) {
+    public static SecondaryTheme getSecondaryThemeByID(int id) {
         return ID_TO_SECONDARY_THEME.getOrDefault(id, ID_TO_SECONDARY_THEME.getOrDefault(0, BUILTIN_DEFAULT_SECONDARY_THEME));
     }
 

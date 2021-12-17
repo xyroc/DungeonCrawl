@@ -195,7 +195,7 @@ public class MultipartModelData {
                 piece.theme = parentPiece.theme;
                 piece.secondaryTheme = parentPiece.secondaryTheme;
                 piece.createBoundingBox();
-                piece.customSetup(rand);
+                piece.setup(rand);
                 return piece;
             } else {
                 throw new RuntimeException("Can't create a multipart piece without a model. Metadata file: " + file.toString());

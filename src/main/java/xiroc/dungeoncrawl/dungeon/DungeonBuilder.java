@@ -270,7 +270,7 @@ public class DungeonBuilder {
                             tile.piece.addChildPieces(pieces, this, type, modelSelector, i, rand);
                         }
 
-                        tile.piece.customSetup(rand);
+                        tile.piece.setup(rand);
                         pieces.add(tile.piece);
                     }
                 }

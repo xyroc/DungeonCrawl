@@ -59,7 +59,6 @@ public class DungeonModelBlock {
     @Nullable
     public ResourceLocation lootTable;
 
-
     private DungeonModelBlock(DungeonModelBlockType type, Vector3i position) {
         this(type, position, null, null, Blocks.CAVE_AIR, null);
     }
@@ -215,6 +214,28 @@ public class DungeonModelBlock {
 
     public static DungeonModelBlock fromNBT(CompoundNBT nbt) {
         return fromNBT(nbt, null);
+    }
+
+    public BlockPos worldPos(DungeonModel model, Rotation rotation, BlockPos offset) {
+        switch (rotation) {
+            case CLOCKWISE_90:
+                return new BlockPos(
+                        offset.getX() + model.length - position.getZ() - 1,
+                        offset.getY() + position.getY(),
+                        offset.getZ() + position.getX());
+            case COUNTERCLOCKWISE_90:
+                return new BlockPos(
+                        offset.getX() + position.getZ(),
+                        offset.getY() + position.getY(),
+                        offset.getZ() + model.width - position.getX() - 1);
+            case CLOCKWISE_180:
+                return new BlockPos(
+                        offset.getX() + model.width - position.getX() - 1,
+                        offset.getY() + position.getY(),
+                        offset.getZ() + model.length - position.getZ() - 1);
+            default:
+                return offset.offset(position);
+        }
     }
 
     /**

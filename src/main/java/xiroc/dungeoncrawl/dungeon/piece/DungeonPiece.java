@@ -40,20 +40,21 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
+import xiroc.dungeoncrawl.dungeon.PillarGenerator;
+import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlock;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelFeature;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.dungeon.model.PlacementBehaviour;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
-import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
@@ -138,7 +139,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
 
         if (p_i51343_2_.contains("subTheme", 99)) {
-            this.secondaryTheme = Theme.getSubThemeByID(p_i51343_2_.getInt("subTheme"));
+            this.secondaryTheme = Theme.getSecondaryThemeByID(p_i51343_2_.getInt("subTheme"));
         } else {
             this.secondaryTheme = Theme.getSecondaryTheme(new ResourceLocation(p_i51343_2_.getString("secondaryTheme")));
         }
@@ -263,7 +264,7 @@ public abstract class DungeonPiece extends StructurePiece {
         this.z = z;
     }
 
-    public void customSetup(Random rand) {
+    public void setup(Random rand) {
         if (model == null) {
             return;
         }
@@ -282,6 +283,10 @@ public abstract class DungeonPiece extends StructurePiece {
                 variation[i] = (byte) rand.nextInt(64);
             }
         }
+    }
+
+    protected boolean hasPillarAt(BlockPos pos) {
+        return false;
     }
 
     public void takeOverProperties(DungeonPiece piece) {
@@ -307,18 +312,43 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public void setBlockState(IWorld world, BlockState state, BlockPos pos, PlacementBehaviour placementBehaviour,
-                              Theme theme, SecondaryTheme secondaryTheme, int lootLevel, boolean worldGen, boolean fillAir) {
-        if (state == null)
-            return;
+    public void buildModel(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, PlacementConfiguration configuration,
+                           Theme theme, SecondaryTheme secondaryTheme, int lootLevel, Rotation rotation, boolean worldGen, boolean fillAir, boolean expandDownwards) {
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Building {} with rotation {} at ({} | {} | {})", model.getKey(), rotation, pos.getX(), pos.getY(), pos.getZ());
+        }
 
-        if (DungeonBuilder.isBlockProtected(world, pos)) {
+        List<BlockPos> fancyPillars = new ArrayList<>(4);
+
+        model.blocks.forEach((block) -> {
+            BlockPos position = block.worldPos(model, rotation, pos);
+
+            if (boundsIn.isInside(position)) {
+                BlockState state = block.type.blockFactory.get(block, rotation, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
+
+                placeBlock(world, state, position, block, rotation, configuration, theme, secondaryTheme, fancyPillars, lootLevel, fillAir, expandDownwards, worldGen);
+            }
+        });
+
+        fancyPillars.forEach((pillar) -> PillarGenerator.generateFancyPillar(world, pillar, boundsIn,  theme));
+        fancyPillars.clear();
+
+        if (Config.EXTENDED_DEBUG.get()) {
+            DungeonCrawl.LOGGER.debug("Finished building {} with rotation {} at ({} | {} | {})", model.getKey(), rotation, pos.getX(), pos.getY(), pos.getZ());
+        }
+    }
+
+    public void placeBlock(IWorld world, BlockState state, BlockPos position, DungeonModelBlock block, Rotation rotation, PlacementConfiguration configuration,
+                           Theme theme, SecondaryTheme secondaryTheme, List<BlockPos> fancyPillars, int lootLevel, boolean fillAir, boolean expandDownwards, boolean worldGen) {
+        if (DungeonBuilder.isBlockProtected(world, position)) {
             return;
         }
 
-        if (world.isEmptyBlock(pos) && !placementBehaviour.isSolid(world, pos, world.getRandom())) {
+        PlacementBehaviour placementBehaviour = block.type.placementBehaviourFromConfig.apply(configuration);
+
+        if (world.isEmptyBlock(position) && !placementBehaviour.isSolid(world, position, rotation, world.getRandom())) {
             if (placementBehaviour.airBlock != null) {
-                state = placementBehaviour.airBlock.apply(theme, secondaryTheme).get(world, pos);
+                state = placementBehaviour.airBlock.apply(theme, secondaryTheme).get(world, position);
             } else if (!fillAir && !Config.SOLID.get()) {
                 return;
             }
@@ -326,21 +356,35 @@ public abstract class DungeonPiece extends StructurePiece {
 
         Random rand = world.getRandom();
 
-        IBlockPlacementHandler.getHandler(state.getBlock()).place(world, state, pos, rand, theme, secondaryTheme, lootLevel, worldGen);
+        IBlockPlacementHandler.getHandler(state.getBlock()).place(world, state, position, rand, theme, secondaryTheme, lootLevel, worldGen);
 
-        TileEntity tile = world.getBlockEntity(pos);
+        TileEntity tile = world.getBlockEntity(position);
         if (tile instanceof LockableLootTileEntity) {
             if (model.hasLootTable()) {
-                Loot.setLoot(world, pos, (LockableLootTileEntity) tile, model.getLootTable(), theme, secondaryTheme, rand);
+                Loot.setLoot(world, position, (LockableLootTileEntity) tile, model.getLootTable(), theme, secondaryTheme, rand);
             } else {
-                Loot.setLoot(world, pos, (LockableLootTileEntity) tile, Loot.getLootTable(stage, rand), theme, secondaryTheme, rand);
+                Loot.setLoot(world, position, (LockableLootTileEntity) tile, Loot.getLootTable(stage, rand), theme, secondaryTheme, rand);
             }
         }
 
-        FluidState fluidState = world.getFluidState(pos);
+        FluidState fluidState = world.getFluidState(position);
         if (!fluidState.isEmpty()) {
-            world.getLiquidTicks().scheduleTick(pos, fluidState.getType(), 0);
+            world.getLiquidTicks().scheduleTick(position, fluidState.getType(), 0);
 
+        }
+
+        if ((block.hasProperties || !state.getProperties().isEmpty()) && worldGen) {
+            world.getChunk(position).markPosForPostprocessing(position);
+        }
+
+        if (expandDownwards) {
+            if (block.type.isExpandable() && block.position.getY() == 0 && !world.getBlockState(position.below()).canOcclude()) {
+                PillarGenerator.generateSimplePillar(world, position.below(), theme);
+            }
+        } else {
+            if (block.position.getY() == 0 && (block.type.isPillar() || hasPillarAt(position)) && !world.getBlockState(position.below()).canOcclude()) {
+                fancyPillars.add(position.below());
+            }
         }
     }
 
@@ -361,171 +405,6 @@ public abstract class DungeonPiece extends StructurePiece {
             if (!fluidstate.isEmpty()) {
                 worldIn.getLiquidTicks().scheduleTick(blockPos, fluidstate.getType(), 0);
             }
-        }
-    }
-
-    private void buildModelBlock(IWorld world, BlockPos position, BlockState state, DungeonModelBlock block, Theme theme, SecondaryTheme secondaryTheme,
-                                 int lootLevel, boolean worldGen, boolean fillAir, boolean expandDownwards) {
-        if (state == null)
-            return;
-
-        placeBlock(world, state, position, block, theme, secondaryTheme, lootLevel, fillAir, worldGen);
-
-        if (block.type == DungeonModelBlockType.PILLAR) {
-            tryBuildFancyPillarPart(world, block, position);
-        }
-
-        if (expandDownwards && block.type.isExpandable() && block.position.getY() == 0 && !world.getBlockState(position.below()).canOcclude()) {
-            buildPillar(world, position.below());
-        }
-    }
-
-    public void build(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                      SecondaryTheme secondaryTheme, int lootLevel, boolean worldGen, boolean fillAir, boolean expandDownwards) {
-        if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Building {} at ({} | {} | {})", model.getKey(), pos.getX(), pos.getY(), pos.getZ());
-        }
-
-        model.blocks.forEach((block) -> {
-            BlockPos position = pos.offset(block.position);
-            if (boundsIn.isInside(position)) {
-                BlockState state = block.type.blockFactory.get(block, Rotation.NONE, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
-
-                buildModelBlock(world, position, state, block, theme, secondaryTheme, lootLevel, worldGen, fillAir, expandDownwards);
-            }
-        });
-
-        if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Finished building {} at ({} | {} | {})", model.getKey(), pos.getX(), pos.getY(), pos.getZ());
-        }
-    }
-
-    public void buildRotated(DungeonModel model, IWorld world, MutableBoundingBox boundsIn, BlockPos pos, Theme theme,
-                             SecondaryTheme secondaryTheme, int lootLevel, Rotation rotation, boolean worldGen, boolean fillAir, boolean expandDownwards) {
-        if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Building {} with rotation {} at ({} | {} | {})", model.getKey(), rotation, pos.getX(), pos.getY(), pos.getZ());
-        }
-
-        switch (rotation) {
-            case CLOCKWISE_90: {
-                model.blocks.forEach((block) -> {
-                    BlockPos position = new BlockPos(
-                            pos.getX() + model.length - block.position.getZ() - 1,
-                            pos.getY() + block.position.getY(),
-                            pos.getZ() + block.position.getX());
-
-                    if (boundsIn.isInside(position)) {
-                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_90, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
-
-                        buildModelBlock(world, position, state, block, theme, secondaryTheme, lootLevel, worldGen, fillAir, expandDownwards);
-                    }
-                });
-                break;
-            }
-            case COUNTERCLOCKWISE_90: {
-                model.blocks.forEach((block) -> {
-                    BlockPos position = new BlockPos(
-                            pos.getX() + block.position.getZ(),
-                            pos.getY() + block.position.getY(),
-                            pos.getZ() + model.width - block.position.getX() - 1);
-
-                    if (boundsIn.isInside(position)) {
-                        BlockState state = block.type.blockFactory.get(block, Rotation.COUNTERCLOCKWISE_90, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
-
-                        buildModelBlock(world, position, state, block, theme, secondaryTheme, lootLevel, worldGen, fillAir, expandDownwards);
-                    }
-                });
-                break;
-            }
-            case CLOCKWISE_180: {
-                model.blocks.forEach((block) -> {
-                    BlockPos position = new BlockPos(
-                            pos.getX() + model.width - block.position.getX() - 1,
-                            pos.getY() + block.position.getY(),
-                            pos.getZ() + model.length - block.position.getZ() - 1);
-
-                    if (boundsIn.isInside(position)) {
-                        BlockState state = block.type.blockFactory.get(block, Rotation.CLOCKWISE_180, world, position, theme, secondaryTheme, world.getRandom(), variation, stage);
-
-                        buildModelBlock(world, position, state, block, theme, secondaryTheme, lootLevel, worldGen, fillAir, expandDownwards);
-                    }
-                });
-                break;
-            }
-            case NONE:
-                build(model, world, boundsIn, pos, theme, secondaryTheme, lootLevel, worldGen, fillAir, expandDownwards);
-                break;
-            default:
-                DungeonCrawl.LOGGER.warn("Failed to build a rotated dungeon segment: Unsupported rotation " + rotation);
-                break;
-        }
-
-        if (Config.EXTENDED_DEBUG.get()) {
-            DungeonCrawl.LOGGER.debug("Finished building {} with rotation {} at ({} | {} | {})", model.getKey(), rotation, pos.getX(), pos.getY(), pos.getZ());
-        }
-    }
-
-    public void placeBlock(IWorld world, BlockState state, BlockPos position, DungeonModelBlock block, Theme theme, SecondaryTheme secondaryTheme,
-                           int lootLevel, boolean fillAir, boolean worldGen) {
-        setBlockState(world, state, position, block.type.placementBehavior, theme, secondaryTheme, lootLevel, worldGen, fillAir);
-
-        if (block.hasProperties && worldGen) {
-            world.getChunk(position).markPosForPostprocessing(position);
-        }
-
-    }
-
-    protected void tryBuildFancyPillarPart(IWorld world, DungeonModelBlock block, BlockPos blockPos) {
-        if (world.getBlockState(blockPos).canOcclude()) {
-            BlockPos pos = blockPos.below(block.position.getY() + 1);
-            if (!world.getBlockState(pos).canOcclude() && block.position.getY() == 0) {
-                buildPillar(world, pos);
-            }
-        }
-    }
-
-    protected void buildPillar(IWorld world, BlockPos pos) {
-        for (; pos.getY() > 0; pos = pos.below()) {
-            if (world.getBlockState(pos).canOcclude()) return;
-            world.setBlock(pos, theme.solid.get(world, pos), 2);
-        }
-    }
-
-    /**
-     * Builds a pillar with stairs at the top.
-     */
-    protected void buildFancyPillarPart(IWorld world, BlockPos pos) {
-        int x = pos.getX() % 3;
-        int z = pos.getZ() % 4;
-
-        if (x == 0) {
-            switch (z) {
-                case 0:
-                    buildPillar(world, pos);
-                    return;
-                case -2:
-                case 1: { // One block south from the pillar
-                    BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH);
-                    stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-                    world.setBlock(pos, stair, 2);
-                    return;
-                }
-                case -1:
-                case 2: { // Two blocks south from the pillar
-                    BlockState stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH);
-                    stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-                    world.setBlock(pos, stair, 2);
-                }
-            }
-        } else if (z == 0) {
-            BlockState stair;
-            if (x == 1 || x == -2) { // One block east from the pillar
-                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
-            } else { // Two blocks east from the pillar
-                stair = DungeonBlocks.applyProperty(theme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
-            }
-            stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
-            world.setBlock(pos, stair, 2);
         }
     }
 
@@ -728,6 +607,28 @@ public abstract class DungeonPiece extends StructurePiece {
             default:
                 return Direction.NORTH;
         }
+    }
+
+    protected static ListNBT positionsToNbt(BlockPos[] positions) {
+        ListNBT nbtPositions = new ListNBT();
+        for (BlockPos pillar : positions) {
+            CompoundNBT p = new CompoundNBT();
+            p.putInt("x", pillar.getX());
+            p.putInt("y", pillar.getY());
+            p.putInt("z", pillar.getZ());
+            nbtPositions.add(p);
+        }
+        return nbtPositions;
+    }
+
+    protected static BlockPos[] positionsFromNbt(ListNBT nbt) {
+        BlockPos[] positions = new BlockPos[nbt.size()];
+        for (int i = 0; i < nbt.size(); i++) {
+            CompoundNBT pillar = nbt.getCompound(i);
+            positions[i] = new BlockPos(pillar.getInt("x"), pillar.getInt("y"), pillar.getInt("z"));
+        }
+        return positions;
+
     }
 
     protected static DungeonModelFeature.Instance[] readAllFeatures(ListNBT nbt) {

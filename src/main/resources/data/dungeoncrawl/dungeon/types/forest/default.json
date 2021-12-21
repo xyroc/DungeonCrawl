@@ -698,7 +698,7 @@
         "max_node_depth": 8,
         "min_stairs_depth": 2,
         "max_depth": 8,
-        "min_distance": 1,
+        "min_distance": 2,
         "max_distance": 3
       }
     }

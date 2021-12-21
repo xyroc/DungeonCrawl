@@ -1,18 +1,19 @@
 {
   "common": [
     {
-      "entity": "minecraft:zombie"
+      "entity": "minecraft:zombie",
+      "weight": 3
     },
     {
-      "entity": "minecraft:skeleton"
+      "entity": "minecraft:skeleton",
+      "weight": 2
     },
     {
       "entity": "minecraft:stray",
       "weight": 2
     },
     {
-      "entity": "minecraft:wither_skeleton",
-      "weight": 2
+      "entity": "minecraft:wither_skeleton"
     }
   ],
   "rare": [

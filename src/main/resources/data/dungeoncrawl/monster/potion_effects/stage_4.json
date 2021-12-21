@@ -34,22 +34,6 @@
         "max": 3
       },
       "weight": 2
-    },
-    {
-      "effect": "minecraft:regeneration",
-      "duration": 6000,
-      "amplifier": {
-        "min": 0,
-        "max": 1
-      }
-    },
-    {
-      "effect": "minecraft:resistance",
-      "duration": 6000,
-      "amplifier": {
-        "min": 0,
-        "max": 1
-      }
     }
   ]
 }

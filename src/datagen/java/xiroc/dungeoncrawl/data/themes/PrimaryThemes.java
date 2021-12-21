@@ -99,7 +99,7 @@ public class PrimaryThemes implements IDataProvider {
                         .add(Blocks.MOSSY_COBBLESTONE, 1)
                         .build())
                 .pillar(new SingleBlock(Blocks.BASALT))
-                .fencing(SingleBlock.AIR)
+                .fencing(new SingleBlock(Blocks.IRON_BARS))
                 .floor(WeightedRandomBlock.builder()
                         .add(Blocks.BASALT, 2)
                         .add(Blocks.POLISHED_BASALT, 1)

@@ -62,7 +62,7 @@
     },
     "fencing": {
       "type": "block",
-      "block": "minecraft:cave_air"
+      "block": "minecraft:iron_bars"
     },
     "floor": {
       "type": "random_block",

@@ -41,12 +41,12 @@
   },
   "level_5": {
     "delay": {
-      "min": 180,
-      "max": 260
+      "min": 260,
+      "max": 400
     },
     "amount": {
       "min": 2,
-      "max": 4
+      "max": 3
     }
   }
 }

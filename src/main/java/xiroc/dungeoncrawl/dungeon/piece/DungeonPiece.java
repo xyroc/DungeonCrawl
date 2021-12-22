@@ -561,7 +561,6 @@ public abstract class DungeonPiece extends StructurePiece {
         };
     }
 
-
     protected static ListTag positionsToNbt(BlockPos[] positions) {
         ListTag nbtPositions = new ListTag();
         for (BlockPos pillar : positions) {

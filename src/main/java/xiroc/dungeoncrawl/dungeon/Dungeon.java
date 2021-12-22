@@ -70,7 +70,6 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
 
         int averageGroundHeight = Math.min(averageInnerGroundHeight, averageOuterGroundHeight);
 
-        DungeonCrawl.LOGGER.info("Average height: {} Center height: {} ({},{}) around center {} {}", averageGroundHeight, averageInnerGroundHeight, averageOuterGroundHeight, centerHeight, centerX, centerZ);
         if (averageGroundHeight < 45) {
             return Optional.empty();
         }

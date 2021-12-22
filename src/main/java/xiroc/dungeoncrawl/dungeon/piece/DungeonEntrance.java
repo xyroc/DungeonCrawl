@@ -82,10 +82,10 @@ public class DungeonEntrance extends DungeonPiece {
 
         // A custom bounding box for decorations (eg. vines placement).
         // The original bounding box of this piece goes from the bottom to the top of the world,
-        //  since the ground height is unknown up the point of actual generation.
-        // And because we dont want the decorations to decorate everything from top to bottom,
+        //  since the ground height is unknown up to the point of actual generation.
+        // And because we don't want the decorations to decorate everything from top to bottom,
         //  we use a custom bounding box for them.
-        MutableBoundingBox populationBox = model.createBoundingBox(pos, rotation);
+        MutableBoundingBox populationBox = model.createBoundingBox(pos, layerRotation);
         decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model, worldGen);
         return true;
     }
@@ -106,22 +106,22 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public void createBoundingBox() {
         if (model != null) {
-            Vector3i offset = model.getOffset(rotation);
-            int x = this.x + 4 + offset.getX();
-            int z = this.z + 4 + offset.getZ();
-            switch (rotation) {
-                case NONE:
-                case CLOCKWISE_180:
-                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
-                    break;
-                case CLOCKWISE_90:
-                case COUNTERCLOCKWISE_90:
-                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.length - 1, 256, z + model.width - 1);
-                    break;
-                default:
-                    DungeonCrawl.LOGGER.warn("Unknown entrance rotation: {}", rotation);
-                    this.boundingBox = new MutableBoundingBox(x, 0, z, x + model.width - 1, 256, z + model.length - 1);
-            }
+            /*
+             * Since the rotation depends on the ground height, which is unknown,
+             *  we have to create a bounding box that contains all four possible rotations of this piece.
+             */
+            Vector3i defaultOffset = model.getOffset();
+            Vector3i clockwise90 = rotatedOffset(defaultOffset, Rotation.CLOCKWISE_90, model);
+            Vector3i clockwise180 = rotatedOffset(defaultOffset, Rotation.CLOCKWISE_180, model);
+            Vector3i counterClockwise90 = rotatedOffset(defaultOffset, Rotation.COUNTERCLOCKWISE_90, model);
+
+            int minOffsetX = Math.min(Math.min(defaultOffset.getX(), clockwise90.getX()), Math.min(clockwise180.getX(), counterClockwise90.getX()));
+            int minOffsetZ = Math.min(Math.min(defaultOffset.getZ(), clockwise90.getZ()), Math.min(clockwise180.getZ(), counterClockwise90.getZ()));
+
+            int x = this.x + 4 + minOffsetX;
+            int z = this.z + 4 + minOffsetZ;
+
+            this.boundingBox = new MutableBoundingBox(x, 0, z, x + Math.max(model.width, model.length) - 1, 512, z + Math.max(model.width, model.length) - 1);
         }
     }
 

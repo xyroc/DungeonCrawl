@@ -57,26 +57,31 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         int centerX = context.chunkPos().getBlockX(7);
         int centerZ = context.chunkPos().getBlockZ(7);
         int centerHeight = context.chunkGenerator().getBaseHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
+
         if (!context.validBiome().test(context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)))) {
             DungeonCrawl.LOGGER.debug("Found invalid biome {}",
                     context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)).getRegistryName());
             return Optional.empty();
         }
+
         int[] innerCornerHeights = context.getCornerHeights(centerX - 5, 10, centerZ - 5, 10);
-        int[] outerCornerHeights = context.getCornerHeights(centerX - 20, 20, centerZ - 20, 20);
+        int[] outerCornerHeights = context.getCornerHeights(centerX - 20, 40, centerZ - 20, 40);
 
         int averageInnerGroundHeight = (centerHeight + innerCornerHeights[0] + innerCornerHeights[1] + innerCornerHeights[2] + innerCornerHeights[3]) / 5;
         int averageOuterGroundHeight = (outerCornerHeights[0] + outerCornerHeights[1] + outerCornerHeights[3] + outerCornerHeights[3]) / 4;
 
-        int averageGroundHeight = Math.min(averageInnerGroundHeight, averageOuterGroundHeight);
+        int minAverageGroundHeight = Math.min(averageInnerGroundHeight, averageOuterGroundHeight);
 
-        if (averageGroundHeight < 45) {
+        if (minAverageGroundHeight < 45) {
             return Optional.empty();
         }
+
+        int startHeight = (minAverageGroundHeight > 80 ? (80 + ((minAverageGroundHeight - 80) >> 1)) : minAverageGroundHeight) - 20;
+
         return Optional.of(((structurePiecesBuilder, generatorContext) -> {
             DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
                     generatorContext.chunkGenerator(),
-                    averageGroundHeight - 16,
+                    startHeight,
                     new BlockPos(centerX, centerHeight, centerZ),
                     generatorContext.chunkPos(),
                     generatorContext.random());

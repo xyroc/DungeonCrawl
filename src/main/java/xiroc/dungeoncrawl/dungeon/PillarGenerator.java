@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.WaterFluid;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.theme.Theme;
 
@@ -42,9 +43,12 @@ public final class PillarGenerator {
     }
 
     private static void placeTopStair(LevelAccessor world, BlockPos pos, Direction toCenter, Theme primaryTheme) {
-        if (world.isEmptyBlock(pos) && world.getBlockState(pos.above()).canOcclude()) {
+        if (!world.getBlockState(pos).canOcclude() && world.getBlockState(pos.above()).canOcclude()) {
             BlockState stair = DungeonBlocks.applyProperty(primaryTheme.solidStairs.get(world, pos), BlockStateProperties.HORIZONTAL_FACING, toCenter);
             stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
+            if (world.getFluidState(pos).getType() instanceof WaterFluid) {
+                stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.WATERLOGGED, true);
+            }
             world.setBlock(pos, stair, 2);
         }
     }

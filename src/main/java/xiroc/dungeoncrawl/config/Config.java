@@ -53,7 +53,8 @@ public class Config {
             TICK_FALLING_BLOCKS,
             OVERWRITE_ENTITY_LOOT_TABLES,
             SECRET_ROOMS,
-            PRINT_BIOME_CATEGORIES;
+            PRINT_BIOME_CATEGORIES,
+            FIXED_GENERATION_HEIGHT;
 
     private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------+";
 
@@ -137,6 +138,9 @@ public class Config {
                 .comment(SEPARATOR_LINE +
                         "\nWhether the dungeons should have secret rooms or not.\n")
                 .define("secret_rooms", true);
+        FIXED_GENERATION_HEIGHT = BUILDER.comment(SEPARATOR_LINE +
+                "\nWhether the dungeons should generate at a fixed height or not. Enable this if the dungeons are generating too high.")
+                .define("fixed_generation_height", false);
         OVERWRITE_ENTITY_LOOT_TABLES = BUILDER.
                 comment(SEPARATOR_LINE +
                         "\nWhether loot tables of certain spawner entities should be overwritten.\n" +

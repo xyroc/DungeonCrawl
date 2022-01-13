@@ -29,6 +29,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.config.Config;
 
 import java.util.Optional;
 import java.util.Set;
@@ -56,7 +57,7 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
     private static Optional<PieceGenerator<NoneFeatureConfiguration>> pieceGeneratorSupplier(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
         int centerX = context.chunkPos().getBlockX(7);
         int centerZ = context.chunkPos().getBlockZ(7);
-        int centerHeight = context.chunkGenerator().getBaseHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
+        int centerHeight = context.chunkGenerator().getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
 
         if (!context.validBiome().test(context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)))) {
             DungeonCrawl.LOGGER.debug("Found invalid biome {}",
@@ -64,19 +65,17 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
             return Optional.empty();
         }
 
-        int[] innerCornerHeights = context.getCornerHeights(centerX - 5, 10, centerZ - 5, 10);
-        int[] outerCornerHeights = context.getCornerHeights(centerX - 20, 40, centerZ - 20, 40);
+        int minGroundHeight = minHeight(context, centerX, centerZ, centerHeight);
 
-        int averageInnerGroundHeight = (centerHeight + innerCornerHeights[0] + innerCornerHeights[1] + innerCornerHeights[2] + innerCornerHeights[3]) / 5;
-        int averageOuterGroundHeight = (outerCornerHeights[0] + outerCornerHeights[1] + outerCornerHeights[3] + outerCornerHeights[3]) / 4;
+        DungeonCrawl.LOGGER.info("Center: ({},{})", centerX, centerZ);
 
-        int minAverageGroundHeight = Math.min(averageInnerGroundHeight, averageOuterGroundHeight);
-
-        if (minAverageGroundHeight < 45) {
+        if (minGroundHeight < 45) {
             return Optional.empty();
         }
 
-        int startHeight = (minAverageGroundHeight > 80 ? (80 + ((minAverageGroundHeight - 80) >> 1)) : minAverageGroundHeight) - 20;
+        int startHeight = Config.FIXED_GENERATION_HEIGHT.get()
+                ? context.chunkGenerator().getSpawnHeight(context.heightAccessor()) - 20
+                : (minGroundHeight > 80 ? (80 + ((minGroundHeight - 80) / 3)) : minGroundHeight) - 20;
 
         return Optional.of(((structurePiecesBuilder, generatorContext) -> {
             DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
@@ -87,6 +86,19 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
                     generatorContext.random());
             builder.build().forEach((structurePiecesBuilder::addPiece));
         }));
+    }
+
+    private static int minHeight(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context, int centerX, int centerZ, int centerHeight) {
+        int minHeight = centerHeight;
+
+        for (int i = 1; i < 9; i++) {
+            int size = i * 5;
+            int[] heights = context.getCornerHeights(centerX - size, size * 2, centerZ - size, size * 2);
+            int lowestHeight = Math.min(Math.min(heights[0], heights[1]), Math.min(heights[2], heights[3]));
+            minHeight = Math.min(minHeight, lowestHeight);
+        }
+
+        return minHeight;
     }
 
     @Override

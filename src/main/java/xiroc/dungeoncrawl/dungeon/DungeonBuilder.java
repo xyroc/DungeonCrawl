@@ -64,6 +64,9 @@ public class DungeonBuilder {
     public Theme theme, catacombsTheme, lowerCatacombsTheme, bottomTheme;
     public SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
 
+    private static final int GRID_SIZE = 17;
+    private static final int HALF_GRID_SIZE = GRID_SIZE << 1;
+
     /**
      * Instantiates a Dungeon Builder for usage during world gen.
      */
@@ -73,8 +76,8 @@ public class DungeonBuilder {
         this.rand = rand;
 
         this.chunkPos = pos;
-        this.startPos = new BlockPos(pos.x * 16 - Dungeon.SIZE / 2 * 9, chunkGenerator.getSpawnHeight() - 15,
-                pos.z * 16 - Dungeon.SIZE / 2 * 9);
+        this.startPos = new BlockPos(pos.x * 16 - HALF_GRID_SIZE * 9, chunkGenerator.getSpawnHeight() - 15,
+                pos.z * 16 - HALF_GRID_SIZE * 9);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");
@@ -89,8 +92,8 @@ public class DungeonBuilder {
         this.rand = rand;
 
         this.chunkPos = new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4);
-        this.startPos = new BlockPos(pos.getX() - Dungeon.SIZE / 2 * 9, world.getChunkSource().generator.getSpawnHeight() - 15,
-                pos.getZ() - Dungeon.SIZE / 2 * 9);
+        this.startPos = new BlockPos(pos.getX() - HALF_GRID_SIZE * 9, world.getChunkSource().generator.getSpawnHeight() - 15,
+                pos.getZ() - HALF_GRID_SIZE * 9);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");
@@ -126,17 +129,14 @@ public class DungeonBuilder {
     private void generateLayout(DungeonType type, DungeonGenerator generator) {
         generator.initializeDungeon(type, this, this.chunkPos, this.rand);
 
-        int gridSize = 17;
-        int startCoordinate = gridSize / 2;
-
-        this.start = new Position2D(startCoordinate, startCoordinate);
+        this.start = new Position2D(HALF_GRID_SIZE, HALF_GRID_SIZE);
 
         int layerCount = generator.layerCount(rand, startPos.getY());
 
         this.layers = new DungeonLayer[layerCount];
 
         for (int layer = 0; layer < layers.length; layer++) {
-            this.layers[layer] = new DungeonLayer(gridSize);
+            this.layers[layer] = new DungeonLayer(GRID_SIZE);
         }
 
         for (int layer = 0; layer < layers.length; layer++) {

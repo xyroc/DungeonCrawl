@@ -66,7 +66,7 @@ public class DungeonBuilder {
     public SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
 
     private static final int GRID_SIZE = 17;
-    private static final int HALF_GRID_SIZE = GRID_SIZE << 1;
+    private static final int HALF_GRID_SIZE = GRID_SIZE >> 1;
 
     /**
      * Instantiates a Dungeon Builder for usage during world gen.

@@ -34,7 +34,7 @@
             "z": -1
           },
           "rotation": "counterclockwise_90",
-          "model": "dungeoncrawl:default/multipart/node_connector"
+          "model": "dungeoncrawl:default/multipart/short_node_connector"
         }
       ]
     },
@@ -48,7 +48,7 @@
             "x": 15,
             "z": 5
           },
-          "model": "dungeoncrawl:default/multipart/node_connector"
+          "model": "dungeoncrawl:default/multipart/short_node_connector"
         }
       ]
     },
@@ -63,7 +63,7 @@
             "z": 15
           },
           "rotation": "clockwise_90",
-          "model": "dungeoncrawl:default/multipart/node_connector"
+          "model": "dungeoncrawl:default/multipart/short_node_connector"
         }
       ]
     },
@@ -78,7 +78,7 @@
             "z": 5
           },
           "rotation": "clockwise_180",
-          "model": "dungeoncrawl:default/multipart/node_connector"
+          "model": "dungeoncrawl:default/multipart/short_node_connector"
         }
       ]
     }

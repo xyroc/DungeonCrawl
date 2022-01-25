@@ -20,9 +20,11 @@ package xiroc.dungeoncrawl.dungeon.decoration;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -52,11 +54,11 @@ public record VineDecoration(float chance) implements DungeonDecoration {
                         BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
                         BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
 
-                        boolean _north = worldGenBounds.isInside(north) && structureBounds.isInside(north) && world.getBlockState(north).isRedstoneConductor(world, north) && !world.isEmptyBlock(north);
-                        boolean _east = worldGenBounds.isInside(east) && structureBounds.isInside(east) && world.getBlockState(east).isRedstoneConductor(world, east) && !world.isEmptyBlock(east);
-                        boolean _south = worldGenBounds.isInside(south) && structureBounds.isInside(south) && world.getBlockState(south).isRedstoneConductor(world, south) && !world.isEmptyBlock(south);
-                        boolean _west = worldGenBounds.isInside(west) && structureBounds.isInside(west) && world.getBlockState(west).isRedstoneConductor(world, east) && !world.isEmptyBlock(west);
-                        boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).isRedstoneConductor(world, up) && !world.isEmptyBlock(up);
+                        boolean _north = worldGenBounds.isInside(north) && structureBounds.isInside(north) && VineBlock.isAcceptableNeighbour(world, north, Direction.NORTH);
+                        boolean _east = worldGenBounds.isInside(east) && structureBounds.isInside(east) && VineBlock.isAcceptableNeighbour(world, east, Direction.EAST);
+                        boolean _south = worldGenBounds.isInside(south) && structureBounds.isInside(south) && VineBlock.isAcceptableNeighbour(world, south, Direction.SOUTH);
+                        boolean _west = worldGenBounds.isInside(west) && structureBounds.isInside(west) && VineBlock.isAcceptableNeighbour(world, west, Direction.WEST);
+                        boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && VineBlock.isAcceptableNeighbour(world, up, Direction.UP);
 
                         if ((_north || _east || _south || _west || _up) && DungeonBlocks.RANDOM.nextFloat() < chance) {
                             BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());

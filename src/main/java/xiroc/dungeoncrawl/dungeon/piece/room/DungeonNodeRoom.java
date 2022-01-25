@@ -87,7 +87,6 @@ public class DungeonNodeRoom extends DungeonPiece {
         super.setWorldPosition(x - 4, y, z - 4);
     }
 
-
     @Override
     public boolean postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {

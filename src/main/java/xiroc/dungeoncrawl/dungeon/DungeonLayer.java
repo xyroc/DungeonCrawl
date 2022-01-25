@@ -139,7 +139,7 @@ public class DungeonLayer {
             index = (index + i) % 4;
             for (int j = 0; j < 2; j++) {
                 Position2D current = start.shift(Orientation.HORIZONTAL_FACINGS[index], j + 1);
-                if (current.isValid(Dungeon.SIZE) && grid[current.x][current.z] != null
+                if (current.isValid(width, length) && grid[current.x][current.z] != null
                         && grid[current.x][current.z].piece.getDungeonPieceType() == DungeonPiece.CORRIDOR
                         && grid[current.x][current.z].piece.connectedSides < 4) {
                     Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(current.x, current.z), rand);

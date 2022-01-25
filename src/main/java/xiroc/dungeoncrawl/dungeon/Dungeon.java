@@ -48,8 +48,6 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
 
     public static final String NAME = DungeonCrawl.MOD_ID + ":dungeon";
 
-    public static final int SIZE = 15;
-
     public Dungeon() {
         super(NoneFeatureConfiguration.CODEC, Dungeon::pieceGeneratorSupplier);
     }

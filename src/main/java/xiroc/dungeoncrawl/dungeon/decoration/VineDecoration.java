@@ -54,11 +54,11 @@ public class VineDecoration implements DungeonDecoration {
                             && structureBounds.isInside(currentPos)
                             && !DungeonBuilder.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)) {
-                        BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-                        BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
-                        BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
-                        BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
-                        BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+                        BlockPos north = currentPos.north();
+                        BlockPos east = currentPos.east();
+                        BlockPos south = currentPos.south();
+                        BlockPos west = currentPos.west();
+                        BlockPos up = currentPos.above();
 
                         boolean _north = worldGenBounds.isInside(north) && structureBounds.isInside(north) && VineBlock.isAcceptableNeighbour(world, north, Direction.NORTH);
                         boolean _east = worldGenBounds.isInside(east) && structureBounds.isInside(east) && VineBlock.isAcceptableNeighbour(world, east, Direction.EAST);
@@ -67,8 +67,7 @@ public class VineDecoration implements DungeonDecoration {
                         boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && VineBlock.isAcceptableNeighbour(world, up, Direction.UP);
 
                         if ((_north || _east || _south || _west || _up) && DungeonBlocks.RANDOM.nextFloat() < chance) {
-                            BlockPos p = new BlockPos(north.getX(), north.getY(), east.getZ());
-                            world.setBlock(p, Blocks.VINE.defaultBlockState().setValue(BlockStateProperties.NORTH, _north)
+                            world.setBlock(currentPos, Blocks.VINE.defaultBlockState().setValue(BlockStateProperties.NORTH, _north)
                                     .setValue(BlockStateProperties.EAST, _east).setValue(BlockStateProperties.SOUTH, _south)
                                     .setValue(BlockStateProperties.WEST, _west).setValue(BlockStateProperties.UP, _up), 2);
                         }

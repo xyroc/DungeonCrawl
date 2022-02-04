@@ -107,6 +107,19 @@ public class SecondaryThemes implements IDataProvider {
                 .fenceGate(SingleBlock.AIR)
                 .button(new SingleBlock(Blocks.STONE_BUTTON))
                 .pressurePlate(new SingleBlock(Blocks.STONE_PRESSURE_PLATE)).build());
+
+        collector.accept(hell("roguelike"), SecondaryTheme.builder()
+                .pillar(new SingleBlock(Blocks.MAGMA_BLOCK))
+                .trapdoor(new SingleBlock(Blocks.IRON_TRAPDOOR))
+                .door(new SingleBlock(Blocks.IRON_DOOR))
+                .material(SharedThemeConstants.HELL_MATERIAL)
+                .stairs(new SingleBlock(Blocks.NETHER_BRICK_STAIRS))
+                .slab(new SingleBlock(Blocks.NETHER_BRICK_SLAB))
+                .fence(new SingleBlock(Blocks.NETHER_BRICK_FENCE))
+                .fenceGate(SingleBlock.AIR)
+                .button(new SingleBlock(Blocks.CRIMSON_BUTTON))
+                .pressurePlate(new SingleBlock(Blocks.CRIMSON_PRESSURE_PLATE))
+                .build());
     }
 
     private static ResourceLocation catacombs(String name) {
@@ -115,6 +128,14 @@ public class SecondaryThemes implements IDataProvider {
 
     private static ResourceLocation catacombs(String namespace, String name) {
         return new ResourceLocation(namespace, "catacombs/" + name);
+    }
+
+    private static ResourceLocation hell(String name) {
+        return hell(DungeonCrawl.MOD_ID, name);
+    }
+
+    private static ResourceLocation hell(String namespace, String name) {
+        return new ResourceLocation(namespace, "hell/" + name);
     }
 
 }

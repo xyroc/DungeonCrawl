@@ -47,11 +47,11 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider,
                             && world.isEmptyBlock(currentPos)
                             && DungeonBlocks.RANDOM.nextFloat() < chance) {
 
-                        BlockPos north = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z - 1);
-                        BlockPos east = new BlockPos(north.getX() + 1, north.getY(), pos.getZ() + z);
-                        BlockPos south = new BlockPos(north.getX(), north.getY(), east.getZ() + 1);
-                        BlockPos west = new BlockPos(north.getX() - 1, north.getY(), east.getZ());
-                        BlockPos up = new BlockPos(north.getX(), north.getY() + 1, east.getZ());
+                        BlockPos north = currentPos.north();
+                        BlockPos east = currentPos.east();
+                        BlockPos south = currentPos.south();
+                        BlockPos west = currentPos.west();
+                        BlockPos up = currentPos.above();
 
                         boolean _north = worldGenBounds.isInside(north) && structureBounds.isInside(north) && world.getBlockState(north).canOcclude();
                         boolean _east = worldGenBounds.isInside(east) && structureBounds.isInside(east) && world.getBlockState(east).canOcclude();

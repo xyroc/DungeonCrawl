@@ -76,8 +76,8 @@ public class DungeonBuilder {
         this.rand = rand;
 
         this.chunkPos = pos;
-        this.startPos = new BlockPos(pos.x * 16 - HALF_GRID_SIZE * 9, chunkGenerator.getSpawnHeight() - 15,
-                pos.z * 16 - HALF_GRID_SIZE * 9);
+        this.startPos = new BlockPos(pos.x * 16 - HALF_GRID_SIZE * 9 - 4, chunkGenerator.getSpawnHeight() - 15,
+                pos.z * 16 - HALF_GRID_SIZE * 9 - 4);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");

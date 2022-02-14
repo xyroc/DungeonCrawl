@@ -125,14 +125,14 @@ public class ModStructures {
 
                 // Prepare debug output
                 debug.append(biomeEntry.getValue().getRegistryName());
-                debug.append(" ");
+                debug.append(",");
             }
         });
 
         configuredStructures.put(DUNGEON.get(), configuredDungeon.build());
         structureSettings.configuredStructures = configuredStructures.build();
         // Debug output
-        DungeonCrawl.LOGGER.info("Dungeons generate in the following biomes of {} : {}", serverLevel.dimension().location(), debug);
+        DungeonCrawl.LOGGER.info("Dungeons generate in the following biomes of {}: {}", serverLevel.dimension().location(), debug);
     }
 
     private static void addDungeonToDimension(ServerLevel serverLevel) {

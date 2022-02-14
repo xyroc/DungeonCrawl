@@ -64,9 +64,6 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         }
 
         int minGroundHeight = minHeight(context, centerX, centerZ, centerHeight);
-
-        DungeonCrawl.LOGGER.info("Center: ({},{})", centerX, centerZ);
-
         if (minGroundHeight < 45) {
             return Optional.empty();
         }

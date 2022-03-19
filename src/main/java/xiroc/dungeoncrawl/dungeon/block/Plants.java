@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -42,10 +43,12 @@ public class Plants {
             world.setBlock(pos, state, 2);
             BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
             if (rand.nextFloat() < 0.6) {
-                BlockState crop = BlockTags.CROPS.getRandomElement(rand).defaultBlockState();
-                if (crop.hasProperty(BlockStateProperties.AGE_7))
-                    crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
-                world.setBlock(cropPos, crop, 2);
+                Registry.BLOCK.getTag(BlockTags.CROPS).flatMap(crops -> crops.getRandomElement(rand)).ifPresent((cropBlock) -> {
+                    BlockState crop = cropBlock.value().defaultBlockState();
+                    if (crop.hasProperty(BlockStateProperties.AGE_7))
+                        crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
+                    world.setBlock(cropPos, crop, 2);
+                });
             } else {
                 world.setBlock(cropPos, Blocks.CAVE_AIR.defaultBlockState(), 2);
             }
@@ -58,7 +61,7 @@ public class Plants {
         @Override
         public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
                           int lootLevel, boolean worldGen) {
-            world.setBlock(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).defaultBlockState(), 2);
+            Registry.BLOCK.getTag(BlockTags.FLOWER_POTS).flatMap((pots) -> pots.getRandomElement(rand)).ifPresent((pot) -> world.setBlock(pos, pot.value().defaultBlockState(), 2));
         }
 
     }
@@ -69,11 +72,14 @@ public class Plants {
         public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
                           int lootLevel, boolean worldGen) {
             world.setBlock(pos, state, 2);
-            BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).defaultBlockState();
-            BlockPos lowerPart = pos.above();
-            BlockPos upperPart = lowerPart.above();
-            world.setBlock(lowerPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);
-            world.setBlock(upperPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 2);
+            Registry.BLOCK.getTag(BlockTags.TALL_FLOWERS).flatMap((flowers) -> flowers.getRandomElement(rand)).ifPresent((flowerBlock) -> {
+                BlockState flower = flowerBlock.value().defaultBlockState();
+                BlockPos lowerPart = pos.above();
+                BlockPos upperPart = lowerPart.above();
+                world.setBlock(lowerPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);
+                world.setBlock(upperPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), 2);
+            });
+
         }
 
     }

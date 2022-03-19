@@ -20,6 +20,8 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -36,6 +38,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -88,15 +91,17 @@ public class DungeonModelBlock {
         Block block;
         ResourceLocation blockName = null;
         if (type == DungeonModelBlockType.CARPET) {
-            Collection<Block> carpets = BlockTags.CARPETS.getValues();
-            int index = 0;
-            for (Block carpet : carpets) {
-                if (state.getBlock() == carpet) {
-                    variation = index;
-                    break;
-                }
-                index++;
-            }
+//            Iterator<Holder<Block>> carpets = Registry.BLOCK.getTagOrEmpty(BlockTags.CARPETS).iterator();
+//            int index = 0;
+//            while (carpets.hasNext()) {
+//                Block carpet = carpets.next().value();
+//                if (state.getBlock() == carpet) {
+//                    variation = index;
+//                    break;
+//                }
+//                index++;
+//            }
+            variation = 0;
             block = state.getBlock();
             blockName = state.getBlock().getRegistryName();
         } else if (type == DungeonModelBlockType.OTHER) {

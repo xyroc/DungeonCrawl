@@ -169,9 +169,9 @@ public enum DungeonModelBlockType {
         } else if (definition.fallback != null && definition.fallback.containsBlock(block)) {
             return definition.fallback.getType(block);
         }
-        if (BlockTags.CARPETS.contains(block)) {
-            return CARPET;
-        }
+//        if (BlockTags.CARPETS.contains(block)) {
+//            return CARPET;
+//        }
         return OTHER;
     }
 

@@ -1,0 +1,7 @@
+{
+  "type": "dungeoncrawl:dungeon",
+  "biomes": "#dungeoncrawl:has_structure/dungeon",
+  "adapt_noise": false,
+  "config": {},
+  "spawn_overrides": {}
+}

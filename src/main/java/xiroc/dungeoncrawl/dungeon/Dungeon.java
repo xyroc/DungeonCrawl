@@ -59,7 +59,7 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
 
         if (!context.validBiome().test(context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)))) {
             DungeonCrawl.LOGGER.debug("Found invalid biome {}",
-                    context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)).getRegistryName());
+                    context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)).value().getRegistryName());
             return Optional.empty();
         }
 
@@ -99,16 +99,6 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
     @Override
     public GenerationStep.Decoration step() {
         return GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
-    }
-
-    @Override
-    protected boolean linearSeparation() {
-        return false;
-    }
-
-    @Override
-    public String getFeatureName() {
-        return NAME;
     }
 
 }

@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,6 @@ import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
-import xiroc.dungeoncrawl.init.ModStructureFeatures;
 import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
@@ -69,7 +67,6 @@ public class DungeonCrawl {
 
     private void init() {
         ModStructures.init();
-        Loot.init();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -82,28 +79,27 @@ public class DungeonCrawl {
         }
 
         event.enqueueWork(() -> {
+            Loot.init();
             StructurePieceTypes.register();
-            ModStructures.register();
-            ModStructureFeatures.register();
         });
     }
 
     private void onWorldLoad(WorldEvent.Load event) {
-        if (Config.PRINT_BIOME_CATEGORIES.get()
-                && event.getWorld() instanceof ServerLevel serverLevel
-                && serverLevel.dimension().equals(Level.OVERWORLD)) {
-            HashMap<String, List<String>> biomes = new HashMap<>();
-            ForgeRegistries.BIOMES.getEntries().forEach((entry) -> {
-                ResourceLocation registryName = entry.getValue().getRegistryName();
-                if (registryName != null) {
-                    biomes.computeIfAbsent(entry.getValue().getBiomeCategory().getName(), (key) -> Lists.newArrayList()).add(registryName.toString());
-                }
-            });
-            biomes.forEach((key, value) -> {
-                LOGGER.info("Biome Category '{}' contains the following biomes:", key);
-                value.forEach(LOGGER::info);
-            });
-        }
+//        if (Config.PRINT_BIOME_CATEGORIES.get()
+//                && event.getWorld() instanceof ServerLevel serverLevel
+//                && serverLevel.dimension().equals(Level.OVERWORLD)) {
+//            HashMap<String, List<String>> biomes = new HashMap<>();
+//            ForgeRegistries.BIOMES.getEntries().forEach((entry) -> {
+//                ResourceLocation registryName = entry.getValue().getRegistryName();
+//                if (registryName != null) {
+//                    biomes.computeIfAbsent(entry.getValue().getBiomeCategory().getName(), (key) -> Lists.newArrayList()).add(registryName.toString());
+//                }
+//            });
+//            biomes.forEach((key, value) -> {
+//                LOGGER.info("Biome Category '{}' contains the following biomes:", key);
+//                value.forEach(LOGGER::info);
+//            });
+//        }
     }
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {

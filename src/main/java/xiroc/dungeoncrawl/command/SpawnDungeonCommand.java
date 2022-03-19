@@ -51,7 +51,7 @@ public class SpawnDungeonCommand {
                 .executes((command) -> {
                     BlockPos pos = Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource());
                     ServerLevel world = command.getSource().getLevel();
-                    ResourceLocation biomeKey = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2));
+                    ResourceLocation biomeKey = world.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(world.getNoiseBiome(pos.getX() >> 2, pos.getY() >> 2, pos.getZ() >> 2).value());
                     String biome = biomeKey != null ? biomeKey.toString() : "minecraft:plains";
                     return spawnDungeon(command.getSource(), world, pos,
                             Theme.randomTheme(biome, world.getRandom()),

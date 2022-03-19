@@ -25,7 +25,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
@@ -109,7 +108,7 @@ public class DungeonBuilder {
         if (startPos.getY() < 16) {
             return Lists.newArrayList();
         }
-        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(startPos.getX()), QuartPos.fromBlock(groundHeight), QuartPos.fromBlock(startPos.getZ()), chunkGenerator.climateSampler());
+        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(startPos.getX()), QuartPos.fromBlock(groundHeight), QuartPos.fromBlock(startPos.getZ()), chunkGenerator.climateSampler()).value();
         DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
         generateLayout(type, DEFAULT_GENERATOR);
 
@@ -285,7 +284,7 @@ public class DungeonBuilder {
 
     public static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
-        return state.getDestroySpeed(world, pos) < 0 || BlockTags.PORTALS.contains(state.getBlock());
+        return state.getDestroySpeed(world, pos) < 0;
     }
 
 }

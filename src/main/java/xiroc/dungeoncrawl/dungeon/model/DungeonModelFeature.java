@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -375,10 +376,12 @@ public final class DungeonModelFeature {
             @Override
             public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
                 if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmBlock) {
-                    BlockState crop = BlockTags.CROPS.getRandomElement(rand).defaultBlockState();
-                    if (crop.hasProperty(BlockStateProperties.AGE_7))
-                        crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
-                    world.setBlock(pos, crop, 2);
+                    Registry.BLOCK.getTag(BlockTags.CROPS).flatMap((tag) -> tag.getRandomElement(rand)).ifPresent((cropBlock) -> {
+                        BlockState crop = cropBlock.value().defaultBlockState();
+                        if (crop.hasProperty(BlockStateProperties.AGE_7))
+                            crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
+                        world.setBlock(pos, crop, 2);
+                    });
                 }
             }
 

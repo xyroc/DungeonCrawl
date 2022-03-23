@@ -114,11 +114,7 @@ public class DungeonModelBlock {
     }
 
     /**
-     * <<<<<<< HEAD
-     * Creates an NBT representation of the DungeonModelBlock.
-     * =======
      * Creates a NBT representation of the DungeonModelBlock.
-     * >>>>>>> origin/1.15
      *
      * @return The CompoundNBT
      */

@@ -18,10 +18,10 @@
 
 package xiroc.dungeoncrawl;
 
-import com.google.common.collect.Lists;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -30,7 +30,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
@@ -39,9 +38,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
-
-import java.util.HashMap;
-import java.util.List;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
@@ -60,7 +56,6 @@ public class DungeonCrawl {
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
-        forgeEventBus.addListener(this::onWorldLoad);
 
         init();
     }
@@ -85,21 +80,19 @@ public class DungeonCrawl {
     }
 
     private void onWorldLoad(WorldEvent.Load event) {
-//        if (Config.PRINT_BIOME_CATEGORIES.get()
-//                && event.getWorld() instanceof ServerLevel serverLevel
-//                && serverLevel.dimension().equals(Level.OVERWORLD)) {
-//            HashMap<String, List<String>> biomes = new HashMap<>();
-//            ForgeRegistries.BIOMES.getEntries().forEach((entry) -> {
-//                ResourceLocation registryName = entry.getValue().getRegistryName();
-//                if (registryName != null) {
-//                    biomes.computeIfAbsent(entry.getValue().getBiomeCategory().getName(), (key) -> Lists.newArrayList()).add(registryName.toString());
-//                }
-//            });
-//            biomes.forEach((key, value) -> {
-//                LOGGER.info("Biome Category '{}' contains the following biomes:", key);
-//                value.forEach(LOGGER::info);
-//            });
-//        }
+        LOGGER.info("Biomes without dungeons:");
+        event.getWorld().registryAccess().registry(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).ifPresentOrElse((configuredStructureRegistry) -> {
+            event.getWorld().registryAccess().registry(Registry.BIOME_REGISTRY).ifPresentOrElse((biomeRegistry) -> {
+                HolderSet<Biome> biomes = configuredStructureRegistry.get(locate("dungeon")).biomes();
+                biomeRegistry.entrySet().forEach((entry) -> {
+                    biomeRegistry.getHolder(entry.getKey()).ifPresentOrElse((biomeHolder -> {
+                        if (!biomes.contains(biomeHolder)) {
+                            LOGGER.info(entry.getKey());
+                        }
+                    }), () -> LOGGER.error("Could not retrieve holder of {}", entry.getKey()));
+                });
+            }, () -> LOGGER.error("Could not retrieve {}", Registry.BIOME_REGISTRY));
+        }, () -> LOGGER.error("Could not retrieve {}", Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY));
     }
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {

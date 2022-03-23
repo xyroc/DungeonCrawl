@@ -20,13 +20,9 @@ package xiroc.dungeoncrawl.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import com.google.common.collect.ImmutableSet;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
-import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.Dungeon;
 
 import java.nio.file.Path;
 
@@ -38,11 +34,6 @@ public class Config {
 
     public static final IntValue SPAWNER_ENTITIES, SPAWNER_RANGE, SPACING, SEPARATION;
 
-    public static final ForgeConfigSpec.ConfigValue<String> DIMENSION_WHITELIST,
-            BIOME_WHITELIST,
-            BIOME_BLACKLIST,
-            BIOME_CATEGORIES;
-
     public static final BooleanValue
             CUSTOM_SPAWNERS,
             NO_NETHER_STUFF,
@@ -53,7 +44,6 @@ public class Config {
             TICK_FALLING_BLOCKS,
             OVERWRITE_ENTITY_LOOT_TABLES,
             SECRET_ROOMS,
-            PRINT_BIOME_CATEGORIES,
             FIXED_GENERATION_HEIGHT;
 
     private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------+";
@@ -68,11 +58,6 @@ public class Config {
                 .comment(SEPARATOR_LINE +
                         "\nEnables extended debug logging to help detecting errors. Enabled by default.\n")
                 .define("extended_debug", true);
-        PRINT_BIOME_CATEGORIES = BUILDER
-                .comment(SEPARATOR_LINE +
-                        "\nPrints all biome categories and their biomes to the console when entering a world.\n"
-                        + "Might be useful for modpack creators. Ignore this for normal gameplay.\n")
-                .define("Print Biome Categories", false);
         BUILDER.pop();
 
         BUILDER.push("World Generation");
@@ -101,36 +86,6 @@ public class Config {
                         "Has to be lower than the spacing!\n")
                 .defineInRange("separation", 12, 8, 8191);
 
-        BUILDER.push("Biomes");
-        BIOME_WHITELIST = BUILDER
-                .comment(SEPARATOR_LINE +
-                        "\nList of biomes the dungeons should spawn in.\n" +
-                        "Entries have to be comma-separated.\n" +
-                        "You can use this together with the Biome Categories.\n")
-                .define("Biome Whitelist", "");
-        BIOME_BLACKLIST = BUILDER
-                .comment(SEPARATOR_LINE +
-                        "\nList of biomes that should never contain dungeons.\n")
-                .define("Biome Blacklist", "");
-        BIOME_CATEGORIES = BUILDER
-                .comment(SEPARATOR_LINE +
-                        "\nList of biome categories the dungeons should spawn in.\n" +
-                        "Entries have to be comma-separated.\n" +
-                        "Biome Categories are groupings of biomes of specific types. Using these allows Dungeon Crawl to\n" +
-                        "  automatically generate in suitable mod biomes and to ignore unsuitable ones like ocean biomes.\n" +
-                        "You can use this together with the Biome Whitelist and you can blacklist specific biomes with the Biome Blacklist.\n" +
-                        "All categories: beach, desert, extreme_hills, forest, icy, jungle, mesa, mountain, mushroom, nether, none, ocean, plains, river, savanna, swamp, taiga, the_end, underground\n" +
-                        "To receive a list of all categories and their respective biomes (including biomes of mods you have installed), enable the 'Print Biome Categories' option.\n")
-                .define("Biome Categories", "desert, extreme_hills, forest, icy, jungle, mesa, mountain, plains, savanna, swamp, taiga");
-        BUILDER.pop();
-
-        BUILDER.push("Dimensions");
-        DIMENSION_WHITELIST = BUILDER
-                .comment(SEPARATOR_LINE +
-                        "\nList of dimensions the dungeons should spawn in.\n" +
-                        "Entries have to be comma-separated.\n")
-                .define("Dimension Whitelist", "minecraft:overworld");
-        BUILDER.pop();
         BUILDER.pop();
 
         BUILDER.push("Dungeon Settings");
@@ -176,24 +131,6 @@ public class Config {
                 .writingMode(WritingMode.REPLACE).build();
         config.load();
         CONFIG.setConfig(config);
-
-        Dungeon.whitelistedDimensions = ImmutableSet.copyOf(DIMENSION_WHITELIST.get().split(",\\s*"));
-        DungeonCrawl.LOGGER.info("Whitelisted Dimensions:");
-        Dungeon.whitelistedDimensions.forEach(DungeonCrawl.LOGGER::info);
-
-        Dungeon.whitelistedBiomes = ImmutableSet.copyOf(BIOME_WHITELIST.get().split(",\\s*"));
-        Dungeon.blacklistedBiomes = ImmutableSet.copyOf(BIOME_BLACKLIST.get().split(",\\s*"));
-
-        ImmutableSet.Builder<Biome.BiomeCategory> builder = new ImmutableSet.Builder<>();
-        for (String s : BIOME_CATEGORIES.get().split(",\\s*")) {
-            Biome.BiomeCategory category = Biome.BiomeCategory.byName(s);
-            if (category == null) {
-                DungeonCrawl.LOGGER.warn("Unknown biome category '{}' in the config.", s);
-                continue;
-            }
-            builder.add(category);
-        }
-        Dungeon.biomeCategories = builder.build();
     }
 
 }

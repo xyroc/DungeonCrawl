@@ -7,6 +7,16 @@
     "#minecraft:is_hill",
     "#minecraft:is_jungle",
     "#minecraft:is_mountain",
-    "#minecraft:is_taiga"
+    "#minecraft:is_taiga",
+    "minecraft:plains",
+    "minecraft:snowy_plains",
+    "minecraft:sunflower_plains",
+    "minecraft:desert",
+    "minecraft:ice_spikes",
+    "minecraft:savanna",
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
+    "minecraft:stony_shore",
+    "minecraft:swamp"
   ]
 }

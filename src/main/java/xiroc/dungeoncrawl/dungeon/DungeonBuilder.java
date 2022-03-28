@@ -137,7 +137,7 @@ public class DungeonBuilder {
 
         this.start = new Position2D(HALF_GRID_SIZE, HALF_GRID_SIZE);
 
-        int layerCount = generator.layerCount(rand, startPos.getY());
+        int layerCount = generator.layerCount(rand, startPos.getY() - chunkGenerator.getMinY());
 
         this.layers = new DungeonLayer[layerCount];
 

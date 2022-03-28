@@ -19,7 +19,10 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
@@ -33,6 +36,8 @@ import java.util.Optional;
 
 public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
 
+    private static final int BIOME_CHECK_RADIUS = 1;
+
     public Dungeon() {
         super(NoneFeatureConfiguration.CODEC, Dungeon::pieceGeneratorSupplier);
     }
@@ -42,9 +47,7 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         int centerZ = context.chunkPos().getBlockZ(7);
         int centerHeight = context.chunkGenerator().getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
 
-        if (!context.validBiome().test(context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)))) {
-            DungeonCrawl.LOGGER.debug("Found invalid biome {}",
-                    context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ)).value().getRegistryName());
+        if (isInvalidSpot(context, BIOME_CHECK_RADIUS)) {
             return Optional.empty();
         }
 
@@ -68,17 +71,40 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         }));
     }
 
+    private static boolean isInvalidSpot(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context, int radius) {
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                ChunkPos pos = new ChunkPos(context.chunkPos().x + x, context.chunkPos().z + z);
+                int centerX = QuartPos.fromBlock(pos.getBlockX(7));
+                int centerZ = QuartPos.fromBlock(pos.getBlockZ(7));
+                Holder<Biome> centerBiome = context.chunkGenerator().getNoiseBiome(centerX, context.chunkGenerator()
+                        .getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor()), centerZ);
+                if (!context.validBiome().test(centerBiome)) {
+                    DungeonCrawl.LOGGER.debug("Invalid biome {} at [{},{}]", centerBiome.value().getRegistryName(), pos.x, pos.z);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private static int minHeight(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context, int centerX, int centerZ, int centerHeight) {
         int minHeight = centerHeight;
 
         for (int i = 1; i < 9; i++) {
             int size = i * 5;
-            int[] heights = context.getCornerHeights(centerX - size, size * 2, centerZ - size, size * 2);
-            int lowestHeight = Math.min(Math.min(heights[0], heights[1]), Math.min(heights[2], heights[3]));
-            minHeight = Math.min(minHeight, lowestHeight);
+            minHeight = Math.min(minHeight, lowestCornerHeight(context, centerX - size, size << 1, centerZ - size, size << 1));
         }
 
         return minHeight;
+    }
+
+    private static int lowestCornerHeight(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context, int x, int sizeX, int z, int sizeZ) {
+        int height = context.chunkGenerator().getFirstFreeHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor());
+        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x + sizeX, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor()));
+        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x, z + sizeZ, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor()));
+        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x + sizeX, z + sizeZ, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor()));
+        return height;
     }
 
     @Override

@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -29,9 +30,25 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.function.Function;
 
 public class Config {
+
+    private static final ImmutableList<Biome.BiomeCategory> DEFAULT_BIOME_CATEGORIES = ImmutableList.<Biome.BiomeCategory>builder()
+            .add(Biome.BiomeCategory.DESERT)
+            .add(Biome.BiomeCategory.EXTREME_HILLS)
+            .add(Biome.BiomeCategory.FOREST)
+            .add(Biome.BiomeCategory.ICY)
+            .add(Biome.BiomeCategory.JUNGLE)
+            .add(Biome.BiomeCategory.MESA)
+            .add(Biome.BiomeCategory.PLAINS)
+            .add(Biome.BiomeCategory.SAVANNA)
+            .add(Biome.BiomeCategory.SWAMP)
+            .add(Biome.BiomeCategory.TAIGA).build();
 
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
@@ -123,10 +140,10 @@ public class Config {
                         " Biome Categories are groupings of biomes of specific types. Using these allows Dungeon Crawl to\n" +
                         "  automatically generate in suitable biomes and to ignore unsuitable ones like ocean biomes.\n" +
                         " You can use this in combination with the Biome Whitelist and you can exclude specific biomes with the Biome Blacklist.\n" +
-                        " ALL CATEGORIES: beach, desert, extreme_hills, forest, icy, jungle, mesa, mushroom, nether, none, ocean, plains, river, savanna, swamp, taiga, the_end\n" +
+                        " ALL CATEGORIES: " + allBiomeCategories() + "\n" +
                         " You may also enable the 'Print Biome Categories' option to have a list of all categories and their respective biomes\n" +
                         "  (including biomes of mods you have installed) printed to the logs.\n")
-                .define("Biome Categories", "desert, extreme_hills, forest, icy, jungle, mesa, plains, savanna, swamp, taiga");
+                .define("Biome Categories", defaultBiomeCategories());
         BUILDER.pop();
 
         BUILDER.push("Dimensions");
@@ -196,6 +213,26 @@ public class Config {
             builder.add(category);
         }
         Dungeon.biomeCategories = builder.build();
+    }
+
+    private static String allBiomeCategories() {
+        Iterator<Biome.BiomeCategory> iterator = Arrays.stream(Biome.BiomeCategory.values()).sorted(Comparator.comparing(Biome.BiomeCategory::getName)).iterator();
+        return commaSeparated(iterator, Biome.BiomeCategory::getName);
+    }
+
+    private static String defaultBiomeCategories() {
+        return commaSeparated(DEFAULT_BIOME_CATEGORIES.iterator(), Biome.BiomeCategory::getName);
+    }
+
+    private static <T> String commaSeparated(Iterator<T> elements, Function<T, String> toString) {
+        StringBuilder builder = new StringBuilder();
+        while (elements.hasNext()) {
+            builder.append(toString.apply(elements.next()));
+            if (elements.hasNext()) {
+                builder.append(", ");
+            }
+        }
+        return builder.toString();
     }
 
 }

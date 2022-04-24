@@ -15,7 +15,7 @@
       "blocks": [
         {
           "block": "minecraft:gravel",
-          "weight": 2
+          "weight": 1
         },
         {
           "block": "minecraft:cobblestone",
@@ -23,15 +23,15 @@
         },
         {
           "block": "minecraft:cracked_stone_bricks",
-          "weight": 1
+          "weight": 2
         },
         {
           "block": "minecraft:mossy_stone_bricks",
-          "weight": 3
+          "weight": 4
         },
         {
           "block": "minecraft:mossy_cobblestone",
-          "weight": 1
+          "weight": 2
         }
       ]
     },
@@ -40,7 +40,7 @@
       "blocks": [
         {
           "block": "minecraft:gravel",
-          "weight": 2
+          "weight": 1
         },
         {
           "block": "minecraft:cobblestone",
@@ -48,7 +48,7 @@
         },
         {
           "block": "minecraft:cracked_stone_bricks",
-          "weight": 1
+          "weight": 3
         },
         {
           "block": "minecraft:mossy_stone_bricks",
@@ -56,7 +56,7 @@
         },
         {
           "block": "minecraft:mossy_cobblestone",
-          "weight": 1
+          "weight": 2
         }
       ]
     },
@@ -68,16 +68,16 @@
       "type": "random_block",
       "blocks": [
         {
+          "block": "minecraft:gravel",
+          "weight": 1
+        },
+        {
           "block": "minecraft:basalt",
-          "weight": 2
+          "weight": 1
         },
         {
           "block": "minecraft:polished_basalt",
           "weight": 1
-        },
-        {
-          "block": "minecraft:gravel",
-          "weight": 3
         },
         {
           "block": "minecraft:mossy_cobblestone",
@@ -132,7 +132,7 @@
       "blocks": [
         {
           "block": "minecraft:gravel",
-          "weight": 2
+          "weight": 1
         },
         {
           "block": "minecraft:basalt",
@@ -140,15 +140,15 @@
         },
         {
           "block": "minecraft:cracked_stone_bricks",
-          "weight": 1
-        },
-        {
-          "block": "minecraft:mossy_stone_bricks",
           "weight": 3
         },
         {
+          "block": "minecraft:mossy_stone_bricks",
+          "weight": 4
+        },
+        {
           "block": "minecraft:mossy_cobblestone",
-          "weight": 1
+          "weight": 2
         },
         {
           "block": "minecraft:cobblestone",

@@ -85,34 +85,34 @@ public class PrimaryThemes implements DataProvider {
         collector.accept(catacombs("crumbled"), Theme.builder()
                 .addDecoration(new VineDecoration(0.5F))
                 .solid(WeightedRandomBlock.builder()
-                        .add(Blocks.GRAVEL, 2)
+                        .add(Blocks.GRAVEL)
                         .add(Blocks.COBBLESTONE, 2)
-                        .add(Blocks.CRACKED_STONE_BRICKS, 1)
-                        .add(Blocks.MOSSY_STONE_BRICKS, 3)
-                        .add(Blocks.MOSSY_COBBLESTONE, 1)
+                        .add(Blocks.CRACKED_STONE_BRICKS, 2)
+                        .add(Blocks.MOSSY_STONE_BRICKS, 4)
+                        .add(Blocks.MOSSY_COBBLESTONE, 2)
                         .build())
                 .generic(WeightedRandomBlock.builder()
-                        .add(Blocks.GRAVEL, 2)
+                        .add(Blocks.GRAVEL)
                         .add(Blocks.COBBLESTONE, 2)
-                        .add(Blocks.CRACKED_STONE_BRICKS, 1)
+                        .add(Blocks.CRACKED_STONE_BRICKS, 3)
                         .add(Blocks.MOSSY_STONE_BRICKS, 3)
-                        .add(Blocks.MOSSY_COBBLESTONE, 1)
+                        .add(Blocks.MOSSY_COBBLESTONE, 2)
                         .build())
                 .pillar(new SingleBlock(Blocks.BASALT))
                 .fencing(new SingleBlock(Blocks.IRON_BARS))
                 .floor(WeightedRandomBlock.builder()
-                        .add(Blocks.BASALT, 2)
+                        .add(Blocks.GRAVEL)
+                        .add(Blocks.BASALT)
                         .add(Blocks.POLISHED_BASALT, 1)
-                        .add(Blocks.GRAVEL, 3)
                         .add(Blocks.MOSSY_COBBLESTONE, 2)
                         .add(Blocks.COBBLESTONE, 2)
                         .build())
                 .material(WeightedRandomBlock.builder()
-                        .add(Blocks.GRAVEL, 2)
+                        .add(Blocks.GRAVEL)
                         .add(Blocks.BASALT, 1)
-                        .add(Blocks.CRACKED_STONE_BRICKS, 1)
-                        .add(Blocks.MOSSY_STONE_BRICKS, 3)
-                        .add(Blocks.MOSSY_COBBLESTONE, 1)
+                        .add(Blocks.CRACKED_STONE_BRICKS, 3)
+                        .add(Blocks.MOSSY_STONE_BRICKS, 4)
+                        .add(Blocks.MOSSY_COBBLESTONE, 2)
                         .add(Blocks.COBBLESTONE, 2)
                         .build())
                 .stairs(WeightedRandomBlock.builder()
@@ -137,6 +137,27 @@ public class PrimaryThemes implements DataProvider {
                         .build())
                 .wall(new SingleBlock(Blocks.MOSSY_STONE_BRICK_WALL))
                 .build());
+
+        collector.accept(hell("roguelike"), Theme.builder()
+                .solid(SharedThemeConstants.HELL_MATERIAL)
+                .generic(SharedThemeConstants.HELL_MATERIAL)
+                .pillar(new SingleBlock(Blocks.OBSIDIAN))
+                .fencing(new SingleBlock(Blocks.IRON_BARS))
+                .material(SharedThemeConstants.HELL_MATERIAL)
+                .floor(WeightedRandomBlock.builder()
+                        .add(Blocks.NETHER_BRICKS, 200)
+                        .add(Blocks.NETHERRACK, 20)
+                        .add(Blocks.SOUL_SAND, 15)
+                        .add(Blocks.NETHER_WART_BLOCK, 10)
+                        .add(Blocks.COAL_BLOCK, 5)
+                        .add(Blocks.RED_NETHER_BRICKS, 50)
+                        .add(Blocks.REDSTONE_BLOCK, 5).build())
+                .fluid(new SingleBlock(Blocks.LAVA))
+                .stairs(new SingleBlock(Blocks.NETHER_BRICK_STAIRS))
+                .solidStairs(new SingleBlock(Blocks.NETHER_BRICK_STAIRS))
+                .slab(new SingleBlock(Blocks.NETHER_BRICK_SLAB))
+                .solidSlab(new SingleBlock(Blocks.NETHER_BRICK_SLAB))
+                .wall(new SingleBlock(Blocks.NETHER_BRICK_WALL)).build());
     }
 
     private static ResourceLocation catacombs(String name) {
@@ -145,6 +166,14 @@ public class PrimaryThemes implements DataProvider {
 
     private static ResourceLocation catacombs(String namespace, String name) {
         return new ResourceLocation(namespace, "catacombs/" + name);
+    }
+
+    private static ResourceLocation hell(String name) {
+        return hell(DungeonCrawl.MOD_ID, name);
+    }
+
+    private static ResourceLocation hell(String namespace, String name) {
+        return new ResourceLocation(namespace, "hell/" + name);
     }
 
 }

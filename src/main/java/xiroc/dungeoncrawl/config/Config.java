@@ -25,6 +25,8 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.function.Function;
 
 public class Config {
 
@@ -46,80 +48,81 @@ public class Config {
             SECRET_ROOMS,
             FIXED_GENERATION_HEIGHT;
 
-    private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------+";
+    private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------+\n";
 
     static {
         BUILDER.push("Miscellaneous Settings");
         ENABLE_TOOLS = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nEnables the dungeon crawl developer tools. Do not use this for normal gameplay.\n")
+                        " Enables the dungeon crawl developer tools. Do not use this for normal gameplay.\n")
                 .define("enable_tools", false);
         EXTENDED_DEBUG = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nEnables extended debug logging to help detecting errors. Enabled by default.\n")
+                        " Enables extended debug logging to help detecting errors. Enabled by default.\n")
                 .define("extended_debug", true);
         BUILDER.pop();
 
         BUILDER.push("World Generation");
         SOLID = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nMakes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.\n")
+                        " Makes the entire dungeon solid, preventing caves, ravines, etc... from interfering with the dungeon.\n")
                 .define("solid", false);
         TICK_FALLING_BLOCKS = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nWhether falling blocks like sand or gravel should drop down after being placed during dungeon generation.\n")
+                        " Whether falling blocks like sand or gravel should drop down after being placed during dungeon generation.\n")
                 .define("tick_falling_blocks", true);
         BUILDER.pop();
 
         BUILDER.push("Dungeon Placement");
         SPACING = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nThe cell size of the grid used to generate the dungeons in chunks. Each cell of this grid can only contain one dungeon.\n" +
-                        "You can also interpret this as the average distance between two adjacent dungeons in chunks.\n" +
-                        "Has to be higher than the separation!\n")
+                        " The cell size of the grid used to generate the dungeons in chunks. Each cell of this grid can only contain one dungeon.\n" +
+                        " You can also see this as the average distance between two adjacent dungeons in chunks.\n" +
+                        " !! Has to be higher than the separation! !! \n" +
+                        " Reduce this value to make the dungeons more common, increase it to make them more rare.\n" +
+                        " Halving it will quadruple the amount of dungeons, doubling it would have the opposite effect.\n")
                 .defineInRange("spacing", 24, 9, 8192);
         SEPARATION = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nThe minimum distance between the dungeons in chunks. Has to be lower than the spacing!\n" +
-                        "The closer the separation is to the spacing, the more grid-aligned and predictable the dungeon placement will be.\n" +
-                        "Generally, bigger values allow for less, and smaller values for more randomness.\n" +
-                        "Has to be lower than the spacing!\n")
+                        " The minimum distance between two adjacent dungeons in chunks. Has to be lower than the spacing!\n" +
+                        " The closer the separation is to the spacing, the more grid-aligned and predictable the dungeon placement will be.\n" +
+                        " Generally, bigger values allow for less, and smaller values for more randomness.\n" +
+                        " !! Has to be lower than the spacing! !!\n")
                 .defineInRange("separation", 12, 8, 8191);
-
         BUILDER.pop();
 
         BUILDER.push("Dungeon Settings");
         SECRET_ROOMS = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nWhether the dungeons should have secret rooms or not.\n")
+                        " Whether the dungeons should have secret rooms or not.\n")
                 .define("secret_rooms", true);
         FIXED_GENERATION_HEIGHT = BUILDER.comment(SEPARATOR_LINE +
                 "\nWhether the dungeons should generate at a fixed height or not. Enable this if the dungeons are generating too high.")
                 .define("fixed_generation_height", false);
         OVERWRITE_ENTITY_LOOT_TABLES = BUILDER.
                 comment(SEPARATOR_LINE +
-                        "\nWhether loot tables of certain spawner entities should be overwritten.\n" +
-                        "For example, wither skeletons from dungeon spawners will never drop skulls if this is enabled.\n")
+                        " Whether loot tables of certain spawner entities should be overwritten.\n" +
+                        " For example, wither skeletons from dungeon spawners will never drop skulls if this is enabled.\n")
                 .define("overwrite_entity_loot_tables", true);
         NO_NETHER_STUFF = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nWhether the hell stage should be built with blocks from the overworld instead from the nether.\n")
+                        " Whether the hell stage should be built with blocks from the overworld instead from the nether.\n")
                 .define("no_nether_blocks", false);
         SPAWNER_RANGE = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nThe activation range for the spawners in the dungeons.\n")
+                        " The activation range for the spawners in the dungeons.\n")
                 .defineInRange("spawner_activation_range", 12, 1, 64);
         SPAWNER_ENTITIES = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nThe number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.\n")
+                        " The number of different entities per spawner. Increasing the number increases the diversity of the monster equipment.\n")
                 .defineInRange("spawner_entities", 6, 1, 128);
         CUSTOM_SPAWNERS = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nWhether custom mob spawners with equipment, etc.. should be used.\n")
+                        " Whether custom mob spawners with equipment, etc.. should be used.\n")
                 .define("custom_spawners", true);
         NATURAL_DESPAWN = BUILDER
                 .comment(SEPARATOR_LINE +
-                        "\nWhether mobs from spawners should despawn naturally or not.\n")
+                        " Whether mobs from spawners should despawn naturally or not.\n")
                 .define("natural_despawn", true);
         BUILDER.pop();
 
@@ -131,6 +134,17 @@ public class Config {
                 .writingMode(WritingMode.REPLACE).build();
         config.load();
         CONFIG.setConfig(config);
+    }
+
+    private static <T> String commaSeparated(Iterator<T> elements, Function<T, String> toString) {
+        StringBuilder builder = new StringBuilder();
+        while (elements.hasNext()) {
+            builder.append(toString.apply(elements.next()));
+            if (elements.hasNext()) {
+                builder.append(", ");
+            }
+        }
+        return builder.toString();
     }
 
 }

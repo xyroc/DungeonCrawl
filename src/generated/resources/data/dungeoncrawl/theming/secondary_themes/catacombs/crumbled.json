@@ -21,7 +21,7 @@
       "blocks": [
         {
           "block": "minecraft:gravel",
-          "weight": 2
+          "weight": 1
         },
         {
           "block": "minecraft:basalt",
@@ -29,7 +29,7 @@
         },
         {
           "block": "minecraft:cracked_stone_bricks",
-          "weight": 1
+          "weight": 3
         },
         {
           "block": "minecraft:mossy_stone_bricks",
@@ -37,7 +37,7 @@
         },
         {
           "block": "minecraft:mossy_cobblestone",
-          "weight": 1
+          "weight": 2
         },
         {
           "block": "minecraft:cobblestone",

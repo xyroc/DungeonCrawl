@@ -80,8 +80,8 @@ public class DungeonBuilder {
         this.groundHeight = groundPos.getY();
 
         this.chunkPos = pos;
-        this.startPos = new BlockPos(pos.x * 16 - HALF_GRID_SIZE * 9, startHeight,
-                pos.z * 16 - HALF_GRID_SIZE * 9);
+        this.startPos = new BlockPos(pos.x * 16 - HALF_GRID_SIZE * 9 - 4, startHeight,
+                pos.z * 16 - HALF_GRID_SIZE * 9 - 4);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");

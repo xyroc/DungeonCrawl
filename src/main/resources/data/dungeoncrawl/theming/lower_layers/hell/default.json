@@ -1,8 +1,8 @@
 {
   "primary_themes": [
-    {"key": "dungeoncrawl:catacombs/crumbled"}
+    {"key": "dungeoncrawl:hell/roguelike"}
   ],
   "secondary_themes": [
-    {"key": "dungeoncrawl:catacombs/crumbled"}
+    {"key": "dungeoncrawl:hell/roguelike"}
   ]
 }

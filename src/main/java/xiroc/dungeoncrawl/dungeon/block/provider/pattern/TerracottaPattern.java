@@ -3,6 +3,7 @@ package xiroc.dungeoncrawl.dungeon.block.provider.pattern;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -11,15 +12,13 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 
-import java.util.Random;
-
 public record TerracottaPattern(BlockStateProvider block) implements BlockStateProvider {
 
     public static final String TYPE = "pattern";
     public static final String PATTERN_TYPE = "terracotta";
 
     @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
+    public BlockState get(LevelAccessor world, BlockPos pos, RandomSource random, Rotation rotation) {
         BlockState state = block.get(world, pos, random, rotation);
         if ((pos.getX() & 1) == 0) {
             if ((pos.getZ() & 1) == 0) {

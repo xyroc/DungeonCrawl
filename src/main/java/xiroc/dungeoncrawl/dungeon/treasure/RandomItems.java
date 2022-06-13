@@ -24,6 +24,7 @@ import com.google.gson.stream.JsonReader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -36,7 +37,6 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Random;
 
 public class RandomItems {
 
@@ -51,41 +51,40 @@ public class RandomItems {
 
     public static void loadJson(ResourceManager resourceManager) {
         try {
-            JsonParser parser = new JsonParser();
 
             // TODO: introduce a method to load single file
             {
                 ResourceLocation stage1 = DungeonCrawl.locate("treasure/stage_1.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage1.toString());
-                JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage1).getInputStream()))).getAsJsonArray();
+                JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage1).orElseThrow().open()))).getAsJsonArray();
                 STAGE_1 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
                 ResourceLocation stage2 = DungeonCrawl.locate("treasure/stage_2.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage2.toString());
-                JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage2).getInputStream()))).getAsJsonArray();
+                JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage2).orElseThrow().open()))).getAsJsonArray();
                 STAGE_2 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
                 ResourceLocation stage3 = DungeonCrawl.locate("treasure/stage_3.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage3.toString());
-                JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage3).getInputStream()))).getAsJsonArray();
+                JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage3).orElseThrow().open()))).getAsJsonArray();
                 STAGE_3 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
                 ResourceLocation stage4 = DungeonCrawl.locate("treasure/stage_4.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage4.toString());
-                JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage4).getInputStream()))).getAsJsonArray();
+                JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage4).orElseThrow().open()))).getAsJsonArray();
                 STAGE_4 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
                 ResourceLocation stage5 = DungeonCrawl.locate("treasure/stage_5.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage5.toString());
-                JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage5).getInputStream()))).getAsJsonArray();
+                JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage5).orElseThrow().open()))).getAsJsonArray();
                 STAGE_5 = WeightedRandom.ITEM.fromJson(array);
             }
         } catch (IOException e) {
@@ -103,7 +102,7 @@ public class RandomItems {
         };
     }
 
-    public static ItemStack generate(Random rand, int lootLevel) {
+    public static ItemStack generate(RandomSource rand, int lootLevel) {
         ItemStack stack = new ItemStack(itemProvider(lootLevel).roll(rand));
         if (rand.nextFloat() < 0.5F + 0.1F * lootLevel) {
             return EnchantmentHelper.enchantItem(rand, stack, 10 + 3 * lootLevel, lootLevel > 2);
@@ -114,7 +113,7 @@ public class RandomItems {
     /**
      * Creates a shield item stack with random patterns.
      */
-    public static ItemStack createShield(Random rand, int lootLevel) {
+    public static ItemStack createShield(RandomSource rand, int lootLevel) {
         ItemStack shield = new ItemStack(Items.SHIELD);
         lootLevel = Mth.clamp(lootLevel, 0, 4);
         float f = rand.nextFloat();

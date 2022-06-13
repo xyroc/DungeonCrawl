@@ -23,13 +23,13 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 public class WeightedRandom<T> implements IRandom<T> {
 
@@ -64,7 +64,7 @@ public class WeightedRandom<T> implements IRandom<T> {
     }
 
     @Override
-    public T roll(Random rand) {
+    public T roll(RandomSource rand) {
         int r = rand.nextInt(totalWeight);
         for (Tuple<T, Integer> entry : entries) {
             if (r < entry.getB()) {

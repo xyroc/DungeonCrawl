@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
@@ -131,8 +132,8 @@ public class ModelBlockDefinition {
     public static void loadJson(ResourceManager resourceManager) {
         keySetBuilder = new ImmutableSet.Builder<>();
         List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate = Lists.newArrayList();
-        resourceManager.listResources(DIRECTORY, (s) -> s.endsWith(".json"))
-                .forEach((resource) -> loadDefinition(resourceManager, resource, referencesToUpdate));
+        resourceManager.listResources(DIRECTORY, (s) -> s.getPath().endsWith(".json"))
+                .forEach((file, resource) -> loadDefinition(resourceManager, file, referencesToUpdate));
 
         for (Tuple<ModelBlockDefinition, ResourceLocation> reference : referencesToUpdate) {
             ResourceLocation key = reference.getB();
@@ -150,10 +151,10 @@ public class ModelBlockDefinition {
      */
     private static void loadDefinition(ResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate) {
         DungeonCrawl.LOGGER.debug("Loading {}", resourceLocation);
-        JsonParser parser = new JsonParser();
         Hashtable<Block, DungeonModelBlockType> definition = new Hashtable<>();
+        Resource resource = resourceManager.getResource(resourceLocation).orElseThrow();
         try {
-            JsonObject object = parser.parse(new InputStreamReader(resourceManager.getResource(resourceLocation).getInputStream())).getAsJsonObject();
+            JsonObject object = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
             object.getAsJsonObject("definition").entrySet().forEach((entry) -> {
                 String key = entry.getKey();
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(key));

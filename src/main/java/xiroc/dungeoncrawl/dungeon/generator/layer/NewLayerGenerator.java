@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.generator.layer;
 import com.google.common.collect.Lists;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
@@ -37,7 +38,6 @@ import xiroc.dungeoncrawl.util.Position2D;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Consumer;
 
 public class NewLayerGenerator extends LayerGenerator {
@@ -77,7 +77,7 @@ public class NewLayerGenerator extends LayerGenerator {
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, RandomSource rand, int layer, boolean isLastLayer) {
         super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
         this.corridors.clear();
         this.placeStairs = !isLastLayer;
@@ -90,7 +90,7 @@ public class NewLayerGenerator extends LayerGenerator {
     }
 
     @Override
-    public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start) {
+    public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, RandomSource rand, Position2D start) {
         dungeonLayer.start = start;
         this.newElements = new ArrayList<>();
         LayerElement stairs = new GenericElement(new DungeonStairs().bottom(), start, null, null, 0);
@@ -129,7 +129,7 @@ public class NewLayerGenerator extends LayerGenerator {
      * @param rand         a random instance
      * @param depth        the current generation depth
      */
-    private void generationStep(LayerElement cursor, DungeonLayer dungeonLayer, @Nullable Direction excludedDirection, Random rand, int depth) {
+    private void generationStep(LayerElement cursor, DungeonLayer dungeonLayer, @Nullable Direction excludedDirection, RandomSource rand, int depth) {
         if (depth > settings.maxDepth) {
             return;
         }
@@ -157,7 +157,7 @@ public class NewLayerGenerator extends LayerGenerator {
     }
 
     @Nullable
-    private LayerElement nextElement(DungeonLayer dungeonLayer, Position2D pos, Direction toOrigin, Random rand, int depth) {
+    private LayerElement nextElement(DungeonLayer dungeonLayer, Position2D pos, Direction toOrigin, RandomSource rand, int depth) {
         if (dungeonLayer.isTileFree(pos)) {
             if (placeStairs && depth >= settings.minStairsDepth) {
                 dungeonLayer.end = pos;
@@ -370,7 +370,7 @@ public class NewLayerGenerator extends LayerGenerator {
             layer.grid[position.x][position.z] = new Tile(piece);
         }
 
-        public void update(NewLayerGenerator layerGenerator, DungeonLayer dungeonLayer, Random rand) {
+        public void update(NewLayerGenerator layerGenerator, DungeonLayer dungeonLayer, RandomSource rand) {
             layerGenerator.generationStep(this, dungeonLayer, toOrigin, rand, this.depth + 1);
         }
 
@@ -406,7 +406,7 @@ public class NewLayerGenerator extends LayerGenerator {
         }
 
         @Override
-        public void update(NewLayerGenerator layerGenerator, DungeonLayer dungeonLayer, Random rand) {
+        public void update(NewLayerGenerator layerGenerator, DungeonLayer dungeonLayer, RandomSource rand) {
             super.update(layerGenerator, dungeonLayer, rand);
         }
 

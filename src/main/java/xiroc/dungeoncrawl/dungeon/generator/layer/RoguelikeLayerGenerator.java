@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
+import net.minecraft.util.RandomSource;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.util.Position2D;
@@ -36,12 +37,12 @@ public class RoguelikeLayerGenerator extends LayerGenerator {
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, RandomSource rand, int layer, boolean isLastLayer) {
         super.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
     }
 
     @Override
-    public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start) {
+    public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, RandomSource rand, Position2D start) {
 
     }
 

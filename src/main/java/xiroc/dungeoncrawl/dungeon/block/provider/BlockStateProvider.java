@@ -20,19 +20,18 @@ package xiroc.dungeoncrawl.dungeon.block.provider;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Random;
-
 public interface BlockStateProvider {
 
-    default BlockState get(LevelAccessor world, BlockPos pos, Random random) {
+    default BlockState get(LevelAccessor world, BlockPos pos, RandomSource random) {
         return get(world, pos, random, Rotation.NONE);
     }
 
-    BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation);
+    BlockState get(LevelAccessor world, BlockPos pos, RandomSource random, Rotation rotation);
 
     JsonObject serialize();
 

@@ -22,10 +22,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 
@@ -98,7 +100,7 @@ public class JSONUtils {
             T t = optional.get();
             return state.setValue(property, t);
         } else {
-            DungeonCrawl.LOGGER.warn("Couldn't apply property {} with value {} to {}", property.getName(), value, state.getBlock().getRegistryName());
+            DungeonCrawl.LOGGER.warn("Couldn't apply property {} with value {} to {}", property.getName(), value, ForgeRegistries.BLOCKS.getKey(state.getBlock()));
         }
         return state;
     }
@@ -112,11 +114,12 @@ public class JSONUtils {
      */
     public static JsonObject serializeBlockState(JsonObject object, BlockState state) {
         Block block = state.getBlock();
-        if (block.getRegistryName() == null) {
+        ResourceLocation registryName = ForgeRegistries.BLOCKS.getKey(block);
+        if (registryName == null) {
             DungeonCrawl.LOGGER.error("No registry name found for block {} ({})", block, block.getClass());
             return new JsonObject();
         }
-        object.addProperty("block", block.getRegistryName().toString());
+        object.addProperty("block", registryName.toString());
 
         BlockState defaultState = block.defaultBlockState();
         JsonObject properties = new JsonObject();

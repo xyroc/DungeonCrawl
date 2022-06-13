@@ -22,14 +22,13 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
-
-import java.util.Random;
 
 public class SuspiciousStew extends LootItemConditionalFunction {
 
@@ -145,7 +144,7 @@ public class SuspiciousStew extends LootItemConditionalFunction {
 
     }
 
-    public static ListTag createEffectList(Random rand) {
+    public static ListTag createEffectList(RandomSource rand) {
         int counter = rand.nextInt(2), max = EFFECTS.length;
         ListTag effects = new ListTag();
 

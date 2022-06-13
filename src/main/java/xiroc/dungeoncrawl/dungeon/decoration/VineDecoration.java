@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.decoration;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
@@ -31,12 +32,10 @@ import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
-import java.util.Random;
-
 public record VineDecoration(float chance) implements DungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
         int maxX = ew ? model.width : model.length;
         int maxZ = ew ? model.length : model.width;

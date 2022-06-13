@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -183,7 +184,7 @@ public enum DungeonModelBlockType {
     public interface BlockFactory {
 
         BlockState get(DungeonModelBlock block, Rotation rotation, LevelAccessor world, BlockPos pos, Theme theme,
-                       SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
+                       SecondaryTheme secondaryTheme, RandomSource rand, byte[] variation, int stage);
 
     }
 

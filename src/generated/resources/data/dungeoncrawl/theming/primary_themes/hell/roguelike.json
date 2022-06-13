@@ -1,59 +1,5 @@
 {
   "theme": {
-    "pillar": {
-      "type": "block",
-      "block": "minecraft:obsidian"
-    },
-    "solid": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:nether_bricks",
-          "weight": 200
-        },
-        {
-          "block": "minecraft:netherrack",
-          "weight": 20
-        },
-        {
-          "block": "minecraft:soul_sand",
-          "weight": 15
-        },
-        {
-          "block": "minecraft:nether_wart_block",
-          "weight": 10
-        },
-        {
-          "block": "minecraft:coal_block",
-          "weight": 5
-        }
-      ]
-    },
-    "generic": {
-      "type": "random_block",
-      "blocks": [
-        {
-          "block": "minecraft:nether_bricks",
-          "weight": 200
-        },
-        {
-          "block": "minecraft:netherrack",
-          "weight": 20
-        },
-        {
-          "block": "minecraft:soul_sand",
-          "weight": 15
-        },
-        {
-          "block": "minecraft:nether_wart_block",
-          "weight": 10
-        },
-        {
-          "block": "minecraft:coal_block",
-          "weight": 5
-        }
-      ]
-    },
     "fencing": {
       "type": "block",
       "block": "minecraft:iron_bars"
@@ -95,13 +41,30 @@
       "type": "block",
       "block": "minecraft:lava"
     },
-    "solid_stairs": {
-      "type": "block",
-      "block": "minecraft:nether_brick_stairs"
-    },
-    "stairs": {
-      "type": "block",
-      "block": "minecraft:nether_brick_stairs"
+    "generic": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_bricks",
+          "weight": 200
+        },
+        {
+          "block": "minecraft:netherrack",
+          "weight": 20
+        },
+        {
+          "block": "minecraft:soul_sand",
+          "weight": 15
+        },
+        {
+          "block": "minecraft:nether_wart_block",
+          "weight": 10
+        },
+        {
+          "block": "minecraft:coal_block",
+          "weight": 5
+        }
+      ]
     },
     "material": {
       "type": "random_block",
@@ -128,17 +91,54 @@
         }
       ]
     },
-    "wall": {
+    "pillar": {
       "type": "block",
-      "block": "minecraft:nether_brick_wall"
+      "block": "minecraft:obsidian"
     },
     "slab": {
       "type": "block",
       "block": "minecraft:nether_brick_slab"
     },
+    "solid": {
+      "type": "random_block",
+      "blocks": [
+        {
+          "block": "minecraft:nether_bricks",
+          "weight": 200
+        },
+        {
+          "block": "minecraft:netherrack",
+          "weight": 20
+        },
+        {
+          "block": "minecraft:soul_sand",
+          "weight": 15
+        },
+        {
+          "block": "minecraft:nether_wart_block",
+          "weight": 10
+        },
+        {
+          "block": "minecraft:coal_block",
+          "weight": 5
+        }
+      ]
+    },
     "solid_slab": {
       "type": "block",
       "block": "minecraft:nether_brick_slab"
+    },
+    "solid_stairs": {
+      "type": "block",
+      "block": "minecraft:nether_brick_stairs"
+    },
+    "stairs": {
+      "type": "block",
+      "block": "minecraft:nether_brick_stairs"
+    },
+    "wall": {
+      "type": "block",
+      "block": "minecraft:nether_brick_wall"
     }
   }
 }

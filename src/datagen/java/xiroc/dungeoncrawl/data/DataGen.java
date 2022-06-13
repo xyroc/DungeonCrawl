@@ -26,18 +26,21 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.loot.LootTables;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 @Mod.EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGen {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
-        if (event.includeServer()) {
-            DataGenerator generator = event.getGenerator();
-            generator.addProvider(new LootTables(generator));
-            generator.addProvider(new PrimaryThemes(generator));
-            generator.addProvider(new SecondaryThemes(generator));
-        }
+        Loot.init(); // Register loot function types
+
+        DataGenerator generator = event.getGenerator();
+        boolean includeServer = event.includeServer();
+
+        generator.addProvider(includeServer, new LootTables(generator));
+        generator.addProvider(includeServer, new PrimaryThemes(generator));
+        generator.addProvider(includeServer, new SecondaryThemes(generator));
     }
 
 }

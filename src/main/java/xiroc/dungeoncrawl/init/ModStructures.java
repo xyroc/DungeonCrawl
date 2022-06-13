@@ -1,42 +1,48 @@
-/*
-        Dungeon Crawl, a procedural dungeon generator for Minecraft 1.14 and later.
-        Copyright (C) 2020
-
-        This program is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
-
-        This program is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 package xiroc.dungeoncrawl.init;
 
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
+import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
+
+import java.util.Map;
 
 public class ModStructures {
 
-    public static final DeferredRegister<StructureFeature<?>> STRUCTURES = DeferredRegister.create(ForgeRegistries.STRUCTURE_FEATURES, DungeonCrawl.MOD_ID);
+    protected static Holder<Structure> DUNGEON;
 
-    public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> DUNGEON = STRUCTURES.register("dungeon", Dungeon::new);
+    public static void register() {
+        TerrainAdjustment dungeonTerrainAdjustment = Config.BURY.get() ? TerrainAdjustment.BURY : TerrainAdjustment.NONE;
+        DUNGEON = register(BuiltinModStructures.DUNGEON, new Dungeon(structure(ModTags.HAS_DUNGEON, Dungeon.GENERATION_STEP, dungeonTerrainAdjustment)));
+    }
 
-    public static void init() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        STRUCTURES.register(modEventBus);
+    private static Structure.StructureSettings structure(TagKey<Biome> p_236546_, Map<MobCategory, StructureSpawnOverride> p_236547_, GenerationStep.Decoration p_236548_, TerrainAdjustment p_236549_) {
+        return new Structure.StructureSettings(biomes(p_236546_), p_236547_, p_236548_, p_236549_);
+    }
+
+    private static Structure.StructureSettings structure(TagKey<Biome> p_236539_, GenerationStep.Decoration p_236540_, TerrainAdjustment p_236541_) {
+        return structure(p_236539_, Map.of(), p_236540_, p_236541_);
+    }
+
+    private static Structure.StructureSettings structure(TagKey<Biome> p_236543_, TerrainAdjustment p_236544_) {
+        return structure(p_236543_, Map.of(), GenerationStep.Decoration.SURFACE_STRUCTURES, p_236544_);
+    }
+
+    private static Holder<Structure> register(ResourceKey<Structure> p_236534_, Structure p_236535_) {
+        return BuiltinRegistries.register(BuiltinRegistries.STRUCTURES, p_236534_, p_236535_);
+    }
+
+    private static HolderSet<Biome> biomes(TagKey<Biome> p_236537_) {
+        return BuiltinRegistries.BIOME.getOrCreateTag(p_236537_);
     }
 
 }

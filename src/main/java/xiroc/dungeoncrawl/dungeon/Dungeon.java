@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
@@ -25,27 +26,31 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.init.ModStructureTypes;
 
 import java.util.Optional;
 
-public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
+public class Dungeon extends Structure {
+
+    public static final GenerationStep.Decoration GENERATION_STEP = GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
+
+    public static final Codec<Dungeon> CODEC = simpleCodec(Dungeon::new);
 
     private static final int BIOME_CHECK_RADIUS = 1;
 
-    public Dungeon() {
-        super(NoneFeatureConfiguration.CODEC, Dungeon::pieceGeneratorSupplier);
+    public Dungeon(StructureSettings settings) {
+        super(settings);
     }
 
-    private static Optional<PieceGenerator<NoneFeatureConfiguration>> pieceGeneratorSupplier(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
+    @Override
+    public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
         int centerX = context.chunkPos().getBlockX(7);
         int centerZ = context.chunkPos().getBlockZ(7);
-        int centerHeight = context.chunkGenerator().getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
+        int centerHeight = context.chunkGenerator().getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
 
         if (isInvalidSpot(context, BIOME_CHECK_RADIUS)) {
             return Optional.empty();
@@ -60,27 +65,30 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
                 ? context.chunkGenerator().getSpawnHeight(context.heightAccessor()) - 20
                 : (minGroundHeight > 80 ? (80 + ((minGroundHeight - 80) / 3)) : minGroundHeight) - 20;
 
-        return Optional.of(((structurePiecesBuilder, generatorContext) -> {
-            DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
-                    generatorContext.chunkGenerator(),
-                    startHeight,
-                    new BlockPos(centerX, centerHeight, centerZ),
-                    generatorContext.chunkPos(),
-                    generatorContext.random());
-            builder.build().forEach((structurePiecesBuilder::addPiece));
-        }));
+        BlockPos position = new BlockPos(centerX, centerHeight, centerZ);
+
+        return Optional.of(new Structure.GenerationStub(position, (structurePiecesBuilder) -> this.generatePieces(structurePiecesBuilder, context, position, startHeight)));
     }
 
-    private static boolean isInvalidSpot(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context, int radius) {
+    private void generatePieces(StructurePiecesBuilder structurePiecesBuilder, GenerationContext context, BlockPos position, int startHeight) {
+        DungeonBuilder builder = new DungeonBuilder(context, startHeight, position);
+        builder.build().forEach(structurePiecesBuilder::addPiece);
+    }
+
+    @Override
+    public StructureType<?> type() {
+        return ModStructureTypes.DUNGEON;
+    }
+
+    private static boolean isInvalidSpot(GenerationContext context, int radius) {
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 ChunkPos pos = new ChunkPos(context.chunkPos().x + x, context.chunkPos().z + z);
                 int centerX = QuartPos.fromBlock(pos.getBlockX(7));
                 int centerZ = QuartPos.fromBlock(pos.getBlockZ(7));
-                Holder<Biome> centerBiome = context.chunkGenerator().getNoiseBiome(centerX, context.chunkGenerator()
-                        .getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor()), centerZ);
+                Holder<Biome> centerBiome = context.chunkGenerator().getBiomeSource().getNoiseBiome(centerX, context.chunkGenerator()
+                        .getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState()), centerZ, context.randomState().sampler());
                 if (!context.validBiome().test(centerBiome)) {
-                    DungeonCrawl.LOGGER.debug("Invalid biome {} at [{},{}]", centerBiome.value().getRegistryName(), pos.x, pos.z);
                     return true;
                 }
             }
@@ -88,7 +96,7 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         return false;
     }
 
-    private static int minHeight(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context, int centerX, int centerZ, int centerHeight) {
+    private static int minHeight(GenerationContext context, int centerX, int centerZ, int centerHeight) {
         int minHeight = centerHeight;
 
         for (int i = 1; i < 9; i++) {
@@ -99,17 +107,17 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         return minHeight;
     }
 
-    private static int lowestCornerHeight(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context, int x, int sizeX, int z, int sizeZ) {
-        int height = context.chunkGenerator().getFirstFreeHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor());
-        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x + sizeX, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor()));
-        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x, z + sizeZ, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor()));
-        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x + sizeX, z + sizeZ, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor()));
+    private static int lowestCornerHeight(GenerationContext context, int x, int sizeX, int z, int sizeZ) {
+        int height = context.chunkGenerator().getFirstFreeHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState());
+        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x + sizeX, z, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState()));
+        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x, z + sizeZ, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState()));
+        height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x + sizeX, z + sizeZ, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState()));
         return height;
     }
 
     @Override
     public GenerationStep.Decoration step() {
-        return GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
+        return GENERATION_STEP;
     }
 
 }

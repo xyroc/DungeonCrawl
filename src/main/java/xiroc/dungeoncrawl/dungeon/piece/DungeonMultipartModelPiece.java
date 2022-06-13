@@ -20,29 +20,28 @@ package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
 import java.util.List;
-import java.util.Random;
 
 public class DungeonMultipartModelPiece extends DungeonPiece {
 
     public DungeonMultipartModelPiece() {
-        super(StructurePieceTypes.MULTIPART_MODEL_PIECE);
+        super(ModStructurePieceTypes.MULTIPART_MODEL_PIECE);
     }
 
     public DungeonMultipartModelPiece(CompoundTag p_i51343_2_) {
-        super(StructurePieceTypes.MULTIPART_MODEL_PIECE, p_i51343_2_);
+        super(ModStructurePieceTypes.MULTIPART_MODEL_PIECE, p_i51343_2_);
     }
 
     @Override
@@ -51,11 +50,11 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, RandomSource rand) {
     }
 
     @Override
-    public void postProcess(WorldGenLevel world, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random random, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel world, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, RandomSource random, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return;

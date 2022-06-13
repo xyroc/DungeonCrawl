@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.data.themes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -49,7 +50,7 @@ public class SecondaryThemes implements DataProvider {
     }
 
     @Override
-    public void run(HashCache directoryCache) {
+    public void run(CachedOutput directoryCache) {
         Path path = this.generator.getOutputFolder();
 
         HashMap<ResourceLocation, SecondaryTheme> themes = new HashMap<>();
@@ -63,7 +64,7 @@ public class SecondaryThemes implements DataProvider {
         themes.forEach(((resourceLocation, theme) -> {
             Path filePath = createPath(path, resourceLocation);
             try {
-                DataProvider.save(GSON, directoryCache, theme.serialize(), filePath);
+                DataProvider.saveStable(directoryCache, theme.serialize(), filePath);
             } catch (IOException exception) {
                 LOGGER.error("Failed to save {}", resourceLocation);
             }

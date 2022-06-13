@@ -27,7 +27,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 public class SecondaryThemeArgument implements ArgumentType<SecondaryTheme> {
 
     public static final DynamicCommandExceptionType THEME_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) ->
-            new TranslatableComponent("Unknown secondary theme: {0}", p_208663_0_));
+            Component.translatable("Unknown secondary theme: {0}", p_208663_0_));
 
     public static SecondaryThemeArgument secondaryTheme() {
         return new SecondaryThemeArgument();

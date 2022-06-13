@@ -16,13 +16,25 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.init;
 
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import xiroc.dungeoncrawl.dungeon.Dungeon;
 
-public record Range(int min, int max) {
-    public int nextInt(RandomSource random) {
-        return Mth.nextInt(random, min, max);
+public interface ModStructureTypes {
+
+    StructureType<Dungeon> DUNGEON = register("dungeoncrawl:dungeon", Dungeon.CODEC);
+
+    private static <S extends Structure> StructureType<S> register(String p_226882_, Codec<S> p_226883_) {
+        return Registry.register(Registry.STRUCTURE_TYPES, p_226882_, () -> {
+            return p_226883_;
+        });
     }
+
+    static void load() {
+    }
+
 }

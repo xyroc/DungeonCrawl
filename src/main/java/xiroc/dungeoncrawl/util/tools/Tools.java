@@ -25,7 +25,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -59,7 +59,7 @@ public class Tools {
             try {
                 return a.getPlayerOrException().isCreative();
             } catch (CommandSyntaxException e) {
-                a.sendFailure(new TextComponent("You must be a player!"));
+                a.sendFailure(Component.literal("You must be a player!"));
                 return false;
             }
         }).then(Commands.argument("name", StringArgumentType.string()).executes((command) -> {
@@ -67,7 +67,7 @@ public class Tools {
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
                         command.getSource().sendSuccess(
-                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
+                                Component.literal(ChatFormatting.RED + "Please select two positions."),
                                 true);
                         return 1;
                     }
@@ -86,12 +86,10 @@ public class Tools {
                                 ModelBlockDefinition.getDefaultDefinition(),
                                 command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendSuccess(new TextComponent("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
+                        command.getSource().sendSuccess(Component.literal("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
-                        command.getSource().sendSuccess(
-                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
-                                true);
+                        command.getSource().sendFailure(Component.literal(ChatFormatting.RED + "Please select two positions."));
                         return 1;
                     }
                 }).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
@@ -99,9 +97,7 @@ public class Tools {
                     UUID uuid = command.getSource().getPlayerOrException().getUUID();
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
-                        command.getSource().sendSuccess(
-                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
-                                true);
+                        command.getSource().sendFailure(Component.literal(ChatFormatting.RED + "Please select two positions."));
                         return 1;
                     }
 
@@ -120,12 +116,10 @@ public class Tools {
                                 command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
 
-                        command.getSource().sendSuccess(new TextComponent("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
+                        command.getSource().sendSuccess(Component.literal("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
-                        command.getSource().sendSuccess(
-                                new TextComponent(ChatFormatting.RED + "Please select two positions."),
-                                true);
+                        command.getSource().sendFailure(Component.literal(ChatFormatting.RED + "Please select two positions."));
                         return 1;
                     }
                 }))
@@ -165,18 +159,18 @@ public class Tools {
                 .executes((command) -> {
                     UUID uuid = command.getSource().getPlayerOrException().getUUID();
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
-                        command.getSource().sendSuccess(new TextComponent(ChatFormatting.RED + "Please set your origin with "
+                        command.getSource().sendFailure(Component.literal(ChatFormatting.RED + "Please set your origin with "
                                 + ChatFormatting.BOLD + "/origin ~ ~ ~"
-                                + ChatFormatting.RED + " first."), true);
+                                + ChatFormatting.RED + " first."));
                         return 1;
                     } else {
                         ModelEditContext context = CONTEXT_TABLE.get(uuid);
                         BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
-                        command.getSource().sendSuccess(new TextComponent("The origin is (x: "
+                        command.getSource().sendSuccess(Component.literal("The origin is (x: "
                                 + context.origin.getX() + " y: "
                                 + context.origin.getY() + " z: "
                                 + context.origin.getZ() + ")."), true);
-                        command.getSource().sendSuccess(new TextComponent("Your coordinates relative to the origin are (x: "
+                        command.getSource().sendSuccess(Component.literal("Your coordinates relative to the origin are (x: "
                                 + (pos.getX() - context.origin.getX()) + " y: "
                                 + (pos.getY() - context.origin.getY()) + " z: "
                                 + (pos.getZ() - context.origin.getZ() + ").")), true);
@@ -193,9 +187,9 @@ public class Tools {
                     UUID uuid = command.getSource().getPlayerOrException().getUUID();
                     if (CONTEXT_TABLE.containsKey(uuid)) {
                         CONTEXT_TABLE.get(uuid).origin = null;
-                        command.getSource().sendSuccess(new TextComponent("Origin reset."), true);
+                        command.getSource().sendSuccess(Component.literal("Origin reset."), true);
                     } else {
-                        command.getSource().sendSuccess(new TextComponent("Nothing to reset."), true);
+                        command.getSource().sendFailure(Component.literal("Nothing to reset."));
                     }
                     return 0;
                 })));
@@ -211,15 +205,15 @@ public class Tools {
 
                 UUID uuid = event.getPlayer().getGameProfile().getId();
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos1 = pos;
-                event.getPlayer().sendMessage(new TextComponent(ChatFormatting.LIGHT_PURPLE + "Position 1 set to ("
-                        + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUUID());
+                event.getPlayer().sendSystemMessage(Component.literal(ChatFormatting.LIGHT_PURPLE + "Position 1 set to ("
+                        + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
             } else if (item == Items.GOLDEN_AXE) {
                 event.setCanceled(true);
                 CONTEXT_TABLE.computeIfAbsent(event.getPlayer().getUUID(), (key) -> new ModelEditContext()).origin = event.getPos();
-                event.getPlayer().sendMessage(new TextComponent("Origin set to (x: "
+                event.getPlayer().sendSystemMessage(Component.literal("Origin set to (x: "
                         + event.getPos().getX() + " y: "
                         + event.getPos().getY() + " z: "
-                        + event.getPos().getZ() + ")."), event.getPlayer().getUUID());
+                        + event.getPos().getZ() + ")."));
             }
         }
     }
@@ -235,18 +229,18 @@ public class Tools {
                 UUID uuid = event.getPlayer().getGameProfile().getId();
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
 
-                event.getPlayer().sendMessage(new TextComponent(ChatFormatting.LIGHT_PURPLE
-                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "), event.getPlayer().getUUID());
+                event.getPlayer().sendSystemMessage(Component.literal(ChatFormatting.LIGHT_PURPLE
+                        + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
             } else if (event.getItemStack().getItem() == Items.GOLDEN_AXE
                     && CONTEXT_TABLE.containsKey(event.getPlayer().getUUID())) {
                 event.setCanceled(true);
                 ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUUID());
                 if (context.origin != null) {
-                    event.getPlayer().sendMessage(new TextComponent("The coordinates of the block you clicked" +
+                    event.getPlayer().sendSystemMessage(Component.literal("The coordinates of the block you clicked" +
                             " relative to the origin are (x: "
                             + (event.getPos().getX() - context.origin.getX()) + " y: "
                             + (event.getPos().getY() - context.origin.getY()) + " z: "
-                            + (event.getPos().getZ() - context.origin.getZ() + ").")), event.getPlayer().getUUID());
+                            + (event.getPos().getZ() - context.origin.getZ() + ").")));
                 }
             }
         }
@@ -256,7 +250,7 @@ public class Tools {
     private static void setOrigin(CommandSourceStack source, BlockPos pos) throws CommandSyntaxException {
         ModelEditContext context = CONTEXT_TABLE.computeIfAbsent(source.getPlayerOrException().getUUID(), (id) -> new ModelEditContext());
         context.origin = pos;
-        source.sendSuccess(new TextComponent("Origin set to (x: "
+        source.sendSuccess(Component.literal("Origin set to (x: "
                 + context.origin.getX() + " y: "
                 + context.origin.getY() + " z: "
                 + context.origin.getZ() + ")."), true);

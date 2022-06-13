@@ -24,20 +24,21 @@ import com.google.gson.stream.JsonReader;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
-import java.util.Random;
 
 public class RandomEquipment {
 
@@ -80,40 +81,37 @@ public class RandomEquipment {
      * Convenience method to load an armor file from json.
      */
     private static void loadArmorFromJson(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
-        if (resourceManager.hasResource(file)) {
-            try {
-                DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
-                if (object.has("helmet")) {
-                    HELMET.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("helmet")));
-                } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'helmet' in {}", file.toString());
-                }
-
-                if (object.has("chestplate")) {
-                    CHESTPLATE.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("chestplate")));
-                } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'chestplate' in {}", file.toString());
-                }
-
-                if (object.has("leggings")) {
-                    LEGGINGS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("leggings")));
-                } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'leggings' in {}", file.toString());
-                }
-
-                if (object.has("boots")) {
-                    BOOTS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("boots")));
-                } else {
-                    DungeonCrawl.LOGGER.warn("Missing entry 'boots' in {}", file.toString());
-                }
-
-            } catch (Exception e) {
-                DungeonCrawl.LOGGER.error("Failed to load {}", file.toString());
-                e.printStackTrace();
+        Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
+        try {
+            DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
+            JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resource.open()))).getAsJsonObject();
+            if (object.has("helmet")) {
+                HELMET.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("helmet")));
+            } else {
+                DungeonCrawl.LOGGER.warn("Missing entry 'helmet' in {}", file.toString());
             }
-        } else {
-            throw new FileNotFoundException("Missing file: " + file);
+
+            if (object.has("chestplate")) {
+                CHESTPLATE.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("chestplate")));
+            } else {
+                DungeonCrawl.LOGGER.warn("Missing entry 'chestplate' in {}", file.toString());
+            }
+
+            if (object.has("leggings")) {
+                LEGGINGS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("leggings")));
+            } else {
+                DungeonCrawl.LOGGER.warn("Missing entry 'leggings' in {}", file.toString());
+            }
+
+            if (object.has("boots")) {
+                BOOTS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("boots")));
+            } else {
+                DungeonCrawl.LOGGER.warn("Missing entry 'boots' in {}", file.toString());
+            }
+
+        } catch (Exception e) {
+            DungeonCrawl.LOGGER.error("Failed to load {}", file.toString());
+            e.printStackTrace();
         }
     }
 
@@ -121,27 +119,24 @@ public class RandomEquipment {
      * Convenience method to load a weapon file from json.
      */
     private static void loadWeaponsFromJson(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
-        if (resourceManager.hasResource(file)) {
-            DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-            JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
+        Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
+        DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
+        JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resource.open()))).getAsJsonObject();
 
-            if (object.has("melee")) {
-                MELEE_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("melee")));
-            } else {
-                DungeonCrawl.LOGGER.error("Missing entry 'melee' in {}", file.toString());
-            }
-
-            if (object.has("ranged")) {
-                RANGED_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("ranged")));
-            } else {
-                DungeonCrawl.LOGGER.error("Missing entry 'ranged' in {}", file.toString());
-            }
+        if (object.has("melee")) {
+            MELEE_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("melee")));
         } else {
-            throw new FileNotFoundException("Missing file: " + file);
+            DungeonCrawl.LOGGER.error("Missing entry 'melee' in {}", file.toString());
+        }
+
+        if (object.has("ranged")) {
+            RANGED_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("ranged")));
+        } else {
+            DungeonCrawl.LOGGER.error("Missing entry 'ranged' in {}", file.toString());
         }
     }
 
-    public static ItemStack[] createArmor(Random rand, int stage) {
+    public static ItemStack[] createArmor(RandomSource rand, int stage) {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
 
@@ -213,13 +208,13 @@ public class RandomEquipment {
         return items;
     }
 
-    public static ItemStack createItemStack(Random rand, Item item, int stage) {
+    public static ItemStack createItemStack(RandomSource rand, Item item, int stage) {
         ItemStack itemStack = EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * stage, false);
         applyDamage(itemStack, rand);
         return itemStack;
     }
 
-    public static void applyDamage(ItemStack item, Random rand) {
+    public static void applyDamage(ItemStack item, RandomSource rand) {
         if (item.isDamageableItem())
             item.setDamageValue(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
     }
@@ -236,7 +231,7 @@ public class RandomEquipment {
         tag.put("display", display);
     }
 
-    public static ItemStack getMeleeWeapon(Random rand, int stage) {
+    public static ItemStack getMeleeWeapon(RandomSource rand, int stage) {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
         if (MELEE_WEAPON.containsKey(stage)) {
@@ -247,7 +242,7 @@ public class RandomEquipment {
         }
     }
 
-    public static ItemStack getRangedWeapon(Random rand, int stage) {
+    public static ItemStack getRangedWeapon(RandomSource rand, int stage) {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
         if (RANGED_WEAPON.containsKey(stage)) {
@@ -258,7 +253,7 @@ public class RandomEquipment {
         }
     }
 
-    public static int getRandomColor(Random rand) {
+    public static int getRandomColor(RandomSource rand) {
         return ARMOR_COLORS[rand.nextInt(ARMOR_COLORS.length)];
     }
 

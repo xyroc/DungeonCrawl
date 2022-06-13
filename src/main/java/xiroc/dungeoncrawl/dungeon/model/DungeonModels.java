@@ -58,33 +58,33 @@ public class DungeonModels {
 
         keySetBuilder = new ImmutableSet.Builder<>();
 
-        resourceManager.listResources(DIRECTORY, (s) -> s.endsWith(".nbt"))
-                .forEach((resource) -> load(resource, resourceManager));
+        resourceManager.listResources(DIRECTORY, (s) -> s.getPath().endsWith(".nbt"))
+                .forEach((file, resource) -> load(file, resourceManager));
 
         KEYS = keySetBuilder.build();
     }
 
-    private static void load(ResourceLocation resource, ResourceManager resourceManager) {
-        DungeonModel model = loadModel(resource, resourceManager);
-        ResourceLocation metadata = new ResourceLocation(resource.getNamespace(),
-                resource.getPath().substring(0, resource.getPath().indexOf(".nbt")) + ".json");
+    private static void load(ResourceLocation file, ResourceManager resourceManager) {
+        DungeonModel model = loadModel(file, resourceManager);
+        ResourceLocation metadataFile = new ResourceLocation(file.getNamespace(),
+                file.getPath().substring(0, file.getPath().indexOf(".nbt")) + ".json");
 
-        if (resourceManager.hasResource(metadata)) {
-            DungeonCrawl.LOGGER.debug("Loading {}", metadata);
+        resourceManager.getResource(metadataFile).ifPresent((metadata) -> {
+            DungeonCrawl.LOGGER.debug("Loading {}", metadataFile);
             try {
-                model.loadMetadata(JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(metadata).getInputStream())).getAsJsonObject(), metadata);
+                model.loadMetadata(JsonParser.parseReader(new InputStreamReader(metadata.open())).getAsJsonObject(), metadataFile);
             } catch (Exception e) {
-                DungeonCrawl.LOGGER.error("Failed to load metadata for {}", resource.getPath());
+                DungeonCrawl.LOGGER.error("Failed to load metadata for {}", file.getPath());
                 e.printStackTrace();
             }
-        }
+        });
     }
 
     private static DungeonModel loadModel(ResourceLocation resource, ResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", resource);
 
         try {
-            CompoundTag nbt = NbtIo.readCompressed(resourceManager.getResource(resource).getInputStream());
+            CompoundTag nbt = NbtIo.readCompressed(resourceManager.getResource(resource).orElseThrow().open());
 
             ResourceLocation key = DungeonCrawl.key(resource, DIRECTORY, ".nbt");
             DungeonModel model = ModelHandler.loadModelFromNBT(nbt, resource, key);

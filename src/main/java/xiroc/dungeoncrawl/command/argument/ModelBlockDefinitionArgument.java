@@ -27,7 +27,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 
@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 public class ModelBlockDefinitionArgument implements ArgumentType<ModelBlockDefinition> {
 
     public static final DynamicCommandExceptionType DEFINITION_NOT_FOUND = new DynamicCommandExceptionType((p_208663_0_) ->
-            new TranslatableComponent("Unknown block definition: {0}", p_208663_0_));
+            Component.translatable("Unknown block definition: {0}", p_208663_0_));
 
     public static ModelBlockDefinitionArgument modelBlockDefinitionArgument() {
         return new ModelBlockDefinitionArgument();

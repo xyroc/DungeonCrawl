@@ -24,16 +24,17 @@ import com.google.gson.stream.JsonReader;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
-import java.util.Random;
 
 public class RandomMonster {
 
@@ -129,29 +130,26 @@ public class RandomMonster {
      * Convenience method to load a single entity file.
      */
     private static void loadEntityFile(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
-        if (resourceManager.hasResource(file)) {
-            DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-            JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
+        DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
+        Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
+        JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resource.open()))).getAsJsonObject();
 
-            if (object.has("common")) {
-                COMMON[stage] = WeightedRandomEntity.fromJson(object.getAsJsonArray("common"));
-            } else {
-                DungeonCrawl.LOGGER.warn("Missing entry 'common' in {}", file.toString());
-                COMMON[stage] = WeightedRandomEntity.EMPTY;
-            }
-
-            if (object.has("rare")) {
-                RARE[stage] = WeightedRandomEntity.fromJson(object.getAsJsonArray("rare"));
-            } else {
-                DungeonCrawl.LOGGER.warn("Missing entry 'rare' in {}", file.toString());
-                RARE[stage] = WeightedRandomEntity.EMPTY;
-            }
+        if (object.has("common")) {
+            COMMON[stage] = WeightedRandomEntity.fromJson(object.getAsJsonArray("common"));
         } else {
-            throw new FileNotFoundException("Missing file: " + file);
+            DungeonCrawl.LOGGER.warn("Missing entry 'common' in {}", file.toString());
+            COMMON[stage] = WeightedRandomEntity.EMPTY;
+        }
+
+        if (object.has("rare")) {
+            RARE[stage] = WeightedRandomEntity.fromJson(object.getAsJsonArray("rare"));
+        } else {
+            DungeonCrawl.LOGGER.warn("Missing entry 'rare' in {}", file.toString());
+            RARE[stage] = WeightedRandomEntity.EMPTY;
         }
     }
 
-    public static EntityType<?> randomMonster(Random rand, int stage) {
+    public static EntityType<?> randomMonster(RandomSource rand, int stage) {
         if (stage > 4)
             stage = 4;
         if (rand.nextFloat() < 0.1) {
@@ -168,7 +166,7 @@ public class RandomMonster {
     @FunctionalInterface
     public interface MobNBTPatcher {
 
-        void patch(CompoundTag nbt, Random rand, int stage);
+        void patch(CompoundTag nbt, RandomSource rand, int stage);
 
     }
 

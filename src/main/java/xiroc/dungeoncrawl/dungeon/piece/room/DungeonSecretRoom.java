@@ -20,35 +20,34 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 import java.util.List;
-import java.util.Random;
 
 public class DungeonSecretRoom extends DungeonPiece {
 
     public DungeonSecretRoom() {
-        super(StructurePieceTypes.SECRET_ROOM);
+        super(ModStructurePieceTypes.SECRET_ROOM);
     }
 
     public DungeonSecretRoom(CompoundTag nbt) {
-        super(StructurePieceTypes.SECRET_ROOM, nbt);
+        super(ModStructurePieceTypes.SECRET_ROOM, nbt);
     }
 
     @Override
-    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, RandomSource randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return;
@@ -67,7 +66,7 @@ public class DungeonSecretRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, RandomSource rand) {
         this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.SECRET_ROOM);
     }
 

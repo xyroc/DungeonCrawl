@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
@@ -26,7 +27,6 @@ import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.function.BiFunction;
 
 public class PlacementBehaviour {
@@ -82,7 +82,7 @@ public class PlacementBehaviour {
         return new PlacementBehaviour(this.function, airBlock);
     }
 
-    public boolean isSolid(LevelAccessor world, BlockPos pos, Rotation pieceRotation, Random rand) {
+    public boolean isSolid(LevelAccessor world, BlockPos pos, Rotation pieceRotation, RandomSource rand) {
         return function.isSolid(world, pos, pieceRotation, rand);
     }
 
@@ -96,7 +96,7 @@ public class PlacementBehaviour {
 
     public interface PlacementFunction {
 
-        boolean isSolid(LevelAccessor world, BlockPos pos, Rotation rotation, Random rand);
+        boolean isSolid(LevelAccessor world, BlockPos pos, Rotation rotation, RandomSource rand);
 
 
     }

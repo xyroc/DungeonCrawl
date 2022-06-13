@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -46,7 +47,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Random;
 
 public record DungeonType(ResourceLocation source,
                           DungeonGeneratorSettings dungeonSettings,
@@ -66,16 +66,16 @@ public record DungeonType(ResourceLocation source,
     }
 
     public static void load(ResourceManager resourceManager) {
-        resourceManager.listResources(TYPES_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
+        resourceManager.listResources(TYPES_DIRECTORY, (path) -> path.getPath().endsWith(".json")).forEach((file, resource) -> {
             try {
-                DungeonCrawl.LOGGER.debug("Loading {}", resource);
-                JsonObject file = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
+                DungeonCrawl.LOGGER.debug("Loading {}", file);
+                JsonObject type = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
 
-                DungeonType.Builder builder = new DungeonType.Builder(resource);
-                builder.settings(DungeonGeneratorSettings.fromJson(file.getAsJsonObject("settings"), resource));
-                builder.entrances(ModelSelector.loadRandom("entrances", file, resource));
+                DungeonType.Builder builder = new DungeonType.Builder(file);
+                builder.settings(DungeonGeneratorSettings.fromJson(type.getAsJsonObject("settings"), file));
+                builder.entrances(ModelSelector.loadRandom("entrances", type, file));
 
-                JsonArray layers = file.getAsJsonArray("layers");
+                JsonArray layers = type.getAsJsonArray("layers");
                 if (layers.size() == 0) {
                     throw new DatapackLoadException("Empty layer list in " + file);
                 } else {
@@ -88,13 +88,13 @@ public record DungeonType(ResourceLocation source,
                         }
 
                         DungeonLayerType layerType = DungeonLayerType.NAME_TO_TYPE.get(layer.get("type").getAsString());
-                        LayerGeneratorSettings layerSettings = LayerGeneratorSettings.fromJson(layer.getAsJsonObject("settings"), resource);
-                        ModelSelector modelSelector = ModelSelector.fromJson(layer.getAsJsonObject("models"), resource);
-                        builder.layer(layerType, layerSettings, modelSelector, getMultipartOverrides(layer, resource));
+                        LayerGeneratorSettings layerSettings = LayerGeneratorSettings.fromJson(layer.getAsJsonObject("settings"), file);
+                        ModelSelector modelSelector = ModelSelector.fromJson(layer.getAsJsonObject("models"), file);
+                        builder.layer(layerType, layerSettings, modelSelector, getMultipartOverrides(layer, file));
                     });
                 }
 
-                ResourceLocation key = DungeonCrawl.key(resource, TYPES_DIRECTORY, ".json");
+                ResourceLocation key = DungeonCrawl.key(file, TYPES_DIRECTORY, ".json");
                 KEY_TO_TYPE.put(key, builder.build());
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load dungeon type " + resource);
@@ -104,13 +104,13 @@ public record DungeonType(ResourceLocation source,
 
         WeightedRandom.Builder<DungeonType> defaultType = new WeightedRandom.Builder<>();
 
-        resourceManager.listResources(MAPPINGS_DIRECTORY, (path) -> path.endsWith(".json")).forEach((resource) -> {
+        resourceManager.listResources(MAPPINGS_DIRECTORY, (path) -> path.getPath().endsWith(".json")).forEach((file, resource) -> {
             try {
-                DungeonCrawl.LOGGER.debug("Loading {}", resource);
-                JsonObject file = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
+                DungeonCrawl.LOGGER.debug("Loading {}", file);
+                JsonObject rawMapping = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
 
-                if (file.has("conditions")) {
-                    JsonObject conditions = file.getAsJsonObject("conditions");
+                if (rawMapping.has("conditions")) {
+                    JsonObject conditions = rawMapping.getAsJsonObject("conditions");
                     if (conditions.has("present")) {
                         JsonArray present = conditions.getAsJsonArray("present");
                         for (JsonElement element : present) {
@@ -125,11 +125,11 @@ public record DungeonType(ResourceLocation source,
                     }
                 }
 
-                if (file.has("default")) {
-                    addEntries(defaultType, file.getAsJsonArray("default"), resource);
+                if (rawMapping.has("default")) {
+                    addEntries(defaultType, rawMapping.getAsJsonArray("default"), file);
                 }
 
-                JsonObject mapping = file.getAsJsonObject("mapping");
+                JsonObject mapping = rawMapping.getAsJsonObject("mapping");
                 mapping.entrySet().forEach((entry) -> {
                     String biome = entry.getKey();
 
@@ -137,7 +137,7 @@ public record DungeonType(ResourceLocation source,
                         DungeonCrawl.LOGGER.warn("Unknown biome {} in {}", biome, resource);
                     }
 
-                    BIOME_TO_TYPE.put(biome, dungeonTypeWeightedRandom(entry.getValue().getAsJsonArray(), resource));
+                    BIOME_TO_TYPE.put(biome, dungeonTypeWeightedRandom(entry.getValue().getAsJsonArray(), file));
                 });
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
@@ -169,7 +169,7 @@ public record DungeonType(ResourceLocation source,
         });
     }
 
-    public static DungeonType randomType(ResourceLocation biome, Random rand) {
+    public static DungeonType randomType(ResourceLocation biome, RandomSource rand) {
         if (biome == null) {
             return DEFAULT_TYPE.roll(rand);
         } else {

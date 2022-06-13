@@ -18,10 +18,12 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -36,8 +38,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
-
-import java.util.Random;
 
 public class Loot {
 
@@ -58,11 +58,27 @@ public class Loot {
     /*                                      LOOT TABLES                                       */
     /* ************************************************************************************** */
 
+    public static final ResourceLocation CHEST_FOOD = DungeonCrawl.locate("chests/food");
+    public static final ResourceLocation CHEST_SECRET_ROOM = DungeonCrawl.locate("chests/secret_room");
+    public static final ResourceLocation CHEST_SUPPLY = DungeonCrawl.locate("chests/supply");
+    public static final ResourceLocation CHEST_TREASURE = DungeonCrawl.locate("chests/treasure");
+
     public static final ResourceLocation CHEST_STAGE_1 = DungeonCrawl.locate("chests/stage_1");
     public static final ResourceLocation CHEST_STAGE_2 = DungeonCrawl.locate("chests/stage_2");
     public static final ResourceLocation CHEST_STAGE_3 = DungeonCrawl.locate("chests/stage_3");
     public static final ResourceLocation CHEST_STAGE_4 = DungeonCrawl.locate("chests/stage_4");
     public static final ResourceLocation CHEST_STAGE_5 = DungeonCrawl.locate("chests/stage_5");
+
+    public static final ImmutableSet<ResourceLocation> ALL_LOOT_TABLES = ImmutableSet.<ResourceLocation>builder()
+            .add(CHEST_FOOD)
+            .add(CHEST_SECRET_ROOM)
+            .add(CHEST_SUPPLY)
+            .add(CHEST_TREASURE)
+            .add(CHEST_STAGE_1)
+            .add(CHEST_STAGE_2)
+            .add(CHEST_STAGE_3)
+            .add(CHEST_STAGE_4)
+            .add(CHEST_STAGE_5).build();
 
     /* ************************************************************************************** */
     /*                                   ENTITY LOOT TABLES                                   */
@@ -83,12 +99,12 @@ public class Loot {
         registerLootFunctionType(DungeonCrawl.locate("suspicious_stew"), SUSPICIOUS_STEW);
     }
 
-    public static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, Random rand) {
+    public static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, RandomSource rand) {
         RandomizableContainerBlockEntity.setLootTable(world, rand, pos, lootTable);
         setLootInformation(tile.getTileData(), theme, secondaryTheme);
     }
 
-    public static ResourceLocation getLootTable(int lootLevel, Random rand) {
+    public static ResourceLocation getLootTable(int lootLevel, RandomSource rand) {
         return switch (lootLevel) {
             case 0 -> rand.nextFloat() < 0.1 ? BuiltInLootTables.JUNGLE_TEMPLE : CHEST_STAGE_1;
             case 1 -> rand.nextFloat() < 0.1 ? BuiltInLootTables.SIMPLE_DUNGEON : CHEST_STAGE_2;

@@ -20,8 +20,7 @@ package xiroc.dungeoncrawl.dungeon.misc;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 public class Banner {
 
@@ -39,7 +38,7 @@ public class Banner {
      * Creates the BlockEntityTag for banners or shields which contains a list of
      * random patterns.
      */
-    public static CompoundTag createPatterns(Random rand) {
+    public static CompoundTag createPatterns(RandomSource rand) {
         CompoundTag blockEntityTag = new CompoundTag();
         ListTag patterns = new ListTag();
         for (int i = 0; i < PATTERNS; i++) {

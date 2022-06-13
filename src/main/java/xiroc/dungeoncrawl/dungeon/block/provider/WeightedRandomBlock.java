@@ -3,14 +3,13 @@ package xiroc.dungeoncrawl.dungeon.block.provider;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
-
-import java.util.Random;
 
 public class WeightedRandomBlock implements BlockStateProvider {
 
@@ -23,7 +22,7 @@ public class WeightedRandomBlock implements BlockStateProvider {
     }
 
     @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
+    public BlockState get(LevelAccessor world, BlockPos pos, RandomSource random, Rotation rotation) {
         return randomBlockState.roll(random);
     }
 

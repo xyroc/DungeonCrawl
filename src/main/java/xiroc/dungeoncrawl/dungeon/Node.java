@@ -18,10 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
-
-import java.util.Random;
 
 public class Node {
 
@@ -54,7 +53,7 @@ public class Node {
      * if there is none. "Fit into the given node" means that wherever the given node does have an exit,
      * this one needs to have one as well.
      */
-    public Rotation compare(Node node, Random rand) {
+    public Rotation compare(Node node, RandomSource rand) {
         return Node.compare(node, this, Rotation.NONE, rand.nextBoolean() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90, 0);
     }
 

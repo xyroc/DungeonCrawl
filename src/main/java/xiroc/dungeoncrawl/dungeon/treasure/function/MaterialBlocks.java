@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -37,8 +38,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Range;
-
-import java.util.Random;
 
 public class MaterialBlocks extends LootItemConditionalFunction {
 
@@ -61,7 +60,7 @@ public class MaterialBlocks extends LootItemConditionalFunction {
         return new ItemStack(Blocks.STONE_BRICKS, AMOUNT.nextInt(context.getRandom()));
     }
 
-    private static Block getMaterial(Theme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
+    private static Block getMaterial(Theme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, RandomSource rand) {
         if (rand.nextBoolean()) {
             return theme.material.get(world, pos, rand).getBlock();
         } else {

@@ -3,12 +3,12 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.Range;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -39,19 +39,16 @@ public class SpawnRates {
     public static void loadJson(ResourceManager resourceManager) {
         DELAY = new Range[5];
         AMOUNT = new Range[5];
-        ResourceLocation resource = DungeonCrawl.locate("monster/spawn_rates.json");
-        DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
+        ResourceLocation file = DungeonCrawl.locate("monster/spawn_rates.json");
+        DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
+        Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
         try {
-            if (resourceManager.hasResource(resource)) {
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
-                loadLevel(data, resource, 0);
-                loadLevel(data, resource, 1);
-                loadLevel(data, resource, 2);
-                loadLevel(data, resource, 3);
-                loadLevel(data, resource, 4);
-            } else {
-                throw new FileNotFoundException("Missing file " + resource);
-            }
+            JsonObject data = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
+            loadLevel(data, file, 0);
+            loadLevel(data, file, 1);
+            loadLevel(data, file, 2);
+            loadLevel(data, file, 3);
+            loadLevel(data, file, 4);
         } catch (IOException e) {
             DungeonCrawl.LOGGER.error("An error occurred whilst trying to load {}", resource.toString());
             e.printStackTrace();

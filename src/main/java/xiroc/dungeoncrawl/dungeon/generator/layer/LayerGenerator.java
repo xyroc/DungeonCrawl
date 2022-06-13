@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -32,7 +33,6 @@ import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
 import java.util.List;
-import java.util.Random;
 
 public abstract class LayerGenerator {
 
@@ -79,7 +79,7 @@ public abstract class LayerGenerator {
         return corridor;
     }
 
-    public static void tryCreateSecretRoom(DungeonLayer dungeonLayer, List<DungeonCorridor> corridors, int maxAttempts, Random random) {
+    public static void tryCreateSecretRoom(DungeonLayer dungeonLayer, List<DungeonCorridor> corridors, int maxAttempts, RandomSource random) {
         for (int i = 0; i < maxAttempts; i++) {
             if (corridors.isEmpty()) {
                 break;
@@ -92,7 +92,7 @@ public abstract class LayerGenerator {
         }
     }
 
-    public static void createStarterRoom(DungeonLayer dungeonLayer, Random rand, int layer) {
+    public static void createStarterRoom(DungeonLayer dungeonLayer, RandomSource rand, int layer) {
         Tuple<Position2D, Rotation> sideRoomData = dungeonLayer.findStarterRoomData(dungeonLayer.start, rand);
         if (sideRoomData != null) {
             DungeonSideRoom room = new DungeonSideRoom();
@@ -118,7 +118,7 @@ public abstract class LayerGenerator {
     /**
      * Used to (re-)initialize the layer generator. Called before every layer generation.
      */
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand,
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, RandomSource rand,
                                 int layer, boolean isLastLayer) {
         this.settings = settings;
     }
@@ -126,8 +126,7 @@ public abstract class LayerGenerator {
     /**
      * Generates a specific layer
      */
-    public abstract void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random
-            rand, Position2D start);
+    public abstract void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, RandomSource rand, Position2D start);
 
     public void enableSecretRoom() {
     }

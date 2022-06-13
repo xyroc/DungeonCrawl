@@ -22,8 +22,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -32,7 +33,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
@@ -40,24 +41,23 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.Orientation;
 
 import java.util.List;
-import java.util.Random;
 
 public class DungeonNodeRoom extends DungeonPiece {
 
     public boolean lootRoom;
 
     public DungeonNodeRoom() {
-        super(StructurePieceTypes.NODE_ROOM);
+        super(ModStructurePieceTypes.NODE_ROOM);
     }
 
     public DungeonNodeRoom(CompoundTag nbt) {
-        super(StructurePieceTypes.NODE_ROOM, nbt);
+        super(ModStructurePieceTypes.NODE_ROOM, nbt);
         this.lootRoom = nbt.getBoolean("lootRoom");
         createBoundingBox();
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, RandomSource rand) {
         if (lootRoom) {
             this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.LOOT_ROOM);
             return;
@@ -88,7 +88,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, RandomSource randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for  {}", this);
             return;
@@ -119,7 +119,7 @@ public class DungeonNodeRoom extends DungeonPiece {
     }
 
     @Override
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonType type, ModelSelector modelSelector, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonType type, ModelSelector modelSelector, int layer, RandomSource rand) {
         super.addChildPieces(pieces, builder, type, modelSelector, layer, rand);
 
         if (sides[0]) {

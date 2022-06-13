@@ -18,13 +18,13 @@
 
 package xiroc.dungeoncrawl.util;
 
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 /**
  * Used to create random objects of various types.
  */
 public interface IRandom<T> {
 
-    T roll(Random rand);
+    T roll(RandomSource rand);
 
 }

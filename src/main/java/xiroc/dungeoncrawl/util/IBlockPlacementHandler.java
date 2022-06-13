@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.util;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -54,7 +55,7 @@ public interface IBlockPlacementHandler {
             .put(Blocks.PODZOL, new Plants.Podzol())
             .build();
 
-    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel);
+    void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel);
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

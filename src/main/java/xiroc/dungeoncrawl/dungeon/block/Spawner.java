@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
@@ -43,7 +45,6 @@ import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.Range;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 import java.util.Set;
 
 public class Spawner implements IBlockPlacementHandler {
@@ -54,7 +55,7 @@ public class Spawner implements IBlockPlacementHandler {
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
     @Override
-    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+    public void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int stage) {
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof SpawnerBlockEntity spawner) {
@@ -91,13 +92,13 @@ public class Spawner implements IBlockPlacementHandler {
     }
 
     public static CompoundTag createSpawnData(@Nullable EntityType<?> type, @Nullable CompoundTag spawnData,
-                                              Random rand, int stage) {
+                                              RandomSource rand, int stage) {
         if (type == null)
             type = RandomMonster.randomMonster(rand, stage);
         if (spawnData == null)
             spawnData = new CompoundTag();
 
-        ResourceLocation registryName = type.getRegistryName();
+        ResourceLocation registryName = ForgeRegistries.ENTITIES.getKey(type);
         if (registryName == null) {
             DungeonCrawl.LOGGER.warn("Entity type {} has no registry name.", type);
             return new CompoundTag();

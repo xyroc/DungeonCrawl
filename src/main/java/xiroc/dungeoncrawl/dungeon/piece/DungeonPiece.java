@@ -24,6 +24,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -62,7 +63,6 @@ import xiroc.dungeoncrawl.util.Position2D;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public abstract class DungeonPiece extends StructurePiece {
 
@@ -190,7 +190,7 @@ public abstract class DungeonPiece extends StructurePiece {
      * Called during the dungeon-post-processing to determine the model that will be
      * used to build this piece.
      */
-    public abstract void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand);
+    public abstract void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, RandomSource rand);
 
     public void createBoundingBox() {
         if (model != null) {
@@ -250,7 +250,7 @@ public abstract class DungeonPiece extends StructurePiece {
         this.z = z;
     }
 
-    public void setup(Random rand) {
+    public void setup(RandomSource rand) {
         if (model == null) {
             return;
         }
@@ -285,7 +285,7 @@ public abstract class DungeonPiece extends StructurePiece {
         return model != null && model.hasMultipart();
     }
 
-    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonType type, ModelSelector modelSelector, int layer, Random rand) {
+    public void addChildPieces(List<DungeonPiece> pieces, DungeonBuilder builder, DungeonType type, ModelSelector modelSelector, int layer, RandomSource rand) {
         if (model != null && (model.hasMultipart() || type.getLayer(layer).hasMultipartOverride(model))) {
             BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
             for (MultipartModelData data : type.getLayer(layer).getMultipartData(model)) {
@@ -298,7 +298,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public void buildModel(DungeonModel model, LevelAccessor world, BoundingBox boundsIn, BlockPos pos, Random random, PlacementConfiguration configuration,
+    public void buildModel(DungeonModel model, LevelAccessor world, BoundingBox boundsIn, BlockPos pos, RandomSource random, PlacementConfiguration configuration,
                            Theme theme, SecondaryTheme secondaryTheme, int lootLevel, Rotation rotation, boolean fillAir, boolean expandDownwards) {
 
         if (Config.EXTENDED_DEBUG.get()) {
@@ -325,7 +325,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    public void placeBlock(LevelAccessor world, BlockState state, BlockPos position, DungeonModelBlock block, Rotation rotation, Random random, PlacementConfiguration configuration,
+    public void placeBlock(LevelAccessor world, BlockState state, BlockPos position, DungeonModelBlock block, Rotation rotation, RandomSource random, PlacementConfiguration configuration,
                            Theme theme, SecondaryTheme secondaryTheme, List<BlockPos> fancyPillars, int lootLevel, boolean fillAir, boolean expandDownwards) {
         if (DungeonBuilder.isBlockProtected(world, position)) {
             return;
@@ -392,7 +392,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    protected void entrances(LevelAccessor world, BoundingBox bounds, DungeonModel model, Random random) {
+    protected void entrances(LevelAccessor world, BoundingBox bounds, DungeonModel model, RandomSource random) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x + offset.getX(), y, z + offset.getZ()); // Ignore the y offset
@@ -488,7 +488,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    protected void decorate(LevelAccessor world, BlockPos pos, Theme theme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonModel model) {
+    protected void decorate(LevelAccessor world, BlockPos pos, Theme theme, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonModel model) {
         if (theme.hasDecorations()) {
             for (DungeonDecoration decoration : theme.getDecorations()) {
                 if (Config.EXTENDED_DEBUG.get()) {
@@ -504,8 +504,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
     }
 
-    protected void placeFeatures(LevelAccessor world, BoundingBox bounds, Theme
-            theme, SecondaryTheme secondaryTheme, Random rand, int stage) {
+    protected void placeFeatures(LevelAccessor world, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, RandomSource rand, int stage) {
         if (features != null) {
             for (DungeonModelFeature.Instance feature : features) {
                 feature.place(world, bounds, rand, theme, secondaryTheme, stage);

@@ -21,26 +21,26 @@ package xiroc.dungeoncrawl.dungeon.piece.room;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 import java.util.List;
-import java.util.Random;
 
 public class DungeonSpiderRoom extends DungeonPiece {
 
     private BlockPos[] spawners, chests;
 
     public DungeonSpiderRoom(CompoundTag nbt) {
-        super(StructurePieceTypes.SPIDER_ROOM, nbt);
+        super(ModStructurePieceTypes.SPIDER_ROOM, nbt);
         if (nbt.contains("spawners")) {
             ListTag list = nbt.getList("spawners", 10);
             spawners = new BlockPos[list.size()];
@@ -60,7 +60,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void setup(Random rand) {
+    public void setup(RandomSource rand) {
         int floor = y + 1;
         int chests = 1 + rand.nextInt(2);
         int spawners = chests + rand.nextInt(2);
@@ -80,7 +80,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void postProcess(WorldGenLevel p_230383_1_, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, RandomSource p_230383_4_, BoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, RandomSource rand) {
     }
 
     @Override

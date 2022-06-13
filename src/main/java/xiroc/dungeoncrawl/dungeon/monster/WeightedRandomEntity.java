@@ -21,13 +21,13 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.util.IRandom;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class WeightedRandomEntity implements IRandom<EntityType<?>> {
 
@@ -55,7 +55,7 @@ public class WeightedRandomEntity implements IRandom<EntityType<?>> {
     }
 
     @Override
-    public EntityType<?> roll(Random rand) {
+    public EntityType<?> roll(RandomSource rand) {
         float f = rand.nextFloat();
         for (WeightedRandomEntity.WeightedEntry entry : entries)
             if (entry.getB() >= f)

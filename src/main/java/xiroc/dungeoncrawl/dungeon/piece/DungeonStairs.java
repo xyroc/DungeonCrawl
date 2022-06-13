@@ -21,9 +21,10 @@ package xiroc.dungeoncrawl.dungeon.piece;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -32,30 +33,29 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 
 import java.util.List;
-import java.util.Random;
 
 public class DungeonStairs extends DungeonPiece {
 
     public int stairType; // 0: bottom stairs, 1: top stairs
 
     public DungeonStairs() {
-        super(StructurePieceTypes.STAIRS);
+        super(ModStructurePieceTypes.STAIRS);
         this.stairType = 0;
     }
 
     public DungeonStairs(CompoundTag p_i51343_2_) {
-        super(StructurePieceTypes.STAIRS, p_i51343_2_);
+        super(ModStructurePieceTypes.STAIRS, p_i51343_2_);
         this.stairType = p_i51343_2_.getInt("stairType");
     }
 
     @Override
-    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, Random rand) {
+    public void setupModel(DungeonBuilder builder, ModelSelector modelSelector, List<DungeonPiece> pieces, RandomSource rand) {
         switch (stairType) {
             case 0 -> this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.BOTTOM_STAIRS);
             case 1 -> this.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.TOP_STAIRS);
@@ -63,7 +63,7 @@ public class DungeonStairs extends DungeonPiece {
     }
 
     @Override
-    public void postProcess(WorldGenLevel worldIn, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
+    public void postProcess(WorldGenLevel worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, RandomSource randomIn, BoundingBox structureBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
         if (model == null) {
             DungeonCrawl.LOGGER.warn("Missing model for {}", this);
             return;
@@ -86,7 +86,7 @@ public class DungeonStairs extends DungeonPiece {
 
     }
 
-    public void ironBars(LevelAccessor world, BoundingBox bounds, DungeonModel model, Random random) {
+    public void ironBars(LevelAccessor world, BoundingBox bounds, DungeonModel model, RandomSource random) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
 
         if (sides[0]) {

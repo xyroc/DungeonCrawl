@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,14 +31,12 @@ import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 
-import java.util.Random;
-
 public class Plants {
 
     public static class Farmland implements IBlockPlacementHandler {
 
         @Override
-        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             state = state.setValue(BlockStateProperties.MOISTURE, 7);
             world.setBlock(pos, state, 2);
             BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
@@ -58,7 +57,7 @@ public class Plants {
     public static class FlowerPot implements IBlockPlacementHandler {
 
         @Override
-        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             Registry.BLOCK.getTag(BlockTags.FLOWER_POTS).flatMap((pots) -> pots.getRandomElement(rand)).ifPresent((pot) -> world.setBlock(pos, pot.value().defaultBlockState(), 2));
         }
 
@@ -67,7 +66,7 @@ public class Plants {
     public static class Podzol implements IBlockPlacementHandler {
 
         @Override
-        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, state, 2);
             Registry.BLOCK.getTag(BlockTags.TALL_FLOWERS).flatMap((flowers) -> flowers.getRandomElement(rand)).ifPresent((flowerBlock) -> {
                 BlockState flower = flowerBlock.value().defaultBlockState();

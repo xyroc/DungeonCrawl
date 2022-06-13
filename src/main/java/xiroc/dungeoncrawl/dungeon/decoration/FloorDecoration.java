@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.decoration;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
@@ -28,12 +29,10 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
-import java.util.Random;
-
 public record FloorDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
         model.blocks.forEach((block) -> {
             BlockPos pos = DungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
             if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
@@ -65,7 +64,7 @@ public record FloorDecoration(BlockStateProvider blockStateProvider, float chanc
     public record NextToSolid(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
 
         @Override
-        public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
+        public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
             model.blocks.forEach((block) -> {
                 if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1) {
                     BlockPos pos = DungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);

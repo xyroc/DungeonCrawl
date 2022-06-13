@@ -42,7 +42,8 @@ public class ModelPools {
         DungeonCrawl.LOGGER.debug("Loading {}", FILE);
         POOLS.clear();
         try {
-            JsonObject file = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(FILE).getInputStream())).getAsJsonObject();
+            JsonObject file = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(FILE)
+                    .orElseThrow(() -> new DatapackLoadException("Missing file: " + FILE)).open())).getAsJsonObject();
             JsonObject pools = file.getAsJsonObject("pools");
 
             pools.entrySet().forEach((entry) -> {

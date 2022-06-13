@@ -25,13 +25,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Blocks;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
-import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
@@ -45,7 +43,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Random;
 
 public class Theme {
 
@@ -276,14 +273,14 @@ public class Theme {
         ImmutableSet.Builder<ResourceLocation> themeKeySetBuilder = new ImmutableSet.Builder<>();
         ImmutableSet.Builder<ResourceLocation> secondaryThemeKeySetBuilder = new ImmutableSet.Builder<>();
 
-        for (ResourceLocation resource : resourceManager.listResources(DungeonCrawl.locate(SECONDARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
-            DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
+        resourceManager.listResources(DungeonCrawl.locate(SECONDARY_THEME_DIRECTORY).getPath(), (s) -> s.getPath().endsWith(".json")).forEach((file, resource) -> {
+            DungeonCrawl.LOGGER.debug("Loading {}", file);
             try {
-                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                ResourceLocation key = DungeonCrawl.key(resource, SECONDARY_THEME_DIRECTORY, ".json");
+                JsonReader reader = new JsonReader(new InputStreamReader(resource.open()));
+                ResourceLocation key = DungeonCrawl.key(file, SECONDARY_THEME_DIRECTORY, ".json");
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
-                    SecondaryTheme theme = JsonTheming.deserializeSecondaryTheme(json, resource);
+                    SecondaryTheme theme = JsonTheming.deserializeSecondaryTheme(json, file);
                     theme.key = key;
                     secondaryThemeKeySetBuilder.add(key);
 
@@ -293,16 +290,16 @@ public class Theme {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
                 e.printStackTrace();
             }
-        }
+        });
 
-        for (ResourceLocation resource : resourceManager.listResources(DungeonCrawl.locate(PRIMARY_THEME_DIRECTORY).getPath(), (s) -> s.endsWith(".json"))) {
-            DungeonCrawl.LOGGER.debug("Loading {}", resource.toString());
+        resourceManager.listResources(DungeonCrawl.locate(PRIMARY_THEME_DIRECTORY).getPath(), (s) -> s.getPath().endsWith(".json")).forEach((file, resource) -> {
+            DungeonCrawl.LOGGER.debug("Loading {}", file);
             try {
-                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                ResourceLocation key = DungeonCrawl.key(resource, PRIMARY_THEME_DIRECTORY, ".json");
+                JsonReader reader = new JsonReader(new InputStreamReader(resource.open()));
+                ResourceLocation key = DungeonCrawl.key(file, PRIMARY_THEME_DIRECTORY, ".json");
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
-                    Theme theme = JsonTheming.deserializeTheme(json, resource);
+                    Theme theme = JsonTheming.deserializeTheme(json, file);
                     theme.key = key;
                     themeKeySetBuilder.add(key);
 
@@ -312,7 +309,7 @@ public class Theme {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource.toString());
                 e.printStackTrace();
             }
-        }
+        });
 
         Hashtable<String, WeightedRandom.Builder<Theme>> themeMappingBuilders = new Hashtable<>();
         Hashtable<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders = new Hashtable<>();
@@ -320,25 +317,25 @@ public class Theme {
         WeightedRandom.Builder<Theme> primaryDefaultBuilder = new WeightedRandom.Builder<>();
         WeightedRandom.Builder<SecondaryTheme> secondaryDefaultBuilder = new WeightedRandom.Builder<>();
 
-        for (ResourceLocation resource : resourceManager.listResources(PRIMARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
+        resourceManager.listResources(PRIMARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.getPath().endsWith(".json")).forEach((file, resource) -> {
             try {
-                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeThemeMapping(JsonParser.parseReader(reader).getAsJsonObject(), themeMappingBuilders, primaryDefaultBuilder, resource);
+                JsonReader reader = new JsonReader(new InputStreamReader(resource.open()));
+                JsonTheming.deserializeThemeMapping(JsonParser.parseReader(reader).getAsJsonObject(), themeMappingBuilders, primaryDefaultBuilder, file);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
             }
-        }
+        });
 
-        for (ResourceLocation resource : resourceManager.listResources(SECONDARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.endsWith(".json"))) {
+        resourceManager.listResources(SECONDARY_THEME_MAPPINGS_DIRECTORY, (s) -> s.getPath().endsWith(".json")).forEach((file, resource) -> {
             try {
-                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeSecondaryThemeMapping(JsonParser.parseReader(reader).getAsJsonObject(), secondaryThemeMappingBuilders, secondaryDefaultBuilder, resource);
+                JsonReader reader = new JsonReader(new InputStreamReader(resource.open()));
+                JsonTheming.deserializeSecondaryThemeMapping(JsonParser.parseReader(reader).getAsJsonObject(), secondaryThemeMappingBuilders, secondaryDefaultBuilder, file);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
             }
-        }
+        });
 
         themeMappingBuilders.forEach((biome, builder) -> BIOME_TO_THEME.put(biome, builder.build()));
         secondaryThemeMappingBuilders.forEach((biome, builder) -> BIOME_TO_SECONDARY_THEME.put(biome, builder.build()));
@@ -374,16 +371,16 @@ public class Theme {
     private static Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> loadRandomThemeFiles(String directory, ResourceManager resourceManager) {
         WeightedRandom.Builder<Theme> primary = new WeightedRandom.Builder<>();
         WeightedRandom.Builder<SecondaryTheme> secondary = new WeightedRandom.Builder<>();
-        for (ResourceLocation resource : resourceManager.listResources(directory, (s) -> s.endsWith(".json"))) {
+        resourceManager.listResources(directory, (s) -> s.getPath().endsWith(".json")).forEach((file, resource) -> {
             try {
-                JsonReader reader = new JsonReader(new InputStreamReader(resourceManager.getResource(resource).getInputStream()));
-                JsonTheming.deserializeRandomThemeFile(JsonParser.parseReader(reader).getAsJsonObject(),
-                        primary, secondary, resource);
+                JsonReader reader = new JsonReader(new InputStreamReader(resource.open()));
+                JsonTheming.deserializeRandomThemeFile(JsonParser.parseReader(reader).getAsJsonObject(), primary, secondary, file);
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load {}", resource);
                 e.printStackTrace();
             }
-        }
+        });
+
         if (primary.entries.isEmpty()) {
             throw new DatapackLoadException("No primary themes were present after loading " + directory);
         }
@@ -401,35 +398,35 @@ public class Theme {
         return KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, BUILTIN_DEFAULT_SECONDARY_THEME);
     }
 
-    public static Theme randomTheme(String biome, Random rand) {
+    public static Theme randomTheme(String biome, RandomSource rand) {
         return BIOME_TO_THEME.getOrDefault(biome, DEFAULT_TOP_THEME).roll(rand);
     }
 
-    public static SecondaryTheme randomSecondaryTheme(String biome, Random rand) {
+    public static SecondaryTheme randomSecondaryTheme(String biome, RandomSource rand) {
         return BIOME_TO_SECONDARY_THEME.getOrDefault(biome, DEFAULT_SECONDARY_TOP_THEME).roll(rand);
     }
 
-    public static Theme randomCatacombsTheme(Random rand) {
+    public static Theme randomCatacombsTheme(RandomSource rand) {
         return CATACOMBS_THEME.roll(rand);
     }
 
-    public static SecondaryTheme randomCatacombsSecondaryTheme(Random rand) {
+    public static SecondaryTheme randomCatacombsSecondaryTheme(RandomSource rand) {
         return CATACOMBS_SECONDARY_THEME.roll(rand);
     }
 
-    public static Theme randomLowerCatacombsTheme(Random rand) {
+    public static Theme randomLowerCatacombsTheme(RandomSource rand) {
         return LOWER_CATACOMBS_THEME.roll(rand);
     }
 
-    public static SecondaryTheme randomLowerCatacombsSecondaryTheme(Random rand) {
+    public static SecondaryTheme randomLowerCatacombsSecondaryTheme(RandomSource rand) {
         return LOWER_CATACOMBS_SECONDARY_THEME.roll(rand);
     }
 
-    public static Theme randomHellTheme(Random rand) {
+    public static Theme randomHellTheme(RandomSource rand) {
         return HELL_THEME.roll(rand);
     }
 
-    public static SecondaryTheme randomHellSecondaryTheme(Random rand) {
+    public static SecondaryTheme randomHellSecondaryTheme(RandomSource rand) {
         return HELL_SECONDARY_THEME.roll(rand);
     }
 

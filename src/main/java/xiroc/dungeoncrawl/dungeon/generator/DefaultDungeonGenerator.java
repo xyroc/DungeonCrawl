@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
@@ -37,24 +38,24 @@ public class DefaultDungeonGenerator extends DungeonGenerator {
     private LayerGenerator layerGenerator;
 
     @Override
-    public void initializeDungeon(DungeonType type, DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand) {
+    public void initializeDungeon(DungeonType type, DungeonBuilder dungeonBuilder, ChunkPos chunkPos, RandomSource rand) {
         super.initializeDungeon(type, dungeonBuilder, chunkPos, rand);
         this.secretRoomLayer = rand.nextInt(2);
     }
 
     @Override
-    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, Random rand, int layer, boolean isLastLayer) {
+    public void initializeLayer(LayerGeneratorSettings settings, DungeonBuilder dungeonBuilder, RandomSource rand, int layer, boolean isLastLayer) {
         this.layerGenerator = this.type.getLayer(layer).layerType().layerGenerator;
         this.layerGenerator.initializeLayer(settings, dungeonBuilder, rand, layer, isLastLayer);
     }
 
     @Override
-    public int layerCount(Random rand, int height) {
+    public int layerCount(RandomSource rand, int height) {
         return Math.min(type.dungeonSettings().maxLayers(), height / 9);
     }
 
     @Override
-    public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, Random rand, Position2D start) {
+    public void generateLayer(DungeonBuilder dungeonBuilder, DungeonLayer dungeonLayer, int layer, RandomSource rand, Position2D start) {
         DungeonCrawl.LOGGER.debug("Generating layout for layer {}", layer);
         if (Config.SECRET_ROOMS.get() && layer == secretRoomLayer) {
             this.layerGenerator.enableSecretRoom();

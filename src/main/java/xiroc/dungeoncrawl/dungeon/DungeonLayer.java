@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -32,7 +33,6 @@ import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.Position2D;
 
 import java.util.List;
-import java.util.Random;
 
 public class DungeonLayer {
 
@@ -126,7 +126,7 @@ public class DungeonLayer {
         return true;
     }
 
-    public Tuple<Position2D, Rotation> findStarterRoomData(Position2D start, Random rand) {
+    public Tuple<Position2D, Rotation> findStarterRoomData(Position2D start, RandomSource rand) {
         int index = rand.nextInt(4);
 
         for (int i = 0; i < 4; i++) {
@@ -146,7 +146,7 @@ public class DungeonLayer {
         return null;
     }
 
-    public Tuple<Position2D, Rotation> findSideRoomData(Position2D base, Random rand) {
+    public Tuple<Position2D, Rotation> findSideRoomData(Position2D base, RandomSource rand) {
         Position2D north = base.shift(Direction.NORTH, 1), east = base.shift(Direction.EAST, 1),
                 south = base.shift(Direction.SOUTH, 1), west = base.shift(Direction.WEST, 1);
 
@@ -200,7 +200,7 @@ public class DungeonLayer {
      * @param placeHolder the placeholder of the piece
      * @param rand        an instance of Random which will be used to choose a random one of the valid rotations, should there be more than one
      */
-    public void rotatePiece(Tile placeHolder, Random rand) {
+    public void rotatePiece(Tile placeHolder, RandomSource rand) {
         if (placeHolder.hasFlag(Tile.Flag.FIXED_ROTATION))
             return;
         DungeonPiece piece = placeHolder.piece;
@@ -231,7 +231,7 @@ public class DungeonLayer {
      * @param rand        an instance of Random which will be used to choose in which direction (clockwise or counterclockwise)
      *                    the algorithm rotates the node until it matches to create more randomness.
      */
-    public void rotateNode(Tile placeHolder, Random rand) {
+    public void rotateNode(Tile placeHolder, RandomSource rand) {
         if (placeHolder.hasFlag(Tile.Flag.FIXED_ROTATION))
             return;
         DungeonNodeRoom node = (DungeonNodeRoom) placeHolder.piece;
@@ -245,7 +245,7 @@ public class DungeonLayer {
         }
     }
 
-    public boolean placeSecretRoom(DungeonCorridor corridor, Position2D position, Random rand) {
+    public boolean placeSecretRoom(DungeonCorridor corridor, Position2D position, RandomSource rand) {
         Direction direction = (corridor.rotation == Rotation.NONE || corridor.rotation == Rotation.CLOCKWISE_180) ?
                 (rand.nextBoolean() ? Direction.NORTH : Direction.SOUTH) : (rand.nextBoolean() ? Direction.EAST : Direction.WEST);
         Position2D pos = position.shift(direction, 2);

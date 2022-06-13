@@ -25,7 +25,9 @@ import com.google.gson.stream.JsonReader;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -33,10 +35,8 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.Range;
 
 import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Random;
 
 public class RandomPotionEffect {
 
@@ -70,59 +70,55 @@ public class RandomPotionEffect {
      * Convenience method to load a single potion effect file.
      */
     private static void loadFile(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
-        if (resourceManager.hasResource(file)) {
-            try {
-                DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
-                JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
+        Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
+        try {
+            DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
+            JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resource.open()))).getAsJsonObject();
 
-                if (object.has("chance")) {
-                    CHANCES[stage] = object.get("chance").getAsFloat();
-                } else {
-                    throw new DatapackLoadException("Missing entry 'chance' in " + file);
-                }
-
-                if (object.has("rolls")) {
-                    JsonObject amount = object.getAsJsonObject("rolls");
-                    ROLLS[stage] = new Range(amount.get("min").getAsInt(), amount.get("max").getAsInt());
-                } else {
-                    throw new DatapackLoadException("Missing entry 'rolls' in " + file);
-                }
-
-                if (object.has("effects")) {
-                    EFFECTS[stage] = WeightedRandomPotionEffect.fromJson(object.getAsJsonArray("effects"));
-                } else {
-                    throw new DatapackLoadException("Missing entry 'effects' in " + file);
-
-                }
-
-                if (object.has("guaranteed")) {
-                    JsonArray array = object.getAsJsonArray("guaranteed");
-                    GUARANTEED_EFFECTS[stage] = new PotionEffect[array.size()];
-                    for (int i = 0; i < array.size(); i++) {
-                        JsonObject effect = array.get(i).getAsJsonObject();
-                        Range amplifier = effect.has("amplifier") ?
-                                new Range(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
-                                        effect.getAsJsonObject("amplifier").get("max").getAsInt())
-                                : new Range(0, 0);
-                        GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
-                                effect.get("duration").getAsInt(), amplifier);
-                    }
-                }
-
-            } catch (Exception e) {
-                DungeonCrawl.LOGGER.error("Failed to load {} ", file);
-                e.printStackTrace();
+            if (object.has("chance")) {
+                CHANCES[stage] = object.get("chance").getAsFloat();
+            } else {
+                throw new DatapackLoadException("Missing entry 'chance' in " + file);
             }
-        } else {
-            throw new FileNotFoundException("Missing file " + file);
+
+            if (object.has("rolls")) {
+                JsonObject amount = object.getAsJsonObject("rolls");
+                ROLLS[stage] = new Range(amount.get("min").getAsInt(), amount.get("max").getAsInt());
+            } else {
+                throw new DatapackLoadException("Missing entry 'rolls' in " + file);
+            }
+
+            if (object.has("effects")) {
+                EFFECTS[stage] = WeightedRandomPotionEffect.fromJson(object.getAsJsonArray("effects"));
+            } else {
+                throw new DatapackLoadException("Missing entry 'effects' in " + file);
+            }
+
+            if (object.has("guaranteed")) {
+                JsonArray array = object.getAsJsonArray("guaranteed");
+                GUARANTEED_EFFECTS[stage] = new PotionEffect[array.size()];
+                for (int i = 0; i < array.size(); i++) {
+                    JsonObject effect = array.get(i).getAsJsonObject();
+                    Range amplifier = effect.has("amplifier") ?
+                            new Range(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
+                                    effect.getAsJsonObject("amplifier").get("max").getAsInt())
+                            : new Range(0, 0);
+                    GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
+                            effect.get("duration").getAsInt(), amplifier);
+                }
+            }
+        } catch (Exception e) {
+            DungeonCrawl.LOGGER.error("Failed to load {} ", file);
+            e.printStackTrace();
         }
+
     }
 
     /**
      * @return An NBT list of potion effects or null.
      */
     @Nullable
-    public static ListTag createPotionEffects(Random rand, int stage) {
+    public static ListTag createPotionEffects(RandomSource rand, int stage) {
         if (stage > 4)
             stage = 4;
         boolean chance = rand.nextFloat() < CHANCES[stage];

@@ -21,13 +21,13 @@ package xiroc.dungeoncrawl.dungeon;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 
 import java.util.List;
-import java.util.Random;
 
 public class DungeonFeatures {
 
@@ -59,7 +59,7 @@ public class DungeonFeatures {
 
     }
 
-    public static void processCorridor(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+    public static void processCorridor(DungeonBuilder builder, DungeonLayer layer, int x, int z, RandomSource rand, int lyr,
                                        int stage, BlockPos startPos) {
         for (CorridorFeature corridorFeature : CORRIDOR_FEATURES)
             if (corridorFeature.process(builder, layer, x, z, rand, lyr, stage, startPos))
@@ -69,7 +69,7 @@ public class DungeonFeatures {
     @FunctionalInterface
     public interface CorridorFeature {
 
-        boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, Random rand, int lyr,
+        boolean process(DungeonBuilder builder, DungeonLayer layer, int x, int z, RandomSource rand, int lyr,
                         int stage, BlockPos startPos);
 
     }

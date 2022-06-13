@@ -20,13 +20,11 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -37,8 +35,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -103,10 +99,10 @@ public class DungeonModelBlock {
 //            }
             variation = 0;
             block = state.getBlock();
-            blockName = state.getBlock().getRegistryName();
+            blockName = Registry.BLOCK.getKey(state.getBlock());
         } else if (type == DungeonModelBlockType.OTHER) {
             block = state.getBlock();
-            blockName = state.getBlock().getRegistryName();
+            blockName = Registry.BLOCK.getKey(state.getBlock());
         } else {
             block = Blocks.CAVE_AIR;
         }

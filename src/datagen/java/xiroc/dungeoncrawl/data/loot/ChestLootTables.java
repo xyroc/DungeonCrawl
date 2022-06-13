@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
@@ -41,7 +42,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
 
     @Override
     public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
-        consumer.accept(chest("food"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_FOOD, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("food")
                         .setRolls(UniformGenerator.between(9, 11))
@@ -122,7 +123,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(6)
                                 .apply(SuspiciousStew.suspiciousStew()))));
 
-        consumer.accept(chest("secret_room"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_SECRET_ROOM, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("secret room")
                         .setRolls(UniformGenerator.between(8, 8))
@@ -153,7 +154,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                         .add(LootItem.lootTableItem(Items.MUSIC_DISC_WAIT))
                         .add(LootItem.lootTableItem(Items.MUSIC_DISC_WARD))));
 
-        consumer.accept(chest("stage_1"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_STAGE_1, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage one chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -279,7 +280,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(2)
                                 .apply(Shield.shield(0)))));
 
-        consumer.accept(chest("stage_2"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_STAGE_2, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage two chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -408,7 +409,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(2)
                                 .apply(Shield.shield(1)))));
 
-        consumer.accept(chest("stage_3"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_STAGE_3, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage three chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -509,7 +510,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(6)
                                 .apply(Shield.shield(2)))));
 
-        consumer.accept(chest("stage_4"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_STAGE_4, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage four chest")
                         .setRolls(UniformGenerator.between(7, 10))
@@ -609,7 +610,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(6)
                                 .apply(Shield.shield(3)))));
 
-        consumer.accept(chest("stage_5"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_STAGE_5, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage five chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -701,7 +702,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(3)
                                 .apply(Shield.shield(4)))));
 
-        consumer.accept(chest("supply"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_SUPPLY, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("guaranteed items")
                         .setRolls(UniformGenerator.between(3, 6))
@@ -809,7 +810,7 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(5)
                                 .apply(EnchantWithLevelsFunction.enchantWithLevels(ConstantValue.exactly(10))))));
 
-        consumer.accept(chest("treasure"), LootTable.lootTable()
+        consumer.accept(Loot.CHEST_TREASURE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("treasure")
                         .setRolls(UniformGenerator.between(7, 8))
@@ -897,10 +898,6 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                         .add(LootItem.lootTableItem(Items.POTION)
                                 .setWeight(5)
                                 .apply(RandomPotion.randomPotion(4)))));
-    }
-
-    private static ResourceLocation chest(String path) {
-        return DungeonCrawl.locate("chests/" + path);
     }
 
 }

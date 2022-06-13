@@ -22,12 +22,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import java.util.Random;
 
 public class TreasureItems {
 
@@ -86,10 +84,10 @@ public class TreasureItems {
             CompoundTag display = new CompoundTag();
             ListTag lore = new ListTag();
             lore.add(StringTag.valueOf(
-                    Component.Serializer.toJson(new TextComponent("A medicinal tincture."))));
+                    Component.Serializer.toJson(Component.literal("A medicinal tincture."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Laudanum"))));
+                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Laudanum"))));
             nbt.put("display", display);
             LAUDANUM = new ItemStack(Items.POTION);
             LAUDANUM.setTag(nbt);
@@ -115,10 +113,10 @@ public class TreasureItems {
             CompoundTag display = new CompoundTag();
             ListTag lore = new ListTag();
             lore.add(StringTag
-                    .valueOf(Component.Serializer.toJson(new TextComponent("An unstable mixture."))));
+                    .valueOf(Component.Serializer.toJson(Component.literal("An unstable mixture."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Animus"))));
+                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Animus"))));
             nbt.put("display", display);
             ANIMUS = new ItemStack(Items.POTION);
             ANIMUS.setTag(nbt);
@@ -145,10 +143,10 @@ public class TreasureItems {
             CompoundTag display = new CompoundTag();
             ListTag lore = new ListTag();
             lore.add(StringTag
-                    .valueOf(Component.Serializer.toJson(new TextComponent("A floral extract."))));
+                    .valueOf(Component.Serializer.toJson(Component.literal("A floral extract."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Nectar"))));
+                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Nectar"))));
             nbt.put("display", display);
             NECTAR = new ItemStack(Items.POTION);
             NECTAR.setTag(nbt);
@@ -175,10 +173,10 @@ public class TreasureItems {
             CompoundTag display = new CompoundTag();
             ListTag lore = new ListTag();
             lore.add(StringTag.valueOf(
-                    Component.Serializer.toJson(new TextComponent("An energetic beverage."))));
+                    Component.Serializer.toJson(Component.literal("An energetic beverage."))));
             display.put("Lore", lore);
             display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Velocitas"))));
+                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Velocitas"))));
             nbt.put("display", display);
             VELOCITAS = new ItemStack(Items.POTION);
             VELOCITAS.setTag(nbt);
@@ -195,9 +193,9 @@ public class TreasureItems {
             nbt.putInt("HideFlags", 32);
             CompoundTag display = new CompoundTag();
             ListTag lore = new ListTag();
-            lore.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent("A glowstone extract."))));
+            lore.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal("A glowstone extract."))));
             display.put("Lore", lore);
-            display.put("Name", StringTag.valueOf(Component.Serializer.toJson(new TextComponent("Luma"))));
+            display.put("Name", StringTag.valueOf(Component.Serializer.toJson(Component.literal("Luma"))));
             nbt.put("display", display);
             LUMA = new ItemStack(Items.POTION);
             LUMA.setTag(nbt);
@@ -222,11 +220,11 @@ public class TreasureItems {
 
     public static CompoundTag createDisplayTag(String name, String... loreEntries) {
         CompoundTag display = new CompoundTag();
-        display.put("Name", StringTag.valueOf(Component.Serializer.toJson(new TextComponent(name))));
+        display.put("Name", StringTag.valueOf(Component.Serializer.toJson(Component.literal(name))));
         ListTag lore = new ListTag();
         if (loreEntries.length > 0) {
             for (String line : loreEntries) {
-                lore.add(StringTag.valueOf(Component.Serializer.toJson(new TextComponent(line))));
+                lore.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(line))));
             }
             display.put("Lore", lore);
         }
@@ -239,22 +237,22 @@ public class TreasureItems {
         return potion;
     }
 
-        private static ItemStack createItemWithNbt (Item item, CompoundTag nbt){
-            ItemStack stack = new ItemStack(item);
-            stack.setTag(nbt);
-            return stack;
-        }
+    private static ItemStack createItemWithNbt(Item item, CompoundTag nbt) {
+        ItemStack stack = new ItemStack(item);
+        stack.setTag(nbt);
+        return stack;
+    }
 
-        public static ItemStack getRandomSpecialPotion (Random rand,int stage){
-            if (rand.nextFloat() < 0.4) {
-                return POTIONS[rand.nextInt(POTIONS.length)].copy();
+    public static ItemStack getRandomSpecialPotion(RandomSource rand, int stage) {
+        if (rand.nextFloat() < 0.4) {
+            return POTIONS[rand.nextInt(POTIONS.length)].copy();
+        } else {
+            if (stage == 0) {
+                return LAUDANUM.copy();
             } else {
-                if (stage == 0) {
-                    return LAUDANUM.copy();
-                } else {
-                    return SPECIAL_POTIONS[rand.nextInt(SPECIAL_POTIONS.length)].copy();
-                }
+                return SPECIAL_POTIONS[rand.nextInt(SPECIAL_POTIONS.length)].copy();
             }
         }
-
     }
+
+}

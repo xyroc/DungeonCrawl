@@ -21,13 +21,13 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.Range;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionEffect.WeightedEntry> {
 
@@ -55,7 +55,7 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
     }
 
     @Override
-    public WeightedEntry roll(Random rand) {
+    public WeightedEntry roll(RandomSource rand) {
         float f = rand.nextFloat();
         for (WeightedRandomPotionEffect.WeightedEntry entry : entries)
             if (entry.weight >= f)

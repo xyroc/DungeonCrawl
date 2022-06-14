@@ -1,5 +1,7 @@
 {
-  "settings": {},
+  "settings": {
+    "max_layers": 5
+  },
   "entrances": {
     "models": [
       {"key": "dungeoncrawl:entrance/roguelike/pyramid", "weight": 4},

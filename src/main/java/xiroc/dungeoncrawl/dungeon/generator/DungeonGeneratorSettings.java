@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 public class DungeonGeneratorSettings {
 
@@ -36,7 +37,7 @@ public class DungeonGeneratorSettings {
         if (settings.has("max_layers")) {
             return new DungeonGeneratorSettings(settings.get("max_layers").getAsInt());
         } else {
-            throw new RuntimeException("Missing entry max_layers in " + file);
+            throw new DatapackLoadException("Missing entry max_layers in " + file);
         }
     }
 

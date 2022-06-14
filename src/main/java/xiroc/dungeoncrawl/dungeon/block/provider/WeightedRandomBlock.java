@@ -12,6 +12,8 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
+import java.util.Random;
+
 public class WeightedRandomBlock implements BlockStateProvider {
 
     protected static final String TYPE = "random_block";
@@ -23,8 +25,8 @@ public class WeightedRandomBlock implements BlockStateProvider {
     }
 
     @Override
-    public BlockState get(IWorld world, BlockPos pos, Rotation rotation) {
-        return randomBlockState.roll(DungeonBlocks.RANDOM);
+    public BlockState get(IWorld world, BlockPos pos, Random random, Rotation rotation) {
+        return randomBlockState.roll(random);
     }
 
     @Override

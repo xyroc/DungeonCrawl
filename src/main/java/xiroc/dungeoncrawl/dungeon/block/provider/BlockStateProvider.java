@@ -25,13 +25,15 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
+import java.util.Random;
+
 public interface BlockStateProvider {
 
-    default BlockState get(IWorld world, BlockPos pos) {
-        return get(world, pos, Rotation.NONE);
+    default BlockState get(IWorld world, BlockPos pos, Random random) {
+        return get(world, pos, random, Rotation.NONE);
     }
 
-    BlockState get(IWorld world, BlockPos pos, Rotation rotation);
+    BlockState get(IWorld world, BlockPos pos, Random random, Rotation rotation);
 
     JsonObject serialize();
 

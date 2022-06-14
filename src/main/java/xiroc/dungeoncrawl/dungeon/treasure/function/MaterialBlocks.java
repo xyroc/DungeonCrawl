@@ -62,8 +62,8 @@ public class MaterialBlocks extends LootFunction {
 
     private static ResourceLocation getMaterial(Theme theme, SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {
         return rand.nextBoolean()
-                ? theme.material.get(world, pos).getBlock().getRegistryName()
-                : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();
+                ? theme.material.get(world, pos, rand).getBlock().getRegistryName()
+                : secondaryTheme.material.get(world, pos, rand).getBlock().getRegistryName();
     }
 
     public static LootFunction.Builder<?> materialBlocks() {

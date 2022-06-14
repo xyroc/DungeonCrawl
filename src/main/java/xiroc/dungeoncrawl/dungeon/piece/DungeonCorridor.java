@@ -65,12 +65,12 @@ public class DungeonCorridor extends DungeonPiece {
         Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.CORRIDOR, theme, secondaryTheme, stage, rotation, worldGen, false, false);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.CORRIDOR, theme, secondaryTheme, stage, rotation, worldGen, false, false);
         if (connectedSides != 2 || !isStraight()) {
-            entrances(worldIn, structureBoundingBoxIn, model, worldGen);
+            entrances(worldIn, structureBoundingBoxIn, model, randomIn, worldGen);
         }
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
-        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
+        decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 

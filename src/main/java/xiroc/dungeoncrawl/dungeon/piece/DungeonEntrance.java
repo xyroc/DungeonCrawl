@@ -70,14 +70,14 @@ public class DungeonEntrance extends DungeonPiece {
         Rotation layerRotation = Rotation.NONE;
         while (cursorHeight < height) {
             buildModel(staircaseLayer, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, false);
+                    new BlockPos(x + 2, cursorHeight, z + 2), randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, false);
             layerRotation = layerRotation.getRotated(Rotation.CLOCKWISE_90);
             cursorHeight++;
         }
 
         BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).offset(rotatedOffset(model.getOffset(), layerRotation, model));
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, true);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, true);
         placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
 
         // A custom bounding box for decorations (eg. vines placement).
@@ -86,7 +86,7 @@ public class DungeonEntrance extends DungeonPiece {
         // And because we don't want the decorations to decorate everything from top to bottom,
         //  we use a custom bounding box for them.
         MutableBoundingBox populationBox = model.createBoundingBox(pos, layerRotation);
-        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model, worldGen);
+        decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, populationBox, model);
         return true;
     }
 

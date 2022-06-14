@@ -23,11 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.Property;
 
-import java.util.Random;
-
 public class DungeonBlocks {
-
-    public static final Random RANDOM = new Random();
 
     public static final Block[] CARPET = new Block[]{Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
             Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET,

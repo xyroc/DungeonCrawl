@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.decoration;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -31,6 +30,8 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.JsonTheming;
 
+import java.util.Random;
+
 public interface DungeonDecoration {
 
     String VINE_DECORATION = "vines";
@@ -38,8 +39,7 @@ public interface DungeonDecoration {
     String FLOOR_DECORATION = "floor";
     String FLOOR_NEXT_TO_SOLID_DECORATION = "floor_next_to_solid";
 
-    void decorate(DungeonModel model, IWorld world, BlockPos pos, int width, int height, int length, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds,
-                  DungeonPiece piece, int stage, boolean worldGen);
+    void decorate(DungeonModel model, IWorld world, BlockPos pos, Random random, MutableBoundingBox worldGenBounds, MutableBoundingBox structureBounds, DungeonPiece piece);
 
     JsonObject serialize();
 

@@ -229,7 +229,7 @@ public final class DungeonModelFeature {
                 }
 
                 BlockPos p = pos.relative(direction, 2);
-                if (bounds.isInside(p) &&  world.getBlockState(p.below()).canOcclude()) {
+                if (bounds.isInside(p) && world.getBlockState(p.below()).canOcclude()) {
                     world.setBlock(p, Blocks.QUARTZ_BLOCK.defaultBlockState(), 2);
                 }
             }
@@ -266,9 +266,9 @@ public final class DungeonModelFeature {
                         if (height < pos.getY()) {
                             for (; height < pos.getY(); height++) {
                                 BlockPos p = new BlockPos(pos.getX(), height, pos.getZ());
-                                world.setBlock(p, theme.solid.get(world, p), 2);
+                                world.setBlock(p, theme.solid.get(world, p, rand), 2);
                             }
-                            world.setBlock(pos, theme.solidStairs.get(world, pos).setValue(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
+                            world.setBlock(pos, theme.solidStairs.get(world, pos, rand).setValue(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
                             pos = pos.relative(direction).relative(Direction.DOWN);
                         } else {
                             break;
@@ -286,7 +286,7 @@ public final class DungeonModelFeature {
         Type SEWER_HOLE = new Type() {
             private final BlockStateProvider AIR_WATER = new BlockStateProvider() {
                 @Override
-                public BlockState get(IWorld world, BlockPos pos, Rotation rotation) {
+                public BlockState get(IWorld world, BlockPos pos, Random random, Rotation rotation) {
                     if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
                     return Blocks.WATER.defaultBlockState();
                 }
@@ -299,7 +299,7 @@ public final class DungeonModelFeature {
 
             private final BlockStateProvider AIR_LAVA = new BlockStateProvider() {
                 @Override
-                public BlockState get(IWorld world, BlockPos pos, Rotation rotation) {
+                public BlockState get(IWorld world, BlockPos pos, Random random, Rotation rotation) {
                     if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
                     return Blocks.LAVA.defaultBlockState();
                 }
@@ -314,42 +314,42 @@ public final class DungeonModelFeature {
             public void place(IWorld world, Random rand, BlockPos pos, Direction direction, MutableBoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
                 BlockStateProvider inner = stage < 4 ? AIR_WATER : AIR_LAVA;
 
-                buildDown(world, pos, bounds, inner);
+                buildDown(world, pos, rand, bounds, inner);
 
                 BlockPos east = pos.east();
-                buildDown(world, east, bounds, inner);
+                buildDown(world, east, rand, bounds, inner);
 
                 BlockPos west = pos.west();
-                buildDown(world, west, bounds, inner);
+                buildDown(world, west, rand, bounds, inner);
 
                 BlockPos north = pos.north();
-                buildDown(world, north, bounds, inner);
+                buildDown(world, north, rand, bounds, inner);
 
                 BlockPos south = pos.south();
-                buildDown(world, pos.south(), bounds, inner);
+                buildDown(world, pos.south(), rand, bounds, inner);
 
-                buildDown(world, east.north(), bounds, inner);
-                buildDown(world, east.south(), bounds, inner);
+                buildDown(world, east.north(), rand, bounds, inner);
+                buildDown(world, east.south(), rand, bounds, inner);
 
-                buildDown(world, west.north(), bounds, inner);
-                buildDown(world, west.south(), bounds, inner);
+                buildDown(world, west.north(), rand, bounds, inner);
+                buildDown(world, west.south(), rand, bounds, inner);
 
                 // Walls
-                buildDown(world, east.offset(1, -1, 0), bounds, theme.generic);
-                buildDown(world, east.offset(1, -1, -1), bounds, theme.generic);
-                buildDown(world, east.offset(1, -1, 1), bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, 0), rand, bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, -1), rand, bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, 1), rand, bounds, theme.generic);
 
-                buildDown(world, south.offset(0, -1, 1), bounds, theme.generic);
-                buildDown(world, south.offset(1, -1, 1), bounds, theme.generic);
-                buildDown(world, south.offset(-1, -1, 1), bounds, theme.generic);
+                buildDown(world, south.offset(0, -1, 1), rand, bounds, theme.generic);
+                buildDown(world, south.offset(1, -1, 1), rand, bounds, theme.generic);
+                buildDown(world, south.offset(-1, -1, 1), rand, bounds, theme.generic);
 
-                buildDown(world, west.offset(-1, -1, 0), bounds, theme.generic);
-                buildDown(world, west.offset(-1, -1, -1), bounds, theme.generic);
-                buildDown(world, west.offset(-1, -1, 1), bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, 0), rand, bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, -1), rand, bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, 1), rand, bounds, theme.generic);
 
-                buildDown(world, north.offset(0, -1, -1), bounds, theme.generic);
-                buildDown(world, north.offset(1, -1, -1), bounds, theme.generic);
-                buildDown(world, north.offset(-1, -1, -1), bounds, theme.generic);
+                buildDown(world, north.offset(0, -1, -1), rand, bounds, theme.generic);
+                buildDown(world, north.offset(1, -1, -1), rand, bounds, theme.generic);
+                buildDown(world, north.offset(-1, -1, -1), rand, bounds, theme.generic);
             }
 
             @Override
@@ -357,11 +357,11 @@ public final class DungeonModelFeature {
                 return "sewer_hole";
             }
 
-            private void buildDown(IWorld world, BlockPos pos, MutableBoundingBox bounds, BlockStateProvider blockStateProvider) {
+            private void buildDown(IWorld world, BlockPos pos, Random random, MutableBoundingBox bounds, BlockStateProvider blockStateProvider) {
                 if (!bounds.isInside(pos)) return;
                 for (; pos.getY() > 0; pos = pos.below()) {
                     if (!DungeonBuilder.isBlockProtected(world, pos) && !world.isEmptyBlock(pos)) {
-                        world.setBlock(pos, blockStateProvider.get(world, pos), 2);
+                        world.setBlock(pos, blockStateProvider.get(world, pos, random), 2);
                         FluidState state = world.getFluidState(pos);
                         if (!state.isEmpty()) world.getLiquidTicks().scheduleTick(pos, state.getType(), 0);
                     }

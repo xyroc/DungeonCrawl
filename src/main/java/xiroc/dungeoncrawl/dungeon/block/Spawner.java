@@ -115,8 +115,8 @@ public class Spawner implements IBlockPlacementHandler {
 
             ListNBT handItems = new ListNBT();
             ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
-                    ? RandomEquipment.getRangedWeapon(DungeonBlocks.RANDOM, stage)
-                    : RandomEquipment.getMeleeWeapon(DungeonBlocks.RANDOM, stage);
+                    ? RandomEquipment.getRangedWeapon(rand, stage)
+                    : RandomEquipment.getMeleeWeapon(rand, stage);
 
             if (mainHand != ItemStack.EMPTY) {
                 handItems.add(mainHand.save(new CompoundNBT()));

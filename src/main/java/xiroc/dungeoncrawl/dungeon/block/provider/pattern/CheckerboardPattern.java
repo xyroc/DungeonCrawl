@@ -8,6 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
+import java.util.Random;
+
 public class CheckerboardPattern implements BlockStateProvider {
 
     protected static final String TYPE = "pattern";
@@ -22,11 +24,11 @@ public class CheckerboardPattern implements BlockStateProvider {
     }
 
     @Override
-    public BlockState get(IWorld world, BlockPos pos, Rotation rotation) {
+    public BlockState get(IWorld world, BlockPos pos, Random random, Rotation rotation) {
         if (((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
-            return block1.get(world, pos, rotation);
+            return block1.get(world, pos, random, rotation);
         } else {
-            return block2.get(world, pos, rotation);
+            return block2.get(world, pos, random, rotation);
         }
     }
 

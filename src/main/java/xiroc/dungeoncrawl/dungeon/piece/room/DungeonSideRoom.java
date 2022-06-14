@@ -59,9 +59,9 @@ public class DungeonSideRoom extends DungeonPiece {
         }
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, rotation, worldGen, false, false);
-        entrances(worldIn, structureBoundingBoxIn, model, randomIn, worldGen);
-        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, rotation, false, false);
+        entrances(worldIn, structureBoundingBoxIn, model, randomIn);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
         return true;
     }

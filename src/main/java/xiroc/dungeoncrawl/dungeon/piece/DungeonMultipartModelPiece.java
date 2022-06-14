@@ -58,8 +58,8 @@ public class DungeonMultipartModelPiece extends DungeonPiece {
         }
         BlockPos pos = new BlockPos(x, y, z);
 
-        buildModel(model, world, boundingBox, pos, random, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, rotation, worldGen, false, false);
-        placeFeatures(world, boundingBox, theme, secondaryTheme, random, stage, worldGen);
+        buildModel(model, world, boundingBox, pos, random, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, rotation, false, false);
+        placeFeatures(world, boundingBox, theme, secondaryTheme, random, stage);
         decorate(world, pos, theme, random, structureBoundingBoxIn, boundingBox, model);
         return true;
     }

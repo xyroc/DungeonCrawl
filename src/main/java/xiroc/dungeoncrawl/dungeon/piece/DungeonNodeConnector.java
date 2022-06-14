@@ -54,8 +54,8 @@ public class DungeonNodeConnector extends DungeonPiece {
         }
         BlockPos pos = new BlockPos(x, y + model.getOffset(rotation).getY(), z);
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.CORRIDOR, theme, secondaryTheme, stage, rotation, worldGen, false, false);
-        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.CORRIDOR, theme, secondaryTheme, stage, rotation, false, false);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
         return true;
     }

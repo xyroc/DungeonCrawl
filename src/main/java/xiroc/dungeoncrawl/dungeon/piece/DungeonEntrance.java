@@ -61,24 +61,22 @@ public class DungeonEntrance extends DungeonPiece {
             return true;
         }
 
-        Heightmap.Type heightmapType = worldGen ? Heightmap.Type.WORLD_SURFACE_WG : Heightmap.Type.WORLD_SURFACE;
-
-        int height = worldIn.getHeight(heightmapType, x + 4, z + 4);
+        int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
         int cursorHeight = y;
 
         DungeonModel staircaseLayer = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE_LAYER);
         Rotation layerRotation = Rotation.NONE;
         while (cursorHeight < height) {
             buildModel(staircaseLayer, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, false);
+                    new BlockPos(x + 2, cursorHeight, z + 2), randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, true, false);
             layerRotation = layerRotation.getRotated(Rotation.CLOCKWISE_90);
             cursorHeight++;
         }
 
         BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).offset(rotatedOffset(model.getOffset(), layerRotation, model));
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, true);
-        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, true, true);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
 
         // A custom bounding box for decorations (eg. vines placement).
         // The original bounding box of this piece goes from the bottom to the top of the world,

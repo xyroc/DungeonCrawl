@@ -43,8 +43,7 @@ public class Furnace implements IBlockPlacementHandler {
     public static final RandomValueRange COAL_AMOUNT = new RandomValueRange(4, 16);
 
     @Override
-    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
-                      int lootLevel, boolean worldGen) {
+    public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
         world.setBlock(pos, state, 2);
         TileEntity tile = world.getBlockEntity(pos);
         if (tile instanceof FurnaceTileEntity) {
@@ -58,8 +57,7 @@ public class Furnace implements IBlockPlacementHandler {
     public static class Smoker implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
-                          int lootLevel, boolean worldGen) {
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, state, 2);
             TileEntity tile = world.getBlockEntity(pos);
             if (tile instanceof SmokerTileEntity) {

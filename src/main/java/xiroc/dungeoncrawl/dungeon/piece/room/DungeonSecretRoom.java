@@ -52,8 +52,8 @@ public class DungeonSecretRoom extends DungeonPiece {
 
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, rotation, worldGen, false, false);
-        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, rotation, false, false);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
         return true;
     }

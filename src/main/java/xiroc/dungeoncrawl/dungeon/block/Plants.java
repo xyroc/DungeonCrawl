@@ -36,8 +36,7 @@ public class Plants {
     public static class Farmland implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
-                          int lootLevel, boolean worldGen) {
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             state = state.setValue(BlockStateProperties.MOISTURE, 7);
             world.setBlock(pos, state, 2);
             BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
@@ -56,8 +55,7 @@ public class Plants {
     public static class FlowerPot implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
-                          int lootLevel, boolean worldGen) {
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, BlockTags.FLOWER_POTS.getRandomElement(rand).defaultBlockState(), 2);
         }
 
@@ -66,8 +64,7 @@ public class Plants {
     public static class Podzol implements IBlockPlacementHandler {
 
         @Override
-        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
-                          int lootLevel, boolean worldGen) {
+        public void place(IWorld world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, state, 2);
             BlockState flower = BlockTags.TALL_FLOWERS.getRandomElement(rand).defaultBlockState();
             BlockPos lowerPart = pos.above();

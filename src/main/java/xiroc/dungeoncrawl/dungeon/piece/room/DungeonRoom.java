@@ -63,9 +63,9 @@ public class DungeonRoom extends DungeonPiece {
         Vector3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.ROOM, theme, secondaryTheme, stage, Rotation.NONE, worldGen,false, false);
-        entrances(worldIn, structureBoundingBoxIn, model, randomIn, worldGen);
-        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.ROOM, theme, secondaryTheme, stage, Rotation.NONE,false, false);
+        entrances(worldIn, structureBoundingBoxIn, model, randomIn);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
         decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
         return true;
     }

@@ -11,14 +11,16 @@ import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.Orientation;
 
+import java.util.Random;
+
 public record TerracottaPattern(BlockStateProvider block) implements BlockStateProvider {
 
     public static final String TYPE = "pattern";
     public static final String PATTERN_TYPE = "terracotta";
 
     @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation) {
-        BlockState state = block.get(world, pos, rotation);
+    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
+        BlockState state = block.get(world, pos, random, rotation);
         if ((pos.getX() & 1) == 0) {
             if ((pos.getZ() & 1) == 0) {
                 return DungeonBlocks.applyProperty(state, BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH).rotate(world, pos, Orientation.getOppositeRotation(rotation));

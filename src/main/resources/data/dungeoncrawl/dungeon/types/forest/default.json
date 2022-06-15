@@ -1,5 +1,7 @@
 {
-  "settings": {},
+  "settings": {
+    "max_layers": 5
+  },
   "entrances": {
     "inherit": ["entrances:default"],
     "models": [

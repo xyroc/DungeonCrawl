@@ -71,43 +71,43 @@ public class DungeonStairs extends DungeonPiece {
         BlockPos pos = new BlockPos(x, y, z).offset(model.getOffset(rotation));
         switch (stairType) {
             case 0 -> {
-                buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.BOTTOM_STAIRCASE, theme, secondaryTheme, stage, Rotation.NONE, worldGen, false, false);
-                ironBars(worldIn, structureBoundingBoxIn, model, worldGen);
-                placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
-                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
+                buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.BOTTOM_STAIRCASE, theme, secondaryTheme, stage, Rotation.NONE, false, false);
+                ironBars(worldIn, structureBoundingBoxIn, model, randomIn);
+                placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
+                decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
             }
             case 1 -> {
-                buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, Rotation.NONE, worldGen, false, false);
-                entrances(worldIn, structureBoundingBoxIn, model, worldGen);
-                placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
-                decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
+                buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, Rotation.NONE, false, false);
+                entrances(worldIn, structureBoundingBoxIn, model, randomIn);
+                placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
+                decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
             }
         }
 
     }
 
-    public void ironBars(LevelAccessor world, BoundingBox bounds, DungeonModel model, boolean worldGen) {
+    public void ironBars(LevelAccessor world, BoundingBox bounds, DungeonModel model, Random random) {
         int pathStartX = (model.width - 3) / 2, pathStartZ = (model.length - 3) / 2;
 
         if (sides[0]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z)), x + x0, y + y0, z, bounds, worldGen);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z), random), x + x0, y + y0, z, bounds, true);
         }
         if (sides[1]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + model.width, y + y0, z + z0)), x + model.width - 1, y + y0, z + z0, bounds, worldGen);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + model.width, y + y0, z + z0), random), x + model.width - 1, y + y0, z + z0, bounds, true);
         }
         if (sides[2]) {
             for (int x0 = pathStartX; x0 < pathStartX + 3; x0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z + model.length)), x + x0, y + y0, z + model.length - 1, bounds, worldGen);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x + x0, y + y0, z + model.length), random), x + x0, y + y0, z + model.length - 1, bounds, true);
         }
         if (sides[3]) {
             for (int z0 = pathStartZ; z0 < pathStartZ + 3; z0++)
                 for (int y0 = 1; y0 < 4; y0++)
-                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x, y + y0, z + z0)), x, y + y0, z + z0, bounds, worldGen);
+                    replaceBlockState(world, theme.fencing.get(world, new BlockPos(x, y + y0, z + z0), random), x, y + y0, z + z0, bounds, true);
         }
 
     }

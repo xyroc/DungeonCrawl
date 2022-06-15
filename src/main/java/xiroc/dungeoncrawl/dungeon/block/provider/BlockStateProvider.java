@@ -24,13 +24,15 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Random;
+
 public interface BlockStateProvider {
 
-    default BlockState get(LevelAccessor world, BlockPos pos) {
-        return get(world, pos, Rotation.NONE);
+    default BlockState get(LevelAccessor world, BlockPos pos, Random random) {
+        return get(world, pos, random, Rotation.NONE);
     }
 
-    BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation);
+    BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation);
 
     JsonObject serialize();
 

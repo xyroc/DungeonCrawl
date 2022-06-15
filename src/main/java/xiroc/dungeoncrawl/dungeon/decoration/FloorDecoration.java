@@ -23,17 +23,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModelBlockType;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
+import java.util.Random;
+
 public record FloorDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
 
     @Override
-    public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
-                         DungeonPiece piece, int stage, boolean worldGen) {
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
         model.blocks.forEach((block) -> {
             BlockPos pos = DungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
             if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1
@@ -42,8 +42,8 @@ public record FloorDecoration(BlockStateProvider blockStateProvider, float chanc
                     && !DungeonBuilder.isBlockProtected(world, origin)
                     && world.isEmptyBlock(origin.offset(block.position).above())
                     && checkSolid(world, origin.offset(block.position), worldGenBounds, structureBounds)
-                    && DungeonBlocks.RANDOM.nextFloat() < chance) {
-                world.setBlock(pos, blockStateProvider.get(world, pos), 2);
+                    && random.nextFloat() < chance) {
+                world.setBlock(pos, blockStateProvider.get(world, pos, random), 2);
             }
         });
     }
@@ -62,12 +62,10 @@ public record FloorDecoration(BlockStateProvider blockStateProvider, float chanc
         return object;
     }
 
-    public record NextToSolid(BlockStateProvider blockStateProvider,
-                              float chance) implements DungeonDecoration {
+    public record NextToSolid(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
 
         @Override
-        public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
-                             DungeonPiece piece, int stage, boolean worldGen) {
+        public void decorate(DungeonModel model, LevelAccessor world, BlockPos origin, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
             model.blocks.forEach((block) -> {
                 if (block.type == DungeonModelBlockType.FLOOR && block.position.getY() < model.height - 1) {
                     BlockPos pos = DungeonDecoration.getRotatedBlockPos(block.position.getX(), block.position.getY() + 1, block.position.getZ(), origin, model, piece.rotation);
@@ -80,8 +78,8 @@ public record FloorDecoration(BlockStateProvider blockStateProvider, float chanc
                             || checkSolid(world, pos.east(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.south(), worldGenBounds, structureBounds)
                             || checkSolid(world, pos.west(), worldGenBounds, structureBounds))
-                            && DungeonBlocks.RANDOM.nextFloat() < chance) {
-                        world.setBlock(pos, blockStateProvider.get(world, pos), 2);
+                            && random.nextFloat() < chance) {
+                        world.setBlock(pos, blockStateProvider.get(world, pos, random), 2);
                     }
                 }
             });

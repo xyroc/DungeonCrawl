@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
+import java.util.Random;
+
 public class SingleBlock implements BlockStateProvider {
 
     public static final SingleBlock AIR = new SingleBlock(Blocks.CAVE_AIR.defaultBlockState());
@@ -25,7 +27,7 @@ public class SingleBlock implements BlockStateProvider {
     }
 
     @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation) {
+    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
         return state;
     }
 

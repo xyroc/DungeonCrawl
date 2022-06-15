@@ -42,12 +42,18 @@ import java.util.Random;
 
 public class DungeonEntrance extends DungeonPiece {
 
+    private static final String KEY_SURFACE_HEIGHT = "SurfaceHeight";
+    private Integer surfaceHeight;
+
     public DungeonEntrance() {
         super(StructurePieceTypes.ENTRANCE);
     }
 
     public DungeonEntrance(TemplateManager manager, CompoundNBT nbt) {
         super(StructurePieceTypes.ENTRANCE, nbt);
+        if (nbt.contains(KEY_SURFACE_HEIGHT)) {
+            this.surfaceHeight = nbt.getInt(KEY_SURFACE_HEIGHT);
+        }
     }
 
     @Override
@@ -61,12 +67,14 @@ public class DungeonEntrance extends DungeonPiece {
             return true;
         }
 
-        int height = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
+        if (this.surfaceHeight == null) {
+            this.surfaceHeight = worldIn.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x + 4, z + 4);
+        }
         int cursorHeight = y;
 
         DungeonModel staircaseLayer = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE_LAYER);
         Rotation layerRotation = Rotation.NONE;
-        while (cursorHeight < height) {
+        while (cursorHeight < surfaceHeight) {
             buildModel(staircaseLayer, worldIn, structureBoundingBoxIn,
                     new BlockPos(x + 2, cursorHeight, z + 2), randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, true, false);
             layerRotation = layerRotation.getRotated(Rotation.CLOCKWISE_90);
@@ -131,6 +139,9 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public void addAdditionalSaveData(CompoundNBT tagCompound) {
         super.addAdditionalSaveData(tagCompound);
+        if (this.surfaceHeight != null) {
+            tagCompound.putInt(KEY_SURFACE_HEIGHT, this.surfaceHeight);
+        }
     }
 
 }

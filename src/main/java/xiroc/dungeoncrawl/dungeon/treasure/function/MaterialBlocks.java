@@ -65,8 +65,8 @@ public class MaterialBlocks extends LootItemConditionalFunction {
 
     private static ResourceLocation getMaterial(Theme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
         return rand.nextBoolean()
-                ? theme.material.get(world, pos).getBlock().getRegistryName()
-                : secondaryTheme.material.get(world, pos).getBlock().getRegistryName();
+                ? theme.material.get(world, pos, rand).getBlock().getRegistryName()
+                : secondaryTheme.material.get(world, pos, rand).getBlock().getRegistryName();
     }
 
     public static LootItemConditionalFunction.Builder<?> materialBlocks() {

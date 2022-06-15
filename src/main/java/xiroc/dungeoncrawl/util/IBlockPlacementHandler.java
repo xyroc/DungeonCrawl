@@ -38,7 +38,7 @@ public interface IBlockPlacementHandler {
 
     IBlockPlacementHandler SPAWNER = new Spawner();
 
-    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, theme, secondaryTheme, lootLevel, worldGen) -> {
+    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, theme, secondaryTheme, lootLevel) -> {
         if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
             world.getChunk(pos).getBlockTicks().scheduleTick(pos, state.getBlock(), 1);
         }
@@ -54,8 +54,7 @@ public interface IBlockPlacementHandler {
             .put(Blocks.PODZOL, new Plants.Podzol())
             .build();
 
-    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel, boolean worldGen);
-
+    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel);
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

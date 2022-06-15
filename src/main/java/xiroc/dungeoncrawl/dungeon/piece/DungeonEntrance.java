@@ -42,12 +42,18 @@ import java.util.Random;
 
 public class DungeonEntrance extends DungeonPiece {
 
+    private static final String KEY_SURFACE_HEIGHT = "SurfaceHeight";
+    private Integer surfaceHeight;
+
     public DungeonEntrance() {
         super(StructurePieceTypes.ENTRANCE);
     }
 
     public DungeonEntrance(ServerLevel serverLevel, CompoundTag nbt) {
         super(StructurePieceTypes.ENTRANCE, nbt);
+        if (nbt.contains(KEY_SURFACE_HEIGHT)) {
+            this.surfaceHeight = nbt.getInt(KEY_SURFACE_HEIGHT);
+        }
     }
 
     @Override
@@ -61,24 +67,24 @@ public class DungeonEntrance extends DungeonPiece {
             return true;
         }
 
-        Heightmap.Types heightmapType = worldGen ? Heightmap.Types.WORLD_SURFACE_WG : Heightmap.Types.WORLD_SURFACE;
-
-        int height = worldIn.getHeight(heightmapType, x + 4, z + 4);
+        if (this.surfaceHeight == null) {
+            this.surfaceHeight = worldIn.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x + 4, z + 4);
+        }
         int cursorHeight = y;
 
         DungeonModel staircaseLayer = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STAIRCASE_LAYER);
         Rotation layerRotation = Rotation.NONE;
-        while (cursorHeight < height) {
+        while (cursorHeight < surfaceHeight) {
             buildModel(staircaseLayer, worldIn, structureBoundingBoxIn,
-                    new BlockPos(x + 2, cursorHeight, z + 2), PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, false);
+                    new BlockPos(x + 2, cursorHeight, z + 2), randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, true, false);
             layerRotation = layerRotation.getRotated(Rotation.CLOCKWISE_90);
             cursorHeight++;
         }
 
         BlockPos pos = new BlockPos(x + 4, cursorHeight, z + 4).offset(rotatedOffset(model.getOffset(), layerRotation, model));
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, worldGen, true, true);
-        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.DEFAULT, theme, secondaryTheme, stage, layerRotation, true, true);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
 
         // A custom bounding box for decorations (eg. vines placement).
         // The original bounding box of this piece goes from the bottom to the top of the world,
@@ -86,7 +92,7 @@ public class DungeonEntrance extends DungeonPiece {
         // And because we don't want the decorations to decorate everything from top to bottom,
         //  we use a custom bounding box for them.
         BoundingBox populationBox = model.createBoundingBox(pos, layerRotation);
-        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, populationBox, model, worldGen);
+        decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, populationBox, model);
         return true;
     }
 
@@ -124,6 +130,14 @@ public class DungeonEntrance extends DungeonPiece {
     @Override
     public int getDungeonPieceType() {
         return ENTRANCE;
+    }
+
+    @Override
+    public void addAdditionalSaveData(ServerLevel serverLevel, CompoundTag tagCompound) {
+        super.addAdditionalSaveData(serverLevel, tagCompound);
+        if (this.surfaceHeight != null) {
+            tagCompound.putInt(KEY_SURFACE_HEIGHT, this.surfaceHeight);
+        }
     }
 
 }

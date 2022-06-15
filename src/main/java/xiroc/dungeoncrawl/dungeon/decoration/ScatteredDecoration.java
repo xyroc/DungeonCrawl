@@ -24,28 +24,28 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
-public record ScatteredDecoration(BlockStateProvider blockStateProvider,
-                                  float chance) implements DungeonDecoration {
+import java.util.Random;
+
+public record ScatteredDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
+
     @Override
-    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
-                         DungeonPiece piece, int stage, boolean worldGen) {
+    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
-        int maxX = ew ? width : length;
-        int maxZ = ew ? length : width;
+        int maxX = ew ? model.width : model.length;
+        int maxZ = ew ? model.length : model.width;
         for (int x = 1; x < maxX - 1; x++) {
-            for (int y = 0; y < height; y++) {
+            for (int y = 0; y < model.height; y++) {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (worldGenBounds.isInside(currentPos)
                             && structureBounds.isInside(currentPos)
                             && !DungeonBuilder.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)
-                            && DungeonBlocks.RANDOM.nextFloat() < chance) {
+                            && random.nextFloat() < chance) {
 
                         BlockPos north = currentPos.north();
                         BlockPos east = currentPos.east();
@@ -60,7 +60,7 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider,
                         boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).canOcclude();
 
                         if (_north || _east || _south || _west || _up) {
-                            world.setBlock(currentPos, blockStateProvider.get(world, currentPos), 2);
+                            world.setBlock(currentPos, blockStateProvider.get(world, currentPos, random), 2);
                         }
 
                     }

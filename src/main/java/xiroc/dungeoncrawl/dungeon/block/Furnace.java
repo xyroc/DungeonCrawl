@@ -41,8 +41,7 @@ public class Furnace implements IBlockPlacementHandler {
             Items.COOKED_COD, Items.COOKED_PORKCHOP, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.BAKED_POTATO};
 
     @Override
-    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
-                      int lootLevel, boolean worldGen) {
+    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
         world.setBlock(pos, state, 2);
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof FurnaceBlockEntity furnace) {
@@ -59,8 +58,7 @@ public class Furnace implements IBlockPlacementHandler {
     public static class Smoker implements IBlockPlacementHandler {
 
         @Override
-        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme,
-                          int lootLevel, boolean worldGen) {
+        public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, state, 2);
             BlockEntity tile = world.getBlockEntity(pos);
             if (tile instanceof SmokerBlockEntity smoker) {

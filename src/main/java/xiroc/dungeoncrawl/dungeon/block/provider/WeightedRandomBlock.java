@@ -7,9 +7,10 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
-import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
+
+import java.util.Random;
 
 public class WeightedRandomBlock implements BlockStateProvider {
 
@@ -22,8 +23,8 @@ public class WeightedRandomBlock implements BlockStateProvider {
     }
 
     @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Rotation rotation) {
-        return randomBlockState.roll(DungeonBlocks.RANDOM);
+    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
+        return randomBlockState.roll(random);
     }
 
     @Override

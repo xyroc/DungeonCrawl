@@ -30,6 +30,8 @@ import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.theme.JsonTheming;
 
+import java.util.Random;
+
 public interface DungeonDecoration {
 
     String VINE_DECORATION = "vines";
@@ -37,8 +39,7 @@ public interface DungeonDecoration {
     String FLOOR_DECORATION = "floor";
     String FLOOR_NEXT_TO_SOLID_DECORATION = "floor_next_to_solid";
 
-    void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, int width, int height, int length, BoundingBox worldGenBounds, BoundingBox structureBounds,
-                  DungeonPiece piece, int stage, boolean worldGen);
+    void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece);
 
     JsonObject serialize();
 

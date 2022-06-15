@@ -73,10 +73,10 @@ public class DungeonMegaNodePart extends DungeonPiece {
         Vec3i offset = model.getOffset(rotation);
         BlockPos pos = new BlockPos(x, y, z).offset(offset);
 
-        buildModel(model, worldIn, structureBoundingBoxIn, pos, PlacementConfiguration.NODE, theme, secondaryTheme, stage, rotation, worldGen, false, false);
-        entrances(worldIn, structureBoundingBoxIn, model, worldGen);
-        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage, worldGen);
-        decorate(worldIn, pos, model.width, model.height, model.length, theme, structureBoundingBoxIn, boundingBox, model, worldGen);
+        buildModel(model, worldIn, structureBoundingBoxIn, pos, randomIn, PlacementConfiguration.NODE, theme, secondaryTheme, stage, rotation, false, false);
+        entrances(worldIn, structureBoundingBoxIn, model, randomIn);
+        placeFeatures(worldIn, structureBoundingBoxIn, theme, secondaryTheme, randomIn, stage);
+        decorate(worldIn, pos, theme, randomIn, structureBoundingBoxIn, boundingBox, model);
         return true;
     }
 

@@ -71,8 +71,7 @@ public record DungeonType(ResourceLocation source,
                 JsonObject file = DungeonCrawl.JSON_PARSER.parse(new InputStreamReader(resourceManager.getResource(resource).getInputStream())).getAsJsonObject();
 
                 DungeonType.Builder builder = new DungeonType.Builder(resource);
-//                DungeonGeneratorSettings settings = DungeonGeneratorSettings.fromJson(file.getAsJsonObject("settings"), resource);
-                builder.settings(new DungeonGeneratorSettings(5));
+                builder.settings(DungeonGeneratorSettings.fromJson(file.getAsJsonObject("settings"), resource));
                 builder.entrances(ModelSelector.loadRandom("entrances", file, resource));
 
                 JsonArray layers = file.getAsJsonArray("layers");

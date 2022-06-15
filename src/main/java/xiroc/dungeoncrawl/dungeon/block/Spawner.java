@@ -54,7 +54,7 @@ public class Spawner implements IBlockPlacementHandler {
             .add(EntityType.SKELETON).add(EntityType.STRAY).build();
 
     @Override
-    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int stage, boolean worldGen) {
+    public void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int stage) {
         world.setBlock(pos, Blocks.SPAWNER.defaultBlockState(), 2);
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof SpawnerBlockEntity spawner) {
@@ -115,8 +115,8 @@ public class Spawner implements IBlockPlacementHandler {
 
             ListTag handItems = new ListTag();
             ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
-                    ? RandomEquipment.getRangedWeapon(DungeonBlocks.RANDOM, stage)
-                    : RandomEquipment.getMeleeWeapon(DungeonBlocks.RANDOM, stage);
+                    ? RandomEquipment.getRangedWeapon(rand, stage)
+                    : RandomEquipment.getMeleeWeapon(rand, stage);
 
             if (mainHand != ItemStack.EMPTY) {
                 handItems.add(mainHand.save(new CompoundTag()));

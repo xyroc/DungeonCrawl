@@ -21,7 +21,6 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.Item;
@@ -227,14 +226,7 @@ public class RandomEquipment {
             item.setDamageValue(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
     }
 
-    public static void enchantItem(ItemStack item, Enchantment enchantment, double multiplier) {
-        int level = (int) ((double) enchantment.getMaxLevel() * multiplier);
-        if (level < 1)
-            level = 1;
-        item.enchant(enchantment, level);
-    }
-
-    public static ItemStack setArmorColor(ItemStack item, int color) {
+    public static void setArmorColor(ItemStack item, int color) {
         CompoundNBT tag = item.getTag();
         if (tag == null)
             tag = new CompoundNBT();
@@ -247,7 +239,6 @@ public class RandomEquipment {
         display.putInt("color", color);
         tag.put("display", display);
         item.setTag(tag);
-        return item;
     }
 
     public static ItemStack getMeleeWeapon(Random rand, int stage) {
@@ -270,12 +261,6 @@ public class RandomEquipment {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;
         }
-    }
-
-    public static double getStageMultiplier(int stage) {
-        if (stage > HIGHEST_STAGE)
-            return 1.0D;
-        return 1D / (HIGHEST_STAGE - stage + 1);
     }
 
     public static int getRandomColor(Random rand) {

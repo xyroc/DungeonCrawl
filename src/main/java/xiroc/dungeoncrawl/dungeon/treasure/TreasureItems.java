@@ -51,8 +51,8 @@ public class TreasureItems {
     public static final ItemStack SPLASH_HARMING;
     public static final ItemStack SPLASH_HARMING_II;
 
-    public static ItemStack[] POTIONS;
-    public static ItemStack[] SPECIAL_POTIONS;
+    private static final ItemStack[] POTIONS;
+    private static final ItemStack[] SPECIAL_POTIONS;
 
     static {
         {
@@ -67,9 +67,9 @@ public class TreasureItems {
             CompoundNBT weakness = new CompoundNBT();
             weakness.putInt("Id", 18);
             weakness.putInt("Duration", 100);
-            CompoundNBT miningFatique = new CompoundNBT();
-            miningFatique.putInt("Id", 4);
-            miningFatique.putInt("Duration", 100);
+            CompoundNBT miningFatigue = new CompoundNBT();
+            miningFatigue.putInt("Id", 4);
+            miningFatigue.putInt("Duration", 100);
             CompoundNBT regeneration = new CompoundNBT();
             regeneration.putInt("Id", 10);
             regeneration.putInt("Amplifier", 1);
@@ -77,7 +77,7 @@ public class TreasureItems {
             customPotionEffects.add(regeneration);
             customPotionEffects.add(blindness);
             customPotionEffects.add(weakness);
-            customPotionEffects.add(miningFatique);
+            customPotionEffects.add(miningFatigue);
             customPotionEffects.add(nausea);
             nbt.put("CustomPotionEffects", customPotionEffects);
             nbt.putInt("CustomPotionColor", 7014144);
@@ -223,11 +223,13 @@ public class TreasureItems {
     public static CompoundNBT createDisplayTag(String name, String... loreEntries) {
         CompoundNBT display = new CompoundNBT();
         display.put("Name", StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(name))));
-        ListNBT lore = new ListNBT();
-        for (String line : loreEntries)
-            lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(line))));
-        if (lore.size() > 0)
+        if (loreEntries.length > 0) {
+            ListNBT lore = new ListNBT();
+            for (String line : loreEntries) {
+                lore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(line))));
+            }
             display.put("Lore", lore);
+        }
         return display;
     }
 
@@ -237,24 +239,22 @@ public class TreasureItems {
         return potion;
     }
 
-    public static CompoundNBT createEnchantmentTag(String enchantment, int level) {
-        CompoundNBT enchantmentTag = new CompoundNBT();
-        enchantmentTag.putString("id", enchantment);
-        enchantmentTag.putInt("lvl", level);
-        return enchantmentTag;
-    }
-
-    public static ItemStack createItemWithNbt(Item item, CompoundNBT nbt) {
+    private static ItemStack createItemWithNbt(Item item, CompoundNBT nbt) {
         ItemStack stack = new ItemStack(item);
         stack.setTag(nbt);
         return stack;
     }
 
     public static ItemStack getRandomSpecialPotion(Random rand, int stage) {
-        if (rand.nextFloat() < 0.4)
+        if (rand.nextFloat() < 0.4) {
             return POTIONS[rand.nextInt(POTIONS.length)].copy();
-        int bound = stage == 0 ? 1 : SPECIAL_POTIONS.length;
-        return SPECIAL_POTIONS[rand.nextInt(bound)].copy();
+        } else {
+            if (stage == 0) {
+                return LAUDANUM.copy();
+            } else {
+                return SPECIAL_POTIONS[rand.nextInt(SPECIAL_POTIONS.length)].copy();
+            }
+        }
     }
 
 }

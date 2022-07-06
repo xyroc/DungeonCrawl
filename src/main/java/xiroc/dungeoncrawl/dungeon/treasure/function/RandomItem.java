@@ -25,7 +25,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
@@ -41,11 +40,7 @@ public class RandomItem extends LootFunction {
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-        if (context.hasParam(LootParameters.ORIGIN)) {
-            return RandomItems.generate(context.getLevel(), context.getRandom(), lootLevel);
-        } else {
-            return ItemStack.EMPTY;
-        }
+        return RandomItems.generate(context.getRandom(), lootLevel);
     }
 
     public static LootFunction.Builder<?> randomItem(int lootLevel) {

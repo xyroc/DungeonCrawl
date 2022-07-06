@@ -28,9 +28,9 @@ import java.util.Random;
 
 public class Banner {
 
-    public static final int PATTERNS = 3;
+    private static final int PATTERNS = 3;
 
-    public static final ResourceLocation[] BANNERS = new ResourceLocation[]{
+    private static final ResourceLocation[] BANNERS = new ResourceLocation[]{
             new ResourceLocation("minecraft:white_banner"), new ResourceLocation("minecraft:red_banner"),
             new ResourceLocation("minecraft:green_banner"), new ResourceLocation("minecraft:blue_banner"),
             new ResourceLocation("minecraft:yellow_banner"), new ResourceLocation("minecraft:light_blue_banner"),
@@ -40,13 +40,13 @@ public class Banner {
             new ResourceLocation("minecraft:purple_banner"), new ResourceLocation("minecraft:brown_banner"),
             new ResourceLocation("minecraft:lime_banner"), new ResourceLocation("minecraft:black_banner")};
 
-    public static final String[] BANNER_PATTERNS = new String[]{"gru", "bl", "br", "bri", "tr", "bs", "ts", "ls",
+    private static final String[] BANNER_PATTERNS = new String[]{"gru", "bl", "br", "bri", "tr", "bs", "ts", "ls",
             "rs", "bl", "tl", "hh", "vhr", "hhb", "bo", "cbo", "gra", "bts", "tts", "ld", "rd", "lud", "rud", "mc",
             "mr", "vh", "dls", "cs", "ms", "drs", "ss", "cr", "sc", "bt", "tt"};
 
-    public static final String[] BANNER_PATTERNS_FINAL = new String[]{"sku", "cre"};
+    private static final String[] BANNER_PATTERNS_FINAL = new String[]{"sku", "cre"};
 
-    public static final String[] BANNER_PATTERNS_FINAL_RARE = new String[]{"glb", "flo"};
+    private static final String[] BANNER_PATTERNS_FINAL_RARE = new String[]{"glb", "flo"};
 
     /**
      * Creates the BlockEntityTag for banners or shields which contains a list of

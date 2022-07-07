@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
@@ -28,11 +29,9 @@ import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
@@ -53,17 +52,18 @@ public class MaterialBlocks extends LootFunction {
             TileEntity chest = context.getLevel().getBlockEntity(pos);
             if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
                 Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
-                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom())),
-                        16 + context.getRandom().nextInt(49));
+                return new ItemStack(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom()), 16 + context.getRandom().nextInt(49));
             }
         }
         return new ItemStack(Blocks.STONE_BRICKS, 16 + context.getRandom().nextInt(49));
     }
 
-    private static ResourceLocation getMaterial(Theme theme, SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {
-        return rand.nextBoolean()
-                ? theme.material.get(world, pos, rand).getBlock().getRegistryName()
-                : secondaryTheme.material.get(world, pos, rand).getBlock().getRegistryName();
+    private static Block getMaterial(Theme theme, SecondaryTheme secondaryTheme, IWorld world, BlockPos pos, Random rand) {
+        if (rand.nextBoolean()) {
+            return theme.material.get(world, pos, rand).getBlock();
+        } else {
+            return secondaryTheme.material.get(world, pos, rand).getBlock();
+        }
     }
 
     public static LootFunction.Builder<?> materialBlocks() {

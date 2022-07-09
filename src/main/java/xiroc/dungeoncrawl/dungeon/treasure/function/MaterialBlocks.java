@@ -21,10 +21,10 @@ package xiroc.dungeoncrawl.dungeon.treasure.function;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -32,7 +32,6 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
@@ -56,17 +55,18 @@ public class MaterialBlocks extends LootItemConditionalFunction {
             BlockEntity chest = context.getLevel().getBlockEntity(pos);
             if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
                 Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
-                return new ItemStack(ForgeRegistries.BLOCKS.getValue(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom())),
-                        AMOUNT.nextInt(context.getRandom()));
+                return new ItemStack(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom()), AMOUNT.nextInt(context.getRandom()));
             }
         }
         return new ItemStack(Blocks.STONE_BRICKS, AMOUNT.nextInt(context.getRandom()));
     }
 
-    private static ResourceLocation getMaterial(Theme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
-        return rand.nextBoolean()
-                ? theme.material.get(world, pos, rand).getBlock().getRegistryName()
-                : secondaryTheme.material.get(world, pos, rand).getBlock().getRegistryName();
+    private static Block getMaterial(Theme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
+        if (rand.nextBoolean()) {
+            return theme.material.get(world, pos, rand).getBlock();
+        } else {
+            return secondaryTheme.material.get(world, pos, rand).getBlock();
+        }
     }
 
     public static LootItemConditionalFunction.Builder<?> materialBlocks() {

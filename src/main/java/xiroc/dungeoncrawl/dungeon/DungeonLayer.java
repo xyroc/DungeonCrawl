@@ -23,7 +23,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.DungeonStatTracker.LayerStatTracker;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -51,10 +50,6 @@ public class DungeonLayer {
      */
     public List<Position2D> distantNodes;
 
-    public boolean stairsPlaced;
-
-    public LayerStatTracker statTracker;
-
     public DungeonLayerMap map;
 
     public DungeonLayer(int size) {
@@ -64,7 +59,6 @@ public class DungeonLayer {
     public DungeonLayer(int width, int length) {
         this.width = width;
         this.length = length;
-        this.statTracker = new LayerStatTracker();
         this.grid = new Tile[this.width][this.length];
         this.distantNodes = Lists.newArrayList();
         this.map = new DungeonLayerMap(width, length);

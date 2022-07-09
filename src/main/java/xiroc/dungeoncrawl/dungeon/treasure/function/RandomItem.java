@@ -43,7 +43,7 @@ public class RandomItem extends LootItemConditionalFunction {
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
         if (context.hasParam(LootContextParams.ORIGIN)) {
-            return RandomItems.generate(context.getLevel(), context.getRandom(), lootLevel);
+            return RandomItems.generate(context.getRandom(), lootLevel);
         } else {
             return ItemStack.EMPTY;
         }

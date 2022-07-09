@@ -225,9 +225,7 @@ public class RandomEquipment {
     }
 
     public static void setArmorColor(ItemStack item, int color) {
-        CompoundTag tag = item.getTag();
-        if (tag == null)
-            tag = new CompoundTag();
+        CompoundTag tag = item.getOrCreateTag();
         Tag displayNBT = tag.get("display");
         CompoundTag display;
         if (displayNBT == null)
@@ -236,7 +234,6 @@ public class RandomEquipment {
             display = (CompoundTag) displayNBT;
         display.putInt("color", color);
         tag.put("display", display);
-        item.setTag(tag);
     }
 
     public static ItemStack getMeleeWeapon(Random rand, int stage) {

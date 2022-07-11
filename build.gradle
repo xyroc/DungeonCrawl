@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '2.3.9'
+version = '2.3.10'
 group = 'xiroc.dungeoncrawl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'DungeonCrawl-1.19'
 

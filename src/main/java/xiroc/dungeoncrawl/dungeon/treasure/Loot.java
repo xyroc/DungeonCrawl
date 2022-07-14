@@ -101,7 +101,7 @@ public class Loot {
 
     public static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, RandomSource rand) {
         RandomizableContainerBlockEntity.setLootTable(world, rand, pos, lootTable);
-        setLootInformation(tile.getTileData(), theme, secondaryTheme);
+        setLootInformation(tile.getPersistentData(), theme, secondaryTheme);
     }
 
     public static ResourceLocation getLootTable(int lootLevel, RandomSource rand) {

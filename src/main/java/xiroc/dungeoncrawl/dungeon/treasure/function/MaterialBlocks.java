@@ -52,8 +52,8 @@ public class MaterialBlocks extends LootItemConditionalFunction {
         if (context.hasParam(LootContextParams.ORIGIN)) {
             BlockPos pos = new BlockPos(context.getParamOrNull(LootContextParams.ORIGIN));
             BlockEntity chest = context.getLevel().getBlockEntity(pos);
-            if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
-                Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+            if (chest != null && chest.getPersistentData().contains(DungeonCrawl.MOD_ID, 10)) {
+                Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getPersistentData());
                 return new ItemStack(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom()), AMOUNT.nextInt(context.getRandom()));
             }
         }

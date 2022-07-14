@@ -98,7 +98,7 @@ public class Spawner implements IBlockPlacementHandler {
         if (spawnData == null)
             spawnData = new CompoundTag();
 
-        ResourceLocation registryName = ForgeRegistries.ENTITIES.getKey(type);
+        ResourceLocation registryName = ForgeRegistries.ENTITY_TYPES.getKey(type);
         if (registryName == null) {
             DungeonCrawl.LOGGER.warn("Entity type {} has no registry name.", type);
             return new CompoundTag();

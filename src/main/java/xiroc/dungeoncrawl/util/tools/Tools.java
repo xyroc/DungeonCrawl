@@ -34,8 +34,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -197,7 +197,7 @@ public class Tools {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (!event.getWorld().isClientSide() && event.getPlayer().isCreative()) {
+        if (!event.getLevel().isClientSide() && event.getPlayer().isCreative()) {
             Item item = event.getPlayer().getItemBySlot(EquipmentSlot.MAINHAND).getItem();
             if (item == Items.DIAMOND_AXE) {
                 event.setCanceled(true);
@@ -220,23 +220,23 @@ public class Tools {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
-        if (!event.getPlayer().level.isClientSide() && event.getPlayer().isCreative()) {
+        if (!event.getEntity().level.isClientSide() && event.getEntity().isCreative()) {
             if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
                 event.setCanceled(true);
 
                 BlockPos pos = event.getPos();
 
-                UUID uuid = event.getPlayer().getGameProfile().getId();
+                UUID uuid = event.getEntity().getGameProfile().getId();
                 CONTEXT_TABLE.computeIfAbsent(uuid, (id) -> new ModelEditContext()).pos2 = pos;
 
-                event.getPlayer().sendSystemMessage(Component.literal(ChatFormatting.LIGHT_PURPLE
+                event.getEntity().sendSystemMessage(Component.literal(ChatFormatting.LIGHT_PURPLE
                         + "Position 2 set to (" + pos.getX() + " | " + pos.getY() + " | " + pos.getZ() + ") "));
             } else if (event.getItemStack().getItem() == Items.GOLDEN_AXE
-                    && CONTEXT_TABLE.containsKey(event.getPlayer().getUUID())) {
+                    && CONTEXT_TABLE.containsKey(event.getEntity().getUUID())) {
                 event.setCanceled(true);
-                ModelEditContext context = CONTEXT_TABLE.get(event.getPlayer().getUUID());
+                ModelEditContext context = CONTEXT_TABLE.get(event.getEntity().getUUID());
                 if (context.origin != null) {
-                    event.getPlayer().sendSystemMessage(Component.literal("The coordinates of the block you clicked" +
+                    event.getEntity().sendSystemMessage(Component.literal("The coordinates of the block you clicked" +
                             " relative to the origin are (x: "
                             + (event.getPos().getX() - context.origin.getX()) + " y: "
                             + (event.getPos().getY() - context.origin.getY()) + " z: "

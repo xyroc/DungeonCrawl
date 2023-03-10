@@ -19,7 +19,9 @@
 package xiroc.dungeoncrawl.init;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
@@ -32,35 +34,23 @@ import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSpiderRoom;
 
-import java.util.Locale;
-
 public interface ModStructurePieceTypes {
+    StructurePieceType ENTRANCE = register("entrance", DungeonEntrance::new);
+    StructurePieceType ROOM = register("room", DungeonRoom::new);
+    StructurePieceType CORRIDOR = register("corridor", DungeonCorridor::new);
+    StructurePieceType STAIRS = register("stairs", DungeonStairs::new);
+    StructurePieceType SIDE_ROOM = register("side_room", DungeonSideRoom::new);
+    StructurePieceType NODE_ROOM = register("node_room", DungeonNodeRoom::new);
+    StructurePieceType NODE_CONNECTOR = register("node_connector", DungeonNodeConnector::new);
+    StructurePieceType SECRET_ROOM = register("secret_room", DungeonSecretRoom::new);
+    StructurePieceType SPIDER_ROOM = register("spider_room", DungeonSpiderRoom::new);
+    StructurePieceType MULTIPART_MODEL_PIECE = register("multipart_model_piece", DungeonMultipartModelPiece::new);
+    StructurePieceType MEGA_NODE_PART = register("mega_node_part", DungeonMegaNodePart::new);
 
-    StructurePieceType ENTRANCE = setPieceId(DungeonEntrance::new, createKey("entrance"));
-    StructurePieceType ROOM = setPieceId(DungeonRoom::new, createKey("room"));
-    StructurePieceType CORRIDOR = setPieceId(DungeonCorridor::new, createKey("corridor"));
-    StructurePieceType STAIRS = setPieceId(DungeonStairs::new, createKey("stairs"));
-    StructurePieceType SIDE_ROOM = setPieceId(DungeonSideRoom::new, createKey("side_room"));
-    StructurePieceType NODE_ROOM = setPieceId(DungeonNodeRoom::new, createKey("node_room"));
-    StructurePieceType NODE_CONNECTOR = setPieceId(DungeonNodeConnector::new, createKey("node_connector"));
-    StructurePieceType SECRET_ROOM = setPieceId(DungeonSecretRoom::new, createKey("secret_room"));
-    StructurePieceType SPIDER_ROOM = setPieceId(DungeonSpiderRoom::new, createKey("spider_room"));
-    StructurePieceType MULTIPART_MODEL_PIECE = setPieceId(DungeonMultipartModelPiece::new, createKey("multipart_model_piece"));
-    StructurePieceType MEGA_NODE_PART = setPieceId(DungeonMegaNodePart::new, createKey("mega_node_part"));
-
-    private static String createKey(String path) {
-        return "dungeoncrawl:" + path;
+    private static StructurePieceType register(String name, StructurePieceType.ContextlessType type) {
+        return Registry.register(BuiltInRegistries.STRUCTURE_PIECE, DungeonCrawl.locate(name), type);
     }
 
-    private static StructurePieceType setFullContextPieceId(StructurePieceType p_191152_, String p_191153_) {
-        return Registry.register(Registry.STRUCTURE_PIECE, p_191153_.toLowerCase(Locale.ROOT), p_191152_);
+    static void init() {
     }
-
-    private static StructurePieceType setPieceId(StructurePieceType.ContextlessType p_191146_, String p_191147_) {
-        return setFullContextPieceId(p_191146_, p_191147_);
-    }
-
-    static void load() {
-    }
-
 }

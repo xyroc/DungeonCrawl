@@ -1,6 +1,6 @@
 modLoader="javafml" #mandatory
 license="GNU General Public License Version 3"
-loaderVersion="[41,)" #mandatory
+loaderVersion="[44,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
@@ -18,7 +18,7 @@ description='''Dungeon Crawl, a spiritual successor to Roguelike Dungeons.'''
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[41.0.94,)" #mandatory
+    versionRange="[44.1.0,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -26,6 +26,6 @@ description='''Dungeon Crawl, a spiritual successor to Roguelike Dungeons.'''
 [[dependencies.dungeoncrawl]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19,)"
+    versionRange="[1.19.3,)"
     ordering="NONE"
     side="BOTH"

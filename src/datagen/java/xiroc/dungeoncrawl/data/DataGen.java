@@ -19,14 +19,19 @@
 package xiroc.dungeoncrawl.data;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.data.loot.LootTables;
+import xiroc.dungeoncrawl.data.loot.ChestLootTables;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
+
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGen {
@@ -38,7 +43,7 @@ public class DataGen {
         DataGenerator generator = event.getGenerator();
         boolean includeServer = event.includeServer();
 
-        generator.addProvider(includeServer, new LootTables(generator));
+        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Loot.ALL_LOOT_TABLES, List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.BLOCK))));
         generator.addProvider(includeServer, new PrimaryThemes(generator));
         generator.addProvider(includeServer, new SecondaryThemes(generator));
     }

@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -99,10 +98,10 @@ public class DungeonModelBlock {
 //            }
             variation = 0;
             block = state.getBlock();
-            blockName = Registry.BLOCK.getKey(state.getBlock());
+            blockName = ForgeRegistries.BLOCKS.getKey(state.getBlock());
         } else if (type == DungeonModelBlockType.OTHER) {
             block = state.getBlock();
-            blockName = Registry.BLOCK.getKey(state.getBlock());
+            blockName = ForgeRegistries.BLOCKS.getKey(state.getBlock());
         } else {
             block = Blocks.CAVE_AIR;
         }

@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.data.loot;
 
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -27,7 +28,6 @@ import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunctio
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
@@ -36,12 +36,10 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>> {
-
+public class ChestLootTables implements LootTableSubProvider {
     @Override
-    public void accept(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
+    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
         consumer.accept(Loot.CHEST_FOOD, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("food")
@@ -899,5 +897,4 @@ public class ChestLootTables implements Consumer<BiConsumer<ResourceLocation, Lo
                                 .setWeight(5)
                                 .apply(RandomPotion.randomPotion(4)))));
     }
-
 }

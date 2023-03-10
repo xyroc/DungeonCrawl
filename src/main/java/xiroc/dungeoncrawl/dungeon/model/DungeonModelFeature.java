@@ -24,7 +24,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -42,6 +41,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
@@ -375,8 +375,8 @@ public final class DungeonModelFeature {
             @Override
             public void place(LevelAccessor world, RandomSource rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmBlock) {
-                    Registry.BLOCK.getTag(BlockTags.CROPS).flatMap((tag) -> tag.getRandomElement(rand)).ifPresent((cropBlock) -> {
-                        BlockState crop = cropBlock.value().defaultBlockState();
+                    ForgeRegistries.BLOCKS.tags().getTag(BlockTags.CROPS).getRandomElement(rand).ifPresent((cropBlock) -> {
+                        BlockState crop = cropBlock.defaultBlockState();
                         if (crop.hasProperty(BlockStateProperties.AGE_7))
                             crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
                         world.setBlock(pos, crop, 2);

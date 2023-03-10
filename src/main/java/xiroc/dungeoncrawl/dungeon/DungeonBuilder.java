@@ -21,7 +21,7 @@ package xiroc.dungeoncrawl.dungeon;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
@@ -86,7 +86,7 @@ public class DungeonBuilder {
                 .getNoiseBiome(QuartPos.fromBlock(startPos.getX()), QuartPos.fromBlock(groundHeight), QuartPos.fromBlock(startPos.getZ()),
                         generationContext.randomState().sampler()).value();
 
-        DungeonType type = DungeonType.randomType(this.generationContext.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(this.biome), this.generationContext.random());
+        DungeonType type = DungeonType.randomType(this.generationContext.registryAccess().registryOrThrow(Registries.BIOME).getKey(this.biome), this.generationContext.random());
 
         generateLayout(type, DEFAULT_GENERATOR);
 
@@ -155,7 +155,7 @@ public class DungeonBuilder {
     }
 
     private void determineThemes() {
-        ResourceLocation registryName = this.generationContext.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
+        ResourceLocation registryName = this.generationContext.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome);
 
         if (registryName != null) {
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), this.generationContext.random());

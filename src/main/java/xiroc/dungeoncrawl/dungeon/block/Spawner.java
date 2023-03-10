@@ -60,7 +60,7 @@ public class Spawner implements IBlockPlacementHandler {
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile instanceof SpawnerBlockEntity spawner) {
             EntityType<?> type = RandomMonster.randomMonster(rand, stage);
-            spawner.getSpawner().setEntityId(type);
+            spawner.getSpawner().setEntityId(type, null, rand, pos);
             if (Config.CUSTOM_SPAWNERS.get() && INVENTORY_ENTITIES.contains(type)) {
                 CompoundTag spawnerNBT = spawner.getSpawner().save(new CompoundTag());
                 ListTag potentialSpawns = new ListTag();

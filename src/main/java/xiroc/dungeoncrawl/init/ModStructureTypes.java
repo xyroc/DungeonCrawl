@@ -18,23 +18,23 @@
 
 package xiroc.dungeoncrawl.init;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 
 public interface ModStructureTypes {
+    DeferredRegister<StructureType<?>> STRUCTURE_TYPES = DeferredRegister.create(Registries.STRUCTURE_TYPE, DungeonCrawl.MOD_ID);
 
-    StructureType<Dungeon> DUNGEON = register("dungeoncrawl:dungeon", Dungeon.CODEC);
+    RegistryObject<StructureType<?>> DUNGEON = STRUCTURE_TYPES.register("dungeon", () -> () -> Dungeon.CODEC);
 
-    private static <S extends Structure> StructureType<S> register(String p_226882_, Codec<S> p_226883_) {
-        return Registry.register(Registry.STRUCTURE_TYPES, p_226882_, () -> {
-            return p_226883_;
-        });
+    static void register() {
+        Registry.register(BuiltInRegistries.STRUCTURE_TYPE, "dungeoncrawl:dungeon", () -> Dungeon.CODEC);
+//        STRUCTURE_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
-
-    static void load() {
-    }
-
 }

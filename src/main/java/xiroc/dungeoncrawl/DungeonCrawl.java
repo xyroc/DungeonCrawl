@@ -31,9 +31,7 @@ import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
-import xiroc.dungeoncrawl.init.ModStructureSets;
 import xiroc.dungeoncrawl.init.ModStructureTypes;
-import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.tools.Tools;
 
@@ -68,11 +66,9 @@ public class DungeonCrawl {
 
         event.enqueueWork(() -> {
             Loot.init();
-            ModStructures.register();
-            ModStructureSets.register();
 
-            ModStructureTypes.load();
-            ModStructurePieceTypes.load();
+            ModStructureTypes.register();
+            ModStructurePieceTypes.init();
         });
 
     }

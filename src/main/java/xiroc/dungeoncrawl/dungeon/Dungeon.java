@@ -38,7 +38,7 @@ public class Dungeon extends Structure {
 
     public static final GenerationStep.Decoration GENERATION_STEP = GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
 
-    public static final Codec<Dungeon> CODEC = simpleCodec(Dungeon::new);
+    public static final Codec<Structure> CODEC = simpleCodec(Dungeon::new);
 
     private static final int BIOME_CHECK_RADIUS = 1;
 
@@ -77,7 +77,7 @@ public class Dungeon extends Structure {
 
     @Override
     public StructureType<?> type() {
-        return ModStructureTypes.DUNGEON;
+        return ModStructureTypes.DUNGEON.get();
     }
 
     private static boolean isInvalidSpot(GenerationContext context, int radius) {

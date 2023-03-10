@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
@@ -41,8 +41,8 @@ public class Plants {
             world.setBlock(pos, state, 2);
             BlockPos cropPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
             if (rand.nextFloat() < 0.6) {
-                Registry.BLOCK.getTag(BlockTags.CROPS).flatMap(crops -> crops.getRandomElement(rand)).ifPresent((cropBlock) -> {
-                    BlockState crop = cropBlock.value().defaultBlockState();
+                ForgeRegistries.BLOCKS.tags().getTag(BlockTags.CROPS).getRandomElement(rand).ifPresent((cropBlock) -> {
+                    BlockState crop = cropBlock.defaultBlockState();
                     if (crop.hasProperty(BlockStateProperties.AGE_7))
                         crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
                     world.setBlock(cropPos, crop, 2);
@@ -58,9 +58,9 @@ public class Plants {
 
         @Override
         public void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
-            Registry.BLOCK.getTag(BlockTags.FLOWER_POTS).flatMap((pots) -> pots.getRandomElement(rand)).ifPresent((pot) -> world.setBlock(pos, pot.value().defaultBlockState(), 2));
+            ForgeRegistries.BLOCKS.tags().getTag(BlockTags.FLOWER_POTS).getRandomElement(rand).ifPresent((pot) ->
+                    world.setBlock(pos, pot.defaultBlockState(), 2));
         }
-
     }
 
     public static class Podzol implements IBlockPlacementHandler {
@@ -68,8 +68,8 @@ public class Plants {
         @Override
         public void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel) {
             world.setBlock(pos, state, 2);
-            Registry.BLOCK.getTag(BlockTags.TALL_FLOWERS).flatMap((flowers) -> flowers.getRandomElement(rand)).ifPresent((flowerBlock) -> {
-                BlockState flower = flowerBlock.value().defaultBlockState();
+            ForgeRegistries.BLOCKS.tags().getTag(BlockTags.TALL_FLOWERS).getRandomElement(rand).ifPresent((flowerBlock) -> {
+                BlockState flower = flowerBlock.defaultBlockState();
                 BlockPos lowerPart = pos.above();
                 BlockPos upperPart = lowerPart.above();
                 world.setBlock(lowerPart, DungeonBlocks.applyProperty(flower, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), 2);

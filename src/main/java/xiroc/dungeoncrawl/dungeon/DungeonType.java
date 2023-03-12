@@ -132,11 +132,6 @@ public record DungeonType(ResourceLocation source,
                 JsonObject mapping = rawMapping.getAsJsonObject("mapping");
                 mapping.entrySet().forEach((entry) -> {
                     String biome = entry.getKey();
-
-                    if (!ForgeRegistries.BIOMES.containsKey(new ResourceLocation(biome))) {
-                        DungeonCrawl.LOGGER.warn("Unknown biome {} in {}", biome, resource);
-                    }
-
                     BIOME_TO_TYPE.put(biome, dungeonTypeWeightedRandom(entry.getValue().getAsJsonArray(), file));
                 });
             } catch (IOException e) {

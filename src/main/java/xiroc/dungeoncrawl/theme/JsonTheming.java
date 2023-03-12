@@ -132,7 +132,7 @@ public class JsonTheming {
     protected static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, WeightedRandom.Builder<Theme> defaultBuilder, ResourceLocation file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-                ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
+                ArrayList<Tuple<ResourceLocation, Integer>> entries = listThemes(entry);
                 entries.forEach((tuple) -> {
                     if (!Theme.KEY_TO_THEME.containsKey(tuple.getA())) {
                         throw new DatapackLoadException("Cannot resolve theme key " + tuple.getA() + " in " + file.toString());
@@ -162,7 +162,7 @@ public class JsonTheming {
     protected static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, WeightedRandom.Builder<SecondaryTheme> defaultBuilder, ResourceLocation file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-                ArrayList<Tuple<ResourceLocation, Integer>> entries = checkAndListThemes(entry);
+                ArrayList<Tuple<ResourceLocation, Integer>> entries = listThemes(entry);
                 entries.forEach((tuple) -> {
                     if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(tuple.getA())) {
                         throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
@@ -183,11 +183,7 @@ public class JsonTheming {
         }
     }
 
-    private static ArrayList<Tuple<ResourceLocation, Integer>> checkAndListThemes(Map.Entry<String, JsonElement> entry) {
-        if (!ForgeRegistries.BIOMES.containsKey(new ResourceLocation(entry.getKey()))) {
-            DungeonCrawl.LOGGER.warn("The biome {} does not exist.", entry.getKey());
-        }
-
+    private static ArrayList<Tuple<ResourceLocation, Integer>> listThemes(Map.Entry<String, JsonElement> entry) {
         ArrayList<Tuple<ResourceLocation, Integer>> entries = new ArrayList<>();
         entry.getValue().getAsJsonArray().forEach((element) -> {
             JsonObject jsonObject = element.getAsJsonObject();

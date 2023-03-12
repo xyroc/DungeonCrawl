@@ -135,7 +135,7 @@ public class NewLayerGenerator extends LayerGenerator {
         }
         List<Direction> directions = Lists.newArrayList(excludedDirection != null ? Orientation.getHorizontalFacingsWithout(excludedDirection) : Orientation.HORIZONTAL_FACINGS);
         int count = depth < 2 ? 2 + rand.nextInt(2) : 1 + rand.nextInt(3);
-        for (; count > 0; count--) {
+        while (count > 0 && !directions.isEmpty()) {
             Direction direction = directions.remove(rand.nextInt(directions.size()));
             int maxDistance = maxDistance(cursor.position, direction, dungeonLayer);
             if (maxDistance >= settings.minDistance) {
@@ -149,6 +149,7 @@ public class NewLayerGenerator extends LayerGenerator {
                             element.onPlaced.accept(this); // Update room / node counts.
                             connectStraight(dungeonLayer, cursor.getConnectionPoint(direction), element.getConnectionPoint(direction.getOpposite()));
                             this.newElements.add(element);
+                            --count;
                         }
                     }
                 }

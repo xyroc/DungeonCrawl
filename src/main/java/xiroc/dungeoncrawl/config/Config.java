@@ -34,14 +34,13 @@ public class Config {
 
     public static final ForgeConfigSpec CONFIG;
 
-    public static final IntValue SPAWNER_ENTITIES, SPAWNER_RANGE, SPACING, SEPARATION;
+    public static final IntValue SPAWNER_ENTITIES, SPAWNER_RANGE;
 
     public static final BooleanValue
             CUSTOM_SPAWNERS,
             NO_NETHER_STUFF,
             ENABLE_TOOLS,
             SOLID,
-            BURY,
             NATURAL_DESPAWN,
             EXTENDED_DEBUG,
             TICK_FALLING_BLOCKS,
@@ -64,8 +63,6 @@ public class Config {
         BUILDER.pop();
 
         BUILDER.push("World Generation");
-        BURY = BUILDER.comment(SEPARATOR_LINE +
-                " Experimental. Prevents caves, ravines, etc.. from interfering with a dungeon.\n").define("bury", false);
         SOLID = BUILDER
                 .comment(SEPARATOR_LINE +
                         " When enabled, the dungeons will ignore caves instead of trying to adjust to them (by not generating specific blocks).\n")
@@ -74,24 +71,6 @@ public class Config {
                 .comment(SEPARATOR_LINE +
                         " Whether falling blocks like sand or gravel should drop down after being placed during dungeon generation.\n")
                 .define("tick_falling_blocks", true);
-        BUILDER.pop();
-
-        BUILDER.push("Dungeon Placement");
-        SPACING = BUILDER
-                .comment(SEPARATOR_LINE +
-                        " The cell size of the grid used to generate the dungeons in chunks. Each cell of this grid can only contain one dungeon.\n" +
-                        " You can also see this as the average distance between two adjacent dungeons in chunks.\n" +
-                        " !! Has to be higher than the separation! !! \n" +
-                        " Reduce this value to make the dungeons more common, increase it to make them more rare.\n" +
-                        " Halving it will quadruple the amount of dungeons, doubling it would have the opposite effect.\n")
-                .defineInRange("spacing", 32, 9, 4096);
-        SEPARATION = BUILDER
-                .comment(SEPARATOR_LINE +
-                        " The minimum distance between two adjacent dungeons in chunks. Has to be lower than the spacing!\n" +
-                        " The closer the separation is to the spacing, the more grid-aligned and predictable the dungeon placement will be.\n" +
-                        " Generally, bigger values allow for less, and smaller values for more randomness.\n" +
-                        " !! Has to be lower than the spacing! !!\n")
-                .defineInRange("separation", 12, 8, 4095);
         BUILDER.pop();
 
         BUILDER.push("Dungeon Settings");

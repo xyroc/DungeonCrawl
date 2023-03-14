@@ -84,14 +84,14 @@ public class Config {
                         " !! Has to be higher than the separation! !! \n" +
                         " Reduce this value to make the dungeons more common, increase it to make them more rare.\n" +
                         " Halving it will quadruple the amount of dungeons, doubling it would have the opposite effect.\n")
-                .defineInRange("spacing", 24, 9, 8192);
+                .defineInRange("spacing", 32, 9, 4096);
         SEPARATION = BUILDER
                 .comment(SEPARATOR_LINE +
                         " The minimum distance between two adjacent dungeons in chunks. Has to be lower than the spacing!\n" +
                         " The closer the separation is to the spacing, the more grid-aligned and predictable the dungeon placement will be.\n" +
                         " Generally, bigger values allow for less, and smaller values for more randomness.\n" +
                         " !! Has to be lower than the spacing! !!\n")
-                .defineInRange("separation", 12, 8, 8191);
+                .defineInRange("separation", 12, 8, 4095);
         BUILDER.pop();
 
         BUILDER.push("Dungeon Settings");

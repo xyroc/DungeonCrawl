@@ -33,6 +33,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunct
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.phys.Vec3;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
@@ -50,11 +51,12 @@ public class MaterialBlocks extends LootItemConditionalFunction {
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
         if (context.hasParam(LootContextParams.ORIGIN)) {
-            BlockPos pos = new BlockPos(context.getParamOrNull(LootContextParams.ORIGIN));
-            BlockEntity chest = context.getLevel().getBlockEntity(pos);
+            Vec3 origin = context.getParam(LootContextParams.ORIGIN);
+            BlockPos chestPosition = new BlockPos((int) (origin.x - 0.5), (int) (origin.y - 0.5), (int) (origin.z - 0.5));
+            BlockEntity chest = context.getLevel().getBlockEntity(chestPosition);
             if (chest != null && chest.getPersistentData().contains(DungeonCrawl.MOD_ID, 10)) {
                 Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getPersistentData());
-                return new ItemStack(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom()), AMOUNT.nextInt(context.getRandom()));
+                return new ItemStack(getMaterial(themes.getA(), themes.getB(), context.getLevel(), chestPosition, context.getRandom()), AMOUNT.nextInt(context.getRandom()));
             }
         }
         return new ItemStack(Blocks.STONE_BRICKS, AMOUNT.nextInt(context.getRandom()));

@@ -18,33 +18,14 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.DungeonType;
-import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGenerator;
 
+import java.util.List;
 import java.util.Random;
 
-/**
- * The base class for all dungeon generator types.
- */
-public abstract class DungeonGenerator extends LayerGenerator {
+public interface DungeonGenerator {
 
-    /**
-     * The dungeon type currently in use.
-     */
-    protected DungeonType type;
-
-    /**
-     * Called once before the layout generation for a dungeon starts.
-     */
-    public void initializeDungeon(DungeonType type, DungeonBuilder dungeonBuilder, ChunkPos chunkPos, Random rand) {
-        this.type = type;
-    }
-
-    /**
-     * @return the amount of layers the dungeon will have.
-     */
-    public abstract int layerCount(Random rand, int height);
+    List<? extends StructurePiece> generateDungeon(DungeonBuilder dungeonBuilder, Random random);
 
 }

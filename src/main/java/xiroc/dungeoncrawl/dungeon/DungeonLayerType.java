@@ -19,21 +19,13 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import com.google.common.collect.ImmutableMap;
-import xiroc.dungeoncrawl.dungeon.generator.layer.LayerGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.layer.NewLayerGenerator;
 
 public enum DungeonLayerType {
 
-    DEFAULT(NewLayerGenerator.INSTANCE);
+    DEFAULT();
 
     public static final ImmutableMap<String, DungeonLayerType> NAME_TO_TYPE = new ImmutableMap.Builder<String, DungeonLayerType>()
             .put("default", DEFAULT)
             .build();
-
-    public final LayerGenerator layerGenerator;
-
-    DungeonLayerType(LayerGenerator layerGenerator) {
-        this.layerGenerator = layerGenerator;
-    }
 
 }

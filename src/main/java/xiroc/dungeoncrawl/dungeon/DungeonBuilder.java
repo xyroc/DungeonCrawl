@@ -18,253 +18,52 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.generator.DefaultDungeonGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
-import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.util.Position2D;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 
 import java.util.List;
 import java.util.Random;
 
 public class DungeonBuilder {
+    public final RegistryAccess registryAccess;
+    public final ChunkGenerator chunkGenerator;
+    public final ChunkPos chunkPos;
+    public final LevelHeightAccessor heightAccessor;
+    public final int startHeight;
+    public final BlockPos groundPos;
+    public final Random random;
+    public final Biome biome;
 
-    public static final DungeonGenerator DEFAULT_GENERATOR = new DefaultDungeonGenerator();
 
-    public Random rand;
-    public Position2D start;
-
-    public DungeonLayer[] layers;
-
-    public ChunkPos chunkPos;
-    public BlockPos groundPos;
-    public BlockPos startPos;
-
-    public ChunkGenerator chunkGenerator;
-    public Biome biome;
-
-    private final RegistryAccess registryAccess;
-
-    public Theme theme, catacombsTheme, lowerCatacombsTheme, bottomTheme;
-    public SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
-
-    private static final int GRID_SIZE = 17;
-    private static final int HALF_GRID_SIZE = GRID_SIZE >> 1;
-
-    /**
-     * Instantiates a Dungeon Builder for usage during world gen.
-     */
-    public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, int startHeight, BlockPos groundPos, ChunkPos pos, Random rand) {
+    public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, int startHeight, BlockPos groundPos, ChunkPos pos, Random random) {
         this.registryAccess = registryAccess;
-        this.rand = rand;
         this.chunkGenerator = chunkGenerator;
-
-        this.chunkPos = pos;
+        this.heightAccessor = heightAccessor;
+        this.startHeight = startHeight;
         this.groundPos = groundPos;
-        this.startPos = new BlockPos(pos.x * 16 - HALF_GRID_SIZE * 9 - 4, startHeight,
-                pos.z * 16 - HALF_GRID_SIZE * 9 - 4);
-
-        DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
-                + startPos.getZ() + ").");
+        this.chunkPos = pos;
+        this.random = random;
+        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(this.groundPos.getX()),
+                QuartPos.fromBlock(this.groundPos.getY()),
+                QuartPos.fromBlock(this.groundPos.getZ()),
+                chunkGenerator.climateSampler()).value();
     }
 
-    public List<DungeonPiece> build() {
-        if (startPos.getY() < 16) {
-            return Lists.newArrayList();
-        }
-        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(groundPos.getX()), QuartPos.fromBlock(groundPos.getY()), QuartPos.fromBlock(groundPos.getZ()), chunkGenerator.climateSampler()).value();
-        DungeonType type = DungeonType.randomType(this.biome.getRegistryName(), this.rand);
-        generateLayout(type, DEFAULT_GENERATOR);
-
-        List<DungeonPiece> pieces = Lists.newArrayList();
-        DungeonPiece entrance = new DungeonEntrance();
-        entrance.setWorldPosition(startPos.getX() + layers[0].start.x * 9, startPos.getY() + 9,
-                startPos.getZ() + layers[0].start.z * 9);
-        entrance.stage = 0;
-
-        entrance.model = type.entrances().roll(rand);
-        entrance.createBoundingBox();
-
-        determineThemes();
-
-        entrance.theme = this.theme;
-        entrance.secondaryTheme = this.secondaryTheme;
-
-        pieces.add(entrance);
-
-        postProcessDungeon(pieces, type, rand);
-        return pieces;
-    }
-
-    private void generateLayout(DungeonType type, DungeonGenerator generator) {
-        generator.initializeDungeon(type, this, this.chunkPos, this.rand);
-
-        this.start = new Position2D(HALF_GRID_SIZE, HALF_GRID_SIZE);
-
-        int layerCount = generator.layerCount(rand, startPos.getY() - chunkGenerator.getMinY());
-
-        this.layers = new DungeonLayer[layerCount];
-
-        for (int layer = 0; layer < layers.length; layer++) {
-            this.layers[layer] = new DungeonLayer(GRID_SIZE);
-        }
-
-        for (int layer = 0; layer < layers.length; layer++) {
-
-            if (layer > 0 && layers[layer - 1].end == null) {
-                // This is an abnormal state and means that the previous layer is unfinished.
-                // Layer generation cannot continue at this point.
-                break;
-            }
-            generator.initializeLayer(type.getLayer(layer).settings(), this, rand, layer, layer == layerCount - 1);
-            generator.generateLayer(this, layers[layer], layer, rand, (layer == 0) ? this.start : layers[layer - 1].end);
-        }
-
-        for (int layer = 0; layer < layers.length; layer++) {
-            processCorridors(layers[layer], layer);
-        }
-    }
-
-    private void processCorridors(DungeonLayer layer, int lyr) {
-        int stage = Math.min(lyr, 4);
-        for (int x = 0; x < layer.width; x++) {
-            for (int z = 0; z < layer.length; z++) {
-                if (layer.grid[x][z] != null) {
-                    if (!layer.grid[x][z].hasFlag(Tile.Flag.PLACEHOLDER)) {
-                        layer.grid[x][z].piece.stage = stage;
-                        if (layer.grid[x][z].piece.getDungeonPieceType() == DungeonPiece.CORRIDOR)
-                            DungeonFeatures.processCorridor(this, layer, x, z, rand, lyr, stage, startPos);
-                    }
-                }
-            }
-        }
-    }
-
-    private void determineThemes() {
-        ResourceLocation registryName = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY).getKey(biome);
-
-        if (registryName != null) {
-            if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), rand);
-        } else {
-            if (this.theme == null) this.theme = Theme.getBuiltinDefaultTheme();
-        }
-
-        if (secondaryTheme == null) {
-            if (theme.secondaryTheme != null) {
-                this.secondaryTheme = theme.secondaryTheme.roll(rand);
-            } else {
-                this.secondaryTheme = registryName != null ? Theme.randomSecondaryTheme(registryName.toString(), rand) : Theme.getBuiltinDefaultSecondaryTheme();
-            }
-        }
-
-        if (this.catacombsTheme == null) {
-            this.catacombsTheme = Theme.randomCatacombsTheme(rand);
-        }
-
-        if (catacombsSecondaryTheme == null) {
-            if (catacombsTheme.secondaryTheme != null) {
-                this.catacombsSecondaryTheme = catacombsTheme.secondaryTheme.roll(rand);
-            } else {
-                this.catacombsSecondaryTheme = Theme.randomCatacombsSecondaryTheme(rand);
-            }
-        }
-
-        if (this.lowerCatacombsTheme == null) {
-            this.lowerCatacombsTheme = Theme.randomLowerCatacombsTheme(rand);
-        }
-
-        if (lowerCatacombsSecondaryTheme == null) {
-            if (lowerCatacombsTheme.secondaryTheme != null) {
-                this.lowerCatacombsSecondaryTheme = lowerCatacombsTheme.secondaryTheme.roll(rand);
-            } else {
-                this.lowerCatacombsSecondaryTheme = Theme.randomLowerCatacombsSecondaryTheme(rand);
-            }
-        }
-
-        if (this.bottomTheme == null) {
-            this.bottomTheme = Config.NO_NETHER_STUFF.get() ? Theme.getTheme(Theme.PRIMARY_HELL_MOSSY) : Theme.randomHellTheme(rand);
-        }
-
-        if (bottomTheme.secondaryTheme != null && this.bottomSecondaryTheme == null) {
-            this.bottomSecondaryTheme = bottomTheme.secondaryTheme.roll(rand);
-        } else {
-            this.bottomSecondaryTheme = Theme.randomHellSecondaryTheme(rand);
-        }
-    }
-
-    private void postProcessDungeon(List<DungeonPiece> pieces, DungeonType type, Random rand) {
-        for (int i = 0; i < layers.length; i++) {
-            DungeonLayer layer = layers[i];
-            ModelSelector modelSelector = type.getLayer(i).modelSelector();
-            for (int x = 0; x < layer.width; x++)
-                for (int z = 0; z < layer.length; z++) {
-                    Tile tile = layer.grid[x][z];
-                    if (tile != null && !tile.hasFlag(Tile.Flag.PLACEHOLDER)) {
-                        switch (i) {
-                            case 2 -> {
-                                tile.piece.theme = catacombsTheme;
-                                tile.piece.secondaryTheme = catacombsSecondaryTheme;
-                            }
-                            case 3 -> {
-                                tile.piece.theme = lowerCatacombsTheme;
-                                tile.piece.secondaryTheme = lowerCatacombsSecondaryTheme;
-                            }
-                            default -> {
-                                if (i >= 4) {
-                                    tile.piece.theme = bottomTheme;
-                                    tile.piece.secondaryTheme = bottomSecondaryTheme;
-                                } else {
-                                    tile.piece.theme = theme;
-                                    tile.piece.secondaryTheme = secondaryTheme;
-                                }
-                            }
-                        }
-
-                        if (!tile.hasFlag(Tile.Flag.FIXED_MODEL)) {
-                            tile.piece.setupModel(this, modelSelector, pieces, rand);
-                        }
-
-                        if (!tile.hasFlag(Tile.Flag.FIXED_POSITION)) {
-                            tile.piece.setWorldPosition(startPos.getX() + x * 9,
-                                    startPos.getY() - i * 9, startPos.getZ() + z * 9);
-                        }
-
-                        tile.piece.createBoundingBox();
-
-                        if (tile.piece.getDungeonPieceType() == DungeonPiece.NODE_ROOM) {
-                            layer.rotateNode(tile, rand);
-                        }
-
-                        if (tile.piece.hasChildPieces()) {
-                            tile.piece.addChildPieces(pieces, this, type, modelSelector, i, rand);
-                        }
-
-                        tile.piece.setup(rand);
-                        pieces.add(tile.piece);
-                    }
-                }
-        }
+    public List<? extends StructurePiece> build() {
+        // TODO: generate dungeon
+        return List.of();
     }
 
     public static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         return state.getDestroySpeed(world, pos) < 0;
     }
-
 }

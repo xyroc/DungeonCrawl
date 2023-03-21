@@ -63,6 +63,7 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         return Optional.of(((structurePiecesBuilder, generatorContext) -> {
             DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
                     generatorContext.chunkGenerator(),
+                    context.heightAccessor(),
                     startHeight,
                     new BlockPos(centerX, centerHeight, centerZ),
                     generatorContext.chunkPos(),

@@ -76,10 +76,10 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 ChunkPos pos = new ChunkPos(context.chunkPos().x + x, context.chunkPos().z + z);
-                int centerX = QuartPos.fromBlock(pos.getBlockX(7));
-                int centerZ = QuartPos.fromBlock(pos.getBlockZ(7));
-                Holder<Biome> centerBiome = context.chunkGenerator().getNoiseBiome(centerX, context.chunkGenerator()
-                        .getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor()), centerZ);
+                int centerX = pos.getBlockX(7);
+                int centerZ = pos.getBlockZ(7);
+                int centerHeight = context.chunkGenerator().getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor());
+                Holder<Biome> centerBiome = context.chunkGenerator().getNoiseBiome(QuartPos.fromBlock(centerX), QuartPos.fromBlock(centerHeight), QuartPos.fromBlock(centerZ));
                 if (!context.validBiome().test(centerBiome)) {
                     DungeonCrawl.LOGGER.debug("Invalid biome {} at [{},{}]", centerBiome.value().getRegistryName(), pos.x, pos.z);
                     return true;

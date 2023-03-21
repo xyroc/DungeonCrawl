@@ -27,7 +27,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
@@ -182,20 +181,18 @@ public class MultipartModelData {
             this.rotation = rotation;
         }
 
-        public DungeonMultipartModelPiece createMultipartPiece(DungeonPiece parentPiece, DungeonModel parent, Rotation rotation, int x, int y, int z, Random rand) {
+        public DungeonPiece createMultipartPiece(DungeonPiece parentPiece, DungeonModel parent, Rotation rotation, int x, int y, int z, Random rand) {
             if (model != null) {
-                DungeonMultipartModelPiece piece = new DungeonMultipartModelPiece();
+                DungeonPiece piece = new DungeonPiece();
                 Rotation fullRotation = this.rotation.getRotated(rotation);
                 Vec3i rotatedOffset = Orientation.rotatedMultipartOffset(parent, model, offset, rotation, fullRotation);
-
-                piece.setWorldPosition(x + rotatedOffset.getX(), y + rotatedOffset.getY(), z + rotatedOffset.getZ());
-                piece.model = model;
+                piece.setPosition(x + rotatedOffset.getX(), y + rotatedOffset.getY(), z + rotatedOffset.getZ());
+                piece.blueprint = model;
                 piece.rotation = fullRotation;
                 piece.stage = parentPiece.stage;
-                piece.theme = parentPiece.theme;
+                piece.primaryTheme = parentPiece.primaryTheme;
                 piece.secondaryTheme = parentPiece.secondaryTheme;
                 piece.createBoundingBox();
-                piece.setup(rand);
                 return piece;
             } else {
                 throw new RuntimeException("Can't create a multipart piece without a model. Metadata file: " + file.toString());
@@ -260,24 +257,24 @@ public class MultipartModelData {
     @FunctionalInterface
     private interface Property<T> {
 
-        Property<Boolean> NORTH = (piece) -> piece.sides[0];
-        Property<Boolean> EAST = (piece) -> piece.sides[1];
-        Property<Boolean> SOUTH = (piece) -> piece.sides[2];
-        Property<Boolean> WEST = (piece) -> piece.sides[3];
+        Property<Boolean> NORTH = (piece) -> false;
+        Property<Boolean> EAST = (piece) -> false;
+        Property<Boolean> SOUTH = (piece) -> false;
+        Property<Boolean> WEST = (piece) -> false;
 
-        Property<Boolean> ROTATED_NORTH = (piece) -> piece.sides[Orientation.rotationAsInt(piece.rotation)];
-        Property<Boolean> ROTATED_EAST = (piece) -> piece.sides[(1 + Orientation.rotationAsInt(piece.rotation)) % 4];
-        Property<Boolean> ROTATED_SOUTH = (piece) -> piece.sides[(2 + Orientation.rotationAsInt(piece.rotation)) % 4];
-        Property<Boolean> ROTATED_WEST = (piece) -> piece.sides[(3 + Orientation.rotationAsInt(piece.rotation)) % 4];
+        Property<Boolean> ROTATED_NORTH = (piece) -> false;
+        Property<Boolean> ROTATED_EAST = (piece) -> false;
+        Property<Boolean> ROTATED_SOUTH = (piece) -> false;
+        Property<Boolean> ROTATED_WEST = (piece) -> false;
 
         Property<Boolean> MULTIPART_NORTH = (piece) -> false;
         Property<Boolean> MULTIPART_EAST = (piece) -> false;
         Property<Boolean> MULTIPART_SOUTH = (piece) -> false;
         Property<Boolean> MULTIPART_WEST = (piece) -> false;
 
-        Property<Boolean> STRAIGHT = (piece) -> (piece.sides[0] && piece.sides[2]) || (piece.sides[1] && piece.sides[3]);
+        Property<Boolean> STRAIGHT = (piece) -> false;
 
-        Property<Integer> CONNECTIONS = (piece) -> piece.connectedSides;
+        Property<Integer> CONNECTIONS = (piece) -> 0;
         Property<Integer> STAGE = (piece) -> piece.stage;
 
         @Nullable

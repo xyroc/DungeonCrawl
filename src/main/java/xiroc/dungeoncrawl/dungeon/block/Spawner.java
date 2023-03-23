@@ -40,7 +40,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
-import xiroc.dungeoncrawl.util.Range;
+import xiroc.dungeoncrawl.util.random.value.Range;
 
 import javax.annotation.Nullable;
 import java.util.Random;

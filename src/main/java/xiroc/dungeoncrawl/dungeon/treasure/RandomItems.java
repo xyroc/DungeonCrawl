@@ -31,8 +31,10 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.misc.Banner;
-import xiroc.dungeoncrawl.util.Range;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.value.Constant;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
+import xiroc.dungeoncrawl.util.random.value.Range;
+import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,12 +44,12 @@ public class RandomItems {
 
     private static WeightedRandom<Item> STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5;
 
-    private static final Range[] UNBREAKING_LEVELS = {
-            new Range(1, 1),
+    private static final RandomValue[] UNBREAKING_LEVELS = {
+            new Constant(1),
             new Range(1, 2),
-            new Range(2, 2),
+            new Constant(2),
             new Range(2, 3),
-            new Range(3, 3)};
+            new Constant(3)};
 
     public static void loadJson(ResourceManager resourceManager) {
         try {
@@ -58,35 +60,35 @@ public class RandomItems {
                 ResourceLocation stage1 = DungeonCrawl.locate("treasure/stage_1.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage1.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage1).getInputStream()))).getAsJsonArray();
-                STAGE_1 = WeightedRandom.ITEM.fromJson(array);
+                STAGE_1 = WeightedRandom.ITEM.deserialize(array);
             }
 
             {
                 ResourceLocation stage2 = DungeonCrawl.locate("treasure/stage_2.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage2.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage2).getInputStream()))).getAsJsonArray();
-                STAGE_2 = WeightedRandom.ITEM.fromJson(array);
+                STAGE_2 = WeightedRandom.ITEM.deserialize(array);
             }
 
             {
                 ResourceLocation stage3 = DungeonCrawl.locate("treasure/stage_3.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage3.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage3).getInputStream()))).getAsJsonArray();
-                STAGE_3 = WeightedRandom.ITEM.fromJson(array);
+                STAGE_3 = WeightedRandom.ITEM.deserialize(array);
             }
 
             {
                 ResourceLocation stage4 = DungeonCrawl.locate("treasure/stage_4.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage4.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage4).getInputStream()))).getAsJsonArray();
-                STAGE_4 = WeightedRandom.ITEM.fromJson(array);
+                STAGE_4 = WeightedRandom.ITEM.deserialize(array);
             }
 
             {
                 ResourceLocation stage5 = DungeonCrawl.locate("treasure/stage_5.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage5.toString());
                 JsonArray array = parser.parse(new JsonReader(new InputStreamReader(resourceManager.getResource(stage5).getInputStream()))).getAsJsonArray();
-                STAGE_5 = WeightedRandom.ITEM.fromJson(array);
+                STAGE_5 = WeightedRandom.ITEM.deserialize(array);
             }
         } catch (IOException e) {
             e.printStackTrace();

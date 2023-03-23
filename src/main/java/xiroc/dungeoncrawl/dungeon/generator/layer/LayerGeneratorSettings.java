@@ -21,7 +21,8 @@ package xiroc.dungeoncrawl.dungeon.generator.layer;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.util.Range;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
+import xiroc.dungeoncrawl.util.random.value.Range;
 
 public class LayerGeneratorSettings {
 
@@ -29,13 +30,13 @@ public class LayerGeneratorSettings {
      * The minimum and maximum amount of rooms
      */
     public final int minRooms, maxRooms;
-    public final Range rooms;
+    public final RandomValue rooms;
 
     /**
      * The minimum and maximum amount of nodes
      */
     public final int minNodes, maxNodes;
-    public final Range nodes;
+    public final RandomValue nodes;
 
     /**
      * The minimum and maximum distance between rooms.

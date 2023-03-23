@@ -38,7 +38,7 @@ import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

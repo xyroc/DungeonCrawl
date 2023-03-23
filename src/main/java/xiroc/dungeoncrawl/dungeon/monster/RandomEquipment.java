@@ -31,7 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -85,25 +85,25 @@ public class RandomEquipment {
                 DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
                 JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
                 if (object.has("helmet")) {
-                    HELMET.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("helmet")));
+                    HELMET.put(stage, WeightedRandom.ITEM.deserialize(object.getAsJsonArray("helmet")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'helmet' in {}", file.toString());
                 }
 
                 if (object.has("chestplate")) {
-                    CHESTPLATE.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("chestplate")));
+                    CHESTPLATE.put(stage, WeightedRandom.ITEM.deserialize(object.getAsJsonArray("chestplate")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'chestplate' in {}", file.toString());
                 }
 
                 if (object.has("leggings")) {
-                    LEGGINGS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("leggings")));
+                    LEGGINGS.put(stage, WeightedRandom.ITEM.deserialize(object.getAsJsonArray("leggings")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'leggings' in {}", file.toString());
                 }
 
                 if (object.has("boots")) {
-                    BOOTS.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("boots")));
+                    BOOTS.put(stage, WeightedRandom.ITEM.deserialize(object.getAsJsonArray("boots")));
                 } else {
                     DungeonCrawl.LOGGER.warn("Missing entry 'boots' in {}", file.toString());
                 }
@@ -126,13 +126,13 @@ public class RandomEquipment {
             JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()))).getAsJsonObject();
 
             if (object.has("melee")) {
-                MELEE_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("melee")));
+                MELEE_WEAPON.put(stage, WeightedRandom.ITEM.deserialize(object.getAsJsonArray("melee")));
             } else {
                 DungeonCrawl.LOGGER.error("Missing entry 'melee' in {}", file.toString());
             }
 
             if (object.has("ranged")) {
-                RANGED_WEAPON.put(stage, WeightedRandom.ITEM.fromJson(object.getAsJsonArray("ranged")));
+                RANGED_WEAPON.put(stage, WeightedRandom.ITEM.deserialize(object.getAsJsonArray("ranged")));
             } else {
                 DungeonCrawl.LOGGER.error("Missing entry 'ranged' in {}", file.toString());
             }

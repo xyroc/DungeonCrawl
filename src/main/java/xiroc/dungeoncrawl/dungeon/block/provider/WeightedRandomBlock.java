@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import java.lang.reflect.Type;
 import java.util.Random;
@@ -92,9 +92,9 @@ public class WeightedRandomBlock implements BlockStateProvider {
             object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_RANDOM_BLOCK);
 
             JsonArray blocks = new JsonArray();
-            src.randomBlockState.getEntries().forEach((entry) -> {
-                JsonObject block = JSONUtils.serializeBlockState(new JsonObject(), entry.getA());
-                block.addProperty("weight", entry.getB());
+            src.randomBlockState.forEach((state, weight) -> {
+                JsonObject block = JSONUtils.serializeBlockState(new JsonObject(), state);
+                block.addProperty("weight", weight);
                 blocks.add(block);
             });
 

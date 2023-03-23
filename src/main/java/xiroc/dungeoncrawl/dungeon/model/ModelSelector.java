@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 public class ModelSelector {
 

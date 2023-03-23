@@ -51,7 +51,7 @@ import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.Range;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -62,11 +62,11 @@ public final class DungeonModelFeature {
 
     private final Type type;
     private final Position[] positions;
-    private final Range amount;
+    private final RandomValue amount;
     @Nullable
     private final DungeonModelFeature followup;
 
-    private DungeonModelFeature(Type type, Position[] positions, Range amount, @Nullable DungeonModelFeature followup) {
+    private DungeonModelFeature(Type type, Position[] positions, RandomValue amount, @Nullable DungeonModelFeature followup) {
         this.type = type;
         this.positions = positions;
         this.amount = amount;
@@ -410,8 +410,7 @@ public final class DungeonModelFeature {
             }
         }
 
-        JsonObject jsonAmount = object.getAsJsonObject("amount");
-        Range amount = new Range(jsonAmount.get("min").getAsInt(), jsonAmount.get("max").getAsInt());
+        RandomValue amount = RandomValue.deserialize(object.get("amount"));
 
         DungeonModelFeature followUp = null;
 

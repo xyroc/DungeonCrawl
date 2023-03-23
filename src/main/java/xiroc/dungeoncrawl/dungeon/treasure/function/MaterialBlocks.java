@@ -36,7 +36,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
-import xiroc.dungeoncrawl.util.Range;
+import xiroc.dungeoncrawl.util.random.value.Range;
 
 import java.util.Random;
 

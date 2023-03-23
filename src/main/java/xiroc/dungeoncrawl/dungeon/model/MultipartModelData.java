@@ -32,7 +32,7 @@ import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.Updatable;
-import xiroc.dungeoncrawl.util.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

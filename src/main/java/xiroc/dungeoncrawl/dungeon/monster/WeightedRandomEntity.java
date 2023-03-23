@@ -24,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.util.IRandom;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.util.ArrayList;
 import java.util.Random;

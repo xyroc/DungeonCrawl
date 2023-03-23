@@ -6,7 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.util.Range;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
+import xiroc.dungeoncrawl.util.random.value.Range;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,9 +15,10 @@ import java.io.InputStreamReader;
 
 public class SpawnRates {
 
-    private static Range[] DELAY, AMOUNT;
+    private static Range[] DELAY;
+    private static RandomValue[] AMOUNT;
 
-    public static Range getAmount(int level) {
+    public static RandomValue getAmount(int level) {
         if (level < 0) {
             return AMOUNT[0];
         }
@@ -69,7 +71,7 @@ public class SpawnRates {
             JsonObject amount = data.getAsJsonObject("amount");
 
             DELAY[level] = new Range(delay.get("min").getAsInt(), delay.get("max").getAsInt());
-            AMOUNT[level] = new Range(amount.get("min").getAsInt(), amount.get("max").getAsInt());
+            AMOUNT[level] = RandomValue.deserialize(amount);
         } else {
             throw new DatapackLoadException("Missing entry " + entry + " in " + resource);
         }

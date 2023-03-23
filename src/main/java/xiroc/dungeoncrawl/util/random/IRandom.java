@@ -16,7 +16,7 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.util.random;
 
 import java.util.Random;
 

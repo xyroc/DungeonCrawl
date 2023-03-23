@@ -30,7 +30,8 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.util.Range;
+import xiroc.dungeoncrawl.util.random.value.Constant;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
 import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
@@ -41,7 +42,7 @@ import java.util.Random;
 public class RandomPotionEffect {
 
     public static float[] CHANCES;
-    public static Range[] ROLLS;
+    public static RandomValue[] ROLLS;
     public static WeightedRandomPotionEffect[] EFFECTS;
     public static PotionEffect[][] GUARANTEED_EFFECTS;
 
@@ -50,7 +51,7 @@ public class RandomPotionEffect {
      */
     public static void loadJson(ResourceManager resourceManager) {
         CHANCES = new float[5];
-        ROLLS = new Range[5];
+        ROLLS = new RandomValue[5];
         EFFECTS = new WeightedRandomPotionEffect[5];
         GUARANTEED_EFFECTS = new PotionEffect[5][];
 
@@ -82,8 +83,7 @@ public class RandomPotionEffect {
                 }
 
                 if (object.has("rolls")) {
-                    JsonObject amount = object.getAsJsonObject("rolls");
-                    ROLLS[stage] = new Range(amount.get("min").getAsInt(), amount.get("max").getAsInt());
+                    ROLLS[stage] = RandomValue.deserialize(object.getAsJsonObject("rolls"));
                 } else {
                     throw new DatapackLoadException("Missing entry 'rolls' in " + file);
                 }
@@ -100,10 +100,7 @@ public class RandomPotionEffect {
                     GUARANTEED_EFFECTS[stage] = new PotionEffect[array.size()];
                     for (int i = 0; i < array.size(); i++) {
                         JsonObject effect = array.get(i).getAsJsonObject();
-                        Range amplifier = effect.has("amplifier") ?
-                                new Range(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
-                                        effect.getAsJsonObject("amplifier").get("max").getAsInt())
-                                : new Range(0, 0);
+                        RandomValue amplifier = effect.has("amplifier") ? RandomValue.deserialize(effect.get("amplifier")) : new Constant(0);
                         GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
                                 effect.get("duration").getAsInt(), amplifier);
                     }
@@ -170,8 +167,7 @@ public class RandomPotionEffect {
         return nbt;
     }
 
-    private record PotionEffect(MobEffect effect, int duration,
-                                Range amplifier) {
+    private record PotionEffect(MobEffect effect, int duration, RandomValue amplifier) {
     }
 
 }

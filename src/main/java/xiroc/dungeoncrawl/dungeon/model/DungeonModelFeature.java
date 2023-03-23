@@ -284,30 +284,14 @@ public final class DungeonModelFeature {
         };
 
         Type SEWER_HOLE = new Type() {
-            private final BlockStateProvider AIR_WATER = new BlockStateProvider() {
-                @Override
-                public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
-                    if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
-                    return Blocks.WATER.defaultBlockState();
-                }
-
-                @Override
-                public JsonObject serialize() {
-                    return null;
-                }
+            private final BlockStateProvider AIR_WATER = (world, pos, random, rotation) -> {
+                if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
+                return Blocks.WATER.defaultBlockState();
             };
 
-            private final BlockStateProvider AIR_LAVA = new BlockStateProvider() {
-                @Override
-                public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
-                    if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
-                    return Blocks.LAVA.defaultBlockState();
-                }
-
-                @Override
-                public JsonObject serialize() {
-                    return null;
-                }
+            private final BlockStateProvider AIR_LAVA = (world, pos, random, rotation) -> {
+                if (pos.getY() > 8) return Blocks.CAVE_AIR.defaultBlockState();
+                return Blocks.LAVA.defaultBlockState();
             };
 
             @Override

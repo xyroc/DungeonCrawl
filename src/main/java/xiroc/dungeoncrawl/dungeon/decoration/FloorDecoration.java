@@ -58,7 +58,7 @@ public record FloorDecoration(BlockStateProvider blockStateProvider, float chanc
         object.addProperty("type", DungeonDecoration.FLOOR_DECORATION);
         object.addProperty("chance", this.chance);
 
-        object.add("block", this.blockStateProvider.serialize());
+        object.add("block",  BlockStateProvider.GSON.toJsonTree(blockStateProvider));
         return object;
     }
 
@@ -91,7 +91,7 @@ public record FloorDecoration(BlockStateProvider blockStateProvider, float chanc
             object.addProperty("type", DungeonDecoration.FLOOR_NEXT_TO_SOLID_DECORATION);
             object.addProperty("chance", this.chance);
 
-            object.add("block", this.blockStateProvider.serialize());
+            object.add("block",  BlockStateProvider.GSON.toJsonTree(blockStateProvider));
             return object;
         }
     }

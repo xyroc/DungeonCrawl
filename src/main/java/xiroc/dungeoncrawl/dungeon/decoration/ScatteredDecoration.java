@@ -75,7 +75,7 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
         object.addProperty("type", DungeonDecoration.SCATTERED_DECORATION);
         object.addProperty("chance", this.chance);
 
-        object.add("block", this.blockStateProvider.serialize());
+        object.add("block",  BlockStateProvider.GSON.toJsonTree(blockStateProvider));
         return object;
     }
 

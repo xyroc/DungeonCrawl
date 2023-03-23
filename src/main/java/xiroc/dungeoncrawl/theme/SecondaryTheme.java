@@ -85,16 +85,16 @@ public class SecondaryTheme {
     public JsonObject serialize() {
         JsonObject object = new JsonObject();
         JsonObject theme = new JsonObject();
-        theme.add("button", button.serialize());
-        theme.add("door", door.serialize());
-        theme.add("fence", fence.serialize());
-        theme.add("fence_gate", fenceGate.serialize());
-        theme.add("material", material.serialize());
-        theme.add("pillar", pillar.serialize());
-        theme.add("pressure_plate", pressurePlate.serialize());
-        theme.add("slab", slab.serialize());
-        theme.add("stairs", stairs.serialize());
-        theme.add("trapdoor", trapDoor.serialize());
+        theme.add("button",  BlockStateProvider.GSON.toJsonTree(button));
+        theme.add("door",  BlockStateProvider.GSON.toJsonTree(door));
+        theme.add("fence",  BlockStateProvider.GSON.toJsonTree(fence));
+        theme.add("fence_gate",  BlockStateProvider.GSON.toJsonTree(fenceGate));
+        theme.add("material",  BlockStateProvider.GSON.toJsonTree(material));
+        theme.add("pillar",  BlockStateProvider.GSON.toJsonTree(pillar));
+        theme.add("pressure_plate",  BlockStateProvider.GSON.toJsonTree(pressurePlate));
+        theme.add("slab",  BlockStateProvider.GSON.toJsonTree(slab));
+        theme.add("stairs",  BlockStateProvider.GSON.toJsonTree(stairs));
+        theme.add("trapdoor",  BlockStateProvider.GSON.toJsonTree(trapDoor));
         object.add("theme", theme);
         return object;
     }

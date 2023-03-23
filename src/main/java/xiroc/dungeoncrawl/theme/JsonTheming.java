@@ -18,28 +18,19 @@
 
 package xiroc.dungeoncrawl.theme;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
-import xiroc.dungeoncrawl.dungeon.block.provider.WeightedRandomBlock;
-import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
-import xiroc.dungeoncrawl.dungeon.block.provider.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Map;
 
 public class JsonTheming {
@@ -229,53 +220,7 @@ public class JsonTheming {
             DungeonCrawl.LOGGER.warn("Missing BlockState Provider \"{}\" in {}", name, file.toString());
             return null;
         }
-        JsonObject object = (JsonObject) base.get(name);
-        if (object.has("type")) {
-            String type = object.get("type").getAsString();
-            if (type.equalsIgnoreCase("random_block")) {
-                JsonArray blockObjects = object.get("blocks").getAsJsonArray();
-                WeightedRandom.Builder<BlockState> builder = new WeightedRandom.Builder<>();
-
-                for (JsonElement blockElement : blockObjects) {
-                    JsonObject blockObject = (JsonObject) blockElement;
-                    Block block = ForgeRegistries.BLOCKS
-                            .getValue(new ResourceLocation(blockObject.get("block").getAsString()));
-                    if (block != null) {
-                        BlockState state = JSONUtils.deserializeBlockStateProperties(block, blockObject);
-                        builder.add(state, JSONUtils.getWeight(blockObject));
-                    } else {
-                        DungeonCrawl.LOGGER.error("Unknown block: {}", blockObject.get("block").getAsString());
-                    }
-                }
-                return new WeightedRandomBlock(builder.build());
-            } else if (type.equalsIgnoreCase("block")) {
-                Block block = ForgeRegistries.BLOCKS
-                        .getValue(new ResourceLocation(object.get("block").getAsString()));
-                if (block != null) {
-                    BlockState state = JSONUtils.deserializeBlockStateProperties(block, object);
-                    return new SingleBlock(state);
-                } else {
-                    DungeonCrawl.LOGGER.error("Unknown block: {}", object.get("block").getAsString());
-                    return new SingleBlock(Blocks.CAVE_AIR.defaultBlockState());
-                }
-            } else if (type.equalsIgnoreCase("pattern")) {
-                switch (object.get("pattern_type").getAsString().toLowerCase(Locale.ROOT)) {
-                    case "checkerboard":
-                        return new CheckerboardPattern(deserialize(object, "block_1", file), deserialize(object, "block_2", file));
-                    case "terracotta":
-                        return new TerracottaPattern(deserialize(object, "block", file));
-                    default:
-                        DungeonCrawl.LOGGER.error("Unknown block pattern type: " + object.get("pattern_type").getAsString());
-                        return null;
-                }
-            } else {
-                DungeonCrawl.LOGGER.error("Failed to load BlockState Provider {}: Unknown type {}.", object, type);
-                return null;
-            }
-        } else {
-            DungeonCrawl.LOGGER.error("Invalid BlockState Provider \"{}\": Type not specified.", name);
-            return null;
-        }
+        return BlockStateProvider.deserialize(base.get(name));
     }
 
 }

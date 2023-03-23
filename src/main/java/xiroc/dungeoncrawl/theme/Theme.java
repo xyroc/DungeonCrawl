@@ -249,18 +249,18 @@ public class Theme {
             object.add("decorations", decorations);
         }
         JsonObject theme = new JsonObject();
-        theme.add("pillar", pillar.serialize());
-        theme.add("solid", solid.serialize());
-        theme.add("generic", generic.serialize());
-        theme.add("fencing", fencing.serialize());
-        theme.add("floor", floor.serialize());
-        theme.add("fluid", fluid.serialize());
-        theme.add("solid_stairs", solidStairs.serialize());
-        theme.add("stairs", stairs.serialize());
-        theme.add("material", material.serialize());
-        theme.add("wall", wall.serialize());
-        theme.add("slab", slab.serialize());
-        theme.add("solid_slab", solidSlab.serialize());
+        theme.add("pillar", BlockStateProvider.GSON.toJsonTree(pillar));
+        theme.add("solid",  BlockStateProvider.GSON.toJsonTree(solid));
+        theme.add("generic",  BlockStateProvider.GSON.toJsonTree(generic));
+        theme.add("fencing",  BlockStateProvider.GSON.toJsonTree(fencing));
+        theme.add("floor",  BlockStateProvider.GSON.toJsonTree(floor));
+        theme.add("fluid",  BlockStateProvider.GSON.toJsonTree(fluid));
+        theme.add("solid_stairs",  BlockStateProvider.GSON.toJsonTree(solidStairs));
+        theme.add("stairs",  BlockStateProvider.GSON.toJsonTree(stairs));
+        theme.add("material",  BlockStateProvider.GSON.toJsonTree(material));
+        theme.add("wall",  BlockStateProvider.GSON.toJsonTree(wall));
+        theme.add("slab",  BlockStateProvider.GSON.toJsonTree(slab));
+        theme.add("solid_slab",  BlockStateProvider.GSON.toJsonTree(solidSlab));
         object.add("theme", theme);
         return object;
     }

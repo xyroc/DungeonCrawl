@@ -28,7 +28,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.theme.JsonTheming;
 
 import java.util.Random;
 
@@ -54,7 +53,7 @@ public interface DungeonDecoration {
                     BlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        blockStateProvider = JsonTheming.deserialize(object, "block", file);
+                        blockStateProvider = BlockStateProvider.deserialize(object.get("block"));
                         if (blockStateProvider != null) {
                             return new ScatteredDecoration(blockStateProvider, chance);
                         }
@@ -68,7 +67,7 @@ public interface DungeonDecoration {
                     BlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        blockStateProvider = JsonTheming.deserialize(object, "block", file);
+                        blockStateProvider = BlockStateProvider.deserialize(object.get("block"));
                         if (blockStateProvider != null) {
                             return new FloorDecoration(blockStateProvider, chance);
                         }
@@ -82,7 +81,7 @@ public interface DungeonDecoration {
                     BlockStateProvider blockStateProvider;
 
                     if (object.has("block")) {
-                        blockStateProvider = JsonTheming.deserialize(object, "block", file);
+                        blockStateProvider = BlockStateProvider.deserialize(object.get("block"));
                         if (blockStateProvider != null) {
                             return new FloorDecoration.NextToSolid(blockStateProvider, chance);
                         }

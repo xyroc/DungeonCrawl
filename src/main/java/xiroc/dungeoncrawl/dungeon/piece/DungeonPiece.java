@@ -34,8 +34,9 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.Orientation;
 
 import java.util.Random;
@@ -56,7 +57,7 @@ public class DungeonPiece extends StructurePiece {
     public Rotation rotation;
     public BlockPos position;
     public int stage;
-    public Theme primaryTheme;
+    public PrimaryTheme primaryTheme;
     public SecondaryTheme secondaryTheme;
     public ResourceLocation lootTable;
     public DungeonModel blueprint;
@@ -85,11 +86,11 @@ public class DungeonPiece extends StructurePiece {
         }
 
         if (nbt.contains(NBT_KEY_PRIMARY_THEME)) {
-            this.primaryTheme = Theme.getTheme(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
+            this.primaryTheme = Themes.getPrimary(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
         }
 
         if (nbt.contains(NBT_KEY_SECONDARY_THEME)) {
-            this.secondaryTheme = Theme.getSecondaryTheme(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
+            this.secondaryTheme = Themes.getSecondary(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
         }
 
         if (nbt.contains(NBT_KEY_LOOT_TABLE)) {
@@ -112,11 +113,11 @@ public class DungeonPiece extends StructurePiece {
         }
 
         if (primaryTheme != null) {
-            nbt.putString(NBT_KEY_PRIMARY_THEME, primaryTheme.getKey().toString());
+            nbt.putString(NBT_KEY_PRIMARY_THEME, primaryTheme.key().toString());
         }
 
         if (secondaryTheme != null) {
-            nbt.putString(NBT_KEY_SECONDARY_THEME, secondaryTheme.getKey().toString());
+            nbt.putString(NBT_KEY_SECONDARY_THEME, secondaryTheme.key().toString());
         }
 
         if (lootTable != null) {
@@ -129,11 +130,11 @@ public class DungeonPiece extends StructurePiece {
         // TODO
     }
 
-    protected void decorate(LevelAccessor world, BlockPos pos, Theme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonModel blueprint) {
+    protected void decorate(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonModel blueprint) {
         // TODO
     }
 
-    protected void placeFeatures(LevelAccessor world, BoundingBox bounds, Theme primaryTheme, SecondaryTheme secondaryTheme, Random rand, int stage) {
+    protected void placeFeatures(LevelAccessor world, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, Random rand, int stage) {
         // TODO
     }
 

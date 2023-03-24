@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.WaterFluid;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
-import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 
 import java.util.Random;
 
@@ -18,7 +18,7 @@ public final class PillarGenerator {
     /**
      * Builds a pillar with decorative stairs at the top.
      */
-    public static void generateFancyPillar(LevelAccessor world, BlockPos center, Random random, BoundingBox worldGenBounds, Theme primaryTheme) {
+    public static void generateFancyPillar(LevelAccessor world, BlockPos center, Random random, BoundingBox worldGenBounds, PrimaryTheme primaryTheme) {
         if (worldGenBounds.isInside(center)) {
             generateSimplePillar(world, center, primaryTheme, random);
         }
@@ -44,9 +44,9 @@ public final class PillarGenerator {
         }
     }
 
-    private static void placeTopStair(LevelAccessor world, BlockPos pos, Direction toCenter, Theme primaryTheme, Random random) {
+    private static void placeTopStair(LevelAccessor world, BlockPos pos, Direction toCenter, PrimaryTheme primaryTheme, Random random) {
         if (world.isEmptyBlock(pos) && world.getBlockState(pos.above()).canOcclude()) {
-            BlockState stair = DungeonBlocks.applyProperty(primaryTheme.solidStairs.get(world, pos, random), BlockStateProperties.HORIZONTAL_FACING, toCenter);
+            BlockState stair = DungeonBlocks.applyProperty(primaryTheme.solidStairs().get(world, pos, random), BlockStateProperties.HORIZONTAL_FACING, toCenter);
             stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
             if (world.getFluidState(pos).getType() instanceof WaterFluid) {
                 stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.WATERLOGGED, true);
@@ -55,10 +55,10 @@ public final class PillarGenerator {
         }
     }
 
-    public static void generateSimplePillar(LevelAccessor world, BlockPos pos, Theme primaryTheme, Random random) {
+    public static void generateSimplePillar(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random) {
         for (; pos.getY() > 0; pos = pos.below()) {
             if (world.getBlockState(pos).canOcclude()) return;
-            world.setBlock(pos, primaryTheme.solid.get(world, pos, random), 2);
+            world.setBlock(pos, primaryTheme.solid().get(world, pos, random), 2);
         }
     }
 

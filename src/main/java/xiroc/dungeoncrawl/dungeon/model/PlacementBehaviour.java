@@ -22,8 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -66,19 +66,19 @@ public class PlacementBehaviour {
 
     private final PlacementFunction function;
     @Nullable
-    public final BiFunction<Theme, SecondaryTheme, BlockStateProvider> airBlock;
+    public final BiFunction<PrimaryTheme, SecondaryTheme, BlockStateProvider> airBlock;
 
     public PlacementBehaviour(PlacementFunction function) {
         this(function, null);
     }
 
 
-    public PlacementBehaviour(PlacementFunction function, BiFunction<Theme, SecondaryTheme, BlockStateProvider> airBlock) {
+    public PlacementBehaviour(PlacementFunction function, BiFunction<PrimaryTheme, SecondaryTheme, BlockStateProvider> airBlock) {
         this.function = function;
         this.airBlock = airBlock;
     }
 
-    public PlacementBehaviour withAirBlock(BiFunction<Theme, SecondaryTheme, BlockStateProvider> airBlock) {
+    public PlacementBehaviour withAirBlock(BiFunction<PrimaryTheme, SecondaryTheme, BlockStateProvider> airBlock) {
         return new PlacementBehaviour(this.function, airBlock);
     }
 

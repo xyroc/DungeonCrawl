@@ -33,9 +33,9 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.random.value.Range;
 
 import java.util.Random;
@@ -54,18 +54,18 @@ public class MaterialBlocks extends LootItemConditionalFunction {
             BlockPos pos = new BlockPos(context.getParamOrNull(LootContextParams.ORIGIN));
             BlockEntity chest = context.getLevel().getBlockEntity(pos);
             if (chest != null && chest.getTileData().contains(DungeonCrawl.MOD_ID, 10)) {
-                Tuple<Theme, SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
+                Tuple<PrimaryTheme, SecondaryTheme> themes = Loot.getLootInformation(chest.getTileData());
                 return new ItemStack(getMaterial(themes.getA(), themes.getB(), context.getLevel(), pos, context.getRandom()), AMOUNT.nextInt(context.getRandom()));
             }
         }
         return new ItemStack(Blocks.STONE_BRICKS, AMOUNT.nextInt(context.getRandom()));
     }
 
-    private static Block getMaterial(Theme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
+    private static Block getMaterial(PrimaryTheme theme, SecondaryTheme secondaryTheme, LevelAccessor world, BlockPos pos, Random rand) {
         if (rand.nextBoolean()) {
-            return theme.material.get(world, pos, rand).getBlock();
+            return theme.material().get(world, pos, rand).getBlock();
         } else {
-            return secondaryTheme.material.get(world, pos, rand).getBlock();
+            return secondaryTheme.material().get(world, pos, rand).getBlock();
         }
     }
 

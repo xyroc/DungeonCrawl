@@ -31,7 +31,11 @@ import com.google.gson.JsonSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.lang.reflect.Type;
@@ -50,6 +54,20 @@ public interface WeightedRandom<T> extends IRandom<T> {
                 }
                 return new JsonPrimitive(registryName.toString());
             }, "item");
+    Serializer<Delegate<PrimaryTheme>> PRIMARY_THEME = Serializer.of(
+            (json) -> {
+                ResourceLocation key = new ResourceLocation(json.getAsString());
+                return Delegate.of(Themes.getPrimary(key), key);
+            },
+            Delegate::serialize,
+            "theme");
+    Serializer<Delegate<SecondaryTheme>> SECONDARY_THEME = Serializer.of(
+            (json) -> {
+                ResourceLocation key = new ResourceLocation(json.getAsString());
+                return Delegate.of(Themes.getSecondary(key), key);
+            },
+            Delegate::serialize,
+            "theme");
 
     boolean isEmpty();
 

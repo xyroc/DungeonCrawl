@@ -32,8 +32,8 @@ import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
+import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
-import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
@@ -54,7 +54,7 @@ public class ResourceReloadHandler implements PreparableReloadListener {
         ModelPools.load(resourceManager);
         DungeonType.load(resourceManager);
 
-        Theme.loadJson(resourceManager);
+        Themes.load(resourceManager);
         SpawnRates.loadJson(resourceManager);
         RandomItems.loadJson(resourceManager);
         RandomMonster.loadJson(resourceManager);

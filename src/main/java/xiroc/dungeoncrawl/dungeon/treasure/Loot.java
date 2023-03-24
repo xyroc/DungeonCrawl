@@ -28,14 +28,15 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
 import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
 
 import java.util.Random;
 
@@ -83,9 +84,9 @@ public class Loot {
         registerLootFunctionType(DungeonCrawl.locate("suspicious_stew"), SUSPICIOUS_STEW);
     }
 
-    public static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, Random rand) {
+    public static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, Random rand) {
         RandomizableContainerBlockEntity.setLootTable(world, rand, pos, lootTable);
-        setLootInformation(tile.getTileData(), theme, secondaryTheme);
+        setLootInformation(tile.getTileData(), primaryTheme, secondaryTheme);
     }
 
     public static ResourceLocation getLootTable(int lootLevel, Random rand) {
@@ -99,16 +100,16 @@ public class Loot {
         };
     }
 
-    public static void setLootInformation(CompoundTag nbt, Theme theme, SecondaryTheme secondaryTheme) {
+    public static void setLootInformation(CompoundTag nbt, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme) {
         CompoundTag data = new CompoundTag();
-        data.putString("theme", theme.getKey().toString());
-        data.putString("secondaryTheme", secondaryTheme.getKey().toString());
+        data.putString("theme", primaryTheme.key().toString());
+        data.putString("secondaryTheme", secondaryTheme.key().toString());
         nbt.put(DungeonCrawl.MOD_ID, data);
     }
 
-    public static Tuple<Theme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
+    public static Tuple<PrimaryTheme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
         CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID);
-        return new Tuple<>(Theme.getTheme(new ResourceLocation(data.getString("theme"))), Theme.getSecondaryTheme(new ResourceLocation(data.getString("secondaryTheme"))));
+        return new Tuple<>(Themes.getPrimary((new ResourceLocation(data.getString("theme")))), Themes.getSecondary(new ResourceLocation(data.getString("secondaryTheme"))));
     }
 
 }

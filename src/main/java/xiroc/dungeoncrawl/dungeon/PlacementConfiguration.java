@@ -8,7 +8,7 @@ public class PlacementConfiguration {
     public static final PlacementConfiguration DEFAULT = new Builder().build();
 
     public static final PlacementConfiguration BOTTOM_STAIRCASE = new Builder()
-            .generic(DungeonModelBlockType.GENERIC.defaultPlacementBehavior.withAirBlock((theme, secondaryTheme) -> theme.getFencing()))
+            .generic(DungeonModelBlockType.GENERIC.defaultPlacementBehavior.withAirBlock((theme, secondaryTheme) -> theme.fencing()))
             .build();
 
     public static final PlacementConfiguration CORRIDOR = new Builder()

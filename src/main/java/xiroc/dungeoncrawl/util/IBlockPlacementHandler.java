@@ -29,8 +29,8 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.Furnace;
 import xiroc.dungeoncrawl.dungeon.block.Plants;
 import xiroc.dungeoncrawl.dungeon.block.Spawner;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 
 import java.util.Random;
 
@@ -38,7 +38,7 @@ public interface IBlockPlacementHandler {
 
     IBlockPlacementHandler SPAWNER = new Spawner();
 
-    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, theme, secondaryTheme, lootLevel) -> {
+    IBlockPlacementHandler DEFAULT = (world, state, pos, rand, primaryTheme, secondaryTheme, lootLevel) -> {
         if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
             world.scheduleTick(pos, state.getBlock(), 1);
         }
@@ -54,7 +54,7 @@ public interface IBlockPlacementHandler {
             .put(Blocks.PODZOL, new Plants.Podzol())
             .build();
 
-    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, Theme theme, SecondaryTheme secondaryTheme, int lootLevel);
+    void place(LevelAccessor world, BlockState state, BlockPos pos, Random rand, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int lootLevel);
 
     static IBlockPlacementHandler getHandler(Block block) {
         return PLACEMENT_HANDLERS.getOrDefault(block, DEFAULT);

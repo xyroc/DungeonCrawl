@@ -20,7 +20,6 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -31,8 +30,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
@@ -43,32 +42,32 @@ public enum DungeonModelBlockType {
     AIR((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> DungeonBlocks.CAVE_AIR),
 
     // Types with Theme Factories
-    SOLID               (tFactory(Theme::getSolid),         new TypeBuilder(PlacementConfiguration::getSolid).expandable().placement(PlacementBehaviour.SOLID)),
-    SOLID_STAIRS        (tFactory(Theme::getSolidStairs),   new TypeBuilder(PlacementConfiguration::getSolidStairs).placement(PlacementBehaviour.SOLID)),
-    SOLID_SLAB          (tFactory(Theme::getSolidSlab),     new TypeBuilder(PlacementConfiguration::getSolidSlab).placement(PlacementBehaviour.SOLID)),
-    GENERIC             (tFactory(Theme::getGeneric),       new TypeBuilder(PlacementConfiguration::getGeneric).expandable()),
-    GENERIC_OR_FENCING  (tFactory(Theme::getGeneric),       new TypeBuilder(PlacementConfiguration::getGenericOrFencing).placement(PlacementBehaviour.NON_SOLID.withAirBlock((theme, secondaryTheme) -> theme.getFencing()))),
-    SLAB                (tFactory(Theme::getSlab),          PlacementConfiguration::getSlab),
-    SOLID_PILLAR        (tFactory(Theme::getPillar),        new TypeBuilder(PlacementConfiguration::getSolidPillar).expandable().pillar().placement(PlacementBehaviour.SOLID)),
-    SOLID_FLOOR         (tFactory(Theme::getFloor),         new TypeBuilder(PlacementConfiguration::getSolidFloor).expandable().placement(PlacementBehaviour.SOLID)),
-    FENCING             (tFactory(Theme::getFencing),       PlacementConfiguration::getFencing),
-    FLOOR               (tFactory(Theme::getFloor),         new TypeBuilder(PlacementConfiguration::getFloor).placement(PlacementBehaviour.SMALL_GRID)),
-    FLUID               (tFactory(Theme::getFluid),         PlacementConfiguration::getFluid),
-    LOOSE_GROUND        (tFactory(Theme::getFloor),         PlacementConfiguration::getLooseGround),
-    STAIRS              (tFactory(Theme::getStairs),        PlacementConfiguration::getStairs),
-    WALL                (tFactory(Theme::getWall),          PlacementConfiguration::getWall),
+    SOLID               (tFactory(PrimaryTheme::solid),         new TypeBuilder(PlacementConfiguration::getSolid).expandable().placement(PlacementBehaviour.SOLID)),
+    SOLID_STAIRS        (tFactory(PrimaryTheme::solidStairs),   new TypeBuilder(PlacementConfiguration::getSolidStairs).placement(PlacementBehaviour.SOLID)),
+    SOLID_SLAB          (tFactory(PrimaryTheme::solidSlab),     new TypeBuilder(PlacementConfiguration::getSolidSlab).placement(PlacementBehaviour.SOLID)),
+    GENERIC             (tFactory(PrimaryTheme::generic),       new TypeBuilder(PlacementConfiguration::getGeneric).expandable()),
+    GENERIC_OR_FENCING  (tFactory(PrimaryTheme::generic),       new TypeBuilder(PlacementConfiguration::getGenericOrFencing).placement(PlacementBehaviour.NON_SOLID.withAirBlock((theme, secondaryTheme) -> theme.fencing()))),
+    SLAB                (tFactory(PrimaryTheme::slab),          PlacementConfiguration::getSlab),
+    SOLID_PILLAR        (tFactory(PrimaryTheme::pillar),        new TypeBuilder(PlacementConfiguration::getSolidPillar).expandable().pillar().placement(PlacementBehaviour.SOLID)),
+    SOLID_FLOOR         (tFactory(PrimaryTheme::floor),         new TypeBuilder(PlacementConfiguration::getSolidFloor).expandable().placement(PlacementBehaviour.SOLID)),
+    FENCING             (tFactory(PrimaryTheme::fencing),       PlacementConfiguration::getFencing),
+    FLOOR               (tFactory(PrimaryTheme::floor),         new TypeBuilder(PlacementConfiguration::getFloor).placement(PlacementBehaviour.SMALL_GRID)),
+    FLUID               (tFactory(PrimaryTheme::fluid),         PlacementConfiguration::getFluid),
+    LOOSE_GROUND        (tFactory(PrimaryTheme::floor),         PlacementConfiguration::getLooseGround),
+    STAIRS              (tFactory(PrimaryTheme::stairs),        PlacementConfiguration::getStairs),
+    WALL                (tFactory(PrimaryTheme::wall),          PlacementConfiguration::getWall),
 
     // Types with Secondary-Theme Factories
-    PILLAR                      (sFactory(SecondaryTheme::getPillar),           new TypeBuilder(PlacementConfiguration::getPillar).expandable().pillar()),
-    MATERIAL_STAIRS             (sFactory(SecondaryTheme::getStairs),           PlacementConfiguration::getStairs),
-    TRAPDOOR                    (sFactory(SecondaryTheme::getTrapDoor),         PlacementConfiguration::getTrapdoor),
-    DOOR                        (sFactory(SecondaryTheme::getDoor),             PlacementConfiguration::getDoor),
-    FENCE                       (sFactory(SecondaryTheme::getFence),            PlacementConfiguration::getFence),
-    FENCE_GATE                  (sFactory(SecondaryTheme::getFenceGate),        PlacementConfiguration::getFenceGate),
-    MATERIAL_SLAB               (sFactory(SecondaryTheme::getSlab),             PlacementConfiguration::getSlab),
-    MATERIAL_BUTTON             (sFactory(SecondaryTheme::getButton),           PlacementConfiguration::getMaterialButton),
-    MATERIAL_PRESSURE_PLATE     (sFactory(SecondaryTheme::getPressurePlate),    PlacementConfiguration::getMaterialPressurePlate),
-    MATERIAL                    (sFactory(SecondaryTheme::getMaterial),         new TypeBuilder(PlacementConfiguration::getMaterial).expandable()),
+    PILLAR                      (sFactory(SecondaryTheme::pillar),           new TypeBuilder(PlacementConfiguration::getPillar).expandable().pillar()),
+    MATERIAL_STAIRS             (sFactory(SecondaryTheme::stairs),           PlacementConfiguration::getStairs),
+    TRAPDOOR                    (sFactory(SecondaryTheme::trapDoor),         PlacementConfiguration::getTrapdoor),
+    DOOR                        (sFactory(SecondaryTheme::door),             PlacementConfiguration::getDoor),
+    FENCE                       (sFactory(SecondaryTheme::fence),            PlacementConfiguration::getFence),
+    FENCE_GATE                  (sFactory(SecondaryTheme::fenceGate),        PlacementConfiguration::getFenceGate),
+    MATERIAL_SLAB               (sFactory(SecondaryTheme::slab),             PlacementConfiguration::getSlab),
+    MATERIAL_BUTTON             (sFactory(SecondaryTheme::button),           PlacementConfiguration::getMaterialButton),
+    MATERIAL_PRESSURE_PLATE     (sFactory(SecondaryTheme::pressurePlate),    PlacementConfiguration::getMaterialPressurePlate),
+    MATERIAL                    (sFactory(SecondaryTheme::material),         new TypeBuilder(PlacementConfiguration::getMaterial).expandable()),
 
     // Other
 
@@ -182,7 +181,7 @@ public enum DungeonModelBlockType {
     @FunctionalInterface
     public interface BlockFactory {
 
-        BlockState get(DungeonModelBlock block, Rotation rotation, LevelAccessor world, BlockPos pos, Theme theme,
+        BlockState get(DungeonModelBlock block, Rotation rotation, LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme,
                        SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
 
     }
@@ -193,8 +192,8 @@ public enum DungeonModelBlockType {
      * @param blockSelector a function that selects the desired field from the theme
      * @return the block factory
      */
-    private static BlockFactory tFactory(Function<Theme, BlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(theme).get(world, pos, rand, rotation), world, pos, rotation);
+    private static BlockFactory tFactory(Function<PrimaryTheme, BlockStateProvider> blockSelector) {
+        return (block, rotation, world, pos, primaryTheme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(primaryTheme).get(world, pos, rand, rotation), world, pos, rotation);
     }
 
     /**
@@ -205,7 +204,7 @@ public enum DungeonModelBlockType {
      */
 
     private static BlockFactory sFactory(Function<SecondaryTheme, BlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(secondaryTheme).get(world, pos, rand, rotation), world, pos, rotation);
+        return (block, rotation, world, pos, primaryTheme, secondaryTheme, rand, variation, stage) -> block.create(blockSelector.apply(secondaryTheme).get(world, pos, rand, rotation), world, pos, rotation);
     }
 
     /**

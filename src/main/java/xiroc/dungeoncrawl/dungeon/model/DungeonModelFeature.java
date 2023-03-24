@@ -44,10 +44,10 @@ import net.minecraft.world.level.material.FluidState;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.DirectionalBlockPos;
 import xiroc.dungeoncrawl.util.IBlockPlacementHandler;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -97,7 +97,7 @@ public final class DungeonModelFeature {
         }
     }
 
-    private static void placeChest(LevelAccessor world, BlockPos pos, BlockState chest, Theme theme, SecondaryTheme secondaryTheme, int lootLevel, Random rand) {
+    private static void placeChest(LevelAccessor world, BlockPos pos, BlockState chest, PrimaryTheme theme, SecondaryTheme secondaryTheme, int lootLevel, Random rand) {
         world.setBlock(pos, chest, 2);
         BlockEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) {
@@ -115,9 +115,9 @@ public final class DungeonModelFeature {
             this.positions = positions;
         }
 
-        public void place(LevelAccessor world, BoundingBox worldGenBounds, Random rand, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+        public void place(LevelAccessor world, BoundingBox worldGenBounds, Random rand, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
             for (DirectionalBlockPos pos : positions) {
-                this.type.place(world, rand, pos.position, pos.direction, worldGenBounds, theme, secondaryTheme, stage);
+                this.type.place(world, rand, pos.position, pos.direction, worldGenBounds, primaryTheme, secondaryTheme, stage);
             }
         }
 
@@ -147,11 +147,11 @@ public final class DungeonModelFeature {
     private interface Type {
         Type CHEST = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos)
                         && world.getBlockState(pos.below()).canOcclude()) {
-                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
+                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), primaryTheme, secondaryTheme, stage, rand);
                 }
             }
 
@@ -163,11 +163,11 @@ public final class DungeonModelFeature {
 
         Type TNT_CHEST = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos)
                         && world.getBlockState(pos.below()).canOcclude()) {
-                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
+                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), primaryTheme, secondaryTheme, stage, rand);
                     BlockPos down = pos.below(2);
                     if (!DungeonBuilder.isBlockProtected(world, down) && !world.isEmptyBlock(down)) {
                         world.setBlock(pos.below(2), Blocks.TNT.defaultBlockState(), 2);
@@ -183,11 +183,11 @@ public final class DungeonModelFeature {
 
         Type SPAWNER = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos)
                         && world.getBlockState(pos.below()).canOcclude()) {
-                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, pos, rand, theme, secondaryTheme, stage);
+                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, pos, rand, primaryTheme, secondaryTheme, stage);
                 }
             }
 
@@ -199,11 +199,11 @@ public final class DungeonModelFeature {
 
         Type CEILING_SPAWNER = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos)
                         && world.getBlockState(pos.above()).canOcclude()) {
-                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, pos, rand, theme, secondaryTheme, stage);
+                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, pos, rand, primaryTheme, secondaryTheme, stage);
                 }
             }
 
@@ -215,18 +215,18 @@ public final class DungeonModelFeature {
 
         Type SPAWNER_GRAVE = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos)
                         && !DungeonBuilder.isBlockProtected(world, pos)
                         && world.getBlockState(pos.below()).canOcclude()) {
-                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), theme, secondaryTheme, stage, rand);
+                    placeChest(world, pos, DungeonBlocks.CHEST.setValue(BlockStateProperties.HORIZONTAL_FACING, direction), primaryTheme, secondaryTheme, stage, rand);
                 }
 
                 BlockPos spawner = pos.relative(direction);
                 if (bounds.isInside(spawner)
                         && !DungeonBuilder.isBlockProtected(world, spawner)
                         && world.getBlockState(spawner.below()).canOcclude()) {
-                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, spawner, rand, theme, secondaryTheme, stage);
+                    IBlockPlacementHandler.SPAWNER.place(world, DungeonBlocks.SPAWNER, spawner, rand, primaryTheme, secondaryTheme, stage);
                 }
 
                 BlockPos p = pos.relative(direction, 2);
@@ -243,7 +243,7 @@ public final class DungeonModelFeature {
 
         Type EMPTY_GRAVE = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 BlockPos position = pos.relative(direction, 2);
                 if (bounds.isInside(position) && world.getBlockState(position.below()).canOcclude()) {
                     world.setBlock(position, Blocks.QUARTZ_BLOCK.defaultBlockState(), 2);
@@ -258,7 +258,7 @@ public final class DungeonModelFeature {
 
         Type STAIRS = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 if (direction.getAxis() == Direction.Axis.Y) return;
                 for (int length = 0; length < 10; length++) {
                     if (bounds.isInside(pos)) {
@@ -266,9 +266,9 @@ public final class DungeonModelFeature {
                         if (height < pos.getY()) {
                             for (; height < pos.getY(); height++) {
                                 BlockPos p = new BlockPos(pos.getX(), height, pos.getZ());
-                                world.setBlock(p, theme.solid.get(world, p, rand), 2);
+                                world.setBlock(p, primaryTheme.solid().get(world, p, rand), 2);
                             }
-                            world.setBlock(pos, theme.solidStairs.get(world, pos, rand).setValue(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
+                            world.setBlock(pos, primaryTheme.solidStairs().get(world, pos, rand).setValue(BlockStateProperties.HORIZONTAL_FACING, direction.getOpposite()), 2);
                             pos = pos.relative(direction).relative(Direction.DOWN);
                         } else {
                             break;
@@ -295,7 +295,7 @@ public final class DungeonModelFeature {
             };
 
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 BlockStateProvider inner = stage < 4 ? AIR_WATER : AIR_LAVA;
 
                 buildDown(world, pos, rand, bounds, inner);
@@ -318,22 +318,24 @@ public final class DungeonModelFeature {
                 buildDown(world, west.north(), rand, bounds, inner);
                 buildDown(world, west.south(), rand, bounds, inner);
 
+                BlockStateProvider wall = primaryTheme.generic();
+
                 // Walls
-                buildDown(world, east.offset(1, -1, 0), rand, bounds, theme.generic);
-                buildDown(world, east.offset(1, -1, -1), rand, bounds, theme.generic);
-                buildDown(world, east.offset(1, -1, 1), rand, bounds, theme.generic);
+                buildDown(world, east.offset(1, -1, 0), rand, bounds, wall);
+                buildDown(world, east.offset(1, -1, -1), rand, bounds, wall);
+                buildDown(world, east.offset(1, -1, 1), rand, bounds, wall);
 
-                buildDown(world, south.offset(0, -1, 1), rand, bounds, theme.generic);
-                buildDown(world, south.offset(1, -1, 1), rand, bounds, theme.generic);
-                buildDown(world, south.offset(-1, -1, 1), rand, bounds, theme.generic);
+                buildDown(world, south.offset(0, -1, 1), rand, bounds, wall);
+                buildDown(world, south.offset(1, -1, 1), rand, bounds, wall);
+                buildDown(world, south.offset(-1, -1, 1), rand, bounds, wall);
 
-                buildDown(world, west.offset(-1, -1, 0), rand, bounds, theme.generic);
-                buildDown(world, west.offset(-1, -1, -1), rand, bounds, theme.generic);
-                buildDown(world, west.offset(-1, -1, 1), rand, bounds, theme.generic);
+                buildDown(world, west.offset(-1, -1, 0), rand, bounds, wall);
+                buildDown(world, west.offset(-1, -1, -1), rand, bounds, wall);
+                buildDown(world, west.offset(-1, -1, 1), rand, bounds, wall);
 
-                buildDown(world, north.offset(0, -1, -1), rand, bounds, theme.generic);
-                buildDown(world, north.offset(1, -1, -1), rand, bounds, theme.generic);
-                buildDown(world, north.offset(-1, -1, -1), rand, bounds, theme.generic);
+                buildDown(world, north.offset(0, -1, -1), rand, bounds, wall);
+                buildDown(world, north.offset(1, -1, -1), rand, bounds, wall);
+                buildDown(world, north.offset(-1, -1, -1), rand, bounds, wall);
             }
 
             @Override
@@ -357,7 +359,7 @@ public final class DungeonModelFeature {
 
         Type CROPS = new Type() {
             @Override
-            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
+            public void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmBlock) {
                     Registry.BLOCK.getTag(BlockTags.CROPS).flatMap((tag) -> tag.getRandomElement(rand)).ifPresent((cropBlock) -> {
                         BlockState crop = cropBlock.value().defaultBlockState();
@@ -386,7 +388,7 @@ public final class DungeonModelFeature {
                 .put(CROPS.getName(), CROPS)
                 .build();
 
-        void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage);
+        void place(LevelAccessor world, Random rand, BlockPos pos, Direction direction, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage);
 
         String getName();
 

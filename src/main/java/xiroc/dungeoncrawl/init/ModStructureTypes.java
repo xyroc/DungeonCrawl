@@ -20,21 +20,18 @@ package xiroc.dungeoncrawl.init;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 
-public interface ModStructureTypes {
-    DeferredRegister<StructureType<?>> STRUCTURE_TYPES = DeferredRegister.create(Registries.STRUCTURE_TYPE, DungeonCrawl.MOD_ID);
+public class ModStructureTypes {
+    private static StructureType<?> DUNGEON;
 
-    RegistryObject<StructureType<?>> DUNGEON = STRUCTURE_TYPES.register("dungeon", () -> () -> Dungeon.CODEC);
+    public static void register() {
+        DUNGEON = Registry.register(BuiltInRegistries.STRUCTURE_TYPE, DungeonCrawl.locate("dungeon"), () -> Dungeon.CODEC);
+    }
 
-    static void register() {
-        Registry.register(BuiltInRegistries.STRUCTURE_TYPE, "dungeoncrawl:dungeon", () -> Dungeon.CODEC);
-//        STRUCTURE_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+    public static StructureType<?> dungeon() {
+        return DUNGEON;
     }
 }

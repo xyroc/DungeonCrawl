@@ -5,7 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "dungeoncrawl.refmap.json",
   "client": [],
-  "mixins": [],
+  "mixins": [
+    "accessor.BoundingBoxAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

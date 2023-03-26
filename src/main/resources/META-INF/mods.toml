@@ -4,7 +4,7 @@ loaderVersion="[45,)" #mandatory
 issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
 [[mods]] #mandatory
 modId="dungeoncrawl" #mandatory
-version="2.3.12" #mandatory
+version="2.3.13" #mandatory
 displayName="Dungeon Crawl" #mandatory
 #updateJSONURL="URL" #optional
 #displayURL="URL" #optional

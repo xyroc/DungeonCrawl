@@ -77,7 +77,7 @@ public class Dungeon extends Structure {
 
     @Override
     public StructureType<?> type() {
-        return ModStructureTypes.DUNGEON.get();
+        return ModStructureTypes.dungeon();
     }
 
     private static boolean isInvalidSpot(GenerationContext context, int radius) {

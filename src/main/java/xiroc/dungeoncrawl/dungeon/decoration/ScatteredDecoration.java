@@ -18,7 +18,13 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
@@ -28,10 +34,10 @@ import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
+import java.lang.reflect.Type;
 import java.util.Random;
 
 public record ScatteredDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
-
     @Override
     public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
         boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
@@ -69,14 +75,23 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
         }
     }
 
-    @Override
-    public JsonObject serialize() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", DungeonDecoration.SCATTERED_DECORATION);
-        object.addProperty("chance", this.chance);
+    public static class Serializer implements JsonSerializer<ScatteredDecoration>, JsonDeserializer<ScatteredDecoration> {
+        private static final String KEY_BLOCK = "block";
+        private static final String KEY_CHANCE = "chance";
 
-        object.add("block",  BlockStateProvider.GSON.toJsonTree(blockStateProvider));
-        return object;
+        @Override
+        public ScatteredDecoration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+            return new ScatteredDecoration(BlockStateProvider.deserialize(object.get(KEY_BLOCK)), object.get(KEY_CHANCE).getAsFloat());
+        }
+
+        @Override
+        public JsonElement serialize(ScatteredDecoration src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            object.addProperty(SharedSerializationConstants.KEY_DECORATION_TYPE, SharedSerializationConstants.DECORATION_TYPE_SCATTERED);
+            object.add(KEY_BLOCK, BlockStateProvider.GSON.toJsonTree(src.blockStateProvider));
+            object.addProperty(KEY_CHANCE, src.chance);
+            return object;
+        }
     }
-
 }

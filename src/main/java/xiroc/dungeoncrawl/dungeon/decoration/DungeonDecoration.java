@@ -18,94 +18,56 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
+import java.lang.reflect.Type;
 import java.util.Random;
 
 public interface DungeonDecoration {
-
-    String VINE_DECORATION = "vines";
-    String SCATTERED_DECORATION = "scattered";
-    String FLOOR_DECORATION = "floor";
-    String FLOOR_NEXT_TO_SOLID_DECORATION = "floor_next_to_solid";
+    Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(DungeonDecoration.class, new Deserializer())
+            .registerTypeAdapter(VineDecoration.class, new VineDecoration.Serializer())
+            .registerTypeAdapter(ScatteredDecoration.class, new ScatteredDecoration.Serializer())
+            .create();
 
     void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece);
 
-    JsonObject serialize();
+    static DungeonDecoration deserialize(JsonObject object) {
+        return GSON.fromJson(object, DungeonDecoration.class);
+    }
 
-    static DungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
-        if (object.has("type")) {
-            String type = object.get("type").getAsString().toLowerCase();
-            switch (type) {
-                case VINE_DECORATION:
-                    return new VineDecoration(object.has("chance") ? object.get("chance").getAsFloat() : 0.35F);
-                case SCATTERED_DECORATION: {
-                    float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.25F;
-                    BlockStateProvider blockStateProvider;
-
-                    if (object.has("block")) {
-                        blockStateProvider = BlockStateProvider.deserialize(object.get("block"));
-                        if (blockStateProvider != null) {
-                            return new ScatteredDecoration(blockStateProvider, chance);
-                        }
-                    } else {
-                        DungeonCrawl.LOGGER.warn("Missing entry 'block'");
-                        return null;
-                    }
-                }
-                case FLOOR_DECORATION: {
-                    float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.5F;
-                    BlockStateProvider blockStateProvider;
-
-                    if (object.has("block")) {
-                        blockStateProvider = BlockStateProvider.deserialize(object.get("block"));
-                        if (blockStateProvider != null) {
-                            return new FloorDecoration(blockStateProvider, chance);
-                        }
-                    } else {
-                        DungeonCrawl.LOGGER.warn("Missing entry 'block'");
-                        return null;
-                    }
-                }
-                case FLOOR_NEXT_TO_SOLID_DECORATION: {
-                    float chance = object.has("chance") ? object.get("chance").getAsFloat() : 0.5F;
-                    BlockStateProvider blockStateProvider;
-
-                    if (object.has("block")) {
-                        blockStateProvider = BlockStateProvider.deserialize(object.get("block"));
-                        if (blockStateProvider != null) {
-                            return new FloorDecoration.NextToSolid(blockStateProvider, chance);
-                        }
-                    } else {
-                        DungeonCrawl.LOGGER.warn("Missing entry 'block'");
-                        return null;
-                    }
-                }
-                default:
-                    DungeonCrawl.LOGGER.warn("Unknown decoration type '{}'", type);
-                    return null;
+    class Deserializer implements JsonDeserializer<DungeonDecoration> {
+        @Override
+        public DungeonDecoration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+            if (object.has(SharedSerializationConstants.KEY_DECORATION_TYPE)) {
+                String type = object.get(SharedSerializationConstants.KEY_DECORATION_TYPE).getAsString().toLowerCase();
+                return switch (type) {
+                    case SharedSerializationConstants.DECORATION_TYPE_VINES -> GSON.fromJson(object, VineDecoration.class);
+                    case SharedSerializationConstants.DECORATION_TYPE_SCATTERED -> GSON.fromJson(object, ScatteredDecoration.class);
+                    default -> throw new JsonParseException("Unknown decoration type: " + type);
+                };
+            } else {
+                throw new JsonParseException("Missing decoration type specification");
             }
-        } else {
-            return null;
         }
     }
 
-    static BlockPos getRotatedBlockPos(int x, int y, int z, BlockPos base, DungeonModel model, Rotation rotation) {
-        return switch (rotation) {
-            case CLOCKWISE_90 -> new BlockPos(base.getX() + model.length - z - 1, base.getY() + y, base.getZ() + x);
-            case CLOCKWISE_180 -> new BlockPos(base.getX() + model.width - x - 1, base.getY() + y, base.getZ() + model.length - z - 1);
-            case COUNTERCLOCKWISE_90 -> new BlockPos(base.getX() + z, base.getY() + y, base.getZ() + model.width - x - 1);
-            default -> new BlockPos(base.getX() + x, base.getY() + y, base.getZ() + z);
-        };
+    interface SharedSerializationConstants {
+        String KEY_DECORATION_TYPE = "type";
+        String DECORATION_TYPE_VINES = "vines";
+        String DECORATION_TYPE_SCATTERED = "scattered";
     }
-
 }

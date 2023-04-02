@@ -32,8 +32,8 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
@@ -60,7 +60,7 @@ public class DungeonPiece extends StructurePiece {
     public PrimaryTheme primaryTheme;
     public SecondaryTheme secondaryTheme;
     public ResourceLocation lootTable;
-    public DungeonModel blueprint;
+    public Blueprint blueprint;
 
     public DungeonPiece() {
         this(StructurePieceTypes.GENERIC_PIECE, new BoundingBox(0 ,0 ,0 ,0 ,0 ,0));
@@ -82,7 +82,7 @@ public class DungeonPiece extends StructurePiece {
         this.stage = nbt.getInt(NBT_KEY_STAGE);
 
         if (nbt.contains(NBT_KEY_BLUEPRINT)) {
-            this.blueprint = DungeonModels.KEY_TO_MODEL.get(new ResourceLocation(nbt.getString(NBT_KEY_BLUEPRINT)));
+            this.blueprint = Blueprints.getBlueprint(new ResourceLocation(nbt.getString(NBT_KEY_BLUEPRINT)));
         }
 
         if (nbt.contains(NBT_KEY_PRIMARY_THEME)) {
@@ -109,7 +109,7 @@ public class DungeonPiece extends StructurePiece {
         nbt.putInt(NBT_KEY_STAGE, stage);
 
         if (blueprint != null) {
-            nbt.putString(NBT_KEY_BLUEPRINT, blueprint.getKey().toString());
+            nbt.putString(NBT_KEY_BLUEPRINT, blueprint.key().toString());
         }
 
         if (primaryTheme != null) {
@@ -130,7 +130,7 @@ public class DungeonPiece extends StructurePiece {
         // TODO
     }
 
-    protected void decorate(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonModel blueprint) {
+    protected void decorate(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, Blueprint blueprint) {
         // TODO
     }
 

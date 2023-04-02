@@ -23,11 +23,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.DungeonType;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
-import xiroc.dungeoncrawl.dungeon.model.ModelPools;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
 import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
@@ -50,20 +46,13 @@ public class ResourceReloadHandler implements PreparableReloadListener {
         DungeonCrawl.LOGGER.info("Loading data...");
         PENDING_UPDATES.clear();
 
-        DungeonModels.load(resourceManager);
-        ModelPools.load(resourceManager);
-        DungeonType.load(resourceManager);
-
+        Blueprints.load(resourceManager);
         Themes.load(resourceManager);
         SpawnRates.loadJson(resourceManager);
         RandomItems.loadJson(resourceManager);
         RandomMonster.loadJson(resourceManager);
         RandomEquipment.loadJson(resourceManager);
         RandomPotionEffect.loadJson(resourceManager);
-
-        if (Config.ENABLE_TOOLS.get()) {
-            ModelBlockDefinition.loadJson(resourceManager);
-        }
 
         DungeonCrawl.LOGGER.debug("Completing...");
         PENDING_UPDATES.forEach(Updatable::update);

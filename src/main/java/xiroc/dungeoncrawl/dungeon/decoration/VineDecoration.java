@@ -33,26 +33,25 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.lang.reflect.Type;
 import java.util.Random;
 
 public record VineDecoration(float chance) implements DungeonDecoration {
     @Override
-    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
-        boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
-        int maxX = ew ? model.width : model.length;
-        int maxZ = ew ? model.length : model.width;
+    public void decorate(Blueprint blueprint, LevelAccessor world, BlockPos pos, Rotation rotation, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds) {
+        boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
+        int maxX = ew ? blueprint.xSpan() : blueprint.zSpan();
+        int maxZ = ew ? blueprint.zSpan() : blueprint.xSpan();
         for (int x = 0; x < maxX; x++) {
-            for (int y = 0; y < model.height; y++) {
+            for (int y = 0; y < blueprint.ySpan(); y++) {
                 for (int z = 0; z < maxZ; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (worldGenBounds.isInside(currentPos)
                             && structureBounds.isInside(currentPos)
-                            && !DungeonBuilder.isBlockProtected(world, currentPos)
+                            && !WorldEditor.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)) {
                         BlockPos north = currentPos.north();
                         BlockPos east = currentPos.east();

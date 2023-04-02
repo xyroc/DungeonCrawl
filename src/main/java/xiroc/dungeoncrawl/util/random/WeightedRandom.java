@@ -32,6 +32,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerTypes;
@@ -82,6 +84,16 @@ public interface WeightedRandom<T> extends IRandom<T> {
             Delegate::serialize,
             "spawner_type"
     );
+    Serializer<Delegate<Blueprint>> BLUEPRINT = Serializer.of(
+            (json) -> {
+                ResourceLocation key = new ResourceLocation(json.getAsString());
+                if (!Blueprints.exists(key)) {
+                    throw new JsonParseException("The blueprint " + key + " does not exist");
+                }
+                return Delegate.of(Blueprints.getBlueprint(key), key);
+            },
+            Delegate::serialize,
+            "blueprint");
 
     boolean isEmpty();
 

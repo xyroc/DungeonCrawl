@@ -22,10 +22,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 
@@ -60,10 +58,5 @@ public class DungeonBuilder {
     public List<? extends StructurePiece> build() {
         // TODO: generate dungeon
         return List.of();
-    }
-
-    public static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
-        return state.getDestroySpeed(world, pos) < 0;
     }
 }

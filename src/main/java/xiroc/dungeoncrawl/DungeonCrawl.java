@@ -37,7 +37,6 @@ import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
-import xiroc.dungeoncrawl.util.tools.Tools;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
@@ -68,10 +67,6 @@ public class DungeonCrawl {
         LOGGER.info("Common Setup");
         //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
-
-        if (Config.ENABLE_TOOLS.get()) {
-            MinecraftForge.EVENT_BUS.register(new Tools());
-        }
 
         event.enqueueWork(() -> {
             Loot.init();

@@ -39,7 +39,6 @@ public class Config {
     public static final BooleanValue
             CUSTOM_SPAWNERS,
             NO_NETHER_STUFF,
-            ENABLE_TOOLS,
             SOLID,
             NATURAL_DESPAWN,
             EXTENDED_DEBUG,
@@ -52,10 +51,6 @@ public class Config {
 
     static {
         BUILDER.push("Miscellaneous Settings");
-        ENABLE_TOOLS = BUILDER
-                .comment(SEPARATOR_LINE +
-                        " Enables the dungeon crawl developer tools. Do not use this for normal gameplay.\n")
-                .define("enable_tools", false);
         EXTENDED_DEBUG = BUILDER
                 .comment(SEPARATOR_LINE +
                         " Enables extended debug logging to help detecting errors. Enabled by default.\n")

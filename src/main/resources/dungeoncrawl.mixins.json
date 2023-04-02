@@ -6,7 +6,8 @@
   "refmap": "dungeoncrawl.refmap.json",
   "client": [],
   "mixins": [
-    "accessor.BoundingBoxAccessor"
+    "accessor.BoundingBoxAccessor",
+    "accessor.StructureTemplateAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

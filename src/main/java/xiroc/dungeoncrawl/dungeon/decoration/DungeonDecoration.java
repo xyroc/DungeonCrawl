@@ -28,9 +28,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 
 import java.lang.reflect.Type;
 import java.util.Random;
@@ -42,7 +42,7 @@ public interface DungeonDecoration {
             .registerTypeAdapter(ScatteredDecoration.class, new ScatteredDecoration.Serializer())
             .create();
 
-    void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece);
+    void decorate(Blueprint blueprint, LevelAccessor world, BlockPos pos, Rotation rotation, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds);
 
     static DungeonDecoration deserialize(JsonObject object) {
         return GSON.fromJson(object, DungeonDecoration.class);

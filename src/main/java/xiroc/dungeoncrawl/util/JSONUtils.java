@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fml.ModList;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 
 import java.util.Optional;
 
@@ -81,7 +80,7 @@ public class JSONUtils {
             z = jsonObject.get("z").getAsInt();
         }
         if (x == 0 && y == 0 && z == 0) {
-            return DungeonModels.NO_OFFSET;
+            return Vec3i.ZERO;
         }
         return new Vec3i(x, y, z);
     }

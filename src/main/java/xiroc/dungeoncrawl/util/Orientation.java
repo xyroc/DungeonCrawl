@@ -27,6 +27,22 @@ public class Orientation {
     public static final Direction[] HORIZONTAL_FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH,
             Direction.WEST};
 
+    public static Rotation horizontalRotation(Direction from, Direction to) {
+        if (from.getAxis() == Direction.Axis.Y || to.getAxis() == Direction.Axis.Y) {
+            throw new IllegalArgumentException();
+        }
+        if (to == from) {
+            return Rotation.NONE;
+        }
+        if (to == from.getOpposite()) {
+            return Rotation.CLOCKWISE_180;
+        }
+        if (to == from.getClockWise()) {
+            return Rotation.CLOCKWISE_90;
+        }
+        return Rotation.COUNTERCLOCKWISE_90;
+    }
+
     public static Vec3i rotatedMultipartOffset(Blueprint parent, Blueprint multipart, Vec3i offset, Rotation parentRotation, Rotation fullRotation) {
         int ordinalBit = fullRotation.ordinal() & 1;
         switch (parentRotation) {

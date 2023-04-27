@@ -28,9 +28,11 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
@@ -42,6 +44,7 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
+import javax.json.JsonException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
@@ -58,6 +61,11 @@ public interface WeightedRandom<T> extends IRandom<T> {
                 }
                 return new JsonPrimitive(registryName.toString());
             }, "item");
+    Serializer<Block> BLOCK = Serializer.of(
+            (json) -> Registry.BLOCK.get(new ResourceLocation(json.getAsString())),
+            (block) -> new JsonPrimitive(Registry.BLOCK.getKey(block).toString()),
+            "block"
+    );
     Serializer<Delegate<PrimaryTheme>> PRIMARY_THEME = Serializer.of(
             (json) -> {
                 ResourceLocation key = new ResourceLocation(json.getAsString());

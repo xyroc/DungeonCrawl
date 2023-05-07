@@ -29,8 +29,21 @@ import net.minecraftforge.fml.ModList;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 public class JSONUtils {
+    public static <T> void serializeIfNonNull(JsonObject parent, String key, T thing, Function<T, JsonElement> serializer) {
+        if (thing != null) {
+            parent.add(key, serializer.apply(thing));
+        }
+    }
+
+    public static <T> T deserializeOrNull(JsonObject parent, String key, Function<JsonElement, T> deserializer) {
+        if (parent.has(key)) {
+            return deserializer.apply(parent.get(key));
+        }
+        return null;
+    }
 
     public static boolean areRequirementsMet(JsonObject object) {
         if (object.has("requirements")) {

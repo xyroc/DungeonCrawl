@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.Furnace;
 import xiroc.dungeoncrawl.dungeon.block.Plants;
-import xiroc.dungeoncrawl.dungeon.block.Spawner;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 
@@ -36,7 +35,6 @@ import java.util.Random;
 
 public interface IBlockPlacementHandler {
 
-    IBlockPlacementHandler SPAWNER = new Spawner();
 
     IBlockPlacementHandler DEFAULT = (world, state, pos, rand, primaryTheme, secondaryTheme, lootLevel) -> {
         if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
@@ -48,7 +46,6 @@ public interface IBlockPlacementHandler {
     ImmutableMap<Block, IBlockPlacementHandler> PLACEMENT_HANDLERS = new ImmutableMap.Builder<Block, IBlockPlacementHandler>()
             .put(Blocks.FURNACE, new Furnace())
             .put(Blocks.SMOKER, new Furnace.Smoker())
-            .put(Blocks.SPAWNER, SPAWNER)
             .put(Blocks.FARMLAND, new Plants.Farmland())
             .put(Blocks.FLOWER_POT, new Plants.FlowerPot())
             .put(Blocks.PODZOL, new Plants.Podzol())

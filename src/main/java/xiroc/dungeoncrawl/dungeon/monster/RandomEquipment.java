@@ -151,7 +151,7 @@ public class RandomEquipment {
         if (HELMET.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = HELMET.get(stage).roll(rand);
-                items[3] = createItemStack(rand, item, stage);
+                items[3] = createItemStack(item, rand, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[3], getRandomColor(rand));
                 }
@@ -166,7 +166,7 @@ public class RandomEquipment {
         if (CHESTPLATE.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = CHESTPLATE.get(stage).roll(rand);
-                items[2] = createItemStack(rand, item, stage);
+                items[2] = createItemStack(item, rand, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[2], getRandomColor(rand));
                 }
@@ -181,7 +181,7 @@ public class RandomEquipment {
         if (LEGGINGS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = LEGGINGS.get(stage).roll(rand);
-                items[1] = createItemStack(rand, item, stage);
+                items[1] = createItemStack(item, rand, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[1], getRandomColor(rand));
                 }
@@ -196,7 +196,7 @@ public class RandomEquipment {
         if (BOOTS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = BOOTS.get(stage).roll(rand);
-                items[0] = createItemStack(rand, item, stage);
+                items[0] = createItemStack(item, rand, stage);
                 if (item instanceof DyeableArmorItem) {
                     setArmorColor(items[0], getRandomColor(rand));
                 }
@@ -213,15 +213,23 @@ public class RandomEquipment {
         return items;
     }
 
-    public static ItemStack createItemStack(Random rand, Item item, int stage) {
+    public static ItemStack createItemStack(Item item, Random rand, int stage) {
         ItemStack itemStack = EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * stage, false);
-        applyDamage(itemStack, rand);
+        if (itemStack.isDamageableItem()) {
+            itemStack.setDamageValue(rand.nextInt(Math.max(1, item.getMaxDamage(itemStack) / 2)));
+        }
         return itemStack;
     }
 
-    public static void applyDamage(ItemStack item, Random rand) {
-        if (item.isDamageableItem())
-            item.setDamageValue(rand.nextInt(Math.max(1, item.getMaxDamage() / 2)));
+    public static ItemStack createArmorPiece(Item item, Random random, int stage) {
+        ItemStack armorPiece = createItemStack(item, random, stage);
+        if (item instanceof DyeableArmorItem) {
+            CompoundTag nbt = armorPiece.getOrCreateTag();
+            CompoundTag display = nbt.getCompound("display");
+            display.putInt("color", random.nextInt(0x1000000));
+            nbt.put("display", display);
+        }
+        return armorPiece;
     }
 
     public static void setArmorColor(ItemStack item, int color) {
@@ -240,7 +248,7 @@ public class RandomEquipment {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
         if (MELEE_WEAPON.containsKey(stage)) {
-            return createItemStack(rand, MELEE_WEAPON.get(stage).roll(rand), stage);
+            return createItemStack(MELEE_WEAPON.get(stage).roll(rand), rand, stage);
         } else {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;
@@ -251,7 +259,7 @@ public class RandomEquipment {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
         if (RANGED_WEAPON.containsKey(stage)) {
-            return createItemStack(rand, RANGED_WEAPON.get(stage).roll(rand), stage);
+            return createItemStack(RANGED_WEAPON.get(stage).roll(rand), rand, stage);
         } else {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;

@@ -33,6 +33,8 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnerTypes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
@@ -68,6 +70,18 @@ public interface WeightedRandom<T> extends IRandom<T> {
             },
             Delegate::serialize,
             "theme");
+    Serializer<Delegate<SpawnerType>> SPAWNER_TYPE = Serializer.of(
+            (json) -> {
+                ResourceLocation key = new ResourceLocation(json.getAsString());
+                SpawnerType spawnerType = SpawnerTypes.get(key);
+                if (spawnerType == null) {
+                    throw new JsonParseException("The spawner type " + key + " does not exist.");
+                }
+                return Delegate.of(spawnerType, key);
+            },
+            Delegate::serialize,
+            "spawner_type"
+    );
 
     boolean isEmpty();
 

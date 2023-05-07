@@ -26,6 +26,8 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.loot.LootTables;
 import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
 import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
+import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
+import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
@@ -43,6 +45,8 @@ public class DataGen {
             generator.addProvider(new SecondaryThemes(generator));
             generator.addProvider(new PrimaryThemeMappings(generator));
             generator.addProvider(new SecondaryThemeMappings(generator));
+            generator.addProvider(new SpawnerEntityTypes(generator));
+            generator.addProvider(new SpawnerTypes(generator));
         }
     }
 

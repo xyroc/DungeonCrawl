@@ -1,31 +1,26 @@
-modLoader="javafml" #mandatory
-license="GNU General Public License Version 3"
-loaderVersion="[45,)" #mandatory
-issueTrackerURL="https://github.com/XYROC/DungeonCrawl/issues" #optional
-[[mods]] #mandatory
-modId="dungeoncrawl" #mandatory
-version="2.3.13" #mandatory
-displayName="Dungeon Crawl" #mandatory
-#updateJSONURL="URL" #optional
-#displayURL="URL" #optional
-#logoFile="logo.png" #optional
-credits="Original Mod by Greymerk (Roguelike Dungeons)" #optional
-authors="xiroc" #optional
-description='''Dungeon Crawl, a spiritual successor to Roguelike Dungeons.'''
-[[dependencies.dungeoncrawl]]
-    # the modid of the dependency
-    modId="forge" #mandatory
-    # Does this dependency have to exist - if not, ordering below must be specified
-    mandatory=true #mandatory
-    # The version range of the dependency
-    versionRange="[45.0.0,)" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+modLoader="javafml"
+license="${mod_license}"
+loaderVersion="${loader_version_range}"
+issueTrackerURL="${mod_issue_tracker}"
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+#updateJSONURL="URL"
+#displayURL="URL"
+#logoFile="logo.png"
+credits="${mod_credits}"
+authors="${mod_authors}"
+description='''${mod_description}'''
+[[dependencies.${mod_id}]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
     ordering="NONE"
-    # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
-[[dependencies.dungeoncrawl]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

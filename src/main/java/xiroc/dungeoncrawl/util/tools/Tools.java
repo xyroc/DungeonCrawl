@@ -66,9 +66,7 @@ public class Tools {
                     UUID uuid = command.getSource().getPlayerOrException().getUUID();
 
                     if (!CONTEXT_TABLE.containsKey(uuid)) {
-                        command.getSource().sendSuccess(
-                                Component.literal(ChatFormatting.RED + "Please select two positions."),
-                                true);
+                        command.getSource().sendSuccess(() -> Component.literal(ChatFormatting.RED + "Please select two positions."), true);
                         return 1;
                     }
 
@@ -84,9 +82,9 @@ public class Tools {
                                 Math.max(context.pos1.getZ(), context.pos2.getZ()));
                         ModelHandler.readAndSaveModelToFile(name,
                                 ModelBlockDefinition.getDefaultDefinition(),
-                                command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
+                                command.getSource().getPlayerOrException().level(), pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
-                        command.getSource().sendSuccess(Component.literal("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
+                        command.getSource().sendSuccess(() -> Component.literal("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
                         command.getSource().sendFailure(Component.literal(ChatFormatting.RED + "Please select two positions."));
@@ -113,10 +111,10 @@ public class Tools {
                         String name = StringArgumentType.getString(command, "name");
                         ModelHandler.readAndSaveModelToFile(name,
                                 blockDefinition,
-                                command.getSource().getPlayerOrException().level, pos1, pos2.getX() - pos1.getX() + 1,
+                                command.getSource().getPlayerOrException().level(), pos1, pos2.getX() - pos1.getX() + 1,
                                 pos2.getY() - pos1.getY() + 1, pos2.getZ() - pos1.getZ() + 1);
 
-                        command.getSource().sendSuccess(Component.literal("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
+                        command.getSource().sendSuccess(() -> Component.literal("Saved as " + ChatFormatting.GREEN + name + ".nbt"), true);
                         return 0;
                     } else {
                         command.getSource().sendFailure(Component.literal(ChatFormatting.RED + "Please select two positions."));
@@ -130,27 +128,27 @@ public class Tools {
                 .then(Commands.argument("model", DungeonModelArgument.modelArgument()).executes((command) -> {
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
                     BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
-                    buildModel(model, command.getSource().getPlayerOrException().level, pos, ModelBlockDefinition.getDefaultDefinition());
+                    buildModel(model, command.getSource().getPlayerOrException().level(), pos, ModelBlockDefinition.getDefaultDefinition());
                     setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
                     BlockPos pos = Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource());
-                    buildModel(model, command.getSource().getPlayerOrException().level, pos, ModelBlockDefinition.getDefaultDefinition());
+                    buildModel(model, command.getSource().getPlayerOrException().level(), pos, ModelBlockDefinition.getDefaultDefinition());
                     setOrigin(command.getSource(), pos);
                     return 0;
                 })).then(Commands.argument("block definition", ModelBlockDefinitionArgument.modelBlockDefinitionArgument()).executes((command) -> {
                     ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
                     BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
-                    buildModel(model, command.getSource().getPlayerOrException().level, pos, blockDefinition);
+                    buildModel(model, command.getSource().getPlayerOrException().level(), pos, blockDefinition);
                     setOrigin(command.getSource(), pos);
                     return 0;
                 }).then(Commands.argument("location", Vec3Argument.vec3()).executes((command) -> {
                     ModelBlockDefinition blockDefinition = ModelBlockDefinitionArgument.getDefinition(command, "block definition");
                     DungeonModel model = DungeonModelArgument.getModel(command, "model");
                     BlockPos pos = Vec3Argument.getCoordinates(command, "location").getBlockPos(command.getSource());
-                    buildModel(model, command.getSource().getPlayerOrException().level, pos, blockDefinition);
+                    buildModel(model, command.getSource().getPlayerOrException().level(), pos, blockDefinition);
                     setOrigin(command.getSource(), pos);
                     return 0;
                 })))));
@@ -166,11 +164,11 @@ public class Tools {
                     } else {
                         ModelEditContext context = CONTEXT_TABLE.get(uuid);
                         BlockPos pos = command.getSource().getPlayerOrException().blockPosition();
-                        command.getSource().sendSuccess(Component.literal("The origin is (x: "
+                        command.getSource().sendSuccess(() -> Component.literal("The origin is (x: "
                                 + context.origin.getX() + " y: "
                                 + context.origin.getY() + " z: "
                                 + context.origin.getZ() + ")."), true);
-                        command.getSource().sendSuccess(Component.literal("Your coordinates relative to the origin are (x: "
+                        command.getSource().sendSuccess(() -> Component.literal("Your coordinates relative to the origin are (x: "
                                 + (pos.getX() - context.origin.getX()) + " y: "
                                 + (pos.getY() - context.origin.getY()) + " z: "
                                 + (pos.getZ() - context.origin.getZ() + ").")), true);
@@ -187,7 +185,7 @@ public class Tools {
                     UUID uuid = command.getSource().getPlayerOrException().getUUID();
                     if (CONTEXT_TABLE.containsKey(uuid)) {
                         CONTEXT_TABLE.get(uuid).origin = null;
-                        command.getSource().sendSuccess(Component.literal("Origin reset."), true);
+                        command.getSource().sendSuccess(() -> Component.literal("Origin reset."), true);
                     } else {
                         command.getSource().sendFailure(Component.literal("Nothing to reset."));
                     }
@@ -220,7 +218,7 @@ public class Tools {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onItemUse(final PlayerInteractEvent.RightClickBlock event) {
-        if (!event.getEntity().level.isClientSide() && event.getEntity().isCreative()) {
+        if (!event.getEntity().level().isClientSide() && event.getEntity().isCreative()) {
             if (event.getItemStack().getItem() == Items.DIAMOND_AXE) {
                 event.setCanceled(true);
 
@@ -250,7 +248,7 @@ public class Tools {
     private static void setOrigin(CommandSourceStack source, BlockPos pos) throws CommandSyntaxException {
         ModelEditContext context = CONTEXT_TABLE.computeIfAbsent(source.getPlayerOrException().getUUID(), (id) -> new ModelEditContext());
         context.origin = pos;
-        source.sendSuccess(Component.literal("Origin set to (x: "
+        source.sendSuccess(() -> Component.literal("Origin set to (x: "
                 + context.origin.getX() + " y: "
                 + context.origin.getY() + " z: "
                 + context.origin.getZ() + ")."), true);

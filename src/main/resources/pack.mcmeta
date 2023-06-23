@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "Dungeon Crawl resources",
-        "pack_format": 12
+        "description": "${mod_name} resources",
+        "pack_format": ${mod_data_pack_format}
     }
 }

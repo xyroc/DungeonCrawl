@@ -1,0 +1,10 @@
+// 1.20.1	2023-06-24T16:04:23.4967956	Loot Tables
+5aac0f95c3aeaa5d60d187d454c56cf53345f22c data/dungeoncrawl/loot_tables/chests/food.json
+dc8a351c5e1c5cd3b42a2235d363e562833b2e2d data/dungeoncrawl/loot_tables/chests/secret_room.json
+8b3fbf51577f28947213554771256adb39878ec6 data/dungeoncrawl/loot_tables/chests/stage_1.json
+62d2735de556654dc03ecf3ebafba0af50e77bd3 data/dungeoncrawl/loot_tables/chests/stage_2.json
+1c49301b80c48ff697ba9fc128c56c9f0aec99b0 data/dungeoncrawl/loot_tables/chests/stage_3.json
+b6880d706ff042957d0c6fdefe8028c47f1ce658 data/dungeoncrawl/loot_tables/chests/stage_4.json
+066b96f4dc89e1973822a7cee31fa59c4a4d7f8b data/dungeoncrawl/loot_tables/chests/stage_5.json
+48c8ab6f18874f8122f3f67d637975de0c6fe04e data/dungeoncrawl/loot_tables/chests/supply.json
+d2e1241a87fbf06b3d96fc20f7330fe1f5e87004 data/dungeoncrawl/loot_tables/chests/treasure.json

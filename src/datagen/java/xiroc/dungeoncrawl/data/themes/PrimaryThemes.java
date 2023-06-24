@@ -18,41 +18,31 @@
 
 package xiroc.dungeoncrawl.data.themes;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.block.provider.WeightedRandomBlock;
 import xiroc.dungeoncrawl.dungeon.decoration.VineDecoration;
 import xiroc.dungeoncrawl.theme.Theme;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 public class PrimaryThemes implements DataProvider {
+    private final PackOutput.PathProvider pathProvider;
 
-    private static final Logger LOGGER = LogManager.getLogger();
-    private final DataGenerator generator;
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-    public PrimaryThemes(DataGenerator generator) {
-        this.generator = generator;
+    public PrimaryThemes(PackOutput packOutput) {
+        this.pathProvider = packOutput.createPathProvider(PackOutput.Target.DATA_PACK, "theming/primary_themes");
     }
 
     @Override
-    public void run(CachedOutput directoryCache) {
-        Path path = this.generator.getOutputFolder();
-
+    public CompletableFuture<?> run(CachedOutput directoryCache) {
         HashMap<ResourceLocation, Theme> themes = new HashMap<>();
         collectThemes(((resourceLocation, theme) -> {
             if (themes.containsKey(resourceLocation)) {
@@ -61,14 +51,10 @@ public class PrimaryThemes implements DataProvider {
             themes.put(resourceLocation, theme);
         }));
 
-        themes.forEach(((resourceLocation, theme) -> {
-            Path filePath = createPath(path, resourceLocation);
-            try {
-                DataProvider.saveStable(directoryCache, theme.serialize(), filePath);
-            } catch (IOException exception) {
-                LOGGER.error("Failed to save {}", resourceLocation);
-            }
-        }));
+        return CompletableFuture.allOf(themes.entrySet().stream().map((entry) -> {
+            Path path = pathProvider.json(entry.getKey());
+            return DataProvider.saveStable(directoryCache, entry.getValue().serialize(), path);
+        }).toArray(CompletableFuture[]::new));
 
     }
 

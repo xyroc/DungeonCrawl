@@ -44,8 +44,8 @@ public class DataGen {
         boolean includeServer = event.includeServer();
 
         generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Loot.ALL_LOOT_TABLES, List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.BLOCK))));
-        generator.addProvider(includeServer, new PrimaryThemes(generator));
-        generator.addProvider(includeServer, new SecondaryThemes(generator));
+        generator.addProvider(includeServer, new PrimaryThemes(generator.getPackOutput()));
+        generator.addProvider(includeServer, new SecondaryThemes(generator.getPackOutput()));
     }
 
 }

@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:chest",
+  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -528,5 +528,6 @@
         "min": 8.0
       }
     }
-  ]
+  ],
+  "random_sequence": "dungeoncrawl:chests/supply"
 }

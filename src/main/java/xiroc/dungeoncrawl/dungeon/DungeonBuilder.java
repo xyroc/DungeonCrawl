@@ -48,7 +48,7 @@ public class DungeonBuilder {
     public Position2D start;
 
     public DungeonLayer[] layers;
-
+    public BlockPos groundPos;
     public BlockPos startPos;
 
     public Structure.GenerationContext generationContext;
@@ -56,8 +56,6 @@ public class DungeonBuilder {
 
     public Theme theme, catacombsTheme, lowerCatacombsTheme, bottomTheme;
     public SecondaryTheme secondaryTheme, catacombsSecondaryTheme, lowerCatacombsSecondaryTheme, bottomSecondaryTheme;
-
-    private final int groundHeight;
 
     private static final int GRID_SIZE = 17;
     private static final int HALF_GRID_SIZE = GRID_SIZE >> 1;
@@ -67,27 +65,23 @@ public class DungeonBuilder {
      */
     public DungeonBuilder(Structure.GenerationContext generationContext, int startHeight, BlockPos groundPos) {
         this.generationContext = generationContext;
-        this.groundHeight = groundPos.getY();
-
+        this.groundPos = groundPos;
         this.startPos = new BlockPos(generationContext.chunkPos().x * 16 - HALF_GRID_SIZE * 9 - 4, startHeight,
                 generationContext.chunkPos().z * 16 - HALF_GRID_SIZE * 9 - 4);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");
-
     }
 
     public List<DungeonPiece> build() {
         if (startPos.getY() < 16) {
             return Lists.newArrayList();
         }
-
         this.biome = this.generationContext.chunkGenerator().getBiomeSource()
-                .getNoiseBiome(QuartPos.fromBlock(startPos.getX()), QuartPos.fromBlock(groundHeight), QuartPos.fromBlock(startPos.getZ()),
+                .getNoiseBiome(QuartPos.fromBlock(groundPos.getX()), QuartPos.fromBlock(groundPos.getY()), QuartPos.fromBlock(groundPos.getZ()),
                         generationContext.randomState().sampler()).value();
 
         DungeonType type = DungeonType.randomType(this.generationContext.registryAccess().registryOrThrow(Registries.BIOME).getKey(this.biome), this.generationContext.random());
-
         generateLayout(type, DEFAULT_GENERATOR);
 
         List<DungeonPiece> pieces = Lists.newArrayList();

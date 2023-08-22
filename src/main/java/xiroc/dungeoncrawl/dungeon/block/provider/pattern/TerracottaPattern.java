@@ -15,28 +15,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.util.Orientation;
 
 import java.lang.reflect.Type;
 import java.util.Random;
 
 public record TerracottaPattern(BlockStateProvider block) implements BlockStateProvider {
+    private static final Direction[] TERRACOTTA_FACINGS = {Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST};
+
+    @Override
+    public BlockState get(BlockPos pos, Random random) {
+        Direction facing = TERRACOTTA_FACINGS[((pos.getX() & 1) << 1) + pos.getZ() & 1];
+        return DungeonBlocks.applyProperty(block.get(pos, random), BlockStateProperties.HORIZONTAL_FACING, facing);
+    }
+
     @Override
     public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
-        BlockState state = block.get(world, pos, random, rotation);
-        if ((pos.getX() & 1) == 0) {
-            if ((pos.getZ() & 1) == 0) {
-                return DungeonBlocks.applyProperty(state, BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH).rotate(world, pos, Orientation.getOppositeRotation(rotation));
-            } else {
-                return DungeonBlocks.applyProperty(state, BlockStateProperties.HORIZONTAL_FACING, Direction.EAST).rotate(world, pos, Orientation.getOppositeRotation(rotation));
-            }
-        } else {
-            if ((pos.getZ() & 1) == 0) {
-                return DungeonBlocks.applyProperty(state, BlockStateProperties.HORIZONTAL_FACING, Direction.WEST).rotate(world, pos, Orientation.getOppositeRotation(rotation));
-            } else {
-                return DungeonBlocks.applyProperty(state, BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH).rotate(world, pos, Orientation.getOppositeRotation(rotation));
-            }
-        }
+        return get(pos, random).rotate(world, pos, rotation);
     }
 
     public static class Serializer implements JsonSerializer<TerracottaPattern>, JsonDeserializer<TerracottaPattern> {

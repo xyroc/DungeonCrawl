@@ -30,6 +30,11 @@ public class WeightedRandomBlock implements BlockStateProvider {
     }
 
     @Override
+    public BlockState get(BlockPos pos, Random random) {
+        return randomBlockState.roll(random);
+    }
+
+    @Override
     public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
         return randomBlockState.roll(random);
     }

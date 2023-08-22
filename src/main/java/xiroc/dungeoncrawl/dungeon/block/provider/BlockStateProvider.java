@@ -46,6 +46,8 @@ public interface BlockStateProvider {
             .registerTypeAdapter(TerracottaPattern.class, new TerracottaPattern.Serializer())
             .create();
 
+    BlockState get(BlockPos pos, Random random);
+
     default BlockState get(LevelAccessor world, BlockPos pos, Random random) {
         return get(world, pos, random, Rotation.NONE);
     }

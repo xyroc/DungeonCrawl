@@ -35,6 +35,11 @@ public class SingleBlock implements BlockStateProvider {
     }
 
     @Override
+    public BlockState get(BlockPos pos, Random random) {
+        return state;
+    }
+
+    @Override
     public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
         return state;
     }

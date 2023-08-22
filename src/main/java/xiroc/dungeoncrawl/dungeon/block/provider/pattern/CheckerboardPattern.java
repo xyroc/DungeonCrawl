@@ -18,6 +18,15 @@ import java.util.Random;
 
 public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider block2) implements BlockStateProvider {
     @Override
+    public BlockState get(BlockPos pos, Random random) {
+        if (((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
+            return block1.get(pos, random);
+        } else {
+            return block2.get(pos, random);
+        }
+    }
+
+    @Override
     public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
         if (((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
             return block1.get(world, pos, random, rotation);

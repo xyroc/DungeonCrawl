@@ -26,6 +26,9 @@ import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.RoguelikeDungeonGenerator;
+import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
 
 import java.util.List;
 import java.util.Random;
@@ -39,7 +42,6 @@ public class DungeonBuilder {
     public final BlockPos groundPos;
     public final Random random;
     public final Biome biome;
-
 
     public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, int startHeight, BlockPos groundPos, ChunkPos pos, Random random) {
         this.registryAccess = registryAccess;
@@ -56,7 +58,9 @@ public class DungeonBuilder {
     }
 
     public List<? extends StructurePiece> build() {
-        // TODO: generate dungeon
-        return List.of();
+        DungeonGenerator dungeonGenerator = new RoguelikeDungeonGenerator();
+        StaircaseBuilder staircaseBuilder = new StaircaseBuilder(groundPos.getX(), groundPos.getZ());
+        staircaseBuilder.top(BlockPos.ZERO, groundPos.getY() + 1);
+        return dungeonGenerator.generateDungeon(this, startHeight, staircaseBuilder, random);
     }
 }

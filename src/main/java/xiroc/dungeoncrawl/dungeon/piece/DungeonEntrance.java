@@ -27,7 +27,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 
 import java.util.Random;
 
@@ -36,11 +36,11 @@ public class DungeonEntrance extends DungeonPiece {
     private Integer surfaceHeight;
 
     public DungeonEntrance() {
-        super(StructurePieceTypes.ENTRANCE, new BoundingBox(0 ,0 ,0 ,0 ,0 ,0));
+        super(ModStructurePieceTypes.ENTRANCE, new BoundingBox(0 ,0 ,0 ,0 ,0 ,0));
     }
 
     public DungeonEntrance(CompoundTag nbt) {
-        super(StructurePieceTypes.ENTRANCE, nbt);
+        super(ModStructurePieceTypes.ENTRANCE, nbt);
         if (nbt.contains(NBT_KEY_SURFACE_HEIGHT)) {
             this.surfaceHeight = nbt.getInt(NBT_KEY_SURFACE_HEIGHT);
         }

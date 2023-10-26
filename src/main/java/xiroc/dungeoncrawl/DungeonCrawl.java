@@ -33,10 +33,12 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
+
+import java.util.function.Function;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
@@ -70,7 +72,8 @@ public class DungeonCrawl {
 
         event.enqueueWork(() -> {
             Loot.init();
-            StructurePieceTypes.register();
+            // Pieces are registered on class load
+            ModStructurePieceTypes.GENERIC_PIECE.getClass();
         });
     }
 

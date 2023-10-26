@@ -16,35 +16,32 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.dungeon;
+package xiroc.dungeoncrawl.init;
 
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.piece.TestPiece;
 
 import java.util.Locale;
 
-public class StructurePieceTypes {
-    public static StructurePieceType GENERIC_PIECE;
-    public static StructurePieceType ENTRANCE;
+public interface ModStructurePieceTypes {
+    StructurePieceType GENERIC_PIECE = setPieceId(DungeonPiece::new, key("generic_piece"));
+    StructurePieceType ENTRANCE = setPieceId(DungeonEntrance::new, key("entrance"));
+    StructurePieceType TEST_PIECE = setPieceId(TestPiece::new, key("test_piece"));
 
-    public static void register() {
-        DungeonCrawl.LOGGER.info("Registering Structure Piece Types");
-        ENTRANCE = setPieceId(DungeonEntrance::new, createKey("entrance"));
-        GENERIC_PIECE = setPieceId(DungeonPiece::new, createKey("generic_piece"));
+    private static ResourceLocation key(String path) {
+        return DungeonCrawl.locate(path);
     }
 
-    private static String createKey(String path) {
-        return "dungeoncrawl:" + path;
+    private static StructurePieceType setFullContextPieceId(StructurePieceType type, ResourceLocation key) {
+        return Registry.register(Registry.STRUCTURE_PIECE, key, type);
     }
 
-    private static StructurePieceType setFullContextPieceId(StructurePieceType p_191152_, String p_191153_) {
-        return Registry.register(Registry.STRUCTURE_PIECE, p_191153_.toLowerCase(Locale.ROOT), p_191152_);
-    }
-
-    private static StructurePieceType setPieceId(StructurePieceType.ContextlessType p_191146_, String p_191147_) {
-        return setFullContextPieceId(p_191146_, p_191147_);
+    private static StructurePieceType setPieceId(StructurePieceType.ContextlessType type, ResourceLocation key) {
+        return setFullContextPieceId(type, key);
     }
 }

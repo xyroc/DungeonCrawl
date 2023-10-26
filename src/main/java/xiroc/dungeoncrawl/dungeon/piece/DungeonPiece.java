@@ -31,7 +31,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import xiroc.dungeoncrawl.dungeon.StructurePieceTypes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -63,11 +63,11 @@ public class DungeonPiece extends StructurePiece {
     public Blueprint blueprint;
 
     public DungeonPiece() {
-        this(StructurePieceTypes.GENERIC_PIECE, new BoundingBox(0 ,0 ,0 ,0 ,0 ,0));
+        this(ModStructurePieceTypes.GENERIC_PIECE, new BoundingBox(0 ,0 ,0 ,0 ,0 ,0));
     }
 
     public DungeonPiece(CompoundTag nbt) {
-        this(StructurePieceTypes.GENERIC_PIECE, nbt);
+        this(ModStructurePieceTypes.GENERIC_PIECE, nbt);
     }
 
     public DungeonPiece(StructurePieceType type, BoundingBox boundingBox) {
@@ -128,6 +128,7 @@ public class DungeonPiece extends StructurePiece {
     @Override
     public void postProcess(WorldGenLevel level, StructureFeatureManager p_73428_, ChunkGenerator chunkGenerator, Random random, BoundingBox worldGenBounds, ChunkPos p_73432_, BlockPos pos) {
         // TODO
+        blueprint.build(level, this.position, this.rotation, worldGenBounds, random, this.primaryTheme, this.secondaryTheme, this.stage);
     }
 
     protected void decorate(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, Blueprint blueprint) {
@@ -140,6 +141,9 @@ public class DungeonPiece extends StructurePiece {
 
     public void createBoundingBox() {
         // TODO
+        if (this.blueprint != null) {
+            this.boundingBox = this.blueprint.createBoundingBox(this.position, this.rotation);
+        }
     }
 
     public void setRotation(Rotation rotation) {

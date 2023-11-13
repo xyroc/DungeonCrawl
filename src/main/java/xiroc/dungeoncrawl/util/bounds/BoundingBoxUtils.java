@@ -28,41 +28,25 @@ public interface BoundingBoxUtils {
         return new Vec3i(x, y, z);
     }
 
-    static BoundingBox cut(BoundingBox boundingBox, Direction direction, int amount) {
-        BoundingBoxAccessor accessor = (BoundingBoxAccessor) boundingBox;
-        switch (direction) {
-            case NORTH -> {
-                int minZ = boundingBox.minZ();
-                accessor.setMinZ(minZ + amount);
-                return new BoundingBox(boundingBox.minX(), boundingBox.minY(), minZ, boundingBox.maxX(), boundingBox.maxY(), boundingBox.minZ() - 1);
-            }
-            case EAST -> {
-                int maxX = boundingBox.maxX();
-                accessor.setMaxX(maxX - amount);
-                return new BoundingBox(boundingBox.maxX() + 1, boundingBox.minY(), boundingBox.minZ(), maxX, boundingBox.maxY(), boundingBox.maxZ());
-            }
-            case SOUTH -> {
-                int maxZ = boundingBox.maxZ();
-                accessor.setMaxZ(maxZ - amount);
-                return new BoundingBox(boundingBox.minX(), boundingBox.minY(), boundingBox.maxZ() + 1, boundingBox.maxX(), boundingBox.maxY(), maxZ);
-            }
-            case WEST -> {
-                int minX = boundingBox.minX();
-                accessor.setMinX(minX + amount);
-                return new BoundingBox(minX, boundingBox.minY(), boundingBox.minZ(), boundingBox.minX() - 1, boundingBox.maxY(), boundingBox.maxZ());
-            }
-            case DOWN -> {
-                int minY = boundingBox.minY();
-                accessor.setMinY(minY + amount);
-                return new BoundingBox(boundingBox.minX(), minY, boundingBox.minZ(), boundingBox.maxX(), boundingBox.minY() - 1, boundingBox.maxZ());
-            }
-            case UP -> {
-                int maxY = boundingBox.maxY();
-                accessor.setMaxY(maxY - amount);
-                return new BoundingBox(boundingBox.minX(), boundingBox.maxY() + 1, boundingBox.minZ(), boundingBox.maxX(), maxY, boundingBox.maxZ());
-            }
-        }
-        return BoundingBoxUtils.emptyBox();
+    static BoundingBoxBuilder tunnelBuilder(Vec3i start, Direction direction, int length, int height, int size) {
+        Vec3i from = start.relative(direction.getCounterClockWise(), size);
+        Vec3i to = start.relative(direction.getClockWise(), size)
+                .relative(direction, length - 1)
+                .relative(Direction.UP, height - 1);
+        return BoundingBoxBuilder.fromCorners(from, to);
+    }
+
+    static BoundingBox centeredBoundingBox(Vec3i center, int radius, int height) {
+        return new BoundingBox(center.getX() - radius,
+                center.getY(),
+                center.getZ() - radius,
+                center.getX() + radius,
+                center.getY() + height - 1,
+                center.getZ() + radius);
+    }
+
+    static BoundingBoxBuilder centeredBuilder(Vec3i center, int radius, int height) {
+        return new BoundingBoxBuilder(centeredBoundingBox(center, radius, height));
     }
 
     static void move(BoundingBox boundingBox, Vec3i offset) {

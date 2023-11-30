@@ -47,6 +47,15 @@ public class BoundingBoxBuilder implements Bounded {
         return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
+    public void encapsulate(Bounded bounded) {
+        minX = Math.min(minX, bounded.minX());
+        minY = Math.min(minY, bounded.minY());
+        minZ = Math.min(minZ, bounded.minZ());
+        maxX = Math.max(maxX, bounded.maxX());
+        maxY = Math.max(maxY, bounded.maxY());
+        maxZ = Math.max(maxZ, bounded.maxZ());
+    }
+
     public void move(int offsetX, int offsetY, int offsetZ) {
         minX += offsetX;
         minY += offsetY;

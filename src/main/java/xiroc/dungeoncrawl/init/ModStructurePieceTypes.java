@@ -22,15 +22,15 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.TestPiece;
 
-import java.util.Locale;
-
 public interface ModStructurePieceTypes {
     StructurePieceType GENERIC_PIECE = setPieceId(DungeonPiece::new, key("generic_piece"));
     StructurePieceType ENTRANCE = setPieceId(DungeonEntrance::new, key("entrance"));
+    StructurePieceType COMPOUND = setPieceId(CompoundPiece::new, key("compound"));
     StructurePieceType TEST_PIECE = setPieceId(TestPiece::new, key("test_piece"));
 
     private static ResourceLocation key(String path) {

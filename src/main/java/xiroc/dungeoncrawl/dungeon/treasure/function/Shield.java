@@ -18,9 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -29,12 +28,17 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 
+import java.util.List;
+
 public class Shield extends LootItemConditionalFunction {
+    public static final Codec<Shield> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder)
+            .and(Codec.INT.fieldOf(Loot.KEY_LOOT_LEVEL).forGetter(shield -> shield.lootLevel))
+            .apply(builder, Shield::new));
 
-    private final int lootLevel;
+    public final int lootLevel;
 
-    public Shield(LootItemCondition[] conditionsIn, int lootLevel) {
-        super(conditionsIn);
+    public Shield(List<LootItemCondition> conditions, int lootLevel) {
+        super(conditions);
         this.lootLevel = Math.max(0, lootLevel);
     }
 
@@ -51,25 +55,4 @@ public class Shield extends LootItemConditionalFunction {
     public LootItemFunctionType getType() {
         return Loot.SHIELD;
     }
-
-    public static class Serializer extends LootItemConditionalFunction.Serializer<Shield> {
-
-        public Serializer() {
-            super();
-        }
-
-        @Override
-        public void serialize(JsonObject p_230424_1_, Shield p_230424_2_, JsonSerializationContext p_230424_3_) {
-            super.serialize(p_230424_1_, p_230424_2_, p_230424_3_);
-            p_230424_1_.addProperty(Loot.LOOT_LEVEL, p_230424_2_.lootLevel);
-        }
-
-        @Override
-        public Shield deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                  LootItemCondition[] conditionsIn) {
-            return new Shield(conditionsIn, object.get(Loot.LOOT_LEVEL).getAsInt());
-        }
-
-    }
-
 }

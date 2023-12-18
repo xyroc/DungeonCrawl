@@ -138,7 +138,7 @@ public class Spawner implements IBlockPlacementHandler {
 
             ListTag potionEffects = RandomPotionEffect.createPotionEffects(rand, stage);
             if (potionEffects != null) {
-                spawnData.put("ActiveEffects", potionEffects);
+                spawnData.put("active_effects", potionEffects);
             }
         }
 

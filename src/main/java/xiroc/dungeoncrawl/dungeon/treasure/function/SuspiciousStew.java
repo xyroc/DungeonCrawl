@@ -18,8 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.RandomSource;
@@ -30,7 +30,10 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
+import java.util.List;
+
 public class SuspiciousStew extends LootItemConditionalFunction {
+    public static final Codec<SuspiciousStew> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder).apply(builder, SuspiciousStew::new));
 
     public static CompoundTag[] EFFECTS;
 
@@ -111,8 +114,8 @@ public class SuspiciousStew extends LootItemConditionalFunction {
                 hunger, saturation, fireResistance, strength, speed, slowness, miningFatique, haste, wither};
     }
 
-    public SuspiciousStew(LootItemCondition[] conditionsIn) {
-        super(conditionsIn);
+    public SuspiciousStew(List<LootItemCondition> conditions) {
+        super(conditions);
     }
 
     @Override
@@ -128,20 +131,6 @@ public class SuspiciousStew extends LootItemConditionalFunction {
     @Override
     public LootItemFunctionType getType() {
         return Loot.SUSPICIOUS_STEW;
-    }
-
-    public static class Serializer extends LootItemConditionalFunction.Serializer<SuspiciousStew> {
-
-        public Serializer() {
-            super();
-        }
-
-        @Override
-        public SuspiciousStew deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                          LootItemCondition[] conditionsIn) {
-            return new SuspiciousStew(conditionsIn);
-        }
-
     }
 
     public static ListTag createEffectList(RandomSource rand) {

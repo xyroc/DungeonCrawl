@@ -18,8 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
@@ -40,12 +40,15 @@ import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 import xiroc.dungeoncrawl.util.Range;
 
+import java.util.List;
+
 public class MaterialBlocks extends LootItemConditionalFunction {
+    public static final Codec<MaterialBlocks> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder).apply(builder, MaterialBlocks::new));
 
     private static final Range AMOUNT = new Range(16, 64);
 
-    public MaterialBlocks(LootItemCondition[] conditionsIn) {
-        super(conditionsIn);
+    public MaterialBlocks(List<LootItemCondition> conditions) {
+        super(conditions);
     }
 
     @Override
@@ -78,19 +81,4 @@ public class MaterialBlocks extends LootItemConditionalFunction {
     public LootItemFunctionType getType() {
         return Loot.MATERIAL_BLOCKS;
     }
-
-    public static class Serializer extends LootItemConditionalFunction.Serializer<MaterialBlocks> {
-
-        public Serializer() {
-            super();
-        }
-
-        @Override
-        public MaterialBlocks deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                          LootItemCondition[] conditionsIn) {
-            return new MaterialBlocks(conditionsIn);
-        }
-
-    }
-
 }

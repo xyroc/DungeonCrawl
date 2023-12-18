@@ -29,6 +29,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -159,11 +160,7 @@ public class RandomPotionEffect {
      * Creates an NBT-representation of the given effect.
      */
     private static CompoundTag toNBT(MobEffect effect, int duration, int amplifier) {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("Id", MobEffect.getId(effect));
-        nbt.putInt("Duration", duration);
-        nbt.putInt("Amplifier", amplifier);
-        return nbt;
+        return new MobEffectInstance(effect, duration, amplifier).save(new CompoundTag());
     }
 
     private record PotionEffect(MobEffect effect, int duration,

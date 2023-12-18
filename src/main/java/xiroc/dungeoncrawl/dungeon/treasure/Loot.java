@@ -19,10 +19,10 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -30,9 +30,8 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
@@ -45,14 +44,14 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 public interface Loot {
 
-    LootItemFunctionType ENCHANTED_BOOK = register("enchanted_book", new LootItemFunctionType(new EnchantedBook.Serializer()));
-    LootItemFunctionType MATERIAL_BLOCKS = register("material_blocks", new LootItemFunctionType(new MaterialBlocks.Serializer()));
-    LootItemFunctionType RANDOM_ITEM = register("random_item", new LootItemFunctionType(new RandomItem.Serializer()));
-    LootItemFunctionType RANDOM_POTION = register("random_potion", new LootItemFunctionType(new RandomPotion.Serializer()));
-    LootItemFunctionType SHIELD = register("shield", new LootItemFunctionType(new Shield.Serializer()));
-    LootItemFunctionType SUSPICIOUS_STEW = register("suspicious_stew", new LootItemFunctionType(new SuspiciousStew.Serializer()));
+    LootItemFunctionType ENCHANTED_BOOK = register("enchanted_book", EnchantedBook.CODEC);
+    LootItemFunctionType MATERIAL_BLOCKS = register("material_blocks", MaterialBlocks.CODEC);
+    LootItemFunctionType RANDOM_ITEM = register("random_item", RandomItem.CODEC);
+    LootItemFunctionType RANDOM_POTION = register("random_potion", RandomPotion.CODEC);
+    LootItemFunctionType SHIELD = register("shield", Shield.CODEC);
+    LootItemFunctionType SUSPICIOUS_STEW = register("suspicious_stew", SuspiciousStew.CODEC);
 
-    String LOOT_LEVEL = "loot_level";
+    String KEY_LOOT_LEVEL = "loot_level";
 
     ResourceLocation CHEST_FOOD = DungeonCrawl.locate("chests/food");
     ResourceLocation CHEST_SECRET_ROOM = DungeonCrawl.locate("chests/secret_room");
@@ -81,8 +80,8 @@ public interface Loot {
     static void init() {
     }
 
-    private static LootItemFunctionType register(String name, LootItemFunctionType type) {
-        return Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, DungeonCrawl.locate(name), type);
+    private static LootItemFunctionType register(String name, Codec<? extends LootItemFunction> codec) {
+        return Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, DungeonCrawl.locate(name), new LootItemFunctionType(codec));
     }
 
     static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, RandomSource rand) {

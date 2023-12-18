@@ -18,9 +18,8 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -30,12 +29,17 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
+import java.util.List;
+
 public class EnchantedBook extends LootItemConditionalFunction {
+    public static final Codec<EnchantedBook> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder)
+            .and(Codec.INT.fieldOf(Loot.KEY_LOOT_LEVEL).forGetter((enchantedBook -> enchantedBook.lootLevel)))
+            .apply(builder, EnchantedBook::new));
 
     public int lootLevel;
 
-    public EnchantedBook(LootItemCondition[] conditionsIn, int stage) {
-        super(conditionsIn);
+    public EnchantedBook(List<LootItemCondition> conditions, int stage) {
+        super(conditions);
         this.lootLevel = stage;
     }
 
@@ -52,27 +56,6 @@ public class EnchantedBook extends LootItemConditionalFunction {
     @Override
     public LootItemFunctionType getType() {
         return Loot.ENCHANTED_BOOK;
-    }
-
-    public static class Serializer extends LootItemConditionalFunction.Serializer<EnchantedBook> {
-
-        public Serializer() {
-            super();
-        }
-
-        @Override
-        public void serialize(JsonObject p_230424_1_, EnchantedBook p_230424_2_, JsonSerializationContext p_230424_3_) {
-            super.serialize(p_230424_1_, p_230424_2_, p_230424_3_);
-            p_230424_1_.addProperty(Loot.LOOT_LEVEL, p_230424_2_.lootLevel);
-        }
-
-
-        @Override
-        public EnchantedBook deserialize(JsonObject object, JsonDeserializationContext deserializationContext,
-                                         LootItemCondition[] conditionsIn) {
-            return new EnchantedBook(conditionsIn, object.get(Loot.LOOT_LEVEL).getAsInt());
-        }
-
     }
 
 }

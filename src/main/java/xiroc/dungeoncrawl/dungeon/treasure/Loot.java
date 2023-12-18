@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -85,7 +86,7 @@ public interface Loot {
     }
 
     static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, RandomSource rand) {
-        RandomizableContainerBlockEntity.setLootTable(world, rand, pos, lootTable);
+        RandomizableContainer.setBlockEntityLootTable(world, rand, pos, lootTable);
         setLootInformation(tile.getPersistentData(), theme, secondaryTheme);
     }
 

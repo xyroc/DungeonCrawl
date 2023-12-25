@@ -13,6 +13,9 @@ import xiroc.dungeoncrawl.dungeon.blueprint.builtin.room.CornerRoomBlueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.room.EmptyRoomBlueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.room.LowerStaircaseBlueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.room.UpperStaircaseBlueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.builtin.segment.CorridorArchSegment;
+import xiroc.dungeoncrawl.dungeon.blueprint.builtin.segment.CorridorBaseSegment;
+import xiroc.dungeoncrawl.dungeon.blueprint.builtin.segment.CorridorSideSegment;
 
 import java.util.function.BiConsumer;
 
@@ -21,6 +24,9 @@ public interface BuiltinBlueprints {
     ResourceLocation CORNER_ROOM = key("rooms/corner");
     ResourceLocation UPPER_STAIRCASE = key("rooms/upper_staircase");
     ResourceLocation LOWER_STAIRCASE = key("rooms/lower_staircase");
+    ResourceLocation CORRIDOR_BASE_SEGMENT = key("segment/corridor/base");
+    ResourceLocation CORRIDOR_SIDE_SEGMENT = key("segment/corridor/side");
+    ResourceLocation CORRIDOR_ARCH_SEGMENT = key("segment/corridor/arch");
 
     private static ResourceLocation key(String path) {
         return new ResourceLocation(DatapackNamespaces.BUILT_IN, path);
@@ -64,5 +70,17 @@ public interface BuiltinBlueprints {
                         Anchor.of(8, 0, 4, Direction.EAST),
                         Anchor.of(4, 0, 8, Direction.SOUTH))),
                 BlueprintSettings.builder().build()));
+
+        register(consumer, new CorridorBaseSegment(CORRIDOR_BASE_SEGMENT, ImmutableMap.of(
+                BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(
+                        Anchor.of(1, 0, 0, Direction.NORTH),
+                        Anchor.of(1, 0, 2, Direction.SOUTH))),
+                BlueprintSettings.builder().build()));
+
+        register(consumer, new CorridorSideSegment(CORRIDOR_SIDE_SEGMENT,
+                ImmutableMap.of(BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(Anchor.of(1, 0, 1, Direction.SOUTH))),
+                BlueprintSettings.builder().build()));
+
+        register(consumer, new CorridorArchSegment(CORRIDOR_ARCH_SEGMENT, ImmutableMap.of(), BlueprintSettings.builder().build()));
     }
 }

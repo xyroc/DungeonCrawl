@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
@@ -31,21 +32,23 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
+import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.util.StorageHelper;
+import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class DungeonPiece extends StructurePiece {
 
-    protected static final String NBT_KEY_POSITION_X = "x";
-    protected static final String NBT_KEY_POSITION_Y = "y";
-    protected static final String NBT_KEY_POSITION_Z = "z";
+    protected static final String NBT_KEY_POSITION = "Position";
     protected static final String NBT_KEY_BLUEPRINT = "Blueprint";
     protected static final String NBT_KEY_ROTATION = "Rotation";
     protected static final String NBT_KEY_FEATURES = "Features";
@@ -53,6 +56,8 @@ public class DungeonPiece extends StructurePiece {
     protected static final String NBT_KEY_SECONDARY_THEME = "SecondaryTheme";
     protected static final String NBT_KEY_STAGE = "Stage";
     protected static final String NBT_KEY_LOOT_TABLE = "LootTable";
+    protected static final String NBT_KEY_ENTRANCES_X_AXIS = "Entrances_X";
+    protected static final String NBT_KEY_ENTRANCES_Z_AXIS = "Entrances_Z";
 
     public Rotation rotation;
     public BlockPos position;
@@ -62,8 +67,12 @@ public class DungeonPiece extends StructurePiece {
     public ResourceLocation lootTable;
     public Blueprint blueprint;
 
+    // Entrances aligned to the x and z axis respectively
+    private final List<BlockPos> entrancesX;
+    private final List<BlockPos> entrancesZ;
+
     public DungeonPiece() {
-        this(ModStructurePieceTypes.GENERIC_PIECE, new BoundingBox(0 ,0 ,0 ,0 ,0 ,0));
+        this(ModStructurePieceTypes.GENERIC_PIECE, new BoundingBox(0, 0, 0, 0, 0, 0));
     }
 
     public DungeonPiece(CompoundTag nbt) {
@@ -73,11 +82,13 @@ public class DungeonPiece extends StructurePiece {
     public DungeonPiece(StructurePieceType type, BoundingBox boundingBox) {
         super(type, 0, boundingBox);
         this.rotation = Rotation.NONE;
+        this.entrancesX = new ArrayList<>();
+        this.entrancesZ = new ArrayList<>();
     }
 
     public DungeonPiece(StructurePieceType type, CompoundTag nbt) {
         super(type, nbt);
-        this.position = new BlockPos(nbt.getInt(NBT_KEY_POSITION_X), nbt.getInt(NBT_KEY_POSITION_Y), nbt.getInt(NBT_KEY_POSITION_Z));
+        this.position = StorageHelper.decode(nbt.get(NBT_KEY_POSITION), BlockPos.CODEC);
         this.rotation = Orientation.getRotation(nbt.getInt(NBT_KEY_ROTATION));
         this.stage = nbt.getInt(NBT_KEY_STAGE);
 
@@ -96,15 +107,25 @@ public class DungeonPiece extends StructurePiece {
         if (nbt.contains(NBT_KEY_LOOT_TABLE)) {
             this.lootTable = new ResourceLocation(nbt.getString(NBT_KEY_LOOT_TABLE));
         }
+
+
+        if (nbt.contains(NBT_KEY_ENTRANCES_X_AXIS)) {
+            this.entrancesX = StorageHelper.decode(nbt.get(NBT_KEY_ENTRANCES_X_AXIS), StorageHelper.BLOCK_POS_LIST_CODEC);
+        } else {
+            this.entrancesX = null;
+        }
+        if (nbt.contains(NBT_KEY_ENTRANCES_Z_AXIS)) {
+            this.entrancesZ = StorageHelper.decode(nbt.get(NBT_KEY_ENTRANCES_Z_AXIS), StorageHelper.BLOCK_POS_LIST_CODEC);
+        } else {
+            this.entrancesZ = null;
+        }
+
         createBoundingBox();
     }
 
     @Override
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
-        nbt.putInt(NBT_KEY_POSITION_X, position.getX());
-        nbt.putInt(NBT_KEY_POSITION_Y, position.getY());
-        nbt.putInt(NBT_KEY_POSITION_Z, position.getZ());
-
+        nbt.put(NBT_KEY_POSITION, StorageHelper.encode(this.position, BlockPos.CODEC));
         nbt.putInt(NBT_KEY_ROTATION, Orientation.rotationAsInt(this.rotation));
         nbt.putInt(NBT_KEY_STAGE, stage);
 
@@ -123,12 +144,33 @@ public class DungeonPiece extends StructurePiece {
         if (lootTable != null) {
             nbt.putString(NBT_KEY_LOOT_TABLE, lootTable.toString());
         }
+
+        if (entrancesX != null) {
+            nbt.put(NBT_KEY_ENTRANCES_X_AXIS, StorageHelper.encode(entrancesX, StorageHelper.BLOCK_POS_LIST_CODEC));
+        }
+        if (entrancesZ != null) {
+            nbt.put(NBT_KEY_ENTRANCES_Z_AXIS, StorageHelper.encode(entrancesZ, StorageHelper.BLOCK_POS_LIST_CODEC));
+        }
     }
 
     @Override
     public void postProcess(WorldGenLevel level, StructureFeatureManager p_73428_, ChunkGenerator chunkGenerator, Random random, BoundingBox worldGenBounds, ChunkPos p_73432_, BlockPos pos) {
         // TODO
         blueprint.build(level, this.position, this.rotation, worldGenBounds, random, this.primaryTheme, this.secondaryTheme, this.stage);
+        placeEntrances(level, worldGenBounds, random);
+    }
+
+    protected void placeEntrances(WorldGenLevel level, BoundingBox worldGenBounds, Random random) {
+        if (this.entrancesX != null) {
+            for (BlockPos entrance : entrancesX) {
+                WorldEditor.placeEntrance(level, primaryTheme.stairs(), entrance, Direction.EAST, worldGenBounds, random, false, true);
+            }
+        }
+        if (this.entrancesZ != null) {
+            for (BlockPos entrance : entrancesZ) {
+                WorldEditor.placeEntrance(level, primaryTheme.stairs(), entrance, Direction.SOUTH, worldGenBounds, random, false, true);
+            }
+        }
     }
 
     protected void decorate(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, Blueprint blueprint) {
@@ -158,5 +200,13 @@ public class DungeonPiece extends StructurePiece {
     public void setPosition(int x, int y, int z) {
         this.position = new BlockPos(x, y, z);
     }
+
+    public void addEntrance(BlockPos position, Direction direction) {
+        switch (direction.getClockWise().getAxis()) {
+            case X -> entrancesX.add(position);
+            case Z -> entrancesZ.add(position);
+        }
+    }
+
 
 }

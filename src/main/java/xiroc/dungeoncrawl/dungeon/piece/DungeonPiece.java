@@ -29,16 +29,13 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
-import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
@@ -46,24 +43,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DungeonPiece extends StructurePiece {
-
-    protected static final String NBT_KEY_POSITION = "Position";
+public class DungeonPiece extends BaseDungeonPiece {
     protected static final String NBT_KEY_BLUEPRINT = "Blueprint";
-    protected static final String NBT_KEY_ROTATION = "Rotation";
     protected static final String NBT_KEY_FEATURES = "Features";
-    protected static final String NBT_KEY_PRIMARY_THEME = "PrimaryTheme";
-    protected static final String NBT_KEY_SECONDARY_THEME = "SecondaryTheme";
     protected static final String NBT_KEY_STAGE = "Stage";
     protected static final String NBT_KEY_LOOT_TABLE = "LootTable";
     protected static final String NBT_KEY_ENTRANCES_X_AXIS = "Entrances_X";
     protected static final String NBT_KEY_ENTRANCES_Z_AXIS = "Entrances_Z";
 
-    public Rotation rotation;
-    public BlockPos position;
     public int stage;
-    public PrimaryTheme primaryTheme;
-    public SecondaryTheme secondaryTheme;
     public ResourceLocation lootTable;
     public Blueprint blueprint;
 
@@ -80,34 +68,22 @@ public class DungeonPiece extends StructurePiece {
     }
 
     public DungeonPiece(StructurePieceType type, BoundingBox boundingBox) {
-        super(type, 0, boundingBox);
-        this.rotation = Rotation.NONE;
+        super(type, boundingBox);
         this.entrancesX = new ArrayList<>();
         this.entrancesZ = new ArrayList<>();
     }
 
     public DungeonPiece(StructurePieceType type, CompoundTag nbt) {
         super(type, nbt);
-        this.position = StorageHelper.decode(nbt.get(NBT_KEY_POSITION), BlockPos.CODEC);
-        this.rotation = Orientation.getRotation(nbt.getInt(NBT_KEY_ROTATION));
         this.stage = nbt.getInt(NBT_KEY_STAGE);
 
         if (nbt.contains(NBT_KEY_BLUEPRINT)) {
             this.blueprint = Blueprints.getBlueprint(new ResourceLocation(nbt.getString(NBT_KEY_BLUEPRINT)));
         }
 
-        if (nbt.contains(NBT_KEY_PRIMARY_THEME)) {
-            this.primaryTheme = Themes.getPrimary(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
-        }
-
-        if (nbt.contains(NBT_KEY_SECONDARY_THEME)) {
-            this.secondaryTheme = Themes.getSecondary(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
-        }
-
         if (nbt.contains(NBT_KEY_LOOT_TABLE)) {
             this.lootTable = new ResourceLocation(nbt.getString(NBT_KEY_LOOT_TABLE));
         }
-
 
         if (nbt.contains(NBT_KEY_ENTRANCES_X_AXIS)) {
             this.entrancesX = StorageHelper.decode(nbt.get(NBT_KEY_ENTRANCES_X_AXIS), StorageHelper.BLOCK_POS_LIST_CODEC);
@@ -125,20 +101,11 @@ public class DungeonPiece extends StructurePiece {
 
     @Override
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
-        nbt.put(NBT_KEY_POSITION, StorageHelper.encode(this.position, BlockPos.CODEC));
-        nbt.putInt(NBT_KEY_ROTATION, Orientation.rotationAsInt(this.rotation));
+        super.addAdditionalSaveData(context, nbt);
         nbt.putInt(NBT_KEY_STAGE, stage);
 
         if (blueprint != null) {
             nbt.putString(NBT_KEY_BLUEPRINT, blueprint.key().toString());
-        }
-
-        if (primaryTheme != null) {
-            nbt.putString(NBT_KEY_PRIMARY_THEME, primaryTheme.key().toString());
-        }
-
-        if (secondaryTheme != null) {
-            nbt.putString(NBT_KEY_SECONDARY_THEME, secondaryTheme.key().toString());
         }
 
         if (lootTable != null) {

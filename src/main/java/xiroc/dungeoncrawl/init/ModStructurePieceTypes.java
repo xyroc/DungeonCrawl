@@ -25,12 +25,14 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.piece.StaircasePiece;
 import xiroc.dungeoncrawl.dungeon.piece.TestPiece;
 
 public interface ModStructurePieceTypes {
     StructurePieceType GENERIC_PIECE = setPieceId(DungeonPiece::new, key("generic_piece"));
     StructurePieceType ENTRANCE = setPieceId(DungeonEntrance::new, key("entrance"));
     StructurePieceType COMPOUND = setPieceId(CompoundPiece::new, key("compound"));
+    StructurePieceType STAIRCASE = setPieceId(StaircasePiece::new, key("staircase"));
     StructurePieceType TEST_PIECE = setPieceId(TestPiece::new, key("test_piece"));
 
     private static ResourceLocation key(String path) {

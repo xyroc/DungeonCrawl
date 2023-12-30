@@ -22,13 +22,13 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class ModelBlockDefinition {
 
     public Block getBlock(DungeonModelBlock block) {
         if (block.type == DungeonModelBlockType.OTHER) {
-            return ForgeRegistries.BLOCKS.getValue(block.blockName);
+            return BuiltInRegistries.BLOCK.get(block.blockName);
         } else if (block.type == DungeonModelBlockType.CARPET) {
             if (block.block != null) {
                 return block.block;
@@ -157,7 +157,7 @@ public class ModelBlockDefinition {
             JsonObject object = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
             object.getAsJsonObject("definition").entrySet().forEach((entry) -> {
                 String key = entry.getKey();
-                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(key));
+                Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(key));
                 if (block != null) {
                     String value = entry.getValue().getAsString().toUpperCase();
                     if (DungeonModelBlockType.NAME_TO_TYPE.containsKey(value)) {

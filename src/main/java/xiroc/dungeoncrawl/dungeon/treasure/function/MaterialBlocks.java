@@ -79,6 +79,6 @@ public class MaterialBlocks extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Loot.MATERIAL_BLOCKS;
+        return Loot.MATERIAL_BLOCKS.get();
     }
 }

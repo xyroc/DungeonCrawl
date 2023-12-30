@@ -59,6 +59,6 @@ public class RandomItem extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Loot.RANDOM_ITEM;
+        return Loot.RANDOM_ITEM.get();
     }
 }

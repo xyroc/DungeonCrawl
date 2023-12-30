@@ -40,7 +40,7 @@ public class DungeonSpiderRoom extends DungeonPiece {
     private BlockPos[] spawners, chests;
 
     public DungeonSpiderRoom(CompoundTag nbt) {
-        super(ModStructurePieceTypes.SPIDER_ROOM, nbt);
+        super(ModStructurePieceTypes.SPIDER_ROOM.get(), nbt);
         if (nbt.contains("spawners")) {
             ListTag list = nbt.getList("spawners", 10);
             spawners = new BlockPos[list.size()];

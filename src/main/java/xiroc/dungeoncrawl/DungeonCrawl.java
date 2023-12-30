@@ -18,14 +18,18 @@
 
 package xiroc.dungeoncrawl;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
@@ -33,7 +37,6 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructureTypes;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
-import xiroc.dungeoncrawl.util.tools.Tools;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
@@ -44,33 +47,31 @@ public class DungeonCrawl {
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    public DungeonCrawl() {
+    public static final DeferredRegister<LootItemFunctionType> LOOT_FUNCTION_TYPE = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MOD_ID);
+    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPE = DeferredRegister.create(Registries.STRUCTURE_TYPE, MOD_ID);
+    public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPE = DeferredRegister.create(Registries.STRUCTURE_PIECE, MOD_ID);
+
+    public DungeonCrawl(IEventBus modEventBus) {
         LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        LOOT_FUNCTION_TYPE.register(modEventBus);
+        STRUCTURE_TYPE.register(modEventBus);
+        STRUCTURE_PIECE_TYPE.register(modEventBus);
+
         modEventBus.addListener(this::commonSetup);
 
-        IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
+        IEventBus forgeEventBus = NeoForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
 
+        Loot.init();
+        ModStructureTypes.init();
+        ModStructurePieceTypes.init();
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("Common Setup");
         //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
-
-        if (Config.ENABLE_TOOLS.get()) {
-            MinecraftForge.EVENT_BUS.register(new Tools());
-        }
-
-        event.enqueueWork(() -> {
-            Loot.init();
-
-            ModStructureTypes.register();
-            ModStructurePieceTypes.init();
-        });
-
     }
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {

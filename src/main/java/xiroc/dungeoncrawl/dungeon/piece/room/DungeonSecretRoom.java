@@ -39,11 +39,11 @@ import java.util.List;
 public class DungeonSecretRoom extends DungeonPiece {
 
     public DungeonSecretRoom() {
-        super(ModStructurePieceTypes.SECRET_ROOM);
+        super(ModStructurePieceTypes.SECRET_ROOM.get());
     }
 
     public DungeonSecretRoom(CompoundTag nbt) {
-        super(ModStructurePieceTypes.SECRET_ROOM, nbt);
+        super(ModStructurePieceTypes.SECRET_ROOM.get(), nbt);
     }
 
     @Override

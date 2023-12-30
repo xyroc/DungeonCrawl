@@ -23,10 +23,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
-import xiroc.dungeoncrawl.dungeon.model.ModelBlockDefinition;
 import xiroc.dungeoncrawl.dungeon.model.ModelPools;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
@@ -60,10 +58,6 @@ public class ResourceReloadHandler implements PreparableReloadListener {
         RandomMonster.loadJson(resourceManager);
         RandomEquipment.loadJson(resourceManager);
         RandomPotionEffect.loadJson(resourceManager);
-
-        if (Config.ENABLE_TOOLS.get()) {
-            ModelBlockDefinition.loadJson(resourceManager);
-        }
 
         DungeonCrawl.LOGGER.debug("Completing...");
         PENDING_UPDATES.forEach(Updatable::update);

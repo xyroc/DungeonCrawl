@@ -20,7 +20,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.PlacementConfiguration;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
@@ -36,7 +35,6 @@ import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
 import java.util.function.Function;
 
 public enum DungeonModelBlockType {
@@ -96,7 +94,7 @@ public enum DungeonModelBlockType {
     CARPET((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
         Block b = block.variation != null && variation != null ?
                 DungeonBlocks.CARPET[(block.variation + variation[block.variation % variation.length]) % DungeonBlocks.CARPET.length]
-                : ForgeRegistries.BLOCKS.getValue(block.blockName);
+                : BuiltInRegistries.BLOCK.get(block.blockName);
         if (b == null) {
             b = DungeonBlocks.CARPET[rand.nextInt(DungeonBlocks.CARPET.length)];
         }

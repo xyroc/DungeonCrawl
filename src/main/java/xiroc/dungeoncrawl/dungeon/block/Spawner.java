@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.block;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +32,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
@@ -98,7 +98,7 @@ public class Spawner implements IBlockPlacementHandler {
         if (spawnData == null)
             spawnData = new CompoundTag();
 
-        ResourceLocation registryName = ForgeRegistries.ENTITY_TYPES.getKey(type);
+        ResourceLocation registryName = BuiltInRegistries.ENTITY_TYPE.getKey(type);
         if (registryName == null) {
             DungeonCrawl.LOGGER.warn("Entity type {} has no registry name.", type);
             return new CompoundTag();

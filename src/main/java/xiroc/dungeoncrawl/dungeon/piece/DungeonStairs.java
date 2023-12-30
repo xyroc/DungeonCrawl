@@ -45,12 +45,12 @@ public class DungeonStairs extends DungeonPiece {
     public int stairType; // 0: bottom stairs, 1: top stairs
 
     public DungeonStairs() {
-        super(ModStructurePieceTypes.STAIRS);
+        super(ModStructurePieceTypes.STAIRS.get());
         this.stairType = 0;
     }
 
     public DungeonStairs(CompoundTag p_i51343_2_) {
-        super(ModStructurePieceTypes.STAIRS, p_i51343_2_);
+        super(ModStructurePieceTypes.STAIRS.get(), p_i51343_2_);
         this.stairType = p_i51343_2_.getInt("stairType");
     }
 

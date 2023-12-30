@@ -54,6 +54,6 @@ public class RandomPotion extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Loot.RANDOM_POTION;
+        return Loot.RANDOM_POTION.get();
     }
 }

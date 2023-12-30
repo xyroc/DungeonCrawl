@@ -28,7 +28,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -41,7 +40,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
@@ -375,12 +373,10 @@ public final class DungeonModelFeature {
             @Override
             public void place(LevelAccessor world, RandomSource rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
                 if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmBlock) {
-                    ForgeRegistries.BLOCKS.tags().getTag(BlockTags.CROPS).getRandomElement(rand).ifPresent((cropBlock) -> {
-                        BlockState crop = cropBlock.defaultBlockState();
-                        if (crop.hasProperty(BlockStateProperties.AGE_7))
-                            crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
-                        world.setBlock(pos, crop, 2);
-                    });
+                    BlockState crop = DungeonBlocks.CROPS.roll(rand).defaultBlockState();
+                    if (crop.hasProperty(BlockStateProperties.AGE_7))
+                        crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
+                    world.setBlock(pos, crop, 2);
                 }
             }
 

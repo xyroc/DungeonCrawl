@@ -53,6 +53,6 @@ public class Shield extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Loot.SHIELD;
+        return Loot.SHIELD.get();
     }
 }

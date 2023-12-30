@@ -55,7 +55,7 @@ public class EnchantedBook extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Loot.ENCHANTED_BOOK;
+        return Loot.ENCHANTED_BOOK.get();
     }
 
 }

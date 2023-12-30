@@ -47,11 +47,11 @@ public class DungeonNodeRoom extends DungeonPiece {
     public boolean lootRoom;
 
     public DungeonNodeRoom() {
-        super(ModStructurePieceTypes.NODE_ROOM);
+        super(ModStructurePieceTypes.NODE_ROOM.get());
     }
 
     public DungeonNodeRoom(CompoundTag nbt) {
-        super(ModStructurePieceTypes.NODE_ROOM, nbt);
+        super(ModStructurePieceTypes.NODE_ROOM.get(), nbt);
         this.lootRoom = nbt.getBoolean("lootRoom");
         createBoundingBox();
     }

@@ -18,20 +18,18 @@
 
 package xiroc.dungeoncrawl.init;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.Dungeon;
 
 public class ModStructureTypes {
-    private static StructureType<?> DUNGEON;
+    private static final DeferredHolder<StructureType<?>,?> DUNGEON = DungeonCrawl.STRUCTURE_TYPE.register("dungeon", () -> () -> Dungeon.CODEC);
 
-    public static void register() {
-        DUNGEON = Registry.register(BuiltInRegistries.STRUCTURE_TYPE, DungeonCrawl.locate("dungeon"), () -> Dungeon.CODEC);
+    public static void init() {
     }
 
     public static StructureType<?> dungeon() {
-        return DUNGEON;
+        return DUNGEON.get();
     }
 }

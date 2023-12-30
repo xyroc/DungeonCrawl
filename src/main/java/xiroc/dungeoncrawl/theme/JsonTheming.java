@@ -21,12 +21,12 @@ package xiroc.dungeoncrawl.theme;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
@@ -234,8 +234,8 @@ public class JsonTheming {
 
                 for (JsonElement blockElement : blockObjects) {
                     JsonObject blockObject = (JsonObject) blockElement;
-                    Block block = ForgeRegistries.BLOCKS
-                            .getValue(new ResourceLocation(blockObject.get("block").getAsString()));
+                    Block block = BuiltInRegistries.BLOCK
+                            .get(new ResourceLocation(blockObject.get("block").getAsString()));
                     if (block != null) {
                         BlockState state = JSONUtils.deserializeBlockStateProperties(block, blockObject);
                         builder.add(state, JSONUtils.getWeight(blockObject));
@@ -245,8 +245,8 @@ public class JsonTheming {
                 }
                 return new WeightedRandomBlock(builder.build());
             } else if (type.equalsIgnoreCase("block")) {
-                Block block = ForgeRegistries.BLOCKS
-                        .getValue(new ResourceLocation(object.get("block").getAsString()));
+                Block block = BuiltInRegistries.BLOCK
+                        .get(new ResourceLocation(object.get("block").getAsString()));
                 if (block != null) {
                     BlockState state = JSONUtils.deserializeBlockStateProperties(block, object);
                     return new SingleBlock(state);

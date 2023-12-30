@@ -40,11 +40,11 @@ import java.util.List;
 public class DungeonMegaNodePart extends DungeonPiece {
 
     public DungeonMegaNodePart() {
-        super(ModStructurePieceTypes.MEGA_NODE_PART);
+        super(ModStructurePieceTypes.MEGA_NODE_PART.get());
     }
 
     public DungeonMegaNodePart(CompoundTag nbt) {
-        super(ModStructurePieceTypes.MEGA_NODE_PART, nbt);
+        super(ModStructurePieceTypes.MEGA_NODE_PART.get(), nbt);
     }
 
     @Override

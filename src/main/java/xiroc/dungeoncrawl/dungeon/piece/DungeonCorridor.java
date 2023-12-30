@@ -39,11 +39,11 @@ import java.util.List;
 public class DungeonCorridor extends DungeonPiece {
 
     public DungeonCorridor() {
-        super(ModStructurePieceTypes.CORRIDOR);
+        super(ModStructurePieceTypes.CORRIDOR.get());
     }
 
     public DungeonCorridor(CompoundTag p_i51343_2_) {
-        super(ModStructurePieceTypes.CORRIDOR, p_i51343_2_);
+        super(ModStructurePieceTypes.CORRIDOR.get(), p_i51343_2_);
     }
 
     @Override

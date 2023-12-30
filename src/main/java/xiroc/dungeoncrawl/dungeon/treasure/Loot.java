@@ -33,11 +33,11 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
-import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
 import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
@@ -45,12 +45,18 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 public interface Loot {
 
-    LootItemFunctionType ENCHANTED_BOOK = register("enchanted_book", EnchantedBook.CODEC);
-    LootItemFunctionType MATERIAL_BLOCKS = register("material_blocks", MaterialBlocks.CODEC);
-    LootItemFunctionType RANDOM_ITEM = register("random_item", RandomItem.CODEC);
-    LootItemFunctionType RANDOM_POTION = register("random_potion", RandomPotion.CODEC);
-    LootItemFunctionType SHIELD = register("shield", Shield.CODEC);
-    LootItemFunctionType SUSPICIOUS_STEW = register("suspicious_stew", SuspiciousStew.CODEC);
+    DeferredHolder<LootItemFunctionType, ?> ENCHANTED_BOOK = DungeonCrawl.LOOT_FUNCTION_TYPE.register("enchanted_book",
+            () -> new LootItemFunctionType(EnchantedBook.CODEC));
+    DeferredHolder<LootItemFunctionType, ?> MATERIAL_BLOCKS = DungeonCrawl.LOOT_FUNCTION_TYPE.register("material_blocks",
+            () -> new LootItemFunctionType(MaterialBlocks.CODEC));
+    DeferredHolder<LootItemFunctionType, ?> RANDOM_ITEM = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_item",
+            () -> new LootItemFunctionType(RandomItem.CODEC));
+    DeferredHolder<LootItemFunctionType, ?> RANDOM_POTION = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_potion",
+            () -> new LootItemFunctionType(EnchantedBook.CODEC));
+    DeferredHolder<LootItemFunctionType, ?> SHIELD = DungeonCrawl.LOOT_FUNCTION_TYPE.register("shield",
+            () -> new LootItemFunctionType(Shield.CODEC));
+    DeferredHolder<LootItemFunctionType, ?> SUSPICIOUS_STEW = DungeonCrawl.LOOT_FUNCTION_TYPE.register("suspicious_stew",
+            () -> new LootItemFunctionType(SuspiciousStew.CODEC));
 
     String KEY_LOOT_LEVEL = "loot_level";
 

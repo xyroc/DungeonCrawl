@@ -38,11 +38,11 @@ import java.util.List;
 public class DungeonNodeConnector extends DungeonPiece {
 
     public DungeonNodeConnector() {
-        super(ModStructurePieceTypes.NODE_CONNECTOR);
+        super(ModStructurePieceTypes.NODE_CONNECTOR.get());
     }
 
     public DungeonNodeConnector(CompoundTag nbt) {
-        super(ModStructurePieceTypes.NODE_CONNECTOR, nbt);
+        super(ModStructurePieceTypes.NODE_CONNECTOR.get(), nbt);
     }
 
     @Override

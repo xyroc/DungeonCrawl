@@ -37,11 +37,11 @@ import java.util.List;
 public class DungeonMultipartModelPiece extends DungeonPiece {
 
     public DungeonMultipartModelPiece() {
-        super(ModStructurePieceTypes.MULTIPART_MODEL_PIECE);
+        super(ModStructurePieceTypes.MULTIPART_MODEL_PIECE.get());
     }
 
     public DungeonMultipartModelPiece(CompoundTag p_i51343_2_) {
-        super(ModStructurePieceTypes.MULTIPART_MODEL_PIECE, p_i51343_2_);
+        super(ModStructurePieceTypes.MULTIPART_MODEL_PIECE.get(), p_i51343_2_);
     }
 
     @Override

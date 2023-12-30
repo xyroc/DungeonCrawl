@@ -130,7 +130,7 @@ public class SuspiciousStew extends LootItemConditionalFunction {
 
     @Override
     public LootItemFunctionType getType() {
-        return Loot.SUSPICIOUS_STEW;
+        return Loot.SUSPICIOUS_STEW.get();
     }
 
     public static ListTag createEffectList(RandomSource rand) {

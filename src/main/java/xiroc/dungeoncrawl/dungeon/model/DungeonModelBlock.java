@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import javax.annotation.Nullable;
@@ -98,10 +98,10 @@ public class DungeonModelBlock {
 //            }
             variation = 0;
             block = state.getBlock();
-            blockName = ForgeRegistries.BLOCKS.getKey(state.getBlock());
+            blockName = BuiltInRegistries.BLOCK.getKey(state.getBlock());
         } else if (type == DungeonModelBlockType.OTHER) {
             block = state.getBlock();
-            blockName = ForgeRegistries.BLOCKS.getKey(state.getBlock());
+            blockName = BuiltInRegistries.BLOCK.getKey(state.getBlock());
         } else {
             block = Blocks.CAVE_AIR;
         }
@@ -171,8 +171,8 @@ public class DungeonModelBlock {
 
         if (nbt.contains("resourceName")) {
             blockName = new ResourceLocation(nbt.getString("resourceName"));
-            if (ForgeRegistries.BLOCKS.containsKey(blockName)) {
-                block = ForgeRegistries.BLOCKS.getValue(blockName);
+            if (BuiltInRegistries.BLOCK.containsKey(blockName)) {
+                block = BuiltInRegistries.BLOCK.get(blockName);
             } else {
                 DungeonCrawl.LOGGER.warn("Unknown block: {}", blockName);
                 block = Blocks.CAVE_AIR;

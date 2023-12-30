@@ -20,9 +20,7 @@ package xiroc.dungeoncrawl.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -30,16 +28,15 @@ import java.util.function.Function;
 
 public class Config {
 
-    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ForgeConfigSpec CONFIG;
+    public static final ModConfigSpec CONFIG;
 
-    public static final IntValue SPAWNER_ENTITIES, SPAWNER_RANGE;
+    public static final ModConfigSpec.IntValue SPAWNER_ENTITIES, SPAWNER_RANGE;
 
-    public static final BooleanValue
+    public static final ModConfigSpec.BooleanValue
             CUSTOM_SPAWNERS,
             NO_NETHER_STUFF,
-            ENABLE_TOOLS,
             SOLID,
             NATURAL_DESPAWN,
             EXTENDED_DEBUG,
@@ -52,10 +49,6 @@ public class Config {
 
     static {
         BUILDER.push("Miscellaneous Settings");
-        ENABLE_TOOLS = BUILDER
-                .comment(SEPARATOR_LINE +
-                        " Enables the dungeon crawl developer tools. Do not use this for normal gameplay.\n")
-                .define("enable_tools", false);
         EXTENDED_DEBUG = BUILDER
                 .comment(SEPARATOR_LINE +
                         " Enables extended debug logging to help detecting errors. Enabled by default.\n")

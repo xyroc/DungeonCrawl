@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.Range;
@@ -104,7 +104,7 @@ public class RandomPotionEffect {
                             new Range(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
                                     effect.getAsJsonObject("amplifier").get("max").getAsInt())
                             : new Range(0, 0);
-                    GUARANTEED_EFFECTS[stage][i] = new PotionEffect(ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(effect.get("effect").getAsString())),
+                    GUARANTEED_EFFECTS[stage][i] = new PotionEffect(BuiltInRegistries.MOB_EFFECT.get(new ResourceLocation(effect.get("effect").getAsString())),
                             effect.get("duration").getAsInt(), amplifier);
                 }
             }

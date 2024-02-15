@@ -23,6 +23,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.data.blueprint.TemplateConfigurations;
 import xiroc.dungeoncrawl.data.loot.LootTables;
 import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
 import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
@@ -47,6 +48,7 @@ public class DataGen {
             generator.addProvider(new SecondaryThemeMappings(generator));
             generator.addProvider(new SpawnerEntityTypes(generator));
             generator.addProvider(new SpawnerTypes(generator));
+            generator.addProvider(new TemplateConfigurations(generator));
         }
     }
 

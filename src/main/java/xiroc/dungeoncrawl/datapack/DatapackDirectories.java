@@ -11,10 +11,8 @@ public interface DatapackDirectories {
     Directory DUNGEON_LAYER_TYPES = DUNGEON_LAYER.subdirectory("types");
 
     Directory BLUEPRINTS = BASE.subdirectory("blueprints");
-    Directory BLUEPRINTS_ROOMS = BLUEPRINTS.subdirectory("rooms");
-    Directory BLUEPRINTS_SIDE_ROOMS = BLUEPRINTS.subdirectory("side_rooms");
-    Directory BLUEPRINTS_CORRIDOR_SEGMENTS = BLUEPRINTS.subdirectory("corridor_segments");
-    Directory BLUEPRINTS_MULTIPART_SEGMENTS = BLUEPRINTS.subdirectory("multipart_segments");
+    Directory BLUEPRINTS_ROOMS = BLUEPRINTS.subdirectory("room");
+    Directory BLUEPRINTS_SEGMENTS = BLUEPRINTS.subdirectory("segment");
 
     Directory THEMES = BASE.subdirectory("themes");
     Directory PRIMARY_THEMES = THEMES.subdirectory("primary");

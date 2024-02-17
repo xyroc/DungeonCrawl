@@ -20,10 +20,10 @@ import xiroc.dungeoncrawl.dungeon.blueprint.builtin.segment.CorridorSideSegment;
 import java.util.function.BiConsumer;
 
 public interface BuiltinBlueprints {
-    ResourceLocation EMPTY_ROOM = key("rooms/empty");
-    ResourceLocation CORNER_ROOM = key("rooms/corner");
-    ResourceLocation UPPER_STAIRCASE = key("rooms/upper_staircase");
-    ResourceLocation LOWER_STAIRCASE = key("rooms/lower_staircase");
+    ResourceLocation EMPTY_ROOM = key("room/empty");
+    ResourceLocation CORNER_ROOM = key("room/corner");
+    ResourceLocation UPPER_STAIRCASE = key("room/upper_staircase");
+    ResourceLocation LOWER_STAIRCASE = key("room/lower_staircase");
     ResourceLocation CORRIDOR_BASE_SEGMENT = key("segment/corridor/base");
     ResourceLocation CORRIDOR_SIDE_SEGMENT = key("segment/corridor/side");
     ResourceLocation CORRIDOR_ARCH_SEGMENT = key("segment/corridor/arch");

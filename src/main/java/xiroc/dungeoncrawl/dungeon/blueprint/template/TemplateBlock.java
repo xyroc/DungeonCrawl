@@ -27,8 +27,8 @@ public record TemplateBlock(PlacementProperties placementProperties, Vec3i posit
             .put(TemplateBlockType.CHEST, Blocks.CHEST)
 
             .put(TemplateBlockType.SOLID_STAIRS, Blocks.STONE_BRICK_STAIRS)
-            .put(TemplateBlockType.GENERIC, Blocks.COBBLESTONE)
-            .put(TemplateBlockType.SOLID, Blocks.STONE_BRICKS)
+            .put(TemplateBlockType.MASONRY, Blocks.COBBLESTONE)
+            .put(TemplateBlockType.SOLID_MASONRY, Blocks.STONE_BRICKS)
             .put(TemplateBlockType.WALL, Blocks.STONE_BRICK_WALL)
             .put(TemplateBlockType.SOLID_PILLAR, Blocks.PURPUR_PILLAR)
             .put(TemplateBlockType.FENCING, Blocks.IRON_BARS)

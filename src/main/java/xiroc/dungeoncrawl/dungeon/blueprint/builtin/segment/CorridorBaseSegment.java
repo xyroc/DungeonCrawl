@@ -25,7 +25,7 @@ public record CorridorBaseSegment(ResourceLocation key, ImmutableMap<ResourceLoc
         BlockPos origin = BlockPos.ZERO;
         editor.fill(new SingleBlock(Blocks.RED_CONCRETE), origin, origin.offset(2, 0, 2), worldGenBounds, random, true, true);
         editor.fill(SingleBlock.AIR, origin.above(), origin.offset(2, 3, 2), worldGenBounds, random, true, true);
-        editor.fill(primaryTheme.generic(), origin.above(4), origin.offset(2, 4, 2), worldGenBounds, random, false, true);
+        editor.fill(primaryTheme.masonry(), origin.above(4), origin.offset(2, 4, 2), worldGenBounds, random, false, true);
     }
 
     @Override

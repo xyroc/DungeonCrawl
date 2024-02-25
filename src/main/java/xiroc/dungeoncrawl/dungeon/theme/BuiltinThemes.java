@@ -15,17 +15,13 @@ public interface BuiltinThemes {
      * and the default theme can't be found either.
      */
     PrimaryTheme DEFAULT_PRIMARY = new PrimaryTheme.Builder(DEFAULT)
-            .material(new SingleBlock(Blocks.COBBLESTONE))
-            .generic(new SingleBlock(Blocks.COBBLESTONE))
-            .solid(new SingleBlock(Blocks.STONE_BRICKS))
+            .masonry(new SingleBlock(Blocks.COBBLESTONE))
             .pillar(new SingleBlock(Blocks.STONE_BRICKS))
             .floor(new SingleBlock(Blocks.GRAVEL))
             .fluid(new SingleBlock(Blocks.WATER))
             .fencing(new SingleBlock(Blocks.IRON_BARS))
             .stairs(new SingleBlock(Blocks.COBBLESTONE_STAIRS))
-            .solidStairs(new SingleBlock(Blocks.STONE_BRICK_STAIRS))
             .slab(new SingleBlock(Blocks.COBBLESTONE_SLAB))
-            .solidSlab(new SingleBlock(Blocks.STONE_BRICK_SLAB))
             .wall(new SingleBlock(Blocks.COBBLESTONE_WALL)).build();
 
     SecondaryTheme DEFAULT_SECONDARY = new SecondaryTheme.Builder(DEFAULT)

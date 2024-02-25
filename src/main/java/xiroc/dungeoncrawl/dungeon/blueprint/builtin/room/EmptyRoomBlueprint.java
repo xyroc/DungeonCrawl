@@ -21,7 +21,7 @@ public record EmptyRoomBlueprint(ResourceLocation key, ImmutableMap<ResourceLoca
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
         BlockPos end = position.offset(8, 8, 8);
-        WorldEditor.fillWalls(world, primaryTheme.generic(), position, end, worldGenBounds, random, false, true);
+        WorldEditor.fillWalls(world, primaryTheme.masonry(), position, end, worldGenBounds, random, false, true);
         WorldEditor.fill(world, SingleBlock.AIR,
                 position.offset(1, 1, 1),
                 end.offset(-1, -1, -1),

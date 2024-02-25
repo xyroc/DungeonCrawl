@@ -46,7 +46,7 @@ public final class PillarGenerator {
 
     private static void placeTopStair(LevelAccessor world, BlockPos pos, Direction toCenter, PrimaryTheme primaryTheme, Random random) {
         if (world.isEmptyBlock(pos) && world.getBlockState(pos.above()).canOcclude()) {
-            BlockState stair = DungeonBlocks.applyProperty(primaryTheme.solidStairs().get(world, pos, random), BlockStateProperties.HORIZONTAL_FACING, toCenter);
+            BlockState stair = DungeonBlocks.applyProperty(primaryTheme.stairs().get(world, pos, random), BlockStateProperties.HORIZONTAL_FACING, toCenter);
             stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.HALF, Half.TOP);
             if (world.getFluidState(pos).getType() instanceof WaterFluid) {
                 stair = DungeonBlocks.applyProperty(stair, BlockStateProperties.WATERLOGGED, true);
@@ -58,7 +58,7 @@ public final class PillarGenerator {
     public static void generateSimplePillar(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random) {
         for (; pos.getY() > 0; pos = pos.below()) {
             if (world.getBlockState(pos).canOcclude()) return;
-            world.setBlock(pos, primaryTheme.solid().get(world, pos, random), 2);
+            world.setBlock(pos, primaryTheme.masonry().get(world, pos, random), 2);
         }
     }
 

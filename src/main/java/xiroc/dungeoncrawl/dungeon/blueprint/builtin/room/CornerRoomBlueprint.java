@@ -25,38 +25,38 @@ public record CornerRoomBlueprint(ResourceLocation key, ImmutableMap<ResourceLoc
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
         // Floor
-        WorldEditor.fill(world, primaryTheme.generic(), position, position.offset(6, 0, 6), worldGenBounds, random, false, true);
+        WorldEditor.fill(world, primaryTheme.masonry(), position, position.offset(6, 0, 6), worldGenBounds, random, false, true);
 
         // Northern Wall
-        WorldEditor.fill(world, primaryTheme.generic(), position.above(), position.offset(5, 4, 0), worldGenBounds, random, false, true);
+        WorldEditor.fill(world, primaryTheme.masonry(), position.above(), position.offset(5, 4, 0), worldGenBounds, random, false, true);
         // Southern Wall
-        WorldEditor.fill(world, primaryTheme.generic(), position.offset(1, 1, 6), position.offset(6, 4, 6), worldGenBounds, random, false, true);
+        WorldEditor.fill(world, primaryTheme.masonry(), position.offset(1, 1, 6), position.offset(6, 4, 6), worldGenBounds, random, false, true);
         // Western Wall
-        WorldEditor.fill(world, primaryTheme.generic(), position.offset(0, 1, 1), position.offset(0, 4, 6), worldGenBounds, random, false, true);
+        WorldEditor.fill(world, primaryTheme.masonry(), position.offset(0, 1, 1), position.offset(0, 4, 6), worldGenBounds, random, false, true);
         // Eastern Wall
-        WorldEditor.fill(world, primaryTheme.generic(), position.offset(6, 1, 0), position.offset(6, 4, 5), worldGenBounds, random, false, true);
+        WorldEditor.fill(world, primaryTheme.masonry(), position.offset(6, 1, 0), position.offset(6, 4, 5), worldGenBounds, random, false, true);
 
         // Pillars
-        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.solidStairs(), position.offset(1, 1, 1), 4, false, true, true, false, worldGenBounds, random, true, true);
-        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.solidStairs(), position.offset(5, 1, 1), 4, false, false, true, true, worldGenBounds, random, true, true);
-        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.solidStairs(), position.offset(5, 1, 5), 4, true, false, false, true, worldGenBounds, random, true, true);
-        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.solidStairs(), position.offset(1, 1, 5), 4, true, true, false, false, worldGenBounds, random, true, true);
+        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.stairs(), position.offset(1, 1, 1), 4, false, true, true, false, worldGenBounds, random, true, true);
+        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.stairs(), position.offset(5, 1, 1), 4, false, false, true, true, worldGenBounds, random, true, true);
+        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.stairs(), position.offset(5, 1, 5), 4, true, false, false, true, worldGenBounds, random, true, true);
+        WorldEditor.placePillar(world, primaryTheme.pillar(), primaryTheme.stairs(), position.offset(1, 1, 5), 4, true, true, false, false, worldGenBounds, random, true, true);
 
         // Ceiling
         BlockPos ceilingCenter = position.offset(3, 5, 3);
-        WorldEditor.fillRing(world, primaryTheme.generic(), ceilingCenter, 3, 2, 1, worldGenBounds, random, false, true);
+        WorldEditor.fillRing(world, primaryTheme.masonry(), ceilingCenter, 3, 2, 1, worldGenBounds, random, false, true);
 
         WorldEditor.placeStairs(world, primaryTheme.stairs(), ceilingCenter.north(), worldGenBounds, Half.TOP, Direction.NORTH, random, false, true, false);
         WorldEditor.placeStairs(world, primaryTheme.stairs(), ceilingCenter.east(), worldGenBounds, Half.TOP, Direction.EAST, random, false, true, false);
         WorldEditor.placeStairs(world, primaryTheme.stairs(), ceilingCenter.south(), worldGenBounds, Half.TOP, Direction.SOUTH, random, false, true, false);
         WorldEditor.placeStairs(world, primaryTheme.stairs(), ceilingCenter.west(), worldGenBounds, Half.TOP, Direction.WEST, random, false, true, false);
 
-        WorldEditor.placeBlock(world, primaryTheme.generic(), ceilingCenter.offset(-1, 0, -1), worldGenBounds, random, false, true, false);
-        WorldEditor.placeBlock(world, primaryTheme.generic(), ceilingCenter.offset(1, 0, -1), worldGenBounds, random, false, true, false);
-        WorldEditor.placeBlock(world, primaryTheme.generic(), ceilingCenter.offset(1, 0, 1), worldGenBounds, random, false, true, false);
-        WorldEditor.placeBlock(world, primaryTheme.generic(), ceilingCenter.offset(-1, 0, 1), worldGenBounds, random, false, true, false);
+        WorldEditor.placeBlock(world, primaryTheme.masonry(), ceilingCenter.offset(-1, 0, -1), worldGenBounds, random, false, true, false);
+        WorldEditor.placeBlock(world, primaryTheme.masonry(), ceilingCenter.offset(1, 0, -1), worldGenBounds, random, false, true, false);
+        WorldEditor.placeBlock(world, primaryTheme.masonry(), ceilingCenter.offset(1, 0, 1), worldGenBounds, random, false, true, false);
+        WorldEditor.placeBlock(world, primaryTheme.masonry(), ceilingCenter.offset(-1, 0, 1), worldGenBounds, random, false, true, false);
 
-        WorldEditor.placeBlock(world, primaryTheme.generic(), ceilingCenter.above(), worldGenBounds, random, false, true, false);
+        WorldEditor.placeBlock(world, primaryTheme.masonry(), ceilingCenter.above(), worldGenBounds, random, false, true, false);
 
         // Air
         BlockState air = Blocks.CAVE_AIR.defaultBlockState();

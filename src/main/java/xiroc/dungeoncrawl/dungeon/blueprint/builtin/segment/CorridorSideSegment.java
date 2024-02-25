@@ -31,7 +31,7 @@ public record CorridorSideSegment(ResourceLocation key, ImmutableMap<ResourceLoc
         editor.fill(secondaryTheme.material(), origin.above(), origin.offset(2, 3, 0), worldGenBounds, random, true, true);
         editor.fill(SingleBlock.AIR, origin.offset(0, 1, 1), origin.offset(2, 2, 1), worldGenBounds, random, true, true);
         editor.placeBlock(SingleBlock.AIR, origin.offset(1, 3, 1), worldGenBounds, random, true, true, false);
-        editor.fill(primaryTheme.generic(), origin.above(4), origin.offset(2, 4, 1), worldGenBounds, random, true, true);
+        editor.fill(primaryTheme.masonry(), origin.above(4), origin.offset(2, 4, 1), worldGenBounds, random, true, true);
 
         BlockPos stair1Pos = origin.offset(0, 3, 1);
         BlockState stair1 = secondaryTheme.stairs().get(world, stair1Pos, random, rotation);

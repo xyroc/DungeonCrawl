@@ -28,7 +28,7 @@ public record CorridorArchSegment(ResourceLocation key, ImmutableMap<ResourceLoc
         // floor
         editor.fill(primaryTheme.floor(), origin, origin.offset(2, 0, 4), worldGenBounds, random, true, true);
         // ceiling
-        editor.fill(primaryTheme.generic(), origin.above(4), origin.offset(2, 4, 4), worldGenBounds, random, true, true);
+        editor.fill(primaryTheme.masonry(), origin.above(4), origin.offset(2, 4, 4), worldGenBounds, random, true, true);
         // air
         editor.fill(SingleBlock.AIR, origin.offset(0, 1, 1), origin.offset(2, 3, 4), worldGenBounds, random, true, true);
         // pillars

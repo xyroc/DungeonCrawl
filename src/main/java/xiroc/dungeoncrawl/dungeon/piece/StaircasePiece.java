@@ -41,7 +41,7 @@ public class StaircasePiece extends BaseDungeonPiece {
             WorldEditor.placeSpiralStairStep(level, primaryTheme.pillar(), primaryTheme.stairs(), center, worldGenBounds, random, true);
         }
         if (wallTop >= wallBottom) {
-            WorldEditor.fillRing(level, primaryTheme.generic(), position.atY(wallBottom), 2, 1, wallTop - wallBottom + 1, worldGenBounds, random, true, true);
+            WorldEditor.fillRing(level, primaryTheme.masonry(), position.atY(wallBottom), 2, 1, wallTop - wallBottom + 1, worldGenBounds, random, true, true);
         }
     }
 

@@ -21,7 +21,7 @@ import java.util.Random;
 public record LowerStaircaseBlueprint(ResourceLocation key, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, BlueprintSettings settings) implements Blueprint {
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
-        BlockStateProvider wall = primaryTheme.generic();
+        BlockStateProvider wall = primaryTheme.masonry();
         WorldEditor.fillRing(world, wall, position.offset(4, 9, 4), 4, 3, 1, worldGenBounds, random, true, true);
         WorldEditor.fillRing(world, wall, position.offset(4, 1, 4), 4, 1, 9, worldGenBounds, random, true, true);
         WorldEditor.fillRing(world, SingleBlock.AIR, position.offset(4, 1, 4), 3, 2, 8, worldGenBounds, random, true, true);

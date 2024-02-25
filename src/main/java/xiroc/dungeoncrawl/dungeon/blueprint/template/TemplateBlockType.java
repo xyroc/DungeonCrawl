@@ -19,19 +19,19 @@ public enum TemplateBlockType {
     AIR((block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> DungeonBlocks.CAVE_AIR, false),
 
     // Types with Primary Theme Factories
-    SOLID(tFactory(PrimaryTheme::solid), true),
-    SOLID_STAIRS(tFactory(PrimaryTheme::solidStairs), true),
-    SOLID_SLAB(tFactory(PrimaryTheme::solidSlab), true),
-    GENERIC(tFactory(PrimaryTheme::generic), false),
-    GENERIC_OR_FENCING(tFactory(PrimaryTheme::generic), false),
+    MASONRY(tFactory(PrimaryTheme::masonry), false),
+    SOLID_MASONRY(tFactory(PrimaryTheme::masonry), true),
+    STAIRS(tFactory(PrimaryTheme::stairs), false),
+    SOLID_STAIRS(tFactory(PrimaryTheme::stairs), true),
     SLAB(tFactory(PrimaryTheme::slab), false),
+    SOLID_SLAB(tFactory(PrimaryTheme::slab), true),
+    GENERIC_OR_FENCING(tFactory(PrimaryTheme::masonry), false),
     SOLID_PILLAR(tFactory(PrimaryTheme::pillar), true),
     SOLID_FLOOR(tFactory(PrimaryTheme::floor), false),
     FENCING(tFactory(PrimaryTheme::fencing), false),
     FLOOR(tFactory(PrimaryTheme::floor), false),
     FLUID(tFactory(PrimaryTheme::fluid), false),
     LOOSE_GROUND(tFactory(PrimaryTheme::floor), false),
-    STAIRS(tFactory(PrimaryTheme::stairs), false),
     WALL(tFactory(PrimaryTheme::wall), false),
 
     // Types with Secondary-Theme Factories
@@ -87,8 +87,7 @@ public enum TemplateBlockType {
     }
 
     /**
-     * A functional interface used to generate a BlockState from a
-     * DungeonModelBlock.
+     * A functional interface used to generate a BlockState from a template block.
      */
     @FunctionalInterface
     public interface BlockFactory {

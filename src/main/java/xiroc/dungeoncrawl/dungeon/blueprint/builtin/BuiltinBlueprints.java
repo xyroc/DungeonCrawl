@@ -43,6 +43,7 @@ public interface BuiltinBlueprints {
                         Anchor.of(3, 0, 0, Direction.NORTH),
                         Anchor.of(6, 0, 3, Direction.EAST),
                         Anchor.of(3, 0, 6, Direction.SOUTH))),
+                ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
         register(consumer, new CornerRoomBlueprint(CORNER_ROOM,
@@ -51,6 +52,7 @@ public interface BuiltinBlueprints {
                         Anchor.of(3, 0, 0, Direction.NORTH),
                         Anchor.of(6, 0, 3, Direction.EAST),
                         Anchor.of(3, 0, 6, Direction.SOUTH))),
+                ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
         register(consumer, new UpperStaircaseBlueprint(UPPER_STAIRCASE, ImmutableMap.of(
@@ -60,6 +62,7 @@ public interface BuiltinBlueprints {
                         Anchor.of(4, 0, 0, Direction.NORTH),
                         Anchor.of(8, 0, 4, Direction.EAST),
                         Anchor.of(4, 0, 8, Direction.SOUTH))),
+                ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
         register(consumer, new LowerStaircaseBlueprint(LOWER_STAIRCASE, ImmutableMap.of(
@@ -69,18 +72,21 @@ public interface BuiltinBlueprints {
                         Anchor.of(4, 0, 0, Direction.NORTH),
                         Anchor.of(8, 0, 4, Direction.EAST),
                         Anchor.of(4, 0, 8, Direction.SOUTH))),
+                ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
         register(consumer, new CorridorBaseSegment(CORRIDOR_BASE_SEGMENT, ImmutableMap.of(
                 BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(
                         Anchor.of(1, 0, 0, Direction.NORTH),
                         Anchor.of(1, 0, 2, Direction.SOUTH))),
+                ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
         register(consumer, new CorridorSideSegment(CORRIDOR_SIDE_SEGMENT,
                 ImmutableMap.of(BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(Anchor.of(1, 0, 1, Direction.SOUTH))),
+                ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
-        register(consumer, new CorridorArchSegment(CORRIDOR_ARCH_SEGMENT, ImmutableMap.of(), BlueprintSettings.builder().build()));
+        register(consumer, new CorridorArchSegment(CORRIDOR_ARCH_SEGMENT, ImmutableMap.of(), ImmutableList.of(), BlueprintSettings.builder().build()));
     }
 }

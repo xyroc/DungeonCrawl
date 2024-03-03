@@ -23,6 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -38,8 +39,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, BlueprintSettings settings,
-                                ImmutableList<TemplateBlock> blocks) implements Blueprint {
-    public static final Gson GSON = new GsonBuilder()
+                                ImmutableList<FeatureConfiguration> features, ImmutableList<TemplateBlock> blocks) implements Blueprint {
+    public static final Gson GSON = FeatureConfiguration.gsonAdapters(new GsonBuilder())
             .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
             .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
             .registerTypeAdapter(BlueprintSettings.class, new BlueprintSettings.Serializer()).create();
@@ -62,8 +63,7 @@ public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableMap<R
             ImmutableMap.Builder<ResourceLocation, ImmutableList<Anchor>> immutableAnchors = ImmutableMap.builder();
             anchors.forEach((type, builder) -> immutableAnchors.put(type, builder.build()));
 
-            return new TemplateBlueprint(key, template.get().getSize(), immutableAnchors.build(), configuration.settings,
-                    blocks.build());
+            return new TemplateBlueprint(key, template.get().getSize(), immutableAnchors.build(), configuration.settings, configuration.features, blocks.build());
         } catch (Exception e) {
             throw new DatapackLoadException("Failed to load " + file + ": " + e.getMessage());
         }

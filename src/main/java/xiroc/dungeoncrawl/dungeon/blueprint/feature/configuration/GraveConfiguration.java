@@ -1,10 +1,21 @@
 package xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration;
 
-import net.minecraft.resources.ResourceLocation;
-import xiroc.dungeoncrawl.util.random.value.RandomValue;
+import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.PlacedFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.settings.ChestSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.settings.PlacementSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.settings.SpawnerSettings;
 
-public class GraveConfiguration extends FeatureConfiguration {
-    public GraveConfiguration(FeatureConfiguration baseConfiguration) {
-        super(baseConfiguration);
+import java.util.Random;
+
+public record GraveConfiguration(PlacementSettings placement, ChestSettings chest, SpawnerSettings spawner) implements FeatureConfiguration.AnchorBased {
+    @Override
+    public PlacedFeature createInstance(Anchor anchor, Random random) {
+        return null;
+    }
+
+    @Override
+    public int type() {
+        return 0;
     }
 }

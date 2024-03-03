@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
@@ -22,6 +23,7 @@ public interface Blueprint {
     Blueprint EMPTY = new Blueprint() {
         final ResourceLocation key = DungeonCrawl.locate("empty");
         final BlueprintSettings settings = BlueprintSettings.builder().build();
+
 
         @Override
         public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random,
@@ -54,6 +56,11 @@ public interface Blueprint {
         }
 
         @Override
+        public ImmutableList<FeatureConfiguration> features() {
+            return ImmutableList.of();
+        }
+
+        @Override
         public ResourceLocation key() {
             return key;
         }
@@ -75,6 +82,7 @@ public interface Blueprint {
 
     ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors();
 
+    ImmutableList<FeatureConfiguration> features();
 
     BlueprintSettings settings();
 
@@ -83,8 +91,7 @@ public interface Blueprint {
     default BoundingBoxBuilder boundingBox(Rotation rotation) {
         return switch (rotation) {
             case NONE, CLOCKWISE_180 -> new BoundingBoxBuilder(0, 0, 0, xSpan() - 1, ySpan() - 1, zSpan() - 1);
-            case CLOCKWISE_90, COUNTERCLOCKWISE_90 ->
-                    new BoundingBoxBuilder(0, 0, 0, zSpan() - 1, ySpan() - 1, xSpan() - 1);
+            case CLOCKWISE_90, COUNTERCLOCKWISE_90 -> new BoundingBoxBuilder(0, 0, 0, zSpan() - 1, ySpan() - 1, xSpan() - 1);
         };
     }
 

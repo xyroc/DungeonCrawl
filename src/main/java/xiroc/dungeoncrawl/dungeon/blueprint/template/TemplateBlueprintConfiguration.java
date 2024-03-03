@@ -1,6 +1,8 @@
 package xiroc.dungeoncrawl.dungeon.blueprint.template;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -12,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -47,12 +50,14 @@ public class TemplateBlueprintConfiguration {
     protected final ImmutableMap<ResourceLocation, TemplateBlock.PlacementProperties> typeMap;
     protected final boolean useDefaultTypes;
     protected final BlueprintSettings settings;
+    protected final ImmutableList<FeatureConfiguration> features;
 
     protected TemplateBlueprintConfiguration(Builder builder) {
         this.template = builder.template;
         this.typeMap = ImmutableMap.copyOf(builder.typeMap);
         this.useDefaultTypes = builder.useDefaultTypes;
         this.settings = builder.settings;
+        this.features = builder.features.build();
     }
 
     protected TemplateBlock.PlacementProperties blockType(ResourceLocation block) {
@@ -68,6 +73,7 @@ public class TemplateBlueprintConfiguration {
         private static final String KEY_BLOCK_TYPES = "block_types";
         private static final String KEY_INHERIT_DEFAULT_BLOCK_TYPES = "inherit_default_block_types";
         private static final String KEY_SETTINGS = "settings";
+        private static final String KEY_FEATURES = "features";
 
         @Override
         public TemplateBlueprintConfiguration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -84,6 +90,12 @@ public class TemplateBlueprintConfiguration {
             }
             if (object.has(KEY_SETTINGS)) {
                 builder.settings = context.deserialize(object.get(KEY_SETTINGS), BlueprintSettings.class);
+            }
+            if (object.has(KEY_FEATURES)) {
+                JsonArray features = object.getAsJsonArray(KEY_FEATURES);
+                for (JsonElement feature : features) {
+                    builder.feature(context.deserialize(feature, FeatureConfiguration.class));
+                }
             }
             return builder.build();
         }
@@ -104,6 +116,13 @@ public class TemplateBlueprintConfiguration {
             if (!src.useDefaultTypes) {
                 object.addProperty(KEY_INHERIT_DEFAULT_BLOCK_TYPES, false);
             }
+            if (!src.features.isEmpty()) {
+                JsonArray features = new JsonArray();
+                for (FeatureConfiguration feature : src.features) {
+                    features.add(context.serialize(feature));
+                }
+                object.add(KEY_FEATURES, features);
+            }
             return object;
         }
     }
@@ -112,6 +131,7 @@ public class TemplateBlueprintConfiguration {
         private ResourceLocation template;
         private boolean useDefaultTypes = true;
         private final HashMap<ResourceLocation, TemplateBlock.PlacementProperties> typeMap = new HashMap<>();
+        private final ImmutableList.Builder<FeatureConfiguration> features = ImmutableList.builder();
         private BlueprintSettings settings;
 
         public TemplateBlueprintConfiguration build() {
@@ -120,6 +140,11 @@ public class TemplateBlueprintConfiguration {
                 settings = BlueprintSettings.builder().build();
             }
             return new TemplateBlueprintConfiguration(this);
+        }
+
+        public Builder feature(FeatureConfiguration configuration) {
+            this.features.add(configuration);
+            return this;
         }
 
         public Builder settings(BlueprintSettings settings) {

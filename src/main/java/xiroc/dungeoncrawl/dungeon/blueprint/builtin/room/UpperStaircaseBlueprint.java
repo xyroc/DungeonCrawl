@@ -13,13 +13,15 @@ import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
 
-public record UpperStaircaseBlueprint(ResourceLocation key, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, BlueprintSettings settings) implements Blueprint {
+public record UpperStaircaseBlueprint(ResourceLocation key, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
+                                      ImmutableList<FeatureConfiguration> features, BlueprintSettings settings) implements Blueprint {
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
         BlockPos end = position.offset(8, 8, 8);

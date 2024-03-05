@@ -20,10 +20,7 @@ public interface SpawnerSerializers {
     }
 
     private static GsonBuilder createSpawnerTypeSerializer() {
-        return createEntityTypeSerializer()
-                .registerTypeAdapter(RandomValue.class, new RandomValue.Deserializer())
-                .registerTypeAdapter(Range.class, new Range.Serializer())
-                .registerTypeAdapter(Constant.class, new Constant.Serializer())
+        return RandomValue.gsonAdapters(createEntityTypeSerializer())
                 .registerTypeAdapter(SpawnerType.class, new SpawnerType.Serializer());
     }
 }

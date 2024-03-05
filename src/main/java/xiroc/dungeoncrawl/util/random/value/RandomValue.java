@@ -11,11 +11,13 @@ import java.lang.reflect.Type;
 import java.util.Random;
 
 public interface RandomValue {
-    Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(RandomValue.class, new Deserializer())
-            .registerTypeAdapter(Range.class, new Range.Serializer())
-            .registerTypeAdapter(Constant.class, new Constant.Serializer())
-            .create();
+    Gson GSON = gsonAdapters(new GsonBuilder()).create();
+
+    static GsonBuilder gsonAdapters(GsonBuilder builder) {
+        return builder.registerTypeAdapter(RandomValue.class, new Deserializer())
+                .registerTypeAdapter(Range.class, new Range.Serializer())
+                .registerTypeAdapter(Constant.class, new Constant.Serializer());
+    }
 
     static RandomValue deserialize(JsonElement json) {
         return GSON.fromJson(json, RandomValue.class);

@@ -38,8 +38,6 @@ import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructures;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 
-import java.util.function.Function;
-
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
 
@@ -73,7 +71,7 @@ public class DungeonCrawl {
         event.enqueueWork(() -> {
             Loot.init();
             // Pieces are registered on class load
-            ModStructurePieceTypes.GENERIC_PIECE.getClass();
+            ModStructurePieceTypes.GENERIC.getClass();
         });
     }
 

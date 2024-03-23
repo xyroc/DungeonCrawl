@@ -15,8 +15,10 @@ import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
 import xiroc.dungeoncrawl.dungeon.piece.Segment;
-import xiroc.dungeoncrawl.dungeon.piece.TestPiece;
+import xiroc.dungeoncrawl.dungeon.piece.TunnelPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
@@ -37,8 +39,9 @@ public class CorridorElement extends DungeonElement {
     private final int fragmentationStart; // Offset from the start of the corridor at which fragments are beginning to be inserted
 
     private final List<CompoundPiece> fragments;
+    private final LevelGenerator levelGenerator;
 
-    public CorridorElement(DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
+    public CorridorElement(LevelGenerator levelGenerator, DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
         super(boundingBox);
         this.from = from;
         this.to = to;
@@ -46,31 +49,30 @@ public class CorridorElement extends DungeonElement {
         this.direction = direction;
         this.fragmentationStart = (length() % FRAGMENT_LENGTH) / 2;
         this.fragments = new ArrayList<>();
+        this.levelGenerator = levelGenerator;
+        fragment(levelGenerator);
     }
 
     public int length() {
         return direction.getAxis() == Direction.Axis.X ? boundingBox.getXSpan() : boundingBox.getZSpan();
     }
 
-    private void fragment() {
+    private void fragment(LevelGenerator levelGenerator) {
         final Rotation rotation = Orientation.horizontalRotation(Direction.EAST, direction);
         int remaining = length() - fragmentationStart;
         BlockPos.MutableBlockPos pos = start.mutable().move(direction, fragmentationStart);
         while (remaining >= FRAGMENT_LENGTH) {
             remaining -= FRAGMENT_LENGTH;
 
-            CompoundPiece corridor = new CompoundPiece();
-            corridor.stage = 0;
-            corridor.blueprint = Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_ARCH_SEGMENT);
-            corridor.rotation = rotation;
+            Blueprint blueprint = Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_ARCH_SEGMENT);
+            int halfWidth = blueprint.zSpan() / 2;
 
-            int halfWidth = corridor.blueprint.zSpan() / 2;
+            BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, blueprint.xSpan(), blueprint.zSpan());
+            BlockPos position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
+            PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
+            SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
 
-            BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, corridor.blueprint.xSpan(), corridor.blueprint.zSpan());
-            corridor.position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
-            corridor.primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
-            corridor.secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
-
+            CompoundPiece corridor = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, levelGenerator.stage);
             corridor.createBoundingBox();
             fragments.add(corridor);
 
@@ -102,20 +104,23 @@ public class CorridorElement extends DungeonElement {
 
     @Override
     public void createPieces(Consumer<StructurePiece> consumer) {
-        fragment();
         addSideSegments(new Random());
         fragments.forEach(consumer);
+
+        PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
+        SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
+
         int remaining = length() - fragmentationStart;
         if (fragmentationStart > 0) {
             BoundingBoxBuilder tunnel = new BoundingBoxBuilder(this.boundingBox);
             tunnel.shrink(direction, remaining);
-            consumer.accept(new TestPiece(tunnel.create()));
+            consumer.accept(new TunnelPiece(tunnel.create(), direction, primaryTheme, secondaryTheme));
         }
         int r = remaining % 3;
         if (r > 0) {
             BoundingBoxBuilder tunnel = new BoundingBoxBuilder(boundingBox);
             tunnel.shrink(direction.getOpposite(), length() - r);
-            consumer.accept(new TestPiece(tunnel.create()));
+            consumer.accept(new TunnelPiece(tunnel.create(), direction, primaryTheme, secondaryTheme));
         }
     }
 }

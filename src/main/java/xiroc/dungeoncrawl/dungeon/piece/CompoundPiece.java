@@ -8,9 +8,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
@@ -23,8 +27,8 @@ public class CompoundPiece extends DungeonPiece {
 
     private final List<Segment> segments;
 
-    public CompoundPiece() {
-        super(ModStructurePieceTypes.COMPOUND, new BoundingBox(0, 0, 0, 0, 0, 0));
+    public CompoundPiece(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+        super(ModStructurePieceTypes.COMPOUND, blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
         this.segments = new ArrayList<>();
     }
 

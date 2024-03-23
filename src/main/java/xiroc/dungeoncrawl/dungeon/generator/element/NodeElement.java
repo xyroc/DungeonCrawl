@@ -7,15 +7,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
-import xiroc.dungeoncrawl.dungeon.generator.ClusterNodeBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
@@ -31,13 +33,12 @@ public class NodeElement extends DungeonElement {
     private final DungeonPiece piece;
     public final ArrayList<Anchor> unusedEntrances;
 
-    public NodeElement(BlockPos position, Blueprint blueprint, Rotation rotation, BoundingBox boundingBox, int depth) {
+    public NodeElement(LevelGenerator levelGenerator, BlockPos position, Blueprint blueprint, Rotation rotation, BoundingBox boundingBox, int depth) {
         super(boundingBox);
         this.depth = depth;
-        this.piece = new DungeonPiece();
-        this.piece.position = position;
-        this.piece.blueprint = blueprint;
-        this.piece.rotation = rotation;
+        PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
+        SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
+        this.piece = new DungeonPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, levelGenerator.stage);
         ImmutableList<Anchor> entrances = blueprint.anchors().get(BuiltinAnchorTypes.ENTRANCE);
         this.unusedEntrances = entrances == null ? Lists.newArrayList() : Lists.newArrayList(entrances);
     }
@@ -50,8 +51,9 @@ public class NodeElement extends DungeonElement {
                 Anchor entrance = coordinateSpace.rotateAndTranslateToOrigin(unusedEntrances.remove(random.nextInt(unusedEntrances.size())), piece.rotation);
 
                 if (random.nextInt(10) == 0 && levelGenerator.createClusterNode(entrance, random, this.depth + 1)) {
+                    piece.addEntrance(entrance.position().above(), entrance.direction());
                     --placements;
-                        continue;
+                    continue;
                 }
 
                 if (attachRoom(levelGenerator, entrance.position().relative(entrance.direction()), entrance.direction(), random)) {
@@ -73,7 +75,7 @@ public class NodeElement extends DungeonElement {
         }
 
         Blueprint room = isEndStaircase ? Blueprints.getBlueprint(BuiltinBlueprints.UPPER_STAIRCASE) :
-                Blueprints.getBlueprint(BuiltinBlueprints.CORNER_ROOM);
+                (random.nextBoolean() ? Blueprints.getBlueprint(BuiltinBlueprints.CORNER_ROOM) : Blueprints.getBlueprint(DungeonCrawl.locate("room/sarcophagus")));
         ImmutableList<Anchor> entrances = room.anchors().get(BuiltinAnchorTypes.ENTRANCE);
         if (entrances == null) {
             return false;
@@ -94,7 +96,6 @@ public class NodeElement extends DungeonElement {
         }
 
         NodeElement node = levelGenerator.createNode(roomPosition, room, rotation, roomBox.create(), roomDepth, true, isEndStaircase);
-        node.piece.stage = levelGenerator.stage;
         node.unusedEntrances.remove(chosenEntrance);
         levelGenerator.createCorridor(this, node, start, direction, corridorBox.create());
 
@@ -105,8 +106,6 @@ public class NodeElement extends DungeonElement {
 
     @Override
     public void createPieces(Consumer<StructurePiece> consumer) {
-        piece.primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
-        piece.secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
         piece.createBoundingBox();
         consumer.accept(piece);
     }

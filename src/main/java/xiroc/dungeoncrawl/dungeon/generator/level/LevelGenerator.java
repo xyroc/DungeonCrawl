@@ -85,8 +85,7 @@ public class LevelGenerator {
 
         staircaseBuilder.bottom(offset, boundingBox.minY, boundingBox.maxY);
 
-        NodeElement staircase = new NodeElement(roomPos, blueprint, rotation, boundingBox.create(), 0);
-        staircase.piece().stage = stage;
+        NodeElement staircase = new NodeElement(this, roomPos, blueprint, rotation, boundingBox.create(), 0);
         plan.add(staircase);
         this.start = staircase;
         this.activeNodes.add(staircase);
@@ -94,7 +93,7 @@ public class LevelGenerator {
     }
 
     public NodeElement createNode(BlockPos position, Blueprint blueprint, Rotation rotation, BoundingBox boundingBox, int depth, boolean isActive, boolean isEndStaircase) {
-        NodeElement node = new NodeElement(position, blueprint, rotation, boundingBox, depth);
+        NodeElement node = new NodeElement(this, position, blueprint, rotation, boundingBox, depth);
         this.plan.add(node);
         if (isActive) {
             this.activeNodes.add(node);
@@ -107,7 +106,7 @@ public class LevelGenerator {
     }
 
     public CorridorElement createCorridor(DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
-        CorridorElement corridor = new CorridorElement(from, to, start, direction, boundingBox);
+        CorridorElement corridor = new CorridorElement(this, from, to, start, direction, boundingBox);
         this.plan.add(corridor);
         this.corridors.add(corridor);
         return corridor;

@@ -5,9 +5,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
@@ -16,12 +20,16 @@ import java.util.Random;
 public class StaircasePiece extends BaseDungeonPiece {
     private static final String NBT_KEY_PROPERTIES = "StaircaseProperties";
 
-    public int height; // height of the staircase starting from the position
-    public int wallBottom; // height at which the wall surrounding the staircase starts (lowest y value that has a wall)
-    public int wallTop; // height at which the wall surrounding the staircase ends (greatest y value that was a wall)
+    public final int height; // height of the staircase starting from the position
+    public final int wallBottom; // height at which the wall surrounding the staircase starts (lowest y value that has a wall)
+    public final int wallTop; // height at which the wall surrounding the staircase ends (greatest y value that was a wall)
 
-    public StaircasePiece(BoundingBox boundingBox) {
-        super(ModStructurePieceTypes.STAIRCASE, boundingBox);
+    public StaircasePiece(int height, int wallBottom, int wallTop, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme) {
+        super(ModStructurePieceTypes.STAIRCASE, null, position, rotation, primaryTheme, secondaryTheme);
+        this.height = height;
+        this.wallBottom = wallBottom;
+        this.wallTop = wallTop;
+        makeBoundingBox();
     }
 
     public StaircasePiece(CompoundTag nbt) {
@@ -31,7 +39,13 @@ public class StaircasePiece extends BaseDungeonPiece {
             height = properties[0];
             wallBottom = properties[1];
             wallTop = properties[2];
+        } else {
+            DungeonCrawl.LOGGER.error("Invalid length of staircase properties array: {}", properties.length);
+            height = 0;
+            wallBottom = 0;
+            wallTop = 0;
         }
+        makeBoundingBox();
     }
 
     @Override

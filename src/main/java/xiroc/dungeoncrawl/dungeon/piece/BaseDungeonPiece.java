@@ -8,6 +8,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
@@ -20,14 +21,17 @@ public abstract class BaseDungeonPiece extends StructurePiece {
     protected static final String NBT_KEY_PRIMARY_THEME = "PrimaryTheme";
     protected static final String NBT_KEY_SECONDARY_THEME = "SecondaryTheme";
 
-    public Rotation rotation;
-    public BlockPos position;
-    public PrimaryTheme primaryTheme;
-    public SecondaryTheme secondaryTheme;
+    public final BlockPos position;
+    public final Rotation rotation;
+    public final PrimaryTheme primaryTheme;
+    public final SecondaryTheme secondaryTheme;
 
-    public BaseDungeonPiece(StructurePieceType type, BoundingBox boundingBox) {
+    public BaseDungeonPiece(StructurePieceType type, BoundingBox boundingBox, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme) {
         super(type, 0, boundingBox);
-        this.rotation = Rotation.NONE;
+        this.rotation = rotation;
+        this.position = position;
+        this.primaryTheme = primaryTheme;
+        this.secondaryTheme = secondaryTheme;
     }
 
     public BaseDungeonPiece(StructurePieceType type, CompoundTag nbt) {
@@ -36,10 +40,14 @@ public abstract class BaseDungeonPiece extends StructurePiece {
         this.rotation = Orientation.getRotation(nbt.getInt(NBT_KEY_ROTATION));
         if (nbt.contains(NBT_KEY_PRIMARY_THEME)) {
             this.primaryTheme = Themes.getPrimary(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
+        } else {
+            this.primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
         }
 
         if (nbt.contains(NBT_KEY_SECONDARY_THEME)) {
             this.secondaryTheme = Themes.getSecondary(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
+        } else {
+            this.secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
         }
     }
 
@@ -47,12 +55,7 @@ public abstract class BaseDungeonPiece extends StructurePiece {
     protected void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
         nbt.put(NBT_KEY_POSITION, StorageHelper.encode(this.position, BlockPos.CODEC));
         nbt.putInt(NBT_KEY_ROTATION, Orientation.rotationAsInt(this.rotation));
-        if (primaryTheme != null) {
-            nbt.putString(NBT_KEY_PRIMARY_THEME, primaryTheme.key().toString());
-        }
-
-        if (secondaryTheme != null) {
-            nbt.putString(NBT_KEY_SECONDARY_THEME, secondaryTheme.key().toString());
-        }
+        nbt.putString(NBT_KEY_PRIMARY_THEME, primaryTheme.key().toString());
+        nbt.putString(NBT_KEY_SECONDARY_THEME, secondaryTheme.key().toString());
     }
 }

@@ -23,47 +23,27 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 
 import java.util.Random;
 
 public class DungeonEntrance extends DungeonPiece {
-    private static final String NBT_KEY_SURFACE_HEIGHT = "SurfaceHeight";
-    private Integer surfaceHeight;
-
-    public DungeonEntrance() {
-        super(ModStructurePieceTypes.ENTRANCE, new BoundingBox(0 ,0 ,0 ,0 ,0 ,0));
+    public DungeonEntrance(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme) {
+        super(ModStructurePieceTypes.ENTRANCE, blueprint, position, rotation, primaryTheme, secondaryTheme, 0);
     }
 
     public DungeonEntrance(CompoundTag nbt) {
         super(ModStructurePieceTypes.ENTRANCE, nbt);
-        if (nbt.contains(NBT_KEY_SURFACE_HEIGHT)) {
-            this.surfaceHeight = nbt.getInt(NBT_KEY_SURFACE_HEIGHT);
-        }
     }
 
     @Override
     public void postProcess(WorldGenLevel level, StructureFeatureManager p_230383_2_, ChunkGenerator p_230383_3_, Random random, BoundingBox worldGenBounds, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-        if (this.surfaceHeight == null) {
-            this.surfaceHeight = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, this.position.getX() + 4, this.position.getZ() + 4);
-        }
-        // TODO
-    }
 
-    @Override
-    public void createBoundingBox() {
-        // TODO
-    }
-
-    @Override
-    public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag tagCompound) {
-        super.addAdditionalSaveData(context, tagCompound);
-        if (this.surfaceHeight != null) {
-            tagCompound.putInt(NBT_KEY_SURFACE_HEIGHT, this.surfaceHeight);
-        }
     }
 }

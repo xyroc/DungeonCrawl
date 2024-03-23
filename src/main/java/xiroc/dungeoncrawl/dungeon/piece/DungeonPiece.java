@@ -33,6 +33,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.FeatureSet;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.PlacedFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
@@ -47,30 +49,34 @@ public class DungeonPiece extends BaseDungeonPiece {
     protected static final String NBT_KEY_BLUEPRINT = "Blueprint";
     protected static final String NBT_KEY_FEATURES = "Features";
     protected static final String NBT_KEY_STAGE = "Stage";
-    protected static final String NBT_KEY_LOOT_TABLE = "LootTable";
     protected static final String NBT_KEY_ENTRANCES_X_AXIS = "Entrances_X";
     protected static final String NBT_KEY_ENTRANCES_Z_AXIS = "Entrances_Z";
 
-    public int stage;
-    public ResourceLocation lootTable;
-    public Blueprint blueprint;
+    public final Blueprint blueprint;
+    public final int stage;
 
     // Entrances aligned to the x and z axis respectively
     private final List<BlockPos> entrancesX;
     private final List<BlockPos> entrancesZ;
 
-    public DungeonPiece() {
-        this(ModStructurePieceTypes.GENERIC_PIECE, new BoundingBox(0, 0, 0, 0, 0, 0));
+    private final List<FeatureSet> features;
+
+    public DungeonPiece(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+        this(ModStructurePieceTypes.GENERIC, blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
+    }
+
+    public DungeonPiece(StructurePieceType type, Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+        super(type, null, position, rotation, primaryTheme, secondaryTheme);
+        this.blueprint = blueprint;
+        this.stage = stage;
+        this.entrancesX = new ArrayList<>();
+        this.entrancesZ = new ArrayList<>();
+        this.features = new ArrayList<>();
+        createBoundingBox();
     }
 
     public DungeonPiece(CompoundTag nbt) {
-        this(ModStructurePieceTypes.GENERIC_PIECE, nbt);
-    }
-
-    public DungeonPiece(StructurePieceType type, BoundingBox boundingBox) {
-        super(type, boundingBox);
-        this.entrancesX = new ArrayList<>();
-        this.entrancesZ = new ArrayList<>();
+        this(ModStructurePieceTypes.GENERIC, nbt);
     }
 
     public DungeonPiece(StructurePieceType type, CompoundTag nbt) {
@@ -79,10 +85,8 @@ public class DungeonPiece extends BaseDungeonPiece {
 
         if (nbt.contains(NBT_KEY_BLUEPRINT)) {
             this.blueprint = Blueprints.getBlueprint(new ResourceLocation(nbt.getString(NBT_KEY_BLUEPRINT)));
-        }
-
-        if (nbt.contains(NBT_KEY_LOOT_TABLE)) {
-            this.lootTable = new ResourceLocation(nbt.getString(NBT_KEY_LOOT_TABLE));
+        } else {
+            this.blueprint = Blueprint.EMPTY;
         }
 
         if (nbt.contains(NBT_KEY_ENTRANCES_X_AXIS)) {
@@ -96,6 +100,12 @@ public class DungeonPiece extends BaseDungeonPiece {
             this.entrancesZ = null;
         }
 
+        if (nbt.contains(NBT_KEY_FEATURES)) {
+            this.features = StorageHelper.decode(nbt.get(NBT_KEY_FEATURES), FeatureSet.CODEC.listOf());
+        } else {
+            this.features = null;
+        }
+
         createBoundingBox();
     }
 
@@ -103,20 +113,15 @@ public class DungeonPiece extends BaseDungeonPiece {
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
         super.addAdditionalSaveData(context, nbt);
         nbt.putInt(NBT_KEY_STAGE, stage);
-
-        if (blueprint != null) {
-            nbt.putString(NBT_KEY_BLUEPRINT, blueprint.key().toString());
-        }
-
-        if (lootTable != null) {
-            nbt.putString(NBT_KEY_LOOT_TABLE, lootTable.toString());
-        }
-
+        nbt.putString(NBT_KEY_BLUEPRINT, blueprint.key().toString());
         if (entrancesX != null) {
             nbt.put(NBT_KEY_ENTRANCES_X_AXIS, StorageHelper.encode(entrancesX, StorageHelper.BLOCK_POS_LIST_CODEC));
         }
         if (entrancesZ != null) {
             nbt.put(NBT_KEY_ENTRANCES_Z_AXIS, StorageHelper.encode(entrancesZ, StorageHelper.BLOCK_POS_LIST_CODEC));
+        }
+        if (features != null) {
+            nbt.put(NBT_KEY_FEATURES, StorageHelper.encode(features, FeatureSet.CODEC.listOf()));
         }
     }
 
@@ -125,6 +130,13 @@ public class DungeonPiece extends BaseDungeonPiece {
         // TODO
         blueprint.build(level, this.position, this.rotation, worldGenBounds, random, this.primaryTheme, this.secondaryTheme, this.stage);
         placeEntrances(level, worldGenBounds, random);
+        if (this.features != null) {
+            for (FeatureSet features : this.features) {
+                for (PlacedFeature feature : features.features()) {
+                    feature.place(level, random, worldGenBounds, primaryTheme, secondaryTheme, stage);
+                }
+            }
+        }
     }
 
     protected void placeEntrances(WorldGenLevel level, BoundingBox worldGenBounds, Random random) {
@@ -155,17 +167,9 @@ public class DungeonPiece extends BaseDungeonPiece {
         }
     }
 
-    public void setRotation(Rotation rotation) {
-        this.rotation = rotation;
-    }
-
     @Override
     public Rotation getRotation() {
         return this.rotation;
-    }
-
-    public void setPosition(int x, int y, int z) {
-        this.position = new BlockPos(x, y, z);
     }
 
     public void addEntrance(BlockPos position, Direction direction) {
@@ -175,5 +179,7 @@ public class DungeonPiece extends BaseDungeonPiece {
         }
     }
 
-
+    public void addFeature(FeatureSet features) {
+        this.features.add(features);
+    }
 }

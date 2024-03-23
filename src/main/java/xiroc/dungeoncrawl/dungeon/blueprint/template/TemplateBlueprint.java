@@ -102,7 +102,7 @@ public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableMap<R
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
         WorldEditor editor = new WorldEditor(world, coordinateSpace(position), rotation);
         this.blocks.forEach((block) ->
-                editor.placeBlock(block.placementProperties().blockType().blockFactory.get(block, rotation, world, position, primaryTheme, secondaryTheme, random, null, stage),
+                editor.placeBlock(block.placementProperties().blockType().blockFactory.get(block, rotation, world, position, primaryTheme, secondaryTheme, random, stage),
                         block.position(), worldGenBounds, block.placementProperties().isSolid(), true, true));
     }
 

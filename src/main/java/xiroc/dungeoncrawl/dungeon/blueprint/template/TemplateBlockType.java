@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public enum TemplateBlockType {
 
-    AIR((block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> DungeonBlocks.CAVE_AIR, false),
+    AIR((block, rotation, world, pos, theme, secondaryTheme, rand, stage) -> DungeonBlocks.CAVE_AIR, false),
 
     // Types with Primary Theme Factories
     MASONRY(tFactory(PrimaryTheme::masonry), false),
@@ -48,10 +48,9 @@ public enum TemplateBlockType {
 
     // Other
 
-    CHEST((block, rotation, world, pos, theme, secondaryTheme, rand, variation,
-           stage) -> block.properties().apply(Blocks.CHEST.defaultBlockState()).rotate(world, pos, rotation), false),
-    SKULL((block, rotation, world, pos, theme, secondaryTheme, rand, variation,
-           stage) -> {
+    CHEST((block, rotation, world, pos, theme, secondaryTheme, rand, stage) ->
+            block.properties().apply(Blocks.CHEST.defaultBlockState()).rotate(world, pos, rotation), false),
+    SKULL((block, rotation, world, pos, theme, secondaryTheme, rand, stage) -> {
         BlockState state = block.properties().apply(Blocks.SKELETON_SKULL.defaultBlockState()).rotate(world, pos, rotation);
         if (state.hasProperty(BlockStateProperties.ROTATION_16)) {
             int r = state.getValue(BlockStateProperties.ROTATION_16);
@@ -68,7 +67,7 @@ public enum TemplateBlockType {
         }
         return state;
     }, false),
-    BLOCK((block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.properties().apply(block.block().defaultBlockState()).rotate(world, pos, rotation),
+    BLOCK((block, rotation, world, pos, theme, secondaryTheme, rand, stage) -> block.properties().apply(block.block().defaultBlockState()).rotate(world, pos, rotation),
             false);
 
     public final BlockFactory blockFactory;
@@ -93,7 +92,7 @@ public enum TemplateBlockType {
     public interface BlockFactory {
 
         BlockState get(TemplateBlock block, Rotation rotation, LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme,
-                       SecondaryTheme secondaryTheme, Random rand, byte[] variation, int stage);
+                       SecondaryTheme secondaryTheme, Random rand, int stage);
 
     }
 
@@ -104,7 +103,7 @@ public enum TemplateBlockType {
      * @return the block factory
      */
     private static BlockFactory tFactory(Function<PrimaryTheme, BlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.properties()
+        return (block, rotation, world, pos, theme, secondaryTheme, rand, stage) -> block.properties()
                 .apply(blockSelector.apply(theme).get(world, pos, rand, rotation))
                 .rotate(world, pos, rotation);
     }
@@ -117,7 +116,7 @@ public enum TemplateBlockType {
      */
 
     private static BlockFactory sFactory(Function<SecondaryTheme, BlockStateProvider> blockSelector) {
-        return (block, rotation, world, pos, theme, secondaryTheme, rand, variation, stage) -> block.properties()
+        return (block, rotation, world, pos, theme, secondaryTheme, rand, stage) -> block.properties()
                 .apply(blockSelector.apply(secondaryTheme).get(world, pos, rand, rotation))
                 .rotate(world, pos, rotation);
     }

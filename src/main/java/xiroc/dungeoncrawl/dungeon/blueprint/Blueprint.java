@@ -84,6 +84,10 @@ public interface Blueprint {
 
     ImmutableList<FeatureConfiguration> features();
 
+    default ImmutableList<BlueprintMultipart> parts() {
+        return ImmutableList.of();
+    }
+
     BlueprintSettings settings();
 
     ResourceLocation key();

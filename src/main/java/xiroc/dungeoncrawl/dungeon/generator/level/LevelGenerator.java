@@ -7,6 +7,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
@@ -17,6 +18,12 @@ import xiroc.dungeoncrawl.dungeon.generator.element.CorridorElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.DungeonElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
+import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
@@ -83,17 +90,39 @@ public class LevelGenerator {
             return true;
         }
 
+        DungeonPiece piece = assemblePiece(blueprint, roomPos, rotation, random);
+        if (piece == null) {
+            return true;
+        }
+
         staircaseBuilder.bottom(offset, boundingBox.minY, boundingBox.maxY);
 
-        NodeElement staircase = new NodeElement(this, roomPos, blueprint, rotation, boundingBox.create(), 0);
+        NodeElement staircase = new NodeElement(piece, 0);
         plan.add(staircase);
         this.start = staircase;
         this.activeNodes.add(staircase);
         return false;
     }
 
-    public NodeElement createNode(BlockPos position, Blueprint blueprint, Rotation rotation, BoundingBox boundingBox, int depth, boolean isActive, boolean isEndStaircase) {
-        NodeElement node = new NodeElement(this, position, blueprint, rotation, boundingBox, depth);
+    public DungeonPiece assemblePiece(Blueprint blueprint, BlockPos position, Rotation rotation, Random random) {
+        ImmutableList<BlueprintMultipart> parts = blueprint.parts();
+        PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
+        SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
+        if (parts.isEmpty()) {
+            return new DungeonPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
+        }
+        CompoundPiece piece = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
+        for (BlueprintMultipart part : parts) {
+            if (!part.addParts(plan, piece, random)) {
+                return null;
+            }
+        }
+        piece.createBoundingBox();
+        return piece;
+    }
+
+    public NodeElement createNode(DungeonPiece piece, int depth, boolean isActive, boolean isEndStaircase) {
+        NodeElement node = new NodeElement(piece, depth);
         this.plan.add(node);
         if (isActive) {
             this.activeNodes.add(node);

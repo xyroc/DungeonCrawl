@@ -21,6 +21,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
@@ -38,11 +39,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, BlueprintSettings settings,
-                                ImmutableList<FeatureConfiguration> features, ImmutableList<TemplateBlock> blocks) implements Blueprint {
+public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, BlueprintSettings settings,
+                                ImmutableList<FeatureConfiguration> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
     public static final Gson GSON = FeatureConfiguration.gsonAdapters(new GsonBuilder())
             .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
             .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
+            .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer())
             .registerTypeAdapter(BlueprintSettings.class, new BlueprintSettings.Serializer()).create();
 
     public static TemplateBlueprint load(ResourceManager resourceManager, ResourceLocation file, ResourceLocation key, Function<ResourceLocation, Optional<StructureTemplate>> templateLookup) {
@@ -63,7 +65,7 @@ public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableMap<R
             ImmutableMap.Builder<ResourceLocation, ImmutableList<Anchor>> immutableAnchors = ImmutableMap.builder();
             anchors.forEach((type, builder) -> immutableAnchors.put(type, builder.build()));
 
-            return new TemplateBlueprint(key, template.get().getSize(), immutableAnchors.build(), configuration.settings, configuration.features, blocks.build());
+            return new TemplateBlueprint(key, template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.settings, configuration.features, configuration.parts);
         } catch (Exception e) {
             throw new DatapackLoadException("Failed to load " + file + ": " + e.getMessage());
         }

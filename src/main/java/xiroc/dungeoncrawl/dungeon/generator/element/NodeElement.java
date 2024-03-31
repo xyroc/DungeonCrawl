@@ -33,13 +33,11 @@ public class NodeElement extends DungeonElement {
     private final DungeonPiece piece;
     public final ArrayList<Anchor> unusedEntrances;
 
-    public NodeElement(LevelGenerator levelGenerator, BlockPos position, Blueprint blueprint, Rotation rotation, BoundingBox boundingBox, int depth) {
-        super(boundingBox);
+    public NodeElement(DungeonPiece piece, int depth) {
+        super(piece.getBoundingBox());
+        this.piece = piece;
         this.depth = depth;
-        PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
-        SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
-        this.piece = new DungeonPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, levelGenerator.stage);
-        ImmutableList<Anchor> entrances = blueprint.anchors().get(BuiltinAnchorTypes.ENTRANCE);
+        ImmutableList<Anchor> entrances = piece.blueprint.anchors().get(BuiltinAnchorTypes.ENTRANCE);
         this.unusedEntrances = entrances == null ? Lists.newArrayList() : Lists.newArrayList(entrances);
     }
 
@@ -95,7 +93,12 @@ public class NodeElement extends DungeonElement {
             return false;
         }
 
-        NodeElement node = levelGenerator.createNode(roomPosition, room, rotation, roomBox.create(), roomDepth, true, isEndStaircase);
+        DungeonPiece piece = levelGenerator.assemblePiece(room, roomPosition, rotation, random);
+        if (piece == null) {
+            return false;
+        }
+
+        NodeElement node = levelGenerator.createNode(piece, roomDepth, true, isEndStaircase);
         node.unusedEntrances.remove(chosenEntrance);
         levelGenerator.createCorridor(this, node, start, direction, corridorBox.create());
 

@@ -44,7 +44,6 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
-import javax.json.JsonException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
@@ -102,6 +101,12 @@ public interface WeightedRandom<T> extends IRandom<T> {
             },
             Delegate::serialize,
             "blueprint");
+
+    Serializer<ResourceLocation> IDENTIFIER = Serializer.of(
+      json -> new ResourceLocation(json.getAsString()),
+      identifier -> new JsonPrimitive(identifier.toString()),
+      "key"
+    );
 
     boolean isEmpty();
 

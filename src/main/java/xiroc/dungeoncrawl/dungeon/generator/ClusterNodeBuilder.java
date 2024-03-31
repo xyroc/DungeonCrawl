@@ -11,6 +11,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
@@ -68,11 +69,16 @@ public class ClusterNodeBuilder {
                 boundingBoxBuilder.move(pos);
 
                 if (nodes.stream().noneMatch(node -> node.intersects(boundingBoxBuilder)) && levelGenerator.plan.isFree(boundingBoxBuilder)) {
-                    NodeElement node = levelGenerator.createNode(pos, room, rotation, boundingBoxBuilder.create(), nextDepth, !isClusterNode, isEndStaircase);
-                    node.piece().stage = levelGenerator.stage;
-                    node.unusedEntrances.remove(chosenEntrance);
-                    nodes.add(node);
-                    return true;
+                    DungeonPiece piece = levelGenerator.assemblePiece(room, pos, rotation, random);
+                    if (piece != null && nodes.stream().noneMatch(node -> node.intersects(piece.getBoundingBox()))) {
+                        NodeElement node = levelGenerator.createNode(piece, nextDepth, !isClusterNode, isEndStaircase);
+                        node.unusedEntrances.remove(chosenEntrance);
+                        if (!isClusterNode) {
+                            node.piece().addEntrance(anchor.position().relative(anchor.direction()).above(), anchor.direction().getOpposite());
+                        }
+                        nodes.add(node);
+                        return true;
+                    }
                 }
             }
         }
@@ -92,6 +98,7 @@ public class ClusterNodeBuilder {
             if (attachNode(attachmentPoint, attachClusterNodes)) {
                 --placementsLeft;
                 node.unusedEntrances.remove(entrance);
+                node.piece().addEntrance(attachmentPoint.position().above(), attachmentPoint.direction());
             }
         }
     }

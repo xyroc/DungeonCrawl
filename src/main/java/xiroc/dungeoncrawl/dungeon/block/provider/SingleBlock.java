@@ -5,6 +5,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
@@ -19,6 +20,7 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.lang.reflect.Type;
+import java.util.Objects;
 import java.util.Random;
 
 public class SingleBlock implements BlockStateProvider {
@@ -68,6 +70,9 @@ public class SingleBlock implements BlockStateProvider {
 
         @Override
         public JsonElement serialize(SingleBlock src, Type typeOfSrc, JsonSerializationContext context) {
+            if (src.state == src.state.getBlock().defaultBlockState()) {
+                return new JsonPrimitive(Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(src.state.getBlock())).toString());
+            }
             JsonObject object = new JsonObject();
             object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_SINGLE_BLOCK);
             return JSONUtils.serializeBlockState(object, src.state);

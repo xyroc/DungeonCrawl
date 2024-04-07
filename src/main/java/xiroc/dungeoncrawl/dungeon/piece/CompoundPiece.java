@@ -27,8 +27,8 @@ public class CompoundPiece extends DungeonPiece {
 
     private final List<Segment> segments;
 
-    public CompoundPiece(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
-        super(ModStructurePieceTypes.COMPOUND, blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
+    public CompoundPiece(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage, Random random) {
+        super(ModStructurePieceTypes.COMPOUND, blueprint, position, rotation, primaryTheme, secondaryTheme, stage, random);
         this.segments = new ArrayList<>();
     }
 

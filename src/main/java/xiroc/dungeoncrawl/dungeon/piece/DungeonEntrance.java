@@ -34,8 +34,8 @@ import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import java.util.Random;
 
 public class DungeonEntrance extends DungeonPiece {
-    public DungeonEntrance(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme) {
-        super(ModStructurePieceTypes.ENTRANCE, blueprint, position, rotation, primaryTheme, secondaryTheme, 0);
+    public DungeonEntrance(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, Random random) {
+        super(ModStructurePieceTypes.ENTRANCE, blueprint, position, rotation, primaryTheme, secondaryTheme, 0, random);
     }
 
     public DungeonEntrance(CompoundTag nbt) {

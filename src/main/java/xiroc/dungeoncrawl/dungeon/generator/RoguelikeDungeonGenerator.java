@@ -27,8 +27,8 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
         DungeonPlan plan = new ListPlan();
         ArrayList<StructurePiece> pieces = new ArrayList<>();
         for (int stage = 0; stage < 5; stage++) {
-            LevelGenerator levelGenerator = new LevelGenerator(plan, stage);
-            levelGenerator.generateLevel(startHeight, staircaseBuilder, random);
+            LevelGenerator levelGenerator = new LevelGenerator(plan, startHeight, stage, random);
+            levelGenerator.generateLevel(staircaseBuilder);
             if (levelGenerator.start() == null) {
                 break;
             }

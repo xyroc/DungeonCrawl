@@ -35,6 +35,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.FeatureSet;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.PlacedFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
@@ -61,17 +62,21 @@ public class DungeonPiece extends BaseDungeonPiece {
 
     private final List<FeatureSet> features;
 
-    public DungeonPiece(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
-        this(ModStructurePieceTypes.GENERIC, blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
+    public DungeonPiece(Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage, Random random) {
+        this(ModStructurePieceTypes.GENERIC, blueprint, position, rotation, primaryTheme, secondaryTheme, stage, random);
     }
 
-    public DungeonPiece(StructurePieceType type, Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public DungeonPiece(StructurePieceType type, Blueprint blueprint, BlockPos position, Rotation rotation, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage,
+                        Random random) {
         super(type, null, position, rotation, primaryTheme, secondaryTheme);
         this.blueprint = blueprint;
         this.stage = stage;
         this.entrancesX = new ArrayList<>();
         this.entrancesZ = new ArrayList<>();
         this.features = new ArrayList<>();
+        for (FeatureConfiguration feature : blueprint.features()) {
+            feature.create(features::add, null, blueprint, position, rotation, random, stage);
+        }
         createBoundingBox();
     }
 
@@ -127,16 +132,9 @@ public class DungeonPiece extends BaseDungeonPiece {
 
     @Override
     public void postProcess(WorldGenLevel level, StructureFeatureManager p_73428_, ChunkGenerator chunkGenerator, Random random, BoundingBox worldGenBounds, ChunkPos p_73432_, BlockPos pos) {
-        // TODO
         blueprint.build(level, this.position, this.rotation, worldGenBounds, random, this.primaryTheme, this.secondaryTheme, this.stage);
         placeEntrances(level, worldGenBounds, random);
-        if (this.features != null) {
-            for (FeatureSet features : this.features) {
-                for (PlacedFeature feature : features.features()) {
-                    feature.place(level, random, worldGenBounds, primaryTheme, secondaryTheme, stage);
-                }
-            }
-        }
+        placeFeatures(level, worldGenBounds, random);
     }
 
     protected void placeEntrances(WorldGenLevel level, BoundingBox worldGenBounds, Random random) {
@@ -156,8 +154,14 @@ public class DungeonPiece extends BaseDungeonPiece {
         // TODO
     }
 
-    protected void placeFeatures(LevelAccessor world, BoundingBox bounds, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, Random rand, int stage) {
-        // TODO
+    protected void placeFeatures(WorldGenLevel level, BoundingBox worldGenBounds, Random random) {
+        if (this.features != null) {
+            for (FeatureSet features : this.features) {
+                for (PlacedFeature feature : features.features()) {
+                    feature.place(level, random, worldGenBounds, primaryTheme, secondaryTheme, stage);
+                }
+            }
+        }
     }
 
     public void createBoundingBox() {
@@ -177,9 +181,5 @@ public class DungeonPiece extends BaseDungeonPiece {
             case X -> entrancesX.add(position);
             case Z -> entrancesZ.add(position);
         }
-    }
-
-    public void addFeature(FeatureSet features) {
-        this.features.add(features);
     }
 }

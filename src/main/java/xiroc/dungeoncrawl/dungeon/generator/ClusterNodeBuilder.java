@@ -69,7 +69,7 @@ public class ClusterNodeBuilder {
                 boundingBoxBuilder.move(pos);
 
                 if (nodes.stream().noneMatch(node -> node.intersects(boundingBoxBuilder)) && levelGenerator.plan.isFree(boundingBoxBuilder)) {
-                    DungeonPiece piece = levelGenerator.assemblePiece(room, pos, rotation, random);
+                    DungeonPiece piece = levelGenerator.assemblePiece(room, pos, rotation);
                     if (piece != null && nodes.stream().noneMatch(node -> node.intersects(piece.getBoundingBox()))) {
                         NodeElement node = levelGenerator.createNode(piece, nextDepth, !isClusterNode, isEndStaircase);
                         node.unusedEntrances.remove(chosenEntrance);

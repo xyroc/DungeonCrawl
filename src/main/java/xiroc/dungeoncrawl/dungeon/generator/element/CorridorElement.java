@@ -50,14 +50,14 @@ public class CorridorElement extends DungeonElement {
         this.fragmentationStart = (length() % FRAGMENT_LENGTH) / 2;
         this.fragments = new ArrayList<>();
         this.levelGenerator = levelGenerator;
-        fragment(levelGenerator);
+        fragment();
     }
 
     public int length() {
         return direction.getAxis() == Direction.Axis.X ? boundingBox.getXSpan() : boundingBox.getZSpan();
     }
 
-    private void fragment(LevelGenerator levelGenerator) {
+    private void fragment() {
         final Rotation rotation = Orientation.horizontalRotation(Direction.EAST, direction);
         int remaining = length() - fragmentationStart;
         BlockPos.MutableBlockPos pos = start.mutable().move(direction, fragmentationStart);
@@ -72,7 +72,7 @@ public class CorridorElement extends DungeonElement {
             PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
             SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
 
-            CompoundPiece corridor = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, levelGenerator.stage);
+            CompoundPiece corridor = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, levelGenerator.stage, levelGenerator.random);
             corridor.createBoundingBox();
             fragments.add(corridor);
 
@@ -80,7 +80,7 @@ public class CorridorElement extends DungeonElement {
         }
     }
 
-    private void addSideSegments(Random random) {
+    private void addSideSegments() {
         for (CompoundPiece fragment : this.fragments) {
             ImmutableList<Anchor> attachmentPoints = fragment.blueprint.anchors().get(BuiltinAnchorTypes.JUNCTURE);
             if (attachmentPoints == null) {
@@ -94,9 +94,10 @@ public class CorridorElement extends DungeonElement {
                     continue;
                 }
                 Anchor actual = coordinateSpace.rotateAndTranslateToOrigin(attachmentPoint, fragment.rotation);
-                Anchor juncture = junctures.get(random.nextInt(junctures.size()));
+                Anchor juncture = junctures.get(levelGenerator.random.nextInt(junctures.size()));
                 Rotation rotation = Orientation.horizontalRotation(juncture.direction(), actual.direction().getOpposite());
                 BlockPos pos = juncture.latchOnto(actual, sideSegment.coordinateSpace(BlockPos.ZERO));
+                // TODO: check for collision
                 fragment.addSegment(new Segment(sideSegment, pos, rotation));
             }
         }
@@ -104,7 +105,7 @@ public class CorridorElement extends DungeonElement {
 
     @Override
     public void createPieces(Consumer<StructurePiece> consumer) {
-        addSideSegments(new Random());
+        addSideSegments();
         fragments.forEach(consumer);
 
         PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);

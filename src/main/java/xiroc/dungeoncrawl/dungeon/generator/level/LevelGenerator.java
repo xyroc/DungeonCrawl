@@ -33,7 +33,9 @@ import java.util.Random;
 
 public class LevelGenerator {
     public final DungeonPlan plan;
+    public final int startHeight;
     public final int stage;
+    public final Random random;
 
     private final List<NodeElement> activeNodes = new ArrayList<>();
     private final List<CorridorElement> corridors = new ArrayList<>();
@@ -43,23 +45,25 @@ public class LevelGenerator {
     private boolean placeEndStaircase;
     private int clusterNodesLeft = 3;
 
-    public LevelGenerator(DungeonPlan plan, int stage) {
+    public LevelGenerator(DungeonPlan plan, int startHeight, int stage, Random random) {
         this.plan = plan;
+        this.startHeight = startHeight;
         this.stage = stage;
-        this.placeEndStaircase = stage < 4;
+        this.random = random;
+        this.placeEndStaircase = stage < 4; // TODO
     }
 
-    public void generateLevel(int startHeight, StaircaseBuilder staircaseBuilder, Random random) {
-        if (createStart(startHeight, staircaseBuilder, random)) {
+    public void generateLevel(StaircaseBuilder staircaseBuilder) {
+        if (createStart(startHeight, staircaseBuilder)) {
             return;
         }
 
         for (int index = 0; index < this.activeNodes.size() && this.activeNodes.size() < 64; ++index) {
-            this.activeNodes.get(index).update(this, random);
+            this.activeNodes.get(index).update(this);
         }
     }
 
-    private boolean createStart(int startHeight, StaircaseBuilder staircaseBuilder, Random random) {
+    private boolean createStart(int startHeight, StaircaseBuilder staircaseBuilder) {
         final int minSeparation = 10;
 
         Blueprint blueprint = Blueprints.getBlueprint(BuiltinBlueprints.LOWER_STAIRCASE);
@@ -90,7 +94,7 @@ public class LevelGenerator {
             return true;
         }
 
-        DungeonPiece piece = assemblePiece(blueprint, roomPos, rotation, random);
+        DungeonPiece piece = assemblePiece(blueprint, roomPos, rotation);
         if (piece == null) {
             return true;
         }
@@ -104,14 +108,14 @@ public class LevelGenerator {
         return false;
     }
 
-    public DungeonPiece assemblePiece(Blueprint blueprint, BlockPos position, Rotation rotation, Random random) {
+    public DungeonPiece assemblePiece(Blueprint blueprint, BlockPos position, Rotation rotation) {
         ImmutableList<BlueprintMultipart> parts = blueprint.parts();
         PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
         SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
         if (parts.isEmpty()) {
-            return new DungeonPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
+            return new DungeonPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage, random);
         }
-        CompoundPiece piece = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage);
+        CompoundPiece piece = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage, random);
         for (BlueprintMultipart part : parts) {
             if (!part.addParts(plan, piece, random)) {
                 return null;

@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
@@ -15,10 +14,6 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
@@ -30,8 +25,9 @@ import java.util.function.Consumer;
 
 public class NodeElement extends DungeonElement {
     public final int depth;
-    private final DungeonPiece piece;
     public final ArrayList<Anchor> unusedEntrances;
+
+    private final DungeonPiece piece;
 
     public NodeElement(DungeonPiece piece, int depth) {
         super(piece.getBoundingBox());
@@ -41,8 +37,9 @@ public class NodeElement extends DungeonElement {
         this.unusedEntrances = entrances == null ? Lists.newArrayList() : Lists.newArrayList(entrances);
     }
 
-    public void update(LevelGenerator levelGenerator, Random random) {
+    public void update(LevelGenerator levelGenerator) {
         if (this.depth < 8) {
+            Random random = levelGenerator.random;
             int placements = 3;
             CoordinateSpace coordinateSpace = piece.blueprint.coordinateSpace(piece.position);
             for (int attempt = 0; !unusedEntrances.isEmpty() && attempt < 4 && placements > 0; ++attempt) {
@@ -54,7 +51,7 @@ public class NodeElement extends DungeonElement {
                     continue;
                 }
 
-                if (attachRoom(levelGenerator, entrance.position().relative(entrance.direction()), entrance.direction(), random)) {
+                if (attachRoom(levelGenerator, entrance.position().relative(entrance.direction()), entrance.direction())) {
                     piece.addEntrance(entrance.position().above(), entrance.direction());
                     --placements;
                 }
@@ -62,7 +59,8 @@ public class NodeElement extends DungeonElement {
         }
     }
 
-    private boolean attachRoom(LevelGenerator levelGenerator, BlockPos start, Direction direction, Random random) {
+    private boolean attachRoom(LevelGenerator levelGenerator, BlockPos start, Direction direction) {
+        Random random = levelGenerator.random;
         int corridorLength = 4 + random.nextInt(8);
         int roomDepth = this.depth + 1;
         boolean isEndStaircase = levelGenerator.shouldPlaceEndStaircase(roomDepth);
@@ -93,7 +91,7 @@ public class NodeElement extends DungeonElement {
             return false;
         }
 
-        DungeonPiece piece = levelGenerator.assemblePiece(room, roomPosition, rotation, random);
+        DungeonPiece piece = levelGenerator.assemblePiece(room, roomPosition, rotation);
         if (piece == null) {
             return false;
         }

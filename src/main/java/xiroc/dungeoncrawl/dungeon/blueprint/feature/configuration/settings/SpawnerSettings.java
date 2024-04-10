@@ -8,9 +8,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.resources.ResourceLocation;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerTypes;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.SingleValueRandom;
 import xiroc.dungeoncrawl.util.random.WeightedRandom;
@@ -28,7 +28,7 @@ public record SpawnerSettings(IRandom<Delegate<SpawnerType>> types) {
             JsonElement spawnerTypesJson = object.get(KEY_TYPES);
             if (spawnerTypesJson.isJsonPrimitive()) {
                 ResourceLocation key = new ResourceLocation(spawnerTypesJson.getAsString());
-                spawnerTypes = new SingleValueRandom<>(Delegate.of(SpawnerTypes.get(key), key));
+                spawnerTypes = new SingleValueRandom<>(Delegate.of(DatapackRegistries.SPAWNER_TYPE.get(key), key));
             } else {
                 spawnerTypes = WeightedRandom.SPAWNER_TYPE.deserialize(spawnerTypesJson);
             }

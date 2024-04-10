@@ -36,8 +36,11 @@ public interface BuiltinThemes {
             .button(new SingleBlock(Blocks.OAK_BUTTON))
             .pressurePlate(new SingleBlock(Blocks.OAK_PRESSURE_PLATE)).build();
 
-    static void register(BiConsumer<ResourceLocation, PrimaryTheme> primaryThemes, BiConsumer<ResourceLocation, SecondaryTheme> secondaryThemes) {
+    static void registerPrimary(BiConsumer<ResourceLocation, PrimaryTheme> primaryThemes) {
         register(primaryThemes, DEFAULT_PRIMARY);
+    }
+
+    static void registerSecondary(BiConsumer<ResourceLocation, SecondaryTheme> secondaryThemes) {
         register(secondaryThemes, DEFAULT_SECONDARY);
     }
 

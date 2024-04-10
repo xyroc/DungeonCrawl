@@ -7,6 +7,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
@@ -19,14 +20,12 @@ import xiroc.dungeoncrawl.dungeon.piece.TunnelPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Consumer;
 
 public class CorridorElement extends DungeonElement {
@@ -69,8 +68,8 @@ public class CorridorElement extends DungeonElement {
 
             BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, blueprint.xSpan(), blueprint.zSpan());
             BlockPos position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
-            PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
-            SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
+            PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
+            SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
 
             CompoundPiece corridor = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, levelGenerator.stage, levelGenerator.random);
             corridor.createBoundingBox();
@@ -108,8 +107,8 @@ public class CorridorElement extends DungeonElement {
         addSideSegments();
         fragments.forEach(consumer);
 
-        PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
-        SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
+        PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
+        SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
 
         int remaining = length() - fragmentationStart;
         if (fragmentationStart > 0) {

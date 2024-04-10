@@ -36,7 +36,7 @@ import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructures;
-import xiroc.dungeoncrawl.util.ResourceReloadHandler;
+import xiroc.dungeoncrawl.datapack.ResourceReloadHandler;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {

@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.util.random.WeightedRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
@@ -20,7 +21,7 @@ public class SpawnerType {
     private static final WeightedRandom.Serializer<SpawnerEntityType> ENTITY_SERIALIZER = WeightedRandom.Serializer.of(
             (json) -> {
                 if (json.isJsonPrimitive()) {
-                    return SpawnerEntityTypes.get(new ResourceLocation(json.getAsString()));
+                    return DatapackRegistries.SPAWNER_ENTITY_TYPE.get(new ResourceLocation(json.getAsString()));
                 } else {
                     return SpawnerSerializers.ENTITY_TYPES.fromJson(json, SpawnerEntityType.class);
                 }

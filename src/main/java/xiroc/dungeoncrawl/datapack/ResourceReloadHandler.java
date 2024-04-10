@@ -16,7 +16,7 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.util;
+package xiroc.dungeoncrawl.datapack;
 
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -31,32 +31,27 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 
-import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class ResourceReloadHandler implements PreparableReloadListener {
 
-    /**
-     * A list of all objects that need to get updated after the data pack files have been loaded.
-     */
-    public static final ArrayList<Updatable> PENDING_UPDATES = new ArrayList<>();
-
     public void reload(ResourceManager resourceManager) {
         DungeonCrawl.LOGGER.info("Loading data...");
-        PENDING_UPDATES.clear();
+
+        DatapackRegistries.PRIMARY_THEME.reload(resourceManager);
+        DatapackRegistries.SECONDARY_THEME.reload(resourceManager);
+        DatapackRegistries.SPAWNER_ENTITY_TYPE.reload(resourceManager);
+        DatapackRegistries.SPAWNER_TYPE.reload(resourceManager);
 
         Blueprints.load(resourceManager);
         Themes.load(resourceManager);
+
         SpawnRates.loadJson(resourceManager);
         RandomItems.loadJson(resourceManager);
         RandomMonster.loadJson(resourceManager);
         RandomEquipment.loadJson(resourceManager);
         RandomPotionEffect.loadJson(resourceManager);
-
-        DungeonCrawl.LOGGER.debug("Completing...");
-        PENDING_UPDATES.forEach(Updatable::update);
-        PENDING_UPDATES.clear();
 
         DungeonCrawl.LOGGER.info("Done.");
     }

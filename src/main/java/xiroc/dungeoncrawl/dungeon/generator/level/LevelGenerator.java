@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
@@ -23,7 +24,6 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
@@ -110,8 +110,8 @@ public class LevelGenerator {
 
     public DungeonPiece assemblePiece(Blueprint blueprint, BlockPos position, Rotation rotation) {
         ImmutableList<BlueprintMultipart> parts = blueprint.parts();
-        PrimaryTheme primaryTheme = Themes.getPrimary(BuiltinThemes.DEFAULT);
-        SecondaryTheme secondaryTheme = Themes.getSecondary(BuiltinThemes.DEFAULT);
+        PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
+        SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
         if (parts.isEmpty()) {
             return new DungeonPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage, random);
         }

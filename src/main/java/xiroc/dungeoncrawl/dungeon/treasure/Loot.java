@@ -28,9 +28,9 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
@@ -71,9 +71,9 @@ public class Loot {
 
     public static final ResourceLocation WITHER_SKELETON = DungeonCrawl.locate("monster_overrides/wither_skeleton");
 
-        private static void registerLootFunctionType(ResourceLocation registryName, LootItemFunctionType type) {
-            Registry.register(Registry.LOOT_FUNCTION_TYPE, registryName, type);
-        }
+    private static void registerLootFunctionType(ResourceLocation registryName, LootItemFunctionType type) {
+        Registry.register(Registry.LOOT_FUNCTION_TYPE, registryName, type);
+    }
 
     public static void init() {
         registerLootFunctionType(DungeonCrawl.locate("enchanted_book"), ENCHANTED_BOOK);
@@ -109,7 +109,10 @@ public class Loot {
 
     public static Tuple<PrimaryTheme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
         CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID);
-        return new Tuple<>(Themes.getPrimary((new ResourceLocation(data.getString("theme")))), Themes.getSecondary(new ResourceLocation(data.getString("secondaryTheme"))));
+        return new Tuple<>(
+                DatapackRegistries.PRIMARY_THEME.get(new ResourceLocation(data.getString("theme"))),
+                DatapackRegistries.SECONDARY_THEME.get(new ResourceLocation(data.getString("secondaryTheme")))
+        );
     }
 
 }

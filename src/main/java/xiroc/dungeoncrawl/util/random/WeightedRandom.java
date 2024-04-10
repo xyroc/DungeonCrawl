@@ -33,15 +33,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerTypes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.lang.reflect.Type;
@@ -68,21 +67,21 @@ public interface WeightedRandom<T> extends IRandom<T> {
     Serializer<Delegate<PrimaryTheme>> PRIMARY_THEME = Serializer.of(
             (json) -> {
                 ResourceLocation key = new ResourceLocation(json.getAsString());
-                return Delegate.of(Themes.getPrimary(key), key);
+                return Delegate.of(DatapackRegistries.PRIMARY_THEME.get(key), key);
             },
             Delegate::serialize,
             "theme");
     Serializer<Delegate<SecondaryTheme>> SECONDARY_THEME = Serializer.of(
             (json) -> {
                 ResourceLocation key = new ResourceLocation(json.getAsString());
-                return Delegate.of(Themes.getSecondary(key), key);
+                return Delegate.of(DatapackRegistries.SECONDARY_THEME.get(key), key);
             },
             Delegate::serialize,
             "theme");
     Serializer<Delegate<SpawnerType>> SPAWNER_TYPE = Serializer.of(
             (json) -> {
                 ResourceLocation key = new ResourceLocation(json.getAsString());
-                SpawnerType spawnerType = SpawnerTypes.get(key);
+                SpawnerType spawnerType = DatapackRegistries.SPAWNER_TYPE.get(key);
                 if (spawnerType == null) {
                     throw new JsonParseException("The spawner type " + key + " does not exist.");
                 }
@@ -103,9 +102,9 @@ public interface WeightedRandom<T> extends IRandom<T> {
             "blueprint");
 
     Serializer<ResourceLocation> IDENTIFIER = Serializer.of(
-      json -> new ResourceLocation(json.getAsString()),
-      identifier -> new JsonPrimitive(identifier.toString()),
-      "key"
+            json -> new ResourceLocation(json.getAsString()),
+            identifier -> new JsonPrimitive(identifier.toString()),
+            "key"
     );
 
     boolean isEmpty();

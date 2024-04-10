@@ -7,11 +7,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.PlacedFeature;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerTypes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
@@ -22,7 +22,7 @@ import java.util.Random;
 public record SarcophagusFeature(Anchor placement, Delegate<SpawnerType> spawnerType, Optional<ResourceLocation> lootTable) implements PlacedFeature {
     public static final Codec<PlacedFeature> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Anchor.CODEC.fieldOf("placement").forGetter(feature -> ((SarcophagusFeature) feature).placement),
-            ResourceLocation.CODEC.xmap(key -> Delegate.of(SpawnerTypes.get(key), key), Delegate::key)
+            ResourceLocation.CODEC.xmap(key -> Delegate.of(DatapackRegistries.SPAWNER_TYPE.get(key), key), Delegate::key)
                     .fieldOf("spawner_type").forGetter(feature -> ((SarcophagusFeature) feature).spawnerType),
             ResourceLocation.CODEC.optionalFieldOf("loot_table").forGetter(feature -> ((SarcophagusFeature) feature).lootTable)
     ).apply(builder, SarcophagusFeature::new));

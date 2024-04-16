@@ -25,7 +25,7 @@ public class SpawnerEntityType {
     }
 
     public static class Serializer implements JsonSerializer<SpawnerEntityType>, JsonDeserializer<SpawnerEntityType> {
-        private static final String KEY_ENTITY_TYPE = "entity";
+        private static final String KEY_ENTITY_TYPE = "name";
         private static final String KEY_PROPERTIES = "properties";
 
         @Override

@@ -18,17 +18,14 @@
 
 package xiroc.dungeoncrawl.util;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.core.Registry;
-import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.fml.ModList;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.util.Objects;
@@ -47,42 +44,6 @@ public class JSONUtils {
             return deserializer.apply(parent.get(key));
         }
         return null;
-    }
-
-    public static boolean areRequirementsMet(JsonObject object) {
-        if (object.has("requirements")) {
-            JsonObject conditions = object.getAsJsonObject("requirements");
-            if (conditions.has("present")) {
-                JsonArray present = conditions.getAsJsonArray("present");
-                for (JsonElement mod : present) {
-                    if (!ModList.get().isLoaded(mod.getAsString())) return false;
-                }
-            }
-            if (conditions.has("absent")) {
-                JsonArray present = conditions.getAsJsonArray("absent");
-                for (JsonElement mod : present) {
-                    if (ModList.get().isLoaded(mod.getAsString())) return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public static Vec3i getOffset(JsonObject jsonObject) {
-        int x = 0, y = 0, z = 0;
-        if (jsonObject.has("x")) {
-            x = jsonObject.get("x").getAsInt();
-        }
-        if (jsonObject.has("y")) {
-            y = jsonObject.get("y").getAsInt();
-        }
-        if (jsonObject.has("z")) {
-            z = jsonObject.get("z").getAsInt();
-        }
-        if (x == 0 && y == 0 && z == 0) {
-            return Vec3i.ZERO;
-        }
-        return new Vec3i(x, y, z);
     }
 
     /**

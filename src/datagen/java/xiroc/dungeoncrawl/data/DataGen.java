@@ -31,7 +31,6 @@ import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
-import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 @Mod.EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGen {
@@ -39,7 +38,6 @@ public class DataGen {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         if (event.includeServer()) {
-            Loot.init();
             DataGenerator generator = event.getGenerator();
             generator.addProvider(new LootTables(generator));
             generator.addProvider(new PrimaryThemes(generator));

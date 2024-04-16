@@ -587,49 +587,6 @@
           "type": "minecraft:item",
           "weight": 6,
           "name": "minecraft:spider_eye"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 3,
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_potion",
-              "loot_level": 0
-            }
-          ],
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 12,
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_item",
-              "loot_level": 0
-            }
-          ],
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 4,
-          "functions": [
-            {
-              "function": "dungeoncrawl:material_blocks"
-            }
-          ],
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "dungeoncrawl:shield",
-              "loot_level": 0
-            }
-          ],
-          "name": "minecraft:shield"
         }
       ]
     }

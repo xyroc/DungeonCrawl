@@ -2,44 +2,6 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "name": "guaranteed items",
-      "rolls": {
-        "type": "minecraft:uniform",
-        "min": 3.0,
-        "max": 6.0
-      },
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_item",
-              "loot_level": 0
-            }
-          ],
-          "name": "minecraft:air"
-        }
-      ]
-    },
-    {
-      "name": "guaranteed potions",
-      "rolls": 1.0,
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_potion",
-              "loot_level": 1
-            }
-          ],
-          "name": "minecraft:potion"
-        }
-      ]
-    },
-    {
       "name": "guaranteed torches",
       "rolls": 1.0,
       "bonus_rolls": 0.0,
@@ -503,16 +465,6 @@
             }
           ],
           "name": "minecraft:spider_eye"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "dungeoncrawl:material_blocks"
-            }
-          ],
-          "name": "minecraft:air"
         },
         {
           "type": "minecraft:item",

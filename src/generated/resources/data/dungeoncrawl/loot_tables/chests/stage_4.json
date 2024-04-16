@@ -432,49 +432,6 @@
             }
           ],
           "name": "minecraft:ender_pearl"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 8,
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_potion",
-              "loot_level": 3
-            }
-          ],
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 10,
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_item",
-              "loot_level": 3
-            }
-          ],
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 4,
-          "functions": [
-            {
-              "function": "dungeoncrawl:material_blocks"
-            }
-          ],
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 6,
-          "functions": [
-            {
-              "function": "dungeoncrawl:shield",
-              "loot_level": 3
-            }
-          ],
-          "name": "minecraft:shield"
         }
       ]
     }

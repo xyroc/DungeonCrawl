@@ -411,49 +411,6 @@
             }
           ],
           "name": "minecraft:iron_nugget"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 5,
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_potion",
-              "loot_level": 4
-            }
-          ],
-          "name": "minecraft:potion"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 9,
-          "functions": [
-            {
-              "function": "dungeoncrawl:random_item",
-              "loot_level": 4
-            }
-          ],
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 3,
-          "functions": [
-            {
-              "function": "dungeoncrawl:material_blocks"
-            }
-          ],
-          "name": "minecraft:air"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 3,
-          "functions": [
-            {
-              "function": "dungeoncrawl:shield",
-              "loot_level": 4
-            }
-          ],
-          "name": "minecraft:shield"
         }
       ]
     }

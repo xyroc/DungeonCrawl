@@ -418,16 +418,6 @@
             }
           ],
           "name": "minecraft:sweet_berries"
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 6,
-          "functions": [
-            {
-              "function": "dungeoncrawl:suspicious_stew"
-            }
-          ],
-          "name": "minecraft:suspicious_stew"
         }
       ]
     }

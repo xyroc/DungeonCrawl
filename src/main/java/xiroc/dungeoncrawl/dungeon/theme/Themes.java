@@ -5,8 +5,8 @@ import com.google.gson.JsonParser;
 import net.minecraft.server.packs.resources.ResourceManager;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
-import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -37,7 +37,7 @@ public class Themes {
                 .forEach((file) -> {
                     try {
                         JsonElement json = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()));
-                        primaryThemes.deserialize(json, WeightedRandom.PRIMARY_THEME, Function.identity());
+                        primaryThemes.deserialize(json, IRandom.PRIMARY_THEME, Function.identity());
                     } catch (IOException e) {
                         throw new DatapackLoadException("Failed to load " + file + ": " + e.getMessage());
                     }
@@ -47,7 +47,7 @@ public class Themes {
                 .forEach((file) -> {
                     try {
                         JsonElement json = JsonParser.parseReader(new InputStreamReader(resourceManager.getResource(file).getInputStream()));
-                        secondaryThemes.deserialize(json, WeightedRandom.SECONDARY_THEME, Function.identity());
+                        secondaryThemes.deserialize(json, IRandom.SECONDARY_THEME, Function.identity());
                     } catch (IOException e) {
                         throw new DatapackLoadException("Failed to load " + file + ": " + e.getMessage());
                     }

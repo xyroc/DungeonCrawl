@@ -21,13 +21,17 @@ package xiroc.dungeoncrawl.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fml.ModList;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -64,23 +68,6 @@ public class JSONUtils {
         return true;
     }
 
-    public static BlockState deserializeBlockStateProperties(Block block, JsonObject element) {
-        BlockState state = block.defaultBlockState();
-        if (element.has("properties")) {
-            JsonObject data = element.get("properties").getAsJsonObject();
-            for (Property<?> property : state.getProperties()) {
-                if (data.has(property.getName())) {
-                    state = parseProperty(state, property, data.get(property.getName()).getAsString());
-                }
-            }
-        }
-        return state;
-    }
-
-    public static int getWeight(JsonObject object) {
-        return object.has("weight") ? object.get("weight").getAsInt() : 1;
-    }
-
     public static Vec3i getOffset(JsonObject jsonObject) {
         int x = 0, y = 0, z = 0;
         if (jsonObject.has("x")) {
@@ -103,8 +90,7 @@ public class JSONUtils {
      *
      * @return the resulting block state
      */
-    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property,
-                                                                      String value) {
+    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property, String value) {
         Optional<T> optional = property.getValue(value);
         if (optional.isPresent()) {
             T t = optional.get();
@@ -115,20 +101,42 @@ public class JSONUtils {
         return state;
     }
 
-    /**
-     * Serializes the given block state and stores it in the given json object.
-     *
-     * @param object the serialized block state will be stored here
-     * @param state  the block state
-     * @return the json object containing the serialized form of the block state
-     */
-    public static JsonObject serializeBlockState(JsonObject object, BlockState state) {
-        Block block = state.getBlock();
-        if (block.getRegistryName() == null) {
-            DungeonCrawl.LOGGER.error("No registry name found for block {} ({})", block, block.getClass());
-            return new JsonObject();
+    private static final String KEY_BLOCK_NAME = "name";
+    private static final String KEY_BLOCK_PROPERTIES = "properties";
+
+    public static BlockState deserializeBlockState(JsonElement json) {
+        if (json.isJsonPrimitive()) {
+            return Registry.BLOCK.get(new ResourceLocation(json.getAsString())).defaultBlockState();
         }
-        object.addProperty("block", block.getRegistryName().toString());
+        JsonObject object = json.getAsJsonObject();
+        BlockState state = Registry.BLOCK.get(new ResourceLocation(object.get(KEY_BLOCK_NAME).getAsString())).defaultBlockState();
+
+        if (object.has(KEY_BLOCK_PROPERTIES)) {
+            JsonObject properties = object.getAsJsonObject(KEY_BLOCK_PROPERTIES);
+            for (Property<?> property : state.getProperties()) {
+                if (properties.has(property.getName())) {
+                    state = parseProperty(state, property, properties.get(property.getName()).getAsString());
+                }
+            }
+        }
+
+        return state;
+    }
+
+    /**
+     * Serializes the given block state.
+     *
+     * @param state the block state
+     * @return the serialized form of the block state
+     */
+    public static JsonElement serializeBlockState(BlockState state) {
+        String name = Objects.requireNonNull(state.getBlock().getRegistryName()).toString();
+        if (state.equals(state.getBlock().defaultBlockState())) {
+            return new JsonPrimitive(name);
+        }
+        JsonObject object = new JsonObject();
+        Block block = state.getBlock();
+        object.addProperty(KEY_BLOCK_NAME, name);
 
         BlockState defaultState = block.defaultBlockState();
         JsonObject properties = new JsonObject();
@@ -137,8 +145,9 @@ public class JSONUtils {
                 properties.addProperty(property.getName(), state.getValue(property).toString());
             }
         });
+
         if (properties.size() > 0) {
-            object.add("properties", properties);
+            object.add(KEY_BLOCK_PROPERTIES, properties);
         }
         return object;
     }

@@ -19,12 +19,12 @@ import xiroc.dungeoncrawl.dungeon.piece.Segment;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
-import xiroc.dungeoncrawl.util.random.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.lang.reflect.Type;
 import java.util.Random;
 
-public record BlueprintMultipart(ResourceLocation anchorType, WeightedRandom<ResourceLocation> blueprints) {
+public record BlueprintMultipart(ResourceLocation anchorType, IRandom<ResourceLocation> blueprints) {
     public boolean addParts(DungeonPlan plan, CompoundPiece parent, Random random) {
         var anchors = parent.blueprint.anchors().get(anchorType);
         if (anchors == null) {
@@ -79,7 +79,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, WeightedRandom<Res
         public BlueprintMultipart deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             ResourceLocation anchorType = new ResourceLocation(object.get(KEY_POSITIONS).getAsString());
-            WeightedRandom<ResourceLocation> blueprints = WeightedRandom.IDENTIFIER.deserialize(object.get(KEY_BLUEPRINTS));
+            IRandom<ResourceLocation> blueprints = IRandom.IDENTIFIER.deserialize(object.get(KEY_BLUEPRINTS));
             return new BlueprintMultipart(anchorType, blueprints);
         }
 
@@ -87,7 +87,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, WeightedRandom<Res
         public JsonElement serialize(BlueprintMultipart src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             object.addProperty(KEY_POSITIONS, src.anchorType.toString());
-            object.add(KEY_BLUEPRINTS, WeightedRandom.IDENTIFIER.serialize(src.blueprints));
+            object.add(KEY_BLUEPRINTS, IRandom.IDENTIFIER.serialize(src.blueprints));
             return object;
         }
     }

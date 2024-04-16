@@ -7,8 +7,8 @@ import net.minecraft.world.level.biome.Biome;
 import xiroc.dungeoncrawl.data.JsonDataProvider;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
-import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class PrimaryThemeMappings extends JsonDataProvider<RandomMapping<String, PrimaryTheme>> {
     public PrimaryThemeMappings(DataGenerator generator) {
         super(generator, "Primary Theme Mappings", DatapackDirectories.PRIMARY_THEME_MAPPINGS.path(),
-                (mapping) -> RandomMapping.serialize(mapping, Function.identity(), WeightedRandom.PRIMARY_THEME));
+                (mapping) -> RandomMapping.serialize(mapping, Function.identity(), IRandom.PRIMARY_THEME));
     }
 
     @Override

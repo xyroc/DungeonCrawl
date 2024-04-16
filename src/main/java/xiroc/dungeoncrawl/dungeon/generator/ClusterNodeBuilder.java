@@ -15,13 +15,13 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
-import xiroc.dungeoncrawl.util.random.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class ClusterNodeBuilder {
-    private static final WeightedRandom<Blueprint> CLUSTER_NODES = new WeightedRandom.Builder<Blueprint>()
+    private static final IRandom<Blueprint> CLUSTER_NODES = new IRandom.Builder<Blueprint>()
             .add(Blueprints.getBlueprint(DungeonCrawl.locate("cluster_test_1")), 2)
             .add(Blueprints.getBlueprint(DungeonCrawl.locate("cluster_test_2")))
             .build();

@@ -9,6 +9,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.lang.reflect.Type;
@@ -47,24 +47,16 @@ public class SingleBlock implements BlockStateProvider {
     }
 
     public static class Serializer implements JsonSerializer<SingleBlock>, JsonDeserializer<SingleBlock> {
+        private static final String KEY_BLOCK = "block";
+
         @Override
         public SingleBlock deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             if (json.isJsonPrimitive()) {
                 ResourceLocation blockName = new ResourceLocation(json.getAsString());
-                Block block = ForgeRegistries.BLOCKS.getValue(blockName);
-                if (block == null) {
-                    throw new DatapackLoadException("Unknown block: " + blockName);
-                }
+                Block block = Registry.BLOCK.get(blockName);
                 return new SingleBlock(block);
             } else {
-                ResourceLocation blockName = new ResourceLocation(json.getAsJsonObject().get("block").getAsString());
-                JsonObject jsonBlock = json.getAsJsonObject();
-
-                Block block = ForgeRegistries.BLOCKS.getValue(blockName);
-                if (block == null) {
-                    throw new DatapackLoadException("Unknown block: " + blockName);
-                }
-                return new SingleBlock(JSONUtils.deserializeBlockStateProperties(block, jsonBlock));
+                return new SingleBlock(JSONUtils.deserializeBlockState(json.getAsJsonObject().get(KEY_BLOCK)));
             }
         }
 
@@ -75,7 +67,8 @@ public class SingleBlock implements BlockStateProvider {
             }
             JsonObject object = new JsonObject();
             object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_SINGLE_BLOCK);
-            return JSONUtils.serializeBlockState(object, src.state);
+            object.add(KEY_BLOCK, JSONUtils.serializeBlockState(src.state));
+            return object;
         }
     }
 }

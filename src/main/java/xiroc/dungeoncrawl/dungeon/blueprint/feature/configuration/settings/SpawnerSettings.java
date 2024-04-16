@@ -7,13 +7,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import net.minecraft.resources.ResourceLocation;
-import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.util.random.IRandom;
-import xiroc.dungeoncrawl.util.random.SingleValueRandom;
-import xiroc.dungeoncrawl.util.random.WeightedRandom;
 
 import java.lang.reflect.Type;
 
@@ -24,27 +20,14 @@ public record SpawnerSettings(IRandom<Delegate<SpawnerType>> types) {
         @Override
         public SpawnerSettings deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             JsonObject object = jsonElement.getAsJsonObject();
-            IRandom<Delegate<SpawnerType>> spawnerTypes;
-            JsonElement spawnerTypesJson = object.get(KEY_TYPES);
-            if (spawnerTypesJson.isJsonPrimitive()) {
-                ResourceLocation key = new ResourceLocation(spawnerTypesJson.getAsString());
-                spawnerTypes = new SingleValueRandom<>(Delegate.of(DatapackRegistries.SPAWNER_TYPE.get(key), key));
-            } else {
-                spawnerTypes = WeightedRandom.SPAWNER_TYPE.deserialize(spawnerTypesJson);
-            }
+            IRandom<Delegate<SpawnerType>> spawnerTypes = IRandom.SPAWNER_TYPE.deserialize(object.get(KEY_TYPES));
             return new SpawnerSettings(spawnerTypes);
         }
 
         @Override
         public JsonElement serialize(SpawnerSettings spawnerSettings, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            if (spawnerSettings.types instanceof SingleValueRandom<Delegate<SpawnerType>> singleValueRandom) {
-                object.add(KEY_TYPES, singleValueRandom.value().serialize());
-            } else if (spawnerSettings.types instanceof WeightedRandom<Delegate<SpawnerType>> weightedRandom) {
-                object.add(KEY_TYPES, WeightedRandom.SPAWNER_TYPE.serialize(weightedRandom));
-            } else {
-                throw new UnsupportedOperationException("Invalid spawner type random: " + spawnerSettings.types.getClass());
-            }
+            object.add(KEY_TYPES, IRandom.SPAWNER_TYPE.serialize(spawnerSettings.types));
             return object;
         }
     }

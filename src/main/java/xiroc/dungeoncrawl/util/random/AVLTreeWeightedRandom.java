@@ -29,11 +29,6 @@ public class AVLTreeWeightedRandom<T> implements WeightedRandom<T> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return this.entries.isEmpty();
-    }
-
-    @Override
     public void forEach(BiConsumer<T, Integer> consumer) {
         this.entries.traverseRecursively(consumer);
     }

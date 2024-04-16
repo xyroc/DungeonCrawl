@@ -36,11 +36,6 @@ public class ListWeightedRandom<T> implements WeightedRandom<T> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return entries.isEmpty();
-    }
-
-    @Override
     public void forEach(BiConsumer<T, Integer> consumer) {
         int lastThreshold = 0;
         for (Entry<T> entry : entries) {

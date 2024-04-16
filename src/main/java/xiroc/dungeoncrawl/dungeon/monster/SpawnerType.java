@@ -1,15 +1,20 @@
 package xiroc.dungeoncrawl.dungeon.monster;
 
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.datapack.DatapackRegistries;
-import xiroc.dungeoncrawl.util.random.WeightedRandom;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
+import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
 
@@ -18,17 +23,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class SpawnerType {
-    private static final WeightedRandom.Serializer<SpawnerEntityType> ENTITY_SERIALIZER = WeightedRandom.Serializer.of(
-            (json) -> {
-                if (json.isJsonPrimitive()) {
-                    return DatapackRegistries.SPAWNER_ENTITY_TYPE.get(new ResourceLocation(json.getAsString()));
-                } else {
-                    return SpawnerSerializers.ENTITY_TYPES.fromJson(json, SpawnerEntityType.class);
-                }
-            },
-            SpawnerSerializers.ENTITY_TYPES::toJsonTree, "entity");
-
-    private final WeightedRandom<SpawnerEntityType> entities;
+    private final IRandom<Delegate<SpawnerEntityType>> entities;
     private final SpawnerEntityProperties properties;
     private final RandomValue spawnAmount;
     private final Range spawnDelay;
@@ -48,7 +43,7 @@ public class SpawnerType {
 
     public CompoundTag createData(Random random, int stage) {
         CompoundTag nbt = new CompoundTag();
-        SpawnerEntityType entityType = entities.roll(random);
+        SpawnerEntityType entityType = entities.roll(random).get();
         ListTag potentialSpawns = new ListTag();
         for (int i = 0; i < 3; ++i) {
             CompoundTag potentialSpawn = new CompoundTag();
@@ -84,13 +79,13 @@ public class SpawnerType {
     }
 
     private void putEquipment(CompoundTag nbt, SpawnerEntityType entityType, Random random, int stage) {
-        WeightedRandom<Item> helmet = entityType.properties != null && entityType.properties.helmet != null ?
+        IRandom<Item> helmet = entityType.properties != null && entityType.properties.helmet != null ?
                 entityType.properties.helmet : (properties != null ? properties.helmet : null);
-        WeightedRandom<Item> chestplate = entityType.properties != null && entityType.properties.chestplate != null ?
+        IRandom<Item> chestplate = entityType.properties != null && entityType.properties.chestplate != null ?
                 entityType.properties.chestplate : (properties != null ? properties.chestplate : null);
-        WeightedRandom<Item> leggings = entityType.properties != null && entityType.properties.leggings != null ?
+        IRandom<Item> leggings = entityType.properties != null && entityType.properties.leggings != null ?
                 entityType.properties.leggings : (properties != null ? properties.leggings : null);
-        WeightedRandom<Item> boots = entityType.properties != null && entityType.properties.boots != null ?
+        IRandom<Item> boots = entityType.properties != null && entityType.properties.boots != null ?
                 entityType.properties.boots : (properties != null ? properties.boots : null);
 
         ListTag armor = new ListTag();
@@ -119,9 +114,9 @@ public class SpawnerType {
         }
         nbt.put("ArmorItems", armor);
 
-        WeightedRandom<Item> mainHand = entityType.properties != null && entityType.properties.mainHand != null ?
+        IRandom<Item> mainHand = entityType.properties != null && entityType.properties.mainHand != null ?
                 entityType.properties.mainHand : (properties != null ? properties.mainHand : null);
-        WeightedRandom<Item> offHand = entityType.properties != null && entityType.properties.offHand != null ?
+        IRandom<Item> offHand = entityType.properties != null && entityType.properties.offHand != null ?
                 entityType.properties.offHand : (properties != null ? properties.offHand : null);
 
         ListTag handItems = new ListTag();
@@ -174,7 +169,7 @@ public class SpawnerType {
         public SpawnerType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             Builder builder = new Builder();
             JsonObject object = json.getAsJsonObject();
-            builder.entities = ENTITY_SERIALIZER.deserialize(object.getAsJsonArray(KEY_ENTITIES));
+            builder.entities = IRandom.SPAWNER_ENTITY.deserialize(object.get(KEY_ENTITIES));
             builder.spawnAmount = context.deserialize(object.get(KEY_SPAWN_AMOUNT), RandomValue.class);
             builder.spawnDelay = context.deserialize(object.get(KEY_SPAWN_DELAY), RandomValue.class);
             if (object.has(KEY_INITIAL_SPAWN_DELAY)) {
@@ -194,7 +189,7 @@ public class SpawnerType {
         @Override
         public JsonElement serialize(SpawnerType src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            object.add(KEY_ENTITIES, ENTITY_SERIALIZER.serialize(src.entities));
+            object.add(KEY_ENTITIES, IRandom.SPAWNER_ENTITY.serialize(src.entities));
             object.add(KEY_SPAWN_AMOUNT, context.serialize(src.spawnAmount));
             object.add(KEY_SPAWN_DELAY, context.serialize(src.spawnDelay));
             if (src.spawnDelay != src.initialSpawnDelay) {
@@ -211,7 +206,7 @@ public class SpawnerType {
     }
 
     public static class Builder {
-        private WeightedRandom<SpawnerEntityType> entities = null;
+        private IRandom<Delegate<SpawnerEntityType>> entities = null;
         private SpawnerEntityProperties properties = null;
         private RandomValue spawnAmount = null;
         private Range spawnDelay = null;
@@ -219,7 +214,7 @@ public class SpawnerType {
         private int maxLightLevel = -1;
         private short activationRange = 0;
 
-        public Builder entities(WeightedRandom<SpawnerEntityType> entities) {
+        public Builder entities(IRandom<Delegate<SpawnerEntityType>> entities) {
             this.entities = entities;
             return this;
         }

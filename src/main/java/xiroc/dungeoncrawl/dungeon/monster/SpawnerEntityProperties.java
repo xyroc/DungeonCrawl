@@ -10,28 +10,28 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.world.item.Item;
 import xiroc.dungeoncrawl.util.JSONUtils;
-import xiroc.dungeoncrawl.util.random.WeightedRandom;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.lang.reflect.Type;
 
 public class SpawnerEntityProperties {
-    protected final WeightedRandom<Item> mainHand;
-    protected final WeightedRandom<Item> offHand;
+    protected final IRandom<Item> mainHand;
+    protected final IRandom<Item> offHand;
 
-    protected final WeightedRandom<Item> helmet;
-    protected final WeightedRandom<Item> chestplate;
-    protected final WeightedRandom<Item> leggings;
-    protected final WeightedRandom<Item> boots;
+    protected final IRandom<Item> helmet;
+    protected final IRandom<Item> chestplate;
+    protected final IRandom<Item> leggings;
+    protected final IRandom<Item> boots;
 
     protected final Float handDropChance;
     protected final Float armorDropChance;
 
-    public SpawnerEntityProperties(WeightedRandom<Item> mainHand,
-                                   WeightedRandom<Item> offHand,
-                                   WeightedRandom<Item> helmet,
-                                   WeightedRandom<Item> chestplate,
-                                   WeightedRandom<Item> leggings,
-                                   WeightedRandom<Item> boots,
+    public SpawnerEntityProperties(IRandom<Item> mainHand,
+                                   IRandom<Item> offHand,
+                                   IRandom<Item> helmet,
+                                   IRandom<Item> chestplate,
+                                   IRandom<Item> leggings,
+                                   IRandom<Item> boots,
                                    Float handDropChance,
                                    Float armorDropChance) {
         this.mainHand = mainHand;
@@ -62,12 +62,12 @@ public class SpawnerEntityProperties {
             JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_EQUIPMENT)) {
                 JsonObject equipment = object.getAsJsonObject(KEY_EQUIPMENT);
-                builder.mainHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_MAIN_HAND, WeightedRandom.ITEM::deserialize);
-                builder.offHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_OFF_HAND, WeightedRandom.ITEM::deserialize);
-                builder.helmet = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_HELMET, WeightedRandom.ITEM::deserialize);
-                builder.chestplate = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_CHESTPLATE, WeightedRandom.ITEM::deserialize);
-                builder.leggings = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_LEGGINGS, WeightedRandom.ITEM::deserialize);
-                builder.boots = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_BOOTS, WeightedRandom.ITEM::deserialize);
+                builder.mainHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_MAIN_HAND, IRandom.ITEM::deserialize);
+                builder.offHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_OFF_HAND, IRandom.ITEM::deserialize);
+                builder.helmet = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_HELMET, IRandom.ITEM::deserialize);
+                builder.chestplate = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_CHESTPLATE, IRandom.ITEM::deserialize);
+                builder.leggings = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_LEGGINGS, IRandom.ITEM::deserialize);
+                builder.boots = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_BOOTS, IRandom.ITEM::deserialize);
                 if (equipment.has(KEY_EQUIPMENT_DROP_CHANCES)) {
                     JsonObject dropChances = equipment.getAsJsonObject(KEY_EQUIPMENT_DROP_CHANCES);
                     builder.handDropChance = JSONUtils.deserializeOrNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_HAND, JsonElement::getAsFloat);
@@ -82,12 +82,12 @@ public class SpawnerEntityProperties {
             JsonObject properties = new JsonObject();
             JsonObject equipment = new JsonObject();
 
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_MAIN_HAND, src.mainHand, WeightedRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_OFF_HAND, src.offHand, WeightedRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_HELMET, src.helmet, WeightedRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_CHESTPLATE, src.chestplate, WeightedRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_LEGGINGS, src.leggings, WeightedRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_BOOTS, src.boots, WeightedRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_MAIN_HAND, src.mainHand, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_OFF_HAND, src.offHand, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_HELMET, src.helmet, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_CHESTPLATE, src.chestplate, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_LEGGINGS, src.leggings, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_BOOTS, src.boots, IRandom.ITEM::serialize);
 
             JsonObject dropChances = new JsonObject();
             JSONUtils.serializeIfNonNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_HAND, src.handDropChance, JsonPrimitive::new);
@@ -105,43 +105,43 @@ public class SpawnerEntityProperties {
     }
 
     public static class Builder {
-        private WeightedRandom<Item> mainHand = null;
-        private WeightedRandom<Item> offHand = null;
+        private IRandom<Item> mainHand = null;
+        private IRandom<Item> offHand = null;
 
-        private WeightedRandom<Item> helmet = null;
-        private WeightedRandom<Item> chestplate = null;
-        private WeightedRandom<Item> leggings = null;
-        private WeightedRandom<Item> boots = null;
+        private IRandom<Item> helmet = null;
+        private IRandom<Item> chestplate = null;
+        private IRandom<Item> leggings = null;
+        private IRandom<Item> boots = null;
 
         private Float armorDropChance = null;
         private Float handDropChance = null;
 
-        public Builder mainHand(WeightedRandom<Item> mainHand) {
+        public Builder mainHand(IRandom<Item> mainHand) {
             this.mainHand = mainHand;
             return this;
         }
 
-        public Builder offHand(WeightedRandom<Item> offHand) {
+        public Builder offHand(IRandom<Item> offHand) {
             this.offHand = offHand;
             return this;
         }
 
-        public Builder helmet(WeightedRandom<Item> helmet) {
+        public Builder helmet(IRandom<Item> helmet) {
             this.helmet = helmet;
             return this;
         }
 
-        public Builder chestplate(WeightedRandom<Item> chestplate) {
+        public Builder chestplate(IRandom<Item> chestplate) {
             this.chestplate = chestplate;
             return this;
         }
 
-        public Builder leggings(WeightedRandom<Item> leggings) {
+        public Builder leggings(IRandom<Item> leggings) {
             this.leggings = leggings;
             return this;
         }
 
-        public Builder boots(WeightedRandom<Item> boots) {
+        public Builder boots(IRandom<Item> boots) {
             this.boots = boots;
             return this;
         }

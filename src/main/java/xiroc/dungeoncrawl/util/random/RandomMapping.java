@@ -15,12 +15,12 @@ public class RandomMapping<K, V> {
     private static final String KEY_FALLBACK = "default";
     private static final String KEY_MAPPING = "mapping";
 
-    private final WeightedRandom<Delegate<V>> fallback;
-    private final ImmutableMap<K, WeightedRandom<Delegate<V>>> entries;
+    private final IRandom<Delegate<V>> fallback;
+    private final ImmutableMap<K, IRandom<Delegate<V>>> entries;
 
     private RandomMapping(Builder<K, V> builder) {
         this.fallback = builder.fallback.build();
-        ImmutableMap.Builder<K, WeightedRandom<Delegate<V>>> entries = ImmutableMap.builder();
+        ImmutableMap.Builder<K, IRandom<Delegate<V>>> entries = ImmutableMap.builder();
         builder.entries.forEach((key, value) -> entries.put(key, value.build()));
         this.entries = entries.build();
     }
@@ -33,12 +33,10 @@ public class RandomMapping<K, V> {
     }
 
     public void validate(Consumer<String> errorHandler) {
-        if (this.fallback.isEmpty()) {
-            errorHandler.accept("RandomMapping default case is empty.");
-        }
+        // TODO
     }
 
-    public static <K, V> JsonElement serialize(RandomMapping<K, V> mapping, Function<K, String> keySerializer, WeightedRandom.Serializer<Delegate<V>> serializer) {
+    public static <K, V> JsonElement serialize(RandomMapping<K, V> mapping, Function<K, String> keySerializer, IRandom.Serializer<Delegate<V>> serializer) {
         JsonObject object = new JsonObject();
         JsonObject jsonMapping = new JsonObject();
         mapping.entries.forEach((key, value) -> jsonMapping.add(keySerializer.apply(key), serializer.serialize(value)));
@@ -48,11 +46,11 @@ public class RandomMapping<K, V> {
     }
 
     public static class Builder<K, V> {
-        private final WeightedRandom.Builder<Delegate<V>> fallback = new WeightedRandom.Builder<>();
-        private final HashMap<K, WeightedRandom.Builder<Delegate<V>>> entries = new HashMap<>();
+        private final IRandom.Builder<Delegate<V>> fallback = new IRandom.Builder<>();
+        private final HashMap<K, IRandom.Builder<Delegate<V>>> entries = new HashMap<>();
 
-        private WeightedRandom.Builder<Delegate<V>> get(K key) {
-            return this.entries.computeIfAbsent(key, (k) -> new WeightedRandom.Builder<>());
+        private IRandom.Builder<Delegate<V>> get(K key) {
+            return this.entries.computeIfAbsent(key, (k) -> new IRandom.Builder<>());
         }
 
         public Builder<K, V> add(K key, ResourceLocation entry, int weight) {
@@ -65,14 +63,14 @@ public class RandomMapping<K, V> {
             return this;
         }
 
-        public Builder<K, V> deserialize(JsonElement file, WeightedRandom.Serializer<Delegate<V>> serializer, Function<String, K> keyProvider) {
+        public Builder<K, V> deserialize(JsonElement file, IRandom.Serializer<Delegate<V>> serializer, Function<String, K> keyProvider) {
             JsonObject object = file.getAsJsonObject();
             if (object.has(KEY_FALLBACK)) {
-                serializer.deserialize(object.get(KEY_FALLBACK), this.fallback);
+                serializer.deserializePartial(object.get(KEY_FALLBACK), this.fallback);
             }
             if (object.has(KEY_MAPPING)) {
                 JsonObject mapping = object.getAsJsonObject(KEY_MAPPING);
-                mapping.entrySet().forEach((entry) -> serializer.deserialize(entry.getValue(), get(keyProvider.apply(entry.getKey()))));
+                mapping.entrySet().forEach((entry) -> serializer.deserializePartial(entry.getValue(), get(keyProvider.apply(entry.getKey()))));
             }
             return this;
         }

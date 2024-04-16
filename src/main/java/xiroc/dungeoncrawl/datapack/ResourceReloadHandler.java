@@ -24,12 +24,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
-import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
-import xiroc.dungeoncrawl.dungeon.monster.RandomMonster;
-import xiroc.dungeoncrawl.dungeon.monster.RandomPotionEffect;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnRates;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
-import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -46,12 +41,6 @@ public class ResourceReloadHandler implements PreparableReloadListener {
 
         Blueprints.load(resourceManager);
         Themes.load(resourceManager);
-
-        SpawnRates.loadJson(resourceManager);
-        RandomItems.loadJson(resourceManager);
-        RandomMonster.loadJson(resourceManager);
-        RandomEquipment.loadJson(resourceManager);
-        RandomPotionEffect.loadJson(resourceManager);
 
         DungeonCrawl.LOGGER.info("Done.");
     }

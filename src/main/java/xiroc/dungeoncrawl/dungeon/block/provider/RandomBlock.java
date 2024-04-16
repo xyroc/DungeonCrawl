@@ -17,21 +17,21 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import java.lang.reflect.Type;
 import java.util.Random;
 
-public class WeightedRandomBlock implements BlockStateProvider {
-    private final IRandom<BlockState> randomBlockState;
+public class RandomBlock implements BlockStateProvider {
+    private final IRandom<BlockState> states;
 
-    public WeightedRandomBlock(IRandom<BlockState> randomBlockState) {
-        this.randomBlockState = randomBlockState;
+    public RandomBlock(IRandom<BlockState> states) {
+        this.states = states;
     }
 
     @Override
     public BlockState get(BlockPos pos, Random random) {
-        return randomBlockState.roll(random);
+        return states.roll(random);
     }
 
     @Override
     public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
-        return randomBlockState.roll(random);
+        return states.roll(random);
     }
 
     public static Builder builder() {
@@ -58,25 +58,25 @@ public class WeightedRandomBlock implements BlockStateProvider {
             return this;
         }
 
-        public WeightedRandomBlock build() {
-            return new WeightedRandomBlock(builder.build());
+        public RandomBlock build() {
+            return new RandomBlock(builder.build());
         }
     }
 
-    public static class Serializer implements JsonSerializer<WeightedRandomBlock>, JsonDeserializer<WeightedRandomBlock> {
+    public static class Serializer implements JsonSerializer<RandomBlock>, JsonDeserializer<RandomBlock> {
         private static final String KEY_BLOCKS = "blocks";
 
         @Override
-        public WeightedRandomBlock deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        public RandomBlock deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             IRandom<BlockState> states = IRandom.BLOCK_STATE.deserialize(json.getAsJsonObject().get(KEY_BLOCKS));
-            return new WeightedRandomBlock(states);
+            return new RandomBlock(states);
         }
 
         @Override
-        public JsonElement serialize(WeightedRandomBlock src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(RandomBlock src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_RANDOM_BLOCK);
-            object.add(KEY_BLOCKS, IRandom.BLOCK_STATE.serialize(src.randomBlockState));
+            object.add(KEY_BLOCKS, IRandom.BLOCK_STATE.serialize(src.states));
             return object;
         }
     }

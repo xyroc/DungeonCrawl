@@ -1,11 +1,11 @@
 package xiroc.dungeoncrawl.data.themes;
 
 import net.minecraft.world.level.block.Blocks;
-import xiroc.dungeoncrawl.dungeon.block.provider.WeightedRandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
 
 class SharedThemeConstants {
 
-    public static final WeightedRandomBlock HELL_MATERIAL = WeightedRandomBlock.builder()
+    public static final RandomBlock HELL_MATERIAL = RandomBlock.builder()
             .add(Blocks.NETHER_BRICKS, 200)
             .add(Blocks.NETHERRACK, 20)
             .add(Blocks.SOUL_SAND, 15)

@@ -41,7 +41,7 @@ public interface BlockStateProvider {
     Gson GSON = new GsonBuilder()
             .registerTypeAdapter(BlockStateProvider.class, new Deserializer())
             .registerTypeAdapter(SingleBlock.class, new SingleBlock.Serializer())
-            .registerTypeAdapter(WeightedRandomBlock.class, new WeightedRandomBlock.Serializer())
+            .registerTypeAdapter(RandomBlock.class, new RandomBlock.Serializer())
             .registerTypeAdapter(CheckerboardPattern.class, new CheckerboardPattern.Serializer())
             .registerTypeAdapter(TerracottaPattern.class, new TerracottaPattern.Serializer())
             .create();
@@ -74,7 +74,7 @@ public interface BlockStateProvider {
                     return GSON.fromJson(json, SingleBlock.class);
                 }
                 case SharedSerializationConstants.TYPE_RANDOM_BLOCK -> {
-                    return GSON.fromJson(json, WeightedRandomBlock.class);
+                    return GSON.fromJson(json, RandomBlock.class);
                 }
                 case SharedSerializationConstants.TYPE_PATTERN -> {
                     String patternType = object.get(SharedSerializationConstants.KEY_PATTERN_TYPE).getAsString().toLowerCase(Locale.ROOT);

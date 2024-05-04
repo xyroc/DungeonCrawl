@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
@@ -29,6 +28,7 @@ import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.mixin.accessor.StructureTemplateAccessor;
+import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.io.InputStreamReader;
@@ -39,7 +39,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, BlueprintSettings settings,
+public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
+                                BlueprintSettings settings,
                                 ImmutableList<FeatureConfiguration> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
     public static final Gson GSON = FeatureConfiguration.gsonAdapters(new GsonBuilder())
             .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
@@ -81,7 +82,7 @@ public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<
             ResourceLocation anchorType = new ResourceLocation(info.nbt.getString(JigsawBlockEntity.NAME));
             anchors.accept(anchorType, new Anchor(info.pos, info.state.getValue(BlockStateProperties.ORIENTATION).front()));
         }
-        TemplateBlock.PlacementProperties properties = configuration.blockType(ForgeRegistries.BLOCKS.getKey(state.getBlock()));
+        TemplateBlock.PlacementProperties properties = configuration.blockType(state.getBlock());
         TemplateBlock block = new TemplateBlock(properties, info.pos, state.getBlock(), TemplateBlock.properties(state));
         blocks.accept(block);
     }
@@ -101,11 +102,14 @@ public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<
     }
 
     @Override
-    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
-        WorldEditor editor = new WorldEditor(world, coordinateSpace(position), rotation);
-        this.blocks.forEach((block) ->
-                editor.placeBlock(block.placementProperties().blockType().blockFactory.get(block, rotation, world, position, primaryTheme, secondaryTheme, random, stage),
-                        block.position(), worldGenBounds, block.placementProperties().isSolid(), true, true));
+    public void build(LevelAccessor level, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+        CoordinateSpace coordinateSpace = coordinateSpace(position);
+        this.blocks.forEach((block) -> {
+            boolean solid = block.placementProperties().isSolid();
+            BlockPos pos = coordinateSpace.rotateAndTranslateToOrigin(block.position(), rotation);
+            WorldEditor.placeBlock(level, block.placementProperties().blockType().blockFactory.get(block, level, pos, primaryTheme, secondaryTheme, random)
+                    .rotate(level, pos, rotation), pos, worldGenBounds, solid, true, true);
+        });
     }
 
     @Override

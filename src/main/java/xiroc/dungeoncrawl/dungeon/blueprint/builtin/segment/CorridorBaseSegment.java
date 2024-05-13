@@ -15,7 +15,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.worldgen.WorldEditor;
+import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
 
 import java.util.Random;
 
@@ -23,11 +23,11 @@ public record CorridorBaseSegment(ResourceLocation key, ImmutableMap<ResourceLoc
                                   ImmutableList<FeatureConfiguration> features, BlueprintSettings settings) implements Blueprint {
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
-        WorldEditor editor = new WorldEditor(world, coordinateSpace(position), rotation);
+        RotatingWorldEditor editor = new RotatingWorldEditor(world, coordinateSpace(position), rotation);
         BlockPos origin = BlockPos.ZERO;
-        editor.fill(new SingleBlock(Blocks.RED_CONCRETE), origin, origin.offset(2, 0, 2), worldGenBounds, random, true, true);
-        editor.fill(SingleBlock.AIR, origin.above(), origin.offset(2, 3, 2), worldGenBounds, random, true, true);
-        editor.fill(primaryTheme.masonry(), origin.above(4), origin.offset(2, 4, 2), worldGenBounds, random, false, true);
+        editor.fill(primaryTheme.floor(), origin, origin.offset(2, 0, 2), worldGenBounds, random, true, true, false);
+        editor.fill(SingleBlock.AIR, origin.above(), origin.offset(2, 3, 2), worldGenBounds, random, true, true, false);
+        editor.fill(primaryTheme.masonry(), origin.above(4), origin.offset(2, 4, 2), worldGenBounds, random, false, true, false);
     }
 
     @Override

@@ -15,12 +15,12 @@ public record CoordinateSpace(BlockPos origin, int width, int length) {
         };
     }
 
-    public Anchor rotateAndTranslateToOrigin(Anchor anchor, Rotation rotation) {
-        return new Anchor(rotateAndTranslateToOrigin(anchor.position(), rotation), rotation.rotate(anchor.direction()));
-    }
-
     public static BlockPos rotate(Vec3i coordinate, Rotation rotation, int width, int length) {
         return rotate(coordinate.getX(), coordinate.getY(), coordinate.getZ(), rotation, width, length);
+    }
+
+    public Anchor rotateAndTranslateToOrigin(Anchor anchor, Rotation rotation) {
+        return new Anchor(rotateAndTranslateToOrigin(anchor.position(), rotation), rotation.rotate(anchor.direction()));
     }
 
     public BlockPos rotateAndTranslateToOrigin(int x, int y, int z, Rotation rotation) {
@@ -29,5 +29,9 @@ public record CoordinateSpace(BlockPos origin, int width, int length) {
 
     public BlockPos rotateAndTranslateToOrigin(Vec3i coordinate, Rotation rotation) {
         return rotateAndTranslateToOrigin(coordinate.getX(), coordinate.getY(), coordinate.getZ(), rotation);
+    }
+
+    public BlockPos rotate(Vec3i coordinate, Rotation rotation) {
+        return rotate(coordinate.getX(), coordinate.getY(), coordinate.getZ(), rotation, width, length);
     }
 }

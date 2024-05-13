@@ -5,104 +5,65 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
+import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
-import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 
 import java.util.Random;
 
-public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, Rotation rotation) {
-    public void fill(BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
-        WorldEditor.fill(world, stateProvider,
-                coordinateSpace.rotateAndTranslateToOrigin(from, rotation),
-                coordinateSpace.rotateAndTranslateToOrigin(to, rotation),
-                boundingBox, random, fillAir, fillSolid);
+public interface WorldEditor {
+    default void placeBlock(BlockStateProvider block, Vec3i pos, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+        placeBlock(block, pos, boundingBox, Rotation.NONE, random, fillAir, fillSolid, postProcess);
     }
 
-    public void fillWalls(BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
-        WorldEditor.fillWalls(world, stateProvider,
-                coordinateSpace.rotateAndTranslateToOrigin(from, rotation),
-                coordinateSpace.rotateAndTranslateToOrigin(to, rotation),
-                boundingBox, random, fillAir, fillSolid);
+    void placeBlock(BlockStateProvider block, Vec3i pos, BoundingBox boundingBox, Rotation blockRotation, Random random, boolean fillAir, boolean fillSolid, boolean postProcess);
+
+    void placeBlock(BlockState block, Vec3i pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess);
+
+    void fill(BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess);
+
+    void fillRing(BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, Random random, boolean fillAir,
+                  boolean fillSolid, boolean postProcess);
+
+    void placeStairs(BlockStateProvider stairs, BlockPos pos, Half half, Direction facing, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid,
+                     boolean postProcess);
+
+    static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
+        return world.getBlockState(pos).getDestroySpeed(world, pos) < 0;
     }
 
-    public void fillRing(BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, Random random, boolean fillAir,
-                         boolean fillSolid) {
-        WorldEditor.fillRing(world, blocks,
-                coordinateSpace.rotateAndTranslateToOrigin(center, rotation),
-                radius, thickness, height, boundingBox, random, fillAir, fillSolid);
+    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
+        fill(world, stateProvider, from, to, Rotation.NONE, boundingBox, random, fillAir, fillSolid);
     }
 
-    public void placeEntrance(BlockStateProvider stairs, Vec3i pos, Direction parallelTo, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
-        WorldEditor.placeEntrance(world, stairs,
-                coordinateSpace.rotateAndTranslateToOrigin(pos, rotation),
-                rotation.rotate(parallelTo), boundingBox, random, fillAir, fillSolid);
-    }
-
-    public void placePillar(BlockStateProvider pillar, BlockStateProvider stairs, Vec3i pos, int height,
-                            boolean north, boolean east, boolean south, boolean west,
-                            BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
-        WorldEditor.placePillar(world, pillar, stairs,
-                coordinateSpace.rotateAndTranslateToOrigin(pos, rotation),
-                height, north, east, south, west, boundingBox, random, fillAir, fillSolid);
-    }
-
-    public void placeSpiralStairStep(BlockStateProvider pillar, BlockStateProvider stairs, Vec3i center, BoundingBox boundingBox, Random random, boolean postProcess) {
-        WorldEditor.placeSpiralStairStep(world, pillar, stairs,
-                coordinateSpace.rotateAndTranslateToOrigin(center, rotation),
-                boundingBox, random, postProcess);
-    }
-
-    public void placeBlock(BlockStateProvider block, Vec3i pos, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        WorldEditor.placeBlock(world, block,
-                coordinateSpace.rotateAndTranslateToOrigin(pos, rotation),
-                boundingBox, random, fillAir, fillSolid, postProcess);
-    }
-
-    public void placeBlock(BlockStateProvider block, int x, int y, int z, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        WorldEditor.placeBlock(world, block,
-                coordinateSpace.rotateAndTranslateToOrigin(x, y, z, rotation),
-                boundingBox, random, fillAir, fillSolid, postProcess);
-    }
-
-    public void placeBlock(BlockState block, Vec3i pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        WorldEditor.placeBlock(world, block,
-                coordinateSpace.rotateAndTranslateToOrigin(pos, rotation),
-                boundingBox, fillAir, fillSolid, postProcess);
-    }
-
-    public void placeBlock(BlockState block, int x, int y, int z, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        WorldEditor.placeBlock(world, block,
-                coordinateSpace.rotateAndTranslateToOrigin(x, y, z, rotation),
-                boundingBox, fillAir, fillSolid, postProcess);
-    }
-
-    public static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
+    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
-        fillUnchecked(world, stateProvider, startVec, endVec, random, fillAir, fillSolid);
+        fillUnchecked(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid);
     }
 
-    public static void fillUnchecked(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Random random, boolean fillAir, boolean fillSolid) {
+    static void fillUnchecked(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, Random random, boolean fillAir, boolean fillSolid) {
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int x = from.getX(); x <= to.getX(); x++) {
             for (int y = from.getY(); y <= to.getY(); y++) {
                 for (int z = from.getZ(); z <= to.getZ(); z++) {
-                    BlockPos pos = new BlockPos(x, y, z);
-                    placeBlockUnchecked(world, stateProvider.get(world, pos, random), pos, fillAir, fillSolid, false);
+                    pos.set(x, y, z);
+                    placeBlockUnchecked(world, stateProvider.get(pos, random).rotate(world, pos, rotation), pos, fillAir, fillSolid, false);
                 }
             }
         }
     }
 
-    public static void fillWalls(LevelAccessor world, BlockStateProvider stateProvider, BlockPos from, BlockPos to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
+    static void fillWalls(LevelAccessor world, BlockStateProvider stateProvider, BlockPos from, BlockPos to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
 
@@ -152,8 +113,8 @@ public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, 
         }
     }
 
-    public static void fillRing(LevelAccessor world, BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, Random random,
-                                boolean fillAir, boolean fillSolid) {
+    static void fillRing(LevelAccessor world, BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, Random random,
+                         boolean fillAir, boolean fillSolid) {
         if (thickness >= radius) {
             fill(world, blocks, center.offset(-radius, 0, -radius), center.offset(radius, height - 1, radius), boundingBox, random, fillAir, fillSolid);
             return;
@@ -164,7 +125,7 @@ public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, 
         fill(world, blocks, center.offset(-radius, 0, thickness - radius), center.offset(thickness - radius - 1, height - 1, radius), boundingBox, random, fillAir, fillSolid);
     }
 
-    public static void placeEntrance(LevelAccessor world, BlockStateProvider stairs, BlockPos pos, Direction parallelTo, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
+    static void placeEntrance(LevelAccessor world, BlockStateProvider stairs, BlockPos pos, Direction parallelTo, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
         for (int coordinate = -1; coordinate <= 1; coordinate++) {
             BlockPos cursor = pos.relative(parallelTo, coordinate);
             placeBlock(world, Blocks.CAVE_AIR.defaultBlockState(), cursor, boundingBox, fillAir, fillSolid, false);
@@ -176,9 +137,9 @@ public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, 
         placeStairs(world, stairs, top.relative(parallelTo.getOpposite()), boundingBox, Half.TOP, parallelTo.getOpposite(), random, fillAir, fillSolid, false);
     }
 
-    public static void placePillar(LevelAccessor world, BlockStateProvider pillar, BlockStateProvider stairs, BlockPos pos,
-                                   int height, boolean north, boolean east, boolean south, boolean west,
-                                   BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
+    static void placePillar(LevelAccessor world, BlockStateProvider pillar, BlockStateProvider stairs, BlockPos pos,
+                            int height, boolean north, boolean east, boolean south, boolean west,
+                            BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
         if (boundingBox.isInside(pos)) {
             BlockPos.MutableBlockPos cursor = pos.mutable();
             for (int i = 0; i < height; i++) {
@@ -204,7 +165,7 @@ public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, 
         }
     }
 
-    public static void placeSpiralStairStep(LevelAccessor world, BlockStateProvider pillar, BlockStateProvider stairs, BlockPos center, BoundingBox boundingBox, Random random, boolean postProcess) {
+    static void placeSpiralStairStep(LevelAccessor world, BlockStateProvider pillar, BlockStateProvider stairs, BlockPos center, BoundingBox boundingBox, Random random, boolean postProcess) {
         fillRing(world, SingleBlock.AIR, center, 1, 1, 1, boundingBox, random, true, true);
         placeBlock(world, pillar, center, boundingBox, random, true, true, postProcess);
         int facing = center.getY() % Orientation.HORIZONTAL_FACINGS.length;
@@ -220,11 +181,7 @@ public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, 
         placeStairs(world, stairs, cursor, boundingBox, Half.TOP, direction.getCounterClockWise(), random, true, true, postProcess);
     }
 
-    public void placeStairs(BlockStateProvider stairs, BlockPos pos, Half half, Direction direction, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        placeStairs(world, stairs, coordinateSpace.rotateAndTranslateToOrigin(pos, rotation), boundingBox, half, direction, random, fillAir, fillSolid, postProcess);
-    }
-
-    public static void placeStairs(LevelAccessor world, BlockStateProvider stairs, BlockPos pos, BoundingBox boundingBox, Half half, Direction facing, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+    static void placeStairs(LevelAccessor world, BlockStateProvider stairs, BlockPos pos, BoundingBox boundingBox, Half half, Direction facing, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (!boundingBox.isInside(pos)) {
             return;
         }
@@ -238,19 +195,19 @@ public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, 
         placeBlockUnchecked(world, stair, pos, fillAir, fillSolid, postProcess);
     }
 
-    public static void placeBlock(LevelAccessor world, BlockStateProvider block, BlockPos pos, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+    static void placeBlock(LevelAccessor world, BlockStateProvider block, BlockPos pos, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
             placeBlockUnchecked(world, block.get(world, pos, random), pos, fillAir, fillSolid, postProcess);
         }
     }
 
-    public static void placeBlock(LevelAccessor world, BlockState block, BlockPos pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess) {
+    static void placeBlock(LevelAccessor world, BlockState block, BlockPos pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
             placeBlockUnchecked(world, block, pos, fillAir, fillSolid, postProcess);
         }
     }
 
-    public static void placeBlockUnchecked(LevelAccessor world, BlockState state, BlockPos pos, boolean fillAir, boolean fillSolid, boolean postProcess) {
+    static void placeBlockUnchecked(LevelAccessor world, BlockState state, BlockPos pos, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (isBlockProtected(world, pos)) {
             return;
         }
@@ -263,17 +220,15 @@ public record WorldEditor(LevelAccessor world, CoordinateSpace coordinateSpace, 
                 return;
             }
         }
-        world.setBlock(pos, state, 2);
-        if (postProcess) {
+        world.setBlock(pos, state, 3);
+        if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
+            world.scheduleTick(pos, state.getBlock(), 1);
+        } else if (postProcess) {
             world.getChunk(pos).markPosForPostprocessing(pos);
         }
         FluidState fluidState = world.getFluidState(pos);
         if (!fluidState.isEmpty()) {
             world.scheduleTick(pos, fluidState.getType(), 0);
         }
-    }
-
-    public static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
-        return world.getBlockState(pos).getDestroySpeed(world, pos) < 0;
     }
 }

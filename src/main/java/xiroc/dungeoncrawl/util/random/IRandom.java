@@ -23,13 +23,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
-import com.mojang.realmsclient.util.JsonUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.DatapackRegistry;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
@@ -41,13 +38,11 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -164,7 +159,14 @@ public interface IRandom<T> {
 
         public JsonElement serialize(IRandom<T> random) {
             if (random instanceof SingleValueRandom<T> singleValueRandom) {
-                return serializer.apply(singleValueRandom.value());
+                JsonElement value = serializer.apply(singleValueRandom.value());
+                if (value.isJsonArray()) {
+                    // Value is an array itself, so we cannot use the simplified representation
+                    JsonArray wrapped = new JsonArray();
+                    wrapped.add(value);
+                    return wrapped;
+                }
+                return value;
             } else if (random instanceof WeightedRandom<T> weightedRandom) {
                 JsonArray entries = new JsonArray();
                 weightedRandom.forEach((value, weight) -> {

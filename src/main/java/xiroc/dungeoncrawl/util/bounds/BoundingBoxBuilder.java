@@ -56,70 +56,18 @@ public class BoundingBoxBuilder implements Bounded {
         maxZ = Math.max(maxZ, bounded.maxZ());
     }
 
-    public void move(int offsetX, int offsetY, int offsetZ) {
+    public BoundingBoxBuilder move(int offsetX, int offsetY, int offsetZ) {
         minX += offsetX;
         minY += offsetY;
         minZ += offsetZ;
         maxX += offsetX;
         maxY += offsetY;
         maxZ += offsetZ;
+        return this;
     }
 
-    public void move(Vec3i offset) {
-        move(offset.getX(), offset.getY(), offset.getZ());
-    }
-
-    public void shrink(Direction side, int amount) {
-        switch (side) {
-            case NORTH -> minZ += amount;
-            case EAST -> maxX -= amount;
-            case SOUTH -> maxZ -= amount;
-            case WEST -> minX += amount;
-            case UP -> maxY -= amount;
-            case DOWN -> minY += amount;
-        }
-    }
-
-    public void shrinkHorizontally(int amount) {
-        this.minX += amount;
-        this.minZ += amount;
-        this.maxX -= amount;
-        this.maxY -= amount;
-    }
-
-    public BoundingBox cut(Direction side, int amount) {
-        return switch (side) {
-            case NORTH -> {
-                int minZ = this.minZ;
-                this.minZ += amount;
-                yield new BoundingBox(this.minX, this.minY, minZ, this.maxX, this.maxY, this.minZ - 1);
-            }
-            case EAST -> {
-                int maxX = this.maxX;
-                this.maxX -= amount;
-                yield new BoundingBox(this.maxX + 1, this.minY, this.minZ, maxX, this.maxY, this.maxZ);
-            }
-            case SOUTH -> {
-                int maxZ = this.maxZ;
-                this.maxZ -= amount;
-                yield new BoundingBox(this.minX, this.minY, this.maxZ + 1, this.maxX, this.maxY, maxZ);
-            }
-            case WEST -> {
-                int minX = this.minX;
-                this.minX += amount;
-                yield new BoundingBox(minX, this.minY, this.minZ, this.minX - 1, this.maxY, this.maxZ);
-            }
-            case UP -> {
-                int maxY = this.maxY;
-                this.maxY -= amount;
-                yield new BoundingBox(this.minX, this.maxY + 1, minZ, this.maxX, maxY, this.maxZ);
-            }
-            case DOWN -> {
-                int minY = this.minY;
-                this.minY += amount;
-                yield new BoundingBox(this.minX, minY, minZ, this.maxX, this.minY - 1, this.maxZ);
-            }
-        };
+    public BoundingBoxBuilder move(Vec3i offset) {
+        return move(offset.getX(), offset.getY(), offset.getZ());
     }
 
     @Override

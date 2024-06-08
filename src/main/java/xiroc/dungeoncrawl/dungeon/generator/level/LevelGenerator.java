@@ -7,12 +7,11 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.datapack.DatapackRegistries;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
-import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.generator.ClusterNodeBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.element.CorridorElement;
@@ -24,6 +23,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.type.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
@@ -32,42 +32,47 @@ import java.util.List;
 import java.util.Random;
 
 public class LevelGenerator {
+    public final LevelType levelType;
     public final DungeonPlan plan;
     public final int startHeight;
     public final int stage;
     public final Random random;
 
-    private final List<NodeElement> activeNodes = new ArrayList<>();
+    private final List<NodeElement> nodes = new ArrayList<>();
     private final List<CorridorElement> corridors = new ArrayList<>();
 
     private NodeElement start = null;
     private NodeElement end = null;
     private boolean placeEndStaircase;
-    private int clusterNodesLeft = 3;
+    private int clusterNodesLeft;
 
-    public LevelGenerator(DungeonPlan plan, int startHeight, int stage, Random random) {
+    public LevelGenerator(LevelType levelType, DungeonPlan plan, int startHeight, int stage, Random random) {
+        this.levelType = levelType;
         this.plan = plan;
         this.startHeight = startHeight;
         this.stage = stage;
         this.random = random;
+        this.clusterNodesLeft = levelType.clusterRooms() != null ? levelType.settings().maxClusterNodes : 0;
         this.placeEndStaircase = stage < 4; // TODO
     }
 
     public void generateLevel(StaircaseBuilder staircaseBuilder) {
-        if (createStart(startHeight, staircaseBuilder)) {
+        if (createStart(staircaseBuilder)) {
             return;
         }
 
-        for (int index = 0; index < this.activeNodes.size() && this.activeNodes.size() < 64; ++index) {
-            this.activeNodes.get(index).update(this);
+        final int maxNodes = levelType.settings().maxRooms;
+        for (int index = 0; index < this.nodes.size() && this.nodes.size() < maxNodes; ++index) {
+            this.nodes.get(index).update(this);
         }
     }
 
-    private boolean createStart(int startHeight, StaircaseBuilder staircaseBuilder) {
+    private boolean createStart(StaircaseBuilder staircaseBuilder) {
         final int minSeparation = 10;
 
-        Blueprint blueprint = Blueprints.getBlueprint(BuiltinBlueprints.LOWER_STAIRCASE);
-        ImmutableList<Anchor> anchors = blueprint.anchors().get(BuiltinAnchorTypes.STAIRCASE);
+        Delegate<Blueprint> roomDelegate = levelType.lowerStaircaseRooms().roll(random);
+        Blueprint room = roomDelegate.get();
+        ImmutableList<Anchor> anchors = room.anchors().get(BuiltinAnchorTypes.STAIRCASE);
         if (anchors == null) {
             return true;
         }
@@ -76,11 +81,11 @@ public class LevelGenerator {
             return true;
         }
 
-        int downwards = Math.max(blueprint.ySpan() - anchor.position().getY(), minSeparation);
+        int downwards = Math.max(room.ySpan() - anchor.position().getY(), minSeparation);
 
         BlockPos start = staircaseBuilder.atY(startHeight);
         Rotation rotation = Rotation.getRandom(random);
-        BlockPos offset = CoordinateSpace.rotate(anchor.position(), rotation, blueprint.xSpan(), blueprint.zSpan());
+        BlockPos offset = CoordinateSpace.rotate(anchor.position(), rotation, room.xSpan(), room.zSpan());
 
         BlockPos roomPos = new BlockPos(
                 start.getX() - offset.getX(),
@@ -88,13 +93,13 @@ public class LevelGenerator {
                 start.getZ() - offset.getZ()
         );
 
-        BoundingBoxBuilder boundingBox = blueprint.boundingBox(rotation);
+        BoundingBoxBuilder boundingBox = room.boundingBox(rotation);
         boundingBox.move(roomPos);
         if (!plan.isFree(boundingBox)) {
             return true;
         }
 
-        DungeonPiece piece = assemblePiece(blueprint, roomPos, rotation);
+        DungeonPiece piece = assemblePiece(room, roomPos, rotation);
         if (piece == null) {
             return true;
         }
@@ -104,7 +109,7 @@ public class LevelGenerator {
         NodeElement staircase = new NodeElement(piece, 0);
         plan.add(staircase);
         this.start = staircase;
-        this.activeNodes.add(staircase);
+        this.nodes.add(staircase);
         return false;
     }
 
@@ -129,7 +134,7 @@ public class LevelGenerator {
         NodeElement node = new NodeElement(piece, depth);
         this.plan.add(node);
         if (isActive) {
-            this.activeNodes.add(node);
+            this.nodes.add(node);
         }
         if (isEndStaircase) {
             placeEndStaircase = false;
@@ -152,7 +157,7 @@ public class LevelGenerator {
     }
 
     public boolean shouldPlaceEndStaircase(int depth) {
-        return placeEndStaircase && depth > 3;
+        return placeEndStaircase && depth >= levelType.settings().minStaircaseDepth;
     }
 
     public boolean createClusterNode(Anchor attachmentPoint, Random random, int depth) {

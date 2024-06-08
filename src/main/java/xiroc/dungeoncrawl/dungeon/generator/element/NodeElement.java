@@ -6,12 +6,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
-import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
@@ -38,7 +36,7 @@ public class NodeElement extends DungeonElement {
     }
 
     public void update(LevelGenerator levelGenerator) {
-        if (this.depth < 8) {
+        if (this.depth < levelGenerator.levelType.settings().maxDepth) {
             Random random = levelGenerator.random;
             int placements = 3;
             CoordinateSpace coordinateSpace = piece.blueprint.coordinateSpace(piece.position);
@@ -61,7 +59,7 @@ public class NodeElement extends DungeonElement {
 
     private boolean attachRoom(LevelGenerator levelGenerator, BlockPos start, Direction direction) {
         Random random = levelGenerator.random;
-        int corridorLength = 4 + random.nextInt(8);
+        int corridorLength = levelGenerator.levelType.settings().corridorLength.nextInt(random);
         int roomDepth = this.depth + 1;
         boolean isEndStaircase = levelGenerator.shouldPlaceEndStaircase(roomDepth);
 
@@ -70,9 +68,10 @@ public class NodeElement extends DungeonElement {
             return false;
         }
 
-        Blueprint room = isEndStaircase ? Blueprints.getBlueprint(BuiltinBlueprints.UPPER_STAIRCASE) :
-                (random.nextBoolean() ? Blueprints.getBlueprint(BuiltinBlueprints.CORNER_ROOM) : Blueprints.getBlueprint(DungeonCrawl.locate("room/sarcophagus")));
-        ImmutableList<Anchor> entrances = room.anchors().get(BuiltinAnchorTypes.ENTRANCE);
+        Delegate<Blueprint> room = isEndStaircase
+                ? levelGenerator.levelType.upperStaircaseRooms().roll(random)
+                : levelGenerator.levelType.rooms().roll(random);
+        ImmutableList<Anchor> entrances = room.get().anchors().get(BuiltinAnchorTypes.ENTRANCE);
         if (entrances == null) {
             return false;
         }
@@ -81,11 +80,11 @@ public class NodeElement extends DungeonElement {
         Anchor entrance = entrances.get(chosenEntrance);
         Anchor corridorEnd = new Anchor(start.relative(direction, corridorLength - 1), direction);
 
-        CoordinateSpace coordinateSpace = room.coordinateSpace(BlockPos.ZERO);
+        CoordinateSpace coordinateSpace = room.get().coordinateSpace(BlockPos.ZERO);
         BlockPos roomPosition = entrance.latchOnto(corridorEnd, coordinateSpace);
         Rotation rotation = Orientation.horizontalRotation(entrance.direction(), direction.getOpposite());
 
-        BoundingBoxBuilder roomBox = room.boundingBox(rotation);
+        BoundingBoxBuilder roomBox = room.get().boundingBox(rotation);
         roomBox.move(roomPosition);
         if (!levelGenerator.plan.isFree(roomBox)) {
             return false;

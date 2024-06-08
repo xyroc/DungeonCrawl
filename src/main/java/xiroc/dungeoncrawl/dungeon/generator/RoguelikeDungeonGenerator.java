@@ -18,7 +18,7 @@ import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.generator.plan.ListPlan;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.dungeon.type.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.random.IRandom;
@@ -75,8 +75,8 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
                 break;
             }
 
-            DungeonPiece piece = end.piece();
-            ImmutableList<Anchor> anchors = piece.blueprint.anchors().get(BuiltinAnchorTypes.STAIRCASE);
+            BlueprintPiece piece = end.piece();
+            ImmutableList<Anchor> anchors = piece.base.blueprint().get().anchors().get(BuiltinAnchorTypes.STAIRCASE);
             if (anchors == null || anchors.isEmpty()) {
                 break;
             }
@@ -84,9 +84,9 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             if (anchor.direction() != Direction.DOWN) {
                 break;
             }
-            BlockPos offset = CoordinateSpace.rotate(anchor.position(), piece.rotation, piece.blueprint.xSpan(), piece.blueprint.zSpan());
-            staircaseBuilder = new StaircaseBuilder(piece.position.getX() + offset.getX(), piece.position.getZ() + offset.getZ());
-            staircaseBuilder.top(offset, piece.position.getY());
+            BlockPos offset = CoordinateSpace.rotate(anchor.position(), piece.base.rotation(), piece.base.blueprint().get().xSpan(), piece.base.blueprint().get().zSpan());
+            staircaseBuilder = new StaircaseBuilder(piece.base.position().getX() + offset.getX(), piece.base.position().getZ() + offset.getZ());
+            staircaseBuilder.top(offset, piece.base.position().getY());
             startHeight = staircaseBuilder.wallTop().getY();
         }
         plan.forEach((element) -> element.createPieces(pieces::add));

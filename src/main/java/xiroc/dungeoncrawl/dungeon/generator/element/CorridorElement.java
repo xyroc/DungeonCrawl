@@ -8,15 +8,17 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.datapack.DatapackRegistries;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
+import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
+import xiroc.dungeoncrawl.dungeon.component.TunnelComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
-import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
-import xiroc.dungeoncrawl.dungeon.piece.Segment;
-import xiroc.dungeoncrawl.dungeon.piece.TunnelPiece;
+import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
@@ -62,15 +64,16 @@ public class CorridorElement extends DungeonElement {
         while (remaining >= FRAGMENT_LENGTH) {
             remaining -= FRAGMENT_LENGTH;
 
-            Blueprint blueprint = Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_ARCH_SEGMENT);
-            int halfWidth = blueprint.zSpan() / 2;
+            Delegate<Blueprint> segmentDelegate = Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_BASE_SEGMENT), BuiltinBlueprints.CORRIDOR_BASE_SEGMENT);
+            Blueprint segment = segmentDelegate.get();
+            int halfWidth = segment.zSpan() / 2;
 
-            BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, blueprint.xSpan(), blueprint.zSpan());
+            BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, segment.xSpan(), segment.zSpan());
             BlockPos position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
             PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
             SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
 
-            CompoundPiece corridor = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, levelGenerator.stage, levelGenerator.random);
+            BlueprintPiece corridor = new BlueprintPiece(new BlueprintComponent(segmentDelegate, position, rotation), primaryTheme, secondaryTheme, levelGenerator.stage);
             corridor.createBoundingBox();
             fragments.add(new Fragment(corridor));
 
@@ -80,19 +83,20 @@ public class CorridorElement extends DungeonElement {
 
     private void addSideSegments() {
         for (Fragment fragment : this.fragments) {
-            CoordinateSpace coordinateSpace = fragment.piece.blueprint.coordinateSpace(fragment.piece.position);
+            CoordinateSpace coordinateSpace = fragment.piece.base.blueprint().get().coordinateSpace(fragment.piece.base.position());
             for (Anchor attachmentPoint : fragment.unusedJunctures) {
-                Blueprint sideSegment = Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT);
-                ImmutableList<Anchor> junctures = sideSegment.anchors().get(BuiltinAnchorTypes.JUNCTURE);
+                Delegate<Blueprint> segmentDelegate = Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT), BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT);
+                Blueprint segment = segmentDelegate.get();
+                ImmutableList<Anchor> junctures = segment.anchors().get(BuiltinAnchorTypes.JUNCTURE);
                 if (junctures == null) {
                     continue;
                 }
-                Anchor actual = coordinateSpace.rotateAndTranslateToOrigin(attachmentPoint, fragment.piece.rotation);
+                Anchor actual = coordinateSpace.rotateAndTranslateToOrigin(attachmentPoint, fragment.piece.base.rotation());
                 Anchor juncture = junctures.get(levelGenerator.random.nextInt(junctures.size()));
                 Rotation rotation = Orientation.horizontalRotation(juncture.direction(), actual.direction().getOpposite());
-                BlockPos pos = juncture.latchOnto(actual, sideSegment.coordinateSpace(BlockPos.ZERO));
-                // TODO: check for collision
-                fragment.piece.addSegment(new Segment(sideSegment, pos, rotation));
+                BlockPos pos = juncture.latchOnto(actual, segment.coordinateSpace(BlockPos.ZERO));
+                // TODO: check for collision, add wall component if everything else collides
+                fragment.piece.addComponent(new BlueprintComponent(segmentDelegate, pos, rotation));
             }
         }
     }
@@ -107,21 +111,21 @@ public class CorridorElement extends DungeonElement {
 
         int remaining = length() - fragmentationStart;
         if (fragmentationStart > 0) {
-            consumer.accept(new TunnelPiece(start, direction, fragmentationStart, 2, 5, primaryTheme, secondaryTheme));
+            consumer.accept(new DungeonPiece(new TunnelComponent(start, direction, fragmentationStart, 5, 2), primaryTheme, secondaryTheme, 0));
         }
         int r = remaining % FRAGMENT_LENGTH;
         if (r > 0) {
-            consumer.accept(new TunnelPiece(start.relative(direction, length() - r), direction, r, 2, 5, primaryTheme, secondaryTheme));
+            consumer.accept(new DungeonPiece(new TunnelComponent(start.relative(direction, length() - r), direction, r, 5, 2), primaryTheme, secondaryTheme, 0));
         }
     }
 
     private static class Fragment {
-        public final CompoundPiece piece;
+        public final BlueprintPiece piece;
         public final ArrayList<Anchor> unusedJunctures;
 
-        public Fragment(CompoundPiece piece) {
+        public Fragment(BlueprintPiece piece) {
             this.piece = piece;
-            var junctures = piece.blueprint.anchors().get(BuiltinAnchorTypes.JUNCTURE);
+            var junctures = piece.base.blueprint().get().anchors().get(BuiltinAnchorTypes.JUNCTURE);
             this.unusedJunctures = junctures != null ? new ArrayList<>(junctures) : new ArrayList<>(0);
         }
     }

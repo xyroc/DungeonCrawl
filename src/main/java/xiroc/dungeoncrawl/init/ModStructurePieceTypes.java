@@ -22,18 +22,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.piece.StaircasePiece;
-import xiroc.dungeoncrawl.dungeon.piece.TunnelPiece;
 
 public interface ModStructurePieceTypes {
     StructurePieceType GENERIC = setPieceId(DungeonPiece::new, key("generic"));
-    StructurePieceType ENTRANCE = setPieceId(DungeonEntrance::new, key("entrance"));
-    StructurePieceType COMPOUND = setPieceId(CompoundPiece::new, key("compound"));
-    StructurePieceType STAIRCASE = setPieceId(StaircasePiece::new, key("staircase"));
-    StructurePieceType TUNNEL = setPieceId(TunnelPiece::new, key("tunnel"));
 
     private static ResourceLocation key(String path) {
         return DungeonCrawl.locate(path);

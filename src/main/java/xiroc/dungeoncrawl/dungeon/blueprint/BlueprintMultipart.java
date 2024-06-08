@@ -11,11 +11,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Rotation;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
+import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
-import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
-import xiroc.dungeoncrawl.dungeon.piece.Segment;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
@@ -24,19 +25,19 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import java.lang.reflect.Type;
 import java.util.Random;
 
-public record BlueprintMultipart(ResourceLocation anchorType, IRandom<ResourceLocation> blueprints) {
-    public boolean addParts(DungeonPlan plan, CompoundPiece parent, Random random) {
-        var anchors = parent.blueprint.anchors().get(anchorType);
+public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Delegate<Blueprint>> blueprints) {
+    public boolean addParts(DungeonPlan plan, DungeonPiece piece, BlueprintComponent parent, Random random) {
+        var anchors = parent.blueprint().get().anchors().get(anchorType);
         if (anchors == null) {
             return true;
         }
-        CoordinateSpace parentCoordinateSpace = parent.blueprint.coordinateSpace(parent.position);
+        CoordinateSpace parentCoordinateSpace = parent.blueprint().get().coordinateSpace(parent.position());
         main:
         for (Anchor anchor : anchors) {
-            anchor = parentCoordinateSpace.rotateAndTranslateToOrigin(anchor, parent.rotation);
+            anchor = parentCoordinateSpace.rotateAndTranslateToOrigin(anchor, parent.rotation());
             for (int attempt = 0; attempt < 4; ++attempt) {
-                Blueprint part = Blueprints.getBlueprint(blueprints.roll(random));
-                if (addPart(plan, parent, part, anchor, random)) {
+                Delegate<Blueprint> part = blueprints.roll(random);
+                if (addPart(plan, part, piece, parent, anchor, random)) {
                     continue main;
                 }
             }
@@ -45,8 +46,9 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<ResourceLo
         return true;
     }
 
-    private boolean addPart(DungeonPlan plan, CompoundPiece parent, Blueprint part, Anchor anchor, Random random) {
-        var junctures = part.anchors().get(BuiltinAnchorTypes.JUNCTURE);
+    private boolean addPart(DungeonPlan plan, Delegate<Blueprint> part, DungeonPiece piece, BlueprintComponent parent, Anchor anchor, Random random) {
+        Blueprint blueprint = part.get();
+        var junctures = blueprint.anchors().get(BuiltinAnchorTypes.JUNCTURE);
         if (junctures == null || junctures.isEmpty()) {
             return false;
         }
@@ -57,15 +59,15 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<ResourceLo
             if (horizontalAnchor && !horizontalJuncture || !horizontalAnchor && horizontalJuncture) {
                 continue;
             }
-            Rotation rotation = horizontalJuncture ? Orientation.horizontalRotation(juncture.direction(), anchor.direction().getOpposite()) : parent.rotation;
-            Vec3i offset = CoordinateSpace.rotate(juncture.position(), rotation, part.xSpan(), part.zSpan());
+            Rotation rotation = horizontalJuncture ? Orientation.horizontalRotation(juncture.direction(), anchor.direction().getOpposite()) : parent.rotation();
+            Vec3i offset = CoordinateSpace.rotate(juncture.position(), rotation, blueprint.xSpan(), blueprint.zSpan());
             BlockPos pos = anchor.position().mutable().move(anchor.direction()).move(-offset.getX(), -offset.getY(), -offset.getZ());
-            BoundingBoxBuilder boundingBox = part.boundingBox(rotation);
+            BoundingBoxBuilder boundingBox = blueprint.boundingBox(rotation);
             boundingBox.move(pos);
             if (!plan.isFree(boundingBox)) {
                 continue;
             }
-            parent.addSegment(new Segment(part, pos, rotation));
+            piece.addComponent(new BlueprintComponent(part, pos, rotation));
             return true;
         }
         return false;
@@ -79,7 +81,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<ResourceLo
         public BlueprintMultipart deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             ResourceLocation anchorType = new ResourceLocation(object.get(KEY_POSITIONS).getAsString());
-            IRandom<ResourceLocation> blueprints = IRandom.IDENTIFIER.deserialize(object.get(KEY_BLUEPRINTS));
+            IRandom<Delegate<Blueprint>> blueprints = IRandom.BLUEPRINT.deserialize(object.get(KEY_BLUEPRINTS));
             return new BlueprintMultipart(anchorType, blueprints);
         }
 
@@ -87,7 +89,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<ResourceLo
         public JsonElement serialize(BlueprintMultipart src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             object.addProperty(KEY_POSITIONS, src.anchorType.toString());
-            object.add(KEY_BLUEPRINTS, IRandom.IDENTIFIER.serialize(src.blueprints));
+            object.add(KEY_BLUEPRINTS, IRandom.BLUEPRINT.serialize(src.blueprints));
             return object;
         }
     }

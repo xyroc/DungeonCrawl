@@ -2,6 +2,7 @@ package xiroc.dungeoncrawl.dungeon.blueprint;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +10,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -20,6 +22,8 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 import java.util.Random;
 
 public interface Blueprint {
+    Codec<Delegate<Blueprint>> CODEC = ResourceLocation.CODEC.xmap(key -> Delegate.of(Blueprints.getBlueprint(key), key), Delegate::key);
+
     Blueprint EMPTY = new Blueprint() {
         final ResourceLocation key = DungeonCrawl.locate("empty");
         final BlueprintSettings settings = BlueprintSettings.builder().build();

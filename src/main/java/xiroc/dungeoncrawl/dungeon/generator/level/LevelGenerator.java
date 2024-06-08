@@ -12,13 +12,14 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
+import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.generator.ClusterNodeBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.element.CorridorElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.DungeonElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
-import xiroc.dungeoncrawl.dungeon.piece.CompoundPiece;
+import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -99,7 +100,7 @@ public class LevelGenerator {
             return true;
         }
 
-        DungeonPiece piece = assemblePiece(room, roomPos, rotation);
+        BlueprintPiece piece = assemblePiece(roomDelegate, roomPos, rotation);
         if (piece == null) {
             return true;
         }
@@ -113,16 +114,17 @@ public class LevelGenerator {
         return false;
     }
 
-    public DungeonPiece assemblePiece(Blueprint blueprint, BlockPos position, Rotation rotation) {
-        ImmutableList<BlueprintMultipart> parts = blueprint.parts();
+    public BlueprintPiece assemblePiece(Delegate<Blueprint> blueprint, BlockPos position, Rotation rotation) {
+        ImmutableList<BlueprintMultipart> parts = blueprint.get().parts();
         PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
         SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
+        BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
         if (parts.isEmpty()) {
-            return new DungeonPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage, random);
+            return new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);
         }
-        CompoundPiece piece = new CompoundPiece(blueprint, position, rotation, primaryTheme, secondaryTheme, stage, random);
+        BlueprintPiece piece = new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);
         for (BlueprintMultipart part : parts) {
-            if (!part.addParts(plan, piece, random)) {
+            if (!part.addParts(plan, piece, baseComponent, random)) {
                 return null;
             }
         }
@@ -130,7 +132,7 @@ public class LevelGenerator {
         return piece;
     }
 
-    public NodeElement createNode(DungeonPiece piece, int depth, boolean isActive, boolean isEndStaircase) {
+    public NodeElement createNode(BlueprintPiece piece, int depth, boolean isActive, boolean isEndStaircase) {
         NodeElement node = new NodeElement(piece, depth);
         this.plan.add(node);
         if (isActive) {

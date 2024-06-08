@@ -10,7 +10,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Random;
 
 public class ClusterNodeBuilder {
-
     private static final int MIN_SIZE = 2;
     private static final int MAX_SIZE = 5;
 
@@ -67,7 +66,7 @@ public class ClusterNodeBuilder {
                 boundingBoxBuilder.move(pos);
 
                 if (nodes.stream().noneMatch(node -> node.intersects(boundingBoxBuilder)) && levelGenerator.plan.isFree(boundingBoxBuilder)) {
-                    DungeonPiece piece = levelGenerator.assemblePiece(room, pos, rotation);
+                    BlueprintPiece piece = levelGenerator.assemblePiece(room, pos, rotation);
                     if (piece != null && nodes.stream().noneMatch(node -> node.intersects(piece.getBoundingBox()))) {
                         NodeElement node = levelGenerator.createNode(piece, nextDepth, !isClusterNode, isEndStaircase);
                         node.unusedEntrances.remove(chosenEntrance);
@@ -91,8 +90,9 @@ public class ClusterNodeBuilder {
         int placementsLeft = Math.min(3, node.unusedEntrances.size());
         for (int attempt = 0; attempt < maxAttempts && placementsLeft > 0; ++attempt) {
             int entrance = random.nextInt(node.unusedEntrances.size());
-            Anchor attachmentPoint = node.piece().blueprint.coordinateSpace(node.piece().position).rotateAndTranslateToOrigin(node.unusedEntrances.get(entrance),
-                    node.piece().rotation);
+            Anchor attachmentPoint =
+                    node.piece().base.blueprint().get().coordinateSpace(node.piece().base.position()).rotateAndTranslateToOrigin(node.unusedEntrances.get(entrance),
+                    node.piece().base.rotation());
             if (attachNode(attachmentPoint, attachClusterNodes)) {
                 --placementsLeft;
                 node.unusedEntrances.remove(entrance);

@@ -11,7 +11,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
@@ -25,23 +25,23 @@ public class NodeElement extends DungeonElement {
     public final int depth;
     public final ArrayList<Anchor> unusedEntrances;
 
-    private final DungeonPiece piece;
+    private final BlueprintPiece piece;
 
-    public NodeElement(DungeonPiece piece, int depth) {
+    public NodeElement(BlueprintPiece piece, int depth) {
         super(piece.getBoundingBox());
         this.piece = piece;
         this.depth = depth;
-        ImmutableList<Anchor> entrances = piece.blueprint.anchors().get(BuiltinAnchorTypes.ENTRANCE);
-        this.unusedEntrances = entrances == null ? Lists.newArrayList() : Lists.newArrayList(entrances);
+        ImmutableList<Anchor> entrances = piece.base.blueprint().get().anchors().get(BuiltinAnchorTypes.ENTRANCE);
+        this.unusedEntrances = entrances == null ? new ArrayList<>(0) : Lists.newArrayList(entrances);
     }
 
     public void update(LevelGenerator levelGenerator) {
         if (this.depth < levelGenerator.levelType.settings().maxDepth) {
             Random random = levelGenerator.random;
             int placements = 3;
-            CoordinateSpace coordinateSpace = piece.blueprint.coordinateSpace(piece.position);
+            CoordinateSpace coordinateSpace = piece.base.blueprint().get().coordinateSpace(piece.base.position());
             for (int attempt = 0; !unusedEntrances.isEmpty() && attempt < 4 && placements > 0; ++attempt) {
-                Anchor entrance = coordinateSpace.rotateAndTranslateToOrigin(unusedEntrances.remove(random.nextInt(unusedEntrances.size())), piece.rotation);
+                Anchor entrance = coordinateSpace.rotateAndTranslateToOrigin(unusedEntrances.remove(random.nextInt(unusedEntrances.size())), piece.base.rotation());
 
                 if (random.nextInt(10) == 0 && levelGenerator.createClusterNode(entrance, random, this.depth + 1)) {
                     piece.addEntrance(entrance.position().above(), entrance.direction());
@@ -90,7 +90,7 @@ public class NodeElement extends DungeonElement {
             return false;
         }
 
-        DungeonPiece piece = levelGenerator.assemblePiece(room, roomPosition, rotation);
+        BlueprintPiece piece = levelGenerator.assemblePiece(room, roomPosition, rotation);
         if (piece == null) {
             return false;
         }
@@ -110,7 +110,7 @@ public class NodeElement extends DungeonElement {
         consumer.accept(piece);
     }
 
-    public DungeonPiece piece() {
+    public BlueprintPiece piece() {
         return this.piece;
     }
 }

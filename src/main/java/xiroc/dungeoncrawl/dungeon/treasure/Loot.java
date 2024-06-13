@@ -18,14 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 
 import java.util.Random;
 
@@ -45,10 +40,6 @@ public class Loot {
     /* ************************************************************************************** */
 
     public static final ResourceLocation WITHER_SKELETON = DungeonCrawl.locate("monster_overrides/wither_skeleton");
-
-    public static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, Random rand) {
-        RandomizableContainerBlockEntity.setLootTable(world, rand, pos, lootTable);
-    }
 
     public static ResourceLocation getLootTable(int lootLevel, Random rand) {
         return switch (lootLevel) {

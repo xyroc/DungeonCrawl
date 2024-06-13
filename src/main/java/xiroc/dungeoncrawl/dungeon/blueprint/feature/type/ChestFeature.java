@@ -35,9 +35,7 @@ public record ChestFeature(Anchor placement, Optional<ResourceLocation> lootTabl
             return;
         }
         level.setBlock(position, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction()), 3);
-        if (level.getBlockEntity(position) instanceof RandomizableContainerBlockEntity chest) {
-            ResourceLocation lootTable = this.lootTable.orElse(Loot.getLootTable(stage, random));
-            Loot.setLoot(level, position, chest, lootTable, primaryTheme, secondaryTheme, random);
-        }
+        ResourceLocation lootTable = this.lootTable.orElse(Loot.getLootTable(stage, random));
+        RandomizableContainerBlockEntity.setLootTable(level, random, position, lootTable);
     }
 }

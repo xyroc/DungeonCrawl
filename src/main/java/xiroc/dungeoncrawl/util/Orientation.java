@@ -19,15 +19,12 @@
 package xiroc.dungeoncrawl.util;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 
-public class Orientation {
-    public static final Direction[] HORIZONTAL_FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH,
-            Direction.WEST};
+public interface Orientation {
+    Direction[] HORIZONTAL_FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
-    public static Rotation horizontalRotation(Direction from, Direction to) {
+    static Rotation horizontalRotation(Direction from, Direction to) {
         if (from.getAxis() == Direction.Axis.Y || to.getAxis() == Direction.Axis.Y) {
             throw new IllegalArgumentException();
         }
@@ -43,63 +40,21 @@ public class Orientation {
         return Rotation.COUNTERCLOCKWISE_90;
     }
 
-    public static Vec3i rotatedMultipartOffset(Blueprint parent, Blueprint multipart, Vec3i offset, Rotation parentRotation, Rotation fullRotation) {
-        int ordinalBit = fullRotation.ordinal() & 1;
-        switch (parentRotation) {
-            case CLOCKWISE_90: {
-                int multipartLength = ordinalBit == 0 ? multipart.xSpan() : multipart.zSpan();
-                return new Vec3i(parent.zSpan() - offset.getZ() - multipartLength, offset.getY(), offset.getX());
-            }
-            case CLOCKWISE_180: {
-                int multipartWidth = ordinalBit == 1 ? multipart.zSpan() : multipart.xSpan();
-                int multipartLength = ordinalBit == 1 ? multipart.xSpan() : multipart.zSpan();
-                return new Vec3i(parent.xSpan() - offset.getX() - multipartWidth, offset.getY(), parent.zSpan() - offset.getZ() - multipartLength);
-            }
-            case COUNTERCLOCKWISE_90: {
-                int multipartWidth = ordinalBit == 0 ? multipart.zSpan() : multipart.xSpan();
-                return new Vec3i(offset.getZ(), offset.getY(), parent.xSpan() - offset.getX() - multipartWidth);
-            }
-            default:
-                return offset;
-        }
+    static Rotation rotationFromInt(int rotation) {
+        return switch (rotation) {
+            case 1 -> Rotation.CLOCKWISE_90;
+            case 2 -> Rotation.CLOCKWISE_180;
+            case 3 -> Rotation.COUNTERCLOCKWISE_90;
+            default -> Rotation.NONE;
+        };
     }
 
-    public static Rotation getOppositeRotation(Rotation rotation) {
-        switch (rotation) {
-            case CLOCKWISE_90:
-                return Rotation.COUNTERCLOCKWISE_90;
-            case COUNTERCLOCKWISE_90:
-                return Rotation.CLOCKWISE_90;
-            default:
-                return rotation;
-        }
-    }
-
-    public static Rotation getRotation(int rotation) {
-        switch (rotation) {
-            case 0:
-                return Rotation.NONE;
-            case 1:
-                return Rotation.CLOCKWISE_90;
-            case 2:
-                return Rotation.CLOCKWISE_180;
-            case 3:
-                return Rotation.COUNTERCLOCKWISE_90;
-            default:
-                return Rotation.NONE;
-        }
-    }
-
-    public static int rotationAsInt(Rotation rotation) {
-        switch (rotation) {
-            case CLOCKWISE_180:
-                return 2;
-            case CLOCKWISE_90:
-                return 1;
-            case COUNTERCLOCKWISE_90:
-                return 3;
-            default:
-                return 0;
-        }
+    static int rotationToInt(Rotation rotation) {
+        return switch (rotation) {
+            case CLOCKWISE_180 -> 2;
+            case CLOCKWISE_90 -> 1;
+            case COUNTERCLOCKWISE_90 -> 3;
+            default -> 0;
+        };
     }
 }

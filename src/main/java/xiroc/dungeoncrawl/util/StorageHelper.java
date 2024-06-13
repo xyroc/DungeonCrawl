@@ -15,7 +15,7 @@ import java.util.List;
 public interface StorageHelper {
     Codec<Block> BLOCK_CODEC = ResourceLocation.CODEC.xmap(Registry.BLOCK::get, Registry.BLOCK::getKey);
     Codec<List<BlockPos>> BLOCK_POS_LIST_CODEC = Codec.list(BlockPos.CODEC);
-    Codec<Rotation> ROTATION_CODEC = Codec.INT.xmap(Orientation::getRotation, Orientation::rotationAsInt);
+    Codec<Rotation> ROTATION_CODEC = Codec.INT.xmap(Orientation::rotationFromInt, Orientation::rotationToInt);
 
     static <T> Tag encode(T value, Codec<T> codec) {
         return codec.encodeStart(NbtOps.INSTANCE, value).result().orElseThrow();

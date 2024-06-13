@@ -58,13 +58,15 @@ public class SpawnerType {
             }
             data.put("entity", entity);
 
-            CompoundTag spawnRules = new CompoundTag();
-            CompoundTag lightLimit = new CompoundTag();
-            lightLimit.putInt("min_inclusive", 0);
-            lightLimit.putInt("max_inclusive",  maxLightLevel);
-            spawnRules.put("block_light_limit", lightLimit);
-            spawnRules.put("sky_light_limit", lightLimit);
-            data.put("custom_spawn_rules", spawnRules);
+            if (maxLightLevel >= 0) {
+                CompoundTag spawnRules = new CompoundTag();
+                CompoundTag lightLimit = new CompoundTag();
+                lightLimit.putInt("min_inclusive", 0);
+                lightLimit.putInt("max_inclusive", maxLightLevel);
+                spawnRules.put("block_light_limit", lightLimit);
+                spawnRules.put("sky_light_limit", lightLimit);
+                data.put("custom_spawn_rules", spawnRules);
+            }
 
             potentialSpawn.put("data", data);
             potentialSpawn.putInt("weight", 1);
@@ -164,6 +166,7 @@ public class SpawnerType {
         private static final String KEY_SPAWN_DELAY = "delay";
         private static final String KEY_INITIAL_SPAWN_DELAY = "initial_delay";
         private static final String KEY_ACTIVATION_RANGE = "activation_range";
+        private static final String KEY_MAX_LIGHT_LEVEL = "max_light_level";
 
         @Override
         public SpawnerType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
@@ -183,6 +186,9 @@ public class SpawnerType {
             if (object.has(KEY_ACTIVATION_RANGE)) {
                 builder.activationRange = object.get(KEY_ACTIVATION_RANGE).getAsShort();
             }
+            if (object.has(KEY_MAX_LIGHT_LEVEL)) {
+                builder.maxLightLevel = object.get(KEY_MAX_LIGHT_LEVEL).getAsInt();
+            }
             return builder.build();
         }
 
@@ -200,6 +206,9 @@ public class SpawnerType {
             }
             if (src.activationRange > 0) {
                 object.addProperty(KEY_ACTIVATION_RANGE, src.activationRange);
+            }
+            if (src.maxLightLevel >= 0) {
+                object.addProperty(KEY_MAX_LIGHT_LEVEL, src.maxLightLevel);
             }
             return object;
         }

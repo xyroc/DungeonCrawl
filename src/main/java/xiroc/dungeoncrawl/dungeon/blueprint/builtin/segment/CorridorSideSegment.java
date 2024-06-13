@@ -23,7 +23,7 @@ import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
 
 import java.util.Random;
 
-public record CorridorSideSegment(ResourceLocation key, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
+public record CorridorSideSegment(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
                                   ImmutableList<FeatureConfiguration> features, BlueprintSettings settings) implements Blueprint {
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {

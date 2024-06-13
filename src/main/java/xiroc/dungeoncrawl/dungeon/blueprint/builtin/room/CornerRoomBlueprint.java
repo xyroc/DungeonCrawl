@@ -24,7 +24,7 @@ import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
 
-public record CornerRoomBlueprint(ResourceLocation key, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
+public record CornerRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
                                   ImmutableList<FeatureConfiguration> features, BlueprintSettings settings) implements Blueprint {
     private static final Vec3i CEILING_CENTER = new Vec3i(3, 5, 3);
 

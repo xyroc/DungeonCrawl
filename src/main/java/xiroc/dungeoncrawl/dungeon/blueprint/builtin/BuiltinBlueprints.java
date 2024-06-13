@@ -32,12 +32,8 @@ public interface BuiltinBlueprints {
         return new ResourceLocation(DatapackNamespaces.BUILT_IN, path);
     }
 
-    private static void register(BiConsumer<ResourceLocation, Blueprint> consumer, Blueprint blueprint) {
-        consumer.accept(blueprint.key(), blueprint);
-    }
-
     static void register(BiConsumer<ResourceLocation, Blueprint> consumer) {
-        register(consumer, new EmptyRoomBlueprint(EMPTY_ROOM,
+        consumer.accept(EMPTY_ROOM, new EmptyRoomBlueprint(
                 ImmutableMap.of(BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
                         Anchor.of(0, 0, 3, Direction.WEST),
                         Anchor.of(3, 0, 0, Direction.NORTH),
@@ -46,7 +42,7 @@ public interface BuiltinBlueprints {
                 ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
-        register(consumer, new CornerRoomBlueprint(CORNER_ROOM,
+        consumer.accept(CORNER_ROOM, new CornerRoomBlueprint(
                 ImmutableMap.of(BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
                         Anchor.of(0, 0, 3, Direction.WEST),
                         Anchor.of(3, 0, 0, Direction.NORTH),
@@ -55,7 +51,7 @@ public interface BuiltinBlueprints {
                 ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
-        register(consumer, new UpperStaircaseBlueprint(UPPER_STAIRCASE, ImmutableMap.of(
+        consumer.accept(UPPER_STAIRCASE, new UpperStaircaseBlueprint(ImmutableMap.of(
                 BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 1, 4, Direction.DOWN)),
                 BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
                         Anchor.of(0, 0, 4, Direction.WEST),
@@ -65,7 +61,7 @@ public interface BuiltinBlueprints {
                 ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
-        register(consumer, new LowerStaircaseBlueprint(LOWER_STAIRCASE, ImmutableMap.of(
+        consumer.accept(LOWER_STAIRCASE, new LowerStaircaseBlueprint(ImmutableMap.of(
                 BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 0, 4, Direction.UP)),
                 BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
                         Anchor.of(0, 0, 4, Direction.WEST),
@@ -75,18 +71,18 @@ public interface BuiltinBlueprints {
                 ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
-        register(consumer, new CorridorBaseSegment(CORRIDOR_BASE_SEGMENT, ImmutableMap.of(
+        consumer.accept(CORRIDOR_BASE_SEGMENT, new CorridorBaseSegment(ImmutableMap.of(
                 BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(
                         Anchor.of(1, 0, 0, Direction.NORTH),
                         Anchor.of(1, 0, 2, Direction.SOUTH))),
                 ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
-        register(consumer, new CorridorSideSegment(CORRIDOR_SIDE_SEGMENT,
+        consumer.accept(CORRIDOR_SIDE_SEGMENT, new CorridorSideSegment(
                 ImmutableMap.of(BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(Anchor.of(1, 0, 1, Direction.SOUTH))),
                 ImmutableList.of(),
                 BlueprintSettings.builder().build()));
 
-        register(consumer, new CorridorArchSegment(CORRIDOR_ARCH_SEGMENT, ImmutableMap.of(), ImmutableList.of(), BlueprintSettings.builder().build()));
+        consumer.accept(CORRIDOR_ARCH_SEGMENT, new CorridorArchSegment(ImmutableMap.of(), ImmutableList.of(), BlueprintSettings.builder().build()));
     }
 }

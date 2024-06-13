@@ -23,7 +23,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,8 +37,8 @@ public class ResourceReloadHandler implements PreparableReloadListener {
         DatapackRegistries.SECONDARY_THEME.reload(resourceManager);
         DatapackRegistries.SPAWNER_ENTITY_TYPE.reload(resourceManager);
         DatapackRegistries.SPAWNER_TYPE.reload(resourceManager);
+        DatapackRegistries.BLUEPRINT.reload(resourceManager);
 
-        Blueprints.load(resourceManager);
         Themes.load(resourceManager);
 
         DungeonCrawl.LOGGER.info("Done.");

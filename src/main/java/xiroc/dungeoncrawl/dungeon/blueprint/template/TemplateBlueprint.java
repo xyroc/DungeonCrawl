@@ -9,6 +9,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.LevelAccessor;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
@@ -31,27 +34,27 @@ import xiroc.dungeoncrawl.mixin.accessor.StructureTemplateAccessor;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                BlueprintSettings settings,
-                                ImmutableList<FeatureConfiguration> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
+public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
+                                BlueprintSettings settings, ImmutableList<FeatureConfiguration> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
+
     public static final Gson GSON = FeatureConfiguration.gsonAdapters(new GsonBuilder())
             .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
             .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
             .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer())
             .registerTypeAdapter(BlueprintSettings.class, new BlueprintSettings.Serializer()).create();
 
-    public static TemplateBlueprint load(ResourceManager resourceManager, ResourceLocation file, ResourceLocation key, Function<ResourceLocation, Optional<StructureTemplate>> templateLookup) {
+    public static TemplateBlueprint load(ResourceManager resourceManager, ResourceLocation key, Reader file) {
         try {
-            TemplateBlueprintConfiguration configuration = GSON.fromJson(new InputStreamReader(resourceManager.getResource(file).getInputStream()), TemplateBlueprintConfiguration.class);
-            Optional<StructureTemplate> template = templateLookup.apply(configuration.template);
+            TemplateBlueprintConfiguration configuration = GSON.fromJson(file, TemplateBlueprintConfiguration.class);
+            Optional<StructureTemplate> template = loadTemplate(resourceManager, configuration.template);
             if (template.isEmpty()) {
                 throw new DatapackLoadException("Could not find structure template: " + configuration.template);
             }
@@ -66,9 +69,9 @@ public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<
             ImmutableMap.Builder<ResourceLocation, ImmutableList<Anchor>> immutableAnchors = ImmutableMap.builder();
             anchors.forEach((type, builder) -> immutableAnchors.put(type, builder.build()));
 
-            return new TemplateBlueprint(key, template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.settings, configuration.features, configuration.parts);
+            return new TemplateBlueprint(template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.settings, configuration.features, configuration.parts);
         } catch (Exception e) {
-            throw new DatapackLoadException("Failed to load " + file + ": " + e.getMessage());
+            throw new DatapackLoadException("Failed to load " + key + ": " + e.getMessage());
         }
     }
 
@@ -101,14 +104,30 @@ public record TemplateBlueprint(ResourceLocation key, Vec3i size, ImmutableList<
         }
     }
 
+    private static Optional<StructureTemplate> loadTemplate(ResourceManager resourceManager, ResourceLocation key) {
+        try {
+            ResourceLocation path = new ResourceLocation(key.getNamespace(), "structures/" + key.getPath() + ".nbt");
+            if (!resourceManager.hasResource(path)) {
+                return Optional.empty();
+            }
+            CompoundTag nbt = NbtIo.readCompressed(resourceManager.getResource(path).getInputStream());
+            StructureTemplate template = new StructureTemplate();
+            template.load(nbt);
+            return Optional.of(template);
+        } catch (IOException e) {
+            DungeonCrawl.LOGGER.error("Failed to load the structure template {} : {}", key, e.getMessage());
+            return Optional.empty();
+        }
+    }
+
     @Override
     public void build(LevelAccessor level, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
         CoordinateSpace coordinateSpace = coordinateSpace(position);
         this.blocks.forEach((block) -> {
             boolean solid = block.placementProperties().isSolid();
             BlockPos pos = coordinateSpace.rotateAndTranslateToOrigin(block.position(), rotation);
-            WorldEditor.placeBlock(level, block.placementProperties().blockType().blockFactory.get(block, level, pos, primaryTheme, secondaryTheme, random)
-                    .rotate(level, pos, rotation), pos, worldGenBounds, solid, true, true);
+            BlockState state = block.placementProperties().blockType().blockFactory.get(block, level, pos, primaryTheme, secondaryTheme, random).rotate(level, pos, rotation);
+            WorldEditor.placeBlock(level, state, pos, worldGenBounds, solid, true, true);
         });
     }
 

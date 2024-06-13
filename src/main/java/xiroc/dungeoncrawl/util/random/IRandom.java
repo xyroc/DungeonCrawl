@@ -21,7 +21,6 @@ package xiroc.dungeoncrawl.util.random;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -31,7 +30,6 @@ import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.DatapackRegistry;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
@@ -79,28 +77,27 @@ public interface IRandom<T> {
 
     Serializer<Item> ITEM = new Serializer<>(
             (json) -> RandomEquipment.getItem(new ResourceLocation(json.getAsString())),
-            (item) -> new JsonPrimitive(item.getRegistryName().toString()), "item");
+            (item) -> new JsonPrimitive(item.getRegistryName().toString()),
+            "item"
+    );
 
     Serializer<BlockState> BLOCK_STATE = new Serializer<>(
             JSONUtils::deserializeBlockState,
-            JSONUtils::serializeBlockState, "block"
+            JSONUtils::serializeBlockState,
+            "block"
     );
 
     Serializer<Delegate<SpawnerEntityType>> SPAWNER_ENTITY = Serializer.referenceOrInlined(
-            DatapackRegistries.SPAWNER_ENTITY_TYPE, "entity",
+            DatapackRegistries.SPAWNER_ENTITY_TYPE,
+            "entity",
             (json) -> SpawnerSerializers.ENTITY_TYPES.fromJson(json, SpawnerEntityType.class),
-            SpawnerSerializers.ENTITY_TYPES::toJsonTree);
+            SpawnerSerializers.ENTITY_TYPES::toJsonTree
+    );
 
     Serializer<Delegate<SpawnerType>> SPAWNER_TYPE = Serializer.reference(DatapackRegistries.SPAWNER_TYPE, "type");
 
     Serializer<Delegate<Blueprint>> BLUEPRINT = new Serializer<>(
-            (json) -> {
-                ResourceLocation key = new ResourceLocation(json.getAsString());
-                if (!Blueprints.exists(key)) {
-                    throw new JsonParseException("The blueprint " + key + " does not exist");
-                }
-                return Delegate.of(Blueprints.getBlueprint(key), key);
-            },
+            (json) -> DatapackRegistries.BLUEPRINT.delegateOrThrow(new ResourceLocation(json.getAsString())),
             (blueprint) -> new JsonPrimitive(blueprint.key().toString()),
             "blueprint"
     );
@@ -111,7 +108,8 @@ public interface IRandom<T> {
     Serializer<ResourceLocation> IDENTIFIER = new Serializer<>(
             (json) -> new ResourceLocation(json.getAsString()),
             (identifier) -> new JsonPrimitive(identifier.toString()),
-            "key");
+            "key"
+    );
 
     class Serializer<T> {
         public static <T> Serializer<Delegate<T>> reference(DatapackRegistry<T> registry, String valueKey) {

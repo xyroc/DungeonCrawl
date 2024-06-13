@@ -5,10 +5,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
@@ -37,20 +37,20 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             .minSeparation(10)
             .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
-                    .add(Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORNER_ROOM), BuiltinBlueprints.CORNER_ROOM))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORNER_ROOM))
                     .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
-                    .add(Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_BASE_SEGMENT), BuiltinBlueprints.CORRIDOR_BASE_SEGMENT))
-                    .add(Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_ARCH_SEGMENT), BuiltinBlueprints.CORRIDOR_ARCH_SEGMENT))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_BASE_SEGMENT))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_ARCH_SEGMENT))
                     .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
-                    .add(Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT), BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT))
                     .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
-                    .add(Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.UPPER_STAIRCASE), BuiltinBlueprints.UPPER_STAIRCASE))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.UPPER_STAIRCASE))
                     .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
-                    .add(Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.LOWER_STAIRCASE), BuiltinBlueprints.LOWER_STAIRCASE))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.LOWER_STAIRCASE))
                     .build(),
             null,
             new IRandom.Builder<Delegate<SpawnerType>>()

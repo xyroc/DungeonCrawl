@@ -18,7 +18,7 @@ import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
 
-public record EmptyRoomBlueprint(ResourceLocation key, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
+public record EmptyRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
                                  ImmutableList<FeatureConfiguration> features, BlueprintSettings settings) implements Blueprint {
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {

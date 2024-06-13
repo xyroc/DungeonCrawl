@@ -10,7 +10,6 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
@@ -64,7 +63,7 @@ public class CorridorElement extends DungeonElement {
         while (remaining >= FRAGMENT_LENGTH) {
             remaining -= FRAGMENT_LENGTH;
 
-            Delegate<Blueprint> segmentDelegate = Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_BASE_SEGMENT), BuiltinBlueprints.CORRIDOR_BASE_SEGMENT);
+            Delegate<Blueprint> segmentDelegate = DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_BASE_SEGMENT);
             Blueprint segment = segmentDelegate.get();
             int halfWidth = segment.zSpan() / 2;
 
@@ -85,7 +84,7 @@ public class CorridorElement extends DungeonElement {
         for (Fragment fragment : this.fragments) {
             CoordinateSpace coordinateSpace = fragment.piece.base.blueprint().get().coordinateSpace(fragment.piece.base.position());
             for (Anchor attachmentPoint : fragment.unusedJunctures) {
-                Delegate<Blueprint> segmentDelegate = Delegate.of(Blueprints.getBlueprint(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT), BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT);
+                Delegate<Blueprint> segmentDelegate = DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT);
                 Blueprint segment = segmentDelegate.get();
                 ImmutableList<Anchor> junctures = segment.anchors().get(BuiltinAnchorTypes.JUNCTURE);
                 if (junctures == null) {

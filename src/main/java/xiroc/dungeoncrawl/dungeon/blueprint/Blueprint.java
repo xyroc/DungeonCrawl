@@ -10,6 +10,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
@@ -22,12 +23,10 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 import java.util.Random;
 
 public interface Blueprint {
-    Codec<Delegate<Blueprint>> CODEC = ResourceLocation.CODEC.xmap(key -> Delegate.of(Blueprints.getBlueprint(key), key), Delegate::key);
+    Codec<Delegate<Blueprint>> CODEC = ResourceLocation.CODEC.xmap(DatapackRegistries.BLUEPRINT::delegateOrThrow, Delegate::key);
 
     Blueprint EMPTY = new Blueprint() {
-        final ResourceLocation key = DungeonCrawl.locate("empty");
         final BlueprintSettings settings = BlueprintSettings.builder().build();
-
 
         @Override
         public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random,
@@ -65,11 +64,6 @@ public interface Blueprint {
         }
 
         @Override
-        public ResourceLocation key() {
-            return key;
-        }
-
-        @Override
         public BoundingBox createBoundingBox(Vec3i offset, Rotation rotation) {
             return BoundingBoxUtils.emptyBox();
         }
@@ -93,8 +87,6 @@ public interface Blueprint {
     }
 
     BlueprintSettings settings();
-
-    ResourceLocation key();
 
     default BoundingBoxBuilder boundingBox(Rotation rotation) {
         return switch (rotation) {

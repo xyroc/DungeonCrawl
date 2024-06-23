@@ -30,7 +30,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
-import xiroc.dungeoncrawl.dungeon.block.provider.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.lang.reflect.Type;
@@ -43,7 +42,6 @@ public interface BlockStateProvider {
             .registerTypeAdapter(SingleBlock.class, new SingleBlock.Serializer())
             .registerTypeAdapter(RandomBlock.class, new RandomBlock.Serializer())
             .registerTypeAdapter(CheckerboardPattern.class, new CheckerboardPattern.Serializer())
-            .registerTypeAdapter(TerracottaPattern.class, new TerracottaPattern.Serializer())
             .create();
 
     BlockState get(BlockPos pos, Random random);
@@ -76,13 +74,8 @@ public interface BlockStateProvider {
                 case SharedSerializationConstants.TYPE_RANDOM_BLOCK -> {
                     return GSON.fromJson(json, RandomBlock.class);
                 }
-                case SharedSerializationConstants.TYPE_PATTERN -> {
-                    String patternType = object.get(SharedSerializationConstants.KEY_PATTERN_TYPE).getAsString().toLowerCase(Locale.ROOT);
-                    return switch (patternType) {
-                        case SharedSerializationConstants.PATTERN_TYPE_CHECKERBOARD -> GSON.fromJson(json, CheckerboardPattern.class);
-                        case SharedSerializationConstants.PATTERN_TYPE_TERRACOTTA -> GSON.fromJson(json, TerracottaPattern.class);
-                        default -> throw new JsonParseException("Unknown block pattern type: " + object.get(patternType).getAsString());
-                    };
+                case SharedSerializationConstants.TYPE_CHECKERBOARD_PATTERN -> {
+                    return GSON.fromJson(json, CheckerboardPattern.class);
                 }
                 default -> throw new JsonParseException("Unknown block state provider type: " + type);
             }
@@ -91,13 +84,9 @@ public interface BlockStateProvider {
 
     interface SharedSerializationConstants {
         String KEY_PROVIDER_TYPE = "type";
-        String KEY_PATTERN_TYPE = "pattern_type";
 
         String TYPE_SINGLE_BLOCK = "block";
         String TYPE_RANDOM_BLOCK = "random_block";
-        String TYPE_PATTERN = "pattern";
-
-        String PATTERN_TYPE_CHECKERBOARD = "checkerboard";
-        String PATTERN_TYPE_TERRACOTTA = "terracotta";
+        String TYPE_CHECKERBOARD_PATTERN = "checkerboard";
     }
 }

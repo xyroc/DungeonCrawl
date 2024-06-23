@@ -36,7 +36,6 @@ public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider 
     }
 
     public static class Serializer implements JsonSerializer<CheckerboardPattern>, JsonDeserializer<CheckerboardPattern> {
-
         private static final String KEY_BLOCK_1 = "block_1";
         private static final String KEY_BLOCK_2 = "block_2";
 
@@ -51,13 +50,11 @@ public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider 
         @Override
         public JsonElement serialize(CheckerboardPattern src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_PATTERN);
-            object.addProperty(SharedSerializationConstants.KEY_PATTERN_TYPE, SharedSerializationConstants.PATTERN_TYPE_CHECKERBOARD);
+            object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_CHECKERBOARD_PATTERN);
 
             object.add(KEY_BLOCK_1, context.serialize(src.block1));
             object.add(KEY_BLOCK_2, context.serialize(src.block2));
             return object;
         }
-
     }
 }

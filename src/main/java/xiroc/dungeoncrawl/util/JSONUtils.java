@@ -21,15 +21,14 @@ package xiroc.dungeoncrawl.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
-import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class JSONUtils {
@@ -47,70 +46,63 @@ public class JSONUtils {
     }
 
     /**
-     * Applies the property value to the BlockState. It is required that the BlockState supports that property.
+     * Reads a block state from a json string
      *
-     * @return the resulting block state
+     * @param json a json string representing the block state
+     * @return the block state
      */
-    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property, String value) {
-        Optional<T> optional = property.getValue(value);
-        if (optional.isPresent()) {
-            T t = optional.get();
-            return state.setValue(property, t);
-        } else {
-            DungeonCrawl.LOGGER.warn("Couldn't apply property {} with value {} to {}", property.getName(), value, state.getBlock().getRegistryName());
-        }
-        return state;
-    }
-
-    private static final String KEY_BLOCK_NAME = "name";
-    private static final String KEY_BLOCK_PROPERTIES = "properties";
-
     public static BlockState deserializeBlockState(JsonElement json) {
-        if (json.isJsonPrimitive()) {
-            return Registry.BLOCK.get(new ResourceLocation(json.getAsString())).defaultBlockState();
-        }
-        JsonObject object = json.getAsJsonObject();
-        BlockState state = Registry.BLOCK.get(new ResourceLocation(object.get(KEY_BLOCK_NAME).getAsString())).defaultBlockState();
-
-        if (object.has(KEY_BLOCK_PROPERTIES)) {
-            JsonObject properties = object.getAsJsonObject(KEY_BLOCK_PROPERTIES);
-            for (Property<?> property : state.getProperties()) {
-                if (properties.has(property.getName())) {
-                    state = parseProperty(state, property, properties.get(property.getName()).getAsString());
-                }
+        String state = json.getAsString();
+        BlockStateParser parser = new BlockStateParser(new StringReader(state), false);
+        try {
+            parser.parse(false);
+            if (parser.getState() == null) {
+                throw new DatapackLoadException("Error while parsing block state: " + state);
             }
+            return parser.getState();
+        } catch (CommandSyntaxException e) {
+            throw new DatapackLoadException("Could not parse block state: " + e.getMessage());
         }
-
-        return state;
     }
 
     /**
-     * Serializes the given block state.
+     * Serializes the given block state to a json string.
      *
      * @param state the block state
      * @return the serialized form of the block state
      */
     public static JsonElement serializeBlockState(BlockState state) {
-        String name = Objects.requireNonNull(state.getBlock().getRegistryName()).toString();
-        if (state.equals(state.getBlock().defaultBlockState())) {
-            return new JsonPrimitive(name);
-        }
-        JsonObject object = new JsonObject();
-        Block block = state.getBlock();
-        object.addProperty(KEY_BLOCK_NAME, name);
+        StringBuilder stateString = new StringBuilder(Registry.BLOCK.getKey(state.getBlock()).toString());
 
-        BlockState defaultState = block.defaultBlockState();
-        JsonObject properties = new JsonObject();
-        state.getProperties().forEach((property) -> {
-            if (!state.getValue(property).equals(defaultState.getValue(property))) {
-                properties.addProperty(property.getName(), state.getValue(property).toString());
+        if (!state.getProperties().isEmpty()) {
+            StringBuilder properties = new StringBuilder();
+            boolean comma = false;
+
+            properties.append('[');
+            for (Property<?> property : state.getProperties()) {
+                if (state.getValue(property) == state.getBlock().defaultBlockState().getValue(property)) {
+                    continue; // Only serialize non-default values
+                }
+                if (comma) {
+                    properties.append(",");
+                }
+                comma = true;
+                serializeProperty(properties, property, state.getValue(property));
+
             }
-        });
+            properties.append(']');
 
-        if (properties.size() > 0) {
-            object.add(KEY_BLOCK_PROPERTIES, properties);
+            if (properties.length() > 2) {
+                stateString.append(properties);
+            }
         }
-        return object;
+
+        return new JsonPrimitive(stateString.toString());
     }
 
+    private static <T extends Comparable<T>> void serializeProperty(StringBuilder builder, Property<T> property, Comparable<?> value) {
+        builder.append(property.getName());
+        builder.append("=");
+        builder.append(property.getName((T) value));
+    }
 }

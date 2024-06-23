@@ -36,13 +36,13 @@ public record CorridorSideSegment(ImmutableMap<ResourceLocation, ImmutableList<A
         editor.fill(primaryTheme.masonry(), origin.above(4), origin.offset(2, 4, 1), worldGenBounds, random, true, true, false);
 
         BlockPos stair1Pos = origin.offset(0, 3, 1);
-        BlockState stair1 = secondaryTheme.stairs().get(world, stair1Pos, random, rotation);
+        BlockState stair1 = secondaryTheme.stairs().get(stair1Pos, random);
         stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HALF, Half.TOP);
         stair1 = DungeonBlocks.applyProperty(stair1, BlockStateProperties.HORIZONTAL_FACING, Direction.WEST);
         editor.placeBlock(stair1, stair1Pos, worldGenBounds, true, true, false);
 
         BlockPos stair2Pos = origin.offset(2, 3, 1);
-        BlockState stair2 = secondaryTheme.stairs().get(world, stair2Pos, random, rotation);
+        BlockState stair2 = secondaryTheme.stairs().get(stair2Pos, random);
         stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HALF, Half.TOP);
         stair2 = DungeonBlocks.applyProperty(stair2, BlockStateProperties.HORIZONTAL_FACING, Direction.EAST);
         editor.placeBlock(stair2, stair2Pos, worldGenBounds, true, true, false);

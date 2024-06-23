@@ -71,8 +71,8 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 BlockPos bottom = new BlockPos(x, from.getY(), z);
                 BlockPos top = new BlockPos(x, to.getY(), z);
-                placeBlockUnchecked(world, stateProvider.get(world, bottom, random), bottom, fillAir, fillSolid, false);
-                placeBlockUnchecked(world, stateProvider.get(world, top, random), top, fillAir, fillSolid, false);
+                placeBlockUnchecked(world, stateProvider.get(bottom, random), bottom, fillAir, fillSolid, false);
+                placeBlockUnchecked(world, stateProvider.get(top, random), top, fillAir, fillSolid, false);
             }
         }
 
@@ -80,7 +80,7 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(startVec.getX(), y, z);
-                    placeBlockUnchecked(world, stateProvider.get(world, pos, random), pos, fillAir, fillSolid, false);
+                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -89,7 +89,7 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(endVec.getX(), y, z);
-                    placeBlockUnchecked(world, stateProvider.get(world, pos, random), pos, fillAir, fillSolid, false);
+                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -98,7 +98,7 @@ public interface WorldEditor {
             for (int x = startVec.getX(); x <= endVec.getX(); x++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(x, y, startVec.getZ());
-                    placeBlockUnchecked(world, stateProvider.get(world, pos, random), pos, fillAir, fillSolid, false);
+                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -107,7 +107,7 @@ public interface WorldEditor {
             for (int x = startVec.getX(); x <= endVec.getX(); x++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(x, y, endVec.getZ());
-                    placeBlockUnchecked(world, stateProvider.get(world, pos, random), pos, fillAir, fillSolid, false);
+                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -143,7 +143,7 @@ public interface WorldEditor {
         if (boundingBox.isInside(pos)) {
             BlockPos.MutableBlockPos cursor = pos.mutable();
             for (int i = 0; i < height; i++) {
-                placeBlockUnchecked(world, pillar.get(world, cursor, random), cursor, fillAir, fillSolid, false);
+                placeBlockUnchecked(world, pillar.get(cursor, random), cursor, fillAir, fillSolid, false);
                 cursor.move(0, 1, 0);
             }
         }
@@ -185,7 +185,7 @@ public interface WorldEditor {
         if (!boundingBox.isInside(pos)) {
             return;
         }
-        BlockState stair = stairs.get(world, pos, random);
+        BlockState stair = stairs.get(pos, random);
         if (stair.hasProperty(BlockStateProperties.HALF)) {
             stair = stair.setValue(BlockStateProperties.HALF, half);
         }
@@ -197,7 +197,7 @@ public interface WorldEditor {
 
     static void placeBlock(LevelAccessor world, BlockStateProvider block, BlockPos pos, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
-            placeBlockUnchecked(world, block.get(world, pos, random), pos, fillAir, fillSolid, postProcess);
+            placeBlockUnchecked(world, block.get(pos, random), pos, fillAir, fillSolid, postProcess);
         }
     }
 

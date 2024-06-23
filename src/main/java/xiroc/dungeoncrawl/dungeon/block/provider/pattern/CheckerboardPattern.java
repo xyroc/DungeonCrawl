@@ -8,8 +8,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
@@ -23,15 +21,6 @@ public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider 
             return block1.get(pos, random);
         } else {
             return block2.get(pos, random);
-        }
-    }
-
-    @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
-        if (((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
-            return block1.get(world, pos, random, rotation);
-        } else {
-            return block2.get(world, pos, random, rotation);
         }
     }
 

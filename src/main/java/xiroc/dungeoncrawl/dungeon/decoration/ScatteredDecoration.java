@@ -64,7 +64,7 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
                         boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).canOcclude();
 
                         if (_north || _east || _south || _west || _up) {
-                            world.setBlock(currentPos, blockStateProvider.get(world, currentPos, random), 2);
+                            world.setBlock(currentPos, blockStateProvider.get(currentPos, random), 2);
                         }
                     }
                 }

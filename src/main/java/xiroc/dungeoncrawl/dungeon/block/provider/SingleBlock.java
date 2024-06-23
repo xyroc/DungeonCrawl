@@ -11,10 +11,8 @@ import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -38,11 +36,6 @@ public class SingleBlock implements BlockStateProvider {
 
     @Override
     public BlockState get(BlockPos pos, Random random) {
-        return state;
-    }
-
-    @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
         return state;
     }
 

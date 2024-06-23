@@ -26,8 +26,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -45,12 +43,6 @@ public interface BlockStateProvider {
             .create();
 
     BlockState get(BlockPos pos, Random random);
-
-    default BlockState get(LevelAccessor world, BlockPos pos, Random random) {
-        return get(world, pos, random, Rotation.NONE);
-    }
-
-    BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation);
 
     static BlockStateProvider deserialize(JsonElement json) throws DatapackLoadException {
         return GSON.fromJson(json, BlockStateProvider.class);

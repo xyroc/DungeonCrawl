@@ -8,9 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
@@ -26,11 +24,6 @@ public class RandomBlock implements BlockStateProvider {
 
     @Override
     public BlockState get(BlockPos pos, Random random) {
-        return states.roll(random);
-    }
-
-    @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, Random random, Rotation rotation) {
         return states.roll(random);
     }
 

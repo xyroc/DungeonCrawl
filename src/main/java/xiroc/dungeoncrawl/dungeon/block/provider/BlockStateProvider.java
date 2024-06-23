@@ -54,6 +54,9 @@ public interface BlockStateProvider {
             if (json.isJsonPrimitive()) {
                 return GSON.fromJson(json, SingleBlock.class);
             }
+            if (json.isJsonArray()) {
+                return GSON.fromJson(json, RandomBlock.class);
+            }
             JsonObject object = json.getAsJsonObject();
             if (!object.has(SharedSerializationConstants.KEY_PROVIDER_TYPE)) {
                 throw new JsonParseException("Missing block state provider type specification");

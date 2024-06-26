@@ -35,12 +35,14 @@ import java.util.Locale;
 import java.util.Random;
 
 public interface BlockStateProvider {
-    Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(BlockStateProvider.class, new Deserializer())
-            .registerTypeAdapter(SingleBlock.class, new SingleBlock.Serializer())
-            .registerTypeAdapter(RandomBlock.class, new RandomBlock.Serializer())
-            .registerTypeAdapter(CheckerboardPattern.class, new CheckerboardPattern.Serializer())
-            .create();
+    Gson GSON = gsonAdapters(new GsonBuilder()).create();
+
+    static GsonBuilder gsonAdapters(GsonBuilder builder) {
+        return builder.registerTypeAdapter(BlockStateProvider.class, new Deserializer())
+                .registerTypeAdapter(SingleBlock.class, new SingleBlock.Serializer())
+                .registerTypeAdapter(RandomBlock.class, new RandomBlock.Serializer())
+                .registerTypeAdapter(CheckerboardPattern.class, new CheckerboardPattern.Serializer());
+    }
 
     BlockState get(BlockPos pos, Random random);
 

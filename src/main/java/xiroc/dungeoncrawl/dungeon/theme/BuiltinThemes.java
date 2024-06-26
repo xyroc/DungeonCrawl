@@ -14,7 +14,7 @@ public interface BuiltinThemes {
      * These builtin themes will only be used in case a theme can't be found
      * and the default theme can't be found either.
      */
-    PrimaryTheme DEFAULT_PRIMARY = new PrimaryTheme.Builder(DEFAULT)
+    PrimaryTheme DEFAULT_PRIMARY = new PrimaryTheme.Builder()
             .masonry(new SingleBlock(Blocks.COBBLESTONE))
             .pillar(new SingleBlock(Blocks.STONE_BRICKS))
             .floor(new SingleBlock(Blocks.GRAVEL))
@@ -24,7 +24,7 @@ public interface BuiltinThemes {
             .slab(new SingleBlock(Blocks.COBBLESTONE_SLAB))
             .wall(new SingleBlock(Blocks.COBBLESTONE_WALL)).build();
 
-    SecondaryTheme DEFAULT_SECONDARY = new SecondaryTheme.Builder(DEFAULT)
+    SecondaryTheme DEFAULT_SECONDARY = new SecondaryTheme.Builder()
             .material(new SingleBlock(Blocks.OAK_PLANKS))
             .pillar(new SingleBlock(Blocks.OAK_LOG))
             .stairs(new SingleBlock(Blocks.OAK_STAIRS))
@@ -37,19 +37,11 @@ public interface BuiltinThemes {
             .pressurePlate(new SingleBlock(Blocks.OAK_PRESSURE_PLATE)).build();
 
     static void registerPrimary(BiConsumer<ResourceLocation, PrimaryTheme> primaryThemes) {
-        register(primaryThemes, DEFAULT_PRIMARY);
+        primaryThemes.accept(DEFAULT, DEFAULT_PRIMARY);
     }
 
     static void registerSecondary(BiConsumer<ResourceLocation, SecondaryTheme> secondaryThemes) {
-        register(secondaryThemes, DEFAULT_SECONDARY);
-    }
-
-    private static void register(BiConsumer<ResourceLocation, PrimaryTheme> primaryThemes, PrimaryTheme primaryTheme) {
-        primaryThemes.accept(primaryTheme.key(), primaryTheme);
-    }
-
-    private static void register(BiConsumer<ResourceLocation, SecondaryTheme> secondaryThemes, SecondaryTheme secondaryTheme) {
-        secondaryThemes.accept(secondaryTheme.key(), secondaryTheme);
+        secondaryThemes.accept(DEFAULT, DEFAULT_SECONDARY);
     }
 
     private static ResourceLocation key(String path) {

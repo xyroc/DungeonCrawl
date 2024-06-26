@@ -29,6 +29,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.FeatureSet;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.PlacedFeature;
@@ -60,11 +61,11 @@ public class DungeonPiece extends BaseDungeonPiece {
 
     private final List<FeatureSet> features;
 
-    public DungeonPiece(DungeonComponent component, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public DungeonPiece(DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
         this(ModStructurePieceTypes.GENERIC, component, primaryTheme, secondaryTheme, stage);
     }
 
-    public DungeonPiece(StructurePieceType type, DungeonComponent component, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme,
+    public DungeonPiece(StructurePieceType type, DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme,
                         int stage) {
         super(type, null, primaryTheme, secondaryTheme);
         this.components = new ArrayList<>();
@@ -128,7 +129,7 @@ public class DungeonPiece extends BaseDungeonPiece {
     @Override
     public void postProcess(WorldGenLevel level, StructureFeatureManager p_73428_, ChunkGenerator chunkGenerator, Random random, BoundingBox worldGenBounds, ChunkPos p_73432_, BlockPos pos) {
         for (DungeonComponent component : components) {
-            component.generate(level, worldGenBounds, random, primaryTheme, secondaryTheme, stage);
+            component.generate(level, worldGenBounds, random, primaryTheme.get(), secondaryTheme.get(), stage);
         }
         placeEntrances(level, worldGenBounds, random);
         placeFeatures(level, worldGenBounds, random);
@@ -137,12 +138,12 @@ public class DungeonPiece extends BaseDungeonPiece {
     protected void placeEntrances(WorldGenLevel level, BoundingBox worldGenBounds, Random random) {
         if (this.entrancesX != null) {
             for (BlockPos entrance : entrancesX) {
-                WorldEditor.placeEntrance(level, primaryTheme.stairs(), entrance, Direction.EAST, worldGenBounds, random, false, true);
+                WorldEditor.placeEntrance(level, primaryTheme.get().stairs(), entrance, Direction.EAST, worldGenBounds, random, false, true);
             }
         }
         if (this.entrancesZ != null) {
             for (BlockPos entrance : entrancesZ) {
-                WorldEditor.placeEntrance(level, primaryTheme.stairs(), entrance, Direction.SOUTH, worldGenBounds, random, false, true);
+                WorldEditor.placeEntrance(level, primaryTheme.get().stairs(), entrance, Direction.SOUTH, worldGenBounds, random, false, true);
             }
         }
     }
@@ -155,7 +156,7 @@ public class DungeonPiece extends BaseDungeonPiece {
         if (this.features != null) {
             for (FeatureSet features : this.features) {
                 for (PlacedFeature feature : features.features()) {
-                    feature.place(level, random, worldGenBounds, primaryTheme, secondaryTheme, stage);
+                    feature.place(level, random, worldGenBounds, primaryTheme.get(), secondaryTheme.get(), stage);
                 }
             }
         }

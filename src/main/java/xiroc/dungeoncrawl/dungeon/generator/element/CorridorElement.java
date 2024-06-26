@@ -69,8 +69,8 @@ public class CorridorElement extends DungeonElement {
 
             BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, segment.xSpan(), segment.zSpan());
             BlockPos position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
-            PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
-            SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
+            Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
+            Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
 
             BlueprintPiece corridor = new BlueprintPiece(new BlueprintComponent(segmentDelegate, position, rotation), primaryTheme, secondaryTheme, levelGenerator.stage);
             corridor.createBoundingBox();
@@ -105,8 +105,8 @@ public class CorridorElement extends DungeonElement {
         addSideSegments();
         fragments.forEach(fragment -> consumer.accept(fragment.piece));
 
-        PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
-        SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
+        Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
+        Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
 
         int remaining = length() - fragmentationStart;
         if (fragmentationStart > 0) {

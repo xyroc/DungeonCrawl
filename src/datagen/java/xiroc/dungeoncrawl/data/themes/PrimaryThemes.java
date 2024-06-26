@@ -23,20 +23,17 @@ import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.data.JsonDataProvider;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.Themes;
 
 import java.util.function.BiConsumer;
 
 public class PrimaryThemes extends JsonDataProvider<PrimaryTheme> {
     public PrimaryThemes(DataGenerator dataGenerator) {
-        super(dataGenerator, "Primary Themes", DatapackDirectories.PRIMARY_THEMES.path(), PrimaryTheme::serialize);
+        super(dataGenerator, "Primary Themes", DatapackDirectories.PRIMARY_THEMES.path(), Themes.GSON::toJsonTree);
     }
 
     @Override
     public void collect(BiConsumer<ResourceLocation, PrimaryTheme> collector) {
         // TODO: add primary themes
-    }
-
-    private static void create(BiConsumer<ResourceLocation, PrimaryTheme> collector, PrimaryTheme theme) {
-        collector.accept(theme.key(), theme);
     }
 }

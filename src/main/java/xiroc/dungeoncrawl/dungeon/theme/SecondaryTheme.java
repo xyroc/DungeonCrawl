@@ -1,16 +1,19 @@
 package xiroc.dungeoncrawl.dungeon.theme;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 
+import java.lang.reflect.Type;
 import java.util.Objects;
 
-public record SecondaryTheme(ResourceLocation key,
-                             BlockStateProvider material,
+public record SecondaryTheme(BlockStateProvider material,
                              BlockStateProvider pillar,
                              BlockStateProvider stairs,
                              BlockStateProvider slab,
@@ -20,59 +23,58 @@ public record SecondaryTheme(ResourceLocation key,
                              BlockStateProvider fenceGate,
                              BlockStateProvider button,
                              BlockStateProvider pressurePlate) {
-    private static final String KEY_THEME = "theme";
-    private static final String KEY_MATERIAL = "material";
-    private static final String KEY_PILLAR = "pillar";
-    private static final String KEY_STAIRS = "stairs";
-    private static final String KEY_SLAB = "slab";
-    private static final String KEY_DOOR = "door";
-    private static final String KEY_TRAPDOOR = "trapdoor";
-    private static final String KEY_FENCE = "fence";
-    private static final String KEY_FENCE_GATE = "fence_gate";
-    private static final String KEY_BUTTON = "button";
-    private static final String KEY_PRESSURE_PLATE = "pressure_plate";
 
-    public static SecondaryTheme deserialize(ResourceLocation key, JsonElement json) {
-        JsonObject object = json.getAsJsonObject();
-        JsonObject theme = object.getAsJsonObject(KEY_THEME);
-        Builder builder = new Builder(key)
-                .material(BlockStateProvider.deserialize(theme.get(KEY_MATERIAL)))
-                .pillar(BlockStateProvider.deserialize(theme.get(KEY_PILLAR)))
-                .stairs(BlockStateProvider.deserialize(theme.get(KEY_STAIRS)))
-                .slab(BlockStateProvider.deserialize(theme.get(KEY_SLAB)))
-                .door(BlockStateProvider.deserialize(theme.get(KEY_DOOR)))
-                .trapdoor(BlockStateProvider.deserialize(theme.get(KEY_TRAPDOOR)))
-                .fence(BlockStateProvider.deserialize(theme.get(KEY_FENCE)))
-                .fenceGate(BlockStateProvider.deserialize(theme.get(KEY_FENCE_GATE)))
-                .button(BlockStateProvider.deserialize(theme.get(KEY_BUTTON)))
-                .pressurePlate(BlockStateProvider.deserialize(theme.get(KEY_PRESSURE_PLATE)));
-        return builder.build();
+
+    public static class Serializer implements JsonSerializer<SecondaryTheme>, JsonDeserializer<SecondaryTheme> {
+        private static final String KEY_MATERIAL = "material";
+        private static final String KEY_PILLAR = "pillar";
+        private static final String KEY_STAIRS = "stairs";
+        private static final String KEY_SLAB = "slab";
+        private static final String KEY_DOOR = "door";
+        private static final String KEY_TRAPDOOR = "trapdoor";
+        private static final String KEY_FENCE = "fence";
+        private static final String KEY_FENCE_GATE = "fence_gate";
+        private static final String KEY_BUTTON = "button";
+        private static final String KEY_PRESSURE_PLATE = "pressure_plate";
+        @Override
+        public SecondaryTheme deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+            Builder builder = new Builder()
+                    .material(BlockStateProvider.deserialize(object.get(KEY_MATERIAL)))
+                    .pillar(BlockStateProvider.deserialize(object.get(KEY_PILLAR)))
+                    .stairs(BlockStateProvider.deserialize(object.get(KEY_STAIRS)))
+                    .slab(BlockStateProvider.deserialize(object.get(KEY_SLAB)))
+                    .door(BlockStateProvider.deserialize(object.get(KEY_DOOR)))
+                    .trapdoor(BlockStateProvider.deserialize(object.get(KEY_TRAPDOOR)))
+                    .fence(BlockStateProvider.deserialize(object.get(KEY_FENCE)))
+                    .fenceGate(BlockStateProvider.deserialize(object.get(KEY_FENCE_GATE)))
+                    .button(BlockStateProvider.deserialize(object.get(KEY_BUTTON)))
+                    .pressurePlate(BlockStateProvider.deserialize(object.get(KEY_PRESSURE_PLATE)));
+            return builder.build();
+        }
+
+        @Override
+        public JsonElement serialize(SecondaryTheme theme, Type type, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            object.add(KEY_MATERIAL, context.serialize(theme.material));
+            object.add(KEY_PILLAR, context.serialize(theme.pillar));
+            object.add(KEY_STAIRS, context.serialize(theme.stairs));
+            object.add(KEY_SLAB, context.serialize(theme.slab));
+            object.add(KEY_DOOR, context.serialize(theme.door));
+            object.add(KEY_TRAPDOOR, context.serialize(theme.trapDoor));
+            object.add(KEY_FENCE, context.serialize(theme.fence));
+            object.add(KEY_FENCE_GATE, context.serialize(theme.fenceGate));
+            object.add(KEY_BUTTON, context.serialize(theme.button));
+            object.add(KEY_PRESSURE_PLATE, context.serialize(theme.pressurePlate));
+            return object;
+        }
     }
 
-    public static JsonObject serialize(SecondaryTheme src) {
-        Gson gson = BlockStateProvider.GSON;
-        JsonObject object = new JsonObject();
-        JsonObject theme = new JsonObject();
-        theme.add(KEY_MATERIAL, gson.toJsonTree(src.material));
-        theme.add(KEY_PILLAR, gson.toJsonTree(src.pillar));
-        theme.add(KEY_STAIRS, gson.toJsonTree(src.stairs));
-        theme.add(KEY_SLAB, gson.toJsonTree(src.slab));
-        theme.add(KEY_DOOR, gson.toJsonTree(src.door));
-        theme.add(KEY_TRAPDOOR, gson.toJsonTree(src.trapDoor));
-        theme.add(KEY_FENCE, gson.toJsonTree(src.fence));
-        theme.add(KEY_FENCE_GATE, gson.toJsonTree(src.fenceGate));
-        theme.add(KEY_BUTTON, gson.toJsonTree(src.button));
-        theme.add(KEY_PRESSURE_PLATE, gson.toJsonTree(src.pressurePlate));
-        object.add(KEY_THEME, theme);
-        return object;
-    }
-
-    public static Builder builder(ResourceLocation key) {
-        return new Builder(key);
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {
-        private final ResourceLocation key;
         private BlockStateProvider button = SingleBlock.AIR;
         private BlockStateProvider door = SingleBlock.AIR;
         private BlockStateProvider fence = SingleBlock.AIR;
@@ -83,10 +85,6 @@ public record SecondaryTheme(ResourceLocation key,
         private BlockStateProvider slab = SingleBlock.AIR;
         private BlockStateProvider stairs = SingleBlock.AIR;
         private BlockStateProvider trapdoor = SingleBlock.AIR;
-
-        public Builder(ResourceLocation key) {
-            this.key = key;
-        }
 
         public Builder button(BlockStateProvider provider) {
             this.button = provider;
@@ -139,7 +137,6 @@ public record SecondaryTheme(ResourceLocation key,
         }
 
         public SecondaryTheme build() {
-            Objects.requireNonNull(key);
             Objects.requireNonNull(material);
             Objects.requireNonNull(pillar);
             Objects.requireNonNull(stairs);
@@ -150,7 +147,7 @@ public record SecondaryTheme(ResourceLocation key,
             Objects.requireNonNull(fenceGate);
             Objects.requireNonNull(button);
             Objects.requireNonNull(pressurePlate);
-            return new SecondaryTheme(key, material, pillar, stairs, slab, door, trapdoor, fence, fenceGate, button, pressurePlate);
+            return new SecondaryTheme(material, pillar, stairs, slab, door, trapdoor, fence, fenceGate, button, pressurePlate);
         }
     }
 }

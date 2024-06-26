@@ -116,8 +116,8 @@ public class LevelGenerator {
 
     public BlueprintPiece assemblePiece(Delegate<Blueprint> blueprint, BlockPos position, Rotation rotation) {
         ImmutableList<BlueprintMultipart> parts = blueprint.get().parts();
-        PrimaryTheme primaryTheme = DatapackRegistries.PRIMARY_THEME.get(BuiltinThemes.DEFAULT);
-        SecondaryTheme secondaryTheme = DatapackRegistries.SECONDARY_THEME.get(BuiltinThemes.DEFAULT);
+        Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
+        Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
         if (parts.isEmpty()) {
             return new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);

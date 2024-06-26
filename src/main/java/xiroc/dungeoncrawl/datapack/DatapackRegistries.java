@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.datapack;
 
-import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
@@ -12,6 +11,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.Themes;
 import xiroc.dungeoncrawl.dungeon.type.LevelType;
 
 import java.util.function.BiConsumer;
@@ -28,10 +28,10 @@ public interface DatapackRegistries {
             (reader) -> SpawnerSerializers.ENTITY_PROPERTIES.fromJson(reader, SpawnerEntityProperties.class));
 
     DatapackRegistry<PrimaryTheme> PRIMARY_THEME = new DatapackRegistry<>(DatapackDirectories.PRIMARY_THEMES, BuiltinThemes::registerPrimary,
-            DatapackRegistry.Parser.keyed((key, reader) -> PrimaryTheme.deserialize(key, JsonParser.parseReader(reader))));
+            (reader) -> Themes.GSON.fromJson(reader, PrimaryTheme.class));
 
     DatapackRegistry<SecondaryTheme> SECONDARY_THEME = new DatapackRegistry<>(DatapackDirectories.SECONDARY_THEMES, BuiltinThemes::registerSecondary,
-            DatapackRegistry.Parser.keyed((key, reader) -> SecondaryTheme.deserialize(key, JsonParser.parseReader(reader))));
+            (reader) -> Themes.GSON.fromJson(reader, SecondaryTheme.class));
 
     DatapackRegistry<Blueprint> BLUEPRINT = new DatapackRegistry<>(DatapackDirectories.BLUEPRINTS, BuiltinBlueprints::register, TemplateBlueprint::load);
 

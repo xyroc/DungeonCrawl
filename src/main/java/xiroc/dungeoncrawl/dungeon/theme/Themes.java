@@ -1,9 +1,12 @@
 package xiroc.dungeoncrawl.dungeon.theme;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.minecraft.server.packs.resources.ResourceManager;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
@@ -14,6 +17,14 @@ import java.util.Random;
 import java.util.function.Function;
 
 public class Themes {
+    public static final Gson GSON = gsonAdapters(new GsonBuilder()).create();
+
+    public static GsonBuilder gsonAdapters(GsonBuilder builder) {
+        return BlockStateProvider.gsonAdapters(builder)
+                .registerTypeAdapter(PrimaryTheme.class, new PrimaryTheme.Serializer())
+                .registerTypeAdapter(SecondaryTheme.class, new SecondaryTheme.Serializer());
+    }
+
     private static RandomMapping<String, PrimaryTheme> PRIMARY_THEME_MAPPING;
     private static RandomMapping<String, SecondaryTheme> SECONDARY_THEME_MAPPING;
 

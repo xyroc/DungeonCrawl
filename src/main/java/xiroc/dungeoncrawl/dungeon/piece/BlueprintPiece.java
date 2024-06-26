@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.piece;
 
+import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
@@ -10,7 +11,7 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 public class BlueprintPiece extends DungeonPiece {
     public final BlueprintComponent base;
 
-    public BlueprintPiece(BlueprintComponent base, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public BlueprintPiece(BlueprintComponent base, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
         super(base, primaryTheme, secondaryTheme, stage);
         this.base = base;
     }

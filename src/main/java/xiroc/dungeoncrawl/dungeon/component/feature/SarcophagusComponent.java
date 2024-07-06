@@ -56,14 +56,14 @@ public record SarcophagusComponent(Anchor placement, Delegate<SpawnerType> spawn
                     .setValue(BlockStateProperties.HALF, Half.TOP))
                     .attach(stair);
 
-            WorldEditor.fill(level, stairBottom, start, end, worldGenBounds, random, true, true);
-            WorldEditor.fill(level, stairTop, start.above(), end.above(), worldGenBounds, random, true, true);
-            WorldEditor.fill(level, stairBottom, start.above(2), end.above(2), worldGenBounds, random, true, true);
+            WorldEditor.fill(level, stairBottom, start, end, worldGenBounds, random, true, true, true);
+            WorldEditor.fill(level, stairTop, start.above(), end.above(), worldGenBounds, random, true, true, true);
+            WorldEditor.fill(level, stairBottom, start.above(2), end.above(2), worldGenBounds, random, true, true, true);
         }
 
         WorldEditor.placeStairs(level, stair, pos, worldGenBounds, Half.BOTTOM, placement.direction(), random, true, true, true);
         WorldEditor.placeStairs(level, stair, pos.relative(placement.direction(), 4), worldGenBounds, Half.BOTTOM, placement.direction().getOpposite(), random, true, true, true);
-        WorldEditor.fill(level, primaryTheme.masonry(), pos.relative(placement.direction()), pos.relative(placement.direction(), 3), worldGenBounds, random, true, true);
+        WorldEditor.fill(level, primaryTheme.masonry(), pos.relative(placement.direction()), pos.relative(placement.direction(), 3), worldGenBounds, random, true, true, false);
 
         WorldEditor.placeStairs(level, stair, pos.above(), worldGenBounds, Half.TOP, placement.direction(), random, true, true, true);
         WorldEditor.placeStairs(level, stair, pos.above().relative(placement.direction(), 4), worldGenBounds, Half.TOP, placement.direction().getOpposite(), random, true, true,

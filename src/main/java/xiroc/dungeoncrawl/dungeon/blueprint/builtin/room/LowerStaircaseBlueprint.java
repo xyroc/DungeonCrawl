@@ -42,7 +42,7 @@ public record LowerStaircaseBlueprint(ImmutableMap<ResourceLocation, ImmutableLi
         WorldEditor.fillRing(world, wall, position.offset(4, 9, 4), 4, 3, 1, worldGenBounds, random, true, true);
         WorldEditor.fillRing(world, wall, position.offset(4, 1, 4), 4, 1, 9, worldGenBounds, random, true, true);
         WorldEditor.fillRing(world, SingleBlock.AIR, position.offset(4, 1, 4), 3, 2, 8, worldGenBounds, random, true, true);
-        WorldEditor.fill(world, wall, position, position.offset(8, 0, 8), worldGenBounds, random, true, true);
+        WorldEditor.fill(world, wall, position, position.offset(8, 0, 8), worldGenBounds, random, true, true, false);
     }
 
     @Override

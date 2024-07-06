@@ -41,23 +41,23 @@ public interface WorldEditor {
         return world.getBlockState(pos).getDestroySpeed(world, pos) < 0;
     }
 
-    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
-        fill(world, stateProvider, from, to, Rotation.NONE, boundingBox, random, fillAir, fillSolid);
+    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+        fill(world, stateProvider, from, to, Rotation.NONE, boundingBox, random, fillAir, fillSolid, false);
     }
 
-    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
+    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
-        fillUnchecked(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid);
+        fillUnchecked(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid, false);
     }
 
-    static void fillUnchecked(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, Random random, boolean fillAir, boolean fillSolid) {
+    static void fillUnchecked(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int x = from.getX(); x <= to.getX(); x++) {
             for (int y = from.getY(); y <= to.getY(); y++) {
                 for (int z = from.getZ(); z <= to.getZ(); z++) {
                     pos.set(x, y, z);
-                    placeBlockUnchecked(world, stateProvider.get(pos, random).rotate(world, pos, rotation), pos, fillAir, fillSolid, false);
+                    placeBlockUnchecked(world, stateProvider.get(pos, random).rotate(world, pos, rotation), pos, fillAir, fillSolid, postProcess);
                 }
             }
         }
@@ -116,13 +116,13 @@ public interface WorldEditor {
     static void fillRing(LevelAccessor world, BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, Random random,
                          boolean fillAir, boolean fillSolid) {
         if (thickness >= radius) {
-            fill(world, blocks, center.offset(-radius, 0, -radius), center.offset(radius, height - 1, radius), boundingBox, random, fillAir, fillSolid);
+            fill(world, blocks, center.offset(-radius, 0, -radius), center.offset(radius, height - 1, radius), boundingBox, random, fillAir, fillSolid, false);
             return;
         }
-        fill(world, blocks, center.offset(-radius, 0, -radius), center.offset(radius - thickness, height - 1, thickness - radius - 1), boundingBox, random, fillAir, fillSolid);
-        fill(world, blocks, center.offset(radius - thickness + 1, 0, -radius), center.offset(radius, height - 1, radius - thickness), boundingBox, random, fillAir, fillSolid);
-        fill(world, blocks, center.offset(thickness - radius, 0, radius - thickness + 1), center.offset(radius, height - 1, radius), boundingBox, random, fillAir, fillSolid);
-        fill(world, blocks, center.offset(-radius, 0, thickness - radius), center.offset(thickness - radius - 1, height - 1, radius), boundingBox, random, fillAir, fillSolid);
+        fill(world, blocks, center.offset(-radius, 0, -radius), center.offset(radius - thickness, height - 1, thickness - radius - 1), boundingBox, random, fillAir, fillSolid, false);
+        fill(world, blocks, center.offset(radius - thickness + 1, 0, -radius), center.offset(radius, height - 1, radius - thickness), boundingBox, random, fillAir, fillSolid, false);
+        fill(world, blocks, center.offset(thickness - radius, 0, radius - thickness + 1), center.offset(radius, height - 1, radius), boundingBox, random, fillAir, fillSolid, false);
+        fill(world, blocks, center.offset(-radius, 0, thickness - radius), center.offset(thickness - radius - 1, height - 1, radius), boundingBox, random, fillAir, fillSolid, false);
     }
 
     static void placeEntrance(LevelAccessor world, BlockStateProvider stairs, BlockPos pos, Direction parallelTo, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {

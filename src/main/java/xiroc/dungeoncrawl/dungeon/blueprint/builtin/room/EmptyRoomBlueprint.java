@@ -27,7 +27,7 @@ public record EmptyRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<An
         WorldEditor.fill(world, SingleBlock.AIR,
                 position.offset(1, 1, 1),
                 end.offset(-1, -1, -1),
-                worldGenBounds, random, true, true);
+                worldGenBounds, random, true, true, false);
     }
 
     @Override

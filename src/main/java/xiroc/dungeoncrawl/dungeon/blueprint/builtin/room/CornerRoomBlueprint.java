@@ -33,7 +33,7 @@ public record CornerRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<A
         MirroringWorldEditor editor = new MirroringWorldEditor(world, coordinateSpace(position), rotation);
         BlockPos origin = BlockPos.ZERO;
         // Floor
-        WorldEditor.fill(world, primaryTheme.floor(), position, position.offset(6, 0, 6), worldGenBounds, random, false, true);
+        WorldEditor.fill(world, primaryTheme.floor(), position, position.offset(6, 0, 6), worldGenBounds, random, false, true, false);
 
         // Walls
         editor.fill(primaryTheme.masonry(), origin.above(), origin.offset(5, 4, 0), worldGenBounds, random, true, true, false);
@@ -58,7 +58,7 @@ public record CornerRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<A
         editor.placeBlock(air, CEILING_CENTER.offset(2, -1, 0), worldGenBounds, false, true, false);
         editor.fill(SingleBlock.AIR, origin.offset(2, 1, 1), origin.offset(4, 3, 1), worldGenBounds, random, true, true, false);
 
-        WorldEditor.fill(world, SingleBlock.AIR, position.offset(2, 1, 2), position.offset(4, 4, 4), worldGenBounds, random, true, true);
+        WorldEditor.fill(world, SingleBlock.AIR, position.offset(2, 1, 2), position.offset(4, 4, 4), worldGenBounds, random, true, true, false);
     }
 
     @Override

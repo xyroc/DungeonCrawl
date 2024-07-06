@@ -69,11 +69,9 @@ public class CorridorElement extends DungeonElement {
 
             BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, segment.xSpan(), segment.zSpan());
             BlockPos position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
-            Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
-            Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
 
-            BlueprintPiece corridor = new BlueprintPiece(new BlueprintComponent(segmentDelegate, position, rotation), primaryTheme, secondaryTheme, levelGenerator.stage);
-            corridor.createBoundingBox();
+            BlueprintPiece corridor = levelGenerator.assemblePiece(segmentDelegate, position, rotation);
+            // TODO: collision check
             fragments.add(new Fragment(corridor));
 
             pos.move(direction, FRAGMENT_LENGTH);

@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.block.MetaBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
@@ -86,7 +87,7 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
             anchors.accept(anchorType, new Anchor(info.pos, info.state.getValue(BlockStateProperties.ORIENTATION).front()));
         }
         TemplateBlock.PlacementProperties properties = configuration.blockType(state.getBlock());
-        TemplateBlock block = new TemplateBlock(properties, info.pos, state.getBlock(), TemplateBlock.properties(state));
+        TemplateBlock block = new TemplateBlock(properties, info.pos, state.getBlock(), new MetaBlock(state));
         blocks.accept(block);
     }
 

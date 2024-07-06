@@ -9,32 +9,13 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
+import xiroc.dungeoncrawl.dungeon.block.MetaBlock;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.lang.reflect.Type;
 import java.util.Locale;
-import java.util.function.Function;
 
-public record TemplateBlock(PlacementProperties placementProperties, Vec3i position, Block block, Function<BlockState, BlockState> properties) {
-    public static Function<BlockState, BlockState> properties(BlockState state) {
-        return (blockState) -> {
-            for (Property<?> property : state.getProperties()) {
-                blockState = applyProperty(blockState, property, state.getValue(property));
-            }
-            return blockState;
-        };
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Comparable<T>> BlockState applyProperty(BlockState state, Property<T> property, Object value) {
-        if (state.hasProperty(property)) {
-            return state.setValue(property, (T) value);
-        }
-        return state;
-    }
-
+public record TemplateBlock(PlacementProperties placementProperties, Vec3i position, Block block, MetaBlock properties) {
     public record PlacementProperties(TemplateBlockType blockType, boolean isSolid) {
         @Override
         public boolean equals(Object other) {

@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 public enum TemplateBlockType {
     // The base block type
-    BLOCK((block, level, pos, primaryTheme, secondaryTheme, rand) -> block.properties().apply(block.block().defaultBlockState())),
+    BLOCK((block, level, pos, primaryTheme, secondaryTheme, rand) -> block.properties().applyProperties(block.block().defaultBlockState())),
 
     // Types with Primary Theme Factories
     MASONRY         (tFactory(PrimaryTheme::masonry)),
@@ -67,7 +67,7 @@ public enum TemplateBlockType {
      * @return the block factory
      */
     private static BlockFactory tFactory(Function<PrimaryTheme, BlockStateProvider> blockSelector) {
-        return (block, level, pos, primaryTheme, secondaryTheme, rand) -> block.properties().apply(blockSelector.apply(primaryTheme).get(pos, rand));
+        return (block, level, pos, primaryTheme, secondaryTheme, rand) -> block.properties().applyProperties(blockSelector.apply(primaryTheme).get(pos, rand));
     }
 
     /**
@@ -78,6 +78,6 @@ public enum TemplateBlockType {
      */
 
     private static BlockFactory sFactory(Function<SecondaryTheme, BlockStateProvider> blockSelector) {
-        return (block, level, pos, primaryTheme, secondaryTheme, rand) -> block.properties().apply(blockSelector.apply(secondaryTheme).get(pos, rand));
+        return (block, level, pos, primaryTheme, secondaryTheme, rand) -> block.properties().applyProperties(blockSelector.apply(secondaryTheme).get(pos, rand));
     }
 }

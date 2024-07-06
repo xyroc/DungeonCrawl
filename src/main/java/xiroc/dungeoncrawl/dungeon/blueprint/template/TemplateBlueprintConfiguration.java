@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class TemplateBlueprintConfiguration {
     protected final ImmutableMap<Block, TemplateBlock.PlacementProperties> typeMap;
     protected final boolean useDefaultTypes;
     protected final BlueprintSettings settings;
-    protected final ImmutableList<FeatureConfiguration> features;
+    protected final ImmutableList<BlueprintFeature> features;
     protected final ImmutableList<BlueprintMultipart> parts;
 
     protected TemplateBlueprintConfiguration(Builder builder) {
@@ -107,7 +107,7 @@ public class TemplateBlueprintConfiguration {
             }
             if (object.has(KEY_FEATURES)) {
                 for (JsonElement feature : object.getAsJsonArray(KEY_FEATURES)) {
-                    builder.feature(context.deserialize(feature, FeatureConfiguration.class));
+                    builder.feature(context.deserialize(feature, BlueprintFeature.class));
                 }
             }
             if (object.has(KEY_PARTS)) {
@@ -136,7 +136,7 @@ public class TemplateBlueprintConfiguration {
             }
             if (!src.features.isEmpty()) {
                 JsonArray features = new JsonArray();
-                for (FeatureConfiguration feature : src.features) {
+                for (BlueprintFeature feature : src.features) {
                     features.add(context.serialize(feature));
                 }
                 object.add(KEY_FEATURES, features);
@@ -156,7 +156,7 @@ public class TemplateBlueprintConfiguration {
         private ResourceLocation template;
         private boolean useDefaultTypes = true;
         private final HashMap<Block, TemplateBlock.PlacementProperties> typeMap = new HashMap<>();
-        private final ImmutableList.Builder<FeatureConfiguration> features = ImmutableList.builder();
+        private final ImmutableList.Builder<BlueprintFeature> features = ImmutableList.builder();
         private final ImmutableList.Builder<BlueprintMultipart> parts = ImmutableList.builder();
 
         private BlueprintSettings settings;
@@ -169,7 +169,7 @@ public class TemplateBlueprintConfiguration {
             return new TemplateBlueprintConfiguration(this);
         }
 
-        public Builder feature(FeatureConfiguration configuration) {
+        public Builder feature(BlueprintFeature configuration) {
             this.features.add(configuration);
             return this;
         }

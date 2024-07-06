@@ -31,8 +31,6 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.FeatureSet;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.PlacedFeature;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
@@ -47,7 +45,6 @@ import java.util.Random;
 
 public class DungeonPiece extends BaseDungeonPiece {
     protected static final String NBT_KEY_COMPONENTS = "Components";
-    protected static final String NBT_KEY_FEATURES = "Features";
     protected static final String NBT_KEY_STAGE = "Stage";
     protected static final String NBT_KEY_ENTRANCES_X_AXIS = "Entrances_X";
     protected static final String NBT_KEY_ENTRANCES_Z_AXIS = "Entrances_Z";
@@ -58,8 +55,6 @@ public class DungeonPiece extends BaseDungeonPiece {
     // Entrances aligned to the x and z axis respectively
     private final List<BlockPos> entrancesX;
     private final List<BlockPos> entrancesZ;
-
-    private final List<FeatureSet> features;
 
     public DungeonPiece(DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
         this(ModStructurePieceTypes.GENERIC, component, primaryTheme, secondaryTheme, stage);
@@ -73,10 +68,6 @@ public class DungeonPiece extends BaseDungeonPiece {
         this.stage = stage;
         this.entrancesX = new ArrayList<>();
         this.entrancesZ = new ArrayList<>();
-        this.features = new ArrayList<>();
-//        for (FeatureConfiguration feature : blueprint.get().features()) {
-//            feature.create(features::add, null, blueprint.get(), position, rotation, random, stage);
-//        }
         createBoundingBox();
     }
 
@@ -101,12 +92,6 @@ public class DungeonPiece extends BaseDungeonPiece {
             this.entrancesZ = null;
         }
 
-        if (nbt.contains(NBT_KEY_FEATURES)) {
-            this.features = StorageHelper.decode(nbt.get(NBT_KEY_FEATURES), FeatureSet.CODEC.listOf());
-        } else {
-            this.features = null;
-        }
-
         createBoundingBox();
     }
 
@@ -121,9 +106,6 @@ public class DungeonPiece extends BaseDungeonPiece {
         if (entrancesZ != null) {
             nbt.put(NBT_KEY_ENTRANCES_Z_AXIS, StorageHelper.encode(entrancesZ, StorageHelper.BLOCK_POS_LIST_CODEC));
         }
-        if (features != null) {
-            nbt.put(NBT_KEY_FEATURES, StorageHelper.encode(features, FeatureSet.CODEC.listOf()));
-        }
     }
 
     @Override
@@ -132,7 +114,6 @@ public class DungeonPiece extends BaseDungeonPiece {
             component.generate(level, worldGenBounds, random, primaryTheme.get(), secondaryTheme.get(), stage);
         }
         placeEntrances(level, worldGenBounds, random);
-        placeFeatures(level, worldGenBounds, random);
     }
 
     protected void placeEntrances(WorldGenLevel level, BoundingBox worldGenBounds, Random random) {
@@ -150,16 +131,6 @@ public class DungeonPiece extends BaseDungeonPiece {
 
     protected void decorate(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, Blueprint blueprint) {
         // TODO
-    }
-
-    protected void placeFeatures(WorldGenLevel level, BoundingBox worldGenBounds, Random random) {
-        if (this.features != null) {
-            for (FeatureSet features : this.features) {
-                for (PlacedFeature feature : features.features()) {
-                    feature.place(level, random, worldGenBounds, primaryTheme.get(), secondaryTheme.get(), stage);
-                }
-            }
-        }
     }
 
     public void createBoundingBox() {

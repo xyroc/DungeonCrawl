@@ -9,11 +9,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
@@ -59,7 +58,7 @@ public interface Blueprint {
         }
 
         @Override
-        public ImmutableList<FeatureConfiguration> features() {
+        public ImmutableList<BlueprintFeature> features() {
             return ImmutableList.of();
         }
 
@@ -80,7 +79,7 @@ public interface Blueprint {
 
     ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors();
 
-    ImmutableList<FeatureConfiguration> features();
+    ImmutableList<BlueprintFeature> features();
 
     default ImmutableList<BlueprintMultipart> parts() {
         return ImmutableList.of();

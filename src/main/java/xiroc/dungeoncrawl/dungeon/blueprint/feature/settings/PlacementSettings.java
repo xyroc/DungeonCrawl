@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.settings;
+package xiroc.dungeoncrawl.dungeon.blueprint.feature.settings;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;

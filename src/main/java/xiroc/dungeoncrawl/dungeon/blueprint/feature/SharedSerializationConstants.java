@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration;
+package xiroc.dungeoncrawl.dungeon.blueprint.feature;
 
 interface SharedSerializationConstants {
     String KEY_FEATURE_TYPE = "type";

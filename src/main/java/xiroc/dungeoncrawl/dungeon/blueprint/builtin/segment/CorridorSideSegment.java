@@ -16,7 +16,7 @@ import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
@@ -24,7 +24,7 @@ import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
 import java.util.Random;
 
 public record CorridorSideSegment(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                  ImmutableList<FeatureConfiguration> features, BlueprintSettings settings) implements Blueprint {
+                                  ImmutableList<BlueprintFeature> features, BlueprintSettings settings) implements Blueprint {
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
         RotatingWorldEditor editor = new RotatingWorldEditor(world, coordinateSpace(position), rotation);

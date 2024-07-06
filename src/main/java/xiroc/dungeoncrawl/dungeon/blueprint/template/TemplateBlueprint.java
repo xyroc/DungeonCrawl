@@ -27,7 +27,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -44,9 +44,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                BlueprintSettings settings, ImmutableList<FeatureConfiguration> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
+                                BlueprintSettings settings, ImmutableList<BlueprintFeature> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
 
-    public static final Gson GSON = FeatureConfiguration.gsonAdapters(new GsonBuilder())
+    public static final Gson GSON = BlueprintFeature.gsonAdapters(new GsonBuilder())
             .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
             .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
             .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer())

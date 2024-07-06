@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.util.bounds;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -12,6 +11,15 @@ public class BoundingBoxBuilder implements Bounded {
                 Math.max(corner1.getX(), corner2.getX()),
                 Math.max(corner1.getY(), corner2.getY()),
                 Math.max(corner1.getZ(), corner2.getZ()));
+    }
+
+    public static BoundingBoxBuilder fromPosition(Vec3i position) {
+        return new BoundingBoxBuilder(position.getX(),
+                position.getY(),
+                position.getZ(),
+                position.getX(),
+                position.getY(),
+                position.getZ());
     }
 
     public int minX;

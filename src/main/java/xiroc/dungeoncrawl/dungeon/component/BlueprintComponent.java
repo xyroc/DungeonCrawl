@@ -35,7 +35,7 @@ public record BlueprintComponent(Delegate<Blueprint> blueprint, BlockPos positio
     }
 
     @Override
-    public int type() {
+    public int componentType() {
         return DECODERS.getId(CODEC);
     }
 

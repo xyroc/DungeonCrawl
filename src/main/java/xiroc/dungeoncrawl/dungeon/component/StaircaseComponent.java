@@ -40,7 +40,7 @@ public record StaircaseComponent(BlockPos position, int height, int wallBottom, 
     }
 
     @Override
-    public int type() {
+    public int componentType() {
         return DECODERS.getId(CODEC);
     }
 

@@ -5,14 +5,13 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.FeatureConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
@@ -20,7 +19,7 @@ import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
 import java.util.Random;
 
 public record CorridorBaseSegment(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                  ImmutableList<FeatureConfiguration> features, BlueprintSettings settings) implements Blueprint {
+                                  ImmutableList<BlueprintFeature> features, BlueprintSettings settings) implements Blueprint {
     @Override
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
         RotatingWorldEditor editor = new RotatingWorldEditor(world, coordinateSpace(position), rotation);

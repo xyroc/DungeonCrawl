@@ -18,25 +18,30 @@
 
 package xiroc.dungeoncrawl.dungeon.block;
 
-import net.minecraft.world.level.block.Block;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
-public class DungeonBlocks {
+public interface DungeonBlocks {
+    MetaBlock TRAPDOOR_OPEN_NORTH = new MetaBlock(Blocks.OAK_TRAPDOOR.defaultBlockState()
+            .setValue(BlockStateProperties.OPEN, true)
+            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+    MetaBlock TRAPDOOR_OPEN_EAST = new MetaBlock(Blocks.OAK_TRAPDOOR.defaultBlockState()
+            .setValue(BlockStateProperties.OPEN, true)
+            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST));
+    MetaBlock TRAPDOOR_OPEN_SOUTH = new MetaBlock(Blocks.OAK_TRAPDOOR.defaultBlockState()
+            .setValue(BlockStateProperties.OPEN, true)
+            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+    MetaBlock TRAPDOOR_OPEN_WEST = new MetaBlock(Blocks.OAK_TRAPDOOR.defaultBlockState()
+            .setValue(BlockStateProperties.OPEN, true)
+            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
 
-    public static final Block[] CARPET = new Block[]{Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
-            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET,
-            Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
-            Blocks.BROWN_CARPET, Blocks.RED_CARPET};
-
-    public static final BlockState CAVE_AIR = Blocks.CAVE_AIR.defaultBlockState();
-
-    public static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, Property<T> property, V value) {
+    static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, Property<T> property, V value) {
         if (state.hasProperty(property)) {
             return state.setValue(property, value);
         }
         return state;
     }
-
 }

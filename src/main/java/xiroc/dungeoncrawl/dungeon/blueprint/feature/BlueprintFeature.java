@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration;
+package xiroc.dungeoncrawl.dungeon.blueprint.feature;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -16,11 +16,10 @@ import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.FeatureSet;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.PlacedFeature;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.settings.ChestSettings;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.settings.PlacementSettings;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.configuration.settings.SpawnerSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
+import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
@@ -30,18 +29,18 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public interface FeatureConfiguration {
+public interface BlueprintFeature {
     String TYPE_CHEST = "chest";
     String TYPE_SPAWNER = "spawner";
     String TYPE_FLOWER_POT = "flower_pot";
     String TYPE_SARCOPHAGUS = "sarcophagus";
     String TYPE_FEATURE_CHAIN = "chain";
 
-    ImmutableMap<String, Class<? extends FeatureConfiguration>> TYPES = ImmutableMap.<String, Class<? extends FeatureConfiguration>>builder()
-            .put(TYPE_CHEST, ChestConfiguration.class)
-            .put(TYPE_SPAWNER, SpawnerConfiguration.class)
-            .put(TYPE_FLOWER_POT, FlowerPotConfiguration.class)
-            .put(TYPE_SARCOPHAGUS, SarcophagusConfiguration.class)
+    ImmutableMap<String, Class<? extends BlueprintFeature>> TYPES = ImmutableMap.<String, Class<? extends BlueprintFeature>>builder()
+            .put(TYPE_CHEST, ChestFeature.class)
+            .put(TYPE_SPAWNER, SpawnerFeature.class)
+            .put(TYPE_FLOWER_POT, FlowerPotFeature.class)
+            .put(TYPE_SARCOPHAGUS, SarcophagusFeature.class)
             .put(TYPE_FEATURE_CHAIN, Chain.class)
             .build();
 
@@ -50,15 +49,15 @@ public interface FeatureConfiguration {
                 .registerTypeAdapter(PlacementSettings.class, new PlacementSettings.Serializer())
                 .registerTypeAdapter(ChestSettings.class, new ChestSettings.Serializer())
                 .registerTypeAdapter(SpawnerSettings.class, new SpawnerSettings.Serializer())
-                .registerTypeAdapter(FeatureConfiguration.class, new Deserializer())
-                .registerTypeAdapter(ChestConfiguration.class, new ChestConfiguration.Serializer())
-                .registerTypeAdapter(SpawnerConfiguration.class, new SpawnerConfiguration.Serializer())
-                .registerTypeAdapter(FlowerPotConfiguration.class, new FlowerPotConfiguration.Serializer())
-                .registerTypeAdapter(SarcophagusConfiguration.class, new SarcophagusConfiguration.Serializer())
+                .registerTypeAdapter(BlueprintFeature.class, new Deserializer())
+                .registerTypeAdapter(ChestFeature.class, new ChestFeature.Serializer())
+                .registerTypeAdapter(SpawnerFeature.class, new SpawnerFeature.Serializer())
+                .registerTypeAdapter(FlowerPotFeature.class, new FlowerPotFeature.Serializer())
+                .registerTypeAdapter(SarcophagusFeature.class, new SarcophagusFeature.Serializer())
                 .registerTypeAdapter(Chain.class, new Chain.Serializer());
     }
 
-    void create(Consumer<FeatureSet> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage);
+    void create(Consumer<DungeonComponent> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage);
 
     static @Nullable ArrayList<Anchor> gatherPositions(@Nullable ArrayList<Anchor> positions, Blueprint blueprint, PlacementSettings placement) {
         if (positions != null) {
@@ -67,15 +66,15 @@ public interface FeatureConfiguration {
         return placement.anchors(blueprint).orElse(null);
     }
 
-    record Chain(PlacementSettings placement, ImmutableList<FeatureConfiguration> features) implements FeatureConfiguration {
+    record Chain(PlacementSettings placement, ImmutableList<BlueprintFeature> features) implements BlueprintFeature {
         @Override
-        public void create(Consumer<FeatureSet> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage) {
+        public void create(Consumer<DungeonComponent> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage) {
             var anchors = placement.anchors(blueprint);
             if (anchors.isEmpty()) {
                 return;
             }
             positions = anchors.get();
-            for (FeatureConfiguration supplier : features) {
+            for (BlueprintFeature supplier : features) {
                 supplier.create(consumer, positions, blueprint, offset, rotation, random, stage);
             }
         }
@@ -88,9 +87,9 @@ public interface FeatureConfiguration {
                 PlacementSettings placement = context.deserialize(jsonElement, PlacementSettings.class);
                 JsonObject object = jsonElement.getAsJsonObject();
                 JsonArray jsonFeatures = object.getAsJsonArray(KEY_FEATURES);
-                ImmutableList.Builder<FeatureConfiguration> features = ImmutableList.builder();
+                ImmutableList.Builder<BlueprintFeature> features = ImmutableList.builder();
                 for (JsonElement jsonFeature : jsonFeatures) {
-                    FeatureConfiguration configuration = context.deserialize(jsonFeature, FeatureConfiguration.class);
+                    BlueprintFeature configuration = context.deserialize(jsonFeature, BlueprintFeature.class);
                     features.add(configuration);
                 }
                 return new Chain(placement, features.build());
@@ -101,7 +100,7 @@ public interface FeatureConfiguration {
                 JsonObject object = context.serialize(chain.placement).getAsJsonObject();
                 object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, TYPE_FEATURE_CHAIN);
                 JsonArray features = new JsonArray();
-                for (FeatureConfiguration configuration : chain.features) {
+                for (BlueprintFeature configuration : chain.features) {
                     features.add(context.serialize(configuration));
                 }
                 object.add(KEY_FEATURES, features);
@@ -110,9 +109,9 @@ public interface FeatureConfiguration {
         }
     }
 
-    interface AnchorBased extends FeatureConfiguration {
+    interface AnchorBased extends BlueprintFeature {
         @Override
-        default void create(Consumer<FeatureSet> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage) {
+        default void create(Consumer<DungeonComponent> features, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage) {
             if (positions == null) {
                 positions = placement().anchors(blueprint).orElse(null);
                 if (positions == null) {
@@ -120,24 +119,20 @@ public interface FeatureConfiguration {
                 }
             }
             CoordinateSpace coordinateSpace = blueprint.coordinateSpace(offset);
-            ArrayList<PlacedFeature> features = new ArrayList<>();
-            placement().drawPositions(positions, random, (anchor) -> features.add(createInstance(coordinateSpace.rotateAndTranslateToOrigin(anchor, rotation), random)));
-            consumer.accept(new FeatureSet(type(), features));
+            placement().drawPositions(positions, random, (anchor) -> features.accept(createInstance(coordinateSpace.rotateAndTranslateToOrigin(anchor, rotation), random)));
         }
 
-        PlacedFeature createInstance(Anchor anchor, Random random);
-
-        int type();
+        DungeonComponent createInstance(Anchor anchor, Random random);
 
         PlacementSettings placement();
     }
 
-    class Deserializer implements JsonDeserializer<FeatureConfiguration> {
+    class Deserializer implements JsonDeserializer<BlueprintFeature> {
         @Override
-        public FeatureConfiguration deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        public BlueprintFeature deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             JsonObject object = jsonElement.getAsJsonObject();
             String typeName = object.get(SharedSerializationConstants.KEY_FEATURE_TYPE).getAsString();
-            Class<? extends FeatureConfiguration> featureType = TYPES.get(typeName);
+            Class<? extends BlueprintFeature> featureType = TYPES.get(typeName);
             if (featureType == null) {
                 throw new DatapackLoadException("Unknown blueprint feature type: \"" + typeName + "\"");
             }

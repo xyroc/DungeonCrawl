@@ -32,19 +32,19 @@ public record TunnelComponent(BlockPos start, Direction direction, int length, i
         BlockPos corner = start.relative(direction.getCounterClockWise(), width);
 
         WorldEditor.fill(level, primaryTheme.floor(), corner.relative(direction.getClockWise()), corner.relative(direction.getClockWise(), 2 * width - 1)
-                .relative(direction, length - 1), worldGenBounds, random, true, true);
+                .relative(direction, length - 1), worldGenBounds, random, true, true, false);
 
-        WorldEditor.fill(level, primaryTheme.masonry(), corner, corner.relative(direction, length - 1).above(height - 1), worldGenBounds, random, true, true);
+        WorldEditor.fill(level, primaryTheme.masonry(), corner, corner.relative(direction, length - 1).above(height - 1), worldGenBounds, random, true, true, false);
 
         WorldEditor.fill(level, primaryTheme.masonry(), corner.relative(direction.getClockWise(), 2 * width),
                 corner.relative(direction.getClockWise(), 2 * width).relative(direction, length - 1).above(height - 1),
-                worldGenBounds, random, true, true);
+                worldGenBounds, random, true, true, false);
 
         WorldEditor.fill(level, primaryTheme.masonry(), corner.relative(direction.getClockWise()).above(height - 1),
-                corner.relative(direction.getClockWise(), 2 * width - 1).above(height - 1).relative(direction, length - 1), worldGenBounds, random, true, true);
+                corner.relative(direction.getClockWise(), 2 * width - 1).above(height - 1).relative(direction, length - 1), worldGenBounds, random, true, true, false);
 
         WorldEditor.fill(level, new SingleBlock(Blocks.CAVE_AIR.defaultBlockState()), corner.above().relative(direction.getClockWise()),
-                corner.above(height - 2).relative(direction, length - 1).relative(direction.getClockWise(), 2 * width - 1), worldGenBounds, random, false, true);
+                corner.above(height - 2).relative(direction, length - 1).relative(direction.getClockWise(), 2 * width - 1), worldGenBounds, random, false, true, false);
     }
 
     @Override
@@ -53,7 +53,7 @@ public record TunnelComponent(BlockPos start, Direction direction, int length, i
     }
 
     @Override
-    public int type() {
+    public int componentType() {
         return DECODERS.getId(CODEC);
     }
 

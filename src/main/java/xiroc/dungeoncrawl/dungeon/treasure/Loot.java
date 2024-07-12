@@ -38,6 +38,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
 import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
+import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
 import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
@@ -52,7 +53,7 @@ public interface Loot {
     DeferredHolder<LootItemFunctionType, ?> RANDOM_ITEM = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_item",
             () -> new LootItemFunctionType(RandomItem.CODEC));
     DeferredHolder<LootItemFunctionType, ?> RANDOM_POTION = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_potion",
-            () -> new LootItemFunctionType(EnchantedBook.CODEC));
+            () -> new LootItemFunctionType(RandomPotion.CODEC));
     DeferredHolder<LootItemFunctionType, ?> SHIELD = DungeonCrawl.LOOT_FUNCTION_TYPE.register("shield",
             () -> new LootItemFunctionType(Shield.CODEC));
     DeferredHolder<LootItemFunctionType, ?> SUSPICIOUS_STEW = DungeonCrawl.LOOT_FUNCTION_TYPE.register("suspicious_stew",

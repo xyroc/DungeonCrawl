@@ -19,6 +19,15 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+sourceSets {
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+}
+
 runs {
     configureEach {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
@@ -44,6 +53,7 @@ runs {
         // workingDirectory project.file('run-data')
 
         programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        modSource project.sourceSets.datagen
     }
 }
 

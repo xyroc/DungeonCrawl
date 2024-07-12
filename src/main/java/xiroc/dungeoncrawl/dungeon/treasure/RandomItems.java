@@ -21,6 +21,11 @@ package xiroc.dungeoncrawl.dungeon.treasure;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
@@ -28,6 +33,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -37,6 +43,7 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Optional;
 
 public class RandomItems {
 
@@ -102,10 +109,10 @@ public class RandomItems {
         };
     }
 
-    public static ItemStack generate(RandomSource rand, int lootLevel) {
+    public static ItemStack generate(RandomSource rand, int lootLevel, RegistryAccess registryAccess) {
         ItemStack stack = new ItemStack(itemProvider(lootLevel).roll(rand));
         if (rand.nextFloat() < 0.5F + 0.1F * lootLevel) {
-            return EnchantmentHelper.enchantItem(rand, stack, 10 + 3 * lootLevel, lootLevel > 2);
+            return EnchantmentHelper.enchantItem(rand, stack, 10 + 3 * lootLevel, registryAccess, Optional.empty());
         }
         return stack;
     }
@@ -113,21 +120,25 @@ public class RandomItems {
     /**
      * Creates a shield item stack with random patterns.
      */
-    public static ItemStack createShield(RandomSource rand, int lootLevel) {
+    public static ItemStack createShield(RandomSource rand, int lootLevel, RegistryAccess registryAccess) {
         ItemStack shield = new ItemStack(Items.SHIELD);
         lootLevel = Mth.clamp(lootLevel, 0, 4);
         float f = rand.nextFloat();
         if (f < 0.12F + lootLevel * 0.02F) {
-            shield.enchant(Enchantments.UNBREAKING, UNBREAKING_LEVELS[Mth.clamp(lootLevel, 0, 4)].nextInt(rand));
+            shield.enchant(enchantment(Enchantments.UNBREAKING, registryAccess), UNBREAKING_LEVELS[Mth.clamp(lootLevel, 0, 4)].nextInt(rand));
             if (f < 0.04F + lootLevel * 0.01F) {
-                shield.enchant(Enchantments.MENDING, 1);
+                shield.enchant(enchantment(Enchantments.MENDING, registryAccess), 1);
             }
             if (rand.nextFloat() < 0.75F) {
-                shield.enchant(Enchantments.VANISHING_CURSE, 1);
+                shield.enchant(enchantment(Enchantments.VANISHING_CURSE, registryAccess), 1);
             }
         }
-        shield.getOrCreateTag().put("BlockEntityTag", Banner.createPatterns(rand));
+        shield.set(DataComponents.BANNER_PATTERNS, Banner.createPatterns(rand, registryAccess));
         return shield;
+    }
+
+    private static Holder<Enchantment> enchantment(ResourceKey<Enchantment> key, RegistryAccess registryAccess) {
+        return registryAccess.registryOrThrow(Registries.ENCHANTMENT).getHolder(key).orElseThrow();
     }
 
 }

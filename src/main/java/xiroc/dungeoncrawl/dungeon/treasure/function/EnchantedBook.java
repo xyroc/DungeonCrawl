@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -30,9 +31,10 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 import java.util.List;
+import java.util.Optional;
 
 public class EnchantedBook extends LootItemConditionalFunction {
-    public static final Codec<EnchantedBook> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder)
+    public static final MapCodec<EnchantedBook> CODEC = RecordCodecBuilder.mapCodec((builder) -> commonFields(builder)
             .and(Codec.INT.fieldOf(Loot.KEY_LOOT_LEVEL).forGetter((enchantedBook -> enchantedBook.lootLevel)))
             .apply(builder, EnchantedBook::new));
 
@@ -46,7 +48,7 @@ public class EnchantedBook extends LootItemConditionalFunction {
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
         return EnchantmentHelper.enchantItem(context.getRandom(), new ItemStack(Items.BOOK),
-                10 + lootLevel * 3, lootLevel > 2);
+                10 + lootLevel * 3, context.getLevel().registryAccess(), Optional.empty());
     }
 
     public static LootItemConditionalFunction.Builder<?> enchantedBook(int lootLevel) {

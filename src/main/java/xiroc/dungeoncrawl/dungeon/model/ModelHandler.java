@@ -61,7 +61,7 @@ public class ModelHandler {
             }
         }
         writeToFile(toNbt(blocks, width, height, length),
-                ((ServerLevel) world).getServer().getServerDirectory().getAbsolutePath() + "/models/" + name + ".nbt");
+                ((ServerLevel) world).getServer().getServerDirectory().toAbsolutePath() + "/models/" + name + ".nbt");
         DungeonCrawl.LOGGER.info("Done.");
     }
 

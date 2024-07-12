@@ -18,7 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
@@ -38,7 +38,7 @@ public class Dungeon extends Structure {
 
     public static final GenerationStep.Decoration GENERATION_STEP = GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
 
-    public static final Codec<Structure> CODEC = simpleCodec(Dungeon::new);
+    public static final MapCodec<Structure> CODEC = simpleCodec(Dungeon::new);
 
     private static final int BIOME_CHECK_RADIUS = 1;
 

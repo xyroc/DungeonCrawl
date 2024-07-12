@@ -120,19 +120,19 @@ public abstract class DungeonPiece extends StructurePiece {
         if (p_i51343_2_.contains("theme", 99)) {
             this.theme = Theme.getThemeByID(p_i51343_2_.getInt("theme"));
         } else {
-            this.theme = Theme.getTheme(new ResourceLocation(p_i51343_2_.getString("theme")));
+            this.theme = Theme.getTheme(ResourceLocation.parse(p_i51343_2_.getString("theme")));
         }
 
         if (p_i51343_2_.contains("subTheme", 99)) {
             this.secondaryTheme = Theme.getSecondaryThemeByID(p_i51343_2_.getInt("subTheme"));
         } else {
-            this.secondaryTheme = Theme.getSecondaryTheme(new ResourceLocation(p_i51343_2_.getString("secondaryTheme")));
+            this.secondaryTheme = Theme.getSecondaryTheme(ResourceLocation.parse(p_i51343_2_.getString("secondaryTheme")));
         }
 
         if (p_i51343_2_.contains("model", 99)) {
             this.model = DungeonModels.ID_TO_MODEL.get(p_i51343_2_.getInt("model"));
         } else {
-            this.model = DungeonModels.KEY_TO_MODEL.get(new ResourceLocation(p_i51343_2_.getString("model")));
+            this.model = DungeonModels.KEY_TO_MODEL.get(ResourceLocation.parse(p_i51343_2_.getString("model")));
         }
 
         if (p_i51343_2_.contains("features", 9)) {

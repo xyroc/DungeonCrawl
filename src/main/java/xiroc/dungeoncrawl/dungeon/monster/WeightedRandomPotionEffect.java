@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.monster;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -48,7 +49,8 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
         int i = 0;
         for (Builder.Entry entry : entries) {
             float weight = (float) entry.weight / (float) totalWeight;
-            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(BuiltInRegistries.MOB_EFFECT.get(new ResourceLocation(entry.effect)), entry.duration, entry.amplifier,
+            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.parse(entry.effect)).orElseThrow(), entry.duration,
+                    entry.amplifier,
                 weight + f);
             f += weight;
             i++;
@@ -81,7 +83,7 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
         return builder.build();
     }
 
-    public record WeightedEntry(MobEffect effect, int duration,
+    public record WeightedEntry(Holder<MobEffect> effect, int duration,
                                 Range amplifier, float weight) {
 
     }

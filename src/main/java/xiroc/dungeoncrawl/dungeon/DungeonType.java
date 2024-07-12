@@ -155,7 +155,7 @@ public record DungeonType(ResourceLocation source,
     private static void addEntries(WeightedRandom.Builder<DungeonType> builder, JsonArray entries, ResourceLocation resource) {
         entries.forEach((element) -> {
             JsonObject entry = element.getAsJsonObject();
-            ResourceLocation key = new ResourceLocation(entry.get("key").getAsString());
+            ResourceLocation key = ResourceLocation.parse(entry.get("key").getAsString());
             if (!KEY_TO_TYPE.containsKey(key)) {
                 throw new DatapackLoadException("Cannot resolve dungeon type " + key + " in " + resource);
             }
@@ -177,7 +177,7 @@ public record DungeonType(ResourceLocation source,
             JsonObject multipart = layer.getAsJsonObject("multipart");
             multipart.entrySet().forEach((entry) -> {
                 JsonObject object = entry.getValue().getAsJsonObject();
-                ResourceLocation target = new ResourceLocation(entry.getKey());
+                ResourceLocation target = ResourceLocation.parse(entry.getKey());
                 if (DungeonModels.KEY_TO_MODEL.containsKey(target)) {
                     String action = object.get("action").getAsString();
                     switch (action) {

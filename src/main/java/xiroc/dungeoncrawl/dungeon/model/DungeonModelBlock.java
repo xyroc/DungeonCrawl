@@ -170,7 +170,7 @@ public class DungeonModelBlock {
         ResourceLocation blockName = null;
 
         if (nbt.contains("resourceName")) {
-            blockName = new ResourceLocation(nbt.getString("resourceName"));
+            blockName = ResourceLocation.parse(nbt.getString("resourceName"));
             if (BuiltInRegistries.BLOCK.containsKey(blockName)) {
                 block = BuiltInRegistries.BLOCK.get(blockName);
             } else {

@@ -128,8 +128,8 @@ public class Theme {
     private static ImmutableSet<ResourceLocation> THEME_KEYS, SECONDARY_THEME_KEYS;
 
     static {
-        BUILTIN_DEFAULT_THEME.key = new ResourceLocation("builtin:default");
-        BUILTIN_DEFAULT_SECONDARY_THEME.key = new ResourceLocation("builtin:default");
+        BUILTIN_DEFAULT_THEME.key = ResourceLocation.parse("builtin:default");
+        BUILTIN_DEFAULT_SECONDARY_THEME.key = ResourceLocation.parse("builtin:default");
         KEY_TO_THEME.put(BUILTIN_DEFAULT_THEME.getKey(), BUILTIN_DEFAULT_THEME);
         KEY_TO_SECONDARY_THEME.put(BUILTIN_DEFAULT_SECONDARY_THEME.getKey(), BUILTIN_DEFAULT_SECONDARY_THEME);
     }

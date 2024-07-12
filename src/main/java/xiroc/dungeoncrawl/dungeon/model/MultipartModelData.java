@@ -219,7 +219,7 @@ public class MultipartModelData {
 
                 Rotation rotation = object.has("rotation") ? Rotation.valueOf(object.get("rotation").getAsString().toUpperCase(Locale.ROOT)) : Rotation.NONE;
 
-                return new Instance(file, new ResourceLocation(object.get("model").getAsString()), offset, rotation);
+                return new Instance(file, ResourceLocation.parse(object.get("model").getAsString()), offset, rotation);
             } else {
                 return EMPTY;
             }

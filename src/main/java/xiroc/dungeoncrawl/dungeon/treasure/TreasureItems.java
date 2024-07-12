@@ -18,229 +18,122 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
+import net.minecraft.util.Unit;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.component.ItemLore;
+
+import java.util.List;
+import java.util.Optional;
 
 public class TreasureItems {
 
     // Potions from the original Roguelike Dungeons
-    public static final ItemStack LAUDANUM;
-    public static final ItemStack ANIMUS;
-    public static final ItemStack NECTAR;
-    public static final ItemStack LUMA;
+    private static final ItemStack LAUDANUM;
+    private static final ItemStack ANIMUS;
+    private static final ItemStack NECTAR;
+    private static final ItemStack LUMA;
 
     // New Potions
-    public static final ItemStack VELOCITAS;
+    private static final ItemStack VELOCITAS;
 
-    public static final ItemStack POTION_HEALING;
-    public static final ItemStack POTION_HEALING_II;
-    public static final ItemStack POTION_REGENERATION;
-    public static final ItemStack POTION_REGENERATION_LONG;
-    public static final ItemStack POTION_REGENERATION_II;
+    private static final ItemStack POTION_HEALING;
+    private static final ItemStack POTION_HEALING_II;
+    private static final ItemStack POTION_REGENERATION;
+    private static final ItemStack POTION_REGENERATION_LONG;
+    private static final ItemStack POTION_REGENERATION_II;
 
-    public static final ItemStack SPLASH_POISON;
-    public static final ItemStack SPLASH_POISON_LONG;
-    public static final ItemStack SPLASH_HARMING;
-    public static final ItemStack SPLASH_HARMING_II;
+    private static final ItemStack SPLASH_POISON;
+    private static final ItemStack SPLASH_POISON_LONG;
+    private static final ItemStack SPLASH_HARMING;
+    private static final ItemStack SPLASH_HARMING_II;
 
     private static final ItemStack[] POTIONS;
     private static final ItemStack[] SPECIAL_POTIONS;
 
     static {
-        {
-            CompoundTag nbt = new CompoundTag();
-            ListTag customPotionEffects = new ListTag();
-            CompoundTag nausea = new CompoundTag();
-            nausea.putInt("Id", 9);
-            nausea.putInt("Duration", 100);
-            CompoundTag blindness = new CompoundTag();
-            blindness.putInt("Id", 15);
-            blindness.putInt("Duration", 100);
-            CompoundTag weakness = new CompoundTag();
-            weakness.putInt("Id", 18);
-            weakness.putInt("Duration", 100);
-            CompoundTag miningFatigue = new CompoundTag();
-            miningFatigue.putInt("Id", 4);
-            miningFatigue.putInt("Duration", 100);
-            CompoundTag regeneration = new CompoundTag();
-            regeneration.putInt("Id", 10);
-            regeneration.putInt("Amplifier", 1);
-            regeneration.putInt("Duration", 160);
-            customPotionEffects.add(regeneration);
-            customPotionEffects.add(blindness);
-            customPotionEffects.add(weakness);
-            customPotionEffects.add(miningFatigue);
-            customPotionEffects.add(nausea);
-            nbt.put("CustomPotionEffects", customPotionEffects);
-            nbt.putInt("CustomPotionColor", 7014144);
-            //nbt.putInt("CustomPotionColor", 0xca03fc);
-            nbt.putInt("HideFlags", 32);
-            CompoundTag display = new CompoundTag();
-            ListTag lore = new ListTag();
-            lore.add(StringTag.valueOf(
-                    Component.Serializer.toJson(Component.literal("A medicinal tincture."))));
-            display.put("Lore", lore);
-            display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Laudanum"))));
-            nbt.put("display", display);
-            LAUDANUM = new ItemStack(Items.POTION);
-            LAUDANUM.setTag(nbt);
-        }
-        {
-            CompoundTag nbt = new CompoundTag();
-            ListTag customPotionEffects = new ListTag();
-            CompoundTag wither = new CompoundTag();
-            wither.putInt("Id", 20);
-            wither.putInt("Duration", 40);
-            CompoundTag blindness = new CompoundTag();
-            blindness.putInt("Id", 15);
-            blindness.putInt("Duration", 40);
-            CompoundTag strength = new CompoundTag();
-            strength.putInt("Id", 5);
-            strength.putInt("Duration", 800);
-            customPotionEffects.add(strength);
-            customPotionEffects.add(blindness);
-            customPotionEffects.add(wither);
-            nbt.put("CustomPotionEffects", customPotionEffects);
-            nbt.putInt("CustomPotionColor", 13050390);
-            nbt.putInt("HideFlags", 32);
-            CompoundTag display = new CompoundTag();
-            ListTag lore = new ListTag();
-            lore.add(StringTag
-                    .valueOf(Component.Serializer.toJson(Component.literal("An unstable mixture."))));
-            display.put("Lore", lore);
-            display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Animus"))));
-            nbt.put("display", display);
-            ANIMUS = new ItemStack(Items.POTION);
-            ANIMUS.setTag(nbt);
-        }
-        {
-            CompoundTag nbt = new CompoundTag();
-            ListTag customPotionEffects = new ListTag();
-            CompoundTag resistance = new CompoundTag();
-            resistance.putInt("Id", 11);
-            resistance.putInt("Duration", 400);
-            CompoundTag blindness = new CompoundTag();
-            blindness.putInt("Id", 15);
-            blindness.putInt("Duration", 100);
-            CompoundTag absorption = new CompoundTag();
-            absorption.putInt("Id", 22);
-            absorption.putInt("Amplifier", 8);
-            absorption.putInt("Duration", 600);
-            customPotionEffects.add(absorption);
-            customPotionEffects.add(resistance);
-            customPotionEffects.add(blindness);
-            nbt.put("CustomPotionEffects", customPotionEffects);
-            nbt.putInt("CustomPotionColor", 15446551);
-            nbt.putInt("HideFlags", 32);
-            CompoundTag display = new CompoundTag();
-            ListTag lore = new ListTag();
-            lore.add(StringTag
-                    .valueOf(Component.Serializer.toJson(Component.literal("A floral extract."))));
-            display.put("Lore", lore);
-            display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Nectar"))));
-            nbt.put("display", display);
-            NECTAR = new ItemStack(Items.POTION);
-            NECTAR.setTag(nbt);
-        }
-        {
-            CompoundTag nbt = new CompoundTag();
-            ListTag customPotionEffects = new ListTag();
-            CompoundTag speed = new CompoundTag();
-            speed.putInt("Id", 1);
-            speed.putInt("Amplifier", 1);
-            speed.putInt("Duration", 400);
-            CompoundTag blindness = new CompoundTag();
-            blindness.putInt("Id", 15);
-            blindness.putInt("Duration", 40);
-            CompoundTag haste = new CompoundTag();
-            haste.putInt("Id", 3);
-            haste.putInt("Duration", 400);
-            customPotionEffects.add(speed);
-            customPotionEffects.add(haste);
-            customPotionEffects.add(blindness);
-            nbt.put("CustomPotionEffects", customPotionEffects);
-            nbt.putInt("CustomPotionColor", 65327);
-            nbt.putInt("HideFlags", 32);
-            CompoundTag display = new CompoundTag();
-            ListTag lore = new ListTag();
-            lore.add(StringTag.valueOf(
-                    Component.Serializer.toJson(Component.literal("An energetic beverage."))));
-            display.put("Lore", lore);
-            display.put("Name",
-                    StringTag.valueOf(Component.Serializer.toJson(Component.literal("Velocitas"))));
-            nbt.put("display", display);
-            VELOCITAS = new ItemStack(Items.POTION);
-            VELOCITAS.setTag(nbt);
-        }
-        {
-            CompoundTag nbt = new CompoundTag();
-            ListTag customPotionEffects = new ListTag();
-            CompoundTag glowing = new CompoundTag();
-            glowing.putInt("Id", 24);
-            glowing.putInt("Duration", 12000);
-            customPotionEffects.add(glowing);
-            nbt.put("CustomPotionEffects", customPotionEffects);
-            nbt.putInt("CustomPotionColor", 16448000);
-            nbt.putInt("HideFlags", 32);
-            CompoundTag display = new CompoundTag();
-            ListTag lore = new ListTag();
-            lore.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal("A glowstone extract."))));
-            display.put("Lore", lore);
-            display.put("Name", StringTag.valueOf(Component.Serializer.toJson(Component.literal("Luma"))));
-            nbt.put("display", display);
-            LUMA = new ItemStack(Items.POTION);
-            LUMA.setTag(nbt);
-        }
+        LAUDANUM = new ItemStack(Items.POTION);
+        LAUDANUM.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(7014144),
+                List.of(new MobEffectInstance(MobEffects.CONFUSION, 100),
+                        new MobEffectInstance(MobEffects.BLINDNESS, 100),
+                        new MobEffectInstance(MobEffects.WEAKNESS, 100),
+                        new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100),
+                        new MobEffectInstance(MobEffects.REGENERATION, 160, 1))));
+        LAUDANUM.set(DataComponents.CUSTOM_NAME, Component.literal("Laudanum"));
+        LAUDANUM.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A medicinal tincture."))));
+        LAUDANUM.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
-        POTION_HEALING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:healing"));
-        POTION_HEALING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_healing"));
+        ANIMUS = new ItemStack(Items.POTION);
+        ANIMUS.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(13050390),
+                List.of(new MobEffectInstance(MobEffects.WITHER, 40),
+                        new MobEffectInstance(MobEffects.BLINDNESS, 40),
+                        new MobEffectInstance(MobEffects.DAMAGE_BOOST, 800))));
+        ANIMUS.set(DataComponents.CUSTOM_NAME, Component.literal("Animus"));
+        ANIMUS.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("An unstable mixture."))));
+        ANIMUS.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
-        POTION_REGENERATION = createItemWithNbt(Items.POTION, createPotionTag("minecraft:regeneration"));
-        POTION_REGENERATION_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_regeneration"));
-        POTION_REGENERATION_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_regeneration"));
+        NECTAR = new ItemStack(Items.POTION);
+        NECTAR.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(15446551),
+                List.of(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 400),
+                        new MobEffectInstance(MobEffects.BLINDNESS, 100),
+                        new MobEffectInstance(MobEffects.ABSORPTION, 600, 8))));
+        NECTAR.set(DataComponents.CUSTOM_NAME, Component.literal("Nectar"));
+        NECTAR.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A floral extract."))));
+        NECTAR.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
-        SPLASH_POISON = createItemWithNbt(Items.POTION, createPotionTag("minecraft:poison"));
-        SPLASH_POISON_LONG = createItemWithNbt(Items.POTION, createPotionTag("minecraft:long_poison"));
-        SPLASH_HARMING = createItemWithNbt(Items.POTION, createPotionTag("minecraft:harming"));
-        SPLASH_HARMING_II = createItemWithNbt(Items.POTION, createPotionTag("minecraft:strong_harming"));
+        LUMA = new ItemStack(Items.POTION);
+        LUMA.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(16448000),
+                List.of(new MobEffectInstance(MobEffects.GLOWING, 12000))));
+        LUMA.set(DataComponents.CUSTOM_NAME, Component.literal("Luma"));
+        LUMA.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A glowstone extract."))));
+        LUMA.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+
+        VELOCITAS = new ItemStack(Items.POTION);
+        VELOCITAS.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(65327),
+                List.of(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 400, 1),
+                        new MobEffectInstance(MobEffects.BLINDNESS, 40),
+                        new MobEffectInstance(MobEffects.DIG_SPEED, 400))));
+        VELOCITAS.set(DataComponents.CUSTOM_NAME, Component.literal("Velocitas"));
+        VELOCITAS.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("An energetic beverage."))));
+        VELOCITAS.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+
+        POTION_HEALING = new ItemStack(Items.POTION);
+        POTION_HEALING.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.HEALING), Optional.empty(), List.of()));
+
+        POTION_HEALING_II = new ItemStack(Items.POTION);
+        POTION_HEALING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_HEALING), Optional.empty(), List.of()));
+
+        POTION_REGENERATION = new ItemStack(Items.POTION);
+        POTION_REGENERATION.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.REGENERATION), Optional.empty(), List.of()));
+
+        POTION_REGENERATION_LONG = new ItemStack(Items.POTION);
+        POTION_REGENERATION_LONG.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.LONG_REGENERATION), Optional.empty(), List.of()));
+
+        POTION_REGENERATION_II = new ItemStack(Items.POTION);
+        POTION_HEALING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_REGENERATION), Optional.empty(), List.of()));
+
+        SPLASH_POISON = new ItemStack(Items.SPLASH_POTION);
+        SPLASH_POISON.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.POISON), Optional.empty(), List.of()));
+
+        SPLASH_POISON_LONG = new ItemStack(Items.SPLASH_POTION);
+        SPLASH_POISON_LONG.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.LONG_POISON), Optional.empty(), List.of()));
+
+        SPLASH_HARMING = new ItemStack(Items.SPLASH_POTION);
+        SPLASH_HARMING.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.HARMING), Optional.empty(), List.of()));
+
+        SPLASH_HARMING_II = new ItemStack(Items.SPLASH_POTION);
+        SPLASH_HARMING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_HARMING), Optional.empty(), List.of()));
 
         POTIONS = new ItemStack[]{POTION_HEALING, POTION_HEALING_II, POTION_REGENERATION, POTION_REGENERATION_LONG,
                 POTION_REGENERATION_II, SPLASH_HARMING, SPLASH_HARMING_II, SPLASH_POISON, SPLASH_POISON_LONG};
         SPECIAL_POTIONS = new ItemStack[]{LAUDANUM, ANIMUS, NECTAR, LUMA, VELOCITAS};
-    }
-
-    public static CompoundTag createDisplayTag(String name, String... loreEntries) {
-        CompoundTag display = new CompoundTag();
-        display.put("Name", StringTag.valueOf(Component.Serializer.toJson(Component.literal(name))));
-        ListTag lore = new ListTag();
-        if (loreEntries.length > 0) {
-            for (String line : loreEntries) {
-                lore.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(line))));
-            }
-            display.put("Lore", lore);
-        }
-        return display;
-    }
-
-    public static CompoundTag createPotionTag(String potionName) {
-        CompoundTag potion = new CompoundTag();
-        potion.putString("Potion", potionName);
-        return potion;
-    }
-
-    private static ItemStack createItemWithNbt(Item item, CompoundTag nbt) {
-        ItemStack stack = new ItemStack(item);
-        stack.setTag(nbt);
-        return stack;
     }
 
     public static ItemStack getRandomSpecialPotion(RandomSource rand, int stage) {

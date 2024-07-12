@@ -18,42 +18,32 @@
 
 package xiroc.dungeoncrawl.dungeon.misc;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Banner {
-
-    private static final int PATTERNS = 3;
-
-    private static final String[] BANNER_PATTERNS = new String[]{"gru", "bl", "br", "bri", "tr", "bs", "ts", "ls",
-            "rs", "bl", "tl", "hh", "vhr", "hhb", "bo", "cbo", "gra", "bts", "tts", "ld", "rd", "lud", "rud", "mc",
-            "mr", "vh", "dls", "cs", "ms", "drs", "ss", "cr", "sc", "bt", "tt"};
-
-    private static final String[] BANNER_PATTERNS_FINAL = new String[]{"sku", "cre"};
-
-    private static final String[] BANNER_PATTERNS_FINAL_RARE = new String[]{"glb", "flo"};
+    private static final int PATTERN_COUNT = 3;
 
     /**
      * Creates the BlockEntityTag for banners or shields which contains a list of
      * random patterns.
      */
-    public static CompoundTag createPatterns(RandomSource rand) {
-        CompoundTag blockEntityTag = new CompoundTag();
-        ListTag patterns = new ListTag();
-        for (int i = 0; i < PATTERNS; i++) {
-            CompoundTag pattern = new CompoundTag();
-            pattern.putInt("Color", rand.nextInt(15));
-            pattern.putString("Pattern",
-                    i == PATTERNS - 1 && rand.nextDouble() < 0.25
-                            ? (rand.nextDouble() < 0.05
-                            ? BANNER_PATTERNS_FINAL_RARE[rand.nextInt(BANNER_PATTERNS_FINAL_RARE.length)]
-                            : BANNER_PATTERNS_FINAL[rand.nextInt(BANNER_PATTERNS_FINAL.length)])
-                            : BANNER_PATTERNS[rand.nextInt(BANNER_PATTERNS.length)]);
-            patterns.add(pattern);
+    public static BannerPatternLayers createPatterns(RandomSource rand, RegistryAccess registryAccess) {
+        Registry<BannerPattern> bannerPatterns = registryAccess.registryOrThrow(Registries.BANNER_PATTERN);
+        List<BannerPatternLayers.Layer> layers = new ArrayList<>();
+        for (int i = 0; i < PATTERN_COUNT; ++i) {
+            Holder<BannerPattern> pattern = bannerPatterns.getRandom(rand).orElseThrow();
+            layers.add(new BannerPatternLayers.Layer(pattern, DyeColor.byId(rand.nextInt(16))));
         }
-        blockEntityTag.put("Patterns", patterns);
-        return blockEntityTag;
+        return new BannerPatternLayers(layers);
     }
-
 }

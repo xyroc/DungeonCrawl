@@ -21,16 +21,17 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -39,6 +40,7 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
+import java.util.Optional;
 
 public class RandomEquipment {
 
@@ -136,20 +138,19 @@ public class RandomEquipment {
         }
     }
 
-    public static ItemStack[] createArmor(RandomSource rand, int stage) {
+    public static ItemStack[] createArmor(RandomSource rand, int stage, RegistryAccess registryAccess) {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
 
         ItemStack[] items = new ItemStack[4];
         float chance = 0.4F + 0.15F * stage;
 
+
         if (HELMET.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = HELMET.get(stage).roll(rand);
-                items[3] = createItemStack(rand, item, stage);
-                if (item instanceof DyeableArmorItem) {
-                    setArmorColor(items[3], getRandomColor(rand));
-                }
+                items[3] = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(items[3], getRandomColor(rand));
             } else {
                 items[3] = ItemStack.EMPTY;
             }
@@ -161,10 +162,8 @@ public class RandomEquipment {
         if (CHESTPLATE.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = CHESTPLATE.get(stage).roll(rand);
-                items[2] = createItemStack(rand, item, stage);
-                if (item instanceof DyeableArmorItem) {
-                    setArmorColor(items[2], getRandomColor(rand));
-                }
+                items[2] = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(items[2], getRandomColor(rand));
             } else {
                 items[2] = ItemStack.EMPTY;
             }
@@ -176,10 +175,8 @@ public class RandomEquipment {
         if (LEGGINGS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = LEGGINGS.get(stage).roll(rand);
-                items[1] = createItemStack(rand, item, stage);
-                if (item instanceof DyeableArmorItem) {
-                    setArmorColor(items[1], getRandomColor(rand));
-                }
+                items[1] = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(items[1], getRandomColor(rand));
             } else {
                 items[1] = ItemStack.EMPTY;
             }
@@ -191,10 +188,8 @@ public class RandomEquipment {
         if (BOOTS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = BOOTS.get(stage).roll(rand);
-                items[0] = createItemStack(rand, item, stage);
-                if (item instanceof DyeableArmorItem) {
-                    setArmorColor(items[0], getRandomColor(rand));
-                }
+                items[0] = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(items[0], getRandomColor(rand));
             } else {
                 items[0] = ItemStack.EMPTY;
             }
@@ -202,14 +197,11 @@ public class RandomEquipment {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             items[0] = ItemStack.EMPTY;
         }
-
-        //DungeonCrawl.LOGGER.info("ARMOR ({}) : {}", stage, Arrays.toString(items));
-
         return items;
     }
 
-    public static ItemStack createItemStack(RandomSource rand, Item item, int stage) {
-        ItemStack itemStack = EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * stage, false);
+    public static ItemStack createItemStack(RandomSource rand, Item item, int stage, RegistryAccess registryAccess) {
+        ItemStack itemStack = EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * stage, registryAccess, Optional.empty());
         applyDamage(itemStack, rand);
         return itemStack;
     }
@@ -220,33 +212,28 @@ public class RandomEquipment {
     }
 
     public static void setArmorColor(ItemStack item, int color) {
-        CompoundTag tag = item.getOrCreateTag();
-        Tag displayNBT = tag.get("display");
-        CompoundTag display;
-        if (displayNBT == null)
-            display = new CompoundTag();
-        else
-            display = (CompoundTag) displayNBT;
-        display.putInt("color", color);
-        tag.put("display", display);
+        if (item.is(ItemTags.DYEABLE)) {
+            DyedItemColor colorComponent = new DyedItemColor(color, true);
+            item.set(DataComponents.DYED_COLOR, colorComponent);
+        }
     }
 
-    public static ItemStack getMeleeWeapon(RandomSource rand, int stage) {
+    public static ItemStack getMeleeWeapon(RandomSource rand, int stage, RegistryAccess registryAccess) {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
         if (MELEE_WEAPON.containsKey(stage)) {
-            return createItemStack(rand, MELEE_WEAPON.get(stage).roll(rand), stage);
+            return createItemStack(rand, MELEE_WEAPON.get(stage).roll(rand), stage, registryAccess);
         } else {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;
         }
     }
 
-    public static ItemStack getRangedWeapon(RandomSource rand, int stage) {
+    public static ItemStack getRangedWeapon(RandomSource rand, int stage, RegistryAccess registryAccess) {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
         if (RANGED_WEAPON.containsKey(stage)) {
-            return createItemStack(rand, RANGED_WEAPON.get(stage).roll(rand), stage);
+            return createItemStack(rand, RANGED_WEAPON.get(stage).roll(rand), stage, registryAccess);
         } else {
             // This can only happen if a monster equipment file in the datapack is incomplete.
             return ItemStack.EMPTY;

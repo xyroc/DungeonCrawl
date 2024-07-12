@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.block;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -68,7 +69,7 @@ public class Spawner implements IBlockPlacementHandler {
                 for (int i = 0; i < Config.SPAWNER_ENTITIES.get(); i++) {
                     CompoundTag potentialSpawn = new CompoundTag();
                     CompoundTag data = new CompoundTag();
-                    CompoundTag spawnData = createSpawnData(type, null, rand, stage);
+                    CompoundTag spawnData = createSpawnData(type, null, rand, stage, world.registryAccess());
                     data.put("entity", spawnData);
                     potentialSpawn.put("data", data);
                     potentialSpawn.putInt("weight", 1);
@@ -92,43 +93,45 @@ public class Spawner implements IBlockPlacementHandler {
     }
 
     public static CompoundTag createSpawnData(@Nullable EntityType<?> type, @Nullable CompoundTag spawnData,
-                                              RandomSource rand, int stage) {
+                                              RandomSource rand, int stage, RegistryAccess registryAccess) {
         if (type == null)
             type = RandomMonster.randomMonster(rand, stage);
         if (spawnData == null)
             spawnData = new CompoundTag();
 
         ResourceLocation registryName = BuiltInRegistries.ENTITY_TYPE.getKey(type);
-        if (registryName == null) {
-            DungeonCrawl.LOGGER.warn("Entity type {} has no registry name.", type);
-            return new CompoundTag();
-        }
 
         spawnData.putString("id", registryName.toString());
         if (INVENTORY_ENTITIES.contains(type)) {
-            ItemStack[] armor = RandomEquipment.createArmor(rand, stage);
+            ItemStack[] armor = RandomEquipment.createArmor(rand, stage, registryAccess);
             ListTag armorList = new ListTag();
 
             for (ItemStack stack : armor) {
-                armorList.add(stack.save(new CompoundTag()));
+                if (stack.isEmpty()) {
+                    armorList.add(new CompoundTag());
+                } else {
+                    armorList.add(stack.save(registryAccess));
+                }
             }
 
-            if (armorList.size() > 0) {
-                spawnData.put("ArmorItems", armorList);
-            }
+            spawnData.put("ArmorItems", armorList);
 
             ListTag handItems = new ListTag();
             ItemStack mainHand = RANGED_INVENTORY_ENTITIES.contains(type)
-                    ? RandomEquipment.getRangedWeapon(rand, stage)
-                    : RandomEquipment.getMeleeWeapon(rand, stage);
+                    ? RandomEquipment.getRangedWeapon(rand, stage, registryAccess)
+                    : RandomEquipment.getMeleeWeapon(rand, stage, registryAccess);
 
-            if (mainHand != ItemStack.EMPTY) {
-                handItems.add(mainHand.save(new CompoundTag()));
+            if (mainHand.isEmpty()) {
+                handItems.add(new CompoundTag());
+            } else {
+                handItems.add(mainHand.save(registryAccess));
             }
 
-            handItems.add(rand.nextDouble() < 0.25
-                    ? RandomItems.createShield(rand, stage).save(new CompoundTag())
-                    : ItemStack.EMPTY.save(new CompoundTag()));
+            if (rand.nextDouble() < 0.25) {
+                handItems.add(RandomItems.createShield(rand, stage, registryAccess).save(registryAccess));
+            } else {
+                handItems.add(new CompoundTag());
+            }
 
             spawnData.put("HandItems", handItems);
 

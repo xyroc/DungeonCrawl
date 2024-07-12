@@ -24,9 +24,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.storage.loot.LootTable;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
@@ -53,7 +56,7 @@ public class DungeonModel {
     private DungeonModelFeature[] features;
 
     @Nullable
-    private ResourceLocation lootTable;
+    private ResourceKey<LootTable> lootTable;
 
     private boolean hasId = false;
     private boolean hasFeatures = false;
@@ -111,7 +114,7 @@ public class DungeonModel {
         }
 
         if (object.has("loot")) {
-            this.lootTable = new ResourceLocation(object.get("loot").getAsString());
+            this.lootTable = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.parse(object.get("loot").getAsString()));
         }
 
         if (object.has("multipart")) {
@@ -152,7 +155,7 @@ public class DungeonModel {
     }
 
     @Nullable
-    public ResourceLocation getLootTable() {
+    public ResourceKey<LootTable> getLootTable() {
         return lootTable;
     }
 

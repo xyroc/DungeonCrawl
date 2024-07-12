@@ -22,9 +22,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -38,13 +39,15 @@ import xiroc.dungeoncrawl.util.Range;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RandomPotionEffect {
 
-    public static float[] CHANCES;
-    public static Range[] ROLLS;
-    public static WeightedRandomPotionEffect[] EFFECTS;
-    public static PotionEffect[][] GUARANTEED_EFFECTS;
+    private static float[] CHANCES;
+    private static Range[] ROLLS;
+    private static WeightedRandomPotionEffect[] EFFECTS;
+    private static PotionEffect[][] GUARANTEED_EFFECTS;
 
     /**
      * Loads all potion effect files.
@@ -104,7 +107,8 @@ public class RandomPotionEffect {
                             new Range(effect.getAsJsonObject("amplifier").get("min").getAsInt(),
                                     effect.getAsJsonObject("amplifier").get("max").getAsInt())
                             : new Range(0, 0);
-                    GUARANTEED_EFFECTS[stage][i] = new PotionEffect(BuiltInRegistries.MOB_EFFECT.get(new ResourceLocation(effect.get("effect").getAsString())),
+                    GUARANTEED_EFFECTS[stage][i] = new PotionEffect(
+                            BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.parse(effect.get("effect").getAsString())).orElseThrow(),
                             effect.get("duration").getAsInt(), amplifier);
                 }
             }
@@ -129,18 +133,14 @@ public class RandomPotionEffect {
             if (chance) {
                 int rolls = ROLLS[stage].nextInt(rand);
                 if (rolls > 0) {
-                    MobEffect[] effects = new MobEffect[rolls - 1];
+                    Set<Holder<MobEffect>> effects = new HashSet<>();
                     loop:
                     for (int i = 0; i < rolls; i++) {
                         WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
                         if (effect != null) {
-                            for (MobEffect value : effects) { // Skip duplicates
-                                if (value == effect.effect())
-                                    continue loop;
+                            if (effects.add(effect.effect())) {
+                                list.add(toNBT(effect.effect(), effect.duration(), effect.amplifier().nextInt(rand)));
                             }
-                            if (i < rolls - 1)
-                                effects[i] = effect.effect();
-                            list.add(toNBT(effect.effect(), effect.duration(), effect.amplifier().nextInt(rand)));
                         }
                     }
                 }
@@ -159,11 +159,11 @@ public class RandomPotionEffect {
     /**
      * Creates an NBT-representation of the given effect.
      */
-    private static CompoundTag toNBT(MobEffect effect, int duration, int amplifier) {
-        return new MobEffectInstance(effect, duration, amplifier).save(new CompoundTag());
+    private static Tag toNBT(Holder<MobEffect> effect, int duration, int amplifier) {
+        return new MobEffectInstance(effect, duration, amplifier).save();
     }
 
-    private record PotionEffect(MobEffect effect, int duration,
+    private record PotionEffect(Holder<MobEffect> effect, int duration,
                                 Range amplifier) {
     }
 

@@ -51,7 +51,7 @@ public class ModelPools {
 
                 entry.getValue().getAsJsonArray().forEach((element) -> {
                     JsonObject modelEntry = element.getAsJsonObject();
-                    ResourceLocation key = new ResourceLocation(modelEntry.get("key").getAsString());
+                    ResourceLocation key = ResourceLocation.parse(modelEntry.get("key").getAsString());
                     if (!DungeonModels.KEY_TO_MODEL.containsKey(key)) {
                         DungeonCrawl.LOGGER.warn("Cannot resolve model key " + key + " in " + FILE);
                     } else {

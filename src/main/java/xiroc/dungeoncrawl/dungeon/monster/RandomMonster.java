@@ -51,7 +51,7 @@ public class RandomMonster {
         VILLAGER_OFFERS.put("Recipes", recipes);
 
         NBT_PATCHERS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
-            nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.toString());
+            nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.location().toString());
             nbt.putLong("DeathLootTableSeed", rand.nextInt());
         });
 

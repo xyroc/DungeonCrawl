@@ -18,8 +18,9 @@
 
 package xiroc.dungeoncrawl.data.loot;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -37,9 +38,9 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 
 import java.util.function.BiConsumer;
 
-public class ChestLootTables implements LootTableSubProvider {
+public record ChestLootTables(HolderLookup.Provider registries) implements LootTableSubProvider {
     @Override
-    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> consumer) {
+    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
         consumer.accept(Loot.CHEST_FOOD, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("food")
@@ -244,8 +245,7 @@ public class ChestLootTables implements LootTableSubProvider {
                         .add(LootItem.lootTableItem(Items.NAME_TAG))
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(10, 15))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(10, 15))))
                         .add(LootItem.lootTableItem(Items.TORCH)
                                 .setWeight(6)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(5, 10))))
@@ -373,8 +373,7 @@ public class ChestLootTables implements LootTableSubProvider {
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(3)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(10, 18))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(10, 18))))
                         .add(LootItem.lootTableItem(Items.TORCH)
                                 .setWeight(5)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8))))
@@ -449,8 +448,7 @@ public class ChestLootTables implements LootTableSubProvider {
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(3)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(15, 20))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(15, 20))))
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(2)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 5))))
@@ -549,8 +547,7 @@ public class ChestLootTables implements LootTableSubProvider {
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(3)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(18, 25))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(18, 25))))
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(2)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 5))))
@@ -638,7 +635,7 @@ public class ChestLootTables implements LootTableSubProvider {
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(3)
-                                .apply(EnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(20, 30))))
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries(), UniformGenerator.between(20, 30))))
                         .add(LootItem.lootTableItem(Items.TORCH)
                                 .setWeight(3)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 5))))
@@ -806,7 +803,7 @@ public class ChestLootTables implements LootTableSubProvider {
                                 .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(5)
-                                .apply(EnchantWithLevelsFunction.enchantWithLevels(ConstantValue.exactly(10))))));
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries(), ConstantValue.exactly(10))))));
 
         consumer.accept(Loot.CHEST_TREASURE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
@@ -862,23 +859,19 @@ public class ChestLootTables implements LootTableSubProvider {
                         .add(LootItem.lootTableItem(Items.GOLDEN_HELMET)
                                 .setWeight(2)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(30, 40))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(30, 40))))
                         .add(LootItem.lootTableItem(Items.GOLDEN_CHESTPLATE)
                                 .setWeight(2)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(30, 40))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(30, 40))))
                         .add(LootItem.lootTableItem(Items.GOLDEN_LEGGINGS)
                                 .setWeight(2)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(30, 40))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(30, 40))))
                         .add(LootItem.lootTableItem(Items.GOLDEN_BOOTS)
                                 .setWeight(2)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(30, 40))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(30, 40))))
                         .add(LootItem.lootTableItem(Items.GOLDEN_APPLE)
                                 .setWeight(3)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 6))))
@@ -888,8 +881,7 @@ public class ChestLootTables implements LootTableSubProvider {
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(4)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(UniformGenerator.between(20, 30))
-                                        .allowTreasure()))
+                                        .enchantWithLevels(registries(), UniformGenerator.between(20, 30))))
                         .add(LootItem.lootTableItem(Items.AIR)
                                 .setWeight(12)
                                 .apply(RandomItem.randomItem(5)))

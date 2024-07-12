@@ -48,7 +48,7 @@ public class WeightedRandomEntity implements IRandom<EntityType<?>> {
         int i = 0;
         for (Tuple<String, Integer> entry : entries) {
             float weight = (float) entry.getB() / (float) totalWeight;
-            this.entries[i] = new WeightedRandomEntity.WeightedEntry(BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(entry.getA())), weight + f);
+            this.entries[i] = new WeightedRandomEntity.WeightedEntry(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(entry.getA())), weight + f);
             f += weight;
             i++;
         }

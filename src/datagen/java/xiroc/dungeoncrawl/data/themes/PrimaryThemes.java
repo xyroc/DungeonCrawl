@@ -151,7 +151,7 @@ public class PrimaryThemes implements DataProvider {
     }
 
     private static ResourceLocation catacombs(String namespace, String name) {
-        return new ResourceLocation(namespace, "catacombs/" + name);
+        return ResourceLocation.fromNamespaceAndPath(namespace, "catacombs/" + name);
     }
 
     private static ResourceLocation hell(String name) {
@@ -159,7 +159,7 @@ public class PrimaryThemes implements DataProvider {
     }
 
     private static ResourceLocation hell(String namespace, String name) {
-        return new ResourceLocation(namespace, "hell/" + name);
+        return ResourceLocation.fromNamespaceAndPath(namespace, "hell/" + name);
     }
 
 }

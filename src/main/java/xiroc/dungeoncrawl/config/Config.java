@@ -18,11 +18,8 @@
 
 package xiroc.dungeoncrawl.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.function.Function;
 
@@ -102,13 +99,6 @@ public class Config {
         BUILDER.pop();
 
         CONFIG = BUILDER.build();
-    }
-
-    public static void load(Path path) {
-        final CommentedFileConfig config = CommentedFileConfig.builder(path).sync().autosave()
-                .writingMode(WritingMode.REPLACE).build();
-        config.load();
-        CONFIG.setConfig(config);
     }
 
     private static <T> String commaSeparated(Iterator<T> elements, Function<T, String> toString) {

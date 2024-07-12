@@ -19,11 +19,10 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 import com.google.common.collect.ImmutableSet;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
@@ -31,7 +30,7 @@ import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -46,33 +45,35 @@ import xiroc.dungeoncrawl.theme.Theme;
 
 public interface Loot {
 
-    DeferredHolder<LootItemFunctionType, ?> ENCHANTED_BOOK = DungeonCrawl.LOOT_FUNCTION_TYPE.register("enchanted_book",
-            () -> new LootItemFunctionType(EnchantedBook.CODEC));
-    DeferredHolder<LootItemFunctionType, ?> MATERIAL_BLOCKS = DungeonCrawl.LOOT_FUNCTION_TYPE.register("material_blocks",
-            () -> new LootItemFunctionType(MaterialBlocks.CODEC));
-    DeferredHolder<LootItemFunctionType, ?> RANDOM_ITEM = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_item",
-            () -> new LootItemFunctionType(RandomItem.CODEC));
-    DeferredHolder<LootItemFunctionType, ?> RANDOM_POTION = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_potion",
-            () -> new LootItemFunctionType(RandomPotion.CODEC));
-    DeferredHolder<LootItemFunctionType, ?> SHIELD = DungeonCrawl.LOOT_FUNCTION_TYPE.register("shield",
-            () -> new LootItemFunctionType(Shield.CODEC));
-    DeferredHolder<LootItemFunctionType, ?> SUSPICIOUS_STEW = DungeonCrawl.LOOT_FUNCTION_TYPE.register("suspicious_stew",
-            () -> new LootItemFunctionType(SuspiciousStew.CODEC));
+    DeferredHolder<LootItemFunctionType<?>, ?> ENCHANTED_BOOK = DungeonCrawl.LOOT_FUNCTION_TYPE.register("enchanted_book",
+            () -> new LootItemFunctionType<>(EnchantedBook.CODEC));
+    DeferredHolder<LootItemFunctionType<?>, ?> MATERIAL_BLOCKS = DungeonCrawl.LOOT_FUNCTION_TYPE.register("material_blocks",
+            () -> new LootItemFunctionType<>(MaterialBlocks.CODEC));
+    DeferredHolder<LootItemFunctionType<?>, ?> RANDOM_ITEM = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_item",
+            () -> new LootItemFunctionType<>(RandomItem.CODEC));
+    DeferredHolder<LootItemFunctionType<?>, ?> RANDOM_POTION = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_potion",
+            () -> new LootItemFunctionType<>(RandomPotion.CODEC));
+    DeferredHolder<LootItemFunctionType<?>, ?> SHIELD = DungeonCrawl.LOOT_FUNCTION_TYPE.register("shield",
+            () -> new LootItemFunctionType<>(Shield.CODEC));
+    DeferredHolder<LootItemFunctionType<?>, ?> SUSPICIOUS_STEW = DungeonCrawl.LOOT_FUNCTION_TYPE.register("suspicious_stew",
+            () -> new LootItemFunctionType<>(SuspiciousStew.CODEC));
 
     String KEY_LOOT_LEVEL = "loot_level";
 
-    ResourceLocation CHEST_FOOD = DungeonCrawl.locate("chests/food");
-    ResourceLocation CHEST_SECRET_ROOM = DungeonCrawl.locate("chests/secret_room");
-    ResourceLocation CHEST_SUPPLY = DungeonCrawl.locate("chests/supply");
-    ResourceLocation CHEST_TREASURE = DungeonCrawl.locate("chests/treasure");
+    ResourceKey<LootTable> CHEST_FOOD = lootTable("chests/food");
+    ResourceKey<LootTable> CHEST_SECRET_ROOM = lootTable("chests/secret_room");
+    ResourceKey<LootTable> CHEST_SUPPLY = lootTable("chests/supply");
+    ResourceKey<LootTable> CHEST_TREASURE = lootTable("chests/treasure");
 
-    ResourceLocation CHEST_STAGE_1 = DungeonCrawl.locate("chests/stage_1");
-    ResourceLocation CHEST_STAGE_2 = DungeonCrawl.locate("chests/stage_2");
-    ResourceLocation CHEST_STAGE_3 = DungeonCrawl.locate("chests/stage_3");
-    ResourceLocation CHEST_STAGE_4 = DungeonCrawl.locate("chests/stage_4");
-    ResourceLocation CHEST_STAGE_5 = DungeonCrawl.locate("chests/stage_5");
+    ResourceKey<LootTable> CHEST_STAGE_1 = lootTable("chests/stage_1");
+    ResourceKey<LootTable> CHEST_STAGE_2 = lootTable("chests/stage_2");
+    ResourceKey<LootTable> CHEST_STAGE_3 = lootTable("chests/stage_3");
+    ResourceKey<LootTable> CHEST_STAGE_4 = lootTable("chests/stage_4");
+    ResourceKey<LootTable> CHEST_STAGE_5 = lootTable("chests/stage_5");
 
-    ImmutableSet<ResourceLocation> ALL_LOOT_TABLES = ImmutableSet.<ResourceLocation>builder()
+    ResourceKey<LootTable> WITHER_SKELETON = lootTable("monster_overrides/wither_skeleton");
+
+    ImmutableSet<ResourceKey<LootTable>> ALL_LOOT_TABLES = ImmutableSet.<ResourceKey<LootTable>>builder()
             .add(CHEST_FOOD)
             .add(CHEST_SECRET_ROOM)
             .add(CHEST_SUPPLY)
@@ -83,21 +84,20 @@ public interface Loot {
             .add(CHEST_STAGE_4)
             .add(CHEST_STAGE_5).build();
 
-    ResourceLocation WITHER_SKELETON = DungeonCrawl.locate("monster_overrides/wither_skeleton");
+    private static ResourceKey<LootTable> lootTable(String path) {
+        return ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate(path));
+    }
 
     static void init() {
     }
 
-    private static LootItemFunctionType register(String name, Codec<? extends LootItemFunction> codec) {
-        return Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, DungeonCrawl.locate(name), new LootItemFunctionType(codec));
-    }
-
-    static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceLocation lootTable, Theme theme, SecondaryTheme secondaryTheme, RandomSource rand) {
+    static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceKey<LootTable> lootTable, Theme theme, SecondaryTheme secondaryTheme,
+                        RandomSource rand) {
         RandomizableContainer.setBlockEntityLootTable(world, rand, pos, lootTable);
         setLootInformation(tile.getPersistentData(), theme, secondaryTheme);
     }
 
-    static ResourceLocation getLootTable(int lootLevel, RandomSource rand) {
+    static ResourceKey<LootTable> getLootTable(int lootLevel, RandomSource rand) {
         return switch (lootLevel) {
             case 0 -> rand.nextFloat() < 0.1 ? BuiltInLootTables.JUNGLE_TEMPLE : CHEST_STAGE_1;
             case 1 -> rand.nextFloat() < 0.1 ? BuiltInLootTables.SIMPLE_DUNGEON : CHEST_STAGE_2;
@@ -117,7 +117,7 @@ public interface Loot {
 
     static Tuple<Theme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
         CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID);
-        return new Tuple<>(Theme.getTheme(new ResourceLocation(data.getString("theme"))), Theme.getSecondaryTheme(new ResourceLocation(data.getString("secondaryTheme"))));
+        return new Tuple<>(Theme.getTheme(ResourceLocation.parse(data.getString("theme"))), Theme.getSecondaryTheme(ResourceLocation.parse(data.getString("secondaryTheme"))));
     }
 
 }

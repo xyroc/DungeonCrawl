@@ -18,100 +18,49 @@
 
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SuspiciousStew extends LootItemConditionalFunction {
-    public static final Codec<SuspiciousStew> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder).apply(builder, SuspiciousStew::new));
+    public static final MapCodec<SuspiciousStew> CODEC = RecordCodecBuilder.mapCodec((builder) -> commonFields(builder).apply(builder, SuspiciousStew::new));
 
-    public static CompoundTag[] EFFECTS;
+    private static final SuspiciousStewEffects.Entry[] EFFECTS;
 
     static {
-        CompoundTag regeneration = new CompoundTag();
-        regeneration.putInt("EffectId", 10);
-        regeneration.putInt("EffectDuration", 160);
+        SuspiciousStewEffects.Entry regeneration = new SuspiciousStewEffects.Entry(MobEffects.REGENERATION, 160);
+        SuspiciousStewEffects.Entry weakness = new SuspiciousStewEffects.Entry(MobEffects.WEAKNESS, 320);
+        SuspiciousStewEffects.Entry poison = new SuspiciousStewEffects.Entry(MobEffects.POISON, 160);
+        SuspiciousStewEffects.Entry healthBoost = new SuspiciousStewEffects.Entry(MobEffects.HEALTH_BOOST, 320);
+        SuspiciousStewEffects.Entry blindness = new SuspiciousStewEffects.Entry(MobEffects.BLINDNESS, 120);
+        SuspiciousStewEffects.Entry resistance = new SuspiciousStewEffects.Entry(MobEffects.DAMAGE_RESISTANCE, 320);
+        SuspiciousStewEffects.Entry nausea = new SuspiciousStewEffects.Entry(MobEffects.CONFUSION, 120);
+        SuspiciousStewEffects.Entry absorption = new SuspiciousStewEffects.Entry(MobEffects.ABSORPTION, 320);
+        SuspiciousStewEffects.Entry hunger = new SuspiciousStewEffects.Entry(MobEffects.HUNGER, 200);
+        SuspiciousStewEffects.Entry saturation = new SuspiciousStewEffects.Entry(MobEffects.SATURATION, 80);
+        SuspiciousStewEffects.Entry fireResistance = new SuspiciousStewEffects.Entry(MobEffects.FIRE_RESISTANCE, 320);
+        SuspiciousStewEffects.Entry strength = new SuspiciousStewEffects.Entry(MobEffects.DAMAGE_BOOST, 320);
+        SuspiciousStewEffects.Entry speed = new SuspiciousStewEffects.Entry(MobEffects.MOVEMENT_SPEED, 220);
+        SuspiciousStewEffects.Entry slowness = new SuspiciousStewEffects.Entry(MobEffects.MOVEMENT_SLOWDOWN, 160);
+        SuspiciousStewEffects.Entry miningFatigue = new SuspiciousStewEffects.Entry(MobEffects.DIG_SLOWDOWN, 160);
+        SuspiciousStewEffects.Entry haste = new SuspiciousStewEffects.Entry(MobEffects.DIG_SPEED, 320);
+        SuspiciousStewEffects.Entry jumpBoost = new SuspiciousStewEffects.Entry(MobEffects.JUMP, 160);
+        SuspiciousStewEffects.Entry wither = new SuspiciousStewEffects.Entry(MobEffects.WITHER, 80);
 
-        CompoundTag weakness = new CompoundTag();
-        weakness.putInt("EffectId", 18);
-        weakness.putInt("EffectDuration", 320);
-
-        CompoundTag poison = new CompoundTag();
-        poison.putInt("EffectId", 19);
-        poison.putInt("EffectDuration", 160);
-
-        CompoundTag healthBoost = new CompoundTag();
-        healthBoost.putInt("EffectId", 21);
-        healthBoost.putInt("EffectDuration", 320);
-
-        CompoundTag blindness = new CompoundTag();
-        blindness.putInt("EffectId", 15);
-        blindness.putInt("EffectDuration", 120);
-
-        CompoundTag resistance = new CompoundTag();
-        resistance.putInt("EffectId", 11);
-        resistance.putInt("EffectDuration", 320);
-
-        CompoundTag nausea = new CompoundTag();
-        nausea.putInt("EffectId", 9);
-        nausea.putInt("EffectDuration", 120);
-
-        CompoundTag absorption = new CompoundTag();
-        absorption.putInt("EffectId", 22);
-        absorption.putInt("EffectDuration", 320);
-
-        CompoundTag hunger = new CompoundTag();
-        hunger.putInt("EffectId", 17);
-        hunger.putInt("EffectDuration", 200);
-
-        CompoundTag saturation = new CompoundTag();
-        saturation.putInt("EffectId", 23);
-        saturation.putInt("EffectDuration", 80);
-
-        CompoundTag fireResistance = new CompoundTag();
-        fireResistance.putInt("EffectId", 12);
-        fireResistance.putInt("EffectDuration", 320);
-
-        CompoundTag strength = new CompoundTag();
-        strength.putInt("EffectId", 5);
-        strength.putInt("EffectDuration", 320);
-
-        CompoundTag speed = new CompoundTag();
-        speed.putInt("EffectId", 1);
-        speed.putInt("EffectDuration", 220);
-
-        CompoundTag slowness = new CompoundTag();
-        slowness.putInt("EffectId", 2);
-        slowness.putInt("EffectDuration", 160);
-
-        CompoundTag miningFatique = new CompoundTag();
-        miningFatique.putInt("EffectId", 4);
-        miningFatique.putInt("EffectDuration", 160);
-
-        CompoundTag haste = new CompoundTag();
-        haste.putInt("EffectId", 3);
-        haste.putInt("EffectDuration", 320);
-
-        CompoundTag jumpBoost = new CompoundTag();
-        jumpBoost.putInt("EffectId", 8);
-        jumpBoost.putInt("EffectDuration", 160);
-
-        CompoundTag wither = new CompoundTag();
-        wither.putInt("EffectId", 20);
-        wither.putInt("EffectDuration", 80);
-
-        EFFECTS = new CompoundTag[]{regeneration, weakness, poison, healthBoost, blindness, resistance, nausea,
-                hunger, saturation, fireResistance, strength, speed, slowness, miningFatique, haste, wither};
+        EFFECTS = new SuspiciousStewEffects.Entry[]{regeneration, weakness, poison, healthBoost, blindness, resistance, nausea,
+                absorption, hunger, saturation, fireResistance, strength, speed, slowness, miningFatigue, haste, jumpBoost, wither};
     }
 
     public SuspiciousStew(List<LootItemCondition> conditions) {
@@ -120,7 +69,7 @@ public class SuspiciousStew extends LootItemConditionalFunction {
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-        stack.getOrCreateTag().put("Effects", createEffectList(context.getRandom()));
+        stack.set(DataComponents.SUSPICIOUS_STEW_EFFECTS, createEffectList(context.getRandom()));
         return stack;
     }
 
@@ -133,16 +82,17 @@ public class SuspiciousStew extends LootItemConditionalFunction {
         return Loot.SUSPICIOUS_STEW.get();
     }
 
-    public static ListTag createEffectList(RandomSource rand) {
-        int counter = rand.nextInt(2), max = EFFECTS.length;
-        ListTag effects = new ListTag();
+    public static SuspiciousStewEffects createEffectList(RandomSource rand) {
+        int counter = rand.nextInt(2);
+        int max = EFFECTS.length;
+        List<SuspiciousStewEffects.Entry> effects = new ArrayList<>();
 
         while (counter < max) {
-            effects.add(EFFECTS[counter].copy());
+            effects.add(EFFECTS[counter]);
             counter += 1 + rand.nextInt(3);
         }
 
-        return effects;
+        return new SuspiciousStewEffects(effects);
     }
 
 }

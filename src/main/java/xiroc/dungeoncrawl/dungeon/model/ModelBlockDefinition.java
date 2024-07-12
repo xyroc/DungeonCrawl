@@ -157,7 +157,7 @@ public class ModelBlockDefinition {
             JsonObject object = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
             object.getAsJsonObject("definition").entrySet().forEach((entry) -> {
                 String key = entry.getKey();
-                Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(key));
+                Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(key));
                 if (block != null) {
                     String value = entry.getValue().getAsString().toUpperCase();
                     if (DungeonModelBlockType.NAME_TO_TYPE.containsKey(value)) {
@@ -173,7 +173,7 @@ public class ModelBlockDefinition {
             ModelBlockDefinition blockDefinition = new ModelBlockDefinition(definition);
 
             if (object.has("fallback")) {
-                referencesToUpdate.add(new Tuple<>(blockDefinition, new ResourceLocation(object.get("fallback").getAsString())));
+                referencesToUpdate.add(new Tuple<>(blockDefinition, ResourceLocation.parse(object.get("fallback").getAsString())));
             }
 
             ResourceLocation key = DungeonCrawl.key(resourceLocation, DIRECTORY, ".json");

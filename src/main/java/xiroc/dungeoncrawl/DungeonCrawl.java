@@ -24,7 +24,9 @@ import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
@@ -38,6 +40,8 @@ import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructureTypes;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 
+import java.util.Objects;
+
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
 
@@ -47,18 +51,20 @@ public class DungeonCrawl {
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    public static final DeferredRegister<LootItemFunctionType> LOOT_FUNCTION_TYPE = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MOD_ID);
+    public static final DeferredRegister<LootItemFunctionType<?>> LOOT_FUNCTION_TYPE = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MOD_ID);
     public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPE = DeferredRegister.create(Registries.STRUCTURE_TYPE, MOD_ID);
     public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPE = DeferredRegister.create(Registries.STRUCTURE_PIECE, MOD_ID);
 
-    public DungeonCrawl(IEventBus modEventBus) {
+    public DungeonCrawl(ModContainer modContainer) {
         LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
+
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.CONFIG, "dungeon_crawl.toml");
+
+        IEventBus modEventBus = Objects.requireNonNull(modContainer.getEventBus());
 
         LOOT_FUNCTION_TYPE.register(modEventBus);
         STRUCTURE_TYPE.register(modEventBus);
         STRUCTURE_PIECE_TYPE.register(modEventBus);
-
-        modEventBus.addListener(this::commonSetup);
 
         IEventBus forgeEventBus = NeoForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
@@ -68,18 +74,12 @@ public class DungeonCrawl {
         ModStructurePieceTypes.init();
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        LOGGER.info("Common Setup");
-        //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
-        Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
-    }
-
     private void onAddReloadListener(final AddReloadListenerEvent event) {
         event.addListener(new ResourceReloadHandler());
     }
 
     public static ResourceLocation locate(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
     /**
@@ -92,7 +92,7 @@ public class DungeonCrawl {
      */
     public static ResourceLocation key(ResourceLocation resourceLocation, String baseDirectory, String fileEnding) {
         String path = resourceLocation.getPath();
-        return new ResourceLocation(resourceLocation.getNamespace(), path.substring(baseDirectory.length() + 1, path.length() - fileEnding.length()));
+        return ResourceLocation.fromNamespaceAndPath(resourceLocation.getNamespace(), path.substring(baseDirectory.length() + 1, path.length() - fileEnding.length()));
     }
 
 }

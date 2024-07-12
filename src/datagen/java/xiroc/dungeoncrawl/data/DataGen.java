@@ -22,7 +22,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.loot.ChestLootTables;
@@ -32,7 +32,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGen {
 
     @SubscribeEvent
@@ -42,7 +42,8 @@ public class DataGen {
         DataGenerator generator = event.getGenerator();
         boolean includeServer = event.includeServer();
 
-        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Loot.ALL_LOOT_TABLES, List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.BLOCK))));
+        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Loot.ALL_LOOT_TABLES,
+                List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
         generator.addProvider(includeServer, new PrimaryThemes(generator.getPackOutput()));
         generator.addProvider(includeServer, new SecondaryThemes(generator.getPackOutput()));
     }

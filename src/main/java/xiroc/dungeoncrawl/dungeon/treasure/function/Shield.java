@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.treasure.function;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -31,7 +32,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.RandomItems;
 import java.util.List;
 
 public class Shield extends LootItemConditionalFunction {
-    public static final Codec<Shield> CODEC = RecordCodecBuilder.create((builder) -> commonFields(builder)
+    public static final MapCodec<Shield> CODEC = RecordCodecBuilder.mapCodec((builder) -> commonFields(builder)
             .and(Codec.INT.fieldOf(Loot.KEY_LOOT_LEVEL).forGetter(shield -> shield.lootLevel))
             .apply(builder, Shield::new));
 
@@ -44,7 +45,7 @@ public class Shield extends LootItemConditionalFunction {
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-        return RandomItems.createShield(context.getRandom(), lootLevel);
+        return RandomItems.createShield(context.getRandom(), lootLevel, context.getLevel().registryAccess());
     }
 
     public static LootItemConditionalFunction.Builder<?> shield(int lootLevel) {

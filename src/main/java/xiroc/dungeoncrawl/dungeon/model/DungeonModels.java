@@ -67,7 +67,7 @@ public class DungeonModels {
 
     private static void load(ResourceLocation file, ResourceManager resourceManager) {
         DungeonModel model = loadModel(file, resourceManager);
-        ResourceLocation metadataFile = new ResourceLocation(file.getNamespace(),
+        ResourceLocation metadataFile = ResourceLocation.fromNamespaceAndPath(file.getNamespace(),
                 file.getPath().substring(0, file.getPath().indexOf(".nbt")) + ".json");
 
         resourceManager.getResource(metadataFile).ifPresent((metadata) -> {

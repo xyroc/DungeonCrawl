@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -24,8 +23,7 @@ import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
 
-public record CornerRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                  ImmutableList<BlueprintFeature> features, BlueprintSettings settings) implements Blueprint {
+public record CornerRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, ImmutableList<BlueprintFeature> features) implements Blueprint {
     private static final Vec3i CEILING_CENTER = new Vec3i(3, 5, 3);
 
     @Override

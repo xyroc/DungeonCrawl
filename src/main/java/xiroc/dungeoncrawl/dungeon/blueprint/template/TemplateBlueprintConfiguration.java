@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
-import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 
 import java.lang.reflect.Type;
@@ -60,7 +59,6 @@ public class TemplateBlueprintConfiguration {
     protected final ResourceLocation template;
     protected final ImmutableMap<Block, TemplateBlock.PlacementProperties> typeMap;
     protected final boolean useDefaultTypes;
-    protected final BlueprintSettings settings;
     protected final ImmutableList<BlueprintFeature> features;
     protected final ImmutableList<BlueprintMultipart> parts;
 
@@ -68,7 +66,6 @@ public class TemplateBlueprintConfiguration {
         this.template = builder.template;
         this.typeMap = ImmutableMap.copyOf(builder.typeMap);
         this.useDefaultTypes = builder.useDefaultTypes;
-        this.settings = builder.settings;
         this.features = builder.features.build();
         this.parts = builder.parts.build();
     }
@@ -85,7 +82,6 @@ public class TemplateBlueprintConfiguration {
         private static final String KEY_TEMPLATE = "template";
         private static final String KEY_BLOCK_TYPES = "block_types";
         private static final String KEY_INHERIT_DEFAULT_BLOCK_TYPES = "inherit_default_block_types";
-        private static final String KEY_SETTINGS = "settings";
         private static final String KEY_FEATURES = "features";
         private static final String KEY_PARTS = "parts";
 
@@ -101,9 +97,6 @@ public class TemplateBlueprintConfiguration {
                 JsonObject map = object.getAsJsonObject(KEY_BLOCK_TYPES);
                 map.entrySet().forEach((entry) ->
                         builder.typeMap.put(Registry.BLOCK.get(new ResourceLocation(entry.getKey())), context.deserialize(entry.getValue(), TemplateBlock.PlacementProperties.class)));
-            }
-            if (object.has(KEY_SETTINGS)) {
-                builder.settings = context.deserialize(object.get(KEY_SETTINGS), BlueprintSettings.class);
             }
             if (object.has(KEY_FEATURES)) {
                 for (JsonElement feature : object.getAsJsonArray(KEY_FEATURES)) {
@@ -159,13 +152,9 @@ public class TemplateBlueprintConfiguration {
         private final ImmutableList.Builder<BlueprintFeature> features = ImmutableList.builder();
         private final ImmutableList.Builder<BlueprintMultipart> parts = ImmutableList.builder();
 
-        private BlueprintSettings settings;
 
         public TemplateBlueprintConfiguration build() {
             Objects.requireNonNull(template);
-            if (settings == null) {
-                settings = BlueprintSettings.builder().build();
-            }
             return new TemplateBlueprintConfiguration(this);
         }
 
@@ -176,11 +165,6 @@ public class TemplateBlueprintConfiguration {
 
         public Builder multipart(BlueprintMultipart multipart) {
             this.parts.add(multipart);
-            return this;
-        }
-
-        public Builder settings(BlueprintSettings settings) {
-            this.settings = settings;
             return this;
         }
 

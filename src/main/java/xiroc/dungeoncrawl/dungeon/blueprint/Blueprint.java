@@ -25,8 +25,6 @@ public interface Blueprint {
     Codec<Delegate<Blueprint>> CODEC = ResourceLocation.CODEC.xmap(DatapackRegistries.BLUEPRINT::delegateOrThrow, Delegate::key);
 
     Blueprint EMPTY = new Blueprint() {
-        final BlueprintSettings settings = BlueprintSettings.builder().build();
-
         @Override
         public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random,
                           PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
@@ -50,11 +48,6 @@ public interface Blueprint {
         @Override
         public ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors() {
             return ImmutableMap.of();
-        }
-
-        @Override
-        public BlueprintSettings settings() {
-            return settings;
         }
 
         @Override
@@ -84,8 +77,6 @@ public interface Blueprint {
     default ImmutableList<BlueprintMultipart> parts() {
         return ImmutableList.of();
     }
-
-    BlueprintSettings settings();
 
     default BoundingBoxBuilder boundingBox(Rotation rotation) {
         return switch (rotation) {

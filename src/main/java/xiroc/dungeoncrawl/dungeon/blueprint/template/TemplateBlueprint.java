@@ -25,7 +25,6 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.MetaBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
-import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -44,13 +43,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                BlueprintSettings settings, ImmutableList<BlueprintFeature> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
+                                ImmutableList<BlueprintFeature> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
 
     public static final Gson GSON = BlueprintFeature.gsonAdapters(new GsonBuilder())
             .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
             .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
-            .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer())
-            .registerTypeAdapter(BlueprintSettings.class, new BlueprintSettings.Serializer()).create();
+            .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer()).create();
 
     public static TemplateBlueprint load(ResourceManager resourceManager, ResourceLocation key, Reader file) {
         try {
@@ -70,7 +68,7 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
             ImmutableMap.Builder<ResourceLocation, ImmutableList<Anchor>> immutableAnchors = ImmutableMap.builder();
             anchors.forEach((type, builder) -> immutableAnchors.put(type, builder.build()));
 
-            return new TemplateBlueprint(template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.settings, configuration.features, configuration.parts);
+            return new TemplateBlueprint(template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.features, configuration.parts);
         } catch (Exception e) {
             throw new DatapackLoadException("Failed to load " + key + ": " + e.getMessage());
         }

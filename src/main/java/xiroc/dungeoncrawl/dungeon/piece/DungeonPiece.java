@@ -56,6 +56,17 @@ public class DungeonPiece extends BaseDungeonPiece {
     private final List<BlockPos> entrancesX;
     private final List<BlockPos> entrancesZ;
 
+    public static DungeonPiece withComponents(List<DungeonComponent> components, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
+        if (components.isEmpty()) {
+            throw new IllegalArgumentException("The list of initial components must not be empty.");
+        }
+        DungeonPiece piece = new DungeonPiece(components.get(0), primaryTheme, secondaryTheme, stage);
+        for (int i = 1; i < components.size(); ++i) {
+            piece.components.add(components.get(i));
+        }
+        return piece;
+    }
+
     public DungeonPiece(DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
         this(ModStructurePieceTypes.GENERIC, component, primaryTheme, secondaryTheme, stage);
     }

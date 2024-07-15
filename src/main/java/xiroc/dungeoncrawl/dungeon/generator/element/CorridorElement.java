@@ -14,6 +14,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
+import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.TunnelComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
@@ -31,24 +32,26 @@ import java.util.function.Consumer;
 public class CorridorElement extends DungeonElement {
     private static final int FRAGMENT_LENGTH = 3;
 
-    private final Direction direction;
+    private final LevelGenerator levelGenerator;
     public final DungeonElement from;
     public final DungeonElement to;
+    private final Direction direction;
     private final BlockPos start;
     private final int fragmentationStart; // Offset from the start of the corridor at which fragments are beginning to be inserted
 
     private final List<Fragment> fragments;
-    private final LevelGenerator levelGenerator;
+    private final List<DungeonComponent> additionalComponents;
 
     public CorridorElement(LevelGenerator levelGenerator, DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
         super(boundingBox);
+        this.levelGenerator = levelGenerator;
         this.from = from;
         this.to = to;
         this.start = start;
         this.direction = direction;
         this.fragmentationStart = (length() % FRAGMENT_LENGTH) / 2;
         this.fragments = new ArrayList<>();
-        this.levelGenerator = levelGenerator;
+        this.additionalComponents = new ArrayList<>(0);
         fragment();
     }
 
@@ -71,9 +74,11 @@ public class CorridorElement extends DungeonElement {
             BlockPos position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
 
             BlueprintPiece corridor = levelGenerator.assemblePiece(segmentDelegate, position, rotation);
-            // TODO: collision check
-            fragments.add(new Fragment(corridor));
-
+            if (corridor != null) {
+                fragments.add(new Fragment(corridor));
+            } else {
+                additionalComponents.add(new TunnelComponent(pos, direction, FRAGMENT_LENGTH, 5, 2));
+            }
             pos.move(direction, FRAGMENT_LENGTH);
         }
     }
@@ -103,16 +108,21 @@ public class CorridorElement extends DungeonElement {
         addSideSegments();
         fragments.forEach(fragment -> consumer.accept(fragment.piece));
 
+        int stage = 0;
         Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
         Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
 
         int remaining = length() - fragmentationStart;
         if (fragmentationStart > 0) {
-            consumer.accept(new DungeonPiece(new TunnelComponent(start, direction, fragmentationStart, 5, 2), primaryTheme, secondaryTheme, 0));
+            consumer.accept(new DungeonPiece(new TunnelComponent(start, direction, fragmentationStart, 5, 2), primaryTheme, secondaryTheme, stage));
         }
         int r = remaining % FRAGMENT_LENGTH;
         if (r > 0) {
-            consumer.accept(new DungeonPiece(new TunnelComponent(start.relative(direction, length() - r), direction, r, 5, 2), primaryTheme, secondaryTheme, 0));
+            consumer.accept(new DungeonPiece(new TunnelComponent(start.relative(direction, length() - r), direction, r, 5, 2), primaryTheme, secondaryTheme, stage));
+        }
+
+        if (!additionalComponents.isEmpty()) {
+            consumer.accept(DungeonPiece.withComponents(additionalComponents, primaryTheme, secondaryTheme, stage));
         }
     }
 

@@ -30,18 +30,12 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 public interface BlueprintFeature {
-    String TYPE_CHEST = "chest";
-    String TYPE_SPAWNER = "spawner";
-    String TYPE_FLOWER_POT = "flower_pot";
-    String TYPE_SARCOPHAGUS = "sarcophagus";
-    String TYPE_FEATURE_CHAIN = "chain";
-
     ImmutableMap<String, Class<? extends BlueprintFeature>> TYPES = ImmutableMap.<String, Class<? extends BlueprintFeature>>builder()
-            .put(TYPE_CHEST, ChestFeature.class)
-            .put(TYPE_SPAWNER, SpawnerFeature.class)
-            .put(TYPE_FLOWER_POT, FlowerPotFeature.class)
-            .put(TYPE_SARCOPHAGUS, SarcophagusFeature.class)
-            .put(TYPE_FEATURE_CHAIN, Chain.class)
+            .put(SharedSerializationConstants.TYPE_CHEST, ChestFeature.class)
+            .put(SharedSerializationConstants.TYPE_SPAWNER, SpawnerFeature.class)
+            .put(SharedSerializationConstants.TYPE_FLOWER_POT, FlowerPotFeature.class)
+            .put(SharedSerializationConstants.TYPE_SARCOPHAGUS, SarcophagusFeature.class)
+            .put(SharedSerializationConstants.TYPE_FEATURE_CHAIN, Chain.class)
             .build();
 
     static GsonBuilder gsonAdapters(GsonBuilder builder) {
@@ -98,7 +92,7 @@ public interface BlueprintFeature {
             @Override
             public JsonElement serialize(Chain chain, Type type, JsonSerializationContext context) {
                 JsonObject object = context.serialize(chain.placement).getAsJsonObject();
-                object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, TYPE_FEATURE_CHAIN);
+                object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_FEATURE_CHAIN);
                 JsonArray features = new JsonArray();
                 for (BlueprintFeature configuration : chain.features) {
                     features.add(context.serialize(configuration));

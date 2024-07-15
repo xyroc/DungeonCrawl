@@ -35,7 +35,7 @@ public record SpawnerFeature(PlacementSettings placement, SpawnerSettings spawne
         public JsonElement serialize(SpawnerFeature configuration, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = context.serialize(configuration.placement).getAsJsonObject();
             object.add(SharedSerializationConstants.KEY_SPAWNER_SETTINGS, context.serialize(configuration.spawner));
-            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, BlueprintFeature.TYPE_SPAWNER);
+            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_SPAWNER);
             return object;
         }
     }

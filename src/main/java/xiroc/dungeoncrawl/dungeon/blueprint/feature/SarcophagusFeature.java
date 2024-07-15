@@ -38,7 +38,7 @@ public record SarcophagusFeature(PlacementSettings placement, ChestSettings ches
             JsonObject object = context.serialize(configuration.placement).getAsJsonObject();
             object.add(SharedSerializationConstants.KEY_CHEST_SETTINGS, context.serialize(configuration.chest));
             object.add(SharedSerializationConstants.KEY_SPAWNER_SETTINGS, context.serialize(configuration.spawner));
-            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, BlueprintFeature.TYPE_SARCOPHAGUS);
+            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_SARCOPHAGUS);
             return object;
         }
     }

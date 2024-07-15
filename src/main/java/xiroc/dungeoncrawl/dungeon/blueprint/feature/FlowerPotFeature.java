@@ -47,7 +47,7 @@ public record FlowerPotFeature(PlacementSettings placement, Block soil, BlockSta
             JsonObject object = context.serialize(configuration.placement).getAsJsonObject();
             object.addProperty(KEY_SOIL, Registry.BLOCK.getKey(configuration.soil).toString());
             object.add(KEY_FLOWERS, BlockStateProvider.GSON.toJsonTree(configuration.flowers));
-            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, BlueprintFeature.TYPE_FLOWER_POT);
+            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_FLOWER_POT);
             return object;
         }
     }

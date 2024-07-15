@@ -35,7 +35,7 @@ public record ChestFeature(PlacementSettings placement, ChestSettings chest) imp
         public JsonElement serialize(ChestFeature configuration, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = context.serialize(configuration.placement).getAsJsonObject();
             object.add(SharedSerializationConstants.KEY_CHEST_SETTINGS, context.serialize(configuration.chest));
-            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, BlueprintFeature.TYPE_CHEST);
+            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_CHEST);
             return object;
         }
     }

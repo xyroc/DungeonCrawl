@@ -26,4 +26,10 @@ public interface Bounded {
                 maxY() >= bounded.minY() && minY() <= bounded.maxY() &&
                 maxZ() >= bounded.minZ() && minZ() <= bounded.maxZ();
     }
+
+    default boolean encapsulates(Bounded bounded) {
+        return minX() <= bounded.minX() && maxX() >= bounded.maxX() &&
+                minY() <= bounded.minY() && maxY() >= bounded.maxY() &&
+                minZ() <= bounded.minZ() && maxZ() >= bounded.maxZ();
+    }
 }

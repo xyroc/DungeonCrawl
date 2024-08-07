@@ -25,6 +25,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.MetaBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
+import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -43,12 +44,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                ImmutableList<BlueprintFeature> features, ImmutableList<BlueprintMultipart> parts) implements Blueprint {
+                                ImmutableList<BlueprintFeature> features, ImmutableList<BlueprintMultipart> parts, ImmutableList<Entrance> entrances) implements Blueprint {
 
     public static final Gson GSON = BlueprintFeature.gsonAdapters(new GsonBuilder())
             .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
             .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
-            .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer()).create();
+            .registerTypeAdapter(TemplateBlueprintConfiguration.EntranceType.class, new TemplateBlueprintConfiguration.EntranceType.Serializer())
+            .registerTypeAdapter(Entrance.CustomParts.class, new Entrance.CustomParts.Serializer())
+            .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer())
+            .create();
 
     public static TemplateBlueprint load(ResourceManager resourceManager, ResourceLocation key, Reader file) {
         try {
@@ -61,14 +65,20 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
 
             ImmutableList.Builder<TemplateBlock> blocks = ImmutableList.builder();
             HashMap<ResourceLocation, ImmutableList.Builder<Anchor>> anchors = new HashMap<>();
+            ImmutableList.Builder<Entrance> entrances = ImmutableList.builder();
 
-            accessor.palettes().get(0).blocks().forEach((info) ->
-                    loadBlock(configuration, info, blocks::add, (type, anchor) -> anchors.computeIfAbsent(type, (k) -> ImmutableList.builder()).add(anchor)));
+            accessor.palettes().get(0).blocks().forEach((info) -> loadBlock(configuration, info, blocks::add, (type, anchor) -> {
+                anchors.computeIfAbsent(type, (k) -> ImmutableList.builder()).add(anchor);
+                var entranceType = configuration.entranceTypes.get(type);
+                if (entranceType != null) {
+                    entrances.add(entranceType.make(anchor));
+                }
+            }));
 
             ImmutableMap.Builder<ResourceLocation, ImmutableList<Anchor>> immutableAnchors = ImmutableMap.builder();
             anchors.forEach((type, builder) -> immutableAnchors.put(type, builder.build()));
 
-            return new TemplateBlueprint(template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.features, configuration.parts);
+            return new TemplateBlueprint(template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.features, configuration.parts, entrances.build());
         } catch (Exception e) {
             throw new DatapackLoadException("Failed to load " + key + ": " + e.getMessage());
         }

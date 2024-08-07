@@ -89,7 +89,7 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             staircaseBuilder.top(offset, piece.base.position().getY());
             startHeight = staircaseBuilder.wallTop().getY();
         }
-        plan.forEach((element) -> element.createPieces(pieces::add));
+        plan.forEach((element) -> element.createPieces(pieces::add, random));
         DungeonCrawl.LOGGER.info("Generated {} pieces.", pieces.size());
         return pieces;
     }

@@ -1,13 +1,13 @@
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
+import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
@@ -51,27 +51,27 @@ public class ClusterNodeBuilder {
         final boolean isEndStaircase = !isClusterNode && levelGenerator.shouldPlaceEndStaircase(nextDepth);
 
         for (int roomAttempt = 0; roomAttempt < 3; ++roomAttempt) {
-            Delegate<Blueprint> room = isEndStaircase ? levelGenerator.levelType.upperStaircaseRooms().roll(random) :
+            final Delegate<Blueprint> room = isEndStaircase ? levelGenerator.levelType.upperStaircaseRooms().roll(random) :
                     isClusterNode ? roomSet.roll(random) : levelGenerator.levelType.rooms().roll(random);
-            ImmutableList<Anchor> entrances = room.get().anchors().get(BuiltinAnchorTypes.ENTRANCE);
-            if (entrances == null || entrances.isEmpty()) {
+            final var entrances = room.get().entrances();
+            if (entrances.isEmpty()) {
                 continue;
             }
-            for (int anchorAttempt = 0; anchorAttempt < 4; ++anchorAttempt) {
-                final int chosenEntrance = random.nextInt(entrances.size());
-                Anchor entrance = entrances.get(chosenEntrance);
-                BlockPos pos = entrance.latchOnto(anchor, room.get().coordinateSpace(BlockPos.ZERO));
-                Rotation rotation = Orientation.horizontalRotation(entrance.direction(), anchor.direction().getOpposite());
-                BoundingBoxBuilder boundingBoxBuilder = room.get().boundingBox(rotation);
-                boundingBoxBuilder.move(pos);
 
-                if (nodes.stream().noneMatch(node -> node.intersects(boundingBoxBuilder)) && levelGenerator.plan.isFree(boundingBoxBuilder)) {
-                    BlueprintPiece piece = levelGenerator.assemblePiece(room, pos, rotation);
+            for (int entranceAttempt = 0; entranceAttempt < 4; ++entranceAttempt) {
+                final int chosenEntrance = random.nextInt(entrances.size());
+                final Entrance entrance = entrances.get(chosenEntrance);
+                final BlockPos roomPos = entrance.placement().latchOnto(anchor, room.get().coordinateSpace(BlockPos.ZERO));
+                final Rotation roomRotation = Orientation.horizontalRotation(entrance.placement().direction(), anchor.direction().getOpposite());
+                final BoundingBoxBuilder roomBox = room.get().boundingBox(roomRotation).move(roomPos);
+
+                if (nodes.stream().noneMatch(node -> node.intersects(roomBox)) && levelGenerator.plan.isFree(roomBox)) {
+                    final BlueprintPiece piece = levelGenerator.assemblePiece(room, roomPos, roomRotation);
                     if (piece != null && nodes.stream().noneMatch(node -> node.intersects(piece.getBoundingBox()))) {
-                        NodeElement node = levelGenerator.createNode(piece, nextDepth, !isClusterNode, isEndStaircase);
+                        final NodeElement node = levelGenerator.createNode(piece, nextDepth, !isClusterNode, isEndStaircase);
                         node.unusedEntrances.remove(chosenEntrance);
                         if (!isClusterNode) {
-                            node.piece().addEntrance(anchor.position().relative(anchor.direction()).above(), anchor.direction().getOpposite());
+                            node.addEntrance(anchor.opposite(), entrance, levelGenerator.random);
                         }
                         nodes.add(node);
                         return true;
@@ -89,14 +89,14 @@ public class ClusterNodeBuilder {
         final int maxAttempts = node.unusedEntrances.size() * 2;
         int placementsLeft = Math.min(3, node.unusedEntrances.size());
         for (int attempt = 0; attempt < maxAttempts && placementsLeft > 0; ++attempt) {
-            int entrance = random.nextInt(node.unusedEntrances.size());
-            Anchor attachmentPoint =
-                    node.piece().base.blueprint().get().coordinateSpace(node.piece().base.position()).rotateAndTranslateToOrigin(node.unusedEntrances.get(entrance),
-                    node.piece().base.rotation());
+            int chosenEntrance = random.nextInt(node.unusedEntrances.size());
+            Entrance entrance = node.unusedEntrances.get(chosenEntrance);
+            BlueprintComponent base = node.piece().base;
+            Anchor attachmentPoint = base.blueprint().get().coordinateSpace(base.position()).rotateAndTranslateToOrigin(entrance.placement(), base.rotation());
             if (attachNode(attachmentPoint, attachClusterNodes)) {
                 --placementsLeft;
-                node.unusedEntrances.remove(entrance);
-                node.piece().addEntrance(attachmentPoint.position().above(), attachmentPoint.direction());
+                node.unusedEntrances.remove(chosenEntrance);
+                node.addEntrance(attachmentPoint, entrance, levelGenerator.random);
             }
         }
     }

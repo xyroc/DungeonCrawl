@@ -26,6 +26,7 @@ public interface DungeonComponent {
         map.addMapping(BlueprintComponent.CODEC, 1);
         map.addMapping(StaircaseComponent.CODEC, 2);
         map.addMapping(TunnelComponent.CODEC, 3);
+        map.addMapping(EntranceComponent.CODEC, 4);
 
         map.addMapping(ChestComponent.CODEC, 10);
         map.addMapping(TNTChestComponent.CODEC, 11);

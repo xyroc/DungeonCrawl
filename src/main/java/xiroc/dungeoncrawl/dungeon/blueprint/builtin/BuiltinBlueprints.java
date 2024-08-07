@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.datapack.DatapackNamespaces;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.room.CornerRoomBlueprint;
@@ -37,45 +38,84 @@ public interface BuiltinBlueprints {
                         Anchor.of(0, 0, 3, Direction.WEST),
                         Anchor.of(3, 0, 0, Direction.NORTH),
                         Anchor.of(6, 0, 3, Direction.EAST),
-                        Anchor.of(3, 0, 6, Direction.SOUTH))),
-                ImmutableList.of()));
+                        Anchor.of(3, 0, 6, Direction.SOUTH)
+                )),
+                ImmutableList.of(),
+                ImmutableList.of(
+                        new Entrance(Anchor.of(0, 0, 3, Direction.WEST)),
+                        new Entrance(Anchor.of(3, 0, 0, Direction.NORTH)),
+                        new Entrance(Anchor.of(6, 0, 3, Direction.EAST)),
+                        new Entrance(Anchor.of(3, 0, 6, Direction.SOUTH))
+                )
+        ));
 
         consumer.accept(CORNER_ROOM, new CornerRoomBlueprint(
                 ImmutableMap.of(BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
                         Anchor.of(0, 0, 3, Direction.WEST),
                         Anchor.of(3, 0, 0, Direction.NORTH),
                         Anchor.of(6, 0, 3, Direction.EAST),
-                        Anchor.of(3, 0, 6, Direction.SOUTH))),
-                ImmutableList.of()));
+                        Anchor.of(3, 0, 6, Direction.SOUTH)
+                )),
+                ImmutableList.of(),
+                ImmutableList.of(
+                        new Entrance(Anchor.of(0, 0, 3, Direction.WEST)),
+                        new Entrance(Anchor.of(3, 0, 0, Direction.NORTH)),
+                        new Entrance(Anchor.of(6, 0, 3, Direction.EAST)),
+                        new Entrance(Anchor.of(3, 0, 6, Direction.SOUTH))
+                )
+        ));
 
-        consumer.accept(UPPER_STAIRCASE, new UpperStaircaseBlueprint(ImmutableMap.of(
-                BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 1, 4, Direction.DOWN)),
-                BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
-                        Anchor.of(0, 0, 4, Direction.WEST),
-                        Anchor.of(4, 0, 0, Direction.NORTH),
-                        Anchor.of(8, 0, 4, Direction.EAST),
-                        Anchor.of(4, 0, 8, Direction.SOUTH))),
-                ImmutableList.of()));
+        consumer.accept(UPPER_STAIRCASE, new UpperStaircaseBlueprint(
+                ImmutableMap.of(
+                        BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 1, 4, Direction.DOWN)),
+                        BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
+                                Anchor.of(0, 0, 4, Direction.WEST),
+                                Anchor.of(4, 0, 0, Direction.NORTH),
+                                Anchor.of(8, 0, 4, Direction.EAST),
+                                Anchor.of(4, 0, 8, Direction.SOUTH)
+                        )),
+                ImmutableList.of(),
+                ImmutableList.of(
+                        new Entrance(Anchor.of(0, 0, 4, Direction.WEST)),
+                        new Entrance(Anchor.of(4, 0, 0, Direction.NORTH)),
+                        new Entrance(Anchor.of(8, 0, 4, Direction.EAST)),
+                        new Entrance(Anchor.of(4, 0, 8, Direction.SOUTH))
+                )
+        ));
 
-        consumer.accept(LOWER_STAIRCASE, new LowerStaircaseBlueprint(ImmutableMap.of(
-                BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 0, 4, Direction.UP)),
-                BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
-                        Anchor.of(0, 0, 4, Direction.WEST),
-                        Anchor.of(4, 0, 0, Direction.NORTH),
-                        Anchor.of(8, 0, 4, Direction.EAST),
-                        Anchor.of(4, 0, 8, Direction.SOUTH))),
-                ImmutableList.of()));
+        consumer.accept(LOWER_STAIRCASE, new LowerStaircaseBlueprint(
+                ImmutableMap.of(
+                        BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 0, 4, Direction.UP)),
+                        BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
+                                Anchor.of(0, 0, 4, Direction.WEST),
+                                Anchor.of(4, 0, 0, Direction.NORTH),
+                                Anchor.of(8, 0, 4, Direction.EAST),
+                                Anchor.of(4, 0, 8, Direction.SOUTH)
+                        )),
+                ImmutableList.of(),
+                ImmutableList.of(
+                        new Entrance(Anchor.of(0, 0, 4, Direction.WEST)),
+                        new Entrance(Anchor.of(4, 0, 0, Direction.NORTH)),
+                        new Entrance(Anchor.of(8, 0, 4, Direction.EAST)),
+                        new Entrance(Anchor.of(4, 0, 8, Direction.SOUTH))
+                )
+        ));
 
-        consumer.accept(CORRIDOR_BASE_SEGMENT, new CorridorBaseSegment(ImmutableMap.of(
-                BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(
+        consumer.accept(CORRIDOR_BASE_SEGMENT, new CorridorBaseSegment(
+                ImmutableMap.of(BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(
                         Anchor.of(1, 0, 0, Direction.NORTH),
-                        Anchor.of(1, 0, 2, Direction.SOUTH))),
-                ImmutableList.of()));
+                        Anchor.of(1, 0, 2, Direction.SOUTH)
+                )),
+                ImmutableList.of(),
+                ImmutableList.of()
+        ));
 
         consumer.accept(CORRIDOR_SIDE_SEGMENT, new CorridorSideSegment(
                 ImmutableMap.of(BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(Anchor.of(1, 0, 1, Direction.SOUTH))),
-                ImmutableList.of()));
+                ImmutableList.of(),
+                ImmutableList.of()
+        ));
 
-        consumer.accept(CORRIDOR_ARCH_SEGMENT, new CorridorArchSegment(ImmutableMap.of(), ImmutableList.of()));
+        consumer.accept(CORRIDOR_ARCH_SEGMENT, new CorridorArchSegment(ImmutableMap.of(), ImmutableList.of(), ImmutableList.of()));
     }
 }

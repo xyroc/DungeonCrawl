@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.dungeon.generator.element;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,8 +7,9 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
+import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
@@ -22,90 +22,99 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 public class NodeElement extends DungeonElement {
-    public final int depth;
-    public final ArrayList<Anchor> unusedEntrances;
-
     private final BlueprintPiece piece;
+
+    public final int depth;
+    public final ArrayList<Entrance> unusedEntrances;
 
     public NodeElement(BlueprintPiece piece, int depth) {
         super(piece.getBoundingBox());
         this.piece = piece;
         this.depth = depth;
-        ImmutableList<Anchor> entrances = piece.base.blueprint().get().anchors().get(BuiltinAnchorTypes.ENTRANCE);
-        this.unusedEntrances = entrances == null ? new ArrayList<>(0) : Lists.newArrayList(entrances);
+        this.unusedEntrances = Lists.newArrayList(piece.base.blueprint().get().entrances());
     }
 
     public void update(LevelGenerator levelGenerator) {
         if (this.depth < levelGenerator.levelType.settings().maxDepth) {
-            Random random = levelGenerator.random;
+            final Random random = levelGenerator.random;
+            final CoordinateSpace coordinateSpace = piece.base.blueprint().get().coordinateSpace(piece.base.position());
             int placements = 3;
-            CoordinateSpace coordinateSpace = piece.base.blueprint().get().coordinateSpace(piece.base.position());
             for (int attempt = 0; !unusedEntrances.isEmpty() && attempt < 4 && placements > 0; ++attempt) {
-                Anchor entrance = coordinateSpace.rotateAndTranslateToOrigin(unusedEntrances.remove(random.nextInt(unusedEntrances.size())), piece.base.rotation());
+                final Entrance entrance = unusedEntrances.remove(random.nextInt(unusedEntrances.size()));
+                final Anchor placement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
 
-                if (random.nextInt(10) == 0 && levelGenerator.createClusterNode(entrance, random, this.depth + 1)) {
-                    piece.addEntrance(entrance.position().above(), entrance.direction());
+                if (levelGenerator.createClusterNode(placement, this.depth + 1) || attachRoom(levelGenerator, placement)) {
+                    addEntrance(placement, entrance, random);
                     --placements;
-                    continue;
-                }
-
-                if (attachRoom(levelGenerator, entrance.position().relative(entrance.direction()), entrance.direction())) {
-                    piece.addEntrance(entrance.position().above(), entrance.direction());
-                    --placements;
+                } else {
+                    entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.closed(), piece, piece.base, random));
                 }
             }
         }
     }
 
-    private boolean attachRoom(LevelGenerator levelGenerator, BlockPos start, Direction direction) {
-        Random random = levelGenerator.random;
-        int corridorLength = levelGenerator.levelType.settings().corridorLength.nextInt(random);
-        int roomDepth = this.depth + 1;
-        boolean isEndStaircase = levelGenerator.shouldPlaceEndStaircase(roomDepth);
+    private boolean attachRoom(LevelGenerator levelGenerator, Anchor placement) {
+        final Random random = levelGenerator.random;
 
-        BoundingBoxBuilder corridorBox = BoundingBoxUtils.tunnelBuilder(start, direction, corridorLength, 8, 2);
+        final BlockPos corridorStart = placement.position().relative(placement.direction());
+        final Direction corridorDirection = placement.direction();
+        final int corridorLength = levelGenerator.levelType.settings().corridorLength.nextInt(random);
+        final BoundingBoxBuilder corridorBox = BoundingBoxUtils.tunnelBuilder(corridorStart, corridorDirection, corridorLength, 8, 2);
+
         if (!levelGenerator.plan.isFree(corridorBox)) {
             return false;
         }
 
-        Delegate<Blueprint> room = isEndStaircase
+        final int roomDepth = this.depth + 1;
+        final boolean isEndStaircase = levelGenerator.shouldPlaceEndStaircase(roomDepth);
+
+        final Delegate<Blueprint> room = isEndStaircase
                 ? levelGenerator.levelType.upperStaircaseRooms().roll(random)
                 : levelGenerator.levelType.rooms().roll(random);
-        ImmutableList<Anchor> entrances = room.get().anchors().get(BuiltinAnchorTypes.ENTRANCE);
-        if (entrances == null) {
+        final var entrances = room.get().entrances();
+        if (entrances.isEmpty()) {
             return false;
         }
 
         final int chosenEntrance = random.nextInt(entrances.size());
-        Anchor entrance = entrances.get(chosenEntrance);
-        Anchor corridorEnd = new Anchor(start.relative(direction, corridorLength - 1), direction);
+        final Entrance entrance = entrances.get(chosenEntrance);
+        final Anchor corridorEnd = new Anchor(corridorStart.relative(corridorDirection, corridorLength - 1), corridorDirection);
 
-        CoordinateSpace coordinateSpace = room.get().coordinateSpace(BlockPos.ZERO);
-        BlockPos roomPosition = entrance.latchOnto(corridorEnd, coordinateSpace);
-        Rotation rotation = Orientation.horizontalRotation(entrance.direction(), direction.getOpposite());
+        final CoordinateSpace coordinateSpace = room.get().coordinateSpace(BlockPos.ZERO);
+        final BlockPos roomPosition = entrance.placement().latchOnto(corridorEnd, coordinateSpace);
+        final Rotation rotation = Orientation.horizontalRotation(entrance.placement().direction(), corridorDirection.getOpposite());
+        final BoundingBoxBuilder roomBox = room.get().boundingBox(rotation).move(roomPosition);
 
-        BoundingBoxBuilder roomBox = room.get().boundingBox(rotation);
-        roomBox.move(roomPosition);
         if (!levelGenerator.plan.isFree(roomBox)) {
             return false;
         }
 
-        BlueprintPiece piece = levelGenerator.assemblePiece(room, roomPosition, rotation);
-        if (piece == null) {
+        final BlueprintPiece roomPiece = levelGenerator.assemblePiece(room, roomPosition, rotation);
+        if (roomPiece == null) {
             return false;
         }
 
-        NodeElement node = levelGenerator.createNode(piece, roomDepth, true, isEndStaircase);
+        final NodeElement node = levelGenerator.createNode(roomPiece, roomDepth, true, isEndStaircase);
         node.unusedEntrances.remove(chosenEntrance);
-        levelGenerator.createCorridor(this, node, start, direction, corridorBox.create());
+        levelGenerator.createCorridor(this, node, corridorStart, corridorDirection, corridorBox.create());
 
-        Anchor rotatedEntrance = coordinateSpace.rotateAndTranslateToOrigin(entrance, rotation);
-        node.piece.addEntrance(roomPosition.offset(rotatedEntrance.position()).above(), rotatedEntrance.direction());
+        final Anchor rotatedEntrance = room.get().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), rotation);
+        node.addEntrance(rotatedEntrance, entrance, random);
         return true;
     }
 
+    public void addEntrance(Anchor placement, Entrance entrance, Random random) {
+        piece.addComponent(entrance.place(placement));
+        entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.open(), piece, piece.base, random));
+    }
+
     @Override
-    public void createPieces(Consumer<StructurePiece> consumer) {
+    public void createPieces(Consumer<StructurePiece> consumer, Random random) {
+        CoordinateSpace coordinateSpace = piece.base.blueprint().get().coordinateSpace(piece.base.position());
+        for (Entrance entrance : unusedEntrances) {
+            Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
+            entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(position.opposite(), parts.closed(), piece, piece.base, random));
+        }
         piece.createBoundingBox();
         consumer.accept(piece);
     }

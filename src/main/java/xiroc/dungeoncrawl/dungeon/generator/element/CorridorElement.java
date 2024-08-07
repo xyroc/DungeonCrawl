@@ -27,6 +27,7 @@ import xiroc.dungeoncrawl.util.Orientation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Consumer;
 
 public class CorridorElement extends DungeonElement {
@@ -104,7 +105,7 @@ public class CorridorElement extends DungeonElement {
     }
 
     @Override
-    public void createPieces(Consumer<StructurePiece> consumer) {
+    public void createPieces(Consumer<StructurePiece> consumer, Random random) {
         addSideSegments();
         fragments.forEach(fragment -> consumer.accept(fragment.piece));
 

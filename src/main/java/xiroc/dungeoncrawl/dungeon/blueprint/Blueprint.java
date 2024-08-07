@@ -56,6 +56,11 @@ public interface Blueprint {
         }
 
         @Override
+        public ImmutableList<Entrance> entrances() {
+            return ImmutableList.of();
+        }
+
+        @Override
         public BoundingBox createBoundingBox(Vec3i offset, Rotation rotation) {
             return BoundingBoxUtils.emptyBox();
         }
@@ -73,6 +78,8 @@ public interface Blueprint {
     ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors();
 
     ImmutableList<BlueprintFeature> features();
+
+    ImmutableList<Entrance> entrances();
 
     default ImmutableList<BlueprintMultipart> parts() {
         return ImmutableList.of();

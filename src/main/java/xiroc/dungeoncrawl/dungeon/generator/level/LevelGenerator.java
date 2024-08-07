@@ -3,7 +3,6 @@ package xiroc.dungeoncrawl.dungeon.generator.level;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.datapack.DatapackRegistries;
@@ -20,7 +19,6 @@ import xiroc.dungeoncrawl.dungeon.generator.element.DungeonElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
@@ -125,7 +123,7 @@ public class LevelGenerator {
 
         BlueprintPiece piece = new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);
 
-        for (var feature: blueprint.get().features()) {
+        for (var feature : blueprint.get().features()) {
             feature.create(piece::addComponent, null, blueprint.get(), piece.base.position(), piece.base.rotation(), random, stage);
         }
 
@@ -134,7 +132,7 @@ public class LevelGenerator {
         }
 
         for (BlueprintMultipart part : parts) {
-            if (!part.addParts(plan, piece, baseComponent, random)) {
+            if (!part.addParts(piece, baseComponent, random)) {
                 return null;
             }
         }
@@ -155,25 +153,18 @@ public class LevelGenerator {
         return node;
     }
 
-    public CorridorElement createCorridor(DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
+    public void createCorridor(DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
         CorridorElement corridor = new CorridorElement(this, from, to, start, direction, boundingBox);
         this.plan.add(corridor);
         this.corridors.add(corridor);
-        return corridor;
-    }
-
-    public static BoundingBox tunnelBoundingBox(Vec3i start, Vec3i end, Direction direction, int size) {
-        Vec3i from = start.relative(direction.getCounterClockWise(), size);
-        Vec3i to = end.relative(direction.getClockWise(), size);
-        return BoundingBox.fromCorners(from, to);
     }
 
     public boolean shouldPlaceEndStaircase(int depth) {
         return placeEndStaircase && depth >= levelType.settings().minStaircaseDepth;
     }
 
-    public boolean createClusterNode(Anchor attachmentPoint, Random random, int depth) {
-        if (clusterNodesLeft == 0) {
+    public boolean createClusterNode(Anchor attachmentPoint, int depth) {
+        if (clusterNodesLeft == 0 || random.nextInt(10) != 0) {
             return false;
         }
         ClusterNodeBuilder clusterNodeBuilder = new ClusterNodeBuilder(this, attachmentPoint, random, depth + 1);

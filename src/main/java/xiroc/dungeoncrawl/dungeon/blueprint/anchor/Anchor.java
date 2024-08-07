@@ -30,6 +30,10 @@ public record Anchor(BlockPos position, Direction direction) {
         return new Anchor(new BlockPos(x, y, z), direction);
     }
 
+    public Anchor opposite() {
+        return new Anchor(position.relative(direction), direction.getOpposite());
+    }
+
     public BlockPos.MutableBlockPos latchOnto(Anchor anchor, CoordinateSpace coordinateSpace) {
         Rotation rotation = Orientation.horizontalRotation(this.direction, anchor.direction.getOpposite());
         Vec3i offset = coordinateSpace.rotateAndTranslateToOrigin(this.position, rotation);

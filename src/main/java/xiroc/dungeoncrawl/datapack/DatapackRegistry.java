@@ -8,6 +8,7 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -20,16 +21,23 @@ public class DatapackRegistry<T> {
     private final Consumer<BiConsumer<ResourceLocation, T>> builtin;
     private final Parser<T> parser;
 
-    private ImmutableMap<ResourceLocation, T> values;
+    private ImmutableMap<ResourceLocation, T> values = ImmutableMap.of();
+    // True when this registry's contents were either not yet loaded or invalidated
+    private boolean isUnloaded = true;
+    private final HashMap<ResourceLocation, Delegate<T>> unresolvedReferences = new HashMap<>();
 
-    public DatapackRegistry(DatapackDirectories.Directory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Function<Reader, T> fromJson) {
+    DatapackRegistry(DatapackDirectories.Directory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Function<Reader, T> fromJson) {
         this(directory, builtin, Parser.simple(fromJson));
     }
 
-    public DatapackRegistry(DatapackDirectories.Directory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Parser<T> parser) {
+    DatapackRegistry(DatapackDirectories.Directory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Parser<T> parser) {
         this.directory = directory;
         this.builtin = builtin;
         this.parser = parser;
+    }
+
+    public void unload() {
+        isUnloaded = true;
     }
 
     public void reload(ResourceManager resourceManager) {
@@ -45,13 +53,27 @@ public class DatapackRegistry<T> {
             }
         });
         values = builder.build();
+        isUnloaded = false;
+
+        unresolvedReferences.forEach((key, reference) -> reference.resolve(this));
+        unresolvedReferences.clear();
+    }
+
+    public int entryCount() {
+        return values.size();
     }
 
     public T get(ResourceLocation key) {
+        if (isUnloaded) {
+            throw new IllegalStateException("Attempted to retrieve " + key + " from unloaded registry");
+        }
         return values.get(key);
     }
 
     public Delegate<T> delegateOrThrow(ResourceLocation key) {
+        if (isUnloaded) {
+            return unresolvedReferences.computeIfAbsent(key, Delegate::of);
+        }
         T value = get(key);
         if (value == null) {
             throw new RuntimeException("No value for key " + key);
@@ -59,7 +81,7 @@ public class DatapackRegistry<T> {
         return Delegate.of(value, key);
     }
 
-    public interface Parser<T> {
+    interface Parser<T> {
         static <T> Parser<T> simple(Function<Reader, T> parser) {
             return keyed((key, reader) -> parser.apply(reader));
         }

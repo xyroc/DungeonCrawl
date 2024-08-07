@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.datapack;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
@@ -27,21 +28,25 @@ import xiroc.dungeoncrawl.dungeon.theme.Themes;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 public class ResourceReloadHandler implements PreparableReloadListener {
+    private static final ImmutableList<DatapackRegistry<?>> REGISTRIES = ImmutableList.<DatapackRegistry<?>>builder()
+            .add(DatapackRegistries.PRIMARY_THEME)
+            .add(DatapackRegistries.SECONDARY_THEME)
+            .add(DatapackRegistries.SPAWNER_ENTITY_TYPE)
+            .add(DatapackRegistries.SPAWNER_TYPE)
+            .add(DatapackRegistries.BLUEPRINT)
+            .build();
 
     public void reload(ResourceManager resourceManager) {
-        DungeonCrawl.LOGGER.info("Loading data...");
-
-        DatapackRegistries.PRIMARY_THEME.reload(resourceManager);
-        DatapackRegistries.SECONDARY_THEME.reload(resourceManager);
-        DatapackRegistries.SPAWNER_ENTITY_TYPE.reload(resourceManager);
-        DatapackRegistries.SPAWNER_TYPE.reload(resourceManager);
-        DatapackRegistries.BLUEPRINT.reload(resourceManager);
+        REGISTRIES.forEach(DatapackRegistry::unload);
+        REGISTRIES.forEach(registry -> registry.reload(resourceManager));
 
         Themes.load(resourceManager);
 
-        DungeonCrawl.LOGGER.info("Done.");
+        final var statistics = REGISTRIES.stream().collect(Collectors.summarizingInt(DatapackRegistry::entryCount));
+        DungeonCrawl.LOGGER.info("Loaded {} registries with a total of {} data entries.", statistics.getCount(), statistics.getSum());
     }
 
     @Override
@@ -54,5 +59,4 @@ public class ResourceReloadHandler implements PreparableReloadListener {
             reloadProfiler.endTick();
         }, gameExecutor);
     }
-
 }

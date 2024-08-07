@@ -5,6 +5,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.datapack.DatapackRegistry;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,11 +19,11 @@ public class Delegate<T> implements Supplier<T> {
      * Possible configurations:
      * [value: nonnull, key:nonnull]: value was referenced via key and was retrieved from the respective registry.
      * [value: nonnull, key:null]: value was defined in-place and therefore has no key.
-     * [value: null, key:nonnull]: value was referenced via key but was not retrieved from a registry. only used for datagen.
+     * [value: null, key:nonnull]: value was referenced via key but was not yet retrieved from a registry.
      */
 
     @Nullable
-    private final T value;
+    private T value;
     @Nullable
     private final ResourceLocation key;
 
@@ -31,9 +32,19 @@ public class Delegate<T> implements Supplier<T> {
         this.key = key;
     }
 
+    public void resolve(DatapackRegistry<T> registry) {
+        if (key == null) {
+            throw new IllegalStateException("Cannot resolve immediate delegate");
+        }
+        this.value = registry.get(key);
+        if (this.value == null) {
+            throw new DatapackLoadException("No entry for: " + key);
+        }
+    }
+
     @Override
     public T get() {
-        if (value == null) { // May only be null during datagen
+        if (value == null) {
             throw new IllegalStateException("Delegate was holding a reference to " + key + ", not a value");
         }
         return value;
@@ -60,7 +71,7 @@ public class Delegate<T> implements Supplier<T> {
     public static <T> Delegate<T> deserialize(JsonElement json, DatapackRegistry<T> registry, Function<JsonElement, T> deserializer) {
         if (json.isJsonPrimitive()) {
             ResourceLocation key = new ResourceLocation(json.getAsString());
-            return of(registry.get(key), key);
+            return registry.delegateOrThrow(key);
         }
         return of(deserializer.apply(json));
     }
@@ -68,7 +79,7 @@ public class Delegate<T> implements Supplier<T> {
     public static <T> Delegate<T> deserialize(JsonElement json, DatapackRegistry<T> registry) {
         if (json.isJsonPrimitive()) {
             ResourceLocation key = new ResourceLocation(json.getAsString());
-            return of(registry.get(key), key);
+            return registry.delegateOrThrow(key);
         }
         throw new JsonParseException("Direct definitions are not allowed");
     }

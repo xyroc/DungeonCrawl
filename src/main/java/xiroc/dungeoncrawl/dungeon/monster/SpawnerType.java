@@ -153,8 +153,6 @@ public class SpawnerType {
             ListTag handDropChances = new ListTag();
             handDropChances.add(FloatTag.valueOf(handDropChance));
             handDropChances.add(FloatTag.valueOf(handDropChance));
-            handDropChances.add(FloatTag.valueOf(handDropChance));
-            handDropChances.add(FloatTag.valueOf(handDropChance));
             nbt.put("HandDropChances", handDropChances);
         }
     }

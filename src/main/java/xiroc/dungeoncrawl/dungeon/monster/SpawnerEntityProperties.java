@@ -5,7 +5,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.world.item.Item;
@@ -13,36 +12,16 @@ import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
-public class SpawnerEntityProperties {
-    protected final IRandom<Item> mainHand;
-    protected final IRandom<Item> offHand;
-
-    protected final IRandom<Item> helmet;
-    protected final IRandom<Item> chestplate;
-    protected final IRandom<Item> leggings;
-    protected final IRandom<Item> boots;
-
-    protected final Float handDropChance;
-    protected final Float armorDropChance;
-
-    public SpawnerEntityProperties(IRandom<Item> mainHand,
-                                   IRandom<Item> offHand,
-                                   IRandom<Item> helmet,
-                                   IRandom<Item> chestplate,
-                                   IRandom<Item> leggings,
-                                   IRandom<Item> boots,
-                                   Float handDropChance,
-                                   Float armorDropChance) {
-        this.mainHand = mainHand;
-        this.offHand = offHand;
-        this.helmet = helmet;
-        this.chestplate = chestplate;
-        this.leggings = leggings;
-        this.boots = boots;
-        this.handDropChance = handDropChance;
-        this.armorDropChance = armorDropChance;
-    }
+public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
+                                      Optional<IRandom<Item>> offHand,
+                                      Optional<IRandom<Item>> helmet,
+                                      Optional<IRandom<Item>> chestplate,
+                                      Optional<IRandom<Item>> leggings,
+                                      Optional<IRandom<Item>> boots,
+                                      Optional<Float> handDropChance,
+                                      Optional<Float> armorDropChance) {
 
     public static class Serializer implements JsonSerializer<SpawnerEntityProperties>, JsonDeserializer<SpawnerEntityProperties> {
         private static final String KEY_EQUIPMENT = "equipment";
@@ -82,16 +61,17 @@ public class SpawnerEntityProperties {
             JsonObject properties = new JsonObject();
             JsonObject equipment = new JsonObject();
 
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_MAIN_HAND, src.mainHand, IRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_OFF_HAND, src.offHand, IRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_HELMET, src.helmet, IRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_CHESTPLATE, src.chestplate, IRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_LEGGINGS, src.leggings, IRandom.ITEM::serialize);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_BOOTS, src.boots, IRandom.ITEM::serialize);
+            src.mainHand.ifPresent(items -> equipment.add(KEY_EQUIPMENT_MAIN_HAND, IRandom.ITEM.serialize(items)));
+            src.offHand.ifPresent(items -> equipment.add(KEY_EQUIPMENT_OFF_HAND, IRandom.ITEM.serialize(items)));
+            src.helmet.ifPresent(items -> equipment.add(KEY_EQUIPMENT_HELMET, IRandom.ITEM.serialize(items)));
+            src.chestplate.ifPresent(items -> equipment.add(KEY_EQUIPMENT_CHESTPLATE, IRandom.ITEM.serialize(items)));
+            src.leggings.ifPresent(items -> equipment.add(KEY_EQUIPMENT_LEGGINGS, IRandom.ITEM.serialize(items)));
+            src.boots.ifPresent(items -> equipment.add(KEY_EQUIPMENT_BOOTS, IRandom.ITEM.serialize(items)));
 
             JsonObject dropChances = new JsonObject();
-            JSONUtils.serializeIfNonNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_HAND, src.handDropChance, JsonPrimitive::new);
-            JSONUtils.serializeIfNonNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_ARMOR, src.armorDropChance, JsonPrimitive::new);
+
+            src.handDropChance.ifPresent(chance -> dropChances.addProperty(KEY_EQUIPMENT_DROP_CHANCE_HAND, chance));
+            src.armorDropChance.ifPresent(chance -> dropChances.addProperty(KEY_EQUIPMENT_DROP_CHANCE_ARMOR, chance));
 
             if (!dropChances.entrySet().isEmpty()) {
                 equipment.add(KEY_EQUIPMENT_DROP_CHANCES, dropChances);
@@ -157,7 +137,14 @@ public class SpawnerEntityProperties {
         }
 
         public SpawnerEntityProperties build() {
-            return new SpawnerEntityProperties(mainHand, offHand, helmet, chestplate, leggings, boots, handDropChance, armorDropChance);
+            return new SpawnerEntityProperties(Optional.ofNullable(mainHand),
+                    Optional.ofNullable(offHand),
+                    Optional.ofNullable(helmet),
+                    Optional.ofNullable(chestplate),
+                    Optional.ofNullable(leggings),
+                    Optional.ofNullable(boots),
+                    Optional.ofNullable(handDropChance),
+                    Optional.ofNullable(armorDropChance));
         }
     }
 }

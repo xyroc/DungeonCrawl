@@ -10,7 +10,6 @@ import com.google.gson.JsonSerializer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.datapack.delegate.Delegate;
@@ -20,26 +19,17 @@ import xiroc.dungeoncrawl.util.random.value.Range;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Function;
 
-public class SpawnerType {
-    private final IRandom<Delegate<SpawnerEntityType>> entities;
-    private final SpawnerEntityProperties properties;
-    private final RandomValue spawnAmount;
-    private final Range spawnDelay;
-    private final RandomValue initialSpawnDelay;
-    private final int maxLightLevel;
-    private final short activationRange;
-
-    private SpawnerType(Builder builder) {
-        this.entities = builder.entities;
-        this.properties = builder.properties;
-        this.spawnAmount = builder.spawnAmount;
-        this.spawnDelay = builder.spawnDelay;
-        this.initialSpawnDelay = builder.initialSpawnDelay;
-        this.maxLightLevel = builder.maxLightLevel;
-        this.activationRange = builder.activationRange;
-    }
+public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
+                          Optional<SpawnerEntityProperties> properties,
+                          RandomValue spawnAmount,
+                          Range spawnDelay,
+                          RandomValue initialSpawnDelay,
+                          int maxLightLevel,
+                          short activationRange) {
 
     public CompoundTag createData(Random random, int stage) {
         CompoundTag nbt = new CompoundTag();
@@ -50,7 +40,7 @@ public class SpawnerType {
             CompoundTag data = new CompoundTag();
             CompoundTag entity = new CompoundTag();
 
-            entity.putString("id", entityType.entity.toString());
+            entity.putString("id", entityType.entity().toString());
             putEquipment(entity, entityType, random, stage);
             putDropChances(entity, entityType);
             if (!Config.NATURAL_DESPAWN.get()) {
@@ -81,80 +71,51 @@ public class SpawnerType {
     }
 
     private void putEquipment(CompoundTag nbt, SpawnerEntityType entityType, Random random, int stage) {
-        IRandom<Item> helmet = entityType.properties != null && entityType.properties.helmet != null ?
-                entityType.properties.helmet : (properties != null ? properties.helmet : null);
-        IRandom<Item> chestplate = entityType.properties != null && entityType.properties.chestplate != null ?
-                entityType.properties.chestplate : (properties != null ? properties.chestplate : null);
-        IRandom<Item> leggings = entityType.properties != null && entityType.properties.leggings != null ?
-                entityType.properties.leggings : (properties != null ? properties.leggings : null);
-        IRandom<Item> boots = entityType.properties != null && entityType.properties.boots != null ?
-                entityType.properties.boots : (properties != null ? properties.boots : null);
+        var helmet = property(entityType, SpawnerEntityProperties::helmet);
+        var chestplate = property(entityType, SpawnerEntityProperties::chestplate);
+        var leggings = property(entityType, SpawnerEntityProperties::leggings);
+        var boots = property(entityType, SpawnerEntityProperties::boots);
 
         ListTag armor = new ListTag();
-        if (boots != null) {
-            armor.add(RandomEquipment.createArmorPiece(boots.roll(random), random, stage).save(new CompoundTag()));
-        } else {
-            armor.add(ItemStack.EMPTY.save(new CompoundTag()));
-        }
 
-        if (leggings != null) {
-            armor.add(RandomEquipment.createArmorPiece(leggings.roll(random), random, stage).save(new CompoundTag()));
-        } else {
-            armor.add(ItemStack.EMPTY.save(new CompoundTag()));
-        }
+        armor.add(boots.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        armor.add(leggings.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        armor.add(chestplate.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        armor.add(helmet.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
 
-        if (chestplate != null) {
-            armor.add(RandomEquipment.createArmorPiece(chestplate.roll(random), random, stage).save(new CompoundTag()));
-        } else {
-            armor.add(ItemStack.EMPTY.save(new CompoundTag()));
-        }
-
-        if (helmet != null) {
-            armor.add(RandomEquipment.createArmorPiece(helmet.roll(random), random, stage).save(new CompoundTag()));
-        } else {
-            armor.add(ItemStack.EMPTY.save(new CompoundTag()));
-        }
         nbt.put("ArmorItems", armor);
 
-        IRandom<Item> mainHand = entityType.properties != null && entityType.properties.mainHand != null ?
-                entityType.properties.mainHand : (properties != null ? properties.mainHand : null);
-        IRandom<Item> offHand = entityType.properties != null && entityType.properties.offHand != null ?
-                entityType.properties.offHand : (properties != null ? properties.offHand : null);
+        var mainHand = property(entityType, SpawnerEntityProperties::mainHand);;
+        var offHand = property(entityType, SpawnerEntityProperties::offHand);;
 
         ListTag handItems = new ListTag();
-        if (mainHand != null) {
-            handItems.add(RandomEquipment.createItemStack(mainHand.roll(random), random, stage).save(new CompoundTag()));
-        } else {
-            handItems.add(ItemStack.EMPTY.save(new CompoundTag()));
-        }
 
-        if (offHand != null) {
-            handItems.add(RandomEquipment.createItemStack(offHand.roll(random), random, stage).save(new CompoundTag()));
-        } else {
-            handItems.add(ItemStack.EMPTY.save(new CompoundTag()));
-        }
+        handItems.add(mainHand.map(items -> RandomEquipment.createItemStack(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        handItems.add(offHand.map(items -> RandomEquipment.createItemStack(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+
         nbt.put("HandItems", handItems);
     }
 
     private void putDropChances(CompoundTag nbt, SpawnerEntityType entityType) {
-        Float armorDropChance = entityType.properties != null && entityType.properties.armorDropChance != null ?
-                entityType.properties.armorDropChance : (properties != null ? properties.armorDropChance : null);
-        if (armorDropChance != null) {
+        property(entityType, SpawnerEntityProperties::armorDropChance).ifPresent(chance -> {
             ListTag armorDropChances = new ListTag();
-            armorDropChances.add(FloatTag.valueOf(armorDropChance));
-            armorDropChances.add(FloatTag.valueOf(armorDropChance));
-            armorDropChances.add(FloatTag.valueOf(armorDropChance));
-            armorDropChances.add(FloatTag.valueOf(armorDropChance));
+            armorDropChances.add(FloatTag.valueOf(chance));
+            armorDropChances.add(FloatTag.valueOf(chance));
+            armorDropChances.add(FloatTag.valueOf(chance));
+            armorDropChances.add(FloatTag.valueOf(chance));
             nbt.put("ArmorDropChances", armorDropChances);
-        }
-        Float handDropChance = entityType.properties != null && entityType.properties.handDropChance != null ?
-                entityType.properties.handDropChance : (properties != null ? properties.handDropChance : null);
-        if (handDropChance != null) {
+        });
+
+        property(entityType, SpawnerEntityProperties::handDropChance).ifPresent(chance -> {
             ListTag handDropChances = new ListTag();
-            handDropChances.add(FloatTag.valueOf(handDropChance));
-            handDropChances.add(FloatTag.valueOf(handDropChance));
+            handDropChances.add(FloatTag.valueOf(chance));
+            handDropChances.add(FloatTag.valueOf(chance));
             nbt.put("HandDropChances", handDropChances);
-        }
+        });
+    }
+
+    private <T> Optional<T> property(SpawnerEntityType entityType, Function<SpawnerEntityProperties, Optional<T>> mapper) {
+        return entityType.properties().flatMap(mapper).or(() -> properties.flatMap(mapper));
     }
 
     public static class Serializer implements JsonSerializer<SpawnerType>, JsonDeserializer<SpawnerType> {
@@ -199,9 +160,7 @@ public class SpawnerType {
             if (src.spawnDelay != src.initialSpawnDelay) {
                 object.add(KEY_INITIAL_SPAWN_DELAY, context.serialize(src.initialSpawnDelay));
             }
-            if (src.properties != null) {
-                object.add(KEY_ENTITY_PROPERTIES, context.serialize(src.properties));
-            }
+            src.properties.ifPresent(properties -> object.add(KEY_ENTITY_PROPERTIES, context.serialize(properties)));
             if (src.activationRange > 0) {
                 object.addProperty(KEY_ACTIVATION_RANGE, src.activationRange);
             }
@@ -268,7 +227,7 @@ public class SpawnerType {
             Objects.requireNonNull(this.spawnAmount, "Cannot create a spawner type without a set spawn amount");
             Objects.requireNonNull(this.spawnDelay, "Cannot create a spawner type without a set spawn delay");
             Objects.requireNonNull(this.initialSpawnDelay, "Cannot create a spawner type without a set initial spawn delay.");
-            return new SpawnerType(this);
+            return new SpawnerType(entities, Optional.ofNullable(properties), spawnAmount, spawnDelay, initialSpawnDelay, maxLightLevel, activationRange);
         }
     }
 }

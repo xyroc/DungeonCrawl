@@ -6,22 +6,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
-public class SpawnerEntityType {
-    protected final ResourceLocation entity;
-    protected final SpawnerEntityProperties properties;
-
+public record SpawnerEntityType(ResourceLocation entity, Optional<SpawnerEntityProperties> properties) {
     public SpawnerEntityType(EntityType<?> entityType) {
-        this(Registry.ENTITY_TYPE.getKey(entityType), null);
+        this(Registry.ENTITY_TYPE.getKey(entityType), Optional.empty());
     }
 
     public SpawnerEntityType(EntityType<?> entityType, SpawnerEntityProperties properties) {
-        this(Registry.ENTITY_TYPE.getKey(entityType), properties);
-    }
-
-    public SpawnerEntityType(ResourceLocation entity, SpawnerEntityProperties properties) {
-        this.entity = entity;
-        this.properties = properties;
+        this(Registry.ENTITY_TYPE.getKey(entityType), Optional.of(properties));
     }
 
     public static class Serializer implements JsonSerializer<SpawnerEntityType>, JsonDeserializer<SpawnerEntityType> {
@@ -32,9 +25,9 @@ public class SpawnerEntityType {
         public SpawnerEntityType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             ResourceLocation entity = new ResourceLocation(object.get(KEY_ENTITY_TYPE).getAsString());
-            SpawnerEntityProperties properties = null;
+            Optional<SpawnerEntityProperties> properties = Optional.empty();
             if (object.has(KEY_PROPERTIES)) {
-                properties = context.deserialize(object.get(KEY_PROPERTIES), SpawnerEntityProperties.class);
+                properties = Optional.of(context.deserialize(object.get(KEY_PROPERTIES), SpawnerEntityProperties.class));
             }
             return new SpawnerEntityType(entity, properties);
         }
@@ -43,9 +36,7 @@ public class SpawnerEntityType {
         public JsonElement serialize(SpawnerEntityType type, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             object.addProperty(KEY_ENTITY_TYPE, type.entity.toString());
-            if (type.properties != null) {
-                object.add(KEY_PROPERTIES, context.serialize(type.properties));
-            }
+            type.properties.ifPresent(properties -> object.add(KEY_PROPERTIES, context.serialize(properties)));
             return object;
         }
     }

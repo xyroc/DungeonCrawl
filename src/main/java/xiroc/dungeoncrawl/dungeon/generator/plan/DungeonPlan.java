@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.dungeon.generator.plan;
 
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.generator.element.DungeonElement;
 import xiroc.dungeoncrawl.util.bounds.Bounded;
 

@@ -18,7 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 

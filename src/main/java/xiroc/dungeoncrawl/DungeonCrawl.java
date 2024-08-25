@@ -18,13 +18,9 @@
 
 package xiroc.dungeoncrawl;
 
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -39,7 +35,6 @@ import xiroc.dungeoncrawl.init.ModStructures;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
-
     public static final String MOD_ID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
     public static final String VERSION = "2.3.14";
@@ -47,7 +42,7 @@ public class DungeonCrawl {
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public DungeonCrawl() {
-        LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
+        LOGGER.info("Here we go! Launching {} {}...", NAME, VERSION);
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
@@ -64,29 +59,12 @@ public class DungeonCrawl {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         LOGGER.info("Common Setup");
-        //ModLoadingContext.get().registerConfig(Type.COMMON, Config.CONFIG);
         Config.load(FMLPaths.CONFIGDIR.get().resolve("dungeon_crawl.toml"));
 
         event.enqueueWork(() -> {
             // Pieces are registered on class load
-            ModStructurePieceTypes.GENERIC.getClass();
+            var ignored = ModStructurePieceTypes.GENERIC.getClass();
         });
-    }
-
-    private void onWorldLoad(WorldEvent.Load event) {
-        LOGGER.info("Biomes without dungeons:");
-        event.getWorld().registryAccess().registry(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).ifPresentOrElse((configuredStructureRegistry) -> {
-            event.getWorld().registryAccess().registry(Registry.BIOME_REGISTRY).ifPresentOrElse((biomeRegistry) -> {
-                HolderSet<Biome> biomes = configuredStructureRegistry.get(locate("dungeon")).biomes();
-                biomeRegistry.entrySet().forEach((entry) -> {
-                    biomeRegistry.getHolder(entry.getKey()).ifPresentOrElse((biomeHolder -> {
-                        if (!biomes.contains(biomeHolder)) {
-                            LOGGER.info(entry.getKey());
-                        }
-                    }), () -> LOGGER.error("Could not retrieve holder of {}", entry.getKey()));
-                });
-            }, () -> LOGGER.error("Could not retrieve {}", Registry.BIOME_REGISTRY));
-        }, () -> LOGGER.error("Could not retrieve {}", Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY));
     }
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {
@@ -109,5 +87,4 @@ public class DungeonCrawl {
         String path = resourceLocation.getPath();
         return new ResourceLocation(resourceLocation.getNamespace(), path.substring(baseDirectory.length() + 1, path.length() - fileEnding.length()));
     }
-
 }

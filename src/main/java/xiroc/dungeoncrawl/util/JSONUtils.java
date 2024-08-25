@@ -100,6 +100,7 @@ public class JSONUtils {
         return new JsonPrimitive(stateString.toString());
     }
 
+    @SuppressWarnings("unchecked")
     private static <T extends Comparable<T>> void serializeProperty(StringBuilder builder, Property<T> property, Comparable<?> value) {
         builder.append(property.getName());
         builder.append("=");

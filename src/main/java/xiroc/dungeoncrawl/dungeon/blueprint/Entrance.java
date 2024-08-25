@@ -11,7 +11,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.IdMapper;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.datapack.delegate.Delegate;
+import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.EntranceComponent;

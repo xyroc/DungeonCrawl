@@ -1,10 +1,9 @@
-package xiroc.dungeoncrawl.datapack.delegate;
+package xiroc.dungeoncrawl.datapack.registry;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.resources.ResourceLocation;
-import xiroc.dungeoncrawl.datapack.DatapackRegistry;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import javax.annotation.Nonnull;
@@ -23,11 +22,14 @@ public class Delegate<T> implements Supplier<T> {
      */
 
     @Nullable
-    private T value;
+    protected T value;
     @Nullable
-    private final ResourceLocation key;
+    protected final ResourceLocation key;
 
-    private Delegate(@Nullable T value, @Nullable ResourceLocation key) {
+    protected Delegate(@Nullable T value, @Nullable ResourceLocation key) {
+        if (key == null && value == null) {
+            throw new IllegalArgumentException("Either a key or a value is required");
+        }
         this.value = value;
         this.key = key;
     }

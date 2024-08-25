@@ -3,7 +3,7 @@ package xiroc.dungeoncrawl.dungeon.generator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.delegate.Delegate;
+import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;

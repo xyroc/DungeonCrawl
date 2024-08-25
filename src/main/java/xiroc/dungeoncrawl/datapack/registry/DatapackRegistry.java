@@ -1,9 +1,9 @@
-package xiroc.dungeoncrawl.datapack;
+package xiroc.dungeoncrawl.datapack.registry;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import xiroc.dungeoncrawl.datapack.delegate.Delegate;
+import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.io.InputStreamReader;
@@ -15,16 +15,16 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class DatapackRegistry<T> {
-    private static final String FILE_ENDING = ".json";
+    static final String FILE_ENDING = ".json";
 
-    private final DatapackDirectories.Directory directory;
-    private final Consumer<BiConsumer<ResourceLocation, T>> builtin;
-    private final Parser<T> parser;
+    final DatapackDirectories.Directory directory;
+    final Consumer<BiConsumer<ResourceLocation, T>> builtin;
+    final Parser<T> parser;
 
-    private ImmutableMap<ResourceLocation, T> values = ImmutableMap.of();
+    ImmutableMap<ResourceLocation, T> values = ImmutableMap.of();
     // True when this registry's contents were either not yet loaded or invalidated
-    private boolean isUnloaded = true;
-    private final HashMap<ResourceLocation, Delegate<T>> unresolvedReferences = new HashMap<>();
+    boolean isUnloaded = true;
+    final HashMap<ResourceLocation, Delegate<T>> unresolvedReferences = new HashMap<>();
 
     DatapackRegistry(DatapackDirectories.Directory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Function<Reader, T> fromJson) {
         this(directory, builtin, Parser.simple(fromJson));
@@ -63,7 +63,7 @@ public class DatapackRegistry<T> {
         return values.size();
     }
 
-    public T get(ResourceLocation key) {
+    T get(ResourceLocation key) {
         if (isUnloaded) {
             throw new IllegalStateException("Attempted to retrieve " + key + " from unloaded registry");
         }

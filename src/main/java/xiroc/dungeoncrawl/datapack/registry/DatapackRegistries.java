@@ -1,10 +1,10 @@
-package xiroc.dungeoncrawl.datapack;
+package xiroc.dungeoncrawl.datapack.registry;
 
 import net.minecraft.resources.ResourceLocation;
+import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityProperties;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
@@ -23,9 +23,6 @@ public interface DatapackRegistries {
 
     DatapackRegistry<SpawnerEntityType> SPAWNER_ENTITY_TYPE = new DatapackRegistry<>(DatapackDirectories.SPAWNER_ENTITIES, none(),
             (reader) -> SpawnerSerializers.ENTITY_TYPES.fromJson(reader, SpawnerEntityType.class));
-
-    DatapackRegistry<SpawnerEntityProperties> SPAWNER_ENTITY_PROPERTIES = new DatapackRegistry<>(DatapackDirectories.SPAWNER_ENTITIES, none(),
-            (reader) -> SpawnerSerializers.ENTITY_PROPERTIES.fromJson(reader, SpawnerEntityProperties.class));
 
     DatapackRegistry<PrimaryTheme> PRIMARY_THEME = new DatapackRegistry<>(DatapackDirectories.PRIMARY_THEMES, BuiltinThemes::registerPrimary,
             (reader) -> Themes.GSON.fromJson(reader, PrimaryTheme.class));

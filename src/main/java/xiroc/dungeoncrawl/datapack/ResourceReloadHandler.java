@@ -24,6 +24,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
 import xiroc.dungeoncrawl.dungeon.theme.Themes;
 
 import java.util.concurrent.CompletableFuture;

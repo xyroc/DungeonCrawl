@@ -2,8 +2,8 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import xiroc.dungeoncrawl.datapack.DatapackRegistries;
-import xiroc.dungeoncrawl.datapack.delegate.Delegate;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
+import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.StaircaseComponent;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;

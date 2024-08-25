@@ -12,7 +12,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.delegate.Delegate;
+import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;

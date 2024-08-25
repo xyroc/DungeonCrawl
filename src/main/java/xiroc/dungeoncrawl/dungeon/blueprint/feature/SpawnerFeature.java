@@ -7,6 +7,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.datapack.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
@@ -19,7 +21,10 @@ import java.util.Random;
 public record SpawnerFeature(PlacementSettings placement, SpawnerSettings spawner) implements BlueprintFeature.AnchorBased {
     @Override
     public DungeonComponent createInstance(Anchor anchor, Random random) {
-        return new SpawnerComponent(anchor.position(), spawner.types().roll(random));
+        var spawnerType = spawner.types()
+                .map(spawnerTypes -> spawnerTypes.roll(random))
+                .orElse(DatapackRegistries.SPAWNER_TYPE.delegateOrThrow(DungeonCrawl.locate("default")));
+        return new SpawnerComponent(anchor.position(), spawnerType);
     }
 
     public static class Serializer implements JsonSerializer<SpawnerFeature>, JsonDeserializer<SpawnerFeature> {

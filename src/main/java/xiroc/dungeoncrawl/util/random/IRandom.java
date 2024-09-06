@@ -44,7 +44,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 /**
- * Used to create random objects of various types.
+ * Used to provide random objects of various types.
  */
 public interface IRandom<T> {
     T roll(Random rand);
@@ -58,6 +58,11 @@ public interface IRandom<T> {
 
         public Builder<T> add(T value, int weight) {
             entries.add(new Tuple<>(value, weight));
+            return this;
+        }
+
+        public Builder<T> add(Builder<T> builder) {
+            entries.addAll(builder.entries);
             return this;
         }
 

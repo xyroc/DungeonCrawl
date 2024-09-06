@@ -30,6 +30,15 @@ public class AVLTreeWeightedRandom<T> implements WeightedRandom<T> {
 
     @Override
     public void forEach(BiConsumer<T, Integer> consumer) {
-        this.entries.traverseRecursively(consumer);
+        this.entries.traverseInOrder(new BiConsumer<>() {
+            int totalWeight = 0;
+
+            @Override
+            public void accept(T t, Integer key) {
+                final int weight = key - totalWeight;
+                totalWeight += weight;
+                consumer.accept(t, weight);
+            }
+        });
     }
 }

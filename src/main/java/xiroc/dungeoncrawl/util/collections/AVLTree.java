@@ -13,21 +13,22 @@ public class AVLTree<T> {
         return root == null;
     }
 
-    public void traverseRecursively(BiConsumer<T, Integer> consumer) {
+    public void traverseInOrder(BiConsumer<T, Integer> consumer) {
         if (root == null) return;
-        traverseRecursively(consumer, root);
+        traverseInOrder(consumer, root);
     }
 
     /*
      * Only used in data gen, so no need for this to be particularly fast.
      */
-    private void traverseRecursively(BiConsumer<T, Integer> consumer, Node<T> node) {
+    private void traverseInOrder(BiConsumer<T, Integer> consumer, Node<T> node) {
+        if (node.left != null) {
+            traverseInOrder(consumer, node.left);
+        }
+        System.out.println("key=" + node.key);
         consumer.accept(node.value, node.key);
         if (node.right != null) {
-            traverseRecursively(consumer, node.right);
-        }
-        if (node.left != null) {
-            traverseRecursively(consumer, node.left);
+            traverseInOrder(consumer, node.right);
         }
     }
 

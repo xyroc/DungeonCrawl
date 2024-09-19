@@ -113,7 +113,7 @@ public interface IRandom<T> {
     Serializer<Delegate<SpawnerEntityType>> SPAWNER_ENTITY = Serializer.referenceOrInlined(
             DatapackRegistries.SPAWNER_ENTITY_TYPE,
             "entity",
-            (json) -> SpawnerSerializers.ENTITY_TYPES.fromJson(json, SpawnerEntityType.class),
+            (json) -> SpawnerSerializers.ENTITY_TYPES.fromJson(json, SpawnerEntityType.Builder.class).build(),
             SpawnerSerializers.ENTITY_TYPES::toJsonTree
     );
 

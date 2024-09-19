@@ -5,6 +5,7 @@ import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityProperties;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
@@ -18,11 +19,14 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface DatapackRegistries {
-    DatapackRegistry<SpawnerType> SPAWNER_TYPE = new DatapackRegistry<>(DatapackDirectories.SPAWNER_TYPES, none(),
-            (reader) -> SpawnerSerializers.SPAWNER_TYPES.fromJson(reader, SpawnerType.class));
+    DatapackRegistry<SpawnerType> SPAWNER_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.SPAWNER_TYPES, none(),
+            (reader) -> SpawnerSerializers.SPAWNER_TYPES.fromJson(reader, SpawnerType.Builder.class));
 
-    DatapackRegistry<SpawnerEntityType> SPAWNER_ENTITY_TYPE = new DatapackRegistry<>(DatapackDirectories.SPAWNER_ENTITIES, none(),
-            (reader) -> SpawnerSerializers.ENTITY_TYPES.fromJson(reader, SpawnerEntityType.class));
+    DatapackRegistry<SpawnerEntityType> SPAWNER_ENTITY_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.SPAWNER_ENTITIES, none(),
+            (reader) -> SpawnerSerializers.ENTITY_TYPES.fromJson(reader, SpawnerEntityType.Builder.class));
+
+    DatapackRegistry<SpawnerEntityProperties> SPAWNER_ENTITY_PROPERTIES = new InheritingDatapackRegistry<>(DatapackDirectories.SPAWNER_ENTITY_PROPERTIES, none(),
+            (reader) -> SpawnerSerializers.ENTITY_PROPERTIES.fromJson(reader, SpawnerEntityProperties.Builder.class));
 
     DatapackRegistry<PrimaryTheme> PRIMARY_THEME = new DatapackRegistry<>(DatapackDirectories.PRIMARY_THEMES, BuiltinThemes::registerPrimary,
             (reader) -> Themes.GSON.fromJson(reader, PrimaryTheme.class));

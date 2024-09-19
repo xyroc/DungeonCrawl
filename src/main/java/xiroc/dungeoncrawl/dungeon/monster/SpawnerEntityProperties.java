@@ -5,9 +5,11 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.world.item.Item;
+import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
@@ -23,68 +25,7 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                                       Optional<Float> handDropChance,
                                       Optional<Float> armorDropChance) {
 
-    public static class Serializer implements JsonSerializer<SpawnerEntityProperties>, JsonDeserializer<SpawnerEntityProperties> {
-        private static final String KEY_EQUIPMENT = "equipment";
-        private static final String KEY_EQUIPMENT_MAIN_HAND = "main_hand";
-        private static final String KEY_EQUIPMENT_OFF_HAND = "off_hand";
-        private static final String KEY_EQUIPMENT_HELMET = "helmet";
-        private static final String KEY_EQUIPMENT_CHESTPLATE = "chestplate";
-        private static final String KEY_EQUIPMENT_LEGGINGS = "leggings";
-        private static final String KEY_EQUIPMENT_BOOTS = "boots";
-        private static final String KEY_EQUIPMENT_DROP_CHANCES = "drop_chances";
-        private static final String KEY_EQUIPMENT_DROP_CHANCE_HAND = "hand";
-        private static final String KEY_EQUIPMENT_DROP_CHANCE_ARMOR = "armor";
-
-        @Override
-        public SpawnerEntityProperties deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            Builder builder = new Builder();
-            JsonObject object = json.getAsJsonObject();
-            if (object.has(KEY_EQUIPMENT)) {
-                JsonObject equipment = object.getAsJsonObject(KEY_EQUIPMENT);
-                builder.mainHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_MAIN_HAND, IRandom.ITEM::deserialize);
-                builder.offHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_OFF_HAND, IRandom.ITEM::deserialize);
-                builder.helmet = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_HELMET, IRandom.ITEM::deserialize);
-                builder.chestplate = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_CHESTPLATE, IRandom.ITEM::deserialize);
-                builder.leggings = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_LEGGINGS, IRandom.ITEM::deserialize);
-                builder.boots = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_BOOTS, IRandom.ITEM::deserialize);
-                if (equipment.has(KEY_EQUIPMENT_DROP_CHANCES)) {
-                    JsonObject dropChances = equipment.getAsJsonObject(KEY_EQUIPMENT_DROP_CHANCES);
-                    builder.handDropChance = JSONUtils.deserializeOrNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_HAND, JsonElement::getAsFloat);
-                    builder.armorDropChance = JSONUtils.deserializeOrNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_ARMOR, JsonElement::getAsFloat);
-                }
-            }
-            return builder.build();
-        }
-
-        @Override
-        public JsonElement serialize(SpawnerEntityProperties src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject properties = new JsonObject();
-            JsonObject equipment = new JsonObject();
-
-            src.mainHand.ifPresent(items -> equipment.add(KEY_EQUIPMENT_MAIN_HAND, IRandom.ITEM.serialize(items)));
-            src.offHand.ifPresent(items -> equipment.add(KEY_EQUIPMENT_OFF_HAND, IRandom.ITEM.serialize(items)));
-            src.helmet.ifPresent(items -> equipment.add(KEY_EQUIPMENT_HELMET, IRandom.ITEM.serialize(items)));
-            src.chestplate.ifPresent(items -> equipment.add(KEY_EQUIPMENT_CHESTPLATE, IRandom.ITEM.serialize(items)));
-            src.leggings.ifPresent(items -> equipment.add(KEY_EQUIPMENT_LEGGINGS, IRandom.ITEM.serialize(items)));
-            src.boots.ifPresent(items -> equipment.add(KEY_EQUIPMENT_BOOTS, IRandom.ITEM.serialize(items)));
-
-            JsonObject dropChances = new JsonObject();
-
-            src.handDropChance.ifPresent(chance -> dropChances.addProperty(KEY_EQUIPMENT_DROP_CHANCE_HAND, chance));
-            src.armorDropChance.ifPresent(chance -> dropChances.addProperty(KEY_EQUIPMENT_DROP_CHANCE_ARMOR, chance));
-
-            if (!dropChances.entrySet().isEmpty()) {
-                equipment.add(KEY_EQUIPMENT_DROP_CHANCES, dropChances);
-            }
-
-            if (!equipment.entrySet().isEmpty()) {
-                properties.add(KEY_EQUIPMENT, equipment);
-            }
-            return properties;
-        }
-    }
-
-    public static class Builder {
+    public static class Builder extends InheritingBuilder<SpawnerEntityProperties, Builder> {
         private IRandom<Item> mainHand = null;
         private IRandom<Item> offHand = null;
 
@@ -136,6 +77,21 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
             return this;
         }
 
+        @Override
+        public Builder inherit(Builder from) {
+            this.mainHand = InheritingBuilder.choose(this.mainHand, from.mainHand);
+            this.offHand = InheritingBuilder.choose(this.offHand, from.offHand);
+
+            this.helmet = InheritingBuilder.choose(this.helmet, from.helmet);
+            this.chestplate = InheritingBuilder.choose(this.chestplate, from.chestplate);
+            this.leggings = InheritingBuilder.choose(this.leggings, from.leggings);
+            this.boots = InheritingBuilder.choose(this.boots, from.boots);
+
+            this.handDropChance = InheritingBuilder.choose(this.handDropChance, from.handDropChance);
+            this.armorDropChance = InheritingBuilder.choose(this.armorDropChance, from.armorDropChance);
+            return this;
+        }
+
         public SpawnerEntityProperties build() {
             return new SpawnerEntityProperties(Optional.ofNullable(mainHand),
                     Optional.ofNullable(offHand),
@@ -145,6 +101,73 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                     Optional.ofNullable(boots),
                     Optional.ofNullable(handDropChance),
                     Optional.ofNullable(armorDropChance));
+        }
+    }
+
+    private interface SerializationKeys {
+        String KEY_EQUIPMENT = "equipment";
+        String KEY_EQUIPMENT_MAIN_HAND = "main_hand";
+        String KEY_EQUIPMENT_OFF_HAND = "off_hand";
+        String KEY_EQUIPMENT_HELMET = "helmet";
+        String KEY_EQUIPMENT_CHESTPLATE = "chestplate";
+        String KEY_EQUIPMENT_LEGGINGS = "leggings";
+        String KEY_EQUIPMENT_BOOTS = "boots";
+        String KEY_EQUIPMENT_DROP_CHANCES = "drop_chances";
+        String KEY_EQUIPMENT_DROP_CHANCE_HAND = "hand";
+        String KEY_EQUIPMENT_DROP_CHANCE_ARMOR = "armor";
+    }
+
+    public static class BuilderSerializer implements SerializationKeys, JsonSerializer<Builder>, JsonDeserializer<Builder> {
+        @Override
+        public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+            Builder builder = new Builder();
+            builder.deserializeBase(object);
+
+            if (object.has(KEY_EQUIPMENT)) {
+                JsonObject equipment = object.getAsJsonObject(KEY_EQUIPMENT);
+                builder.mainHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_MAIN_HAND, IRandom.ITEM::deserialize);
+                builder.offHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_OFF_HAND, IRandom.ITEM::deserialize);
+                builder.helmet = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_HELMET, IRandom.ITEM::deserialize);
+                builder.chestplate = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_CHESTPLATE, IRandom.ITEM::deserialize);
+                builder.leggings = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_LEGGINGS, IRandom.ITEM::deserialize);
+                builder.boots = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_BOOTS, IRandom.ITEM::deserialize);
+                if (equipment.has(KEY_EQUIPMENT_DROP_CHANCES)) {
+                    JsonObject dropChances = equipment.getAsJsonObject(KEY_EQUIPMENT_DROP_CHANCES);
+                    builder.handDropChance = JSONUtils.deserializeOrNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_HAND, JsonElement::getAsFloat);
+                    builder.armorDropChance = JSONUtils.deserializeOrNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_ARMOR, JsonElement::getAsFloat);
+                }
+            }
+            return builder;
+        }
+
+        @Override
+        public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
+            JsonObject properties = new JsonObject();
+            builder.serializeBase(properties);
+
+            JsonObject equipment = new JsonObject();
+
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_MAIN_HAND, builder.mainHand, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_OFF_HAND, builder.offHand, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_HELMET, builder.helmet, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_CHESTPLATE, builder.chestplate, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_LEGGINGS, builder.leggings, IRandom.ITEM::serialize);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_BOOTS, builder.boots, IRandom.ITEM::serialize);
+
+            JsonObject dropChances = new JsonObject();
+
+            JSONUtils.serializeIfNonNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_HAND, builder.handDropChance, JsonPrimitive::new);
+            JSONUtils.serializeIfNonNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_ARMOR, builder.armorDropChance, JsonPrimitive::new);
+
+            if (!dropChances.entrySet().isEmpty()) {
+                equipment.add(KEY_EQUIPMENT_DROP_CHANCES, dropChances);
+            }
+
+            if (!equipment.entrySet().isEmpty()) {
+                properties.add(KEY_EQUIPMENT, equipment);
+            }
+            return properties;
         }
     }
 }

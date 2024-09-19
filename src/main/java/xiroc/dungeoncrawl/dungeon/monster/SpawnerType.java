@@ -10,13 +10,18 @@ import com.google.gson.JsonSerializer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import xiroc.dungeoncrawl.config.Config;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
+import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
+import xiroc.dungeoncrawl.datapack.registry.InheritingDelegate;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,7 +29,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
-                          Optional<SpawnerEntityProperties> properties,
+                          Optional<Delegate<SpawnerEntityProperties>> properties,
                           RandomValue spawnAmount,
                           Range spawnDelay,
                           RandomValue initialSpawnDelay,
@@ -85,8 +90,8 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
 
         nbt.put("ArmorItems", armor);
 
-        var mainHand = property(entityType, SpawnerEntityProperties::mainHand);;
-        var offHand = property(entityType, SpawnerEntityProperties::offHand);;
+        var mainHand = property(entityType, SpawnerEntityProperties::mainHand);
+        var offHand = property(entityType, SpawnerEntityProperties::offHand);
 
         ListTag handItems = new ListTag();
 
@@ -115,78 +120,40 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
     }
 
     private <T> Optional<T> property(SpawnerEntityType entityType, Function<SpawnerEntityProperties, Optional<T>> mapper) {
-        return entityType.properties().flatMap(mapper).or(() -> properties.flatMap(mapper));
+        return entityType.properties().map(Delegate::get).flatMap(mapper).or(() -> properties.map(Delegate::get).flatMap(mapper));
     }
 
-    public static class Serializer implements JsonSerializer<SpawnerType>, JsonDeserializer<SpawnerType> {
-        private static final String KEY_ENTITIES = "entities";
-        private static final String KEY_ENTITY_PROPERTIES = "entity_properties";
-        private static final String KEY_SPAWN_AMOUNT = "amount";
-        private static final String KEY_SPAWN_DELAY = "delay";
-        private static final String KEY_INITIAL_SPAWN_DELAY = "initial_delay";
-        private static final String KEY_ACTIVATION_RANGE = "activation_range";
-        private static final String KEY_MAX_LIGHT_LEVEL = "max_light_level";
+    public static class Builder extends InheritingBuilder<SpawnerType, Builder> {
+        @Nullable
+        private IRandom.Builder<Delegate<SpawnerEntityType>> entities = null;
 
-        @Override
-        public SpawnerType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            Builder builder = new Builder();
-            JsonObject object = json.getAsJsonObject();
-            builder.entities = IRandom.SPAWNER_ENTITY.deserialize(object.get(KEY_ENTITIES));
-            builder.spawnAmount = context.deserialize(object.get(KEY_SPAWN_AMOUNT), RandomValue.class);
-            builder.spawnDelay = context.deserialize(object.get(KEY_SPAWN_DELAY), RandomValue.class);
-            if (object.has(KEY_INITIAL_SPAWN_DELAY)) {
-                builder.initialSpawnDelay = context.deserialize(object.get(KEY_INITIAL_SPAWN_DELAY), RandomValue.class);
-            } else {
-                builder.initialSpawnDelay = builder.spawnDelay;
-            }
-            if (object.has(KEY_ENTITY_PROPERTIES)) {
-                builder.properties = context.deserialize(object.get(KEY_ENTITY_PROPERTIES), SpawnerEntityProperties.class);
-            }
-            if (object.has(KEY_ACTIVATION_RANGE)) {
-                builder.activationRange = object.get(KEY_ACTIVATION_RANGE).getAsShort();
-            }
-            if (object.has(KEY_MAX_LIGHT_LEVEL)) {
-                builder.maxLightLevel = object.get(KEY_MAX_LIGHT_LEVEL).getAsInt();
-            }
-            return builder.build();
-        }
+        @Nullable
+        private InheritingDelegate<SpawnerEntityProperties, SpawnerEntityProperties.Builder> properties = null;
 
-        @Override
-        public JsonElement serialize(SpawnerType src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.add(KEY_ENTITIES, IRandom.SPAWNER_ENTITY.serialize(src.entities));
-            object.add(KEY_SPAWN_AMOUNT, context.serialize(src.spawnAmount));
-            object.add(KEY_SPAWN_DELAY, context.serialize(src.spawnDelay));
-            if (src.spawnDelay != src.initialSpawnDelay) {
-                object.add(KEY_INITIAL_SPAWN_DELAY, context.serialize(src.initialSpawnDelay));
-            }
-            src.properties.ifPresent(properties -> object.add(KEY_ENTITY_PROPERTIES, context.serialize(properties)));
-            if (src.activationRange > 0) {
-                object.addProperty(KEY_ACTIVATION_RANGE, src.activationRange);
-            }
-            if (src.maxLightLevel >= 0) {
-                object.addProperty(KEY_MAX_LIGHT_LEVEL, src.maxLightLevel);
-            }
-            return object;
-        }
-    }
-
-    public static class Builder {
-        private IRandom<Delegate<SpawnerEntityType>> entities = null;
-        private SpawnerEntityProperties properties = null;
+        @Nullable
         private RandomValue spawnAmount = null;
+
+        @Nullable
         private Range spawnDelay = null;
+
+        @Nullable
         private RandomValue initialSpawnDelay = null;
+
         private int maxLightLevel = -1;
         private short activationRange = 0;
 
-        public Builder entities(IRandom<Delegate<SpawnerEntityType>> entities) {
+        public Builder entities(IRandom.Builder<Delegate<SpawnerEntityType>> entities) {
             this.entities = entities;
             return this;
         }
 
-        public Builder defaultProperties(SpawnerEntityProperties properties) {
-            this.properties = properties;
+        public Builder defaultProperties(SpawnerEntityProperties.Builder properties) {
+            this.properties = InheritingDelegate.ofBuilder(properties);
+            return this;
+        }
+
+        public Builder defaultProperties(ResourceLocation properties) {
+            this.properties = InheritingDelegate.ofKey(properties);
             return this;
         }
 
@@ -214,7 +181,6 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
 
         public Builder activationRange(int activationRange) {
             // Accepting an int just to cast it to a short purely for convenience
-            // This is fine since these builder functions are only used for data gen
             if (activationRange < 0 || activationRange > Short.MAX_VALUE) {
                 throw new IllegalArgumentException("Invalid  spawner activation range: " + activationRange);
             }
@@ -222,12 +188,69 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
             return this;
         }
 
+        @Override
+        public Builder inherit(Builder from) {
+            entities = InheritingBuilder.inheritOrReplaceOrChoose(entities, from.entities);
+            properties = InheritingDelegate.inheritOrChoose(properties, from.properties);
+            spawnAmount = choose(spawnAmount, from.spawnAmount);
+            spawnDelay = choose(spawnDelay, from.spawnDelay);
+            initialSpawnDelay = choose(initialSpawnDelay, from.initialSpawnDelay);
+            if (maxLightLevel < 0) {
+                maxLightLevel = from.maxLightLevel;
+            }
+            if (activationRange <= 0) {
+                activationRange = from.activationRange;
+            }
+            return this;
+        }
+
         public SpawnerType build() {
             Objects.requireNonNull(this.entities, "Cannot create a spawner type without spawner entities");
             Objects.requireNonNull(this.spawnAmount, "Cannot create a spawner type without a set spawn amount");
             Objects.requireNonNull(this.spawnDelay, "Cannot create a spawner type without a set spawn delay");
-            Objects.requireNonNull(this.initialSpawnDelay, "Cannot create a spawner type without a set initial spawn delay.");
-            return new SpawnerType(entities, Optional.ofNullable(properties), spawnAmount, spawnDelay, initialSpawnDelay, maxLightLevel, activationRange);
+            final var initialSpawnDelay = this.initialSpawnDelay != null ? this.initialSpawnDelay : spawnDelay;
+            final var properties = Optional.ofNullable(this.properties).map(prop -> prop.transform(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES));
+            return new SpawnerType(entities.build(), properties, spawnAmount, spawnDelay, initialSpawnDelay, maxLightLevel, activationRange);
+        }
+    }
+
+    private interface SerializationKeys {
+        String KEY_ENTITIES = "entities";
+        String KEY_ENTITY_PROPERTIES = "entity_properties";
+        String KEY_SPAWN_AMOUNT = "amount";
+        String KEY_SPAWN_DELAY = "delay";
+        String KEY_INITIAL_SPAWN_DELAY = "initial_delay";
+        String KEY_ACTIVATION_RANGE = "activation_range";
+        String KEY_MAX_LIGHT_LEVEL = "max_light_level";
+    }
+
+    public static class BuilderSerializer implements SerializationKeys, JsonSerializer<Builder>, JsonDeserializer<Builder> {
+        @Override
+        public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+            Builder builder = new Builder();
+            builder.deserializeBase(object);
+            if (object.has(KEY_ENTITIES)) builder.entities = IRandom.SPAWNER_ENTITY.deserializeBuilder(object.get(KEY_ENTITIES));
+            if (object.has(KEY_SPAWN_AMOUNT)) builder.spawnAmount = context.deserialize(object.get(KEY_SPAWN_AMOUNT), RandomValue.class);
+            if (object.has(KEY_SPAWN_DELAY)) builder.spawnDelay = context.deserialize(object.get(KEY_SPAWN_DELAY), RandomValue.class);
+            if (object.has(KEY_INITIAL_SPAWN_DELAY)) builder.initialSpawnDelay = context.deserialize(object.get(KEY_INITIAL_SPAWN_DELAY), RandomValue.class);
+            if (object.has(KEY_ENTITY_PROPERTIES)) builder.properties = context.deserialize(object.get(KEY_ENTITY_PROPERTIES), SpawnerEntityProperties.class);
+            if (object.has(KEY_ACTIVATION_RANGE)) builder.activationRange = object.get(KEY_ACTIVATION_RANGE).getAsShort();
+            if (object.has(KEY_MAX_LIGHT_LEVEL)) builder.maxLightLevel = object.get(KEY_MAX_LIGHT_LEVEL).getAsInt();
+            return builder;
+        }
+
+        @Override
+        public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            builder.serializeBase(object);
+            if (builder.entities != null) object.add(KEY_ENTITIES, IRandom.SPAWNER_ENTITY.serializeBuilder(builder.entities));
+            if (builder.spawnAmount != null) object.add(KEY_SPAWN_AMOUNT, context.serialize(builder.spawnAmount));
+            if (builder.spawnDelay != null) object.add(KEY_SPAWN_DELAY, context.serialize(builder.spawnDelay));
+            if (builder.initialSpawnDelay != null) object.add(KEY_INITIAL_SPAWN_DELAY, context.serialize(builder.initialSpawnDelay));
+            if (builder.properties != null) object.add(KEY_ENTITY_PROPERTIES, builder.properties.serialize(context::serialize));
+            if (builder.maxLightLevel >= 0) object.addProperty(KEY_MAX_LIGHT_LEVEL, builder.maxLightLevel);
+            return object;
         }
     }
 }

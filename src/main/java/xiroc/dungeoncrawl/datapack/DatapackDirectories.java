@@ -21,6 +21,7 @@ public interface DatapackDirectories {
     Directory SPAWNER = BASE.subdirectory("spawner");
     Directory SPAWNER_TYPES = SPAWNER.subdirectory("types");
     Directory SPAWNER_ENTITIES = SPAWNER.subdirectory("entities");
+    Directory SPAWNER_ENTITY_PROPERTIES = SPAWNER.subdirectory("profiles");
     Directory SPAWNER_EQUIPMENT = SPAWNER.subdirectory("equipment");
     Directory SPAWNER_EQUIPMENT_WEAPON = SPAWNER_EQUIPMENT.subdirectory("weapon");
     Directory SPAWNER_EQUIPMENT_ARMOR = SPAWNER_EQUIPMENT.subdirectory("armor");
@@ -63,6 +64,5 @@ public interface DatapackDirectories {
         public String path() {
             return path;
         }
-
     }
 }

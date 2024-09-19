@@ -10,15 +10,17 @@ public interface SpawnerSerializers {
     Gson SPAWNER_TYPES = createSpawnerTypeSerializer().create();
 
     private static GsonBuilder createEntityPropertiesSerializer() {
-        return new GsonBuilder().registerTypeAdapter(SpawnerEntityProperties.class, new SpawnerEntityProperties.Serializer());
+        return new GsonBuilder()
+                .registerTypeAdapter(SpawnerEntityProperties.Builder.class, new SpawnerEntityProperties.BuilderSerializer());
     }
 
     private static GsonBuilder createEntityTypeSerializer() {
-        return createEntityPropertiesSerializer().registerTypeAdapter(SpawnerEntityType.class, new SpawnerEntityType.Serializer());
+        return createEntityPropertiesSerializer()
+                .registerTypeAdapter(SpawnerEntityType.Builder.class, new SpawnerEntityType.BuilderSerializer());
     }
 
     private static GsonBuilder createSpawnerTypeSerializer() {
         return RandomValue.gsonAdapters(createEntityTypeSerializer())
-                .registerTypeAdapter(SpawnerType.class, new SpawnerType.Serializer());
+                .registerTypeAdapter(SpawnerType.Builder.class, new SpawnerType.BuilderSerializer());
     }
 }

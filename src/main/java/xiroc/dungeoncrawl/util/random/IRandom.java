@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
+import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
@@ -49,7 +50,7 @@ import java.util.function.Function;
 public interface IRandom<T> {
     T roll(Random rand);
 
-    class Builder<T> {
+    class Builder<T> extends InheritingBuilder<IRandom<T>, Builder<T>> {
         private final List<Tuple<T, Integer>> entries = new ArrayList<>();
 
         public Builder<T> add(T value) {
@@ -66,6 +67,23 @@ public interface IRandom<T> {
             return this;
         }
 
+        public Builder<T> add(IRandom<T> random) {
+            if (random instanceof SingleValueRandom<T> singleValueRandom) {
+                add(singleValueRandom.value());
+            } else if (random instanceof WeightedRandom<T> weightedRandom) {
+                weightedRandom.forEach(this::add);
+            } else {
+                throw new IllegalArgumentException("Unsupported IRandom type: " + random.getClass());
+            }
+            return this;
+        }
+
+        @Override
+        public Builder<T> inherit(Builder<T> from) {
+            return add(from);
+        }
+
+        @Override
         public IRandom<T> build() {
             if (entries.isEmpty()) {
                 throw new IllegalStateException("Cannot build an empty IRandom instance");
@@ -74,9 +92,9 @@ public interface IRandom<T> {
                 return new SingleValueRandom<>(entries.get(0).getA());
             }
             if (entries.size() < 32) {
-                return new ListWeightedRandom<>(entries);
+                return new ListWeightedRandom<T>(entries);
             }
-            return new AVLTreeWeightedRandom<>(entries);
+            return new AVLTreeWeightedRandom<T>(entries);
         }
     }
 
@@ -150,14 +168,22 @@ public interface IRandom<T> {
             }
         }
 
-        public IRandom<T> deserialize(JsonElement json) {
+        public IRandom.Builder<T> deserializeBuilder(JsonElement json) {
+            Builder<T> builder = new Builder<>();
             if (!json.isJsonArray()) {
-                return new SingleValueRandom<>(deserializer.apply(json));
+                builder.add(deserializer.apply(json));
             } else {
-                IRandom.Builder<T> builder = new Builder<>();
                 deserializePartial(json, builder);
-                return builder.build();
             }
+            return builder;
+        }
+
+        public IRandom<T> deserialize(JsonElement json) {
+            return deserializeBuilder(json).build();
+        }
+
+        public JsonElement serializeBuilder(Builder<T> builder) {
+            return serialize(builder.build());
         }
 
         public JsonElement serialize(IRandom<T> random) {
@@ -180,7 +206,7 @@ public interface IRandom<T> {
                 });
                 return entries;
             } else {
-                throw new IllegalArgumentException("Unsupported random type: " + random.getClass());
+                throw new IllegalArgumentException("Unsupported IRandom type: " + random.getClass());
             }
         }
     }

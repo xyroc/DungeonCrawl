@@ -36,6 +36,17 @@ public record SpawnerEntityType(ResourceLocation entity, Optional<Delegate<Spawn
         @Nullable
         private InheritingDelegate<SpawnerEntityProperties, SpawnerEntityProperties.Builder> properties = null;
 
+        public Builder copy(SpawnerEntityType spawnerEntityType) {
+            this.entity = spawnerEntityType.entity;
+            this.properties = spawnerEntityType.properties.map(delegate -> {
+               if (delegate.hasKey()) {
+                   return InheritingDelegate.<SpawnerEntityProperties, SpawnerEntityProperties.Builder>ofKey(delegate.key());
+               }
+               return InheritingDelegate.ofBuilder(new SpawnerEntityProperties.Builder().copy(delegate.get()));
+            }).orElse(null);
+            return this;
+        }
+
         public Builder entity(@Nullable ResourceLocation entity) {
             this.entity = entity;
             return this;

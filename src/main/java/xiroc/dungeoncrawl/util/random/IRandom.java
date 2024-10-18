@@ -41,6 +41,7 @@ import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -51,10 +52,12 @@ public interface IRandom<T> {
     T roll(Random rand);
 
     class Builder<T> extends InheritingBuilder<IRandom<T>, Builder<T>> {
+        private static final int DEFAULT_WEIGHT = 1;
+
         private final List<Tuple<T, Integer>> entries = new ArrayList<>();
 
         public Builder<T> add(T value) {
-            return add(value, 1);
+            return add(value, DEFAULT_WEIGHT);
         }
 
         public Builder<T> add(T value, int weight) {
@@ -114,7 +117,7 @@ public interface IRandom<T> {
             DatapackRegistries.SPAWNER_ENTITY_TYPE,
             "entity",
             (json) -> SpawnerSerializers.ENTITY_TYPES.fromJson(json, SpawnerEntityType.Builder.class).build(),
-            SpawnerSerializers.ENTITY_TYPES::toJsonTree
+            (type) -> SpawnerSerializers.ENTITY_TYPES.toJsonTree(new SpawnerEntityType.Builder().copy(type))
     );
 
     Serializer<Delegate<SpawnerType>> SPAWNER_TYPE = Serializer.reference(DatapackRegistries.SPAWNER_TYPE, "type");
@@ -162,7 +165,7 @@ public interface IRandom<T> {
             } else {
                 for (JsonElement element : json.getAsJsonArray()) {
                     JsonObject object = element.getAsJsonObject();
-                    int weight = object.has(KEY_WEIGHT) ? object.get(KEY_WEIGHT).getAsInt() : 1;
+                    int weight = object.has(KEY_WEIGHT) ? object.get(KEY_WEIGHT).getAsInt() : Builder.DEFAULT_WEIGHT;
                     builder.add(deserializer.apply(object.get(valueKey)), weight);
                 }
             }
@@ -200,7 +203,9 @@ public interface IRandom<T> {
                 JsonArray entries = new JsonArray();
                 weightedRandom.forEach((value, weight) -> {
                     JsonObject entry = new JsonObject();
-                    entry.addProperty(KEY_WEIGHT, weight);
+                    if (weight != Builder.DEFAULT_WEIGHT) {
+                        entry.addProperty(KEY_WEIGHT, weight);
+                    }
                     entry.add(valueKey, serializer.apply(value));
                     entries.add(entry);
                 });

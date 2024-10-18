@@ -37,6 +37,18 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
         private Float armorDropChance = null;
         private Float handDropChance = null;
 
+        public Builder copy(SpawnerEntityProperties properties) {
+            this.mainHand = properties.mainHand().orElse(null);
+            this.offHand = properties.offHand().orElse(null);
+            this.helmet = properties.helmet().orElse(null);
+            this.chestplate = properties.chestplate().orElse(null);
+            this.leggings = properties.leggings().orElse(null);
+            this.boots = properties.boots().orElse(null);
+            this.armorDropChance = properties.armorDropChance().orElse(null);
+            this.handDropChance = properties.handDropChance().orElse(null);
+            return this;
+        }
+
         public Builder mainHand(IRandom<Item> mainHand) {
             this.mainHand = mainHand;
             return this;

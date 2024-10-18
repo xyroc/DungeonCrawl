@@ -31,7 +31,7 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
+import xiroc.dungeoncrawl.dungeon.monster.EquipmentHelper;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
@@ -99,8 +99,8 @@ public interface IRandom<T> {
     }
 
     Serializer<Item> ITEM = new Serializer<>(
-            (json) -> RandomEquipment.getItem(new ResourceLocation(json.getAsString())),
-            (item) -> new JsonPrimitive(item.getRegistryName().toString()),
+            (json) -> EquipmentHelper.getItem(new ResourceLocation(json.getAsString())),
+            (item) -> new JsonPrimitive(Objects.requireNonNull(item.getRegistryName()).toString()),
             "item"
     );
 

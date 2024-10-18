@@ -23,14 +23,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.util.Random;
 
-public class RandomEquipment {
-    public static ItemStack createItemStack(Item item, Random rand, int stage) {
+public class EquipmentHelper {
+    public static ItemStack enchantAndDamage(Item item, Random rand, int stage) {
         ItemStack itemStack = EnchantmentHelper.enchantItem(rand, new ItemStack(item), 10 + 3 * stage, false);
         if (itemStack.isDamageableItem()) {
             itemStack.setDamageValue(rand.nextInt(Math.max(1, item.getMaxDamage(itemStack) / 2)));
@@ -39,7 +40,7 @@ public class RandomEquipment {
     }
 
     public static ItemStack createArmorPiece(Item item, Random random, int stage) {
-        ItemStack armorPiece = createItemStack(item, random, stage);
+        ItemStack armorPiece = enchantAndDamage(item, random, stage);
         if (item instanceof DyeableArmorItem) {
             CompoundTag nbt = armorPiece.getOrCreateTag();
             CompoundTag display = nbt.getCompound("display");
@@ -50,9 +51,11 @@ public class RandomEquipment {
     }
 
     public static Item getItem(ResourceLocation resourceLocation) {
-        if (ForgeRegistries.ITEMS.containsKey(resourceLocation))
-            return ForgeRegistries.ITEMS.getValue(resourceLocation);
-        DungeonCrawl.LOGGER.warn("Failed to get {} from the item registry.", resourceLocation.toString());
-        return null;
+        final var item = ForgeRegistries.ITEMS.getValue(resourceLocation);
+        if (item == null) {
+            DungeonCrawl.LOGGER.warn("Could not find the item {}.", resourceLocation.toString());
+            return Items.AIR;
+        }
+        return item;
     }
 }

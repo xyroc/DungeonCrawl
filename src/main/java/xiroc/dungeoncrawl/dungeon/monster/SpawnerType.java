@@ -83,10 +83,10 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
 
         ListTag armor = new ListTag();
 
-        armor.add(boots.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
-        armor.add(leggings.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
-        armor.add(chestplate.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
-        armor.add(helmet.map(items -> RandomEquipment.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        armor.add(boots.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        armor.add(leggings.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        armor.add(chestplate.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        armor.add(helmet.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
 
         nbt.put("ArmorItems", armor);
 
@@ -95,8 +95,8 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
 
         ListTag handItems = new ListTag();
 
-        handItems.add(mainHand.map(items -> RandomEquipment.createItemStack(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
-        handItems.add(offHand.map(items -> RandomEquipment.createItemStack(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        handItems.add(mainHand.map(items -> EquipmentHelper.enchantAndDamage(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
+        handItems.add(offHand.map(items -> EquipmentHelper.enchantAndDamage(items.roll(random), random, stage)).orElse(ItemStack.EMPTY).save(new CompoundTag()));
 
         nbt.put("HandItems", handItems);
     }

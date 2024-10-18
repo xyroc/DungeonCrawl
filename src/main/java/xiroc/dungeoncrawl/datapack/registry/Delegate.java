@@ -59,6 +59,14 @@ public class Delegate<T> implements Supplier<T> {
         return key;
     }
 
+    public boolean hasValue() {
+        return value != null;
+    }
+
+    public boolean hasKey() {
+        return key != null;
+    }
+
     public JsonElement serialize(Function<T, JsonElement> serializer) {
         if (key != null) {
             return new JsonPrimitive(key.toString());

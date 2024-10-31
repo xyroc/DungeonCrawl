@@ -233,7 +233,8 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
             if (object.has(KEY_SPAWN_AMOUNT)) builder.spawnAmount = context.deserialize(object.get(KEY_SPAWN_AMOUNT), RandomValue.class);
             if (object.has(KEY_SPAWN_DELAY)) builder.spawnDelay = context.deserialize(object.get(KEY_SPAWN_DELAY), RandomValue.class);
             if (object.has(KEY_INITIAL_SPAWN_DELAY)) builder.initialSpawnDelay = context.deserialize(object.get(KEY_INITIAL_SPAWN_DELAY), RandomValue.class);
-            if (object.has(KEY_ENTITY_PROPERTIES)) builder.properties = context.deserialize(object.get(KEY_ENTITY_PROPERTIES), SpawnerEntityProperties.class);
+            if (object.has(KEY_ENTITY_PROPERTIES)) builder.properties = InheritingDelegate.ofBuilder(
+                    context.<SpawnerEntityProperties.Builder>deserialize(object.get(KEY_ENTITY_PROPERTIES), SpawnerEntityProperties.Builder.class));
             if (object.has(KEY_ACTIVATION_RANGE)) builder.activationRange = object.get(KEY_ACTIVATION_RANGE).getAsShort();
             if (object.has(KEY_MAX_LIGHT_LEVEL)) builder.maxLightLevel = object.get(KEY_MAX_LIGHT_LEVEL).getAsInt();
             return builder;

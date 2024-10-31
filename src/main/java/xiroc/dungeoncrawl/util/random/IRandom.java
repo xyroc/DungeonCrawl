@@ -89,7 +89,7 @@ public interface IRandom<T> {
         @Override
         public IRandom<T> build() {
             if (entries.isEmpty()) {
-                throw new IllegalStateException("Cannot build an empty IRandom instance");
+                throw new IllegalStateException("Need at least one entry");
             }
             if (entries.size() == 1) {
                 return new SingleValueRandom<>(entries.get(0).getA());

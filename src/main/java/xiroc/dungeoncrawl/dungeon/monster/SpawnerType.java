@@ -227,9 +227,8 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
     public static class BuilderSerializer implements SerializationKeys, JsonSerializer<Builder>, JsonDeserializer<Builder> {
         @Override
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
             Builder builder = new Builder();
-            builder.deserializeBase(object);
+            JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_ENTITIES)) builder.entities = IRandom.SPAWNER_ENTITY.deserializeBuilder(object.get(KEY_ENTITIES));
             if (object.has(KEY_SPAWN_AMOUNT)) builder.spawnAmount = context.deserialize(object.get(KEY_SPAWN_AMOUNT), RandomValue.class);
             if (object.has(KEY_SPAWN_DELAY)) builder.spawnDelay = context.deserialize(object.get(KEY_SPAWN_DELAY), RandomValue.class);
@@ -243,7 +242,6 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
         @Override
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            builder.serializeBase(object);
             if (builder.entities != null) object.add(KEY_ENTITIES, IRandom.SPAWNER_ENTITY.serializeBuilder(builder.entities));
             if (builder.spawnAmount != null) object.add(KEY_SPAWN_AMOUNT, context.serialize(builder.spawnAmount));
             if (builder.spawnDelay != null) object.add(KEY_SPAWN_DELAY, context.serialize(builder.spawnDelay));

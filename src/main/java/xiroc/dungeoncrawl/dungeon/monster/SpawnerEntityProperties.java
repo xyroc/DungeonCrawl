@@ -132,10 +132,8 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
     public static class BuilderSerializer implements SerializationKeys, JsonSerializer<Builder>, JsonDeserializer<Builder> {
         @Override
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
             Builder builder = new Builder();
-            builder.deserializeBase(object);
-
+            JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_EQUIPMENT)) {
                 JsonObject equipment = object.getAsJsonObject(KEY_EQUIPMENT);
                 builder.mainHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_MAIN_HAND, IRandom.ITEM::deserialize);
@@ -156,8 +154,6 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
         @Override
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
             JsonObject properties = new JsonObject();
-            builder.serializeBase(properties);
-
             JsonObject equipment = new JsonObject();
 
             JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_MAIN_HAND, builder.mainHand, IRandom.ITEM::serialize);

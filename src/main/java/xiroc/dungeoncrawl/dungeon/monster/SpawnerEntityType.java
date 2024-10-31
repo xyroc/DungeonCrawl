@@ -82,9 +82,8 @@ public record SpawnerEntityType(ResourceLocation entity, Optional<Delegate<Spawn
 
         @Override
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
             Builder builder = new Builder();
-            builder.deserializeBase(object);
+            JsonObject object = json.getAsJsonObject();
             builder.entity = new ResourceLocation(object.get(KEY_ENTITY_TYPE).getAsString());
             if (object.has(KEY_PROPERTIES)) {
                 builder.properties = InheritingDelegate.deserialize(object.get(KEY_PROPERTIES), (properties) -> SpawnerSerializers.ENTITY_PROPERTIES.fromJson(properties, SpawnerEntityProperties.Builder.class));
@@ -95,7 +94,6 @@ public record SpawnerEntityType(ResourceLocation entity, Optional<Delegate<Spawn
         @Override
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            builder.serializeBase(object);
             object.addProperty(KEY_ENTITY_TYPE, Objects.requireNonNull(builder.entity).toString());
             if (builder.properties != null) {
                 object.add(KEY_PROPERTIES, builder.properties.serialize(SpawnerSerializers.ENTITY_PROPERTIES::toJsonTree));

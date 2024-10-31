@@ -159,7 +159,8 @@ public interface IRandom<T> {
             this.valueKey = valueKey;
         }
 
-        public void deserializePartial(JsonElement json, IRandom.Builder<T> builder) {
+        public IRandom.Builder<T> deserializeBuilder(JsonElement json) {
+            Builder<T> builder = new Builder<>();
             if (!json.isJsonArray()) {
                 builder.add(deserializer.apply(json));
             } else {
@@ -168,15 +169,6 @@ public interface IRandom<T> {
                     int weight = object.has(KEY_WEIGHT) ? object.get(KEY_WEIGHT).getAsInt() : Builder.DEFAULT_WEIGHT;
                     builder.add(deserializer.apply(object.get(valueKey)), weight);
                 }
-            }
-        }
-
-        public IRandom.Builder<T> deserializeBuilder(JsonElement json) {
-            Builder<T> builder = new Builder<>();
-            if (!json.isJsonArray()) {
-                builder.add(deserializer.apply(json));
-            } else {
-                deserializePartial(json, builder);
             }
             return builder;
         }

@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.datapack.registry;
 
+import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
@@ -12,8 +13,10 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
+import xiroc.dungeoncrawl.dungeon.theme.ThemeSerializers;
 import xiroc.dungeoncrawl.dungeon.type.LevelType;
+import xiroc.dungeoncrawl.util.random.IRandom;
+import xiroc.dungeoncrawl.util.random.RandomMapping;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -29,10 +32,16 @@ public interface DatapackRegistries {
             (reader) -> SpawnerSerializers.ENTITY_PROPERTIES.fromJson(reader, SpawnerEntityProperties.Builder.class));
 
     DatapackRegistry<PrimaryTheme> PRIMARY_THEME = new DatapackRegistry<>(DatapackDirectories.PRIMARY_THEMES, BuiltinThemes::registerPrimary,
-            (reader) -> Themes.GSON.fromJson(reader, PrimaryTheme.class));
+            (reader) -> ThemeSerializers.GSON.fromJson(reader, PrimaryTheme.class));
 
     DatapackRegistry<SecondaryTheme> SECONDARY_THEME = new DatapackRegistry<>(DatapackDirectories.SECONDARY_THEMES, BuiltinThemes::registerSecondary,
-            (reader) -> Themes.GSON.fromJson(reader, SecondaryTheme.class));
+            (reader) -> ThemeSerializers.GSON.fromJson(reader, SecondaryTheme.class));
+
+    DatapackRegistry<RandomMapping<ResourceLocation, PrimaryTheme>> PRIMARY_THEME_MAPPINGS = new InheritingDatapackRegistry<>(DatapackDirectories.PRIMARY_THEME_MAPPINGS, none(),
+            (reader) -> new RandomMapping.Builder<ResourceLocation, PrimaryTheme>().deserialize(JsonParser.parseReader(reader), IRandom.PRIMARY_THEME, ResourceLocation::new));
+
+    DatapackRegistry<RandomMapping<ResourceLocation, SecondaryTheme>> SECONDARY_THEME_MAPPINGS = new InheritingDatapackRegistry<>(DatapackDirectories.SECONDARY_THEME_MAPPINGS, none(),
+            (reader) -> new RandomMapping.Builder<ResourceLocation, SecondaryTheme>().deserialize(JsonParser.parseReader(reader), IRandom.SECONDARY_THEME, ResourceLocation::new));
 
     DatapackRegistry<Blueprint> BLUEPRINT = new DatapackRegistry<>(DatapackDirectories.BLUEPRINTS, BuiltinBlueprints::register, TemplateBlueprint::load);
 

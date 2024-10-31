@@ -26,7 +26,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -36,6 +35,8 @@ public class ResourceReloadHandler implements PreparableReloadListener {
     private static final ImmutableList<DatapackRegistry<?>> REGISTRIES = ImmutableList.<DatapackRegistry<?>>builder()
             .add(DatapackRegistries.PRIMARY_THEME)
             .add(DatapackRegistries.SECONDARY_THEME)
+            .add(DatapackRegistries.PRIMARY_THEME_MAPPINGS)
+            .add(DatapackRegistries.SECONDARY_THEME_MAPPINGS)
             .add(DatapackRegistries.SPAWNER_ENTITY_TYPE)
             .add(DatapackRegistries.SPAWNER_TYPE)
             .add(DatapackRegistries.BLUEPRINT)
@@ -44,8 +45,6 @@ public class ResourceReloadHandler implements PreparableReloadListener {
     public void reload(ResourceManager resourceManager) {
         REGISTRIES.forEach(DatapackRegistry::unload);
         REGISTRIES.forEach(registry -> registry.reload(resourceManager));
-
-        Themes.load(resourceManager);
 
         final var statistics = REGISTRIES.stream().collect(Collectors.summarizingInt(DatapackRegistry::entryCount));
         DungeonCrawl.LOGGER.info("Loaded {} registries with a total of {} data entries.", statistics.getCount(), statistics.getSum());

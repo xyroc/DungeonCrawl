@@ -5,10 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
+import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.util.HashMap;
 import java.util.Random;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class RandomMapping<K, V> {
@@ -19,9 +20,19 @@ public class RandomMapping<K, V> {
     private final ImmutableMap<K, IRandom<Delegate<V>>> entries;
 
     private RandomMapping(Builder<K, V> builder) {
-        this.fallback = builder.fallback.build();
+        try {
+            this.fallback = builder.fallback.build();
+        } catch (Exception e) {
+            throw new DatapackLoadException("Invalid fallback: " + e.getMessage());
+        }
         ImmutableMap.Builder<K, IRandom<Delegate<V>>> entries = ImmutableMap.builder();
-        builder.entries.forEach((key, value) -> entries.put(key, value.build()));
+        builder.entries.forEach((key, value) -> {
+            try {
+                entries.put(key, value.build());
+            } catch (Exception e) {
+                throw new DatapackLoadException("Invalid entry with key '" + key + "': " + e.getMessage());
+            }
+        });
         this.entries = entries.build();
     }
 
@@ -30,10 +41,6 @@ public class RandomMapping<K, V> {
             return fallback.roll(random).get();
         }
         return entries.getOrDefault(key, fallback).roll(random).get();
-    }
-
-    public void validate(Consumer<String> errorHandler) {
-        // TODO
     }
 
     public static <K, V> JsonElement serialize(RandomMapping<K, V> mapping, Function<K, String> keySerializer, IRandom.Serializer<Delegate<V>> serializer) {
@@ -45,9 +52,9 @@ public class RandomMapping<K, V> {
         return object;
     }
 
-    public static class Builder<K, V> {
-        private final IRandom.Builder<Delegate<V>> fallback = new IRandom.Builder<>();
-        private final HashMap<K, IRandom.Builder<Delegate<V>>> entries = new HashMap<>();
+    public static class Builder<K, V> extends InheritingBuilder<RandomMapping<K, V>, Builder<K, V>> {
+        private IRandom.Builder<Delegate<V>> fallback = new IRandom.Builder<>();
+        private HashMap<K, IRandom.Builder<Delegate<V>>> entries = new HashMap<>();
 
         private IRandom.Builder<Delegate<V>> get(K key) {
             return this.entries.computeIfAbsent(key, (k) -> new IRandom.Builder<>());
@@ -63,14 +70,37 @@ public class RandomMapping<K, V> {
             return this;
         }
 
-        public Builder<K, V> deserialize(JsonElement file, IRandom.Serializer<Delegate<V>> serializer, Function<String, K> keyProvider) {
-            JsonObject object = file.getAsJsonObject();
+        public Builder<K, V> deserialize(JsonElement json, IRandom.Serializer<Delegate<V>> serializer, Function<String, K> keyProvider) {
+            JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_FALLBACK)) {
-                serializer.deserializePartial(object.get(KEY_FALLBACK), this.fallback);
+                this.fallback = serializer.deserializeBuilder(object.get(KEY_FALLBACK));
             }
             if (object.has(KEY_MAPPING)) {
                 JsonObject mapping = object.getAsJsonObject(KEY_MAPPING);
-                mapping.entrySet().forEach((entry) -> serializer.deserializePartial(entry.getValue(), get(keyProvider.apply(entry.getKey()))));
+                mapping.entrySet().forEach((entry) -> {
+                    final var key = keyProvider.apply(entry.getKey());
+                    this.entries.put(key, serializer.deserializeBuilder(entry.getValue()));
+                });
+            }
+            return this;
+        }
+
+        @Override
+        public Builder<K, V> inherit(Builder<K, V> from) {
+            this.fallback = inheritOrReplace(this.fallback, from.fallback);
+            if (from.replace()) {
+                this.entries = from.entries;
+            } else {
+                from.entries.forEach((key, value) -> {
+                    if (value == null) {
+                        return;
+                    }
+                    if (value.replace()) {
+                        this.entries.put(key, value);
+                    } else {
+                        this.entries.get(key).inherit(value);
+                    }
+                });
             }
             return this;
         }

@@ -56,6 +56,10 @@ public interface IRandom<T> {
 
         private final List<Tuple<T, Integer>> entries = new ArrayList<>();
 
+        public static<T> Builder<T> copy(IRandom<T> instance) {
+            return new Builder<T>().add(instance);
+        }
+
         public Builder<T> add(T value) {
             return add(value, DEFAULT_WEIGHT);
         }

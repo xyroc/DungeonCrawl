@@ -25,14 +25,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
 public class LevelGeneratorSettings {
-    private static final int DEFAULT_MAX_ROOMS = 16;
-    private static final int DEFAULT_MIN_SEPARATION = 10;
     private static final int DEFAULT_MAX_CLUSTER_NODES = 0;
 
     /**
@@ -64,64 +65,44 @@ public class LevelGeneratorSettings {
     /**
      * The minimum and maximum length of corridors between rooms.
      */
-    public final Range corridorLength;
+    public final RandomValue corridorLength;
 
-    public LevelGeneratorSettings(Builder builder) {
-        this.maxRooms = builder.maxRooms;
-        this.maxClusterNodes = builder.maxClusterNodes;
-        this.maxDepth = builder.maxDepth;
-        this.minStaircaseDepth = builder.minStaircaseDepth;
-        this.minSeparation = builder.minSeparation;
-        this.corridorLength = builder.corridorLength;
+    private LevelGeneratorSettings(Builder builder) {
+        this.maxRooms = Objects.requireNonNull(builder.maxRooms, "No maximum amount of rooms was specified");
+        this.maxClusterNodes = Objects.requireNonNullElse(builder.maxClusterNodes, DEFAULT_MAX_CLUSTER_NODES);
+        this.maxDepth = Objects.requireNonNull(builder.maxDepth, "No maximum generation depth was specified");
+        this.minStaircaseDepth = Objects.requireNonNull(builder.minStaircaseDepth, "No minimum staircase depth was specified");
+        this.minSeparation = Objects.requireNonNull(builder.minSeparation, "No minimum separation was specified");
+        this.corridorLength = Objects.requireNonNull(builder.corridorLength, "No corridor length was specified");
     }
 
-    public static class Serializer implements JsonSerializer<LevelGeneratorSettings>, JsonDeserializer<LevelGeneratorSettings> {
-        private static final String KEY_MAX_ROOMS = "max_rooms";
-        private static final String KEY_MAX_CLUSTER_NODES = "max_cluster_nodes";
-        private static final String KEY_MAX_GENERATION_DEPTH = "max_generation_depth";
-        private static final String KEY_MIN_STAIRCASE_DEPTH = "min_staircase_depth";
-        private static final String KEY_MIN_SEPARATION = "min_separation";
-
-        @Override
-        public LevelGeneratorSettings deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            Builder builder = new Builder();
-            JsonObject object = json.getAsJsonObject();
-            builder.maxRooms = object.get(KEY_MAX_ROOMS).getAsInt();
-            builder.maxClusterNodes = object.has(KEY_MAX_CLUSTER_NODES) ? object.get(KEY_MAX_CLUSTER_NODES).getAsInt() : DEFAULT_MAX_CLUSTER_NODES;
-            builder.maxDepth = object.get(KEY_MAX_GENERATION_DEPTH).getAsInt();
-            builder.minStaircaseDepth = object.get(KEY_MIN_STAIRCASE_DEPTH).getAsInt();
-            builder.minSeparation = object.has(KEY_MIN_SEPARATION) ? object.get(KEY_MIN_SEPARATION).getAsInt() : DEFAULT_MIN_SEPARATION;
-            return builder.build();
-        }
-
-        @Override
-        public JsonElement serialize(LevelGeneratorSettings settings, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.addProperty(KEY_MAX_ROOMS, settings.maxRooms);
-            object.addProperty(KEY_MAX_GENERATION_DEPTH, settings.maxDepth);
-            object.addProperty(KEY_MIN_STAIRCASE_DEPTH, settings.minStaircaseDepth);
-            if (settings.maxClusterNodes != DEFAULT_MAX_CLUSTER_NODES) {
-                object.addProperty(KEY_MAX_CLUSTER_NODES, settings.maxClusterNodes);
-            }
-            if (settings.minSeparation != DEFAULT_MIN_SEPARATION) {
-                object.addProperty(KEY_MIN_SEPARATION, settings.minSeparation);
-            }
-            return object;
-        }
-    }
-
-    public static class Builder {
-        private int maxRooms = DEFAULT_MAX_ROOMS;
-        private int maxClusterNodes = DEFAULT_MAX_CLUSTER_NODES;
+    public static class Builder extends InheritingBuilder<LevelGeneratorSettings, Builder> {
+        @Nullable
+        private Integer maxRooms = null;
+        @Nullable
+        private Integer maxClusterNodes = null;
+        @Nullable
         private Integer maxDepth = null;
+        @Nullable
         private Integer minStaircaseDepth = null;
-        private int minSeparation = DEFAULT_MIN_SEPARATION;
+        @Nullable
+        private Integer minSeparation = null;
+        @Nullable
         private Range corridorLength = null;
 
+        @Override
+        public Builder inherit(Builder from) {
+            this.maxRooms = InheritingBuilder.choose(this.maxRooms, from.maxRooms);
+            this.maxClusterNodes = InheritingBuilder.choose(this.maxClusterNodes, from.maxClusterNodes);
+            this.maxDepth = InheritingBuilder.choose(this.maxDepth, from.maxDepth);
+            this.minStaircaseDepth = InheritingBuilder.choose(this.minStaircaseDepth, from.minStaircaseDepth);
+            this.minSeparation = InheritingBuilder.choose(this.minSeparation, from.minSeparation);
+            this.corridorLength = InheritingBuilder.choose(this.corridorLength, from.corridorLength);
+            return this;
+        }
+
+        @Override
         public LevelGeneratorSettings build() {
-            Objects.requireNonNull(maxDepth);
-            Objects.requireNonNull(minStaircaseDepth);
-            Objects.requireNonNull(corridorLength);
             return new LevelGeneratorSettings(this);
         }
 
@@ -153,6 +134,40 @@ public class LevelGeneratorSettings {
         public Builder corridorLength(Range corridorLength) {
             this.corridorLength = corridorLength;
             return this;
+        }
+    }
+
+    public static class BuilderSerializer implements JsonSerializer<Builder>, JsonDeserializer<Builder> {
+        private static final String KEY_MAX_ROOMS = "max_rooms";
+        private static final String KEY_MAX_CLUSTER_NODES = "max_cluster_nodes";
+        private static final String KEY_MAX_GENERATION_DEPTH = "max_generation_depth";
+        private static final String KEY_MIN_STAIRCASE_DEPTH = "min_staircase_depth";
+        private static final String KEY_MIN_SEPARATION = "min_separation";
+        private static final String KEY_CORRIDOR_LENGTH = "corridor_length";
+
+        @Override
+        public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            Builder builder = new Builder();
+            JsonObject object = json.getAsJsonObject();
+            if (object.has(KEY_MAX_ROOMS)) builder.maxRooms = object.get(KEY_MAX_ROOMS).getAsInt();
+            if (object.has(KEY_MAX_CLUSTER_NODES)) builder.maxClusterNodes = object.get(KEY_MAX_CLUSTER_NODES).getAsInt();
+            if (object.has(KEY_MAX_GENERATION_DEPTH)) builder.maxDepth = object.get(KEY_MAX_GENERATION_DEPTH).getAsInt();
+            if (object.has(KEY_MIN_STAIRCASE_DEPTH)) builder.minStaircaseDepth = object.get(KEY_MIN_STAIRCASE_DEPTH).getAsInt();
+            if (object.has(KEY_MIN_SEPARATION)) builder.minSeparation = object.get(KEY_MIN_SEPARATION).getAsInt();
+            if (object.has(KEY_CORRIDOR_LENGTH)) builder.corridorLength = context.deserialize(object.get(KEY_CORRIDOR_LENGTH), RandomValue.class);
+            return builder;
+        }
+
+        @Override
+        public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            if (builder.maxRooms != null) object.addProperty(KEY_MAX_ROOMS, builder.maxRooms);
+            if (builder.maxClusterNodes != null) object.addProperty(KEY_MAX_CLUSTER_NODES, builder.maxClusterNodes);
+            if (builder.maxDepth != null) object.addProperty(KEY_MAX_GENERATION_DEPTH, builder.maxDepth);
+            if (builder.minStaircaseDepth != null) object.addProperty(KEY_MIN_STAIRCASE_DEPTH, builder.minStaircaseDepth);
+            if (builder.minSeparation != null) object.addProperty(KEY_MIN_SEPARATION, builder.minSeparation);
+            if (builder.corridorLength != null) object.add(KEY_CORRIDOR_LENGTH, context.serialize(builder.corridorLength));
+            return object;
         }
     }
 }

@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.util.random.value;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -11,16 +10,10 @@ import java.lang.reflect.Type;
 import java.util.Random;
 
 public interface RandomValue {
-    Gson GSON = gsonAdapters(new GsonBuilder()).create();
-
-    static GsonBuilder gsonAdapters(GsonBuilder builder) {
-        return builder.registerTypeAdapter(RandomValue.class, new Deserializer())
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(RandomValue.class, new Deserializer())
                 .registerTypeAdapter(Range.class, new Range.Serializer())
                 .registerTypeAdapter(Constant.class, new Constant.Serializer());
-    }
-
-    static RandomValue deserialize(JsonElement json) {
-        return GSON.fromJson(json, RandomValue.class);
     }
 
     int nextInt(Random random);

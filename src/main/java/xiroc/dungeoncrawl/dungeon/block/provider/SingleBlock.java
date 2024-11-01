@@ -47,7 +47,7 @@ public class SingleBlock implements BlockStateProvider {
 
         @Override
         public JsonElement serialize(SingleBlock src, Type typeOfSrc, JsonSerializationContext context) {
-            return JSONUtils.serializeBlockState(src.state);
+            return JSONUtils.serializeBlockState(src.state).getAsJsonPrimitive();
         }
     }
 }

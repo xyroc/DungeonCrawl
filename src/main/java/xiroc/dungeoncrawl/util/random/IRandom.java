@@ -33,7 +33,6 @@ import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.monster.EquipmentHelper;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
@@ -56,7 +55,7 @@ public interface IRandom<T> {
 
         private final List<Tuple<T, Integer>> entries = new ArrayList<>();
 
-        public static<T> Builder<T> copy(IRandom<T> instance) {
+        public static <T> Builder<T> copy(IRandom<T> instance) {
             return new Builder<T>().add(instance);
         }
 
@@ -120,18 +119,12 @@ public interface IRandom<T> {
     Serializer<Delegate<SpawnerEntityType>> SPAWNER_ENTITY = Serializer.referenceOrInlined(
             DatapackRegistries.SPAWNER_ENTITY_TYPE,
             "entity",
-            (json) -> SpawnerSerializers.ENTITY_TYPES.fromJson(json, SpawnerEntityType.Builder.class).build(),
-            (type) -> SpawnerSerializers.ENTITY_TYPES.toJsonTree(new SpawnerEntityType.Builder().copy(type))
+            (json) -> JSONUtils.GSON.fromJson(json, SpawnerEntityType.Builder.class).build(),
+            (type) -> JSONUtils.GSON.toJsonTree(new SpawnerEntityType.Builder().copy(type))
     );
 
     Serializer<Delegate<SpawnerType>> SPAWNER_TYPE = Serializer.reference(DatapackRegistries.SPAWNER_TYPE, "type");
-
-    Serializer<Delegate<Blueprint>> BLUEPRINT = new Serializer<>(
-            (json) -> DatapackRegistries.BLUEPRINT.delegateOrThrow(new ResourceLocation(json.getAsString())),
-            (blueprint) -> new JsonPrimitive(blueprint.key().toString()),
-            "blueprint"
-    );
-
+    Serializer<Delegate<Blueprint>> BLUEPRINT = Serializer.reference(DatapackRegistries.BLUEPRINT, "blueprint");
     Serializer<Delegate<PrimaryTheme>> PRIMARY_THEME = Serializer.reference(DatapackRegistries.PRIMARY_THEME, "theme");
     Serializer<Delegate<SecondaryTheme>> SECONDARY_THEME = Serializer.reference(DatapackRegistries.SECONDARY_THEME, "theme");
 
@@ -151,6 +144,10 @@ public interface IRandom<T> {
             return new Serializer<>(json -> Delegate.deserialize(json, registry, deserializer), delegate -> delegate.serialize(serializer), valueKey);
         }
 
+        private static final boolean REPLACE_BY_DEFAULT = InheritingBuilder.REPLACE_BY_DEFAULT;
+
+        private static final String KEY_REPLACE = InheritingBuilder.KEY_REPLACE;
+        private static final String KEY_VALUES = "values";
         private static final String KEY_WEIGHT = "weight";
 
         private final Function<JsonElement, T> deserializer;
@@ -165,10 +162,19 @@ public interface IRandom<T> {
 
         public IRandom.Builder<T> deserializeBuilder(JsonElement json) {
             Builder<T> builder = new Builder<>();
-            if (!json.isJsonArray()) {
+            if (json.isJsonPrimitive()) {
                 builder.add(deserializer.apply(json));
             } else {
+                if (json.isJsonObject()) {
+                    JsonObject object = json.getAsJsonObject();
+                    builder.replace(object.has(KEY_REPLACE) ? object.get(KEY_REPLACE).getAsBoolean() : REPLACE_BY_DEFAULT);
+                    json = object.get(KEY_VALUES);
+                }
                 for (JsonElement element : json.getAsJsonArray()) {
+                    if (element.isJsonPrimitive()) {
+                        builder.add(deserializer.apply(element));
+                        continue;
+                    }
                     JsonObject object = element.getAsJsonObject();
                     int weight = object.has(KEY_WEIGHT) ? object.get(KEY_WEIGHT).getAsInt() : Builder.DEFAULT_WEIGHT;
                     builder.add(deserializer.apply(object.get(valueKey)), weight);
@@ -182,33 +188,45 @@ public interface IRandom<T> {
         }
 
         public JsonElement serializeBuilder(Builder<T> builder) {
-            return serialize(builder.build());
+            if (builder.entries.isEmpty()) {
+                throw new IllegalStateException("Need at least one entry");
+            }
+
+            JsonArray entries = new JsonArray();
+            builder.entries.forEach(entry -> {
+                final T value = entry.getA();
+                final int weight = entry.getB();
+
+                JsonElement jsonEntry = serializer.apply(value);
+                if (weight != Builder.DEFAULT_WEIGHT || jsonEntry.isJsonObject()) {
+                    JsonObject entryObject = new JsonObject();
+                    entryObject.add(valueKey, jsonEntry);
+                    if (weight != Builder.DEFAULT_WEIGHT) {
+                        entryObject.addProperty(KEY_WEIGHT, weight);
+                    }
+                    jsonEntry = entryObject;
+                }
+                entries.add(jsonEntry);
+            });
+
+            JsonElement serialized = entries;
+
+            if (entries.size() == 1 && entries.get(0).isJsonPrimitive()) {
+                serialized = entries.get(0);
+            }
+
+            if (builder.replace() != REPLACE_BY_DEFAULT) {
+                JsonObject wrapped = new JsonObject();
+                wrapped.add(KEY_VALUES, serialized);
+                wrapped.addProperty(KEY_REPLACE, builder.replace());
+                return wrapped;
+            }
+
+            return serialized;
         }
 
         public JsonElement serialize(IRandom<T> random) {
-            if (random instanceof SingleValueRandom<T> singleValueRandom) {
-                JsonElement value = serializer.apply(singleValueRandom.value());
-                if (value.isJsonArray()) {
-                    // Value is an array itself, so we cannot use the simplified representation
-                    JsonArray wrapped = new JsonArray();
-                    wrapped.add(value);
-                    return wrapped;
-                }
-                return value;
-            } else if (random instanceof WeightedRandom<T> weightedRandom) {
-                JsonArray entries = new JsonArray();
-                weightedRandom.forEach((value, weight) -> {
-                    JsonObject entry = new JsonObject();
-                    if (weight != Builder.DEFAULT_WEIGHT) {
-                        entry.addProperty(KEY_WEIGHT, weight);
-                    }
-                    entry.add(valueKey, serializer.apply(value));
-                    entries.add(entry);
-                });
-                return entries;
-            } else {
-                throw new IllegalArgumentException("Unsupported IRandom type: " + random.getClass());
-            }
+            return serializeBuilder(Builder.copy(random));
         }
     }
 }

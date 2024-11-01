@@ -86,7 +86,7 @@ public record SpawnerEntityType(ResourceLocation entity, Optional<Delegate<Spawn
             JsonObject object = json.getAsJsonObject();
             builder.entity = new ResourceLocation(object.get(KEY_ENTITY_TYPE).getAsString());
             if (object.has(KEY_PROPERTIES)) {
-                builder.properties = InheritingDelegate.deserialize(object.get(KEY_PROPERTIES), (properties) -> SpawnerSerializers.ENTITY_PROPERTIES.fromJson(properties, SpawnerEntityProperties.Builder.class));
+                builder.properties = InheritingDelegate.deserialize(object.get(KEY_PROPERTIES), (properties) -> context.deserialize(properties, SpawnerEntityProperties.Builder.class));
             }
             return builder;
         }
@@ -96,7 +96,7 @@ public record SpawnerEntityType(ResourceLocation entity, Optional<Delegate<Spawn
             JsonObject object = new JsonObject();
             object.addProperty(KEY_ENTITY_TYPE, Objects.requireNonNull(builder.entity).toString());
             if (builder.properties != null) {
-                object.add(KEY_PROPERTIES, builder.properties.serialize(SpawnerSerializers.ENTITY_PROPERTIES::toJsonTree));
+                object.add(KEY_PROPERTIES, builder.properties.serialize(context::serialize));
             }
             return object;
         }

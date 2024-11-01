@@ -1,34 +1,45 @@
 package xiroc.dungeoncrawl.util.random;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
+import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
 
-public class RandomMapping<K, V> {
-    private static final String KEY_FALLBACK = "default";
-    private static final String KEY_MAPPING = "mapping";
-
+public class RandomMapping<V> {
     private final IRandom<Delegate<V>> fallback;
-    private final ImmutableMap<K, IRandom<Delegate<V>>> entries;
+    private ImmutableMap<ResourceLocation, IRandom<Delegate<V>>> entries;
+    private final ImmutableList<TagReference<V>> tagReferences;
 
-    private RandomMapping(Builder<K, V> builder) {
+    private RandomMapping(Builder<V> builder) {
         Objects.requireNonNull(builder.fallback, "No fallback pool was provided");
         try {
             this.fallback = builder.fallback.build();
         } catch (Exception e) {
             throw new DatapackLoadException("Invalid fallback pool: " + e.getMessage());
         }
-        ImmutableMap.Builder<K, IRandom<Delegate<V>>> entries = ImmutableMap.builder();
+        ImmutableMap.Builder<ResourceLocation, IRandom<Delegate<V>>> entries = ImmutableMap.builder();
         builder.entries.forEach((key, value) -> {
             try {
                 entries.put(key, value.build());
@@ -37,80 +48,158 @@ public class RandomMapping<K, V> {
             }
         });
         this.entries = entries.build();
+        ImmutableList.Builder<TagReference<V>> tagReferences = ImmutableList.builder();
+        builder.tagEntries.forEach((tagKey, entriesBuilder) -> tagReferences.add(new TagReference<>(tagKey, entriesBuilder.build())));
+        this.tagReferences = tagReferences.build();
     }
 
-    public V roll(K key, Random random) {
+    public V roll(ResourceLocation key, Random random) {
         if (key == null) {
             return fallback.roll(random).get();
         }
         return entries.getOrDefault(key, fallback).roll(random).get();
     }
 
-    public static <K, V> JsonElement serialize(RandomMapping<K, V> mapping, Function<K, String> keySerializer, IRandom.Serializer<Delegate<V>> serializer) {
-        JsonObject object = new JsonObject();
-        JsonObject jsonMapping = new JsonObject();
-        mapping.entries.forEach((key, value) -> jsonMapping.add(keySerializer.apply(key), serializer.serialize(value)));
-        object.add(KEY_FALLBACK, serializer.serialize(mapping.fallback));
-        object.add(KEY_MAPPING, jsonMapping);
-        return object;
+    public <T> void resolveTagReferences(Registry<T> registry) {
+        if (tagReferences.isEmpty()) {
+            return;
+        }
+        final HashMap<ResourceLocation, IRandom.Builder<Delegate<V>>> updatedEntries = new HashMap<>();
+        this.entries.forEach((key, entries) -> updatedEntries.put(key, IRandom.Builder.copy(entries)));
+        tagReferences.forEach(reference -> reference.resolve(registry, (key, values) -> updatedEntries.computeIfAbsent(key, ignored -> new IRandom.Builder<>()).add(values)));
+
+        ImmutableMap.Builder<ResourceLocation, IRandom<Delegate<V>>> builder = ImmutableMap.builder();
+        updatedEntries.forEach((key, entriesBuilder) -> builder.put(key, entriesBuilder.build()));
+        this.entries = builder.build();
     }
 
-    public static class Builder<K, V> extends InheritingBuilder<RandomMapping<K, V>, Builder<K, V>> {
+    public static class Builder<V> extends InheritingBuilder<RandomMapping<V>, Builder<V>> {
         @Nullable
         private IRandom.Builder<Delegate<V>> fallback = null;
-        private HashMap<K, IRandom.Builder<Delegate<V>>> entries = new HashMap<>();
+        private final HashMap<ResourceLocation, IRandom.Builder<Delegate<V>>> entries = new HashMap<>();
+        private final HashMap<ResourceLocation, IRandom.Builder<Delegate<V>>> tagEntries = new HashMap<>();
 
-        private IRandom.Builder<Delegate<V>> get(K key) {
-            return this.entries.computeIfAbsent(key, (k) -> new IRandom.Builder<>());
+        private IRandom.Builder<Delegate<V>> get(ResourceLocation key) {
+            return this.entries.computeIfAbsent(key, ignored -> new IRandom.Builder<>());
         }
 
-        public Builder<K, V> add(K key, ResourceLocation entry, int weight) {
-            get(key).add(Delegate.of(entry), weight);
+        private IRandom.Builder<Delegate<V>> getTag(ResourceLocation tagKey) {
+            return this.tagEntries.computeIfAbsent(tagKey, ignored -> new IRandom.Builder<>());
+        }
+
+        public Builder<V> add(ResourceLocation key, Delegate<V> entry) {
+            return add(key, entry, 1);
+        }
+
+        public Builder<V> add(ResourceLocation key, Delegate<V> entry, int weight) {
+            get(key).add(entry, weight);
             return this;
         }
 
-        public Builder<K, V> fallback(IRandom.Builder<Delegate<V>> fallback) {
+        public Builder<V> add(ResourceLocation key, IRandom.Builder<Delegate<V>> entries) {
+            get(key).add(entries);
+            return this;
+        }
+
+        public Builder<V> addTag(ResourceLocation tagKey, IRandom.Builder<Delegate<V>> entries) {
+            getTag(tagKey).add(entries);
+            return this;
+        }
+
+        public Builder<V> addTag(TagKey<?> tagKey, IRandom.Builder<Delegate<V>> entries) {
+            return addTag(tagKey.location(), entries);
+        }
+
+        public Builder<V> fallback(IRandom.Builder<Delegate<V>> fallback) {
             this.fallback = fallback;
             return this;
         }
 
-        public Builder<K, V> deserialize(JsonElement json, IRandom.Serializer<Delegate<V>> serializer, Function<String, K> keyProvider) {
+        @Override
+        public Builder<V> inherit(Builder<V> from) {
+            this.fallback = InheritingBuilder.inheritOrReplaceOrChoose(this.fallback, from.fallback);
+            from.entries.forEach((key, entriesBuilder) -> {
+                if (entriesBuilder.replace()) {
+                    this.entries.put(key, entriesBuilder);
+                } else {
+                    this.entries.get(key).inherit(entriesBuilder);
+                }
+            });
+            from.tagEntries.forEach((tagKey, entriesBuilder) -> {
+                if (entriesBuilder.replace()) {
+                    this.tagEntries.put(tagKey, entriesBuilder);
+                } else {
+                    this.tagEntries.get(tagKey).inherit(entriesBuilder);
+                }
+            });
+            return this;
+        }
+
+        public RandomMapping<V> build() {
+            return new RandomMapping<>(this);
+        }
+    }
+
+    public record BuilderSerializer<V>(IRandom.Serializer<Delegate<V>> valueSerializer) implements JsonSerializer<Builder<V>>, JsonDeserializer<Builder<V>> {
+        private static final String KEY_FALLBACK = "default";
+        private static final String KEY_MAPPING = "mapping";
+        private static final String TAG_PREFIX = "#";
+
+        @Override
+        public Builder<V> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            Builder<V> builder = new Builder<>();
             JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_FALLBACK)) {
-                this.fallback = serializer.deserializeBuilder(object.get(KEY_FALLBACK));
+                builder.fallback = valueSerializer.deserializeBuilder(object.get(KEY_FALLBACK));
             }
             if (object.has(KEY_MAPPING)) {
                 JsonObject mapping = object.getAsJsonObject(KEY_MAPPING);
                 mapping.entrySet().forEach((entry) -> {
-                    final var key = keyProvider.apply(entry.getKey());
-                    this.entries.put(key, serializer.deserializeBuilder(entry.getValue()));
+                    if (entry.getKey().startsWith(TAG_PREFIX)) {
+                        ResourceLocation tagKey = new ResourceLocation(entry.getKey().substring(1));
+                        builder.tagEntries.put(tagKey, valueSerializer.deserializeBuilder(entry.getValue()));
+                        return;
+                    }
+                    final var key = new ResourceLocation(entry.getKey());
+                    builder.add(key, valueSerializer.deserializeBuilder(entry.getValue()));
                 });
             }
-            return this;
+            return builder;
         }
 
         @Override
-        public Builder<K, V> inherit(Builder<K, V> from) {
-            this.fallback = InheritingBuilder.inheritOrReplaceOrChoose(this.fallback, from.fallback);
-            if (from.replace()) {
-                this.entries = from.entries;
-            } else {
-                from.entries.forEach((key, value) -> {
-                    if (value == null) {
-                        return;
-                    }
-                    if (value.replace()) {
-                        this.entries.put(key, value);
-                    } else {
-                        this.entries.get(key).inherit(value);
-                    }
-                });
+        public JsonElement serialize(Builder<V> src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            JsonObject jsonMapping = new JsonObject();
+            src.entries.forEach((key, value) -> jsonMapping.add(key.toString(), valueSerializer.serializeBuilder(value)));
+            src.tagEntries.forEach((tagKey, value) -> jsonMapping.add(TAG_PREFIX + tagKey.toString(), valueSerializer.serializeBuilder(value)));
+            if (src.fallback != null) {
+                object.add(KEY_FALLBACK, valueSerializer.serializeBuilder(src.fallback));
             }
-            return this;
+            object.add(KEY_MAPPING, jsonMapping);
+            return object;
         }
+    }
 
-        public RandomMapping<K, V> build() {
-            return new RandomMapping<>(this);
+    public record TagReference<V>(ResourceLocation tag, IRandom<Delegate<V>> entries) {
+        public <T> void resolve(Registry<T> registry, BiConsumer<ResourceLocation, IRandom<Delegate<V>>> consumer) {
+            TagKey<T> tagKey = TagKey.create(registry.key(), tag);
+            registry.getTag(tagKey).ifPresentOrElse(tag -> tag.forEach(holder -> {
+                ResourceLocation valueKey = registry.getKey(holder.value());
+                consumer.accept(valueKey, entries);
+            }), () -> {
+                throw new DatapackLoadException("The tag " + tagKey + " does not exist");
+            });
         }
+    }
+
+    public interface Types {
+        Type PRIMARY_THEME = new TypeToken<Builder<PrimaryTheme>>() {}.getType();
+        Type SECONDARY_THEME = new TypeToken<Builder<SecondaryTheme>>() {}.getType();
+    }
+
+    public static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(Types.PRIMARY_THEME, new BuilderSerializer<>(IRandom.PRIMARY_THEME));
+        builder.registerTypeAdapter(Types.SECONDARY_THEME, new BuilderSerializer<>(IRandom.SECONDARY_THEME));
     }
 }

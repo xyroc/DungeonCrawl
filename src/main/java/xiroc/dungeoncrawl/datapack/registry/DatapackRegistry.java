@@ -81,6 +81,10 @@ public class DatapackRegistry<T> {
         return Delegate.of(value, key);
     }
 
+    ImmutableMap<ResourceLocation, T> getValues() {
+        return values;
+    }
+
     interface Parser<T> {
         static <T> Parser<T> simple(Function<Reader, T> parser) {
             return keyed((key, reader) -> parser.apply(reader));

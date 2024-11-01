@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -29,7 +30,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.datapack.ResourceReloadHandler;
+import xiroc.dungeoncrawl.datapack.registry.ResourceReloadHandler;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructures;
 
@@ -49,6 +50,7 @@ public class DungeonCrawl {
 
         IEventBus forgeEventBus = MinecraftForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
+        forgeEventBus.addListener(this::onTagsUpdated);
 
         init();
     }
@@ -69,6 +71,13 @@ public class DungeonCrawl {
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {
         event.addListener(new ResourceReloadHandler());
+    }
+
+    private void onTagsUpdated(final TagsUpdatedEvent event) {
+        if (event.getUpdateCause() != TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD) {
+            return;
+        }
+        ResourceReloadHandler.onTagsUpdated(event.getTagManager());
     }
 
     public static ResourceLocation locate(String path) {

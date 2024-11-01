@@ -38,9 +38,8 @@ public interface BlueprintFeature {
             .put(SharedSerializationConstants.TYPE_FEATURE_CHAIN, Chain.class)
             .build();
 
-    static GsonBuilder gsonAdapters(GsonBuilder builder) {
-        return RandomValue.gsonAdapters(builder)
-                .registerTypeAdapter(PlacementSettings.class, new PlacementSettings.Serializer())
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(PlacementSettings.class, new PlacementSettings.Serializer())
                 .registerTypeAdapter(ChestSettings.class, new ChestSettings.Serializer())
                 .registerTypeAdapter(SpawnerSettings.class, new SpawnerSettings.Serializer())
                 .registerTypeAdapter(BlueprintFeature.class, new Deserializer())

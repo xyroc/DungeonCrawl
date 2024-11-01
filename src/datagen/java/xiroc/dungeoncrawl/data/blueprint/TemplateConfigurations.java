@@ -6,12 +6,13 @@ import xiroc.dungeoncrawl.data.JsonDataProvider;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprintConfiguration;
+import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.util.function.BiConsumer;
 
 public class TemplateConfigurations extends JsonDataProvider<TemplateBlueprintConfiguration> {
     public TemplateConfigurations(DataGenerator generator) {
-        super(generator, "Template Configurations", DatapackDirectories.BLUEPRINTS.path(), TemplateBlueprint.GSON::toJsonTree);
+        super(generator, "Template Configurations", DatapackDirectories.BLUEPRINTS.path(), JSONUtils.GSON::toJsonTree);
     }
 
     @Override

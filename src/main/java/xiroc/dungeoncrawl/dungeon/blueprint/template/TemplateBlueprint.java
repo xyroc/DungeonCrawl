@@ -2,7 +2,6 @@ package xiroc.dungeoncrawl.dungeon.blueprint.template;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -33,6 +32,7 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.mixin.accessor.StructureTemplateAccessor;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
+import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.io.IOException;
@@ -46,17 +46,17 @@ import java.util.function.Consumer;
 public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
                                 ImmutableList<BlueprintFeature> features, ImmutableList<BlueprintMultipart> parts, ImmutableList<Entrance> entrances) implements Blueprint {
 
-    public static final Gson GSON = BlueprintFeature.gsonAdapters(new GsonBuilder())
-            .registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
-            .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
-            .registerTypeAdapter(TemplateBlueprintConfiguration.EntranceType.class, new TemplateBlueprintConfiguration.EntranceType.Serializer())
-            .registerTypeAdapter(Entrance.CustomParts.class, new Entrance.CustomParts.Serializer())
-            .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer())
-            .create();
+    public static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
+                .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
+                .registerTypeAdapter(TemplateBlueprintConfiguration.EntranceType.class, new TemplateBlueprintConfiguration.EntranceType.Serializer())
+                .registerTypeAdapter(Entrance.CustomParts.class, new Entrance.CustomParts.Serializer())
+                .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer());
+    }
 
     public static TemplateBlueprint load(ResourceManager resourceManager, ResourceLocation key, Reader file) {
         try {
-            TemplateBlueprintConfiguration configuration = GSON.fromJson(file, TemplateBlueprintConfiguration.class);
+            TemplateBlueprintConfiguration configuration = JSONUtils.GSON.fromJson(file, TemplateBlueprintConfiguration.class);
             Optional<StructureTemplate> template = loadTemplate(resourceManager, configuration.template);
             if (template.isEmpty()) {
                 throw new DatapackLoadException("Could not find structure template: " + configuration.template);

@@ -31,8 +31,8 @@ public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider 
         @Override
         public CheckerboardPattern deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
-            BlockStateProvider block1 = BlockStateProvider.deserialize(object.get(KEY_BLOCK_1));
-            BlockStateProvider block2 = BlockStateProvider.deserialize(object.get(KEY_BLOCK_2));
+            BlockStateProvider block1 = context.deserialize(object.get(KEY_BLOCK_1), BlockStateProvider.class);
+            BlockStateProvider block2 = context.deserialize(object.get(KEY_BLOCK_2), BlockStateProvider.class);
             return new CheckerboardPattern(block1, block2);
         }
 

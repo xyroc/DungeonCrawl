@@ -18,7 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.block.provider;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -28,17 +27,14 @@ import com.google.gson.JsonParseException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
-import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.Random;
 
 public interface BlockStateProvider {
-    Gson GSON = gsonAdapters(new GsonBuilder()).create();
-
-    static GsonBuilder gsonAdapters(GsonBuilder builder) {
-        return builder.registerTypeAdapter(BlockStateProvider.class, new Deserializer())
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(BlockStateProvider.class, new Deserializer())
                 .registerTypeAdapter(SingleBlock.class, new SingleBlock.Serializer())
                 .registerTypeAdapter(RandomBlock.class, new RandomBlock.Serializer())
                 .registerTypeAdapter(CheckerboardPattern.class, new CheckerboardPattern.Serializer());
@@ -46,18 +42,14 @@ public interface BlockStateProvider {
 
     BlockState get(BlockPos pos, Random random);
 
-    static BlockStateProvider deserialize(JsonElement json) throws DatapackLoadException {
-        return GSON.fromJson(json, BlockStateProvider.class);
-    }
-
     class Deserializer implements JsonDeserializer<BlockStateProvider> {
         @Override
         public BlockStateProvider deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             if (json.isJsonPrimitive()) {
-                return GSON.fromJson(json, SingleBlock.class);
+                return context.deserialize(json, SingleBlock.class);
             }
             if (json.isJsonArray()) {
-                return GSON.fromJson(json, RandomBlock.class);
+                return context.deserialize(json, RandomBlock.class);
             }
             JsonObject object = json.getAsJsonObject();
             if (!object.has(SharedSerializationConstants.KEY_PROVIDER_TYPE)) {
@@ -66,13 +58,13 @@ public interface BlockStateProvider {
             String type = object.get(SharedSerializationConstants.KEY_PROVIDER_TYPE).getAsString().toLowerCase(Locale.ROOT);
             switch (type) {
                 case SharedSerializationConstants.TYPE_SINGLE_BLOCK -> {
-                    return GSON.fromJson(json, SingleBlock.class);
+                    return context.deserialize(json, SingleBlock.class);
                 }
                 case SharedSerializationConstants.TYPE_RANDOM_BLOCK -> {
-                    return GSON.fromJson(json, RandomBlock.class);
+                    return context.deserialize(json, RandomBlock.class);
                 }
                 case SharedSerializationConstants.TYPE_CHECKERBOARD_PATTERN -> {
-                    return GSON.fromJson(json, CheckerboardPattern.class);
+                    return context.deserialize(json, CheckerboardPattern.class);
                 }
                 default -> throw new JsonParseException("Unknown block state provider type: " + type);
             }

@@ -38,7 +38,7 @@ public record FlowerPotFeature(PlacementSettings placement, Block soil, BlockSta
             if (object.has(KEY_SOIL)) {
                 soil = Registry.BLOCK.get(new ResourceLocation(object.get(KEY_SOIL).getAsString()));
             }
-            BlockStateProvider flowers = BlockStateProvider.deserialize(object.get(KEY_FLOWERS));
+            BlockStateProvider flowers = context.deserialize(object.get(KEY_FLOWERS), BlockStateProvider.class);
             return new FlowerPotFeature(placement, soil, flowers);
         }
 
@@ -46,7 +46,7 @@ public record FlowerPotFeature(PlacementSettings placement, Block soil, BlockSta
         public JsonElement serialize(FlowerPotFeature configuration, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = context.serialize(configuration.placement).getAsJsonObject();
             object.addProperty(KEY_SOIL, Registry.BLOCK.getKey(configuration.soil).toString());
-            object.add(KEY_FLOWERS, BlockStateProvider.GSON.toJsonTree(configuration.flowers));
+            object.add(KEY_FLOWERS, context.serialize(configuration.flowers));
             object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_FLOWER_POT);
             return object;
         }

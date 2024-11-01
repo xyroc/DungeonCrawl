@@ -13,24 +13,27 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 
 public abstract class InheritingBuilder<T, B extends InheritingBuilder<T, B>> {
+    public static final boolean REPLACE_BY_DEFAULT = true;
+    public static final String KEY_REPLACE = "replace";
     private static final String KEY_PARENT = "inherit";
-    private static final String KEY_REPLACE = "replace";
-    private static final boolean REPLACE_BY_DEFAULT = true;
 
     @Nullable
     protected ResourceLocation parent = null;
     protected boolean replace = REPLACE_BY_DEFAULT;
 
     @SuppressWarnings("unchecked")
-    public B parent(@Nullable ResourceLocation parent) {
-        this.parent = parent;
+    private B self() {
         return (B) this;
     }
 
-    @SuppressWarnings("unchecked")
+    public B parent(@Nullable ResourceLocation parent) {
+        this.parent = parent;
+        return self();
+    }
+
     public B replace(boolean replace) {
         this.replace = replace;
-        return (B) this;
+        return self();
     }
 
     @Nullable
@@ -51,14 +54,13 @@ public abstract class InheritingBuilder<T, B extends InheritingBuilder<T, B>> {
      * It is *not* an exhaustive check for correctness though. For example, delegates referencing nonexistent entries will
      *  likely remain undetected.
      */
-    @SuppressWarnings("unchecked")
     public B tryBuild() {
         try {
             build();
         } catch (Exception e) {
             throw new IllegalStateException("Builder " + getClass().getName() + " threw an exception on build", e);
         }
-        return (B) this;
+        return self();
     }
 
     public abstract B inherit(B from);

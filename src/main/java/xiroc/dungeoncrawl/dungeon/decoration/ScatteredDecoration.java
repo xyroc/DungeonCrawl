@@ -79,14 +79,14 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
         @Override
         public ScatteredDecoration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
-            return new ScatteredDecoration(BlockStateProvider.deserialize(object.get(KEY_BLOCK)), object.get(KEY_CHANCE).getAsFloat());
+            return new ScatteredDecoration(context.deserialize(object.get(KEY_BLOCK), BlockStateProvider.class), object.get(KEY_CHANCE).getAsFloat());
         }
 
         @Override
         public JsonElement serialize(ScatteredDecoration src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             object.addProperty(SharedSerializationConstants.KEY_DECORATION_TYPE, SharedSerializationConstants.DECORATION_TYPE_SCATTERED);
-            object.add(KEY_BLOCK, BlockStateProvider.GSON.toJsonTree(src.blockStateProvider));
+            object.add(KEY_BLOCK, context.serialize(src.blockStateProvider));
             object.addProperty(KEY_CHANCE, src.chance);
             return object;
         }

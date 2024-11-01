@@ -16,17 +16,18 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package xiroc.dungeoncrawl.datapack;
+package xiroc.dungeoncrawl.datapack.registry;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class ResourceReloadHandler implements PreparableReloadListener {
             .add(DatapackRegistries.BLUEPRINT)
             .build();
 
-    public void reload(ResourceManager resourceManager) {
+    private static void reload(ResourceManager resourceManager) {
         REGISTRIES.forEach(DatapackRegistry::unload);
         REGISTRIES.forEach(registry -> registry.reload(resourceManager));
 
@@ -50,12 +51,21 @@ public class ResourceReloadHandler implements PreparableReloadListener {
         DungeonCrawl.LOGGER.info("Loaded {} registries with a total of {} data entries.", statistics.getCount(), statistics.getSum());
     }
 
+    public static void onTagsUpdated(RegistryAccess registryAccess) {
+        final var biomeMappings = List.of(DatapackRegistries.PRIMARY_THEME_MAPPINGS, DatapackRegistries.SECONDARY_THEME_MAPPINGS);
+        final var biomeRegistry = registryAccess.registry(Registry.BIOME_REGISTRY).orElseThrow();
+        biomeMappings.forEach(mappings ->
+                mappings.getValues().forEach((ignored, mapping) ->
+                        mapping.resolveTagReferences(biomeRegistry)));
+        DungeonCrawl.LOGGER.info("Updated biome mappings.");
+    }
+
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier stage, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
         return stage.wait(Unit.INSTANCE).thenRunAsync(() -> {
             reloadProfiler.startTick();
             reloadProfiler.push("listener");
-            this.reload(resourceManager);
+            ResourceReloadHandler.reload(resourceManager);
             reloadProfiler.pop();
             reloadProfiler.endTick();
         }, gameExecutor);

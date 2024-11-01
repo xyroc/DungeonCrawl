@@ -23,13 +23,13 @@ import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.data.JsonDataProvider;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.Themes;
+import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.util.function.BiConsumer;
 
 public class SecondaryThemes extends JsonDataProvider<SecondaryTheme> {
     public SecondaryThemes(DataGenerator generator) {
-        super(generator, "Secondary Themes", DatapackDirectories.SECONDARY_THEMES.path(), Themes.GSON::toJsonTree);
+        super(generator, "Secondary Themes", DatapackDirectories.SECONDARY_THEMES.path(), JSONUtils.GSON::toJsonTree);
     }
 
     @Override

@@ -36,20 +36,21 @@ public record SecondaryTheme(BlockStateProvider material,
         private static final String KEY_FENCE_GATE = "fence_gate";
         private static final String KEY_BUTTON = "button";
         private static final String KEY_PRESSURE_PLATE = "pressure_plate";
+
         @Override
         public SecondaryTheme deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             Builder builder = new Builder()
-                    .material(BlockStateProvider.deserialize(object.get(KEY_MATERIAL)))
-                    .pillar(BlockStateProvider.deserialize(object.get(KEY_PILLAR)))
-                    .stairs(BlockStateProvider.deserialize(object.get(KEY_STAIRS)))
-                    .slab(BlockStateProvider.deserialize(object.get(KEY_SLAB)))
-                    .door(BlockStateProvider.deserialize(object.get(KEY_DOOR)))
-                    .trapdoor(BlockStateProvider.deserialize(object.get(KEY_TRAPDOOR)))
-                    .fence(BlockStateProvider.deserialize(object.get(KEY_FENCE)))
-                    .fenceGate(BlockStateProvider.deserialize(object.get(KEY_FENCE_GATE)))
-                    .button(BlockStateProvider.deserialize(object.get(KEY_BUTTON)))
-                    .pressurePlate(BlockStateProvider.deserialize(object.get(KEY_PRESSURE_PLATE)));
+                    .material(context.deserialize(object.get(KEY_MATERIAL), BlockStateProvider.class))
+                    .pillar(context.deserialize(object.get(KEY_PILLAR), BlockStateProvider.class))
+                    .stairs(context.deserialize(object.get(KEY_STAIRS), BlockStateProvider.class))
+                    .slab(context.deserialize(object.get(KEY_SLAB), BlockStateProvider.class))
+                    .door(context.deserialize(object.get(KEY_DOOR), BlockStateProvider.class))
+                    .trapdoor(context.deserialize(object.get(KEY_TRAPDOOR), BlockStateProvider.class))
+                    .fence(context.deserialize(object.get(KEY_FENCE), BlockStateProvider.class))
+                    .fenceGate(context.deserialize(object.get(KEY_FENCE_GATE), BlockStateProvider.class))
+                    .button(context.deserialize(object.get(KEY_BUTTON), BlockStateProvider.class))
+                    .pressurePlate(context.deserialize(object.get(KEY_PRESSURE_PLATE), BlockStateProvider.class));
             return builder.build();
         }
 

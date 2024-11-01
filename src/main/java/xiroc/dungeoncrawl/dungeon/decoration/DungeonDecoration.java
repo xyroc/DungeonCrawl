@@ -19,7 +19,6 @@
 package xiroc.dungeoncrawl.dungeon.decoration;
 
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -36,17 +35,13 @@ import java.lang.reflect.Type;
 import java.util.Random;
 
 public interface DungeonDecoration {
-    Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(DungeonDecoration.class, new Deserializer())
-            .registerTypeAdapter(VineDecoration.class, new VineDecoration.Serializer())
-            .registerTypeAdapter(ScatteredDecoration.class, new ScatteredDecoration.Serializer())
-            .create();
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(DungeonDecoration.class, new Deserializer())
+                .registerTypeAdapter(VineDecoration.class, new VineDecoration.Serializer())
+                .registerTypeAdapter(ScatteredDecoration.class, new ScatteredDecoration.Serializer());
+    }
 
     void decorate(Blueprint blueprint, LevelAccessor world, BlockPos pos, Rotation rotation, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds);
-
-    static DungeonDecoration deserialize(JsonObject object) {
-        return GSON.fromJson(object, DungeonDecoration.class);
-    }
 
     class Deserializer implements JsonDeserializer<DungeonDecoration> {
         @Override
@@ -55,8 +50,8 @@ public interface DungeonDecoration {
             if (object.has(SharedSerializationConstants.KEY_DECORATION_TYPE)) {
                 String type = object.get(SharedSerializationConstants.KEY_DECORATION_TYPE).getAsString().toLowerCase();
                 return switch (type) {
-                    case SharedSerializationConstants.DECORATION_TYPE_VINES -> GSON.fromJson(object, VineDecoration.class);
-                    case SharedSerializationConstants.DECORATION_TYPE_SCATTERED -> GSON.fromJson(object, ScatteredDecoration.class);
+                    case SharedSerializationConstants.DECORATION_TYPE_VINES -> context.deserialize(object, VineDecoration.class);
+                    case SharedSerializationConstants.DECORATION_TYPE_SCATTERED -> context.deserialize(object, ScatteredDecoration.class);
                     default -> throw new JsonParseException("Unknown decoration type: " + type);
                 };
             } else {

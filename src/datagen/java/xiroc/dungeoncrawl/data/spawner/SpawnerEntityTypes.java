@@ -5,13 +5,13 @@ import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.data.JsonDataProvider;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
+import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.util.function.BiConsumer;
 
 public class SpawnerEntityTypes extends JsonDataProvider<SpawnerEntityType> {
     public SpawnerEntityTypes(DataGenerator generator) {
-        super(generator, "Spawner Entity Types", DatapackDirectories.SPAWNER_ENTITIES.path(), SpawnerSerializers.ENTITY_TYPES::toJsonTree);
+        super(generator, "Spawner Entity Types", DatapackDirectories.SPAWNER_ENTITIES.path(), JSONUtils.GSON::toJsonTree);
     }
 
     @Override

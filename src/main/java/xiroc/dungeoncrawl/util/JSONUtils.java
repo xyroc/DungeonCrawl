@@ -18,6 +18,8 @@
 
 package xiroc.dungeoncrawl.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -27,18 +29,48 @@ import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
+import xiroc.dungeoncrawl.dungeon.theme.ThemeSerializers;
+import xiroc.dungeoncrawl.dungeon.type.DungeonTypeSerializers;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.random.RandomMapping;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class JSONUtils {
-    public static <T> void serializeIfNonNull(JsonObject parent, String key, T thing, Function<T, JsonElement> serializer) {
+public interface JSONUtils {
+    Gson GSON = withTypeAdapters(List.of(
+            BlockStateProvider::gsonAdapters,
+            BlueprintFeature::gsonAdapters,
+            TemplateBlueprint::gsonAdapters,
+            DungeonDecoration::gsonAdapters,
+            SpawnerSerializers::gsonAdapters,
+            ThemeSerializers::gsonAdapters,
+            DungeonTypeSerializers::gsonAdapters,
+            RandomMapping::gsonAdapters,
+            RandomValue::gsonAdapters)).create();
+
+    private static GsonBuilder withTypeAdapters(List<Consumer<GsonBuilder>> adapterProviders) {
+        GsonBuilder builder = new GsonBuilder();
+        for (var adapterProvider : adapterProviders) {
+            adapterProvider.accept(builder);
+        }
+        return builder;
+    }
+
+    static <T> void serializeIfNonNull(JsonObject parent, String key, T thing, Function<T, JsonElement> serializer) {
         if (thing != null) {
             parent.add(key, serializer.apply(thing));
         }
     }
 
-    public static <T> T deserializeOrNull(JsonObject parent, String key, Function<JsonElement, T> deserializer) {
+    static <T> T deserializeOrNull(JsonObject parent, String key, Function<JsonElement, T> deserializer) {
         if (parent.has(key)) {
             return deserializer.apply(parent.get(key));
         }
@@ -51,7 +83,7 @@ public class JSONUtils {
      * @param json a json string representing the block state
      * @return the block state
      */
-    public static BlockState deserializeBlockState(JsonElement json) {
+    static BlockState deserializeBlockState(JsonElement json) {
         String state = json.getAsString();
         BlockStateParser parser = new BlockStateParser(new StringReader(state), false);
         try {
@@ -71,7 +103,7 @@ public class JSONUtils {
      * @param state the block state
      * @return the serialized form of the block state
      */
-    public static JsonElement serializeBlockState(BlockState state) {
+    static JsonElement serializeBlockState(BlockState state) {
         StringBuilder stateString = new StringBuilder(Registry.BLOCK.getKey(state.getBlock()).toString());
 
         if (!state.getProperties().isEmpty()) {

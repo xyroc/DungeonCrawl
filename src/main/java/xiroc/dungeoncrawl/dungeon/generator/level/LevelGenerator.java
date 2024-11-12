@@ -68,8 +68,6 @@ public class LevelGenerator {
     }
 
     private boolean createStart(StaircaseBuilder staircaseBuilder) {
-        final int minSeparation = 10;
-
         Delegate<Blueprint> roomDelegate = levelType.lowerStaircaseRooms().roll(random);
         Blueprint room = roomDelegate.get();
         ImmutableList<Anchor> anchors = room.anchors().get(BuiltinAnchorTypes.STAIRCASE);
@@ -81,7 +79,7 @@ public class LevelGenerator {
             return true;
         }
 
-        int downwards = Math.max(room.ySpan() - anchor.position().getY(), minSeparation);
+        int downwards = Math.max(room.ySpan() - anchor.position().getY(), levelType.settings().minSeparation);
 
         BlockPos start = staircaseBuilder.atY(startHeight);
         Rotation rotation = Rotation.getRandom(random);

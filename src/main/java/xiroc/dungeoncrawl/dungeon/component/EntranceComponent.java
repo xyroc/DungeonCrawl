@@ -12,18 +12,17 @@ import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
-import java.util.Optional;
 import java.util.Random;
 
-public record EntranceComponent(Anchor placement, Optional<Entrance.Decoration> decoration) implements DungeonComponent {
+public record EntranceComponent(Anchor placement, Entrance.Decoration decoration) implements DungeonComponent {
     public static final Codec<EntranceComponent> CODEC = RecordCodecBuilder.create(builder ->
             builder.group(Anchor.CODEC.fieldOf("placement").forGetter(EntranceComponent::placement),
-                            Entrance.Decoration.CODEC.optionalFieldOf("decoration").forGetter(EntranceComponent::decoration))
+                            Entrance.Decoration.CODEC.fieldOf("decoration").forGetter(EntranceComponent::decoration))
                     .apply(builder, EntranceComponent::new));
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
-        this.decoration.ifPresent(decoration -> decoration.generate(level, placement, worldGenBounds, random, primaryTheme, secondaryTheme, stage));
+        decoration.generate(level, placement, worldGenBounds, random, primaryTheme, secondaryTheme, stage);
     }
 
     @Override

@@ -9,13 +9,12 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
+import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
-import xiroc.dungeoncrawl.dungeon.generator.ClusterNodeBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.element.CorridorElement;
-import xiroc.dungeoncrawl.dungeon.generator.element.DungeonElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
@@ -37,6 +36,7 @@ public class LevelGenerator {
     public final int startHeight;
     public final int stage;
     public final Random random;
+    public final GeneratorContext generatorContext;
 
     private final List<NodeElement> nodes = new ArrayList<>();
     private final List<CorridorElement> corridors = new ArrayList<>();
@@ -54,17 +54,7 @@ public class LevelGenerator {
         this.random = random;
         this.clusterNodesLeft = levelType.clusterRooms() != null ? levelType.settings().maxClusterNodes : 0;
         this.placeEndStaircase = stage < 4; // TODO
-    }
-
-    public void generateLevel(StaircaseBuilder staircaseBuilder) {
-        if (createStart(staircaseBuilder)) {
-            return;
-        }
-
-        final int maxNodes = levelType.settings().maxRooms;
-        for (int index = 0; index < this.nodes.size() && this.nodes.size() < maxNodes; ++index) {
-            this.nodes.get(index).update(this);
-        }
+        this.generatorContext = new GeneratorContext(plan, this);
     }
 
     private boolean createStart(StaircaseBuilder staircaseBuilder) {
@@ -111,6 +101,47 @@ public class LevelGenerator {
         return false;
     }
 
+    public void generateLevel(StaircaseBuilder staircaseBuilder) {
+        if (createStart(staircaseBuilder)) {
+            return;
+        }
+
+        final int maxNodes = levelType.settings().maxRooms;
+        for (int index = 0; index < this.nodes.size() && this.nodes.size() < maxNodes; ++index) {
+            final NodeElement node = this.nodes.get(index);
+            if (node.depth < levelType.settings().maxDepth) {
+                growNode(node);
+            }
+        }
+    }
+
+    public void growNode(NodeElement node) {
+        final BlueprintPiece piece = node.piece();
+        final CoordinateSpace coordinateSpace = piece.base.blueprint().get().coordinateSpace(piece.base.position());
+        final int nextDepth = node.depth + 1;
+        int maxRooms = 1 + (1 + random.nextInt(4)) / 2;
+        for (int attempt = 0; !node.unusedEntrances.isEmpty() && attempt < 4 && maxRooms > 0; ++attempt) {
+            final Entrance entrance = node.unusedEntrances.remove(random.nextInt(node.unusedEntrances.size()));
+            final Anchor placement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
+
+            boolean nodeCreated = createClusterNode(placement, nextDepth);
+            if (!nodeCreated) {
+                NodeElement newNode = NodeElement.attachRoomWithCorridor(this.generatorContext, placement, nextDepth);
+                if (newNode != null) {
+                    nodeCreated = true;
+                    this.nodes.add(newNode);
+                }
+            }
+
+            if (nodeCreated) {
+                node.addEntrance(placement, entrance, random);
+                --maxRooms;
+            } else {
+                entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.closed(), piece, piece.base, random));
+            }
+        }
+    }
+
     @Nullable
     public BlueprintPiece assemblePiece(Delegate<Blueprint> blueprint, BlockPos position, Rotation rotation) {
         Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
@@ -138,21 +169,8 @@ public class LevelGenerator {
         return piece;
     }
 
-    public NodeElement createNode(BlueprintPiece piece, int depth, boolean isActive, boolean isEndStaircase) {
-        NodeElement node = new NodeElement(piece, depth);
-        this.plan.add(node);
-        if (isActive) {
-            this.nodes.add(node);
-        }
-        if (isEndStaircase) {
-            placeEndStaircase = false;
-            end = node;
-        }
-        return node;
-    }
-
-    public void createCorridor(DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
-        CorridorElement corridor = new CorridorElement(this, from, to, start, direction, boundingBox);
+    public void createCorridor(BlockPos start, Direction direction, BoundingBox boundingBox) {
+        CorridorElement corridor = new CorridorElement(this, start, direction, boundingBox);
         this.plan.add(corridor);
         this.corridors.add(corridor);
     }
@@ -161,12 +179,21 @@ public class LevelGenerator {
         return placeEndStaircase && depth >= levelType.settings().minStaircaseDepth;
     }
 
+    public void setEndStaircase(NodeElement element) {
+        this.end = element;
+        this.placeEndStaircase = false;
+    }
+
+    public void addActiveNode(NodeElement node) {
+        this.nodes.add(node);
+    }
+
     public boolean createClusterNode(Anchor attachmentPoint, int depth) {
         if (clusterNodesLeft == 0 || random.nextInt(10) != 0) {
             return false;
         }
-        ClusterNodeBuilder clusterNodeBuilder = new ClusterNodeBuilder(this, attachmentPoint, random, depth + 1);
-        if (clusterNodeBuilder.build()) {
+        ClusterNodeGenerator clusterNodeGenerator = new ClusterNodeGenerator(generatorContext, attachmentPoint, random, depth + 1);
+        if (clusterNodeGenerator.generate()) {
             --clusterNodesLeft;
             return true;
         }

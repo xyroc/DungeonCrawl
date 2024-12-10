@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
-import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.StaircaseComponent;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
@@ -25,11 +24,6 @@ public class StaircaseBuilder {
         this.z = z;
     }
 
-    public StaircaseBuilder(Anchor anchor) {
-        this.x = anchor.position().getX();
-        this.z = anchor.position().getZ();
-    }
-
     public void top(Vec3i top, int minRoomY) {
         this.staircaseTop = minRoomY + top.getY() - 1;
         this.wallTop = minRoomY - 1;
@@ -48,12 +42,12 @@ public class StaircaseBuilder {
         return new BlockPos(x, wallTop, z);
     }
 
-    public DungeonPiece make() {
+    public DungeonPiece make(int stage) {
         BlockPos position = new BlockPos(x, staircaseBottom, z);
         Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
         Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
         int height = staircaseTop - staircaseBottom + 1;
         StaircaseComponent staircase = new StaircaseComponent(position, height, wallBottom, wallTop);
-        return new DungeonPiece(staircase, primaryTheme, secondaryTheme, 0);
+        return new DungeonPiece(staircase, primaryTheme, secondaryTheme, stage);
     }
 }

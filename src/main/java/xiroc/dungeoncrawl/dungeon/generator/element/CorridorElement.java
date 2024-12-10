@@ -34,8 +34,6 @@ public class CorridorElement extends DungeonElement {
     private static final int FRAGMENT_LENGTH = 3;
 
     private final LevelGenerator levelGenerator;
-    public final DungeonElement from;
-    public final DungeonElement to;
     private final Direction direction;
     private final BlockPos start;
     private final int fragmentationStart; // Offset from the start of the corridor at which fragments are beginning to be inserted
@@ -43,11 +41,9 @@ public class CorridorElement extends DungeonElement {
     private final List<Fragment> fragments;
     private final List<DungeonComponent> additionalComponents;
 
-    public CorridorElement(LevelGenerator levelGenerator, DungeonElement from, DungeonElement to, BlockPos start, Direction direction, BoundingBox boundingBox) {
+    public CorridorElement(LevelGenerator levelGenerator, BlockPos start, Direction direction, BoundingBox boundingBox) {
         super(boundingBox);
         this.levelGenerator = levelGenerator;
-        this.from = from;
-        this.to = to;
         this.start = start;
         this.direction = direction;
         this.fragmentationStart = (length() % FRAGMENT_LENGTH) / 2;
@@ -91,7 +87,7 @@ public class CorridorElement extends DungeonElement {
                 Delegate<Blueprint> segmentDelegate = DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT);
                 Blueprint segment = segmentDelegate.get();
                 ImmutableList<Anchor> junctures = segment.anchors().get(BuiltinAnchorTypes.JUNCTURE);
-                if (junctures == null) {
+                if (junctures == null || junctures.isEmpty()) {
                     continue;
                 }
                 Anchor actual = coordinateSpace.rotateAndTranslateToOrigin(attachmentPoint, fragment.piece.base.rotation());
@@ -109,17 +105,16 @@ public class CorridorElement extends DungeonElement {
         addSideSegments();
         fragments.forEach(fragment -> consumer.accept(fragment.piece));
 
-        int stage = 0;
         Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
         Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
 
-        int remaining = length() - fragmentationStart;
+        final int stage = levelGenerator.stage;
         if (fragmentationStart > 0) {
             consumer.accept(new DungeonPiece(new TunnelComponent(start, direction, fragmentationStart, 5, 2), primaryTheme, secondaryTheme, stage));
         }
-        int r = remaining % FRAGMENT_LENGTH;
-        if (r > 0) {
-            consumer.accept(new DungeonPiece(new TunnelComponent(start.relative(direction, length() - r), direction, r, 5, 2), primaryTheme, secondaryTheme, stage));
+        final int remaining = (length() - fragmentationStart) % FRAGMENT_LENGTH;
+        if (remaining > 0) {
+            consumer.accept(new DungeonPiece(new TunnelComponent(start.relative(direction, length() - remaining), direction, remaining, 5, 2), primaryTheme, secondaryTheme, stage));
         }
 
         if (!additionalComponents.isEmpty()) {
@@ -129,12 +124,12 @@ public class CorridorElement extends DungeonElement {
 
     private static class Fragment {
         public final BlueprintPiece piece;
-        public final ArrayList<Anchor> unusedJunctures;
+        public final List<Anchor> unusedJunctures;
 
         public Fragment(BlueprintPiece piece) {
             this.piece = piece;
             var junctures = piece.base.blueprint().get().anchors().get(BuiltinAnchorTypes.JUNCTURE);
-            this.unusedJunctures = junctures != null ? new ArrayList<>(junctures) : new ArrayList<>(0);
+            this.unusedJunctures = junctures != null ? new ArrayList<>(junctures) : List.of();
         }
     }
 }

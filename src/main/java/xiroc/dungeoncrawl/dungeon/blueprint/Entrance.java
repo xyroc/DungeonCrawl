@@ -20,6 +20,7 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,8 +31,15 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
         this(placement, Optional.of(Decoration.PRIMARY), Optional.empty());
     }
 
+    /**
+     * Creates an {@link EntranceComponent} with this entrance's decoration at the provided anchor.
+     *
+     * @param placement the entrance anchor to place the entrance at
+     * @return the {@link EntranceComponent}, or null if this entrance does not have a decoration
+     */
+    @Nullable
     public EntranceComponent place(Anchor placement) {
-        return new EntranceComponent(new Anchor(placement.position().above(), placement.direction()), decoration);
+        return decoration.map(value -> new EntranceComponent(new Anchor(placement.position().above(), placement.direction()), value)).orElse(null);
     }
 
     public record CustomParts(IRandom<Delegate<Blueprint>> open, IRandom<Delegate<Blueprint>> closed) {

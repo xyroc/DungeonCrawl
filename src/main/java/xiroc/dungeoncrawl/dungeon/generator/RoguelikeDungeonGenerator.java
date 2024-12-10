@@ -68,7 +68,7 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             if (levelGenerator.start() == null) {
                 break;
             }
-            pieces.add(staircaseBuilder.make());
+            pieces.add(staircaseBuilder.make(stage));
 
             NodeElement end = levelGenerator.end();
             if (end == null) {

@@ -124,7 +124,7 @@ public class NodeElement extends DungeonElement {
             Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
             entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(position.opposite(), parts.closed(), piece, piece.base, random));
         }
-        piece.createBoundingBox();
+        piece.updateBoundingBox();
         consumer.accept(piece);
     }
 

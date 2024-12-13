@@ -147,15 +147,14 @@ public class LevelGenerator {
         Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
         Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
 
-        ImmutableList<BlueprintMultipart> parts = blueprint.get().parts();
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
-
         BlueprintPiece piece = new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);
 
         for (var feature : blueprint.get().features()) {
             feature.create(piece::addComponent, null, blueprint.get(), piece.base.position(), piece.base.rotation(), random, stage);
         }
 
+        ImmutableList<BlueprintMultipart> parts = blueprint.get().parts();
         if (parts.isEmpty()) {
             return piece;
         }
@@ -165,7 +164,7 @@ public class LevelGenerator {
                 return null;
             }
         }
-        piece.createBoundingBox();
+        piece.updateBoundingBox();
         return piece;
     }
 

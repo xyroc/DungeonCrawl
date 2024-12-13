@@ -20,17 +20,19 @@ package xiroc.dungeoncrawl.dungeon.piece;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
+import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
@@ -41,34 +43,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DungeonPiece extends BaseDungeonPiece {
-    protected static final String NBT_KEY_COMPONENTS = "Components";
-    protected static final String NBT_KEY_STAGE = "Stage";
+public class DungeonPiece extends StructurePiece {
+    private static final String NBT_KEY_PRIMARY_THEME = "PrimaryTheme";
+    private static final String NBT_KEY_SECONDARY_THEME = "SecondaryTheme";
+    private static final String NBT_KEY_COMPONENTS = "Components";
+    private static final String NBT_KEY_STAGE = "Stage";
 
+    private final Delegate<PrimaryTheme> primaryTheme;
+    private final Delegate<SecondaryTheme> secondaryTheme;
     private final List<DungeonComponent> components;
-    public final int stage;
+    private final int stage;
 
     public static DungeonPiece withComponents(List<DungeonComponent> components, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
         if (components.isEmpty()) {
             throw new IllegalArgumentException("The list of initial components must not be empty.");
         }
-        DungeonPiece piece = new DungeonPiece(components.get(0), primaryTheme, secondaryTheme, stage);
-        for (int i = 1; i < components.size(); ++i) {
-            piece.components.add(components.get(i));
-        }
-        return piece;
+        return new DungeonPiece(components, primaryTheme, secondaryTheme, stage);
     }
 
     public DungeonPiece(DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
-        this(ModStructurePieceTypes.GENERIC, component, primaryTheme, secondaryTheme, stage);
+        this(new ArrayList<>(), primaryTheme, secondaryTheme, stage);
+        this.components.add(component);
+        updateBoundingBox();
     }
 
-    public DungeonPiece(StructurePieceType type, DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
-        super(type, null, primaryTheme, secondaryTheme);
-        this.components = new ArrayList<>();
-        this.components.add(component);
+    private DungeonPiece(List<DungeonComponent> components, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
+        super(ModStructurePieceTypes.GENERIC, 0, null);
+        this.components = components;
+        this.primaryTheme = primaryTheme;
+        this.secondaryTheme = secondaryTheme;
         this.stage = stage;
-        createBoundingBox();
+        if (!this.components.isEmpty()) {
+            updateBoundingBox();
+        }
     }
 
     public DungeonPiece(CompoundTag nbt) {
@@ -77,14 +84,26 @@ public class DungeonPiece extends BaseDungeonPiece {
 
     public DungeonPiece(StructurePieceType type, CompoundTag nbt) {
         super(type, nbt);
+        if (nbt.contains(NBT_KEY_PRIMARY_THEME)) {
+            this.primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
+        } else {
+            this.primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
+        }
+
+        if (nbt.contains(NBT_KEY_SECONDARY_THEME)) {
+            this.secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
+        } else {
+            this.secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
+        }
         this.stage = nbt.getInt(NBT_KEY_STAGE);
         this.components = StorageHelper.decode(nbt.get(NBT_KEY_COMPONENTS), DungeonComponent.CODEC.listOf());
-        createBoundingBox();
+        updateBoundingBox();
     }
 
     @Override
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
-        super.addAdditionalSaveData(context, nbt);
+        nbt.putString(NBT_KEY_PRIMARY_THEME, primaryTheme.key().toString());
+        nbt.putString(NBT_KEY_SECONDARY_THEME, secondaryTheme.key().toString());
         nbt.putInt(NBT_KEY_STAGE, stage);
         nbt.put(NBT_KEY_COMPONENTS, StorageHelper.encode(components, DungeonComponent.CODEC.listOf()));
     }
@@ -96,11 +115,7 @@ public class DungeonPiece extends BaseDungeonPiece {
         }
     }
 
-    protected void decorate(LevelAccessor world, BlockPos pos, PrimaryTheme primaryTheme, Random random, BoundingBox worldGenBounds, BoundingBox structureBounds, Blueprint blueprint) {
-        // TODO
-    }
-
-    public void createBoundingBox() {
+    public void updateBoundingBox() {
         BoundingBoxBuilder builder = components.get(0).boundingBox(); // There is always at least one component
         for (int i = 1; i < components.size(); ++i) {
             builder.encapsulate(components.get(i).boundingBox());

@@ -38,25 +38,6 @@ public class NodeElement extends DungeonElement {
     }
 
     @Nullable
-    public static NodeElement attachRoomWithCorridor(GeneratorContext context, Anchor placement, int depth) {
-        final LevelGenerator levelGenerator = context.levelGenerator();
-        for (int attempt = 0; attempt < 3; ++attempt) {
-            final boolean isEndStaircase = levelGenerator.shouldPlaceEndStaircase(depth);
-            final Delegate<Blueprint> room = isEndStaircase
-                    ? levelGenerator.levelType.upperStaircaseRooms().roll(levelGenerator.random)
-                    : levelGenerator.levelType.rooms().roll(levelGenerator.random);
-            NodeElement node = attachRoomWithCorridor(context, placement, room, depth);
-            if (node != null) {
-                if (isEndStaircase) {
-                    levelGenerator.setEndStaircase(node);
-                }
-                return node;
-            }
-        }
-        return null;
-    }
-
-    @Nullable
     public static NodeElement attachRoomWithCorridor(GeneratorContext context, Anchor attachmentPoint, Delegate<Blueprint> room, int depth) {
         final LevelGenerator levelGenerator = context.levelGenerator();
 

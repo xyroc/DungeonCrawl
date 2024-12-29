@@ -81,25 +81,21 @@ public class ClusterNodeGenerator {
         final LevelGenerator levelGenerator = context.levelGenerator();
 
         final int nextDepth = isClusterNode ? depth : depth + 1;
-        final boolean isEndStaircase = !isClusterNode && levelGenerator.shouldPlaceEndStaircase(nextDepth);
 
         for (int roomAttempt = 0; roomAttempt < 3; ++roomAttempt) {
-            final Delegate<Blueprint> room = isEndStaircase ? levelGenerator.levelType.upperStaircaseRooms().roll(random) :
-                    isClusterNode ? roomSet.roll(random) : levelGenerator.levelType.rooms().roll(random);
+            final Delegate<Blueprint> room = isClusterNode ? roomSet.roll(random) : levelGenerator.roomChooser.nextRoom(nextDepth, random);
             final var entrances = room.get().entrances();
             if (entrances.isEmpty()) {
                 continue;
             }
 
             for (int entranceAttempt = 0; entranceAttempt < 4; ++entranceAttempt) {
-                final NodeElement node = NodeElement.attachRoom(this.context, anchor, room, this.depth);
+                final NodeElement node = NodeElement.attachRoom(this.context, anchor, room, nextDepth);
                 if (node != null) {
-                    if (isEndStaircase) {
-                        context.levelGenerator().setEndStaircase(node);
-                    }
                     if (!isClusterNode) {
                         // Mark node as active so that the layer generator can use it for further generation
-                        context.levelGenerator().addActiveNode(node);
+                        levelGenerator.addActiveNode(node);
+                        levelGenerator.roomChooser.commit(node);
                     }
                     this.activeNodes.add(node);
                     return true;
@@ -112,7 +108,7 @@ public class ClusterNodeGenerator {
     /**
      * Attempts to attach more nodes to the provided node.
      *
-     * @param node the node to attach more nodes to
+     * @param node               the node to attach more nodes to
      * @param attachClusterNodes true if cluster node blueprints should be used, false for normal blueprints
      * @return the number of nodes added
      */

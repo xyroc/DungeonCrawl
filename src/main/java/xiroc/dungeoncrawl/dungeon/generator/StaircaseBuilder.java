@@ -38,8 +38,8 @@ public class StaircaseBuilder {
         return new BlockPos(x, y, z);
     }
 
-    public BlockPos wallTop() {
-        return new BlockPos(x, wallTop, z);
+    public int wallTop() {
+        return wallTop;
     }
 
     public DungeonPiece make(int stage) {

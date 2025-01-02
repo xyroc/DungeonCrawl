@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:block",
+  "type": "minecraft:chest",
   "pools": [
     {
       "bonus_rolls": 0.0,

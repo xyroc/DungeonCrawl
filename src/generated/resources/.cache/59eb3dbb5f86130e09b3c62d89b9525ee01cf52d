@@ -1,10 +1,10 @@
-// 1.20.1	2023-06-24T16:04:23.4967956	Loot Tables
-5aac0f95c3aeaa5d60d187d454c56cf53345f22c data/dungeoncrawl/loot_tables/chests/food.json
-dc8a351c5e1c5cd3b42a2235d363e562833b2e2d data/dungeoncrawl/loot_tables/chests/secret_room.json
-8b3fbf51577f28947213554771256adb39878ec6 data/dungeoncrawl/loot_tables/chests/stage_1.json
-62d2735de556654dc03ecf3ebafba0af50e77bd3 data/dungeoncrawl/loot_tables/chests/stage_2.json
-1c49301b80c48ff697ba9fc128c56c9f0aec99b0 data/dungeoncrawl/loot_tables/chests/stage_3.json
-b6880d706ff042957d0c6fdefe8028c47f1ce658 data/dungeoncrawl/loot_tables/chests/stage_4.json
-066b96f4dc89e1973822a7cee31fa59c4a4d7f8b data/dungeoncrawl/loot_tables/chests/stage_5.json
-48c8ab6f18874f8122f3f67d637975de0c6fe04e data/dungeoncrawl/loot_tables/chests/supply.json
-d2e1241a87fbf06b3d96fc20f7330fe1f5e87004 data/dungeoncrawl/loot_tables/chests/treasure.json
+// 1.20.1	2025-01-02T22:29:26.4828414	Loot Tables
+480954ea390a188fc3069bcf9c9e3ce7a6fe7b30 data/dungeoncrawl/loot_tables/chests/food.json
+2ba2bc48b2e7769c488a5be77ba1e408958d28d5 data/dungeoncrawl/loot_tables/chests/secret_room.json
+756240c08b289b1209b74a426ba98518dd97114c data/dungeoncrawl/loot_tables/chests/stage_1.json
+5ea473cd5be4ce2ce8a6b7fc77b80f32e942178b data/dungeoncrawl/loot_tables/chests/stage_2.json
+2feef4629289a61b3bf80f33a6c12723ce3d05af data/dungeoncrawl/loot_tables/chests/stage_3.json
+437e9b6442c00a93006376d2e6796f5d5344f540 data/dungeoncrawl/loot_tables/chests/stage_4.json
+a704fde2dbb5bbd46e0c953f5884a12a208b08ce data/dungeoncrawl/loot_tables/chests/stage_5.json
+8c45c5e6d74a9e974fdee98e8a52d42a2b69ffd8 data/dungeoncrawl/loot_tables/chests/supply.json
+4b55ab6a2b35915d0a57025d32729ec99c3e47ac data/dungeoncrawl/loot_tables/chests/treasure.json

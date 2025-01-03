@@ -23,7 +23,7 @@ repositories {
 }
 
 base {
-    archivesName = "DungeonCrawl-${minecraft_version}"
+    archivesName = "DungeonCrawl-NeoForge-${minecraft_version}"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)

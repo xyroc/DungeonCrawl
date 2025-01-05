@@ -4,25 +4,38 @@ import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
+import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
+import xiroc.dungeoncrawl.dungeon.type.level.SpecialRoom;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
 public class RoomChooser {
-    public final IRandom<Delegate<Blueprint>> standardRooms;
-    public final List<RoomEntry> specialRooms;
+    private final IRandom<Delegate<Blueprint>> standardRooms;
+    private final List<RoomEntry> specialRooms;
 
     /**
      * The index of the current room choice in the {@code specialRooms} list.
      * Negative if the current choice is not a special room.
      */
     private int currentChoice = -1;
+    /**
+     * The number of standard and special rooms placed.
+     */
+    private int roomsPlaced = 0;
 
-    public RoomChooser(IRandom<Delegate<Blueprint>> standardRooms, List<RoomEntry> specialRooms) {
-        this.standardRooms = standardRooms;
-        this.specialRooms = specialRooms;
+    public RoomChooser(LevelType levelType, List<RoomEntry> additionalSpecialRooms, Random random) {
+        this.standardRooms = levelType.rooms();
+        this.specialRooms = new ArrayList<>();
+        this.specialRooms.addAll(additionalSpecialRooms);
+        for (SpecialRoom specialRoom : levelType.specialRooms()) {
+            this.specialRooms.add(new RoomEntry(specialRoom.variants(), specialRoom.minDepth().nextInt(random), specialRoom.amount().nextInt(random)));
+        }
+        this.specialRooms.sort(Comparator.comparingInt(entry -> entry.minDepth));
     }
 
     /**
@@ -35,9 +48,13 @@ public class RoomChooser {
      */
     public Delegate<Blueprint> nextRoom(int depth, Random random) {
         final int eligibleSpecialRooms = numberOfEligibleSpecialRooms(depth);
-        if (eligibleSpecialRooms > 0) {
+        for (int attempt = 0; attempt < eligibleSpecialRooms; ++attempt) {
             currentChoice = random.nextInt(eligibleSpecialRooms);
             final RoomEntry entry = specialRooms.get(currentChoice);
+            if (entry.nextPlacement > roomsPlaced) {
+                // Room is on cooldown, try again.
+                continue;
+            }
             return entry.variants.roll(random);
         }
         currentChoice = -1;
@@ -45,7 +62,8 @@ public class RoomChooser {
     }
 
     /**
-     * Find the number of special room entries that can be used at this depth.
+     * Find the number of special room entries eligible for this depth.
+     * Rooms on cooldown are still considered eligible.
      *
      * @param depth The depth the room would be placed at.
      * @return The number of rooms. Might be zero.
@@ -68,12 +86,14 @@ public class RoomChooser {
      * @param node The node that is using the chosen room.
      */
     public void commit(NodeElement node) {
+        ++roomsPlaced;
         if (currentChoice < 0) {
             // Current choice is not a special room, nothing to do.
             return;
         }
         // Current choice is a special room, update state.
         final RoomEntry entry = specialRooms.get(currentChoice);
+        entry.nextPlacement = roomsPlaced + 3;
         if (entry.callback != null) {
             entry.callback.accept(node);
         }
@@ -89,6 +109,11 @@ public class RoomChooser {
         private int amountLeft;
         @Nullable
         private final Consumer<NodeElement> callback;
+
+        /**
+         * The total number of rooms that must have been placed until this room can be placed again.
+         */
+        private int nextPlacement = 0;
 
         public RoomEntry(IRandom<Delegate<Blueprint>> variants, int minDepth, int amount, @Nullable Consumer<NodeElement> callback) {
             this.variants = variants;

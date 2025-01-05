@@ -1,5 +1,6 @@
-package xiroc.dungeoncrawl.dungeon.type;
+package xiroc.dungeoncrawl.dungeon.type.level;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -13,10 +14,12 @@ import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
+import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Objects;
 
 public record LevelType(LevelGeneratorSettings settings,
@@ -26,27 +29,31 @@ public record LevelType(LevelGeneratorSettings settings,
                         IRandom<Delegate<Blueprint>> upperStaircaseRooms,
                         IRandom<Delegate<Blueprint>> lowerStaircaseRooms,
                         @Nullable IRandom<IRandom<Delegate<Blueprint>>> clusterRooms,
+                        ImmutableList<SpecialRoom> specialRooms,
                         IRandom<Delegate<SpawnerType>> spawners,
                         @Nullable ResourceLocation lootTable) {
 
     public static class Builder extends InheritingBuilder<LevelType, Builder> {
         @Nullable
-        private LevelGeneratorSettings.Builder settings;
+        private LevelGeneratorSettings.Builder settings = null;
         @Nullable
-        private IRandom.Builder<Delegate<Blueprint>> rooms;
+        private IRandom.Builder<Delegate<Blueprint>> rooms = null;
         @Nullable
-        private IRandom.Builder<Delegate<Blueprint>> corridorSegments;
+        private IRandom.Builder<Delegate<Blueprint>> corridorSegments = null;
         @Nullable
-        private IRandom.Builder<Delegate<Blueprint>> corridorSideSegments;
+        private IRandom.Builder<Delegate<Blueprint>> corridorSideSegments = null;
         @Nullable
-        private IRandom.Builder<Delegate<Blueprint>> upperStaircaseRooms;
+        private IRandom.Builder<Delegate<Blueprint>> upperStaircaseRooms = null;
         @Nullable
-        private IRandom.Builder<Delegate<Blueprint>> lowerStaircaseRooms;
+        private IRandom.Builder<Delegate<Blueprint>> lowerStaircaseRooms = null;
         @Nullable
-        private IRandom.Builder<Delegate<SpawnerType>> spawnerTypes;
+        private IRandom.Builder<IRandom<Delegate<Blueprint>>> clusterRooms = null;
         @Nullable
-        private ResourceLocation lootTable;
-
+        private IRandom.Builder<Delegate<SpawnerType>> spawnerTypes = null;
+        @Nullable
+        private List<SpecialRoom> specialRooms = null;
+        @Nullable
+        private ResourceLocation lootTable = null;
         @Override
         public Builder inherit(Builder from) {
             this.settings = InheritingBuilder.inheritOrReplaceOrChoose(this.settings, from.settings);
@@ -55,6 +62,8 @@ public record LevelType(LevelGeneratorSettings settings,
             this.corridorSideSegments = InheritingBuilder.inheritOrReplaceOrChoose(this.corridorSideSegments, from.corridorSideSegments);
             this.upperStaircaseRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.upperStaircaseRooms, from.upperStaircaseRooms);
             this.lowerStaircaseRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.lowerStaircaseRooms, from.lowerStaircaseRooms);
+            this.clusterRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.clusterRooms, from.clusterRooms);
+            this.specialRooms = InheritingBuilder.choose(this.specialRooms, from.specialRooms);
             this.spawnerTypes = InheritingBuilder.inheritOrReplaceOrChoose(this.spawnerTypes, from.spawnerTypes);
             this.lootTable = InheritingBuilder.choose(this.lootTable, from.lootTable);
             return this;
@@ -62,6 +71,9 @@ public record LevelType(LevelGeneratorSettings settings,
 
         @Override
         public LevelType build() {
+            if (specialRooms == null) {
+                specialRooms = List.of();
+            }
             Objects.requireNonNull(settings, "No generation settings were specified");
             Objects.requireNonNull(rooms, "No rooms were specified");
             Objects.requireNonNull(corridorSegments, "No corridor segments were specified");
@@ -76,6 +88,7 @@ public record LevelType(LevelGeneratorSettings settings,
                     upperStaircaseRooms.build(),
                     lowerStaircaseRooms.build(),
                     null,
+                    ImmutableList.copyOf(specialRooms),
                     spawnerTypes.build(),
                     lootTable);
         }
@@ -110,6 +123,16 @@ public record LevelType(LevelGeneratorSettings settings,
             return this;
         }
 
+        public Builder clusterRooms(@Nullable IRandom.Builder<IRandom<Delegate<Blueprint>>> clusterRooms) {
+            this.clusterRooms = clusterRooms;
+            return this;
+        }
+
+        public Builder specialRooms(@Nullable List<SpecialRoom> specialRooms) {
+            this.specialRooms = specialRooms;
+            return this;
+        }
+
         public Builder spawnerTypes(@Nullable IRandom.Builder<Delegate<SpawnerType>> spawnerTypes) {
             this.spawnerTypes = spawnerTypes;
             return this;
@@ -121,9 +144,6 @@ public record LevelType(LevelGeneratorSettings settings,
         }
     }
 
-    private static final IRandom.Serializer<IRandom<Delegate<Blueprint>>> ROOM_SET =
-            new IRandom.Serializer<>(IRandom.BLUEPRINT::deserialize, IRandom.BLUEPRINT::serialize, "rooms");
-
     public static class BuilderSerializer implements JsonSerializer<Builder>, JsonDeserializer<Builder> {
         private static final String KEY_SETTINGS = "settings";
         private static final String KEY_BLUEPRINTS = "blueprints";
@@ -133,12 +153,15 @@ public record LevelType(LevelGeneratorSettings settings,
         private static final String KEY_UPPER_STAIRCASE_ROOMS = "upper_staircase";
         private static final String KEY_LOWER_STAIRCASE_ROOMS = "lower_staircase";
         private static final String KEY_CLUSTER_ROOMS = "cluster_rooms";
+        private static final String KEY_SPECIAL_ROOMS = "special_rooms";
         private static final String KEY_SPAWNER_TYPES = "spawners";
         private static final String KEY_LOOT_TABLE = "loot_table";
 
+        private static final IRandom.Serializer<IRandom<Delegate<Blueprint>>> ROOM_SET =
+                new IRandom.Serializer<>(IRandom.BLUEPRINT::deserialize, IRandom.BLUEPRINT::serialize, "rooms");
+
         @Override
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            // TODO: cluster rooms
             Builder builder = new Builder();
             JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_SETTINGS))
@@ -155,6 +178,12 @@ public record LevelType(LevelGeneratorSettings settings,
                     builder.upperStaircaseRooms = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_UPPER_STAIRCASE_ROOMS));
                 if (blueprints.has(KEY_LOWER_STAIRCASE_ROOMS))
                     builder.lowerStaircaseRooms = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_LOWER_STAIRCASE_ROOMS));
+                if (blueprints.has(KEY_CLUSTER_ROOMS)) {
+                    builder.clusterRooms = ROOM_SET.deserializeBuilder(blueprints.get(KEY_CLUSTER_ROOMS));
+                }
+                if (blueprints.has(KEY_SPECIAL_ROOMS)) {
+                    builder.specialRooms = JSONUtils.deserializeList(blueprints.getAsJsonArray(KEY_SPECIAL_ROOMS), elem -> context.deserialize(elem, SpecialRoom.class));
+                }
             }
             if (object.has(KEY_SPAWNER_TYPES)) {
                 builder.spawnerTypes = IRandom.SPAWNER_TYPE.deserializeBuilder(object.get(KEY_SPAWNER_TYPES));
@@ -167,7 +196,6 @@ public record LevelType(LevelGeneratorSettings settings,
 
         @Override
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
-            // TODO: cluster rooms
             JsonObject object = new JsonObject();
             if (builder.settings != null)
                 object.add(KEY_SETTINGS, context.serialize(builder.settings));
@@ -183,6 +211,12 @@ public record LevelType(LevelGeneratorSettings settings,
                 blueprints.add(KEY_UPPER_STAIRCASE_ROOMS, IRandom.BLUEPRINT.serializeBuilder(builder.upperStaircaseRooms));
             if (builder.lowerStaircaseRooms != null)
                 blueprints.add(KEY_LOWER_STAIRCASE_ROOMS, IRandom.BLUEPRINT.serializeBuilder(builder.lowerStaircaseRooms));
+            if (builder.clusterRooms != null) {
+                blueprints.add(KEY_CLUSTER_ROOMS, ROOM_SET.serializeBuilder(builder.clusterRooms));
+            }
+            if (builder.specialRooms != null) {
+                blueprints.add(KEY_SPECIAL_ROOMS, JSONUtils.serializeList(builder.specialRooms, context::serialize));
+            }
 
             if (!blueprints.entrySet().isEmpty()) {
                 object.add(KEY_BLUEPRINTS, blueprints);
@@ -194,59 +228,6 @@ public record LevelType(LevelGeneratorSettings settings,
 
             if (builder.lootTable != null) {
                 object.addProperty(KEY_LOOT_TABLE, builder.lootTable.toString());
-            }
-            return object;
-        }
-    }
-
-    public static class Serializer implements JsonSerializer<LevelType>, JsonDeserializer<LevelType> {
-        private static final String KEY_SETTINGS = "settings";
-        private static final String KEY_BLUEPRINTS = "blueprints";
-        private static final String KEY_ROOMS = "rooms";
-        private static final String KEY_CORRIDOR_SEGMENTS = "corridor_segments";
-        private static final String KEY_CORRIDOR_SIDE_SEGMENTS = "corridor_side_segments";
-        private static final String KEY_CLUSTER_ROOMS = "cluster_rooms";
-        private static final String KEY_UPPER_STAIRCASE_ROOMS = "upper_staircase";
-        private static final String KEY_LOWER_STAIRCASE_ROOMS = "lower_staircase";
-        private static final String KEY_SPAWNERS = "spawners";
-        private static final String KEY_LOOT_TABLE = "loot_table";
-
-        @Override
-        public LevelType deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            LevelGeneratorSettings settings = context.deserialize(object.get(KEY_SETTINGS), LevelGeneratorSettings.class);
-            JsonObject blueprints = object.get(KEY_BLUEPRINTS).getAsJsonObject();
-            IRandom<Delegate<Blueprint>> rooms = IRandom.BLUEPRINT.deserialize(blueprints.get(KEY_ROOMS));
-            IRandom<Delegate<Blueprint>> corridorSegments = IRandom.BLUEPRINT.deserialize(blueprints.get(KEY_CORRIDOR_SEGMENTS));
-            IRandom<Delegate<Blueprint>> corridorSideSegments = IRandom.BLUEPRINT.deserialize(blueprints.get(KEY_CORRIDOR_SIDE_SEGMENTS));
-            IRandom<Delegate<Blueprint>> upperStaircaseRooms = IRandom.BLUEPRINT.deserialize(blueprints.get(KEY_UPPER_STAIRCASE_ROOMS));
-            IRandom<Delegate<Blueprint>> lowerStaircaseRooms = IRandom.BLUEPRINT.deserialize(blueprints.get(KEY_LOWER_STAIRCASE_ROOMS));
-            IRandom<IRandom<Delegate<Blueprint>>> clusterRooms = null;
-            if (object.has(KEY_CLUSTER_ROOMS)) {
-                clusterRooms = ROOM_SET.deserialize(object.get(KEY_CLUSTER_ROOMS));
-            }
-            IRandom<Delegate<SpawnerType>> spawners = IRandom.SPAWNER_TYPE.deserialize(object.get(KEY_SPAWNERS));
-            ResourceLocation lootTable = object.has(KEY_LOOT_TABLE) ? new ResourceLocation(object.get(KEY_LOOT_TABLE).getAsString()) : null;
-            return new LevelType(settings, rooms, corridorSegments, corridorSideSegments, upperStaircaseRooms, lowerStaircaseRooms, clusterRooms, spawners, lootTable);
-        }
-
-        @Override
-        public JsonElement serialize(LevelType levelType, Type type, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.add(KEY_SETTINGS, context.serialize(levelType.settings));
-            JsonObject blueprints = new JsonObject();
-            blueprints.add(KEY_ROOMS, IRandom.BLUEPRINT.serialize(levelType.rooms));
-            blueprints.add(KEY_CORRIDOR_SEGMENTS, IRandom.BLUEPRINT.serialize(levelType.corridorSegments));
-            blueprints.add(KEY_CORRIDOR_SIDE_SEGMENTS, IRandom.BLUEPRINT.serialize(levelType.corridorSideSegments));
-            blueprints.add(KEY_UPPER_STAIRCASE_ROOMS, IRandom.BLUEPRINT.serialize(levelType.upperStaircaseRooms));
-            blueprints.add(KEY_LOWER_STAIRCASE_ROOMS, IRandom.BLUEPRINT.serialize(levelType.lowerStaircaseRooms));
-            if (levelType.clusterRooms != null) {
-                blueprints.add(KEY_CLUSTER_ROOMS, ROOM_SET.serialize(levelType.clusterRooms));
-            }
-            object.add(KEY_BLUEPRINTS, blueprints);
-            object.add(KEY_SPAWNERS, IRandom.SPAWNER_TYPE.serialize(levelType.spawners));
-            if (levelType.lootTable != null) {
-                object.addProperty(KEY_LOOT_TABLE, levelType.lootTable.toString());
             }
             return object;
         }

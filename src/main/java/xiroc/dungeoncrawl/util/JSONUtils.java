@@ -18,8 +18,10 @@
 
 package xiroc.dungeoncrawl.util;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -75,6 +77,34 @@ public interface JSONUtils {
             return deserializer.apply(parent.get(key));
         }
         return null;
+    }
+
+    /**
+     * Deserialize a json array into an immutable list of any type.
+     *
+     * @param list         the json array
+     * @param deserializer the function to deserialize an element
+     */
+    static <T> ImmutableList<T> deserializeList(JsonArray list, Function<JsonElement, T> deserializer) {
+        final ImmutableList.Builder<T> listBuilder = ImmutableList.builder();
+        for (JsonElement entry : list) {
+            listBuilder.add(deserializer.apply(entry));
+        }
+        return listBuilder.build();
+    }
+
+    /**
+     * Serialize a list of any type into a json array.
+     *
+     * @param list       the list
+     * @param serializer the function to serialize an element
+     */
+    static <T> JsonArray serializeList(List<T> list, Function<T, JsonElement> serializer) {
+        final JsonArray jsonArray = new JsonArray();
+        for (T thing : list) {
+            jsonArray.add(serializer.apply(thing));
+        }
+        return jsonArray;
     }
 
     /**

@@ -19,7 +19,7 @@ import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.generator.plan.ListPlan;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
-import xiroc.dungeoncrawl.dungeon.type.LevelType;
+import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.Range;
@@ -52,7 +52,12 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             new IRandom.Builder<Delegate<Blueprint>>()
                     .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.LOWER_STAIRCASE))
                     .build(),
-            null,
+            new IRandom.Builder<IRandom<Delegate<Blueprint>>>()
+                    .add(new IRandom.Builder<Delegate<Blueprint>>()
+                            .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(DungeonCrawl.locate("room/cake_cluster")))
+                            .build())
+                    .build(),
+            ImmutableList.of(),
             new IRandom.Builder<Delegate<SpawnerType>>()
                     .add(Delegate.of(DungeonCrawl.locate("default")))
                     .build(),

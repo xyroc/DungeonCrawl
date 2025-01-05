@@ -11,7 +11,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.type.LevelType;
+import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 

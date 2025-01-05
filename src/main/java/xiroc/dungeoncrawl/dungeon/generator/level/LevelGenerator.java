@@ -22,7 +22,7 @@ import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.type.LevelType;
+import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
@@ -54,10 +54,12 @@ public class LevelGenerator {
         this.random = random;
         this.clusterNodesLeft = levelType.clusterRooms() != null ? levelType.settings().maxClusterNodes : 0;
         this.generatorContext = new GeneratorContext(plan, this);
-        this.roomChooser = new RoomChooser(levelType.rooms(), new ArrayList<>());
+
+        final List<RoomChooser.RoomEntry> additionalSpecialRooms = new ArrayList<>(1);
         if (stage < 4) {
-            this.roomChooser.specialRooms.add(new RoomChooser.RoomEntry(levelType.upperStaircaseRooms(), 3, 1, this::setEndStaircase));
+            additionalSpecialRooms.add(new RoomChooser.RoomEntry(levelType.upperStaircaseRooms(), 3, 1, this::setEndStaircase));
         }
+        this.roomChooser = new RoomChooser(levelType, additionalSpecialRooms, random);
     }
 
     private boolean createStart(StaircaseBuilder staircaseBuilder) {

@@ -30,6 +30,7 @@ public record LevelType(LevelGeneratorSettings settings,
                         IRandom<Delegate<Blueprint>> lowerStaircaseRooms,
                         @Nullable IRandom<IRandom<Delegate<Blueprint>>> clusterRooms,
                         ImmutableList<SpecialRoom> specialRooms,
+                        IRandom<CorridorStyle> corridorStyles,
                         IRandom<Delegate<SpawnerType>> spawners,
                         @Nullable ResourceLocation lootTable) {
 
@@ -50,6 +51,10 @@ public record LevelType(LevelGeneratorSettings settings,
         private IRandom.Builder<IRandom<Delegate<Blueprint>>> clusterRooms = null;
         @Nullable
         private IRandom.Builder<Delegate<SpawnerType>> spawnerTypes = null;
+
+        @Nullable
+        private IRandom.Builder<CorridorStyle> corridorStyles = null;
+
         @Nullable
         private List<SpecialRoom> specialRooms = null;
         @Nullable
@@ -64,6 +69,7 @@ public record LevelType(LevelGeneratorSettings settings,
             this.lowerStaircaseRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.lowerStaircaseRooms, from.lowerStaircaseRooms);
             this.clusterRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.clusterRooms, from.clusterRooms);
             this.specialRooms = InheritingBuilder.choose(this.specialRooms, from.specialRooms);
+            this.corridorStyles = InheritingBuilder.inheritOrReplaceOrChoose(this.corridorStyles, from.corridorStyles);
             this.spawnerTypes = InheritingBuilder.inheritOrReplaceOrChoose(this.spawnerTypes, from.spawnerTypes);
             this.lootTable = InheritingBuilder.choose(this.lootTable, from.lootTable);
             return this;
@@ -80,6 +86,7 @@ public record LevelType(LevelGeneratorSettings settings,
             Objects.requireNonNull(corridorSideSegments, "No corridor segments were specified");
             Objects.requireNonNull(upperStaircaseRooms, "No upper staircase rooms were specified");
             Objects.requireNonNull(lowerStaircaseRooms, "No lower staircase rooms were specified");
+            Objects.requireNonNull(corridorStyles, "No corridor styles were specified");
             Objects.requireNonNull(spawnerTypes, "No spawner types were specified");
             return new LevelType(settings.build(),
                     rooms.build(),
@@ -89,6 +96,7 @@ public record LevelType(LevelGeneratorSettings settings,
                     lowerStaircaseRooms.build(),
                     null,
                     ImmutableList.copyOf(specialRooms),
+                    corridorStyles.build(),
                     spawnerTypes.build(),
                     lootTable);
         }
@@ -133,6 +141,11 @@ public record LevelType(LevelGeneratorSettings settings,
             return this;
         }
 
+        public Builder corridorStyles(@Nullable IRandom.Builder<CorridorStyle> corridorStyles) {
+            this.corridorStyles = corridorStyles;
+            return this;
+        }
+
         public Builder spawnerTypes(@Nullable IRandom.Builder<Delegate<SpawnerType>> spawnerTypes) {
             this.spawnerTypes = spawnerTypes;
             return this;
@@ -154,6 +167,7 @@ public record LevelType(LevelGeneratorSettings settings,
         private static final String KEY_LOWER_STAIRCASE_ROOMS = "lower_staircase";
         private static final String KEY_CLUSTER_ROOMS = "cluster_rooms";
         private static final String KEY_SPECIAL_ROOMS = "special_rooms";
+        private static final String KEY_CORRIDOR_STYLES = "corridor_styles";
         private static final String KEY_SPAWNER_TYPES = "spawners";
         private static final String KEY_LOOT_TABLE = "loot_table";
 
@@ -184,6 +198,9 @@ public record LevelType(LevelGeneratorSettings settings,
                 if (blueprints.has(KEY_SPECIAL_ROOMS)) {
                     builder.specialRooms = JSONUtils.deserializeList(blueprints.getAsJsonArray(KEY_SPECIAL_ROOMS), elem -> context.deserialize(elem, SpecialRoom.class));
                 }
+            }
+            if (object.has(KEY_CORRIDOR_STYLES)) {
+                builder.corridorStyles = IRandom.CORRIDOR_STYLE.deserializeBuilder(object.get(KEY_CORRIDOR_STYLES));
             }
             if (object.has(KEY_SPAWNER_TYPES)) {
                 builder.spawnerTypes = IRandom.SPAWNER_TYPE.deserializeBuilder(object.get(KEY_SPAWNER_TYPES));
@@ -220,6 +237,10 @@ public record LevelType(LevelGeneratorSettings settings,
 
             if (!blueprints.entrySet().isEmpty()) {
                 object.add(KEY_BLUEPRINTS, blueprints);
+            }
+
+            if (builder.corridorStyles != null) {
+                object.add(KEY_CORRIDOR_STYLES, IRandom.CORRIDOR_STYLE.serializeBuilder(builder.corridorStyles));
             }
 
             if (builder.spawnerTypes != null) {

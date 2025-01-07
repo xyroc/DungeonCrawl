@@ -22,6 +22,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 
@@ -36,6 +37,7 @@ public class CorridorElement extends DungeonElement {
     private final LevelGenerator levelGenerator;
     private final Direction direction;
     private final BlockPos start;
+    private final CorridorStyle style;
     private final int fragmentationStart; // Offset from the start of the corridor at which fragments are beginning to be inserted
 
     private final List<Fragment> fragments;
@@ -46,6 +48,7 @@ public class CorridorElement extends DungeonElement {
         this.levelGenerator = levelGenerator;
         this.start = start;
         this.direction = direction;
+        this.style = levelGenerator.levelType.corridorStyles().roll(levelGenerator.random);
         this.fragmentationStart = (length() % FRAGMENT_LENGTH) / 2;
         this.fragments = new ArrayList<>();
         this.additionalComponents = new ArrayList<>(0);
@@ -60,10 +63,14 @@ public class CorridorElement extends DungeonElement {
         final Rotation rotation = Orientation.horizontalRotation(Direction.EAST, direction);
         int remaining = length() - fragmentationStart;
         BlockPos.MutableBlockPos pos = start.mutable().move(direction, fragmentationStart);
+
+        int currentSegment = 0;
+        final int segments = style.segments().size();
+
         while (remaining >= FRAGMENT_LENGTH) {
             remaining -= FRAGMENT_LENGTH;
 
-            Delegate<Blueprint> segmentDelegate = DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_BASE_SEGMENT);
+            final Delegate<Blueprint> segmentDelegate = style.segments().get(currentSegment).roll(levelGenerator.random);
             Blueprint segment = segmentDelegate.get();
             int halfWidth = segment.zSpan() / 2;
 
@@ -77,6 +84,8 @@ public class CorridorElement extends DungeonElement {
                 additionalComponents.add(new TunnelComponent(pos, direction, FRAGMENT_LENGTH, 5, 2));
             }
             pos.move(direction, FRAGMENT_LENGTH);
+
+            currentSegment = (currentSegment + 1) % segments;
         }
     }
 

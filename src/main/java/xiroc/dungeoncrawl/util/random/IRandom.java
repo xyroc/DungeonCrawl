@@ -36,6 +36,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.util.ArrayList;
@@ -127,6 +128,12 @@ public interface IRandom<T> {
     Serializer<Delegate<Blueprint>> BLUEPRINT = Serializer.reference(DatapackRegistries.BLUEPRINT, "blueprint");
     Serializer<Delegate<PrimaryTheme>> PRIMARY_THEME = Serializer.reference(DatapackRegistries.PRIMARY_THEME, "theme");
     Serializer<Delegate<SecondaryTheme>> SECONDARY_THEME = Serializer.reference(DatapackRegistries.SECONDARY_THEME, "theme");
+
+    Serializer<CorridorStyle> CORRIDOR_STYLE = new Serializer<>(
+            json -> JSONUtils.GSON.fromJson(json, CorridorStyle.class),
+            style -> JSONUtils.GSON.toJsonTree(style, CorridorStyle.class),
+            "style"
+    );
 
     Serializer<ResourceLocation> IDENTIFIER = new Serializer<>(
             (json) -> new ResourceLocation(json.getAsString()),

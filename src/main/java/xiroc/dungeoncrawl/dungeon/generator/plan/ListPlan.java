@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.generator.plan;
 
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.generator.element.DungeonElement;
 import xiroc.dungeoncrawl.util.bounds.Bounded;
 
@@ -9,6 +10,11 @@ import java.util.function.Predicate;
 
 public class ListPlan implements DungeonPlan {
     private final ArrayList<DungeonElement> elements = new ArrayList<>();
+    private final BoundingBox boundingBox;
+
+    public ListPlan(BoundingBox boundingBox) {
+        this.boundingBox = boundingBox;
+    }
 
     @Override
     public void add(DungeonElement element) {
@@ -17,7 +23,7 @@ public class ListPlan implements DungeonPlan {
 
     @Override
     public boolean isFree(Bounded boundingBox) {
-        return elements.stream().noneMatch((element) -> element.intersects(boundingBox));
+        return boundingBox.encapsulatedBy(this.boundingBox) && elements.stream().noneMatch((element) -> element.intersects(boundingBox));
     }
 
     @Override

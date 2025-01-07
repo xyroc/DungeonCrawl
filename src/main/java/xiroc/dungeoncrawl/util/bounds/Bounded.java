@@ -32,4 +32,10 @@ public interface Bounded {
                 minY() <= bounded.minY() && maxY() >= bounded.maxY() &&
                 minZ() <= bounded.minZ() && maxZ() >= bounded.maxZ();
     }
+
+    default boolean encapsulatedBy(BoundingBox bounded) {
+        return bounded.minX() <= minX() && bounded.maxX() >= maxX() &&
+                bounded.minY() <= minY() && bounded.maxY() >= maxY() &&
+                bounded.minZ() <= minZ() && bounded.maxZ() >= maxZ();
+    }
 }

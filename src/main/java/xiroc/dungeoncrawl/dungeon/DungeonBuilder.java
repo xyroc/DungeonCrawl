@@ -25,6 +25,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.RoguelikeDungeonGenerator;
@@ -42,6 +44,7 @@ public class DungeonBuilder {
     public final BlockPos groundPos;
     public final Random random;
     public final Biome biome;
+    public final BoundingBox maximumBounds;
 
     public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, int startHeight, BlockPos groundPos, ChunkPos pos, Random random) {
         this.registryAccess = registryAccess;
@@ -55,6 +58,15 @@ public class DungeonBuilder {
                 QuartPos.fromBlock(this.groundPos.getY()),
                 QuartPos.fromBlock(this.groundPos.getZ()),
                 chunkGenerator.climateSampler()).value();
+
+        // Find the bounding box all pieces need to be inside to avoid exceeding the maximum size.
+        final int range = StructureFeature.MAX_STRUCTURE_RANGE;
+        final ChunkPos lowestChunk = new ChunkPos(chunkPos.x - range, chunkPos.z - range);
+        final ChunkPos highestChunk = new ChunkPos(chunkPos.x + range, chunkPos.z + range);
+        this.maximumBounds = BoundingBox.fromCorners(
+                lowestChunk.getBlockAt(0, heightAccessor.getMinBuildHeight(), 0),
+                highestChunk.getBlockAt(15, heightAccessor.getMaxBuildHeight(), 15)
+        );
     }
 
     public List<? extends StructurePiece> build() {

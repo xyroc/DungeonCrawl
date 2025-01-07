@@ -58,7 +58,12 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
                             .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(DungeonCrawl.locate("room/cake_cluster")))
                             .build())
                     .build(),
-            ImmutableList.of(),
+            ImmutableList.of(
+                    new SpecialRoom(new IRandom.Builder<Delegate<Blueprint>>()
+                            .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(DungeonCrawl.locate("room/library")))
+                            .build(),
+                            new Constant(5),
+                            new Constant(3))),
             new IRandom.Builder<CorridorStyle>()
                     .add(new CorridorStyle(ImmutableList.of(
                             new IRandom.Builder<Delegate<Blueprint>>()
@@ -75,7 +80,7 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
 
     @Override
     public List<? extends StructurePiece> generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, StaircaseBuilder staircaseBuilder, Random random) {
-        DungeonPlan plan = new ListPlan();
+        DungeonPlan plan = new ListPlan(dungeonBuilder.maximumBounds);
         ArrayList<StructurePiece> pieces = new ArrayList<>();
         for (int stage = 0; stage < 5; stage++) {
             LevelGenerator levelGenerator = new LevelGenerator(DUMMY_LEVEL_TYPE, plan, startHeight, stage, random);

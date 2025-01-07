@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.generator.level;
 
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
@@ -71,7 +72,7 @@ public class ClusterNodeGenerator {
         this.depth = depth;
         this.roomSet = Objects.requireNonNull(upperContext.levelGenerator().levelType.clusterRooms(), "No cluster room blueprints present").roll(random);
 
-        this.preliminaryPlan = new ListPlan();
+        this.preliminaryPlan = new ListPlan(BoundingBox.infinite());
         // Use a combined to allow for collision checks on the preliminary cluster node layout
         final DungeonPlan combinedPlan = new HierarchicalPlan(this.preliminaryPlan, upperContext.dungeonPlan());
         this.context = new GeneratorContext(combinedPlan, upperContext.levelGenerator());

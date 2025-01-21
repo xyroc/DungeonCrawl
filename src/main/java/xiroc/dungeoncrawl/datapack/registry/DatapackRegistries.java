@@ -42,8 +42,8 @@ public interface DatapackRegistries {
 
     DatapackRegistry<Blueprint> BLUEPRINT = new DatapackRegistry<>(DatapackDirectories.BLUEPRINTS, BuiltinBlueprints::register, TemplateBlueprint::load);
 
-    DatapackRegistry<LevelType> LEVEL_TYPE = new DatapackRegistry<>(DatapackDirectories.DUNGEON_LAYER_TYPES, none(),
-            (reader) -> JSONUtils.GSON.fromJson(reader, LevelType.class));
+    DatapackRegistry<LevelType> LEVEL_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.DUNGEON_LAYER_TYPES, none(),
+            (reader) -> JSONUtils.GSON.fromJson(reader, LevelType.Builder.class));
 
     private static <T> Consumer<BiConsumer<ResourceLocation, T>> none() {
         return (collector) -> {

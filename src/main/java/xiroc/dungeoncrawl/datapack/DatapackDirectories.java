@@ -11,8 +11,6 @@ public interface DatapackDirectories {
     Directory DUNGEON_LAYER_TYPES = DUNGEON_LAYER.subdirectory("types");
 
     Directory BLUEPRINTS = BASE.subdirectory("blueprints");
-    Directory BLUEPRINTS_ROOMS = BLUEPRINTS.subdirectory("room");
-    Directory BLUEPRINTS_SEGMENTS = BLUEPRINTS.subdirectory("segment");
 
     Directory THEMES = BASE.subdirectory("themes");
     Directory PRIMARY_THEMES = THEMES.subdirectory("primary");
@@ -22,10 +20,6 @@ public interface DatapackDirectories {
     Directory SPAWNER_TYPES = SPAWNER.subdirectory("types");
     Directory SPAWNER_ENTITIES = SPAWNER.subdirectory("entities");
     Directory SPAWNER_ENTITY_PROPERTIES = SPAWNER.subdirectory("profiles");
-    Directory SPAWNER_EQUIPMENT = SPAWNER.subdirectory("equipment");
-    Directory SPAWNER_EQUIPMENT_WEAPON = SPAWNER_EQUIPMENT.subdirectory("weapon");
-    Directory SPAWNER_EQUIPMENT_ARMOR = SPAWNER_EQUIPMENT.subdirectory("armor");
-    Directory SPAWNER_POTION_EFFECTS = SPAWNER.subdirectory("potion_effects");
 
     Directory MAPPINGS = BASE.subdirectory("mappings");
     Directory TYPE_MAPPINGS = MAPPINGS.subdirectory("types");

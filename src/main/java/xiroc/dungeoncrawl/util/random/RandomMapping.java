@@ -18,6 +18,7 @@ import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import javax.annotation.Nullable;
@@ -196,10 +197,12 @@ public class RandomMapping<V> {
     public interface Types {
         Type PRIMARY_THEME = new TypeToken<Builder<PrimaryTheme>>() {}.getType();
         Type SECONDARY_THEME = new TypeToken<Builder<SecondaryTheme>>() {}.getType();
+        Type DUNGEON_TYPE = new TypeToken<Builder<DungeonType>>() {}.getType();
     }
 
     public static void gsonAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(Types.PRIMARY_THEME, new BuilderSerializer<>(IRandom.PRIMARY_THEME));
         builder.registerTypeAdapter(Types.SECONDARY_THEME, new BuilderSerializer<>(IRandom.SECONDARY_THEME));
+        builder.registerTypeAdapter(Types.DUNGEON_TYPE, new BuilderSerializer<>(IRandom.DUNGEON_TYPE));
     }
 }

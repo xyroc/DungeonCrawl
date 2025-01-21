@@ -26,6 +26,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.type.DungeonTypes;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -46,6 +47,7 @@ public class ResourceReloadHandler implements PreparableReloadListener {
     private static void reload(ResourceManager resourceManager) {
         REGISTRIES.forEach(DatapackRegistry::unload);
         REGISTRIES.forEach(registry -> registry.reload(resourceManager));
+        DungeonTypes.load(resourceManager);
 
         final var statistics = REGISTRIES.stream().collect(Collectors.summarizingInt(DatapackRegistry::entryCount));
         DungeonCrawl.LOGGER.info("Loaded {} registries with a total of {} data entries.", statistics.getCount(), statistics.getSum());

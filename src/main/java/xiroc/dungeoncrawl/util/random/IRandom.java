@@ -36,6 +36,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
 import xiroc.dungeoncrawl.util.JSONUtils;
 
@@ -134,6 +135,8 @@ public interface IRandom<T> {
             style -> JSONUtils.GSON.toJsonTree(style, CorridorStyle.class),
             "style"
     );
+
+    Serializer<Delegate<DungeonType>> DUNGEON_TYPE = Serializer.reference(DatapackRegistries.DUNGEON_TYPE, "type");
 
     Serializer<ResourceLocation> IDENTIFIER = new Serializer<>(
             (json) -> new ResourceLocation(json.getAsString()),

@@ -11,6 +11,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
@@ -44,6 +45,9 @@ public interface DatapackRegistries {
 
     DatapackRegistry<LevelType> LEVEL_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.DUNGEON_LAYER_TYPES, none(),
             (reader) -> JSONUtils.GSON.fromJson(reader, LevelType.Builder.class));
+
+    DatapackRegistry<DungeonType> DUNGEON_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.DUNGEON_TYPES, none(),
+            (reader) -> JSONUtils.GSON.fromJson(reader, DungeonType.Builder.class));
 
     private static <T> Consumer<BiConsumer<ResourceLocation, T>> none() {
         return (collector) -> {

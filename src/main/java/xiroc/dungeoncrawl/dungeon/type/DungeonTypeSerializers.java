@@ -12,6 +12,7 @@ public interface DungeonTypeSerializers {
         builder.registerTypeAdapter(LevelGeneratorSettings.Builder.class, InheritingBuilder.WrappedSerializer.of(new LevelGeneratorSettings.BuilderSerializer()))
                 .registerTypeAdapter(LevelType.Builder.class, InheritingBuilder.WrappedSerializer.of(new LevelType.BuilderSerializer()))
                 .registerTypeAdapter(SpecialRoom.class, new SpecialRoom.Serializer())
-                .registerTypeAdapter(CorridorStyle.class, new CorridorStyle.Serializer());
+                .registerTypeAdapter(CorridorStyle.class, new CorridorStyle.Serializer())
+                .registerTypeAdapter(DungeonType.Builder.class, InheritingBuilder.WrappedSerializer.of(new DungeonType.BuilderSerializer()));
     }
 }

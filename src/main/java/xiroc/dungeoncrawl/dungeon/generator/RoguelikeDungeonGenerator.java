@@ -41,13 +41,6 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
                     .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORNER_ROOM))
                     .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
-                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_BASE_SEGMENT))
-                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_ARCH_SEGMENT))
-                    .build(),
-            new IRandom.Builder<Delegate<Blueprint>>()
-                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT))
-                    .build(),
-            new IRandom.Builder<Delegate<Blueprint>>()
                     .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.UPPER_STAIRCASE))
                     .build(),
             new IRandom.Builder<Delegate<Blueprint>>()

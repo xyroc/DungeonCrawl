@@ -24,8 +24,6 @@ import java.util.Objects;
 
 public record LevelType(LevelGeneratorSettings settings,
                         IRandom<Delegate<Blueprint>> rooms,
-                        IRandom<Delegate<Blueprint>> corridorSegments,
-                        IRandom<Delegate<Blueprint>> corridorSideSegments,
                         IRandom<Delegate<Blueprint>> upperStaircaseRooms,
                         IRandom<Delegate<Blueprint>> lowerStaircaseRooms,
                         @Nullable IRandom<IRandom<Delegate<Blueprint>>> clusterRooms,
@@ -39,10 +37,6 @@ public record LevelType(LevelGeneratorSettings settings,
         private LevelGeneratorSettings.Builder settings = null;
         @Nullable
         private IRandom.Builder<Delegate<Blueprint>> rooms = null;
-        @Nullable
-        private IRandom.Builder<Delegate<Blueprint>> corridorSegments = null;
-        @Nullable
-        private IRandom.Builder<Delegate<Blueprint>> corridorSideSegments = null;
         @Nullable
         private IRandom.Builder<Delegate<Blueprint>> upperStaircaseRooms = null;
         @Nullable
@@ -59,12 +53,11 @@ public record LevelType(LevelGeneratorSettings settings,
         private List<SpecialRoom> specialRooms = null;
         @Nullable
         private ResourceLocation lootTable = null;
+
         @Override
         public Builder inherit(Builder from) {
             this.settings = InheritingBuilder.inheritOrReplaceOrChoose(this.settings, from.settings);
             this.rooms = InheritingBuilder.inheritOrReplaceOrChoose(this.rooms, from.rooms);
-            this.corridorSegments = InheritingBuilder.inheritOrReplaceOrChoose(this.corridorSegments, from.corridorSegments);
-            this.corridorSideSegments = InheritingBuilder.inheritOrReplaceOrChoose(this.corridorSideSegments, from.corridorSideSegments);
             this.upperStaircaseRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.upperStaircaseRooms, from.upperStaircaseRooms);
             this.lowerStaircaseRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.lowerStaircaseRooms, from.lowerStaircaseRooms);
             this.clusterRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.clusterRooms, from.clusterRooms);
@@ -82,16 +75,12 @@ public record LevelType(LevelGeneratorSettings settings,
             }
             Objects.requireNonNull(settings, "No generation settings were specified");
             Objects.requireNonNull(rooms, "No rooms were specified");
-            Objects.requireNonNull(corridorSegments, "No corridor segments were specified");
-            Objects.requireNonNull(corridorSideSegments, "No corridor segments were specified");
             Objects.requireNonNull(upperStaircaseRooms, "No upper staircase rooms were specified");
             Objects.requireNonNull(lowerStaircaseRooms, "No lower staircase rooms were specified");
             Objects.requireNonNull(corridorStyles, "No corridor styles were specified");
             Objects.requireNonNull(spawnerTypes, "No spawner types were specified");
             return new LevelType(settings.build(),
                     rooms.build(),
-                    corridorSegments.build(),
-                    corridorSideSegments.build(),
                     upperStaircaseRooms.build(),
                     lowerStaircaseRooms.build(),
                     null,
@@ -108,16 +97,6 @@ public record LevelType(LevelGeneratorSettings settings,
 
         public Builder rooms(@Nullable IRandom.Builder<Delegate<Blueprint>> rooms) {
             this.rooms = rooms;
-            return this;
-        }
-
-        public Builder corridorSegments(@Nullable IRandom.Builder<Delegate<Blueprint>> corridorSegments) {
-            this.corridorSegments = corridorSegments;
-            return this;
-        }
-
-        public Builder corridorSideSegments(@Nullable IRandom.Builder<Delegate<Blueprint>> corridorSideSegments) {
-            this.corridorSideSegments = corridorSideSegments;
             return this;
         }
 
@@ -161,8 +140,6 @@ public record LevelType(LevelGeneratorSettings settings,
         private static final String KEY_SETTINGS = "settings";
         private static final String KEY_BLUEPRINTS = "blueprints";
         private static final String KEY_ROOMS = "rooms";
-        private static final String KEY_CORRIDOR_SEGMENTS = "corridor_segments";
-        private static final String KEY_CORRIDOR_SIDE_SEGMENTS = "corridor_side_segments";
         private static final String KEY_UPPER_STAIRCASE_ROOMS = "upper_staircase";
         private static final String KEY_LOWER_STAIRCASE_ROOMS = "lower_staircase";
         private static final String KEY_CLUSTER_ROOMS = "cluster_rooms";
@@ -184,10 +161,6 @@ public record LevelType(LevelGeneratorSettings settings,
                 JsonObject blueprints = object.get(KEY_BLUEPRINTS).getAsJsonObject();
                 if (blueprints.has(KEY_ROOMS))
                     builder.rooms = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_ROOMS));
-                if (blueprints.has(KEY_CORRIDOR_SEGMENTS))
-                    builder.corridorSegments = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_CORRIDOR_SEGMENTS));
-                if (blueprints.has(KEY_CORRIDOR_SIDE_SEGMENTS))
-                    builder.corridorSideSegments = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_CORRIDOR_SIDE_SEGMENTS));
                 if (blueprints.has(KEY_UPPER_STAIRCASE_ROOMS))
                     builder.upperStaircaseRooms = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_UPPER_STAIRCASE_ROOMS));
                 if (blueprints.has(KEY_LOWER_STAIRCASE_ROOMS))
@@ -220,10 +193,6 @@ public record LevelType(LevelGeneratorSettings settings,
             JsonObject blueprints = new JsonObject();
             if (builder.rooms != null)
                 blueprints.add(KEY_ROOMS, IRandom.BLUEPRINT.serializeBuilder(builder.rooms));
-            if (builder.corridorSegments != null)
-                blueprints.add(KEY_CORRIDOR_SEGMENTS, IRandom.BLUEPRINT.serializeBuilder(builder.corridorSegments));
-            if (builder.corridorSideSegments != null)
-                blueprints.add(KEY_CORRIDOR_SIDE_SEGMENTS, IRandom.BLUEPRINT.serializeBuilder(builder.corridorSideSegments));
             if (builder.upperStaircaseRooms != null)
                 blueprints.add(KEY_UPPER_STAIRCASE_ROOMS, IRandom.BLUEPRINT.serializeBuilder(builder.upperStaircaseRooms));
             if (builder.lowerStaircaseRooms != null)

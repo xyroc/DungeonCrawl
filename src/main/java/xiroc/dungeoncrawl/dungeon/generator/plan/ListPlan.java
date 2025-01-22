@@ -40,4 +40,9 @@ public class ListPlan implements DungeonPlan {
     public boolean anyMatch(Bounded boundingBox, Predicate<DungeonElement> predicate) {
         return elements.stream().anyMatch((element) -> element.intersects(boundingBox) && predicate.test(element));
     }
+
+    @Override
+    public int pieceCount() {
+        return elements.size();
+    }
 }

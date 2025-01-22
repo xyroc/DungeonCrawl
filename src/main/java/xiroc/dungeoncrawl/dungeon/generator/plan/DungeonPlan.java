@@ -16,4 +16,6 @@ public interface DungeonPlan {
     void forEachIn(Bounded boundingBox, Consumer<DungeonElement> consumer);
 
     boolean anyMatch(Bounded boundingBox, Predicate<DungeonElement> predicate);
+
+    int pieceCount();
 }

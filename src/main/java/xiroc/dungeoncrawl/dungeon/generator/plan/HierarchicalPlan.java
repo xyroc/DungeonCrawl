@@ -41,4 +41,9 @@ public record HierarchicalPlan(DungeonPlan primary, DungeonPlan secondary) imple
     public boolean anyMatch(Bounded boundingBox, Predicate<DungeonElement> predicate) {
         return primary.anyMatch(boundingBox, predicate) && secondary.anyMatch(boundingBox, predicate);
     }
+
+    @Override
+    public int pieceCount() {
+        return primary.pieceCount() + secondary.pieceCount();
+    }
 }

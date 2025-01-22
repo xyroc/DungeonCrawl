@@ -32,7 +32,6 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
-import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
@@ -84,17 +83,8 @@ public class DungeonPiece extends StructurePiece {
 
     public DungeonPiece(StructurePieceType type, CompoundTag nbt) {
         super(type, nbt);
-        if (nbt.contains(NBT_KEY_PRIMARY_THEME)) {
-            this.primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
-        } else {
-            this.primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
-        }
-
-        if (nbt.contains(NBT_KEY_SECONDARY_THEME)) {
-            this.secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
-        } else {
-            this.secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
-        }
+        this.primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
+        this.secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
         this.stage = nbt.getInt(NBT_KEY_STAGE);
         this.components = StorageHelper.decode(nbt.get(NBT_KEY_COMPONENTS), DungeonComponent.CODEC.listOf());
         updateBoundingBox();

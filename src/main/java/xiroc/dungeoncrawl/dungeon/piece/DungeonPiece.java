@@ -18,6 +18,7 @@
 
 package xiroc.dungeoncrawl.dungeon.piece;
 
+import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +39,6 @@ import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -61,9 +61,7 @@ public class DungeonPiece extends StructurePiece {
     }
 
     public DungeonPiece(DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
-        this(new ArrayList<>(), primaryTheme, secondaryTheme, stage);
-        this.components.add(component);
-        updateBoundingBox();
+        this(Lists.newArrayList(component), primaryTheme, secondaryTheme, stage);
     }
 
     private DungeonPiece(List<DungeonComponent> components, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {

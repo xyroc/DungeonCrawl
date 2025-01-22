@@ -84,6 +84,7 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
                 for (final DungeonSection section : builder.sections) {
                     sections.add(context.serialize(section));
                 }
+                object.add(KEY_SECTIONS, sections);
             }
             return object;
         }

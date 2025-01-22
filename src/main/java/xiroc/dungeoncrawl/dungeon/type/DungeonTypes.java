@@ -22,7 +22,7 @@ public class DungeonTypes {
         try {
             DungeonCrawl.LOGGER.debug("Loading dungeon type mapping from {}", FILE_LOCATION);
             final InputStream inputStream = resourceManager.getResource(FILE_LOCATION).getInputStream();
-            BIOME_TO_DUNGEON_TYPE_MAPPING = JSONUtils.GSON.fromJson(new InputStreamReader(inputStream), RandomMapping.Types.DUNGEON_TYPE);
+            BIOME_TO_DUNGEON_TYPE_MAPPING = JSONUtils.GSON.<RandomMapping.Builder<DungeonType>>fromJson(new InputStreamReader(inputStream), RandomMapping.Types.DUNGEON_TYPE).build();
         } catch (IOException e) {
             throw new DatapackLoadException("Failed to load " + FILE_LOCATION + ": " + e.getMessage());
         }

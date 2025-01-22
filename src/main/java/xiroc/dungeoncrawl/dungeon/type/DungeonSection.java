@@ -79,6 +79,7 @@ public record DungeonSection(ImmutableList<Delegate<LevelType>> levels,
             JsonObject themes = new JsonObject();
             themes.addProperty(KEY_THEME_PRIMARY, section.primaryThemes.key().toString());
             themes.addProperty(KEY_THEME_SECONDARY, section.secondaryThemes.key().toString());
+            object.add(KEY_THEMES, themes);
             return object;
         }
     }

@@ -39,6 +39,10 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
                     .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORNER_ROOM))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(DungeonCrawl.locate("room/sarcophagus")))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(DungeonCrawl.locate("test/entrance_parts/test1")))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(DungeonCrawl.locate("room/eniko")))
+                    .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(DungeonCrawl.locate("room/dark_hall")))
                     .build(),
             new IRandom.Builder<Delegate<Blueprint>>()
                     .add(DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.UPPER_STAIRCASE))

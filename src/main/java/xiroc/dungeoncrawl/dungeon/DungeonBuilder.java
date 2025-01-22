@@ -64,7 +64,8 @@ public class DungeonBuilder {
         final ChunkPos lowestChunk = new ChunkPos(chunkPos.x - range, chunkPos.z - range);
         final ChunkPos highestChunk = new ChunkPos(chunkPos.x + range, chunkPos.z + range);
         this.maximumBounds = BoundingBox.fromCorners(
-                lowestChunk.getBlockAt(0, heightAccessor.getMinBuildHeight(), 0),
+                // The lowest two layers of blocks are usually bedrock and should not be considered usable.
+                lowestChunk.getBlockAt(0, heightAccessor.getMinBuildHeight() + 2, 0),
                 highestChunk.getBlockAt(15, heightAccessor.getMaxBuildHeight(), 15)
         );
     }

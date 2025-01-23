@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
@@ -19,11 +20,15 @@ public record SpawnerSettings(Optional<IRandom<Delegate<SpawnerType>>> types) {
         this(Optional.empty());
     }
 
+    public IRandom<Delegate<SpawnerType>> getSpawnerTypes(LevelGenerator levelGenerator) {
+        return types.orElse(levelGenerator.levelType.spawners());
+    }
+
     public static class Serializer implements JsonSerializer<SpawnerSettings>, JsonDeserializer<SpawnerSettings> {
         private static final String KEY_TYPES = "type";
 
         @Override
-        public SpawnerSettings deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        public SpawnerSettings deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = jsonElement.getAsJsonObject();
             Optional<IRandom<Delegate<SpawnerType>>> spawnerTypes = Optional.empty();
             if (object.has(KEY_TYPES)) {

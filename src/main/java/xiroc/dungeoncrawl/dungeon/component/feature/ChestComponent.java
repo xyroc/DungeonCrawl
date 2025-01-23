@@ -16,16 +16,14 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
-import java.util.Optional;
 import java.util.Random;
 
-public record ChestComponent(Anchor placement, Optional<ResourceLocation> lootTable) implements DungeonComponent {
+public record ChestComponent(Anchor placement, ResourceLocation lootTable) implements DungeonComponent {
     public static final Codec<ChestComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Anchor.CODEC.fieldOf("placement").forGetter(ChestComponent::placement),
-            ResourceLocation.CODEC.optionalFieldOf("loot_table").forGetter(ChestComponent::lootTable)
+            ResourceLocation.CODEC.fieldOf("loot_table").forGetter(ChestComponent::lootTable)
     ).apply(builder, ChestComponent::new));
 
     @Override
@@ -38,7 +36,6 @@ public record ChestComponent(Anchor placement, Optional<ResourceLocation> lootTa
             return;
         }
         level.setBlock(position, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction()), 3);
-        ResourceLocation lootTable = this.lootTable.orElse(Loot.getLootTable(stage, random));
         RandomizableContainerBlockEntity.setLootTable(level, random, position, lootTable);
     }
 

@@ -12,14 +12,14 @@ import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.ChestComponent;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
 import java.lang.reflect.Type;
-import java.util.Random;
 
 public record ChestFeature(PlacementSettings placement, ChestSettings chest) implements BlueprintFeature.AnchorBased {
     @Override
-    public DungeonComponent createInstance(Anchor anchor, Random random) {
-        return new ChestComponent(anchor, chest.lootTable());
+    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
+        return new ChestComponent(anchor, chest.getLootTable(levelGenerator));
     }
 
     public static class Serializer implements JsonSerializer<ChestFeature>, JsonDeserializer<ChestFeature> {

@@ -20,13 +20,12 @@ import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
-import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.function.Consumer;
 
 public interface BlueprintFeature {
@@ -50,7 +49,7 @@ public interface BlueprintFeature {
                 .registerTypeAdapter(Chain.class, new Chain.Serializer());
     }
 
-    void create(Consumer<DungeonComponent> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage);
+    void create(LevelGenerator levelGenerator, Consumer<DungeonComponent> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation);
 
     static @Nullable ArrayList<Anchor> gatherPositions(@Nullable ArrayList<Anchor> positions, Blueprint blueprint, PlacementSettings placement) {
         if (positions != null) {
@@ -61,14 +60,14 @@ public interface BlueprintFeature {
 
     record Chain(PlacementSettings placement, ImmutableList<BlueprintFeature> features) implements BlueprintFeature {
         @Override
-        public void create(Consumer<DungeonComponent> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage) {
+        public void create(LevelGenerator levelGenerator, Consumer<DungeonComponent> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation) {
             var anchors = placement.anchors(blueprint);
             if (anchors.isEmpty()) {
                 return;
             }
             positions = anchors.get();
             for (BlueprintFeature supplier : features) {
-                supplier.create(consumer, positions, blueprint, offset, rotation, random, stage);
+                supplier.create(levelGenerator, consumer, positions, blueprint, offset, rotation);
             }
         }
 
@@ -104,7 +103,7 @@ public interface BlueprintFeature {
 
     interface AnchorBased extends BlueprintFeature {
         @Override
-        default void create(Consumer<DungeonComponent> features, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation, Random random, int stage) {
+        default void create(LevelGenerator levelGenerator, Consumer<DungeonComponent> features, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation) {
             if (positions == null) {
                 positions = placement().anchors(blueprint).orElse(null);
                 if (positions == null) {
@@ -112,10 +111,11 @@ public interface BlueprintFeature {
                 }
             }
             CoordinateSpace coordinateSpace = blueprint.coordinateSpace(offset);
-            placement().drawPositions(positions, random, (anchor) -> features.accept(createInstance(coordinateSpace.rotateAndTranslateToOrigin(anchor, rotation), random)));
+            placement().drawPositions(positions, levelGenerator.random, (anchor) -> features.accept(createInstance(levelGenerator, coordinateSpace.rotateAndTranslateToOrigin(anchor, rotation)
+            )));
         }
 
-        DungeonComponent createInstance(Anchor anchor, Random random);
+        DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor);
 
         PlacementSettings placement();
     }

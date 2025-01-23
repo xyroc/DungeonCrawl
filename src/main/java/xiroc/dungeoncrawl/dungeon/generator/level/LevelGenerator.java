@@ -176,7 +176,7 @@ public class LevelGenerator {
         BlueprintPiece piece = new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);
 
         for (var feature : blueprint.get().features()) {
-            feature.create(piece::addComponent, null, blueprint.get(), piece.base.position(), piece.base.rotation(), random, stage);
+            feature.create(this, piece::addComponent, null, blueprint.get(), piece.base.position(), piece.base.rotation());
         }
 
         ImmutableList<BlueprintMultipart> parts = blueprint.get().parts();

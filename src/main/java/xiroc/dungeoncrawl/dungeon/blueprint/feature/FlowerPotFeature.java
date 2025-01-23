@@ -16,14 +16,14 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.FlowerPotComponent;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
 import java.lang.reflect.Type;
-import java.util.Random;
 
 public record FlowerPotFeature(PlacementSettings placement, Block soil, BlockStateProvider flowers) implements BlueprintFeature.AnchorBased {
     @Override
-    public DungeonComponent createInstance(Anchor anchor, Random random) {
-        return new FlowerPotComponent(anchor.position(), soil, flowers.get(anchor.position(), random).getBlock());
+    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
+        return new FlowerPotComponent(anchor.position(), soil, flowers.get(anchor.position(), levelGenerator.random).getBlock());
     }
 
     public static class Serializer implements JsonSerializer<FlowerPotFeature>, JsonDeserializer<FlowerPotFeature> {

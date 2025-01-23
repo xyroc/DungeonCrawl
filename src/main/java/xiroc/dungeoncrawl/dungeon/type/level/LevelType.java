@@ -30,7 +30,7 @@ public record LevelType(LevelGeneratorSettings settings,
                         ImmutableList<SpecialRoom> specialRooms,
                         IRandom<CorridorStyle> corridorStyles,
                         IRandom<Delegate<SpawnerType>> spawners,
-                        @Nullable ResourceLocation lootTable) {
+                        ResourceLocation lootTable) {
 
     public static class Builder extends InheritingBuilder<LevelType, Builder> {
         @Nullable
@@ -79,6 +79,7 @@ public record LevelType(LevelGeneratorSettings settings,
             Objects.requireNonNull(lowerStaircaseRooms, "No lower staircase rooms were specified");
             Objects.requireNonNull(corridorStyles, "No corridor styles were specified");
             Objects.requireNonNull(spawnerTypes, "No spawner types were specified");
+            Objects.requireNonNull(lootTable, "No loot table was specified.");
             return new LevelType(settings.build(),
                     rooms.build(),
                     upperStaircaseRooms.build(),

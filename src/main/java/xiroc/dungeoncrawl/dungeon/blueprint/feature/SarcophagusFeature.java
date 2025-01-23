@@ -7,25 +7,22 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SarcophagusComponent;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
 import java.lang.reflect.Type;
-import java.util.Random;
 
 public record SarcophagusFeature(PlacementSettings placement, ChestSettings chest, SpawnerSettings spawner) implements BlueprintFeature.AnchorBased {
     @Override
-    public DungeonComponent createInstance(Anchor anchor, Random random) {
-        var spawnerType = spawner.types()
-                .map(spawnerTypes -> spawnerTypes.roll(random))
-                .orElse(DatapackRegistries.SPAWNER_TYPE.delegateOrThrow(DungeonCrawl.locate("default")));
-        return new SarcophagusComponent(anchor, spawnerType, chest.lootTable());
+    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
+        var spawnerType = spawner.getSpawnerTypes(levelGenerator).roll(levelGenerator.random);
+        var lootTable = chest.getLootTable(levelGenerator);
+        return new SarcophagusComponent(anchor, spawnerType, lootTable);
     }
 
     public static class Serializer implements JsonSerializer<SarcophagusFeature>, JsonDeserializer<SarcophagusFeature> {

@@ -5,12 +5,11 @@ import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
-
-import java.util.Random;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
 public record GraveFeature(PlacementSettings placement, ChestSettings chest, SpawnerSettings spawner) implements BlueprintFeature.AnchorBased {
     @Override
-    public DungeonComponent createInstance(Anchor anchor, Random random) {
+    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
         return null;
     }
 

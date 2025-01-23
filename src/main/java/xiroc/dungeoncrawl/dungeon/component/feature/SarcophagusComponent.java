@@ -25,15 +25,14 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
-import java.util.Optional;
 import java.util.Random;
 
-public record SarcophagusComponent(Anchor placement, Delegate<SpawnerType> spawnerType, Optional<ResourceLocation> lootTable) implements DungeonComponent {
+public record SarcophagusComponent(Anchor placement, Delegate<SpawnerType> spawnerType, ResourceLocation lootTable) implements DungeonComponent {
     public static final Codec<SarcophagusComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Anchor.CODEC.fieldOf("placement").forGetter(SarcophagusComponent::placement),
             ResourceLocation.CODEC.xmap(DatapackRegistries.SPAWNER_TYPE::delegateOrThrow, Delegate::key)
                     .fieldOf("spawner_type").forGetter(SarcophagusComponent::spawnerType),
-            ResourceLocation.CODEC.optionalFieldOf("loot_table").forGetter(SarcophagusComponent::lootTable)
+            ResourceLocation.CODEC.fieldOf("loot_table").forGetter(SarcophagusComponent::lootTable)
     ).apply(builder, SarcophagusComponent::new));
 
     @Override

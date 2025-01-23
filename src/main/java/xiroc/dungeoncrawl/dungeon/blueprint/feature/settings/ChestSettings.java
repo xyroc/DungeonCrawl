@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.resources.ResourceLocation;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -15,6 +16,10 @@ import java.util.Optional;
 public record ChestSettings(Optional<ResourceLocation> lootTable) {
     public ChestSettings() {
         this(Optional.empty());
+    }
+
+    public ResourceLocation getLootTable(LevelGenerator levelGenerator) {
+        return lootTable.orElse(levelGenerator.levelType.lootTable());
     }
 
     public static class Serializer implements JsonSerializer<ChestSettings>, JsonDeserializer<ChestSettings> {

@@ -7,23 +7,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SpawnerComponent;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
 import java.lang.reflect.Type;
-import java.util.Random;
 
 public record SpawnerFeature(PlacementSettings placement, SpawnerSettings spawner) implements BlueprintFeature.AnchorBased {
     @Override
-    public DungeonComponent createInstance(Anchor anchor, Random random) {
-        var spawnerType = spawner.types()
-                .map(spawnerTypes -> spawnerTypes.roll(random))
-                .orElse(DatapackRegistries.SPAWNER_TYPE.delegateOrThrow(DungeonCrawl.locate("default")));
+    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
+        var spawnerType = spawner.getSpawnerTypes(levelGenerator).roll(levelGenerator.random);
         return new SpawnerComponent(anchor.position(), spawnerType);
     }
 

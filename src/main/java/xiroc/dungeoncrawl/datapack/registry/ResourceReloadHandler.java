@@ -42,6 +42,8 @@ public class ResourceReloadHandler implements PreparableReloadListener {
             .add(DatapackRegistries.SPAWNER_ENTITY_TYPE)
             .add(DatapackRegistries.SPAWNER_TYPE)
             .add(DatapackRegistries.BLUEPRINT)
+            .add(DatapackRegistries.LEVEL_TYPE)
+            .add(DatapackRegistries.DUNGEON_TYPE)
             .build();
 
     private static void reload(ResourceManager resourceManager) {

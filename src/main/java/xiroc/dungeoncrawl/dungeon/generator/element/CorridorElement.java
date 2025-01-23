@@ -103,6 +103,7 @@ public class CorridorElement extends DungeonElement {
                 // TODO: check for collision, add wall component if everything else collides
                 fragment.piece.addComponent(new BlueprintComponent(segmentDelegate, pos, rotation));
             }
+            fragment.piece.updateBoundingBox();
         }
     }
 

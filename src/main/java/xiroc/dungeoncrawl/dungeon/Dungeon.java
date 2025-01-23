@@ -64,11 +64,12 @@ public class Dungeon extends StructureFeature<NoneFeatureConfiguration> {
             DungeonBuilder builder = new DungeonBuilder(context.registryAccess(),
                     generatorContext.chunkGenerator(),
                     context.heightAccessor(),
+                    structurePiecesBuilder,
                     startHeight,
                     new BlockPos(centerX, centerHeight, centerZ),
                     generatorContext.chunkPos(),
                     generatorContext.random());
-            builder.build().forEach((structurePiecesBuilder::addPiece));
+            builder.build();
         }));
     }
 

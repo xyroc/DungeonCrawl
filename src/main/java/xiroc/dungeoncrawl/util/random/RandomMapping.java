@@ -54,11 +54,11 @@ public class RandomMapping<V> {
         this.tagReferences = tagReferences.build();
     }
 
-    public V roll(ResourceLocation key, Random random) {
+    public Delegate<V> roll(ResourceLocation key, Random random) {
         if (key == null) {
-            return fallback.roll(random).get();
+            return fallback.roll(random);
         }
-        return entries.getOrDefault(key, fallback).roll(random).get();
+        return entries.getOrDefault(key, fallback).roll(random);
     }
 
     public <T> void resolveTagReferences(Registry<T> registry) {

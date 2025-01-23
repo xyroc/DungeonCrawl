@@ -6,7 +6,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jetbrains.annotations.Nullable;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
@@ -19,7 +18,6 @@ import xiroc.dungeoncrawl.dungeon.generator.element.CorridorElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
-import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
@@ -36,6 +34,8 @@ public class LevelGenerator {
     public final int startHeight;
     public final int stage;
     public final Random random;
+    public final Delegate<PrimaryTheme> primaryTheme;
+    public final Delegate<SecondaryTheme> secondaryTheme;
     public final GeneratorContext generatorContext;
     public final RoomChooser roomChooser;
 
@@ -46,17 +46,27 @@ public class LevelGenerator {
     private NodeElement end = null;
     private int clusterNodesLeft;
 
-    public LevelGenerator(LevelType levelType, DungeonPlan plan, int startHeight, int stage, Random random) {
+    public LevelGenerator(LevelType levelType,
+                          DungeonPlan plan,
+                          int startHeight,
+                          int stage,
+                          Random random,
+                          Delegate<PrimaryTheme> primaryTheme,
+                          Delegate<SecondaryTheme> secondaryTheme,
+                          boolean placeExit) {
         this.levelType = levelType;
         this.plan = plan;
         this.startHeight = startHeight;
         this.stage = stage;
         this.random = random;
+        this.primaryTheme = primaryTheme;
+        this.secondaryTheme = secondaryTheme;
+
         this.clusterNodesLeft = levelType.clusterRooms() != null ? levelType.settings().maxClusterNodes : 0;
         this.generatorContext = new GeneratorContext(plan, this);
 
         final List<RoomChooser.RoomEntry> additionalSpecialRooms = new ArrayList<>(1);
-        if (stage < 4) {
+        if (placeExit) {
             additionalSpecialRooms.add(new RoomChooser.RoomEntry(levelType.upperStaircaseRooms(), 3, 1, this::setEndStaircase));
         }
         this.roomChooser = new RoomChooser(levelType, additionalSpecialRooms, random);
@@ -162,9 +172,6 @@ public class LevelGenerator {
 
     @Nullable
     public BlueprintPiece assemblePiece(Delegate<Blueprint> blueprint, BlockPos position, Rotation rotation) {
-        Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
-        Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
-
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
         BlueprintPiece piece = new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);
 

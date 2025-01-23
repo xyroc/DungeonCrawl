@@ -31,6 +31,16 @@ public record DungeonSection(ImmutableList<Delegate<LevelType>> levels,
         @Nullable
         private Delegate<RandomMapping<SecondaryTheme>> secondaryThemes = null;
 
+        public Builder primaryThemes(@Nullable Delegate<RandomMapping<PrimaryTheme>> primaryThemes) {
+            this.primaryThemes = primaryThemes;
+            return this;
+        }
+
+        public Builder secondaryThemes(@Nullable Delegate<RandomMapping<SecondaryTheme>> secondaryThemes) {
+            this.secondaryThemes = secondaryThemes;
+            return this;
+        }
+
         public Builder level(Delegate<LevelType> level) {
             levels.add(level);
             return this;

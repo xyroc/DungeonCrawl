@@ -20,19 +20,22 @@ package xiroc.dungeoncrawl.dungeon;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.RoguelikeDungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
+import xiroc.dungeoncrawl.dungeon.type.DungeonType;
+import xiroc.dungeoncrawl.dungeon.type.DungeonTypes;
 
-import java.util.List;
 import java.util.Random;
 
 public class DungeonBuilder {
@@ -46,24 +49,39 @@ public class DungeonBuilder {
     public final ChunkGenerator chunkGenerator;
     public final ChunkPos chunkPos;
     public final LevelHeightAccessor heightAccessor;
+    public final StructurePiecesBuilder structurePiecesBuilder;
     public final int startHeight;
     public final BlockPos groundPos;
     public final Random random;
-    public final Biome biome;
+    public final ResourceLocation biomeKey;
     public final BoundingBox maximumBounds;
+    public final DungeonType dungeonType;
 
-    public DungeonBuilder(RegistryAccess registryAccess, ChunkGenerator chunkGenerator, LevelHeightAccessor heightAccessor, int startHeight, BlockPos groundPos, ChunkPos pos, Random random) {
+    public DungeonBuilder(RegistryAccess registryAccess,
+                          ChunkGenerator chunkGenerator,
+                          LevelHeightAccessor heightAccessor,
+                          StructurePiecesBuilder structurePiecesBuilder,
+                          int startHeight,
+                          BlockPos groundPos,
+                          ChunkPos pos,
+                          Random random) {
         this.registryAccess = registryAccess;
         this.chunkGenerator = chunkGenerator;
         this.heightAccessor = heightAccessor;
+        this.structurePiecesBuilder = structurePiecesBuilder;
         this.startHeight = startHeight;
         this.groundPos = groundPos;
         this.chunkPos = pos;
         this.random = random;
-        this.biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(this.groundPos.getX()),
+
+
+        final Biome biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(this.groundPos.getX()),
                 QuartPos.fromBlock(this.groundPos.getY()),
                 QuartPos.fromBlock(this.groundPos.getZ()),
                 chunkGenerator.climateSampler()).value();
+
+        this.biomeKey = registryAccess.registry(Registry.BIOME_REGISTRY).orElseThrow().getKey(biome);
+        this.dungeonType = DungeonTypes.biomeMapping().roll(this.biomeKey, random).get();
 
         // Find the bounding box all pieces need to be inside to avoid exceeding the maximum size.
         final int range = StructureFeature.MAX_STRUCTURE_RANGE;
@@ -75,10 +93,10 @@ public class DungeonBuilder {
         );
     }
 
-    public List<? extends StructurePiece> build() {
+    public void build() {
         DungeonGenerator dungeonGenerator = new RoguelikeDungeonGenerator();
         StaircaseBuilder staircaseBuilder = new StaircaseBuilder(groundPos.getX(), groundPos.getZ());
         staircaseBuilder.top(BlockPos.ZERO, groundPos.getY() + 1);
-        return dungeonGenerator.generateDungeon(this, startHeight, staircaseBuilder, random);
+        dungeonGenerator.generateDungeon(this, startHeight, staircaseBuilder, random);
     }
 }

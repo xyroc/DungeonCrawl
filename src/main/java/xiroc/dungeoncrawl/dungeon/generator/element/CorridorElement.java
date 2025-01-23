@@ -19,7 +19,6 @@ import xiroc.dungeoncrawl.dungeon.component.TunnelComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
@@ -114,8 +113,8 @@ public class CorridorElement extends DungeonElement {
         addSideSegments();
         fragments.forEach(fragment -> consumer.accept(fragment.piece));
 
-        Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
-        Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
+        Delegate<PrimaryTheme> primaryTheme = levelGenerator.primaryTheme;
+        Delegate<SecondaryTheme> secondaryTheme = levelGenerator.secondaryTheme;
 
         final int stage = levelGenerator.stage;
         if (fragmentationStart > 0) {

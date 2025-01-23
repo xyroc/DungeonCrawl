@@ -18,14 +18,12 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 
-import java.util.List;
 import java.util.Random;
 
 public interface DungeonGenerator {
 
-    List<? extends StructurePiece> generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, StaircaseBuilder staircaseBuilder, Random random);
+    void generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, StaircaseBuilder staircaseBuilder, Random random);
 
 }

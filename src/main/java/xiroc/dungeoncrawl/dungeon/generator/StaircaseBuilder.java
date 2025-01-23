@@ -2,11 +2,9 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.component.StaircaseComponent;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
-import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 
@@ -42,10 +40,8 @@ public class StaircaseBuilder {
         return wallTop;
     }
 
-    public DungeonPiece make(int stage) {
+    public DungeonPiece make(int stage, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme) {
         BlockPos position = new BlockPos(x, staircaseBottom, z);
-        Delegate<PrimaryTheme> primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
-        Delegate<SecondaryTheme> secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(BuiltinThemes.DEFAULT);
         int height = staircaseTop - staircaseBottom + 1;
         StaircaseComponent staircase = new StaircaseComponent(position, height, wallBottom, wallTop);
         return new DungeonPiece(staircase, primaryTheme, secondaryTheme, stage);

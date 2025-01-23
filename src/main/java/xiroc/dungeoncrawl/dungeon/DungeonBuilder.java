@@ -36,6 +36,12 @@ import java.util.List;
 import java.util.Random;
 
 public class DungeonBuilder {
+    /**
+     * The amount of block layers at the bottom of the world that should not be considered usable for dungeon generation.
+     * Used to avoid cutting into the bedrock layer.
+     */
+    public static final int WORLD_BOTTOM_CUTOFF = 5;
+
     public final RegistryAccess registryAccess;
     public final ChunkGenerator chunkGenerator;
     public final ChunkPos chunkPos;
@@ -64,8 +70,7 @@ public class DungeonBuilder {
         final ChunkPos lowestChunk = new ChunkPos(chunkPos.x - range, chunkPos.z - range);
         final ChunkPos highestChunk = new ChunkPos(chunkPos.x + range, chunkPos.z + range);
         this.maximumBounds = BoundingBox.fromCorners(
-                // The lowest two layers of blocks are usually bedrock and should not be considered usable.
-                lowestChunk.getBlockAt(0, heightAccessor.getMinBuildHeight() + 2, 0),
+                lowestChunk.getBlockAt(0, heightAccessor.getMinBuildHeight() + WORLD_BOTTOM_CUTOFF, 0),
                 highestChunk.getBlockAt(15, heightAccessor.getMaxBuildHeight(), 15)
         );
     }

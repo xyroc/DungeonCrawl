@@ -7,12 +7,10 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
-import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.TunnelComponent;
@@ -92,7 +90,7 @@ public class CorridorElement extends DungeonElement {
         for (Fragment fragment : this.fragments) {
             CoordinateSpace coordinateSpace = fragment.piece.base.blueprint().get().coordinateSpace(fragment.piece.base.position());
             for (Anchor attachmentPoint : fragment.unusedJunctures) {
-                Delegate<Blueprint> segmentDelegate = DatapackRegistries.BLUEPRINT.delegateOrThrow(BuiltinBlueprints.CORRIDOR_SIDE_SEGMENT);
+                Delegate<Blueprint> segmentDelegate = style.sideSegments().roll(levelGenerator.random);
                 Blueprint segment = segmentDelegate.get();
                 ImmutableList<Anchor> junctures = segment.anchors().get(BuiltinAnchorTypes.JUNCTURE);
                 if (junctures == null || junctures.isEmpty()) {

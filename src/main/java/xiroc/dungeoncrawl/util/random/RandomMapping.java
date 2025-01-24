@@ -189,7 +189,7 @@ public class RandomMapping<V> {
                 ResourceLocation valueKey = registry.getKey(holder.value());
                 consumer.accept(valueKey, entries);
             }), () -> {
-                throw new DatapackLoadException("The tag " + tagKey + " does not exist");
+                throw new DatapackLoadException("The tag " + tagKey + " does not exist for registry " + registry.key());
             });
         }
     }

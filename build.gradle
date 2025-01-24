@@ -92,6 +92,14 @@ minecraft {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    testImplementation(platform("org.junit:junit-bom:${junit_bom}"))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.assertj:assertj-core:${assertj_core}"
+}
+
+test {
+    useJUnitPlatform()
 }
 
 mixin {

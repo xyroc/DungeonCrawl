@@ -16,16 +16,14 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
-import java.util.Optional;
 import java.util.Random;
 
-public record TNTChestComponent(Anchor placement, Optional<ResourceLocation> lootTable) implements DungeonComponent {
+public record TNTChestComponent(Anchor placement, ResourceLocation lootTable) implements DungeonComponent {
     public static final Codec<TNTChestComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Anchor.CODEC.fieldOf("placement").forGetter(TNTChestComponent::placement),
-            ResourceLocation.CODEC.optionalFieldOf("loot_table").forGetter(TNTChestComponent::lootTable)
+            ResourceLocation.CODEC.fieldOf("loot_table").forGetter(TNTChestComponent::lootTable)
     ).apply(builder, TNTChestComponent::new));
 
     @Override
@@ -39,7 +37,6 @@ public record TNTChestComponent(Anchor placement, Optional<ResourceLocation> loo
         }
         level.setBlock(position, Blocks.TRAPPED_CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction()), 3);
         level.setBlock(position.below(2), Blocks.TNT.defaultBlockState(), 3);
-        ResourceLocation lootTable = this.lootTable.orElse(Loot.getLootTable(stage, random));
         RandomizableContainerBlockEntity.setLootTable(level, random, position, lootTable);
     }
 

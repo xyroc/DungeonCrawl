@@ -100,9 +100,9 @@ public interface IRandom<T> {
                 return new SingleValueRandom<>(entries.get(0).getA());
             }
             if (entries.size() < 32) {
-                return new ListWeightedRandom<T>(entries);
+                return new ListWeightedRandom<>(entries);
             }
-            return new AVLTreeWeightedRandom<T>(entries);
+            return new AVLTreeWeightedRandom<>(entries);
         }
     }
 
@@ -137,12 +137,6 @@ public interface IRandom<T> {
     );
 
     Serializer<Delegate<DungeonType>> DUNGEON_TYPE = Serializer.reference(DatapackRegistries.DUNGEON_TYPE, "type");
-
-    Serializer<ResourceLocation> IDENTIFIER = new Serializer<>(
-            (json) -> new ResourceLocation(json.getAsString()),
-            (identifier) -> new JsonPrimitive(identifier.toString()),
-            "key"
-    );
 
     class Serializer<T> {
         public static <T> Serializer<Delegate<T>> reference(DatapackRegistry<T> registry, String valueKey) {

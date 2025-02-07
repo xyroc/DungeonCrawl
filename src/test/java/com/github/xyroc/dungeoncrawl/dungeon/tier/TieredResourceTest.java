@@ -31,9 +31,7 @@ public class TieredResourceTest {
         final JsonElement json = GSON.toJsonTree(builder, TIERED_STRING_TYPE);
 
         assertThat(json).isNotNull();
-        assertThat(json.isJsonObject()).isTrue();
-        assertThat(json.getAsJsonObject().has("tier_0")).isTrue();
-        assertThat(json.getAsJsonObject().get("tier_0").getAsString()).isEqualTo("first tier");
+        assertThat(json.getAsString()).isEqualTo("first tier");
 
         final var deserializedBuilder = GSON.fromJson(json, TIERED_STRING_TYPE);
         assertThat(deserializedBuilder).isNotNull();

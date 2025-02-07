@@ -95,6 +95,10 @@ public interface TieredResource<T> {
 
         @Override
         public Builder<T> deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
+            if (!json.isJsonObject()) {
+                final T firstTier = context.deserialize(json, resourceType);
+                return new Builder<>(firstTier);
+            }
             final JsonObject jsonObject = json.getAsJsonObject();
 
             final String firstTierKey = TIER_PREFIX + '0';
@@ -123,10 +127,15 @@ public interface TieredResource<T> {
 
         @Override
         public JsonElement serialize(Builder<T> builder, Type type, JsonSerializationContext context) {
+            final JsonElement firstTier = context.serialize(builder.firstTier, resourceType);
+            if (builder.followingTiers.isEmpty() && !firstTier.isJsonObject()) {
+                return firstTier;
+            }
+
             builder.sortTiers();
 
             final JsonObject object = new JsonObject();
-            object.add(TIER_PREFIX + '0', context.serialize(builder.firstTier, resourceType));
+            object.add(TIER_PREFIX + '0', firstTier);
             for (Tier<T> followingTier : builder.followingTiers) {
                 object.add(TIER_PREFIX + followingTier.startingFrom, context.serialize(followingTier.resource, resourceType));
             }

@@ -61,6 +61,7 @@ public class ResourceReloadHandler implements PreparableReloadListener {
         biomeMappings.forEach(mappings ->
                 mappings.getValues().forEach((ignored, mapping) ->
                         mapping.resolveTagReferences(biomeRegistry)));
+        DungeonTypes.biomeMapping().resolveTagReferences(biomeRegistry);
         DungeonCrawl.LOGGER.info("Updated biome mappings.");
     }
 

@@ -3,7 +3,7 @@ package xiroc.dungeoncrawl.datapack.registry;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import xiroc.dungeoncrawl.datapack.DatapackDirectories;
+import xiroc.dungeoncrawl.datapack.DatapackDirectory;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.io.InputStreamReader;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class DatapackRegistry<T> {
     static final String FILE_ENDING = ".json";
 
-    final DatapackDirectories.Directory directory;
+    final DatapackDirectory directory;
     final Consumer<BiConsumer<ResourceLocation, T>> builtin;
     final Parser<T> parser;
 
@@ -26,11 +26,11 @@ public class DatapackRegistry<T> {
     boolean isUnloaded = true;
     final HashMap<ResourceLocation, Delegate<T>> unresolvedReferences = new HashMap<>();
 
-    DatapackRegistry(DatapackDirectories.Directory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Function<Reader, T> fromJson) {
+    DatapackRegistry(DatapackDirectory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Function<Reader, T> fromJson) {
         this(directory, builtin, Parser.simple(fromJson));
     }
 
-    DatapackRegistry(DatapackDirectories.Directory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Parser<T> parser) {
+    DatapackRegistry(DatapackDirectory directory, Consumer<BiConsumer<ResourceLocation, T>> builtin, Parser<T> parser) {
         this.directory = directory;
         this.builtin = builtin;
         this.parser = parser;

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.commons.lang3.mutable.MutableObject;
-import xiroc.dungeoncrawl.datapack.DatapackDirectories;
+import xiroc.dungeoncrawl.datapack.DatapackDirectory;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class InheritingDatapackRegistry<T, B extends InheritingBuilder<T, B>> extends DatapackRegistry<T> {
     private final Function<Reader, B> parser;
 
-    InheritingDatapackRegistry(final DatapackDirectories.Directory directory,
+    InheritingDatapackRegistry(final DatapackDirectory directory,
                                final Consumer<BiConsumer<ResourceLocation, T>> builtin,
                                final Function<Reader, B> parser) {
         super(directory, builtin, (reader) -> {

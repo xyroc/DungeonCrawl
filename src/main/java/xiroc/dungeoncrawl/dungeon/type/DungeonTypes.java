@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class DungeonTypes {
-    public static final ResourceLocation FILE_LOCATION = DatapackDirectories.TYPE_MAPPINGS.file(DatapackNamespaces.DEFAULT, "dungeon_types.json");
+    public static final ResourceLocation FILE_LOCATION = DatapackDirectories.TYPE_MAPPINGS.resource(DatapackNamespaces.DEFAULT, "dungeon_types.json");
 
     private static RandomMapping<DungeonType> BIOME_TO_DUNGEON_TYPE_MAPPING;
 

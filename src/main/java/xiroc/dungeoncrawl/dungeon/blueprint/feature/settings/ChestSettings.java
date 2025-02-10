@@ -9,17 +9,19 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
+import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-public record ChestSettings(Optional<ResourceLocation> lootTable) {
+public record ChestSettings(Optional<TieredResource<ResourceLocation>> lootTable) {
     public ChestSettings() {
         this(Optional.empty());
     }
 
     public ResourceLocation getLootTable(LevelGenerator levelGenerator) {
-        return lootTable.orElse(levelGenerator.levelType.lootTable());
+        return lootTable.map(lootTables -> lootTables.forTier(levelGenerator.stage))
+                .orElse(levelGenerator.levelType.lootTable());
     }
 
     public static class Serializer implements JsonSerializer<ChestSettings>, JsonDeserializer<ChestSettings> {
@@ -27,15 +29,18 @@ public record ChestSettings(Optional<ResourceLocation> lootTable) {
 
         @Override
         public ChestSettings deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = jsonElement.getAsJsonObject();
-            Optional<ResourceLocation> lootTable = Optional.ofNullable(object.has(KEY_LOOT_TABLE) ? new ResourceLocation(object.get(KEY_LOOT_TABLE).getAsString()) : null);
+            final JsonObject object = jsonElement.getAsJsonObject();
+            final Optional<TieredResource<ResourceLocation>> lootTable = object.has(KEY_LOOT_TABLE) ?
+                    Optional.of(context.<TieredResource.Builder<ResourceLocation>>deserialize(object.get(KEY_LOOT_TABLE), TieredResource.Types.IDENTIFIER).build()) :
+                    Optional.empty();
             return new ChestSettings(lootTable);
         }
 
         @Override
         public JsonElement serialize(ChestSettings chestSettings, Type type, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            chestSettings.lootTable.ifPresent(resourceLocation -> object.addProperty(KEY_LOOT_TABLE, resourceLocation.toString()));
+            final JsonObject object = new JsonObject();
+            chestSettings.lootTable.ifPresent(lootTables ->
+                    object.add(KEY_LOOT_TABLE, context.serialize(new TieredResource.Builder<>(lootTables), TieredResource.Types.IDENTIFIER)));
             return object;
         }
     }

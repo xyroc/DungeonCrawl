@@ -1,6 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.tier;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -8,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -24,6 +27,15 @@ import java.util.List;
  * There must always be a tier starting at the number zero to ensure that there is a mapping for all non-negative integers.
  */
 public interface TieredResource<T> {
+
+    interface Types {
+        Type IDENTIFIER = new TypeToken<Builder<ResourceLocation>>() {}.getType();
+    }
+
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer());
+        builder.registerTypeAdapter(Types.IDENTIFIER, new BuilderSerializer<>(ResourceLocation.class));
+    }
 
     /**
      * Find the resource associated with the specified tier.
@@ -61,6 +73,17 @@ public interface TieredResource<T> {
         private final T firstTier;
         private final List<Tier<T>> followingTiers = new ArrayList<>();
 
+        public Builder(TieredResource<T> instance) {
+            if (instance instanceof TieredResource.SingleTier<T> singleTier) {
+                this.firstTier = singleTier.resource;
+            } else if (instance instanceof TieredResource.MultiTier<T> multiTier) {
+                this.firstTier = multiTier.firstTier;
+                this.followingTiers.addAll(multiTier.followingTiers);
+            } else {
+                throw new IllegalStateException("Invalid TieredResource type: " + instance.getClass());
+            }
+        }
+
         public Builder(T firstTier) {
             this.firstTier = firstTier;
         }
@@ -77,7 +100,6 @@ public interface TieredResource<T> {
             sortTiers();
             return new MultiTier<>(firstTier, ImmutableList.copyOf(followingTiers));
         }
-
         private void sortTiers() {
             followingTiers.sort(Comparator.comparingInt(Tier::startingFrom));
         }

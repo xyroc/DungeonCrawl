@@ -31,7 +31,6 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.monster.EquipmentHelper;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -42,7 +41,6 @@ import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -107,14 +105,14 @@ public interface IRandom<T> {
     }
 
     Serializer<Item> ITEM = new Serializer<>(
-            (json) -> EquipmentHelper.getItem(new ResourceLocation(json.getAsString())),
-            (item) -> new JsonPrimitive(Objects.requireNonNull(item.getRegistryName()).toString()),
+            json -> JSONUtils.GSON.fromJson(json, Item.class),
+            item -> JSONUtils.GSON.toJsonTree(item, Item.class),
             "item"
     );
 
     Serializer<BlockState> BLOCK_STATE = new Serializer<>(
-            JSONUtils::deserializeBlockState,
-            JSONUtils::serializeBlockState,
+            json -> JSONUtils.GSON.fromJson(json, BlockState.class),
+            state -> JSONUtils.GSON.toJsonTree(state, BlockState.class),
             "block"
     );
 

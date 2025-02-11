@@ -24,13 +24,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.arguments.blocks.BlockStateParser;
-import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
@@ -39,7 +34,8 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.theme.ThemeSerializers;
 import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 import xiroc.dungeoncrawl.dungeon.type.DungeonTypeSerializers;
-import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.json.BlockStateSerializer;
+import xiroc.dungeoncrawl.util.json.ItemSerializer;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
@@ -49,6 +45,7 @@ import java.util.function.Function;
 
 public interface JSONUtils {
     Gson GSON = withTypeAdapters(List.of(
+            JSONUtils::gsonAdapters,
             BlockStateProvider::gsonAdapters,
             BlueprintFeature::gsonAdapters,
             TemplateBlueprint::gsonAdapters,
@@ -59,6 +56,11 @@ public interface JSONUtils {
             RandomMapping::gsonAdapters,
             RandomValue::gsonAdapters,
             TieredResource::gsonAdapters)).create();
+
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(Item.class, new ItemSerializer())
+                .registerTypeAdapter(BlockState.class, new BlockStateSerializer());
+    }
 
     private static GsonBuilder withTypeAdapters(List<Consumer<GsonBuilder>> adapterProviders) {
         GsonBuilder builder = new GsonBuilder();
@@ -107,67 +109,5 @@ public interface JSONUtils {
             jsonArray.add(serializer.apply(thing));
         }
         return jsonArray;
-    }
-
-    /**
-     * Reads a block state from a json string
-     *
-     * @param json a json string representing the block state
-     * @return the block state
-     */
-    static BlockState deserializeBlockState(JsonElement json) {
-        String state = json.getAsString();
-        BlockStateParser parser = new BlockStateParser(new StringReader(state), false);
-        try {
-            parser.parse(false);
-            if (parser.getState() == null) {
-                throw new DatapackLoadException("Error while parsing block state: " + state);
-            }
-            return parser.getState();
-        } catch (CommandSyntaxException e) {
-            throw new DatapackLoadException("Could not parse block state: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Serializes the given block state to a json string.
-     *
-     * @param state the block state
-     * @return the serialized form of the block state
-     */
-    static JsonElement serializeBlockState(BlockState state) {
-        StringBuilder stateString = new StringBuilder(Registry.BLOCK.getKey(state.getBlock()).toString());
-
-        if (!state.getProperties().isEmpty()) {
-            StringBuilder properties = new StringBuilder();
-            boolean comma = false;
-
-            properties.append('[');
-            for (Property<?> property : state.getProperties()) {
-                if (state.getValue(property) == state.getBlock().defaultBlockState().getValue(property)) {
-                    continue; // Only serialize non-default values
-                }
-                if (comma) {
-                    properties.append(",");
-                }
-                comma = true;
-                serializeProperty(properties, property, state.getValue(property));
-
-            }
-            properties.append(']');
-
-            if (properties.length() > 2) {
-                stateString.append(properties);
-            }
-        }
-
-        return new JsonPrimitive(stateString.toString());
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends Comparable<T>> void serializeProperty(StringBuilder builder, Property<T> property, Comparable<?> value) {
-        builder.append(property.getName());
-        builder.append("=");
-        builder.append(property.getName((T) value));
     }
 }

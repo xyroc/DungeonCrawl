@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.lang.reflect.Type;
 import java.util.Random;
@@ -39,15 +38,17 @@ public class SingleBlock implements BlockStateProvider {
         @Override
         public SingleBlock deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             if (json.isJsonPrimitive()) {
-                return new SingleBlock(JSONUtils.deserializeBlockState(json));
+                final BlockState state = context.deserialize(json, BlockState.class);
+                return new SingleBlock(state);
             } else {
-                return new SingleBlock(JSONUtils.deserializeBlockState(json.getAsJsonObject().get(KEY_BLOCK)));
+                final BlockState state = context.deserialize(json.getAsJsonObject().get(KEY_BLOCK), BlockState.class);
+                return new SingleBlock(state);
             }
         }
 
         @Override
         public JsonElement serialize(SingleBlock src, Type typeOfSrc, JsonSerializationContext context) {
-            return JSONUtils.serializeBlockState(src.state).getAsJsonPrimitive();
+            return context.serialize(src, BlockState.class).getAsJsonPrimitive();
         }
     }
 }

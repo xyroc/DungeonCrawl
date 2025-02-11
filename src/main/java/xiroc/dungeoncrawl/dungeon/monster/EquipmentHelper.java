@@ -19,14 +19,10 @@
 package xiroc.dungeoncrawl.dungeon.monster;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.util.Random;
 
@@ -48,14 +44,5 @@ public class EquipmentHelper {
             nbt.put("display", display);
         }
         return armorPiece;
-    }
-
-    public static Item getItem(ResourceLocation resourceLocation) {
-        final var item = ForgeRegistries.ITEMS.getValue(resourceLocation);
-        if (item == null) {
-            DungeonCrawl.LOGGER.warn("Could not find the item {}.", resourceLocation.toString());
-            return Items.AIR;
-        }
-        return item;
     }
 }

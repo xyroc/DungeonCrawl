@@ -141,7 +141,7 @@ public class RandomMapping<V> {
         }
     }
 
-    public record BuilderSerializer<V>(IRandom.Serializer<Delegate<V>> valueSerializer) implements JsonSerializer<Builder<V>>, JsonDeserializer<Builder<V>> {
+    public record BuilderSerializer<V>(Type builderType) implements JsonSerializer<Builder<V>>, JsonDeserializer<Builder<V>> {
         private static final String KEY_FALLBACK = "default";
         private static final String KEY_MAPPING = "mapping";
         private static final String TAG_PREFIX = "#";
@@ -151,18 +151,19 @@ public class RandomMapping<V> {
             Builder<V> builder = new Builder<>();
             JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_FALLBACK)) {
-                builder.fallback = valueSerializer.deserializeBuilder(object.get(KEY_FALLBACK));
+                builder.fallback = context.deserialize(object.get(KEY_FALLBACK), builderType);
             }
             if (object.has(KEY_MAPPING)) {
                 JsonObject mapping = object.getAsJsonObject(KEY_MAPPING);
                 mapping.entrySet().forEach((entry) -> {
                     if (entry.getKey().startsWith(TAG_PREFIX)) {
                         ResourceLocation tagKey = new ResourceLocation(entry.getKey().substring(1));
-                        builder.tagEntries.put(tagKey, valueSerializer.deserializeBuilder(entry.getValue()));
+                        builder.tagEntries.put(tagKey, context.deserialize(entry.getValue(), builderType));
                         return;
                     }
                     final var key = new ResourceLocation(entry.getKey());
-                    builder.add(key, valueSerializer.deserializeBuilder(entry.getValue()));
+                    final IRandom.Builder<Delegate<V>> entries = context.deserialize(entry.getValue(), builderType);
+                    builder.add(key, entries);
                 });
             }
             return builder;
@@ -172,10 +173,10 @@ public class RandomMapping<V> {
         public JsonElement serialize(Builder<V> src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             JsonObject jsonMapping = new JsonObject();
-            src.entries.forEach((key, value) -> jsonMapping.add(key.toString(), valueSerializer.serializeBuilder(value)));
-            src.tagEntries.forEach((tagKey, value) -> jsonMapping.add(TAG_PREFIX + tagKey.toString(), valueSerializer.serializeBuilder(value)));
+            src.entries.forEach((key, value) -> jsonMapping.add(key.toString(), context.serialize(value, builderType)));
+            src.tagEntries.forEach((tagKey, value) -> jsonMapping.add(TAG_PREFIX + tagKey.toString(), context.serialize(value, builderType)));
             if (src.fallback != null) {
-                object.add(KEY_FALLBACK, valueSerializer.serializeBuilder(src.fallback));
+                object.add(KEY_FALLBACK, context.serialize(src.fallback, builderType));
             }
             object.add(KEY_MAPPING, jsonMapping);
             return object;
@@ -201,8 +202,8 @@ public class RandomMapping<V> {
     }
 
     public static void gsonAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(Types.PRIMARY_THEME, new BuilderSerializer<>(IRandom.PRIMARY_THEME));
-        builder.registerTypeAdapter(Types.SECONDARY_THEME, new BuilderSerializer<>(IRandom.SECONDARY_THEME));
-        builder.registerTypeAdapter(Types.DUNGEON_TYPE, new BuilderSerializer<>(IRandom.DUNGEON_TYPE));
+        builder.registerTypeAdapter(Types.PRIMARY_THEME, new BuilderSerializer<PrimaryTheme>(PrimaryTheme.Types.RANDOM_BUILDER));
+        builder.registerTypeAdapter(Types.SECONDARY_THEME, new BuilderSerializer<SecondaryTheme>(SecondaryTheme.Types.RANDOM_BUILDER));
+        builder.registerTypeAdapter(Types.DUNGEON_TYPE, new BuilderSerializer<DungeonType>(DungeonType.Types.RANDOM_BUILDER));
     }
 }

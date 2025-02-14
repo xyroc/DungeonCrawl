@@ -27,7 +27,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
-import xiroc.dungeoncrawl.util.random.value.Range;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -88,7 +87,18 @@ public class LevelGeneratorSettings {
         @Nullable
         private Integer minSeparation = null;
         @Nullable
-        private Range corridorLength = null;
+        private RandomValue corridorLength = null;
+
+        public static Builder fromInstance(LevelGeneratorSettings instance) {
+            final Builder builder = new Builder();
+            builder.maxRooms = instance.maxRooms;
+            builder.maxClusterNodes = instance.maxClusterNodes;
+            builder.maxDepth = instance.maxDepth;
+            builder.minStaircaseDepth = instance.minStaircaseDepth;
+            builder.minSeparation = instance.minSeparation;
+            builder.corridorLength = instance.corridorLength;
+            return builder;
+        }
 
         @Override
         public Builder inherit(Builder from) {
@@ -131,7 +141,7 @@ public class LevelGeneratorSettings {
             return this;
         }
 
-        public Builder corridorLength(Range corridorLength) {
+        public Builder corridorLength(RandomValue corridorLength) {
             this.corridorLength = corridorLength;
             return this;
         }

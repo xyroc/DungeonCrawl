@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
@@ -32,6 +33,13 @@ public record LevelType(LevelGeneratorSettings settings,
                         IRandom<Delegate<SpawnerType>> spawners,
                         ResourceLocation lootTable) {
 
+    /**
+     * Holds types representing the different contexts this class is serialized in.
+     */
+    public interface Types {
+        Type DELEGATE = new TypeToken<Delegate<LevelType>>() {}.getType();
+    }
+
     public static class Builder extends InheritingBuilder<LevelType, Builder> {
         @Nullable
         private LevelGeneratorSettings.Builder settings = null;
@@ -53,6 +61,21 @@ public record LevelType(LevelGeneratorSettings settings,
         private List<SpecialRoom> specialRooms = null;
         @Nullable
         private ResourceLocation lootTable = null;
+
+        public static Builder fromInstance(LevelType type) {
+            final Builder builder = new Builder();
+            builder.settings = LevelGeneratorSettings.Builder.fromInstance(type.settings);
+            builder.rooms = new IRandom.Builder<Delegate<Blueprint>>().add(type.rooms);
+            builder.upperStaircaseRooms = new IRandom.Builder<Delegate<Blueprint>>().add(type.upperStaircaseRooms);
+            builder.lowerStaircaseRooms = new IRandom.Builder<Delegate<Blueprint>>().add(type.lowerStaircaseRooms);
+            if (type.clusterRooms != null) {
+                builder.clusterRooms = new IRandom.Builder<IRandom<Delegate<Blueprint>>>().add(type.clusterRooms);
+            }
+            builder.spawnerTypes = new IRandom.Builder<Delegate<SpawnerType>>().add(type.spawners);
+            builder.corridorStyles = new IRandom.Builder<CorridorStyle>().add(type.corridorStyles);
+            builder.lootTable = type.lootTable;
+            return builder;
+        }
 
         @Override
         public Builder inherit(Builder from) {
@@ -149,9 +172,6 @@ public record LevelType(LevelGeneratorSettings settings,
         private static final String KEY_SPAWNER_TYPES = "spawners";
         private static final String KEY_LOOT_TABLE = "loot_table";
 
-        private static final IRandom.Serializer<IRandom<Delegate<Blueprint>>> ROOM_SET =
-                new IRandom.Serializer<>(IRandom.BLUEPRINT::deserialize, IRandom.BLUEPRINT::serialize, "rooms");
-
         @Override
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             Builder builder = new Builder();
@@ -161,23 +181,23 @@ public record LevelType(LevelGeneratorSettings settings,
             if (object.has(KEY_BLUEPRINTS)) {
                 JsonObject blueprints = object.get(KEY_BLUEPRINTS).getAsJsonObject();
                 if (blueprints.has(KEY_ROOMS))
-                    builder.rooms = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_ROOMS));
+                    builder.rooms = context.deserialize(blueprints.get(KEY_ROOMS), Blueprint.Types.RANDOM_BUILDER);
                 if (blueprints.has(KEY_UPPER_STAIRCASE_ROOMS))
-                    builder.upperStaircaseRooms = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_UPPER_STAIRCASE_ROOMS));
+                    builder.upperStaircaseRooms = context.deserialize(blueprints.get(KEY_UPPER_STAIRCASE_ROOMS), Blueprint.Types.RANDOM_BUILDER);
                 if (blueprints.has(KEY_LOWER_STAIRCASE_ROOMS))
-                    builder.lowerStaircaseRooms = IRandom.BLUEPRINT.deserializeBuilder(blueprints.get(KEY_LOWER_STAIRCASE_ROOMS));
+                    builder.lowerStaircaseRooms = context.deserialize(blueprints.get(KEY_LOWER_STAIRCASE_ROOMS), Blueprint.Types.RANDOM_BUILDER);
                 if (blueprints.has(KEY_CLUSTER_ROOMS)) {
-                    builder.clusterRooms = ROOM_SET.deserializeBuilder(blueprints.get(KEY_CLUSTER_ROOMS));
+                    builder.clusterRooms = context.deserialize(blueprints.get(KEY_CLUSTER_ROOMS), Blueprint.Types.RANDOM_RANDOM_BUILDER);
                 }
                 if (blueprints.has(KEY_SPECIAL_ROOMS)) {
                     builder.specialRooms = JSONUtils.deserializeList(blueprints.getAsJsonArray(KEY_SPECIAL_ROOMS), elem -> context.deserialize(elem, SpecialRoom.class));
                 }
             }
             if (object.has(KEY_CORRIDOR_STYLES)) {
-                builder.corridorStyles = IRandom.CORRIDOR_STYLE.deserializeBuilder(object.get(KEY_CORRIDOR_STYLES));
+                builder.corridorStyles = context.deserialize(object.get(KEY_CORRIDOR_STYLES), CorridorStyle.Types.RANDOM_BUILDER);
             }
             if (object.has(KEY_SPAWNER_TYPES)) {
-                builder.spawnerTypes = IRandom.SPAWNER_TYPE.deserializeBuilder(object.get(KEY_SPAWNER_TYPES));
+                builder.spawnerTypes = context.deserialize(object.get(KEY_SPAWNER_TYPES), SpawnerType.Types.RANDOM_BUILDER);
             }
             if (object.has(KEY_LOOT_TABLE)) {
                 builder.lootTable = new ResourceLocation(object.get(KEY_LOOT_TABLE).getAsString());
@@ -193,13 +213,13 @@ public record LevelType(LevelGeneratorSettings settings,
 
             JsonObject blueprints = new JsonObject();
             if (builder.rooms != null)
-                blueprints.add(KEY_ROOMS, IRandom.BLUEPRINT.serializeBuilder(builder.rooms));
+                blueprints.add(KEY_ROOMS, context.serialize(builder.rooms, Blueprint.Types.RANDOM_BUILDER));
             if (builder.upperStaircaseRooms != null)
-                blueprints.add(KEY_UPPER_STAIRCASE_ROOMS, IRandom.BLUEPRINT.serializeBuilder(builder.upperStaircaseRooms));
+                blueprints.add(KEY_UPPER_STAIRCASE_ROOMS, context.serialize(builder.upperStaircaseRooms, Blueprint.Types.RANDOM_BUILDER));
             if (builder.lowerStaircaseRooms != null)
-                blueprints.add(KEY_LOWER_STAIRCASE_ROOMS, IRandom.BLUEPRINT.serializeBuilder(builder.lowerStaircaseRooms));
+                blueprints.add(KEY_LOWER_STAIRCASE_ROOMS, context.serialize(builder.lowerStaircaseRooms, Blueprint.Types.RANDOM_BUILDER));
             if (builder.clusterRooms != null) {
-                blueprints.add(KEY_CLUSTER_ROOMS, ROOM_SET.serializeBuilder(builder.clusterRooms));
+                blueprints.add(KEY_CLUSTER_ROOMS, context.serialize(builder.clusterRooms, Blueprint.Types.RANDOM_RANDOM_BUILDER));
             }
             if (builder.specialRooms != null) {
                 blueprints.add(KEY_SPECIAL_ROOMS, JSONUtils.serializeList(builder.specialRooms, context::serialize));
@@ -210,11 +230,11 @@ public record LevelType(LevelGeneratorSettings settings,
             }
 
             if (builder.corridorStyles != null) {
-                object.add(KEY_CORRIDOR_STYLES, IRandom.CORRIDOR_STYLE.serializeBuilder(builder.corridorStyles));
+                object.add(KEY_CORRIDOR_STYLES, context.serialize(builder.corridorStyles, CorridorStyle.Types.RANDOM_BUILDER));
             }
 
             if (builder.spawnerTypes != null) {
-                object.add(KEY_SPAWNER_TYPES, IRandom.SPAWNER_TYPE.serializeBuilder(builder.spawnerTypes));
+                object.add(KEY_SPAWNER_TYPES, context.serialize(builder.spawnerTypes, SpawnerType.Types.RANDOM_BUILDER));
             }
 
             if (builder.lootTable != null) {

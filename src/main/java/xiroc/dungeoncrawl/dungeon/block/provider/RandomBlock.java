@@ -61,14 +61,14 @@ public class RandomBlock implements BlockStateProvider {
         @Override
         public RandomBlock deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             if (json.isJsonArray()) {
-                return new RandomBlock(IRandom.BLOCK_STATE.deserialize(json));
+                return new RandomBlock(context.deserialize(json, IRandom.VanillaTypes.BLOCK_STATE));
             }
-            return new RandomBlock(IRandom.BLOCK_STATE.deserialize(json.getAsJsonObject().get(KEY_BLOCKS)));
+            return new RandomBlock(context.deserialize(json.getAsJsonObject().get(KEY_BLOCKS), IRandom.VanillaTypes.BLOCK_STATE));
         }
 
         @Override
         public JsonElement serialize(RandomBlock src, Type typeOfSrc, JsonSerializationContext context) {
-            var json = IRandom.BLOCK_STATE.serialize(src.states);
+            var json = context.serialize(src.states, IRandom.VanillaTypes.BLOCK_STATE);
             if (json.isJsonObject()) {
                 json.getAsJsonObject().addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_RANDOM_BLOCK);
             }

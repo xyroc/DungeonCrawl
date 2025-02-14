@@ -23,7 +23,7 @@ public record SpecialRoom(IRandom<Delegate<Blueprint>> variants, RandomValue min
         @Override
         public SpecialRoom deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
-            final IRandom<Delegate<Blueprint>> variants = IRandom.BLUEPRINT.deserialize(object.get(KEY_VARIANTS));
+            final IRandom<Delegate<Blueprint>> variants = context.deserialize(object.get(KEY_VARIANTS), Blueprint.Types.RANDOM);
             final RandomValue minDepth = context.deserialize(object.get(KEY_MIN_DEPTH), RandomValue.class);
             final RandomValue amount = context.deserialize(object.get(KEY_AMOUNT), RandomValue.class);
             return new SpecialRoom(variants, minDepth, amount);
@@ -32,7 +32,7 @@ public record SpecialRoom(IRandom<Delegate<Blueprint>> variants, RandomValue min
         @Override
         public JsonElement serialize(SpecialRoom specialRoom, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            object.add(KEY_VARIANTS, IRandom.BLUEPRINT.serialize(specialRoom.variants));
+            object.add(KEY_VARIANTS, context.serialize(specialRoom.variants, Blueprint.Types.RANDOM));
             object.add(KEY_MIN_DEPTH, context.serialize(specialRoom.minDepth));
             object.add(KEY_AMOUNT, context.serialize(specialRoom.amount));
             return object;

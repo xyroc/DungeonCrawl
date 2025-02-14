@@ -88,7 +88,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Delegate<B
         public BlueprintMultipart deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             ResourceLocation anchorType = new ResourceLocation(object.get(KEY_POSITIONS).getAsString());
-            IRandom<Delegate<Blueprint>> blueprints = IRandom.BLUEPRINT.deserialize(object.get(KEY_BLUEPRINTS));
+            IRandom<Delegate<Blueprint>> blueprints = context.deserialize(object.get(KEY_BLUEPRINTS), Blueprint.Types.RANDOM);
             return new BlueprintMultipart(anchorType, blueprints);
         }
 
@@ -96,7 +96,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Delegate<B
         public JsonElement serialize(BlueprintMultipart src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
             object.addProperty(KEY_POSITIONS, src.anchorType.toString());
-            object.add(KEY_BLUEPRINTS, IRandom.BLUEPRINT.serialize(src.blueprints));
+            object.add(KEY_BLUEPRINTS, context.serialize(src.blueprints, Blueprint.Types.RANDOM));
             return object;
         }
     }

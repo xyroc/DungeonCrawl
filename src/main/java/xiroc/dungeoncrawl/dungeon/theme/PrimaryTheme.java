@@ -7,8 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
+import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
@@ -21,6 +24,14 @@ public record PrimaryTheme(BlockStateProvider masonry,
                            BlockStateProvider stairs,
                            BlockStateProvider slab,
                            BlockStateProvider wall) {
+
+    /**
+     * Holds types representing the different contexts this class is serialized in.
+     */
+    public interface Types {
+        Type DELEGATE = new TypeToken<Delegate<PrimaryTheme>>() {}.getType();
+        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<PrimaryTheme>>>() {}.getType();
+    }
 
     public static class Serializer implements JsonSerializer<PrimaryTheme>, JsonDeserializer<PrimaryTheme> {
         private static final String KEY_MASONRY = "masonry";

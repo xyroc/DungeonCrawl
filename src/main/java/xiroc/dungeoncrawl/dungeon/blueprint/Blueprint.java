@@ -2,6 +2,8 @@ package xiroc.dungeoncrawl.dungeon.blueprint;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -16,11 +18,32 @@ import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
+import java.lang.reflect.Type;
 import java.util.Random;
 
 public interface Blueprint {
     Codec<Delegate<Blueprint>> CODEC = ResourceLocation.CODEC.xmap(DatapackRegistries.BLUEPRINT::delegateOrThrow, Delegate::key);
+
+    /**
+     * Holds types representing the different contexts this class is used in.
+     */
+    interface Types {
+        Type DELEGATE = new TypeToken<Delegate<Blueprint>>() {}.getType();
+
+        Type RANDOM = new TypeToken<IRandom<Delegate<Blueprint>>>() {}.getType();
+        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<Blueprint>>>() {}.getType();
+
+        Type RANDOM_RANDOM_BUILDER = new TypeToken<IRandom.Builder<IRandom<Blueprint>>>() {}.getType();
+    }
+
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(Types.DELEGATE, new Delegate.Serializer<>(DatapackRegistries.BLUEPRINT, null));
+        builder.registerTypeAdapter(Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<Blueprint>>(Types.DELEGATE, "blueprint"));
+        builder.registerTypeAdapter(Types.RANDOM, new IRandom.DirectSerializer<Delegate<Blueprint>>(Types.RANDOM_BUILDER));
+        builder.registerTypeAdapter(Types.RANDOM_RANDOM_BUILDER, new IRandom.BuilderSerializer<IRandom<Delegate<Blueprint>>>(Types.RANDOM, "blueprints"));
+    }
 
     void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random,
                PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage);

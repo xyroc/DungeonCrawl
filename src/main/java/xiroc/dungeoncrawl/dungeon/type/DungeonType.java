@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
@@ -20,6 +21,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<DungeonSection> sections) {
+    /**
+     * Holds types representing the different contexts this class is serialized in.
+     */
+    public interface Types {
+        Type DELEGATE = new TypeToken<Delegate<DungeonType>>() {}.getType();
+        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<DungeonType>>>() {}.getType();
+    }
+
     public static class Builder extends InheritingBuilder<DungeonType, Builder> {
         @Nullable
         private IRandom.Builder<Delegate<Blueprint>> entrances = null;
@@ -63,7 +72,7 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
             final JsonObject object = json.getAsJsonObject();
             final Builder builder = new Builder();
             if (object.has(KEY_ENTRANCES)) {
-                builder.entrances = IRandom.BLUEPRINT.deserializeBuilder(object.get(KEY_ENTRANCES));
+                builder.entrances = context.deserialize(object.get(KEY_ENTRANCES), Blueprint.Types.RANDOM_BUILDER);
             }
             if (object.has(KEY_SECTIONS)) {
                 for (final JsonElement section : object.getAsJsonArray(KEY_SECTIONS)) {
@@ -77,7 +86,7 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
             final JsonObject object = new JsonObject();
             if (builder.entrances != null) {
-                object.add(KEY_ENTRANCES, IRandom.BLUEPRINT.serializeBuilder(builder.entrances));
+                object.add(KEY_ENTRANCES, context.serialize(builder.entrances, Blueprint.Types.RANDOM_BUILDER));
             }
             if (!builder.sections.isEmpty()) {
                 final JsonArray sections = new JsonArray();

@@ -70,7 +70,8 @@ public record DungeonSection(ImmutableList<Delegate<LevelType>> levels,
             JsonArray levels = object.get(KEY_LEVELS).getAsJsonArray();
             ImmutableList.Builder<Delegate<LevelType>> builder = ImmutableList.builder();
             for (JsonElement level : levels) {
-                builder.add(Delegate.deserialize(level, DatapackRegistries.LEVEL_TYPE, (inlined) -> context.deserialize(inlined, LevelType.class)));
+                final Delegate<LevelType> levelType = context.deserialize(level, LevelType.Types.DELEGATE);
+                builder.add(levelType);
             }
             JsonObject themes = object.get(KEY_THEMES).getAsJsonObject();
             var primaryThemes = DatapackRegistries.PRIMARY_THEME_MAPPINGS.delegateOrThrow(new ResourceLocation(themes.get(KEY_THEME_PRIMARY).getAsString()));
@@ -83,7 +84,7 @@ public record DungeonSection(ImmutableList<Delegate<LevelType>> levels,
             JsonObject object = new JsonObject();
             JsonArray levels = new JsonArray();
             for (var level : section.levels) {
-                levels.add(level.serialize(context::serialize));
+                levels.add(context.serialize(level, LevelType.Types.DELEGATE));
             }
             object.add(KEY_LEVELS, levels);
             JsonObject themes = new JsonObject();

@@ -32,7 +32,7 @@ public record SpawnerSettings(Optional<IRandom<Delegate<SpawnerType>>> types) {
             JsonObject object = jsonElement.getAsJsonObject();
             Optional<IRandom<Delegate<SpawnerType>>> spawnerTypes = Optional.empty();
             if (object.has(KEY_TYPES)) {
-                spawnerTypes = Optional.of(IRandom.SPAWNER_TYPE.deserialize(object.get(KEY_TYPES)));
+                spawnerTypes = Optional.of(context.deserialize(object.get(KEY_TYPES), SpawnerType.Types.RANDOM));
             }
             return new SpawnerSettings(spawnerTypes);
         }
@@ -40,7 +40,7 @@ public record SpawnerSettings(Optional<IRandom<Delegate<SpawnerType>>> types) {
         @Override
         public JsonElement serialize(SpawnerSettings spawnerSettings, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            spawnerSettings.types.ifPresent(spawnerTypes -> object.add(KEY_TYPES, IRandom.SPAWNER_TYPE.serialize(spawnerTypes)));
+            spawnerSettings.types.ifPresent(spawnerTypes -> object.add(KEY_TYPES, context.serialize(spawnerTypes, SpawnerType.Types.RANDOM)));
             return object;
         }
     }

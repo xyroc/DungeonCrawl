@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
@@ -35,6 +36,15 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
                           RandomValue initialSpawnDelay,
                           int maxLightLevel,
                           short activationRange) {
+
+    /**
+     * Holds types representing the different contexts this class is serialized in.
+     */
+    public interface Types {
+        Type DELEGATE = new TypeToken<Delegate<SpawnerType>>() {}.getType();
+        Type RANDOM = new TypeToken<IRandom<Delegate<SpawnerType>>>() {}.getType();
+        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<SpawnerType>>>() {}.getType();
+    }
 
     public CompoundTag createData(Random random, int stage) {
         CompoundTag nbt = new CompoundTag();
@@ -229,7 +239,7 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             Builder builder = new Builder();
             JsonObject object = json.getAsJsonObject();
-            if (object.has(KEY_ENTITIES)) builder.entities = IRandom.SPAWNER_ENTITY.deserializeBuilder(object.get(KEY_ENTITIES));
+            if (object.has(KEY_ENTITIES)) builder.entities = context.deserialize(object.get(KEY_ENTITIES), SpawnerEntityType.Types.RANDOM_BUILDER);
             if (object.has(KEY_SPAWN_AMOUNT)) builder.spawnAmount = context.deserialize(object.get(KEY_SPAWN_AMOUNT), RandomValue.class);
             if (object.has(KEY_SPAWN_DELAY)) builder.spawnDelay = context.deserialize(object.get(KEY_SPAWN_DELAY), RandomValue.class);
             if (object.has(KEY_INITIAL_SPAWN_DELAY)) builder.initialSpawnDelay = context.deserialize(object.get(KEY_INITIAL_SPAWN_DELAY), RandomValue.class);
@@ -243,7 +253,7 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
         @Override
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            if (builder.entities != null) object.add(KEY_ENTITIES, IRandom.SPAWNER_ENTITY.serializeBuilder(builder.entities));
+            if (builder.entities != null) object.add(KEY_ENTITIES, context.serialize(builder.entities, SpawnerEntityType.Types.RANDOM_BUILDER));
             if (builder.spawnAmount != null) object.add(KEY_SPAWN_AMOUNT, context.serialize(builder.spawnAmount));
             if (builder.spawnDelay != null) object.add(KEY_SPAWN_DELAY, context.serialize(builder.spawnDelay));
             if (builder.initialSpawnDelay != null) object.add(KEY_INITIAL_SPAWN_DELAY, context.serialize(builder.initialSpawnDelay));

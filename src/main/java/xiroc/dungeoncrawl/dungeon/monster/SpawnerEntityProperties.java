@@ -146,12 +146,13 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
             JsonObject object = json.getAsJsonObject();
             if (object.has(KEY_EQUIPMENT)) {
                 JsonObject equipment = object.getAsJsonObject(KEY_EQUIPMENT);
-                builder.mainHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_MAIN_HAND, IRandom.ITEM::deserializeBuilder);
-                builder.offHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_OFF_HAND, IRandom.ITEM::deserializeBuilder);
-                builder.helmet = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_HELMET, IRandom.ITEM::deserializeBuilder);
-                builder.chestplate = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_CHESTPLATE, IRandom.ITEM::deserializeBuilder);
-                builder.leggings = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_LEGGINGS, IRandom.ITEM::deserializeBuilder);
-                builder.boots = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_BOOTS, IRandom.ITEM::deserializeBuilder);
+                builder.mainHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_MAIN_HAND, items -> context.deserialize(items, IRandom.VanillaTypes.Builder.ITEM));
+                builder.offHand = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_OFF_HAND, items -> context.deserialize(items, IRandom.VanillaTypes.Builder.ITEM));
+                builder.helmet = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_HELMET, items -> context.deserialize(items, IRandom.VanillaTypes.Builder.ITEM));
+                builder.chestplate = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_CHESTPLATE, items -> context.deserialize(items, IRandom.VanillaTypes.Builder.ITEM));
+                builder.leggings = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_LEGGINGS, items -> context.deserialize(items, IRandom.VanillaTypes.Builder.ITEM));
+                builder.boots = JSONUtils.deserializeOrNull(equipment, KEY_EQUIPMENT_BOOTS, items -> context.deserialize(items, IRandom.VanillaTypes.Builder.ITEM));
+
                 if (equipment.has(KEY_EQUIPMENT_DROP_CHANCES)) {
                     JsonObject dropChances = equipment.getAsJsonObject(KEY_EQUIPMENT_DROP_CHANCES);
                     builder.handDropChance = JSONUtils.deserializeOrNull(dropChances, KEY_EQUIPMENT_DROP_CHANCE_HAND, JsonElement::getAsFloat);
@@ -166,12 +167,12 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
             JsonObject properties = new JsonObject();
             JsonObject equipment = new JsonObject();
 
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_MAIN_HAND, builder.mainHand, IRandom.ITEM::serializeBuilder);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_OFF_HAND, builder.offHand, IRandom.ITEM::serializeBuilder);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_HELMET, builder.helmet, IRandom.ITEM::serializeBuilder);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_CHESTPLATE, builder.chestplate, IRandom.ITEM::serializeBuilder);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_LEGGINGS, builder.leggings, IRandom.ITEM::serializeBuilder);
-            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_BOOTS, builder.boots, IRandom.ITEM::serializeBuilder);
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_MAIN_HAND, builder.mainHand, items -> context.serialize(items, IRandom.VanillaTypes.Builder.ITEM));
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_OFF_HAND, builder.offHand, items -> context.serialize(items, IRandom.VanillaTypes.Builder.ITEM));
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_HELMET, builder.helmet, items -> context.serialize(items, IRandom.VanillaTypes.Builder.ITEM));
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_CHESTPLATE, builder.chestplate, items -> context.serialize(items, IRandom.VanillaTypes.Builder.ITEM));
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_LEGGINGS, builder.leggings, items -> context.serialize(items, IRandom.VanillaTypes.Builder.ITEM));
+            JSONUtils.serializeIfNonNull(equipment, KEY_EQUIPMENT_BOOTS, builder.boots, items -> context.serialize(items, IRandom.VanillaTypes.Builder.ITEM));
 
             JsonObject dropChances = new JsonObject();
 

@@ -27,6 +27,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
@@ -36,6 +37,7 @@ import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 import xiroc.dungeoncrawl.dungeon.type.DungeonTypeSerializers;
 import xiroc.dungeoncrawl.util.json.BlockStateSerializer;
 import xiroc.dungeoncrawl.util.json.ItemSerializer;
+import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
@@ -48,6 +50,7 @@ public interface JSONUtils {
             JSONUtils::gsonAdapters,
             BlockStateProvider::gsonAdapters,
             BlueprintFeature::gsonAdapters,
+            Blueprint::gsonAdapters,
             TemplateBlueprint::gsonAdapters,
             DungeonDecoration::gsonAdapters,
             SpawnerSerializers::gsonAdapters,
@@ -55,6 +58,7 @@ public interface JSONUtils {
             DungeonTypeSerializers::gsonAdapters,
             RandomMapping::gsonAdapters,
             RandomValue::gsonAdapters,
+            IRandom::gsonAdapters,
             TieredResource::gsonAdapters)).create();
 
     static void gsonAdapters(GsonBuilder builder) {

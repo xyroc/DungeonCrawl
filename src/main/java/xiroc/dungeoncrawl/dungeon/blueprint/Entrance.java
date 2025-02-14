@@ -50,16 +50,16 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
             @Override
             public CustomParts deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
                 JsonObject object = json.getAsJsonObject();
-                IRandom<Delegate<Blueprint>> open = IRandom.BLUEPRINT.deserialize(object.get(KEY_OPEN));
-                IRandom<Delegate<Blueprint>> closed = IRandom.BLUEPRINT.deserialize(object.get(KEY_CLOSED));
+                IRandom<Delegate<Blueprint>> open = context.deserialize(object.get(KEY_OPEN), Blueprint.Types.RANDOM);
+                IRandom<Delegate<Blueprint>> closed = context.deserialize(object.get(KEY_CLOSED), Blueprint.Types.RANDOM);
                 return new CustomParts(open, closed);
             }
 
             @Override
             public JsonElement serialize(CustomParts customParts, Type type, JsonSerializationContext context) {
                 JsonObject object = new JsonObject();
-                object.add(KEY_OPEN, IRandom.BLUEPRINT.serialize(customParts.open));
-                object.add(KEY_CLOSED, IRandom.BLUEPRINT.serialize(customParts.closed));
+                object.add(KEY_OPEN, context.serialize(customParts.open, Blueprint.Types.RANDOM));
+                object.add(KEY_CLOSED, context.serialize(customParts.closed, Blueprint.Types.RANDOM));
                 return object;
             }
         }

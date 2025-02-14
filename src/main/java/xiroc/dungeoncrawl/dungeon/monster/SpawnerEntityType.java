@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -14,6 +15,7 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.datapack.registry.InheritingDelegate;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -21,6 +23,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 public record SpawnerEntityType(ResourceLocation entity, Optional<Delegate<SpawnerEntityProperties>> properties) {
+    /**
+     * Holds types representing the different contexts this class is serialized in.
+     */
+    interface Types {
+        Type DELEGATE = new TypeToken<Delegate<SpawnerEntityType>>() {}.getType();
+        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<SpawnerEntityType>>>() {}.getType();
+    }
+
     public SpawnerEntityType(EntityType<?> entityType) {
         this(Registry.ENTITY_TYPE.getKey(entityType), Optional.empty());
     }
@@ -30,6 +40,10 @@ public record SpawnerEntityType(ResourceLocation entity, Optional<Delegate<Spawn
     }
 
     public static class Builder extends InheritingBuilder<SpawnerEntityType, Builder> {
+        public static Builder fromInstance(SpawnerEntityType type) {
+            return new Builder().copy(type);
+        }
+
         @Nullable
         private ResourceLocation entity = null;
 

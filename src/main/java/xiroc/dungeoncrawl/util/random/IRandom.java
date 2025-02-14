@@ -18,31 +18,25 @@
 
 package xiroc.dungeoncrawl.util.random;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import net.minecraft.resources.ResourceLocation;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.dungeon.type.DungeonType;
-import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
-import xiroc.dungeoncrawl.util.JSONUtils;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
 /**
  * Used to provide random objects of various types.
@@ -104,68 +98,33 @@ public interface IRandom<T> {
         }
     }
 
-    Serializer<Item> ITEM = new Serializer<>(
-            json -> JSONUtils.GSON.fromJson(json, Item.class),
-            item -> JSONUtils.GSON.toJsonTree(item, Item.class),
-            "item"
-    );
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(VanillaTypes.Builder.BLOCK_STATE, new BuilderSerializer<BlockState>(BlockState.class, "block"))
+                .registerTypeAdapter(VanillaTypes.Builder.ITEM, new BuilderSerializer<Item>(Item.class, "item"))
+                .registerTypeAdapter(VanillaTypes.BLOCK_STATE, new DirectSerializer<BlockState>(VanillaTypes.Builder.BLOCK_STATE));
+    }
 
-    Serializer<BlockState> BLOCK_STATE = new Serializer<>(
-            json -> JSONUtils.GSON.fromJson(json, BlockState.class),
-            state -> JSONUtils.GSON.toJsonTree(state, BlockState.class),
-            "block"
-    );
+    interface VanillaTypes {
+        Type BLOCK_STATE = new TypeToken<IRandom<BlockState>>() {}.getType();
 
-    Serializer<Delegate<SpawnerEntityType>> SPAWNER_ENTITY = Serializer.referenceOrInlined(
-            DatapackRegistries.SPAWNER_ENTITY_TYPE,
-            "entity",
-            (json) -> JSONUtils.GSON.fromJson(json, SpawnerEntityType.Builder.class).build(),
-            (type) -> JSONUtils.GSON.toJsonTree(new SpawnerEntityType.Builder().copy(type))
-    );
-
-    Serializer<Delegate<SpawnerType>> SPAWNER_TYPE = Serializer.reference(DatapackRegistries.SPAWNER_TYPE, "type");
-    Serializer<Delegate<Blueprint>> BLUEPRINT = Serializer.reference(DatapackRegistries.BLUEPRINT, "blueprint");
-    Serializer<Delegate<PrimaryTheme>> PRIMARY_THEME = Serializer.reference(DatapackRegistries.PRIMARY_THEME, "theme");
-    Serializer<Delegate<SecondaryTheme>> SECONDARY_THEME = Serializer.reference(DatapackRegistries.SECONDARY_THEME, "theme");
-
-    Serializer<CorridorStyle> CORRIDOR_STYLE = new Serializer<>(
-            json -> JSONUtils.GSON.fromJson(json, CorridorStyle.class),
-            style -> JSONUtils.GSON.toJsonTree(style, CorridorStyle.class),
-            "style"
-    );
-
-    Serializer<Delegate<DungeonType>> DUNGEON_TYPE = Serializer.reference(DatapackRegistries.DUNGEON_TYPE, "type");
-
-    class Serializer<T> {
-        public static <T> Serializer<Delegate<T>> reference(DatapackRegistry<T> registry, String valueKey) {
-            return new Serializer<>(json -> Delegate.deserialize(json, registry), delegate -> new JsonPrimitive(delegate.key().toString()), valueKey);
+        interface Builder {
+            Type BLOCK_STATE = new TypeToken<IRandom.Builder<BlockState>>() {}.getType();
+            Type ITEM = new TypeToken<IRandom.Builder<Item>>() {}.getType();
         }
+    }
 
-        public static <T> Serializer<Delegate<T>> referenceOrInlined(DatapackRegistry<T> registry, String valueKey,
-                                                                     Function<JsonElement, T> deserializer, Function<T, JsonElement> serializer) {
-            return new Serializer<>(json -> Delegate.deserialize(json, registry, deserializer), delegate -> delegate.serialize(serializer), valueKey);
-        }
-
+    record BuilderSerializer<T>(Type valueType, String valueKey) implements JsonSerializer<Builder<T>>, JsonDeserializer<Builder<T>> {
         private static final boolean REPLACE_BY_DEFAULT = InheritingBuilder.REPLACE_BY_DEFAULT;
 
         private static final String KEY_REPLACE = InheritingBuilder.KEY_REPLACE;
         private static final String KEY_VALUES = "values";
         private static final String KEY_WEIGHT = "weight";
 
-        private final Function<JsonElement, T> deserializer;
-        private final Function<T, JsonElement> serializer;
-        private final String valueKey;
-
-        public Serializer(Function<JsonElement, T> deserializer, Function<T, JsonElement> serializer, String valueKey) {
-            this.deserializer = deserializer;
-            this.serializer = serializer;
-            this.valueKey = valueKey;
-        }
-
-        public IRandom.Builder<T> deserializeBuilder(JsonElement json) {
-            Builder<T> builder = new Builder<>();
+        @Override
+        public Builder<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            final Builder<T> builder = new Builder<>();
             if (json.isJsonPrimitive()) {
-                builder.add(deserializer.apply(json));
+                builder.add(context.<T>deserialize(json, valueType));
             } else {
                 if (json.isJsonObject()) {
                     JsonObject object = json.getAsJsonObject();
@@ -174,22 +133,19 @@ public interface IRandom<T> {
                 }
                 for (JsonElement element : json.getAsJsonArray()) {
                     if (element.isJsonPrimitive()) {
-                        builder.add(deserializer.apply(element));
+                        builder.add(context.<T>deserialize(element, valueType));
                         continue;
                     }
                     JsonObject object = element.getAsJsonObject();
                     int weight = object.has(KEY_WEIGHT) ? object.get(KEY_WEIGHT).getAsInt() : Builder.DEFAULT_WEIGHT;
-                    builder.add(deserializer.apply(object.get(valueKey)), weight);
+                    builder.add(context.deserialize(object.get(valueKey), valueType), weight);
                 }
             }
             return builder;
         }
 
-        public IRandom<T> deserialize(JsonElement json) {
-            return deserializeBuilder(json).build();
-        }
-
-        public JsonElement serializeBuilder(Builder<T> builder) {
+        @Override
+        public JsonElement serialize(Builder<T> builder, Type typeOfSrc, JsonSerializationContext context) {
             if (builder.entries.isEmpty()) {
                 throw new IllegalStateException("Need at least one entry");
             }
@@ -199,7 +155,7 @@ public interface IRandom<T> {
                 final T value = entry.getA();
                 final int weight = entry.getB();
 
-                JsonElement jsonEntry = serializer.apply(value);
+                JsonElement jsonEntry = context.serialize(value, valueType);
                 if (weight != Builder.DEFAULT_WEIGHT || jsonEntry.isJsonObject()) {
                     JsonObject entryObject = new JsonObject();
                     entryObject.add(valueKey, jsonEntry);
@@ -226,9 +182,20 @@ public interface IRandom<T> {
 
             return serialized;
         }
+    }
 
-        public JsonElement serialize(IRandom<T> random) {
-            return serializeBuilder(Builder.copy(random));
+    record DirectSerializer<T>(Type builderType) implements JsonSerializer<IRandom<T>>, JsonDeserializer<IRandom<T>> {
+        @Override
+        public IRandom<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            final Builder<T> builder = context.deserialize(json, builderType);
+            return builder.build();
+        }
+
+        @Override
+        public JsonElement serialize(IRandom<T> src, Type typeOfSrc, JsonSerializationContext context) {
+            final Builder<T> builder = new Builder<>();
+            builder.add(src);
+            return context.serialize(builder, builderType);
         }
     }
 }

@@ -1,14 +1,20 @@
 package xiroc.dungeoncrawl.datapack.registry;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.json.JsonException;
+import java.lang.reflect.Type;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -78,31 +84,44 @@ public class Delegate<T> implements Supplier<T> {
         return json;
     }
 
-    public static <T> Delegate<T> deserialize(JsonElement json, DatapackRegistry<T> registry, Function<JsonElement, T> deserializer) {
-        if (json.isJsonPrimitive()) {
-            ResourceLocation key = new ResourceLocation(json.getAsString());
-            return registry.delegateOrThrow(key);
-        }
-        return of(deserializer.apply(json));
-    }
-
-    public static <T> Delegate<T> deserialize(JsonElement json, DatapackRegistry<T> registry) {
-        if (json.isJsonPrimitive()) {
-            ResourceLocation key = new ResourceLocation(json.getAsString());
-            return registry.delegateOrThrow(key);
-        }
-        throw new JsonParseException("Direct definitions are not allowed");
-    }
-
-    public static <T> Delegate<T> of(@Nonnull T value, @Nonnull ResourceLocation key) {
+    public static <T> Delegate<T> of(@NotNull T value, @NotNull ResourceLocation key) {
         return new Delegate<>(value, key);
     }
 
-    public static <T> Delegate<T> of(@Nonnull T value) {
+    public static <T> Delegate<T> of(@NotNull T value) {
         return new Delegate<>(value, null);
     }
 
-    public static <T> Delegate<T> of(@Nonnull ResourceLocation key) {
+    public static <T> Delegate<T> of(@NotNull ResourceLocation key) {
         return new Delegate<>(null, key);
+    }
+
+    public record Serializer<T>(DatapackRegistry<T> registry, @Nullable Type valueType) implements JsonSerializer<Delegate<T>>, JsonDeserializer<Delegate<T>> {
+        @Override
+        public Delegate<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            if (json.isJsonPrimitive()) {
+                final ResourceLocation key = new ResourceLocation(json.getAsString());
+                return registry.delegateOrThrow(key);
+            }
+            if (valueType == null) {
+                throw new JsonParseException("Inline definitions are not allowed here.");
+            }
+            return new Delegate<>(context.deserialize(json, valueType), null);
+        }
+
+        @Override
+        public JsonElement serialize(Delegate<T> src, Type typeOfSrc, JsonSerializationContext context) {
+            if (src.key != null) {
+                return new JsonPrimitive(src.key.toString());
+            }
+            if (valueType == null) {
+                throw new JsonSyntaxException("Inline definitions are not allowed here.");
+            }
+            final JsonElement json = context.serialize(src.value, valueType);
+            if (json.isJsonPrimitive()) {
+                throw new JsonSyntaxException("Inline definitions must not serialize to a primitive value");
+            }
+            return json;
+        }
     }
 }

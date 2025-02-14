@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.util.JSONUtils;
@@ -20,6 +21,14 @@ import java.util.List;
 import java.util.Objects;
 
 public record CorridorStyle(ImmutableList<IRandom<Delegate<Blueprint>>> segments, IRandom<Delegate<Blueprint>> sideSegments) {
+    /**
+     * Holds types representing the different contexts this class is used in.
+     */
+    public interface Types {
+        Type RANDOM = new TypeToken<IRandom<CorridorStyle>>() {}.getType();
+        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<CorridorStyle>>() {}.getType();
+    }
+
     public static class Serializer implements JsonSerializer<CorridorStyle>, JsonDeserializer<CorridorStyle> {
         private static final String KEY_SEGMENTS = "segments";
         private static final String KEY_SIDE_SEGMENTS = "side_segments";
@@ -27,16 +36,17 @@ public record CorridorStyle(ImmutableList<IRandom<Delegate<Blueprint>>> segments
         @Override
         public CorridorStyle deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
-            final var segments = JSONUtils.deserializeList(object.getAsJsonArray(KEY_SEGMENTS), IRandom.BLUEPRINT::deserialize);
-            final var sideSegments = IRandom.BLUEPRINT.deserialize(object.get(KEY_SIDE_SEGMENTS));
+            final ImmutableList<IRandom<Delegate<Blueprint>>> segments = JSONUtils.deserializeList(object.getAsJsonArray(KEY_SEGMENTS), segment ->
+                    context.deserialize(segment, Blueprint.Types.RANDOM));
+            final IRandom<Delegate<Blueprint>> sideSegments = context.deserialize(object.get(KEY_SIDE_SEGMENTS), Blueprint.Types.RANDOM);
             return new CorridorStyle(segments, sideSegments);
         }
 
         @Override
         public JsonElement serialize(CorridorStyle corridorStyle, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            object.add(KEY_SEGMENTS, JSONUtils.serializeList(corridorStyle.segments, IRandom.BLUEPRINT::serialize));
-            object.add(KEY_SIDE_SEGMENTS, IRandom.BLUEPRINT.serialize(corridorStyle.sideSegments));
+            object.add(KEY_SEGMENTS, JSONUtils.serializeList(corridorStyle.segments, segment -> context.serialize(segment, Blueprint.Types.RANDOM)));
+            object.add(KEY_SIDE_SEGMENTS, context.serialize(corridorStyle.sideSegments, Blueprint.Types.RANDOM));
             return object;
         }
     }

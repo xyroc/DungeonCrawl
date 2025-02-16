@@ -22,8 +22,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
@@ -41,6 +43,7 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -90,27 +93,22 @@ public interface JSONUtils {
     /**
      * Deserialize a json array into an immutable list of any type.
      *
-     * @param list         the json array
-     * @param deserializer the function to deserialize an element
+     * @param list    the json array
+     * @param entryType    the type used to fetch the type adapter to deserialize the list entries
+     * @param context the deserialization context
      */
-    static <T> ImmutableList<T> deserializeList(JsonArray list, Function<JsonElement, T> deserializer) {
+    static <T> ImmutableList<T> deserializeList(JsonArray list, Type entryType, JsonDeserializationContext context) {
         final ImmutableList.Builder<T> listBuilder = ImmutableList.builder();
         for (JsonElement entry : list) {
-            listBuilder.add(deserializer.apply(entry));
+            listBuilder.add(context.<T>deserialize(entry, entryType));
         }
         return listBuilder.build();
     }
 
-    /**
-     * Serialize a list of any type into a json array.
-     *
-     * @param list       the list
-     * @param serializer the function to serialize an element
-     */
-    static <T> JsonArray serializeList(List<T> list, Function<T, JsonElement> serializer) {
+    static <T> JsonArray serializeList(List<T> list, Type entryType, JsonSerializationContext context) {
         final JsonArray jsonArray = new JsonArray();
-        for (T thing : list) {
-            jsonArray.add(serializer.apply(thing));
+        for (T entry : list) {
+            jsonArray.add(context.serialize(entry, entryType));
         }
         return jsonArray;
     }

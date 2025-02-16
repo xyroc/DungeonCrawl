@@ -189,9 +189,10 @@ public record LevelType(LevelGeneratorSettings settings,
                 if (blueprints.has(KEY_CLUSTER_ROOMS)) {
                     builder.clusterRooms = context.deserialize(blueprints.get(KEY_CLUSTER_ROOMS), Blueprint.Types.RANDOM_RANDOM_BUILDER);
                 }
-                if (blueprints.has(KEY_SPECIAL_ROOMS)) {
-                    builder.specialRooms = JSONUtils.deserializeList(blueprints.getAsJsonArray(KEY_SPECIAL_ROOMS), elem -> context.deserialize(elem, SpecialRoom.class));
-                }
+            }
+
+            if (object.has(KEY_SPECIAL_ROOMS)) {
+                builder.specialRooms = JSONUtils.deserializeList(object.getAsJsonArray(KEY_SPECIAL_ROOMS), SpecialRoom.class, context);
             }
             if (object.has(KEY_CORRIDOR_STYLES)) {
                 builder.corridorStyles = context.deserialize(object.get(KEY_CORRIDOR_STYLES), CorridorStyle.Types.RANDOM_BUILDER);
@@ -221,8 +222,10 @@ public record LevelType(LevelGeneratorSettings settings,
             if (builder.clusterRooms != null) {
                 blueprints.add(KEY_CLUSTER_ROOMS, context.serialize(builder.clusterRooms, Blueprint.Types.RANDOM_RANDOM_BUILDER));
             }
-            if (builder.specialRooms != null) {
-                blueprints.add(KEY_SPECIAL_ROOMS, JSONUtils.serializeList(builder.specialRooms, context::serialize));
+
+            if (!builder.specialRooms.isEmpty()) {
+                object.add(KEY_SPECIAL_ROOMS, JSONUtils.serializeList(builder.specialRooms, SpecialRoom.class, context));
+            }
             }
 
             if (!blueprints.entrySet().isEmpty()) {

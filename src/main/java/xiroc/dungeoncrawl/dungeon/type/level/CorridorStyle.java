@@ -36,8 +36,7 @@ public record CorridorStyle(ImmutableList<IRandom<Delegate<Blueprint>>> segments
         @Override
         public CorridorStyle deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
-            final ImmutableList<IRandom<Delegate<Blueprint>>> segments = JSONUtils.deserializeList(object.getAsJsonArray(KEY_SEGMENTS), segment ->
-                    context.deserialize(segment, Blueprint.Types.RANDOM));
+            final ImmutableList<IRandom<Delegate<Blueprint>>> segments = JSONUtils.deserializeList(object.getAsJsonArray(KEY_SEGMENTS), Blueprint.Types.RANDOM, context);
             final IRandom<Delegate<Blueprint>> sideSegments = context.deserialize(object.get(KEY_SIDE_SEGMENTS), Blueprint.Types.RANDOM);
             return new CorridorStyle(segments, sideSegments);
         }
@@ -45,7 +44,7 @@ public record CorridorStyle(ImmutableList<IRandom<Delegate<Blueprint>>> segments
         @Override
         public JsonElement serialize(CorridorStyle corridorStyle, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            object.add(KEY_SEGMENTS, JSONUtils.serializeList(corridorStyle.segments, segment -> context.serialize(segment, Blueprint.Types.RANDOM)));
+            object.add(KEY_SEGMENTS, JSONUtils.serializeList(corridorStyle.segments, Blueprint.Types.RANDOM, context));
             object.add(KEY_SIDE_SEGMENTS, context.serialize(corridorStyle.sideSegments, Blueprint.Types.RANDOM));
             return object;
         }

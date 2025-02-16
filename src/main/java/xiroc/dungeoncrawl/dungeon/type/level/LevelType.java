@@ -15,11 +15,13 @@ import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
+import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +31,7 @@ public record LevelType(LevelGeneratorSettings settings,
                         IRandom<Delegate<Blueprint>> lowerStaircaseRooms,
                         @Nullable IRandom<IRandom<Delegate<Blueprint>>> clusterRooms,
                         ImmutableList<SpecialRoom> specialRooms,
+                        ImmutableList<SecretRoom> secretRooms,
                         IRandom<CorridorStyle> corridorStyles,
                         IRandom<Delegate<SpawnerType>> spawners,
                         ResourceLocation lootTable) {
@@ -57,8 +60,9 @@ public record LevelType(LevelGeneratorSettings settings,
         @Nullable
         private IRandom.Builder<CorridorStyle> corridorStyles = null;
 
-        @Nullable
-        private List<SpecialRoom> specialRooms = null;
+        private List<SpecialRoom> specialRooms = new ArrayList<>();
+        private List<SecretRoom> secretRooms = new ArrayList<>();
+
         @Nullable
         private ResourceLocation lootTable = null;
 
@@ -85,6 +89,7 @@ public record LevelType(LevelGeneratorSettings settings,
             this.lowerStaircaseRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.lowerStaircaseRooms, from.lowerStaircaseRooms);
             this.clusterRooms = InheritingBuilder.inheritOrReplaceOrChoose(this.clusterRooms, from.clusterRooms);
             this.specialRooms = InheritingBuilder.choose(this.specialRooms, from.specialRooms);
+            this.secretRooms = InheritingBuilder.choose(this.secretRooms, from.secretRooms);
             this.corridorStyles = InheritingBuilder.inheritOrReplaceOrChoose(this.corridorStyles, from.corridorStyles);
             this.spawnerTypes = InheritingBuilder.inheritOrReplaceOrChoose(this.spawnerTypes, from.spawnerTypes);
             this.lootTable = InheritingBuilder.choose(this.lootTable, from.lootTable);
@@ -109,6 +114,7 @@ public record LevelType(LevelGeneratorSettings settings,
                     lowerStaircaseRooms.build(),
                     null,
                     ImmutableList.copyOf(specialRooms),
+                    ImmutableList.copyOf(secretRooms),
                     corridorStyles.build(),
                     spawnerTypes.build(),
                     lootTable);
@@ -139,8 +145,13 @@ public record LevelType(LevelGeneratorSettings settings,
             return this;
         }
 
-        public Builder specialRooms(@Nullable List<SpecialRoom> specialRooms) {
-            this.specialRooms = specialRooms;
+        public Builder specialRoom(SpecialRoom specialRoom) {
+            this.specialRooms.add(specialRoom);
+            return this;
+        }
+
+        public Builder secretRoom(SecretRoom.Builder secretRoom) {
+            this.secretRooms.add(secretRoom.build());
             return this;
         }
 
@@ -168,6 +179,7 @@ public record LevelType(LevelGeneratorSettings settings,
         private static final String KEY_LOWER_STAIRCASE_ROOMS = "lower_staircase";
         private static final String KEY_CLUSTER_ROOMS = "cluster_rooms";
         private static final String KEY_SPECIAL_ROOMS = "special_rooms";
+        private static final String KEY_SECRET_ROOMS = "secret_rooms";
         private static final String KEY_CORRIDOR_STYLES = "corridor_styles";
         private static final String KEY_SPAWNER_TYPES = "spawners";
         private static final String KEY_LOOT_TABLE = "loot_table";
@@ -194,6 +206,10 @@ public record LevelType(LevelGeneratorSettings settings,
             if (object.has(KEY_SPECIAL_ROOMS)) {
                 builder.specialRooms = JSONUtils.deserializeList(object.getAsJsonArray(KEY_SPECIAL_ROOMS), SpecialRoom.class, context);
             }
+            if (object.has(KEY_SECRET_ROOMS)) {
+                builder.secretRooms = JSONUtils.deserializeList(object.getAsJsonArray(KEY_SECRET_ROOMS), SecretRoom.class, context);
+            }
+
             if (object.has(KEY_CORRIDOR_STYLES)) {
                 builder.corridorStyles = context.deserialize(object.get(KEY_CORRIDOR_STYLES), CorridorStyle.Types.RANDOM_BUILDER);
             }
@@ -226,6 +242,8 @@ public record LevelType(LevelGeneratorSettings settings,
             if (!builder.specialRooms.isEmpty()) {
                 object.add(KEY_SPECIAL_ROOMS, JSONUtils.serializeList(builder.specialRooms, SpecialRoom.class, context));
             }
+            if (!builder.secretRooms.isEmpty()) {
+                object.add(KEY_SECRET_ROOMS, JSONUtils.serializeList(builder.secretRooms, SecretRoom.class, context));
             }
 
             if (!blueprints.entrySet().isEmpty()) {

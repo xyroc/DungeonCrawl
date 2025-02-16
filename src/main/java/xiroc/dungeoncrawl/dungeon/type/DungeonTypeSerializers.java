@@ -24,6 +24,8 @@ public interface DungeonTypeSerializers {
                 .registerTypeAdapter(DungeonType.Builder.class, InheritingBuilder.WrappedSerializer.of(new DungeonType.BuilderSerializer()))
                 .registerTypeAdapter(DungeonType.Types.DELEGATE, new Delegate.Serializer<>(DatapackRegistries.DUNGEON_TYPE, null))
                 .registerTypeAdapter(DungeonType.Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<DungeonType>>(DungeonType.Types.DELEGATE, "type"))
-                .registerTypeAdapter(DungeonSection.class, new DungeonSection.Serializer());
+                .registerTypeAdapter(DungeonSection.class, new DungeonSection.Serializer())
+                .registerTypeAdapter(SecretRoom.Builder.class, new SecretRoom.BuilderSerializer())
+                .registerTypeAdapter(SecretRoom.class, new AdapterSerializer<>(SecretRoom.Builder.class, SecretRoom.Builder::build, SecretRoom.Builder::fromInstance));
     }
 }

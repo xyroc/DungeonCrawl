@@ -18,9 +18,10 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<DungeonSection> sections) {
+public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<DungeonSection> sections, ImmutableList<SecretRoom> secretRooms) {
     /**
      * Holds types representing the different contexts this class is serialized in.
      */
@@ -32,7 +33,8 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
     public static class Builder extends InheritingBuilder<DungeonType, Builder> {
         @Nullable
         private IRandom.Builder<Delegate<Blueprint>> entrances = null;
-        private final ArrayList<DungeonSection> sections = new ArrayList<>();
+        private final List<DungeonSection> sections = new ArrayList<>();
+        private List<SecretRoom> secretRooms = new ArrayList<>();
 
         public Builder entrances(IRandom.Builder<Delegate<Blueprint>> entrances) {
             this.entrances = entrances;
@@ -44,12 +46,18 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
             return this;
         }
 
+        public Builder secretRoom(SecretRoom.Builder secretRoom) {
+            this.secretRooms.add(secretRoom.build());
+            return this;
+        }
+
         @Override
         public Builder inherit(Builder from) {
             if (!replace && !from.sections.isEmpty()) {
                 sections.addAll(from.sections);
             }
             this.entrances = InheritingBuilder.inheritOrReplaceOrChoose(this.entrances, from.entrances);
+            this.secretRooms = InheritingBuilder.choose(this.secretRooms, from.secretRooms);
             return this;
         }
 
@@ -59,13 +67,14 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
             if (sections.isEmpty()) {
                 throw new IllegalStateException("A dungeon type must have at least one section");
             }
-            return new DungeonType(entrances.build(), ImmutableList.copyOf(sections));
+            return new DungeonType(entrances.build(), ImmutableList.copyOf(sections), ImmutableList.copyOf(secretRooms));
         }
     }
 
     public static class BuilderSerializer implements JsonSerializer<Builder>, JsonDeserializer<Builder> {
         private static final String KEY_ENTRANCES = "entrances";
         private static final String KEY_SECTIONS = "sections";
+        private static final String KEY_SECRET_ROOMS = "secret_rooms";
 
         @Override
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
@@ -77,6 +86,11 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
             if (object.has(KEY_SECTIONS)) {
                 for (final JsonElement section : object.getAsJsonArray(KEY_SECTIONS)) {
                     builder.sections.add(context.deserialize(section, DungeonSection.class));
+                }
+            }
+            if (object.has(KEY_SECRET_ROOMS)) {
+                for (final JsonElement secretRoom : object.getAsJsonArray(KEY_SECRET_ROOMS)) {
+                    builder.secretRooms.add(context.deserialize(secretRoom, SecretRoom.class));
                 }
             }
             return builder;
@@ -94,6 +108,13 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
                     sections.add(context.serialize(section));
                 }
                 object.add(KEY_SECTIONS, sections);
+            }
+            if (!builder.secretRooms.isEmpty()) {
+                final JsonArray secretRooms = new JsonArray();
+                for (final SecretRoom secretRoom : builder.secretRooms) {
+                    secretRooms.add(context.serialize(secretRoom, SecretRoom.class));
+                }
+                object.add(KEY_SECRET_ROOMS, secretRooms);
             }
             return object;
         }

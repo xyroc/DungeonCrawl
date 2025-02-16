@@ -30,6 +30,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
+import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.RoguelikeDungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
@@ -55,7 +56,7 @@ public class DungeonBuilder {
     public final Random random;
     public final ResourceLocation biomeKey;
     public final BoundingBox maximumBounds;
-    public final DungeonType dungeonType;
+    public final Delegate<DungeonType> dungeonType;
 
     public DungeonBuilder(RegistryAccess registryAccess,
                           ChunkGenerator chunkGenerator,
@@ -81,7 +82,7 @@ public class DungeonBuilder {
                 chunkGenerator.climateSampler()).value();
 
         this.biomeKey = registryAccess.registry(Registry.BIOME_REGISTRY).orElseThrow().getKey(biome);
-        this.dungeonType = DungeonTypes.biomeMapping().roll(this.biomeKey, random).get();
+        this.dungeonType = DungeonTypes.biomeMapping().roll(this.biomeKey, random);
 
         // Find the bounding box all pieces need to be inside to avoid exceeding the maximum size.
         final int range = StructureFeature.MAX_STRUCTURE_RANGE;

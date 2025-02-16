@@ -20,6 +20,7 @@ import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
@@ -39,8 +40,9 @@ public class LevelGenerator {
     public final GeneratorContext generatorContext;
     public final RoomChooser roomChooser;
 
+    private final SecretRoomGenerator secretRoomGenerator;
     private final List<NodeElement> nodes = new ArrayList<>();
-    private final List<CorridorElement> corridors = new ArrayList<>();
+    protected final List<CorridorElement> corridors = new ArrayList<>();
 
     private NodeElement start = null;
     private NodeElement end = null;
@@ -53,7 +55,8 @@ public class LevelGenerator {
                           Random random,
                           Delegate<PrimaryTheme> primaryTheme,
                           Delegate<SecondaryTheme> secondaryTheme,
-                          boolean placeExit) {
+                          boolean placeExit,
+                          List<SecretRoom> extraSecretRooms) {
         this.levelType = levelType;
         this.plan = plan;
         this.startHeight = startHeight;
@@ -70,6 +73,11 @@ public class LevelGenerator {
             additionalSpecialRooms.add(new RoomChooser.RoomEntry(levelType.upperStaircaseRooms(), 3, 1, this::setEndStaircase));
         }
         this.roomChooser = new RoomChooser(levelType, additionalSpecialRooms, random);
+
+        final List<SecretRoom> secretRooms = new ArrayList<>(extraSecretRooms.size() + levelType.secretRooms().size());
+        secretRooms.addAll(extraSecretRooms);
+        secretRooms.addAll(levelType.secretRooms());
+        this.secretRoomGenerator = new SecretRoomGenerator(secretRooms);
     }
 
     private boolean createStart(StaircaseBuilder staircaseBuilder) {
@@ -128,6 +136,8 @@ public class LevelGenerator {
                 growNode(node);
             }
         }
+
+        secretRoomGenerator.generateSecretRooms(this);
     }
 
     private void growNode(NodeElement node) {
@@ -156,7 +166,7 @@ public class LevelGenerator {
             }
         }
     }
-    
+
     @Nullable
     private NodeElement attachRoomWithCorridor(Anchor placement, int depth) {
         for (int attempt = 0; attempt < 3; ++attempt) {

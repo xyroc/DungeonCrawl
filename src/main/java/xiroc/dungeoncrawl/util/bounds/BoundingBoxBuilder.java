@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.util.bounds;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -22,11 +23,20 @@ public class BoundingBoxBuilder implements Bounded {
                 position.getZ());
     }
 
+    public static BoundingBoxBuilder tunnel(Vec3i start, Direction direction, int length, int height, int size) {
+        Vec3i from = start.relative(direction.getCounterClockWise(), size);
+        Vec3i to = start.relative(direction.getClockWise(), size)
+                .relative(direction, length - 1)
+                .relative(Direction.UP, height - 1);
+        return fromCorners(from, to);
+    }
+
     public int minX;
     public int minY;
     public int minZ;
     public int maxX;
     public int maxY;
+
     public int maxZ;
 
     public BoundingBoxBuilder(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
@@ -45,10 +55,6 @@ public class BoundingBoxBuilder implements Bounded {
         this.maxX = boundingBox.maxX();
         this.maxY = boundingBox.maxY();
         this.maxZ = boundingBox.maxZ();
-    }
-
-    public boolean exists() {
-        return maxX >= minX && maxY >= minY && maxZ >= minZ;
     }
 
     public BoundingBox create() {

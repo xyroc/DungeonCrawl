@@ -18,7 +18,6 @@ import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
-import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -44,7 +43,7 @@ public class NodeElement extends DungeonElement {
         final BlockPos corridorStart = attachmentPoint.position().relative(attachmentPoint.direction());
         final Direction corridorDirection = attachmentPoint.direction();
         final int corridorLength = levelGenerator.levelType.settings().corridorLength.nextInt(levelGenerator.random);
-        final BoundingBoxBuilder corridorBox = BoundingBoxUtils.tunnelBuilder(corridorStart, corridorDirection, corridorLength, 8, 2);
+        final BoundingBoxBuilder corridorBox = BoundingBoxBuilder.tunnel(corridorStart, corridorDirection, corridorLength, 8, 2);
 
         if (!context.dungeonPlan().isFree(corridorBox)) {
             return null;

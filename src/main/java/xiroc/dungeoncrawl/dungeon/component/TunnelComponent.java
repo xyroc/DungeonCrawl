@@ -13,7 +13,6 @@ import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
-import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
@@ -49,7 +48,7 @@ public record TunnelComponent(BlockPos start, Direction direction, int length, i
 
     @Override
     public BoundingBoxBuilder boundingBox() {
-        return BoundingBoxUtils.tunnelBuilder(start, direction, length, height, width);
+        return BoundingBoxBuilder.tunnel(start, direction, length, height, width);
     }
 
     @Override

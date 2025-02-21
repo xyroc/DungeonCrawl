@@ -2,7 +2,6 @@ package xiroc.dungeoncrawl.util;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -10,12 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 
-import java.util.List;
-
 public interface StorageHelper {
     Codec<Block> BLOCK_CODEC = ResourceLocation.CODEC.xmap(Registry.BLOCK::get, Registry.BLOCK::getKey);
-    Codec<List<BlockPos>> BLOCK_POS_LIST_CODEC = Codec.list(BlockPos.CODEC);
-    Codec<Rotation> ROTATION_CODEC = Codec.INT.xmap(Orientation::rotationFromInt, Orientation::rotationToInt);
+    Codec<Rotation> ROTATION_CODEC = Codec.INT.xmap(ordinal -> Rotation.values()[ordinal], Enum::ordinal);
 
     static <T> Tag encode(T value, Codec<T> codec) {
         return codec.encodeStart(NbtOps.INSTANCE, value).result().orElseThrow();

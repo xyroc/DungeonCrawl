@@ -40,13 +40,13 @@ public interface WorldEditor {
     }
 
     static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        fill(world, stateProvider, from, to, Rotation.NONE, boundingBox, random, fillAir, fillSolid, false);
+        fill(world, stateProvider, from, to, Rotation.NONE, boundingBox, random, fillAir, fillSolid, postProcess);
     }
 
     static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
-        fillUnchecked(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid, false);
+        fillUnchecked(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid, postProcess);
     }
 
     static void fillUnchecked(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {

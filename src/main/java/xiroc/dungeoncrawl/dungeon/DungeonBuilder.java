@@ -33,7 +33,6 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.RoguelikeDungeonGenerator;
-import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
 import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.dungeon.type.DungeonTypes;
 
@@ -96,8 +95,6 @@ public class DungeonBuilder {
 
     public void build() {
         DungeonGenerator dungeonGenerator = new RoguelikeDungeonGenerator();
-        StaircaseBuilder staircaseBuilder = new StaircaseBuilder(groundPos.getX(), groundPos.getZ());
-        staircaseBuilder.top(BlockPos.ZERO, groundPos.getY() + 1);
-        dungeonGenerator.generateDungeon(this, startHeight, staircaseBuilder, random);
+        dungeonGenerator.generateDungeon(this, startHeight, random);
     }
 }

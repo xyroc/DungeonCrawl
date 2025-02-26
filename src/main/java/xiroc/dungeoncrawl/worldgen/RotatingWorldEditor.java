@@ -52,16 +52,6 @@ public record RotatingWorldEditor(LevelAccessor level, CoordinateSpace coordinat
         WorldEditor.placeStairs(level, stairs, coordinateSpace.rotateAndTranslateToOrigin(pos, rotation), boundingBox, half, rotation.rotate(facing), random, fillAir, fillSolid, postProcess);
     }
 
-    public void placePillar(BlockStateProvider pillar, BlockStateProvider stairs, Vec3i pos, int height,
-                            boolean north, boolean east, boolean south, boolean west,
-                            BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
-        WorldEditor.placePillar(level, pillar, stairs, coordinateSpace.rotateAndTranslateToOrigin(pos, rotation), height, north, east, south, west, boundingBox, random, fillAir, fillSolid);
-    }
-
-    public void placeSpiralStairStep(BlockStateProvider pillar, BlockStateProvider stairs, Vec3i center, BoundingBox boundingBox, Random random, boolean postProcess) {
-        WorldEditor.placeSpiralStairStep(level, pillar, stairs, coordinateSpace.rotateAndTranslateToOrigin(center, rotation), boundingBox, random, postProcess);
-    }
-
     @Override
     public void placeBlock(BlockStateProvider block, Vec3i pos, BoundingBox boundingBox, Rotation blockRotation, Random random, boolean fillAir, boolean fillSolid,
                            boolean postProcess) {

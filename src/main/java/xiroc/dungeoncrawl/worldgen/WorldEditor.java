@@ -14,8 +14,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
-import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 
 import java.util.Random;
@@ -163,22 +161,6 @@ public interface WorldEditor {
             BlockPos stairWest = pos.offset(-1, height - 1, 0);
             placeStairs(world, stairs, stairWest, boundingBox, Half.TOP, Direction.EAST, random, fillAir, fillSolid, false);
         }
-    }
-
-    static void placeSpiralStairStep(LevelAccessor world, BlockStateProvider pillar, BlockStateProvider stairs, BlockPos center, BoundingBox boundingBox, Random random, boolean postProcess) {
-        fillRing(world, SingleBlock.AIR, center, 1, 1, 1, boundingBox, random, true, true);
-        placeBlock(world, pillar, center, boundingBox, random, true, true, postProcess);
-        int facing = center.getY() % Orientation.HORIZONTAL_FACINGS.length;
-        if (facing < 0) {
-            facing = Orientation.HORIZONTAL_FACINGS.length + facing;
-        }
-        Direction direction = Orientation.HORIZONTAL_FACINGS[facing];
-        BlockPos cursor = center.relative(direction);
-        placeStairs(world, stairs, cursor, boundingBox, Half.BOTTOM, direction.getClockWise(), random, true, true, postProcess);
-        cursor = cursor.relative(direction.getClockWise());
-        placeStairs(world, stairs, cursor, boundingBox, Half.TOP, direction.getOpposite(), random, true, true, postProcess);
-        cursor = cursor.relative(direction.getOpposite());
-        placeStairs(world, stairs, cursor, boundingBox, Half.TOP, direction.getCounterClockWise(), random, true, true, postProcess);
     }
 
     static void placeStairs(LevelAccessor world, BlockStateProvider stairs, BlockPos pos, BoundingBox boundingBox, Half half, Direction facing, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {

@@ -3,16 +3,22 @@ package xiroc.dungeoncrawl.dungeon.generator;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Rotation;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
+import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.generator.plan.ListPlan;
+import xiroc.dungeoncrawl.dungeon.generator.staircase.StaircasePlanner;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.DungeonSection;
@@ -29,9 +35,16 @@ import java.util.Random;
 
 public class RoguelikeDungeonGenerator implements DungeonGenerator {
     @Override
-    public void generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, StaircaseBuilder staircaseBuilder, Random random) {
-        DungeonPlan plan = new ListPlan(dungeonBuilder.maximumBounds);
+    public void generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, Random random) {
+        final DungeonPlan plan = new ListPlan(dungeonBuilder.maximumBounds);
         int stage = 0;
+
+        StaircasePlanner staircasePlanner = new StaircasePlanner(dungeonBuilder.groundPos.getX(), dungeonBuilder.groundPos.getZ());
+
+        if (!createEntrance(dungeonBuilder, staircasePlanner, random)) {
+            DungeonCrawl.LOGGER.warn("Could not create an entrance for dungeon of type {}. Aborting dungeon generation.", dungeonBuilder.dungeonType.key());
+            return;
+        }
 
         final ImmutableList<DungeonSection> sections = dungeonBuilder.dungeonType.get().sections();
         // Secret rooms defined via the dungeon type, which could be applied to any layer.
@@ -64,34 +77,23 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
                 final LevelGenerator levelGenerator = new LevelGenerator(levelType.get(), plan, startHeight, stage, random, primaryTheme, secondaryTheme, !lastLayer, additionalSecretRooms);
                 ++stage;
 
-                levelGenerator.generateLevel(staircaseBuilder);
+                levelGenerator.generateLevel(staircasePlanner);
                 if (levelGenerator.start() == null) {
                     DungeonCrawl.LOGGER.debug("Ending dungeon generation early because level generation failed. The level type was {}.", levelType.key());
                     break outerLoop;
                 }
-                dungeonBuilder.structurePiecesBuilder.addPiece(staircaseBuilder.make(stage, primaryTheme, secondaryTheme));
+                dungeonBuilder.structurePiecesBuilder.addPiece(staircasePlanner.make(stage, primaryTheme, secondaryTheme));
 
                 NodeElement end = levelGenerator.end();
                 if (end == null) {
                     break outerLoop;
                 }
 
-                BlueprintPiece piece = end.piece();
-                ImmutableList<Anchor> anchors = piece.base.blueprint().get().anchors().get(BuiltinAnchorTypes.STAIRCASE);
-                if (anchors == null || anchors.isEmpty()) {
-                    DungeonCrawl.LOGGER.warn("Blueprint {} does not have any staircase anchors.", piece.base.blueprint().key());
+                staircasePlanner = makeStaircase(end.piece(), random);
+                if (staircasePlanner == null) {
                     break outerLoop;
                 }
-                Anchor anchor = anchors.get(random.nextInt(anchors.size()));
-                if (anchor.direction() != Direction.DOWN) {
-                    DungeonCrawl.LOGGER.warn("Blueprint {} has a staircase anchor that isn't facing downwards.", piece.base.blueprint().key());
-                    break outerLoop;
-                }
-
-                BlockPos offset = CoordinateSpace.rotate(anchor.position(), piece.base.rotation(), piece.base.blueprint().get().xSpan(), piece.base.blueprint().get().zSpan());
-                staircaseBuilder = new StaircaseBuilder(piece.base.position().getX() + offset.getX(), piece.base.position().getZ() + offset.getZ());
-                staircaseBuilder.top(offset, piece.base.position().getY());
-                startHeight = staircaseBuilder.wallTop();
+                startHeight = staircasePlanner.getWallTop();
             }
         }
 
@@ -113,5 +115,63 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             }
         }
         return globalSecretRooms;
+    }
+
+    @Nullable
+    private Anchor randomStaircaseAnchor(Delegate<Blueprint> upperStaircaseRoom, Random random) {
+        final ImmutableList<Anchor> staircaseAnchors = upperStaircaseRoom.get().anchors().get(BuiltinAnchorTypes.STAIRCASE);
+        if (staircaseAnchors == null) {
+            DungeonCrawl.LOGGER.warn("Blueprint {} is used as an upper staircase room but does not have any staircase anchors.", upperStaircaseRoom.key());
+            return null;
+        }
+        final Anchor staircaseAnchor = staircaseAnchors.get(random.nextInt(staircaseAnchors.size()));
+        if (staircaseAnchor.direction() == Direction.UP) {
+            DungeonCrawl.LOGGER.warn("Blueprint {} has a staircase anchor that is facing upwards but is used as an upper staircase room, which requires a downwards facing staircase",
+                    upperStaircaseRoom.key());
+            return null;
+        }
+        return staircaseAnchor;
+    }
+
+    private boolean createEntrance(DungeonBuilder dungeonBuilder, StaircasePlanner staircasePlanner, Random random) {
+        final Delegate<Blueprint> entrance = dungeonBuilder.dungeonType.get().entrances().roll(random);
+        Anchor staircaseAnchor = randomStaircaseAnchor(entrance, random);
+        if (staircaseAnchor == null) {
+            return false;
+        }
+
+        final Rotation entranceRotation = Rotation.getRandom(random);
+        staircaseAnchor = entrance.get().coordinateSpace(BlockPos.ZERO).rotateAndTranslateToOrigin(staircaseAnchor, entranceRotation);
+        final BlockPos entrancePosition = dungeonBuilder.groundPos.above().offset(
+                -staircaseAnchor.position().getX(),
+                0,
+                -staircaseAnchor.position().getZ()
+        );
+
+        final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
+        staircasePlanner.setTop(staircaseAnchor.position().getY(), entrancePosition.getY(), staircaseConstraint);
+
+
+        final var section = dungeonBuilder.dungeonType.get().sections().get(0);
+        final var primaryTheme = section.primaryThemes().get().roll(dungeonBuilder.biomeKey, random);
+        final var secondaryTheme = section.secondaryThemes().get().roll(dungeonBuilder.biomeKey, random);
+        final DungeonPiece entrancePiece = new BlueprintPiece(new BlueprintComponent(entrance, entrancePosition, entranceRotation), primaryTheme, secondaryTheme, 0);
+        dungeonBuilder.structurePiecesBuilder.addPiece(entrancePiece);
+        return true;
+    }
+
+    @Nullable
+    private StaircasePlanner makeStaircase(BlueprintPiece piece, Random random) {
+        final Anchor staircaseAnchor = randomStaircaseAnchor(piece.base.blueprint(), random);
+        if (staircaseAnchor == null) {
+            return null;
+        }
+
+        // Horizontal anchor is interpreted as downwards anchor with a staircase facing constraint.
+        final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
+        final BlockPos offset = CoordinateSpace.rotate(staircaseAnchor.position(), piece.base.rotation(), piece.base.blueprint().get().xSpan(), piece.base.blueprint().get().zSpan());
+        final StaircasePlanner staircasePlanner = new StaircasePlanner(piece.base.position().getX() + offset.getX(), piece.base.position().getZ() + offset.getZ());
+        staircasePlanner.setTop(offset.getY(), piece.base.position().getY(), staircaseConstraint);
+        return staircasePlanner;
     }
 }

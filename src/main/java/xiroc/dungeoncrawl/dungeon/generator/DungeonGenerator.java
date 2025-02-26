@@ -24,6 +24,6 @@ import java.util.Random;
 
 public interface DungeonGenerator {
 
-    void generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, StaircaseBuilder staircaseBuilder, Random random);
+    void generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, Random random);
 
 }

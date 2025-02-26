@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jetbrains.annotations.Nullable;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
@@ -13,7 +14,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
-import xiroc.dungeoncrawl.dungeon.generator.StaircaseBuilder;
+import xiroc.dungeoncrawl.dungeon.generator.staircase.StaircasePlanner;
 import xiroc.dungeoncrawl.dungeon.generator.element.CorridorElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
@@ -23,6 +24,7 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
+import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
 import java.util.ArrayList;
@@ -80,52 +82,57 @@ public class LevelGenerator {
         this.secretRoomGenerator = new SecretRoomGenerator(secretRooms);
     }
 
-    private boolean createStart(StaircaseBuilder staircaseBuilder) {
-        Delegate<Blueprint> roomDelegate = levelType.lowerStaircaseRooms().roll(random);
-        Blueprint room = roomDelegate.get();
-        ImmutableList<Anchor> anchors = room.anchors().get(BuiltinAnchorTypes.STAIRCASE);
-        if (anchors == null) {
+    private boolean createStart(StaircasePlanner staircasePlanner) {
+        final Delegate<Blueprint> roomDelegate = levelType.lowerStaircaseRooms().roll(random);
+        final Blueprint room = roomDelegate.get();
+        final ImmutableList<Anchor> staircaseAnchors = room.anchors().get(BuiltinAnchorTypes.STAIRCASE);
+        if (staircaseAnchors == null) {
+            DungeonCrawl.LOGGER.warn("Blueprint {} is used as a lower staircase room but does not have any staircase anchors.", roomDelegate.key());
             return true;
         }
-        Anchor anchor = anchors.get(random.nextInt(anchors.size()));
-        if (anchor.direction() != Direction.UP) {
+        final Anchor staircaseAnchor = staircaseAnchors.get(random.nextInt(staircaseAnchors.size()));
+        if (staircaseAnchor.direction() == Direction.DOWN) {
+            DungeonCrawl.LOGGER.warn("Blueprint {} has a downwards facing staircase anchor but it used as a lower staircase room, which requires an upwards facing staircase",
+                    roomDelegate.key());
             return true;
         }
 
-        int downwards = Math.max(room.ySpan() - anchor.position().getY(), levelType.settings().minSeparation);
+        final int downwards = Math.max(room.ySpan() - staircaseAnchor.position().getY(), levelType.settings().minSeparation);
 
-        BlockPos start = staircaseBuilder.atY(startHeight);
-        Rotation rotation = Rotation.getRandom(random);
-        BlockPos offset = CoordinateSpace.rotate(anchor.position(), rotation, room.xSpan(), room.zSpan());
+        final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
+        final Rotation rotation = staircaseConstraint != null ?
+                Orientation.horizontalRotation(staircaseConstraint, staircasePlanner.getFacingAt(startHeight - downwards)) :
+                Rotation.getRandom(random);
+        final BlockPos offset = CoordinateSpace.rotate(staircaseAnchor.position(), rotation, room.xSpan(), room.zSpan());
 
-        BlockPos roomPos = new BlockPos(
-                start.getX() - offset.getX(),
-                start.getY() - offset.getY() - downwards,
-                start.getZ() - offset.getZ()
+        final BlockPos center = staircasePlanner.getCenterAtY(startHeight);
+        final BlockPos roomPos = new BlockPos(
+                center.getX() - offset.getX(),
+                center.getY() - offset.getY() - downwards,
+                center.getZ() - offset.getZ()
         );
 
-        BoundingBoxBuilder boundingBox = room.boundingBox(rotation);
-        boundingBox.move(roomPos);
+        final BoundingBoxBuilder boundingBox = room.boundingBox(rotation).move(roomPos);
         if (!plan.isFree(boundingBox)) {
             return true;
         }
 
-        BlueprintPiece piece = assemblePiece(roomDelegate, roomPos, rotation);
+        final BlueprintPiece piece = assemblePiece(roomDelegate, roomPos, rotation);
         if (piece == null) {
             return true;
         }
 
-        staircaseBuilder.bottom(offset, boundingBox.minY, boundingBox.maxY);
+        staircasePlanner.setBottom(boundingBox.minY + offset.getY(), boundingBox.maxY);
 
-        NodeElement staircase = new NodeElement(piece, 0);
+        final NodeElement staircase = new NodeElement(piece, 0);
         plan.add(staircase);
         this.start = staircase;
         this.nodes.add(staircase);
         return false;
     }
 
-    public void generateLevel(StaircaseBuilder staircaseBuilder) {
-        if (createStart(staircaseBuilder)) {
+    public void generateLevel(StaircasePlanner staircasePlanner) {
+        if (createStart(staircasePlanner)) {
             return;
         }
 

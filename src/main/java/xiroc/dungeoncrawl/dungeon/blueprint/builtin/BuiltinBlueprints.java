@@ -67,7 +67,7 @@ public interface BuiltinBlueprints {
 
         consumer.accept(UPPER_STAIRCASE, new UpperStaircaseBlueprint(
                 ImmutableMap.of(
-                        BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 1, 4, Direction.DOWN)),
+                        BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 0, 4, Direction.DOWN)),
                         BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
                                 Anchor.of(0, 0, 4, Direction.WEST),
                                 Anchor.of(4, 0, 0, Direction.NORTH),
@@ -85,7 +85,7 @@ public interface BuiltinBlueprints {
 
         consumer.accept(LOWER_STAIRCASE, new LowerStaircaseBlueprint(
                 ImmutableMap.of(
-                        BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 0, 4, Direction.UP)),
+                        BuiltinAnchorTypes.STAIRCASE, ImmutableList.of(Anchor.of(4, 1, 4, Direction.UP)),
                         BuiltinAnchorTypes.ENTRANCE, ImmutableList.of(
                                 Anchor.of(0, 0, 4, Direction.WEST),
                                 Anchor.of(4, 0, 0, Direction.NORTH),

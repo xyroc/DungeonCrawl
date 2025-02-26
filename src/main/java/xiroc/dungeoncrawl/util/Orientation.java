@@ -22,11 +22,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Rotation;
 
 public interface Orientation {
-    Direction[] HORIZONTAL_FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
-
+    /**
+     * Determines the {@code Rotation} that must be applied to a {@code Direction} to end up at another.
+     * @param from the direction to start off.
+     * @param to the direction we want to end up at.
+     * @return The rotation necessary to do so.
+     */
     static Rotation horizontalRotation(Direction from, Direction to) {
         if (from.getAxis() == Direction.Axis.Y || to.getAxis() == Direction.Axis.Y) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Directions must be horizontal");
         }
         if (to == from) {
             return Rotation.NONE;
@@ -40,21 +44,15 @@ public interface Orientation {
         return Rotation.COUNTERCLOCKWISE_90;
     }
 
-    static Rotation rotationFromInt(int rotation) {
-        return switch (rotation) {
-            case 1 -> Rotation.CLOCKWISE_90;
-            case 2 -> Rotation.CLOCKWISE_180;
-            case 3 -> Rotation.COUNTERCLOCKWISE_90;
-            default -> Rotation.NONE;
-        };
-    }
-
-    static int rotationToInt(Rotation rotation) {
-        return switch (rotation) {
-            case CLOCKWISE_180 -> 2;
-            case CLOCKWISE_90 -> 1;
-            case COUNTERCLOCKWISE_90 -> 3;
-            default -> 0;
-        };
+    /**
+     * Determines the number of 90 degree clockwise rotations needed to go from one direction to another.
+     *
+     * @param from The direction to start off.
+     * @param to The goal.
+     * @return The number of rotations.
+     */
+    static int numberOfClockwise90DegreeRotations(Direction from, Direction to) {
+        // Rotations are ordered NONE (0) -> 90 Deg CLK (1) -> 180 Deg (2) -> 90 Deg C-CLK (3)
+        return horizontalRotation(from, to).ordinal();
     }
 }

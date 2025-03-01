@@ -88,11 +88,15 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
         BlockState state = info.state;
         if (state.getBlock() == Blocks.JIGSAW) {
             if (info.nbt == null) {
-                throw new DatapackLoadException("Jigsaw block without nbt data at " + info.pos.getX() + ',' + info.pos.getY() + ',' + info.pos.getZ());
+                return;
             }
             state = parseBlockState(info.nbt.getString(JigsawBlockEntity.FINAL_STATE));
             ResourceLocation anchorType = new ResourceLocation(info.nbt.getString(JigsawBlockEntity.NAME));
             anchors.accept(anchorType, new Anchor(info.pos, info.state.getValue(BlockStateProperties.ORIENTATION).front()));
+        }
+        if (state.getBlock() == Blocks.STRUCTURE_VOID) {
+            // Ignore jigsaw blocks that turn into structure void.
+            return;
         }
         TemplateBlock.PlacementProperties properties = configuration.blockType(state.getBlock());
         TemplateBlock block = new TemplateBlock(properties, info.pos, state.getBlock(), new MetaBlock(state));

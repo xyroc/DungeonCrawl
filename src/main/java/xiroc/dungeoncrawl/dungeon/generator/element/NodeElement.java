@@ -16,7 +16,6 @@ import xiroc.dungeoncrawl.dungeon.generator.level.GeneratorContext;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
-import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
 import java.util.ArrayList;
@@ -68,15 +67,16 @@ public class NodeElement extends DungeonElement {
         }
         final int chosenEntrance = levelGenerator.random.nextInt(entrances.size());
         final Entrance entrance = entrances.get(chosenEntrance);
-        final BlockPos roomPosition = entrance.placement().latchOnto(attachmentPoint, room.get().coordinateSpace(BlockPos.ZERO));
-        final Rotation rotation = Orientation.horizontalRotation(entrance.placement().direction(), attachmentPoint.direction().getOpposite());
-        final BoundingBoxBuilder roomBox = room.get().boundingBox(rotation).move(roomPosition);
+        final var roomPlacement = entrance.placement().latchOnto(attachmentPoint, room.get());
+        final BlockPos roomPosition = roomPlacement.getFirst();
+        final Rotation roomRotation = roomPlacement.getSecond();
+        final BoundingBoxBuilder roomBox = room.get().boundingBox(roomRotation).move(roomPosition);
 
         if (!context.dungeonPlan().isFree(roomBox)) {
             return null;
         }
 
-        final BlueprintPiece roomPiece = levelGenerator.assemblePiece(room, roomPosition, rotation);
+        final BlueprintPiece roomPiece = levelGenerator.assemblePiece(room, roomPosition, roomRotation);
         if (roomPiece == null) {
             return null;
         }
@@ -84,7 +84,7 @@ public class NodeElement extends DungeonElement {
         final NodeElement node = new NodeElement(roomPiece, depth);
         context.dungeonPlan().add(node);
         node.unusedEntrances.remove(chosenEntrance);
-        final Anchor rotatedEntrance = room.get().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), rotation);
+        final Anchor rotatedEntrance = room.get().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), roomRotation);
         node.addEntrance(rotatedEntrance, entrance, levelGenerator.random);
         return node;
     }

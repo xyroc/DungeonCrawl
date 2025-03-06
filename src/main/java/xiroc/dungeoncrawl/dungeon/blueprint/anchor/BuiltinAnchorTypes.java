@@ -7,4 +7,5 @@ public interface BuiltinAnchorTypes {
     ResourceLocation JUNCTURE = DungeonCrawl.locate("juncture");
     ResourceLocation ENTRANCE = DungeonCrawl.locate("entrance");
     ResourceLocation STAIRCASE = DungeonCrawl.locate("staircase");
+    ResourceLocation CORRIDOR = DungeonCrawl.locate("corridor");
 }

@@ -3,11 +3,10 @@ package xiroc.dungeoncrawl.dungeon.generator.element;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import org.jetbrains.annotations.Nullable;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
@@ -23,7 +22,6 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
-import xiroc.dungeoncrawl.util.Orientation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,31 +57,44 @@ public class CorridorElement extends DungeonElement {
     }
 
     private void fragment() {
-        final Rotation rotation = Orientation.horizontalRotation(Direction.EAST, direction);
         int remaining = length() - fragmentationStart;
-        BlockPos.MutableBlockPos pos = start.mutable().move(direction, fragmentationStart);
+        final BlockPos.MutableBlockPos pos = start.mutable().move(direction, fragmentationStart);
 
         int currentSegment = 0;
         final int segments = style.segments().size();
 
         while (remaining >= FRAGMENT_LENGTH) {
-            remaining -= FRAGMENT_LENGTH;
-
             final Delegate<Blueprint> segmentDelegate = style.segments().get(currentSegment).roll(levelGenerator.random);
-            Blueprint segment = segmentDelegate.get();
-            int halfWidth = segment.zSpan() / 2;
+            final Blueprint segment = segmentDelegate.get();
 
-            BlockPos offset = CoordinateSpace.rotate(Vec3i.ZERO, rotation, segment.xSpan(), segment.zSpan());
-            BlockPos position = pos.offset(-offset.getX(), 0, -offset.getZ()).relative(direction.getCounterClockWise(), halfWidth);
+            final Anchor attachmentPoint = new Anchor(pos.relative(direction.getOpposite()), direction);
+            final List<Anchor> corridorAnchors = segment.anchors().get(BuiltinAnchorTypes.CORRIDOR);
 
-            BlueprintPiece corridor = levelGenerator.assemblePiece(segmentDelegate, position, rotation);
-            if (corridor != null) {
-                fragments.add(new Fragment(corridor));
-            } else {
+            boolean placementFailed = false;
+
+            if (corridorAnchors == null || corridorAnchors.isEmpty()) {
+                DungeonCrawl.LOGGER.warn("Corridor segment blueprint {} does not have any anchors of the type {} and can therefore not generate.", segmentDelegate.key(),
+                        BuiltinAnchorTypes.CORRIDOR);
+                placementFailed = true;
+            }
+
+            if (!placementFailed) {
+                final Anchor corridorAnchor = corridorAnchors.get(levelGenerator.random.nextInt(corridorAnchors.size()));
+                final var placement = corridorAnchor.latchOnto(attachmentPoint, segmentDelegate.get());
+                final BlueprintPiece corridor = levelGenerator.assemblePiece(segmentDelegate, placement.getFirst(), placement.getSecond());
+                if (corridor != null) {
+                    fragments.add(new Fragment(corridor));
+                } else {
+                    placementFailed = true;
+                }
+            }
+
+            if (placementFailed) {
                 additionalComponents.add(new TunnelComponent(pos, direction, FRAGMENT_LENGTH, 5, 2));
             }
             pos.move(direction, FRAGMENT_LENGTH);
 
+            remaining -= FRAGMENT_LENGTH;
             currentSegment = (currentSegment + 1) % segments;
         }
     }
@@ -116,9 +127,8 @@ public class CorridorElement extends DungeonElement {
         for (int attempt = 0; attempt < junctures.size(); ++attempt) {
             final int chosenJuncture = levelGenerator.random.nextInt(junctures.size());
             final Anchor juncture = junctures.get(chosenJuncture);
-            final Rotation rotation = Orientation.horizontalRotation(juncture.direction(), attachmentPoint.direction().getOpposite());
-            final BlockPos position = juncture.latchOnto(attachmentPoint, segment.get().coordinateSpace(BlockPos.ZERO));
-            final BlueprintComponent segmentComponent = new BlueprintComponent(segment, position, rotation);
+            final var placement = juncture.latchOnto(attachmentPoint, segment.get());
+            final BlueprintComponent segmentComponent = new BlueprintComponent(segment, placement.getFirst(), placement.getSecond());
 
             if (levelGenerator.plan.anyMatch(segmentComponent.boundingBox(), element -> element != this)) {
                 // Collision with another element.

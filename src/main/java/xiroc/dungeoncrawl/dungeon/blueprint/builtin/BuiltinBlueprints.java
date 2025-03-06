@@ -102,10 +102,13 @@ public interface BuiltinBlueprints {
         ));
 
         consumer.accept(CORRIDOR_BASE_SEGMENT, new CorridorBaseSegment(
-                ImmutableMap.of(BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(
-                        Anchor.of(1, 0, 0, Direction.NORTH),
-                        Anchor.of(1, 0, 2, Direction.SOUTH)
-                )),
+                ImmutableMap.of(
+                        BuiltinAnchorTypes.JUNCTURE, ImmutableList.of(
+                                Anchor.of(1, 0, 0, Direction.NORTH),
+                                Anchor.of(1, 0, 2, Direction.SOUTH)),
+                        BuiltinAnchorTypes.CORRIDOR, ImmutableList.of(
+                                Anchor.of(0, 0, 1, Direction.WEST))
+                ),
                 ImmutableList.of(),
                 ImmutableList.of()
         ));
@@ -116,6 +119,11 @@ public interface BuiltinBlueprints {
                 ImmutableList.of()
         ));
 
-        consumer.accept(CORRIDOR_ARCH_SEGMENT, new CorridorArchSegment(ImmutableMap.of(), ImmutableList.of(), ImmutableList.of()));
+        consumer.accept(CORRIDOR_ARCH_SEGMENT, new CorridorArchSegment(
+                ImmutableMap.of(
+                        BuiltinAnchorTypes.CORRIDOR, ImmutableList.of(
+                                Anchor.of(0, 0, 2, Direction.WEST))),
+                ImmutableList.of(),
+                ImmutableList.of()));
     }
 }

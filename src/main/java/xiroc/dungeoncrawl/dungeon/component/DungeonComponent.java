@@ -23,6 +23,7 @@ import java.util.Random;
 public interface DungeonComponent {
     private static IdMapper<Decoder<? extends DungeonComponent>> gatherDecoders() {
         IdMapper<Decoder<? extends DungeonComponent>> map = new IdMapper<>();
+        map.addMapping(CuboidComponent.CODEC, 0);
         map.addMapping(BlueprintComponent.CODEC, 1);
         map.addMapping(StaircaseComponent.CODEC, 2);
         map.addMapping(TunnelComponent.CODEC, 3);

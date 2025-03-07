@@ -12,6 +12,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
+import xiroc.dungeoncrawl.dungeon.component.CuboidComponent;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.TunnelComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
@@ -22,6 +23,7 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
+import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,15 +103,47 @@ public class CorridorElement extends DungeonElement {
 
     private void addSideSegments() {
         for (Fragment fragment : this.fragments) {
-            final CoordinateSpace coordinateSpace = fragment.piece.base.blueprint().get().coordinateSpace(fragment.piece.base.position());
+            final Blueprint mainSegment = fragment.piece.base.blueprint().get();
+            final CoordinateSpace coordinateSpace = mainSegment.coordinateSpace(fragment.piece.base.position());
 
             for (Anchor juncture : fragment.unusedJunctures) {
                 final Anchor attachmentPoint = coordinateSpace.rotateAndTranslateToOrigin(juncture, fragment.piece.base.rotation());
-                final Delegate<Blueprint> segmentDelegate = style.sideSegments().roll(levelGenerator.random);
-                final BlueprintComponent segment = createSideSegment(segmentDelegate, attachmentPoint);
+                if (attachmentPoint.direction().getAxis() != this.direction.getClockWise().getAxis()) {
+                    // Side segments must be horizontal and perpendicular to the corridor's direction.
+                    continue;
+                }
+                final BlueprintComponent sideSegment = createSideSegment(style.sideSegments().roll(levelGenerator.random), attachmentPoint);
 
-                if (segment != null) {
-                    fragment.piece.addComponent(segment);
+                if (sideSegment != null) {
+                    fragment.piece.addComponent(sideSegment);
+                } else {
+                    // Side segment could not be placed, close the side off with a wall
+                    final BlockPos wallPlacement = attachmentPoint.position().relative(attachmentPoint.direction()).above();
+                    final BoundingBoxBuilder mainSegmentBounds = fragment.piece.base.boundingBox();
+                    switch (attachmentPoint.direction().getAxis()) {
+                        case X -> {
+                            final CuboidComponent wall = new CuboidComponent(new BoundingBox(
+                                    wallPlacement.getX(),
+                                    wallPlacement.getY(),
+                                    mainSegmentBounds.minZ,
+                                    wallPlacement.getX(),
+                                    mainSegmentBounds.maxY - 1,
+                                    mainSegmentBounds.maxZ
+                            ));
+                            fragment.piece.addComponent(wall);
+                        }
+                        case Z -> {
+                            final CuboidComponent wall = new CuboidComponent(new BoundingBox(
+                                    mainSegmentBounds.minX,
+                                    wallPlacement.getY(),
+                                    wallPlacement.getZ(),
+                                    mainSegmentBounds.maxX,
+                                    mainSegmentBounds.maxY - 1,
+                                    wallPlacement.getZ()
+                            ));
+                            fragment.piece.addComponent(wall);
+                        }
+                    }
                 }
             }
             fragment.unusedJunctures.clear();

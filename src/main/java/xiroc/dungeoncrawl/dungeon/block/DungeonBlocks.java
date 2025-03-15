@@ -33,10 +33,10 @@ public interface DungeonBlocks {
             .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.EAST));
     MetaBlock TRAPDOOR_OPEN_SOUTH = new MetaBlock(Blocks.OAK_TRAPDOOR.defaultBlockState()
             .setValue(BlockStateProperties.OPEN, true)
-            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH));
     MetaBlock TRAPDOOR_OPEN_WEST = new MetaBlock(Blocks.OAK_TRAPDOOR.defaultBlockState()
             .setValue(BlockStateProperties.OPEN, true)
-            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+            .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.WEST));
 
     static <T extends Comparable<T>, V extends T> BlockState applyProperty(BlockState state, Property<T> property, V value) {
         if (state.hasProperty(property)) {

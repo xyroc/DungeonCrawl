@@ -13,6 +13,9 @@ public record SecretRoomGenerator(List<SecretRoom> secretRooms) {
     private static final int MAX_ROOM_PLACEMENT_ATTEMPTS = 16;
 
     public void generateSecretRooms(LevelGenerator levelGenerator) {
+        if (levelGenerator.corridors.isEmpty()) {
+            return;
+        }
         for (final SecretRoom secretRoom : secretRooms) {
             generateSecretRoom(secretRoom, levelGenerator);
         }

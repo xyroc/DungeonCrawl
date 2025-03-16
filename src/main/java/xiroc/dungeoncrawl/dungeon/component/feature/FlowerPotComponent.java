@@ -54,7 +54,7 @@ public record FlowerPotComponent(BlockPos position, Block soil, Block flower) im
     @Override
     public BoundingBoxBuilder boundingBox() {
         int size = isDoublePlant() ? 2 : 1;
-        return BoundingBoxBuilder.fromCorners(position, position.above(size));
+        return BoundingBoxBuilder.fromCorners(position.offset(-1, 0, -1), position.offset(1, size, 1));
     }
 
     @Override

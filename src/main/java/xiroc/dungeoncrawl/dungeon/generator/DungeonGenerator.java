@@ -20,10 +20,8 @@ package xiroc.dungeoncrawl.dungeon.generator;
 
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 
-import java.util.Random;
-
 public interface DungeonGenerator {
 
-    void generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, Random random);
+    void generateDungeon(DungeonBuilder dungeonBuilder);
 
 }

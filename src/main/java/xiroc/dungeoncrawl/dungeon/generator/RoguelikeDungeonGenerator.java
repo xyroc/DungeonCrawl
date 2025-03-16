@@ -35,7 +35,8 @@ import java.util.Random;
 
 public class RoguelikeDungeonGenerator implements DungeonGenerator {
     @Override
-    public void generateDungeon(DungeonBuilder dungeonBuilder, int startHeight, Random random) {
+    public void generateDungeon(DungeonBuilder dungeonBuilder) {
+        final Random random = dungeonBuilder.random;
         final DungeonPlan plan = new ListPlan(dungeonBuilder.maximumBounds);
         int stage = 0;
 
@@ -45,6 +46,8 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             DungeonCrawl.LOGGER.warn("Could not create an entrance for dungeon of type {}. Aborting dungeon generation.", dungeonBuilder.dungeonType.key());
             return;
         }
+
+        int startHeight = dungeonBuilder.startHeight;
 
         final ImmutableList<DungeonSection> sections = dungeonBuilder.dungeonType.get().sections();
         // Secret rooms defined via the dungeon type, which could be applied to any layer.

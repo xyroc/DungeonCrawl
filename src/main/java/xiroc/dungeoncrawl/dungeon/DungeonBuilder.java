@@ -74,7 +74,6 @@ public class DungeonBuilder {
         this.chunkPos = pos;
         this.random = random;
 
-
         final Biome biome = chunkGenerator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(this.groundPos.getX()),
                 QuartPos.fromBlock(this.groundPos.getY()),
                 QuartPos.fromBlock(this.groundPos.getZ()),
@@ -95,6 +94,6 @@ public class DungeonBuilder {
 
     public void build() {
         DungeonGenerator dungeonGenerator = new RoguelikeDungeonGenerator();
-        dungeonGenerator.generateDungeon(this, startHeight, random);
+        dungeonGenerator.generateDungeon(this);
     }
 }

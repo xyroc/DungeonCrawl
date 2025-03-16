@@ -17,6 +17,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
 
 import java.util.Random;
@@ -24,9 +25,11 @@ import java.util.Random;
 public record CorridorArchSegment(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, ImmutableList<BlueprintFeature> features,
                                   ImmutableList<Entrance> entrances) implements Blueprint {
     @Override
-    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
         RotatingWorldEditor editor = new RotatingWorldEditor(world, coordinateSpace(position), rotation);
         BlockPos origin = BlockPos.ZERO;
+        PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
+        SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().get();
         // floor
         editor.fill(primaryTheme.floor(), origin, origin.offset(2, 0, 4), worldGenBounds, random, true, true, false);
         // ceiling

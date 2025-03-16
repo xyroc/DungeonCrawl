@@ -8,9 +8,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.Random;
 
@@ -21,8 +20,8 @@ public record EntranceComponent(Anchor placement, Entrance.Decoration decoration
                     .apply(builder, EntranceComponent::new));
 
     @Override
-    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
-        decoration.generate(level, placement, worldGenBounds, random, primaryTheme, secondaryTheme, stage);
+    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
+        decoration.generate(level, placement, worldGenBounds, random, worldGenContext);
     }
 
     @Override

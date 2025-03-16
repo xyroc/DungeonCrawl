@@ -135,34 +135,6 @@ public interface WorldEditor {
         placeStairs(world, stairs, top.relative(parallelTo.getOpposite()), boundingBox, Half.TOP, parallelTo.getOpposite(), random, fillAir, fillSolid, false);
     }
 
-    static void placePillar(LevelAccessor world, BlockStateProvider pillar, BlockStateProvider stairs, BlockPos pos,
-                            int height, boolean north, boolean east, boolean south, boolean west,
-                            BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
-        if (boundingBox.isInside(pos)) {
-            BlockPos.MutableBlockPos cursor = pos.mutable();
-            for (int i = 0; i < height; i++) {
-                placeBlockUnchecked(world, pillar.get(cursor, random), cursor, fillAir, fillSolid, false);
-                cursor.move(0, 1, 0);
-            }
-        }
-        if (north) {
-            BlockPos stairNorth = pos.offset(0, height - 1, -1);
-            placeStairs(world, stairs, stairNorth, boundingBox, Half.TOP, Direction.SOUTH, random, fillAir, fillSolid, false);
-        }
-        if (east) {
-            BlockPos stairEast = pos.offset(1, height - 1, 0);
-            placeStairs(world, stairs, stairEast, boundingBox, Half.TOP, Direction.WEST, random, fillAir, fillSolid, false);
-        }
-        if (south) {
-            BlockPos stairSouth = pos.offset(0, height - 1, 1);
-            placeStairs(world, stairs, stairSouth, boundingBox, Half.TOP, Direction.NORTH, random, fillAir, fillSolid, false);
-        }
-        if (west) {
-            BlockPos stairWest = pos.offset(-1, height - 1, 0);
-            placeStairs(world, stairs, stairWest, boundingBox, Half.TOP, Direction.EAST, random, fillAir, fillSolid, false);
-        }
-    }
-
     static void placeStairs(LevelAccessor world, BlockStateProvider stairs, BlockPos pos, BoundingBox boundingBox, Half half, Direction facing, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (!boundingBox.isInside(pos)) {
             return;
@@ -212,5 +184,28 @@ public interface WorldEditor {
         if (!fluidState.isEmpty()) {
             world.scheduleTick(pos, fluidState.getType(), 0);
         }
+    }
+
+    static void buildFoundation(LevelAccessor world, BlockPos pos, Random random, BoundingBox worldGenBounds, DungeonWorldGenContext context) {
+        if (!worldGenBounds.isInside(pos)) {
+            return;
+        }
+        boolean pillar = ((pos.getX() & 2) | (pos.getZ() & 2)) == 0;
+        if (pillar) {
+            int downwards = Math.max(countEmptyBlocksDownwardsUnchecked(world, pos.below()), 1);
+            fill(world, context.primaryTheme().get().masonry(), pos.below(), pos.below(downwards), worldGenBounds, random, true, true, false);
+        } else {
+            placeBlock(world, context.primaryTheme().get().masonry(), pos.below(), worldGenBounds, random, true, true, false);
+        }
+    }
+
+    static int countEmptyBlocksDownwardsUnchecked(LevelAccessor world, BlockPos pos) {
+        int blocks = 0;
+        final BlockPos.MutableBlockPos cursor = pos.mutable();
+        while (cursor.getY() > world.getMinBuildHeight() && world.isEmptyBlock(cursor)) {
+            ++blocks;
+            cursor.move(0, -1, 0);
+        }
+        return blocks;
     }
 }

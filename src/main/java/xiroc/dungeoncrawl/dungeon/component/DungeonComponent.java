@@ -14,9 +14,8 @@ import xiroc.dungeoncrawl.dungeon.component.feature.FurnaceComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SarcophagusComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SpawnerComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.TNTChestComponent;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.Random;
 
@@ -72,7 +71,7 @@ public interface DungeonComponent {
         }
     };
 
-    void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage);
+    void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext);
 
     BoundingBoxBuilder boundingBox();
 

@@ -1,6 +1,10 @@
 package xiroc.dungeoncrawl.datapack.registry;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import xiroc.dungeoncrawl.datapack.DatapackDirectory;
@@ -83,6 +87,26 @@ public class DatapackRegistry<T> {
 
     ImmutableMap<ResourceLocation, T> getValues() {
         return values;
+    }
+
+    public Codec<Delegate<T>> delegateCodec() {
+        return new Codec<>() {
+            @Override
+            public <A> DataResult<Pair<Delegate<T>, A>> decode(DynamicOps<A> ops, A input) {
+                return Codec.STRING.decode(ops, input).flatMap( key -> {
+                    try {
+                        return DataResult.success(Pair.of(delegateOrThrow(new ResourceLocation(key.getFirst())), key.getSecond()));
+                    } catch (Exception e) {
+                        return DataResult.error("Could not decode for key " + key.getFirst() + ":" + e.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public <A> DataResult<A> encode(Delegate<T> tDelegate, DynamicOps<A> ops, A prefix) {
+                return DataResult.success(tDelegate.key().toString()).flatMap(key -> Codec.STRING.encode(key, ops, prefix));
+            }
+        };
     }
 
     interface Parser<T> {

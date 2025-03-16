@@ -26,6 +26,7 @@ import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +191,7 @@ public class LevelGenerator {
     @Nullable
     public BlueprintPiece assemblePiece(Delegate<Blueprint> blueprint, BlockPos position, Rotation rotation) {
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
-        BlueprintPiece piece = new BlueprintPiece(baseComponent, primaryTheme, secondaryTheme, stage);
+        BlueprintPiece piece = new BlueprintPiece(baseComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, baseComponent.position().getY(), stage));
 
         for (var feature : blueprint.get().features()) {
             feature.create(this, piece::addComponent, null, blueprint.get(), piece.base.position(), piece.base.rotation());

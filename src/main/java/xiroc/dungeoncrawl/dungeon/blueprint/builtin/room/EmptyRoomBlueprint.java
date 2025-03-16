@@ -12,8 +12,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
@@ -21,9 +20,9 @@ import java.util.Random;
 public record EmptyRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, ImmutableList<BlueprintFeature> features,
                                  ImmutableList<Entrance> entrances) implements Blueprint {
     @Override
-    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
         BlockPos end = position.offset(8, 8, 8);
-        WorldEditor.fillWalls(world, primaryTheme.masonry(), position, end, worldGenBounds, random, false, true);
+        WorldEditor.fillWalls(world, worldGenContext.primaryTheme().get().masonry(), position, end, worldGenBounds, random, false, true);
         WorldEditor.fill(world, SingleBlock.AIR,
                 position.offset(1, 1, 1),
                 end.offset(-1, -1, -1),

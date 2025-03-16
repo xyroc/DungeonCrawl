@@ -14,10 +14,10 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
@@ -34,7 +34,8 @@ public record FlowerPotComponent(BlockPos position, Block soil, Block flower) im
     }
 
     @Override
-    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
+        SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().get();
         WorldEditor.placeBlock(level, soil.defaultBlockState(), position, worldGenBounds, true, true, false);
         BlockState flowerState = flower.defaultBlockState();
         if (flower.canSurvive(flowerState, level, position.above())) {

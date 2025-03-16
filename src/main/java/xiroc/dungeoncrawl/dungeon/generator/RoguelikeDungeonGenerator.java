@@ -26,6 +26,7 @@ import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -154,11 +155,11 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
         final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
         staircasePlanner.setTop(staircaseAnchor.position().getY(), entrancePosition.getY(), staircaseConstraint);
 
-
         final var section = dungeonBuilder.dungeonType.get().sections().get(0);
         final var primaryTheme = section.primaryThemes().get().roll(dungeonBuilder.biomeKey, random);
         final var secondaryTheme = section.secondaryThemes().get().roll(dungeonBuilder.biomeKey, random);
-        final DungeonPiece entrancePiece = new BlueprintPiece(new BlueprintComponent(entrance, entrancePosition, entranceRotation), primaryTheme, secondaryTheme, 0);
+        final BlueprintComponent entranceComponent = new BlueprintComponent(entrance, entrancePosition, entranceRotation);
+        final DungeonPiece entrancePiece = new BlueprintPiece(entranceComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, entranceComponent.position().getY(), 0));
         dungeonBuilder.structurePiecesBuilder.addPiece(entrancePiece);
         return true;
     }

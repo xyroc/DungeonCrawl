@@ -21,7 +21,6 @@ package xiroc.dungeoncrawl.dungeon.piece;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureFeatureManager;
 import net.minecraft.world.level.WorldGenLevel;
@@ -30,46 +29,37 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.List;
 import java.util.Random;
 
 public class DungeonPiece extends StructurePiece {
-    private static final String NBT_KEY_PRIMARY_THEME = "PrimaryTheme";
-    private static final String NBT_KEY_SECONDARY_THEME = "SecondaryTheme";
     private static final String NBT_KEY_COMPONENTS = "Components";
-    private static final String NBT_KEY_STAGE = "Stage";
+    private static final String NBT_KEY_WORLD_GEN_CONTEXT = "WorldGenContext";
 
-    private final Delegate<PrimaryTheme> primaryTheme;
-    private final Delegate<SecondaryTheme> secondaryTheme;
+    private final DungeonWorldGenContext worldGenContext;
     private final List<DungeonComponent> components;
-    private final int stage;
 
-    public static DungeonPiece withComponents(List<DungeonComponent> components, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
+    public static DungeonPiece withComponents(List<DungeonComponent> components, DungeonWorldGenContext worldGenContext) {
         if (components.isEmpty()) {
             throw new IllegalArgumentException("The list of initial components must not be empty.");
         }
-        return new DungeonPiece(components, primaryTheme, secondaryTheme, stage);
+        return new DungeonPiece(components, worldGenContext);
     }
 
-    public DungeonPiece(DungeonComponent component, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
-        this(Lists.newArrayList(component), primaryTheme, secondaryTheme, stage);
+    public DungeonPiece(DungeonComponent component, DungeonWorldGenContext worldGenContext) {
+        this(Lists.newArrayList(component), worldGenContext);
     }
 
-    private DungeonPiece(List<DungeonComponent> components, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme, int stage) {
+    private DungeonPiece(List<DungeonComponent> components, DungeonWorldGenContext worldGenContext) {
         super(ModStructurePieceTypes.GENERIC, 0, null);
         this.components = components;
-        this.primaryTheme = primaryTheme;
-        this.secondaryTheme = secondaryTheme;
-        this.stage = stage;
+        this.worldGenContext = worldGenContext;
         if (!this.components.isEmpty()) {
             updateBoundingBox();
         }
@@ -81,25 +71,21 @@ public class DungeonPiece extends StructurePiece {
 
     public DungeonPiece(StructurePieceType type, CompoundTag nbt) {
         super(type, nbt);
-        this.primaryTheme = DatapackRegistries.PRIMARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_PRIMARY_THEME)));
-        this.secondaryTheme = DatapackRegistries.SECONDARY_THEME.delegateOrThrow(new ResourceLocation(nbt.getString(NBT_KEY_SECONDARY_THEME)));
-        this.stage = nbt.getInt(NBT_KEY_STAGE);
+        this.worldGenContext = StorageHelper.decode(nbt.get(NBT_KEY_WORLD_GEN_CONTEXT), DungeonWorldGenContext.CODEC);
         this.components = StorageHelper.decode(nbt.get(NBT_KEY_COMPONENTS), DungeonComponent.CODEC.listOf());
         updateBoundingBox();
     }
 
     @Override
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
-        nbt.putString(NBT_KEY_PRIMARY_THEME, primaryTheme.key().toString());
-        nbt.putString(NBT_KEY_SECONDARY_THEME, secondaryTheme.key().toString());
-        nbt.putInt(NBT_KEY_STAGE, stage);
+        nbt.put(NBT_KEY_WORLD_GEN_CONTEXT, StorageHelper.encode(worldGenContext, DungeonWorldGenContext.CODEC));
         nbt.put(NBT_KEY_COMPONENTS, StorageHelper.encode(components, DungeonComponent.CODEC.listOf()));
     }
 
     @Override
     public void postProcess(WorldGenLevel level, StructureFeatureManager p_73428_, ChunkGenerator chunkGenerator, Random random, BoundingBox worldGenBounds, ChunkPos p_73432_, BlockPos pos) {
         for (DungeonComponent component : components) {
-            component.generate(level, worldGenBounds, random, primaryTheme.get(), secondaryTheme.get(), stage);
+            component.generate(level, worldGenBounds, random, worldGenContext);
         }
     }
 

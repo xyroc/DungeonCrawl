@@ -14,11 +14,10 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.random.IRandom;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.lang.reflect.Type;
 import java.util.Random;
@@ -45,8 +44,7 @@ public interface Blueprint {
         builder.registerTypeAdapter(Types.RANDOM_RANDOM_BUILDER, new IRandom.BuilderSerializer<IRandom<Delegate<Blueprint>>>(Types.RANDOM, "blueprints"));
     }
 
-    void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random,
-               PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage);
+    void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext);
 
     int xSpan();
 

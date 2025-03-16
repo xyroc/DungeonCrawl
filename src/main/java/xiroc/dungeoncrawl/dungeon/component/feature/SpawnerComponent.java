@@ -16,9 +16,8 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.Random;
 
@@ -30,14 +29,14 @@ public record SpawnerComponent(BlockPos position, Delegate<SpawnerType> type) im
     ).apply(builder, SpawnerComponent::new));
 
     @Override
-    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
         if (!worldGenBounds.isInside(position)) {
             return;
         }
         level.setBlock(position, Blocks.SPAWNER.defaultBlockState(), 2);
         BlockEntity blockEntity = level.getBlockEntity(position);
         if (blockEntity instanceof SpawnerBlockEntity spawner) {
-            spawner.getSpawner().load(spawner.getLevel(), position, type.get().createData(random, stage));
+            spawner.getSpawner().load(spawner.getLevel(), position, type.get().createData(random, worldGenContext.level()));
         } else {
             DungeonCrawl.LOGGER.warn("Could not fetch a spawner entity at {}", position);
         }

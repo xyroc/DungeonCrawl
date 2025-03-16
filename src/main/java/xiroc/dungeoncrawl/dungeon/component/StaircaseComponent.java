@@ -12,8 +12,8 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
@@ -54,7 +54,8 @@ public record StaircaseComponent(BlockPos center, int height, int wallBottom, in
     }
 
     @Override
-    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
+        final PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
         for (int i = 0; i < height; ++i) {
             placeSpiralStairStep(level, primaryTheme.pillar(), primaryTheme.stairs(), this.center.above(i), worldGenBounds, random);
         }

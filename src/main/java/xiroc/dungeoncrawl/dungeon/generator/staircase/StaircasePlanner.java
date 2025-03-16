@@ -9,6 +9,7 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 public class StaircasePlanner {
     /**
@@ -103,6 +104,6 @@ public class StaircasePlanner {
         BlockPos position = new BlockPos(centerX, staircaseBottom, centerZ);
         int height = staircaseTop - staircaseBottom + 1;
         StaircaseComponent staircase = new StaircaseComponent(position, height, wallBottom, wallTop, rotation);
-        return new DungeonPiece(staircase, primaryTheme, secondaryTheme, stage);
+        return new DungeonPiece(staircase, new DungeonWorldGenContext(primaryTheme, secondaryTheme, Integer.MIN_VALUE, stage));
     }
 }

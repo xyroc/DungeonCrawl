@@ -24,6 +24,7 @@ import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -258,16 +259,18 @@ public class CorridorElement extends DungeonElement {
         Delegate<SecondaryTheme> secondaryTheme = levelGenerator.secondaryTheme;
 
         final int stage = levelGenerator.stage;
+        final DungeonWorldGenContext tunnelGenContext = new DungeonWorldGenContext(primaryTheme, secondaryTheme, start.getY() - 1, stage);
+
         if (fragmentationStart > 0) {
-            consumer.accept(new DungeonPiece(new TunnelComponent(start, direction, fragmentationStart, 5, 2), primaryTheme, secondaryTheme, stage));
+            consumer.accept(new DungeonPiece(new TunnelComponent(start, direction, fragmentationStart, 5, 2), tunnelGenContext));
         }
         final int remaining = (length() - fragmentationStart) % FRAGMENT_LENGTH;
         if (remaining > 0) {
-            consumer.accept(new DungeonPiece(new TunnelComponent(start.relative(direction, length() - remaining), direction, remaining, 5, 2), primaryTheme, secondaryTheme, stage));
+            consumer.accept(new DungeonPiece(new TunnelComponent(start.relative(direction, length() - remaining), direction, remaining, 5, 2), tunnelGenContext));
         }
 
         if (!additionalComponents.isEmpty()) {
-            consumer.accept(DungeonPiece.withComponents(additionalComponents, primaryTheme, secondaryTheme, stage));
+            consumer.accept(DungeonPiece.withComponents(additionalComponents, tunnelGenContext));
         }
     }
 

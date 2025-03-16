@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
@@ -27,7 +27,8 @@ public record TunnelComponent(BlockPos start, Direction direction, int length, i
     ).stable();
 
     @Override
-    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
+        PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
         BlockPos corner = start.relative(direction.getCounterClockWise(), width);
 
         WorldEditor.fill(level, primaryTheme.floor(), corner.relative(direction.getClockWise()), corner.relative(direction.getClockWise(), 2 * width - 1)

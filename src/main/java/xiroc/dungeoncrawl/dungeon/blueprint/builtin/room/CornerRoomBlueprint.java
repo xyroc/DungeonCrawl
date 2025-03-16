@@ -18,7 +18,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.MirroringWorldEditor;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
@@ -29,9 +29,10 @@ public record CornerRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<A
     private static final Vec3i CEILING_CENTER = new Vec3i(3, 5, 3);
 
     @Override
-    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
         MirroringWorldEditor editor = new MirroringWorldEditor(world, coordinateSpace(position), rotation);
         BlockPos origin = BlockPos.ZERO;
+        PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
         // Floor
         WorldEditor.fill(world, primaryTheme.floor(), position, position.offset(6, 0, 6), worldGenBounds, random, false, true, false);
 

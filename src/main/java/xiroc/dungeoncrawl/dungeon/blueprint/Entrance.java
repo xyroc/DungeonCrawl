@@ -15,9 +15,8 @@ import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.EntranceComponent;
-import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.random.IRandom;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import javax.annotation.Nullable;
@@ -85,17 +84,17 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
     }
 
     public interface Decoration {
-        Decoration NONE = (level, placement, worldGenBounds, random, primaryTheme, secondaryTheme, stage) ->
+        Decoration NONE = (level, placement, worldGenBounds, random, worldGenContext) ->
                 WorldEditor.fill(level, SingleBlock.AIR,
                         placement.position().relative(placement.direction().getClockWise()),
                         placement.position().relative(placement.direction().getCounterClockWise()).above(2),
                         worldGenBounds, random, false, true, false);
 
-        Decoration PRIMARY = (level, placement, worldGenBounds, random, primaryTheme, secondaryTheme, stage) ->
-                WorldEditor.placeEntrance(level, primaryTheme.stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
+        Decoration PRIMARY = (level, placement, worldGenBounds, random, worldGenContext) ->
+                WorldEditor.placeEntrance(level, worldGenContext.primaryTheme().get().stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
 
-        Decoration SECONDARY = (level, placement, worldGenBounds, random, primaryTheme, secondaryTheme, stage) ->
-                WorldEditor.placeEntrance(level, secondaryTheme.stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
+        Decoration SECONDARY = (level, placement, worldGenBounds, random, worldGenContext) ->
+                WorldEditor.placeEntrance(level, worldGenContext.secondaryTheme().get().stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
 
         private static IdMapper<Decoration> gatherDecorations() {
             IdMapper<Decoration> decorations = new IdMapper<>();
@@ -109,6 +108,6 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
 
         Codec<Decoration> CODEC = Codec.INT.xmap(DECORATIONS::byId, DECORATIONS::getId);
 
-        void generate(LevelAccessor level, Anchor placement, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage);
+        void generate(LevelAccessor level, Anchor placement, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext);
     }
 }

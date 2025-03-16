@@ -15,7 +15,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.RotatingWorldEditor;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
@@ -24,7 +24,8 @@ import java.util.Random;
 public record LowerStaircaseBlueprint(ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors, ImmutableList<BlueprintFeature> features,
                                       ImmutableList<Entrance> entrances) implements Blueprint {
     @Override
-    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
+        PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
         BlockStateProvider wall = primaryTheme.masonry();
         BlockStateProvider fencing = primaryTheme.fencing();
         BlockStateProvider floor = primaryTheme.floor();

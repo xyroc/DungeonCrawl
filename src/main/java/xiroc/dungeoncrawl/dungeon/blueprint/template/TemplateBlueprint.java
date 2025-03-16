@@ -33,18 +33,30 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.mixin.accessor.StructureTemplateAccessor;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks, ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
-                                ImmutableList<BlueprintFeature> features, ImmutableList<BlueprintMultipart> parts, ImmutableList<Entrance> entrances) implements Blueprint {
+public record TemplateBlueprint(Vec3i size,
+                                List<TemplateBlockColumn> blockColumns,
+                                ImmutableMap<ResourceLocation, ImmutableList<Anchor>> anchors,
+                                ImmutableList<BlueprintFeature> features,
+                                ImmutableList<BlueprintMultipart> parts,
+                                ImmutableList<Entrance> entrances) implements Blueprint {
+    /**
+     * Block coordinates must be smaller than 2^16 because x and z are packed into a 32-bit integer when loading blueprints.
+     * No realistic blueprint should ever get even remotely close to this limit, but we are checking regardless.
+     */
+    private static final int THEORETICAL_MAX_BLUEPRINT_SIZE = (1 << 16) - 1;
 
     public static void gsonAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
@@ -61,15 +73,27 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
             if (template.isEmpty()) {
                 throw new DatapackLoadException("Could not find structure template: " + configuration.template);
             }
+            Vec3i templateSize = template.get().getSize();
+            if (templateSize.getX() > THEORETICAL_MAX_BLUEPRINT_SIZE || templateSize.getZ() > THEORETICAL_MAX_BLUEPRINT_SIZE) {
+                throw new DatapackLoadException("Blueprint is too large! The maximum width/length is " + THEORETICAL_MAX_BLUEPRINT_SIZE);
+            }
+
             StructureTemplateAccessor accessor = (StructureTemplateAccessor) template.get();
 
-            ImmutableList.Builder<TemplateBlock> blocks = ImmutableList.builder();
             HashMap<ResourceLocation, ImmutableList.Builder<Anchor>> anchors = new HashMap<>();
             ImmutableList.Builder<Entrance> entrances = ImmutableList.builder();
 
-            accessor.palettes().get(0).blocks().forEach((info) -> loadBlock(configuration, info, blocks::add, (type, anchor) -> {
-                anchors.computeIfAbsent(type, (k) -> ImmutableList.builder()).add(anchor);
-                var entranceType = configuration.entranceTypes.get(type);
+            Map<Integer, TemplateBlockColumn.Builder> blockColumns = new HashMap<>();
+
+            accessor.palettes().get(0).blocks().forEach((info) -> loadBlock(configuration, info, block -> {
+                int x = block.position().getX();
+                int z = block.position().getZ();
+                // Pack x into the 16 most significant bits and z into the 16 least significant bits.
+                int columnId = x << 16 | z;
+                blockColumns.computeIfAbsent(columnId, ignored -> new TemplateBlockColumn.Builder(x, z)).addBlock(block);
+            }, (anchorType, anchor) -> {
+                anchors.computeIfAbsent(anchorType, (k) -> ImmutableList.builder()).add(anchor);
+                var entranceType = configuration.entranceTypes.get(anchorType);
                 if (entranceType != null) {
                     entrances.add(entranceType.make(anchor));
                 }
@@ -78,7 +102,11 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
             ImmutableMap.Builder<ResourceLocation, ImmutableList<Anchor>> immutableAnchors = ImmutableMap.builder();
             anchors.forEach((type, builder) -> immutableAnchors.put(type, builder.build()));
 
-            return new TemplateBlueprint(template.get().getSize(), blocks.build(), immutableAnchors.build(), configuration.features, configuration.parts, entrances.build());
+            var actualColumns = blockColumns.values().stream().map(TemplateBlockColumn.Builder::build).toList();
+            return new TemplateBlueprint(template.get().getSize(), actualColumns, immutableAnchors.build(),
+                    configuration.features,
+                    configuration.parts,
+                    entrances.build());
         } catch (Exception e) {
             throw new DatapackLoadException("Failed to load " + key + ": " + e.getMessage());
         }
@@ -95,7 +123,7 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
             anchors.accept(anchorType, new Anchor(info.pos, info.state.getValue(BlockStateProperties.ORIENTATION).front()));
         }
         if (state.getBlock() == Blocks.STRUCTURE_VOID) {
-            // Ignore jigsaw blocks that turn into structure void.
+            // Ignore jigsaw blockColumns that turn into structure void.
             return;
         }
         TemplateBlock.PlacementProperties properties = configuration.blockType(state.getBlock());
@@ -134,13 +162,24 @@ public record TemplateBlueprint(Vec3i size, ImmutableList<TemplateBlock> blocks,
     }
 
     @Override
-    public void build(LevelAccessor level, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void build(LevelAccessor level, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
         CoordinateSpace coordinateSpace = coordinateSpace(position);
-        this.blocks.forEach((block) -> {
-            boolean solid = block.placementProperties().isSolid();
-            BlockPos pos = coordinateSpace.rotateAndTranslateToOrigin(block.position(), rotation);
-            BlockState state = block.placementProperties().blockType().blockFactory.get(block, level, pos, primaryTheme, secondaryTheme, random).rotate(level, pos, rotation);
-            WorldEditor.placeBlock(level, state, pos, worldGenBounds, solid, true, true);
+        PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
+        SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().get();
+        this.blockColumns.forEach((column) -> {
+            BlockPos columnPos = coordinateSpace.rotateAndTranslateToOrigin(column.x(), column.lowestY(), column.z(), rotation);
+            if (!worldGenBounds.isInside(columnPos)) {
+                return;
+            }
+            for (TemplateBlock block : column.blocks()) {
+                boolean solid = block.placementProperties().isSolid();
+                BlockPos pos = coordinateSpace.rotateAndTranslateToOrigin(block.position(), rotation);
+                BlockState state = block.placementProperties().blockType().blockFactory.get(block, level, pos, primaryTheme, secondaryTheme, random).rotate(level, pos, rotation);
+                WorldEditor.placeBlock(level, state, pos, worldGenBounds, solid, true, true);
+            }
+            if (columnPos.getY() <= worldGenContext.foundationHeight() && !level.getBlockState(columnPos).isAir()) {
+                WorldEditor.buildFoundation(level, columnPos, random, worldGenBounds, worldGenContext);
+            }
         });
     }
 

@@ -21,8 +21,8 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.Random;
@@ -36,8 +36,9 @@ public record SarcophagusComponent(Anchor placement, Delegate<SpawnerType> spawn
     ).apply(builder, SarcophagusComponent::new));
 
     @Override
-    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, PrimaryTheme primaryTheme, SecondaryTheme secondaryTheme, int stage) {
+    public void generate(LevelAccessor level, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
         final BlockPos pos = placement.position().relative(placement.direction());
+        final PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
         final BlockStateProvider stair = primaryTheme.stairs();
 
         Rotation[] rotations = {Rotation.CLOCKWISE_90, Rotation.COUNTERCLOCKWISE_90};

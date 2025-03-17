@@ -11,6 +11,7 @@ import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.component.CuboidComponent;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
@@ -117,6 +118,9 @@ public class CorridorElement extends DungeonElement {
 
                 if (sideSegment != null) {
                     fragment.piece.addComponent(sideSegment);
+                    for (BlueprintFeature feature : sideSegment.blueprint().get().features()) {
+                        feature.create(levelGenerator, fragment.piece::addComponent, null, sideSegment.blueprint().get(), sideSegment.position(), sideSegment.rotation());
+                    }
                 } else {
                     // Side segment could not be placed, close the side off with a wall
                     final BlockPos wallPlacement = attachmentPoint.position().relative(attachmentPoint.direction()).above();

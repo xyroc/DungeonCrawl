@@ -28,7 +28,7 @@ public record RotatingWorldEditor(LevelAccessor level, CoordinateSpace coordinat
             for (int z = start.getZ(); z <= end.getZ(); z++) {
                 for (int y = start.getY(); y <= end.getY(); y++) {
                     pos.set(x, y, z);
-                    WorldEditor.placeBlockUnchecked(level, blocks.get(pos, random).rotate(level, pos, rotation), pos, fillAir, fillSolid, postProcess);
+                    Unsafe.placeBlock(level, blocks.get(pos, random).rotate(level, pos, rotation), pos, fillAir, fillSolid, postProcess);
                 }
             }
         }

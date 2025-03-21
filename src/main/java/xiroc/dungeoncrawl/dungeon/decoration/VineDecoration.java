@@ -51,7 +51,7 @@ public record VineDecoration(float chance) implements DungeonDecoration {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (worldGenBounds.isInside(currentPos)
                             && structureBounds.isInside(currentPos)
-                            && !WorldEditor.isBlockProtected(world, currentPos)
+                            && !WorldEditor.Unsafe.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)) {
                         BlockPos north = currentPos.north();
                         BlockPos east = currentPos.east();

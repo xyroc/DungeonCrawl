@@ -48,7 +48,7 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (worldGenBounds.isInside(currentPos)
                             && structureBounds.isInside(currentPos)
-                            && !WorldEditor.isBlockProtected(world, currentPos)
+                            && !WorldEditor.Unsafe.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)
                             && random.nextFloat() < chance) {
                         BlockPos north = currentPos.north();

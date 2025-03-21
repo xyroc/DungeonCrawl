@@ -35,10 +35,6 @@ public interface WorldEditor {
     void placeStairs(BlockStateProvider stairs, BlockPos pos, Half half, Direction facing, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid,
                      boolean postProcess);
 
-    static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
-        return world.getBlockState(pos).getDestroySpeed(world, pos) < 0;
-    }
-
     static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         fill(world, stateProvider, from, to, Rotation.NONE, boundingBox, random, fillAir, fillSolid, postProcess);
     }
@@ -46,19 +42,7 @@ public interface WorldEditor {
     static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
-        fillUnchecked(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid, postProcess);
-    }
-
-    static void fillUnchecked(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        for (int x = from.getX(); x <= to.getX(); x++) {
-            for (int y = from.getY(); y <= to.getY(); y++) {
-                for (int z = from.getZ(); z <= to.getZ(); z++) {
-                    pos.set(x, y, z);
-                    placeBlockUnchecked(world, stateProvider.get(pos, random).rotate(world, pos, rotation), pos, fillAir, fillSolid, postProcess);
-                }
-            }
-        }
+        Unsafe.fill(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid, postProcess);
     }
 
     static void fillWalls(LevelAccessor world, BlockStateProvider stateProvider, BlockPos from, BlockPos to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
@@ -69,8 +53,8 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 BlockPos bottom = new BlockPos(x, from.getY(), z);
                 BlockPos top = new BlockPos(x, to.getY(), z);
-                placeBlockUnchecked(world, stateProvider.get(bottom, random), bottom, fillAir, fillSolid, false);
-                placeBlockUnchecked(world, stateProvider.get(top, random), top, fillAir, fillSolid, false);
+                Unsafe.placeBlock(world, stateProvider.get(bottom, random), bottom, fillAir, fillSolid, false);
+                Unsafe.placeBlock(world, stateProvider.get(top, random), top, fillAir, fillSolid, false);
             }
         }
 
@@ -78,7 +62,7 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(startVec.getX(), y, z);
-                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -87,7 +71,7 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(endVec.getX(), y, z);
-                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -96,7 +80,7 @@ public interface WorldEditor {
             for (int x = startVec.getX(); x <= endVec.getX(); x++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(x, y, startVec.getZ());
-                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -105,7 +89,7 @@ public interface WorldEditor {
             for (int x = startVec.getX(); x <= endVec.getX(); x++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(x, y, endVec.getZ());
-                    placeBlockUnchecked(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
                 }
             }
         }
@@ -146,43 +130,18 @@ public interface WorldEditor {
         if (stair.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
             stair = stair.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
         }
-        placeBlockUnchecked(world, stair, pos, fillAir, fillSolid, postProcess);
+        Unsafe.placeBlock(world, stair, pos, fillAir, fillSolid, postProcess);
     }
 
     static void placeBlock(LevelAccessor world, BlockStateProvider block, BlockPos pos, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
-            placeBlockUnchecked(world, block.get(pos, random), pos, fillAir, fillSolid, postProcess);
+            Unsafe.placeBlock(world, block.get(pos, random), pos, fillAir, fillSolid, postProcess);
         }
     }
 
     static void placeBlock(LevelAccessor world, BlockState block, BlockPos pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
-            placeBlockUnchecked(world, block, pos, fillAir, fillSolid, postProcess);
-        }
-    }
-
-    static void placeBlockUnchecked(LevelAccessor world, BlockState state, BlockPos pos, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        if (isBlockProtected(world, pos)) {
-            return;
-        }
-        if (world.isEmptyBlock(pos)) {
-            if (!fillAir) {
-                return;
-            }
-        } else {
-            if (!fillSolid) {
-                return;
-            }
-        }
-        world.setBlock(pos, state, 3);
-        if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
-            world.scheduleTick(pos, state.getBlock(), 1);
-        } else if (postProcess) {
-            world.getChunk(pos).markPosForPostprocessing(pos);
-        }
-        FluidState fluidState = world.getFluidState(pos);
-        if (!fluidState.isEmpty()) {
-            world.scheduleTick(pos, fluidState.getType(), 0);
+            Unsafe.placeBlock(world, block, pos, fillAir, fillSolid, postProcess);
         }
     }
 
@@ -192,20 +151,67 @@ public interface WorldEditor {
         }
         boolean pillar = ((pos.getX() & 2) | (pos.getZ() & 2)) == 0;
         if (pillar) {
-            int downwards = Math.max(countEmptyBlocksDownwardsUnchecked(world, pos.below()), 1);
+            int downwards = Math.max(Unsafe.countEmptyBlocksDownwards(world, pos.below()), 1);
             fill(world, context.primaryTheme().get().masonry(), pos.below(), pos.below(downwards), worldGenBounds, random, true, true, false);
         } else {
             placeBlock(world, context.primaryTheme().get().masonry(), pos.below(), worldGenBounds, random, true, true, false);
         }
     }
 
-    static int countEmptyBlocksDownwardsUnchecked(LevelAccessor world, BlockPos pos) {
-        int blocks = 0;
-        final BlockPos.MutableBlockPos cursor = pos.mutable();
-        while (cursor.getY() > world.getMinBuildHeight() && world.isEmptyBlock(cursor)) {
-            ++blocks;
-            cursor.move(0, -1, 0);
+    /**
+     * Operations used for world generation that are "unsafe" in the sense that no bounding box checks are made.
+     * Use these only if you made sure beforehand that they won't exceed valid bounding boxes.
+     */
+    interface Unsafe {
+        static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+            for (int x = from.getX(); x <= to.getX(); x++) {
+                for (int y = from.getY(); y <= to.getY(); y++) {
+                    for (int z = from.getZ(); z <= to.getZ(); z++) {
+                        pos.set(x, y, z);
+                        placeBlock(world, stateProvider.get(pos, random).rotate(world, pos, rotation), pos, fillAir, fillSolid, postProcess);
+                    }
+                }
+            }
         }
-        return blocks;
+
+        static void placeBlock(LevelAccessor world, BlockState state, BlockPos pos, boolean fillAir, boolean fillSolid, boolean postProcess) {
+            if (isBlockProtected(world, pos)) {
+                return;
+            }
+            if (world.isEmptyBlock(pos)) {
+                if (!fillAir) {
+                    return;
+                }
+            } else {
+                if (!fillSolid) {
+                    return;
+                }
+            }
+            world.setBlock(pos, state, 3);
+            if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
+                world.scheduleTick(pos, state.getBlock(), 1);
+            } else if (postProcess) {
+                world.getChunk(pos).markPosForPostprocessing(pos);
+            }
+            FluidState fluidState = world.getFluidState(pos);
+            if (!fluidState.isEmpty()) {
+                world.scheduleTick(pos, fluidState.getType(), 0);
+            }
+        }
+
+        static int countEmptyBlocksDownwards(LevelAccessor world, BlockPos pos) {
+            int blocks = 0;
+            final BlockPos.MutableBlockPos cursor = pos.mutable();
+            while (cursor.getY() > world.getMinBuildHeight() && world.isEmptyBlock(cursor)) {
+                ++blocks;
+                cursor.move(0, -1, 0);
+            }
+            return blocks;
+        }
+
+        static boolean isBlockProtected(LevelAccessor world, BlockPos pos) {
+            return world.getBlockState(pos).getDestroySpeed(world, pos) < 0;
+        }
     }
 }

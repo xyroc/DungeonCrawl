@@ -27,10 +27,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,8 +72,8 @@ public class DungeonCrawl {
         ModStructurePieceTypes.init();
     }
 
-    private void onAddReloadListener(final AddReloadListenerEvent event) {
-        event.addListener(new ResourceReloadHandler());
+    private void onAddReloadListener(final AddServerReloadListenersEvent event) {
+        event.addListener(locate("server_resources"), new ResourceReloadHandler());
     }
 
     public static ResourceLocation locate(String path) {

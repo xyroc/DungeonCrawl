@@ -38,7 +38,7 @@ public class Banner {
      * random patterns.
      */
     public static BannerPatternLayers createPatterns(RandomSource rand, RegistryAccess registryAccess) {
-        Registry<BannerPattern> bannerPatterns = registryAccess.registryOrThrow(Registries.BANNER_PATTERN);
+        Registry<BannerPattern> bannerPatterns = registryAccess.lookupOrThrow(Registries.BANNER_PATTERN);
         List<BannerPatternLayers.Layer> layers = new ArrayList<>();
         for (int i = 0; i < PATTERN_COUNT; ++i) {
             Holder<BannerPattern> pattern = bannerPatterns.getRandom(rand).orElseThrow();

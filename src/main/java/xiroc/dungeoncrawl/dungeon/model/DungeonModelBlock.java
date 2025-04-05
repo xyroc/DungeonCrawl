@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -172,7 +173,7 @@ public class DungeonModelBlock {
         if (nbt.contains("resourceName")) {
             blockName = ResourceLocation.parse(nbt.getString("resourceName"));
             if (BuiltInRegistries.BLOCK.containsKey(blockName)) {
-                block = BuiltInRegistries.BLOCK.get(blockName);
+                block = BuiltInRegistries.BLOCK.get(blockName).map(Holder::value).orElse(Blocks.CAVE_AIR);
             } else {
                 DungeonCrawl.LOGGER.warn("Unknown block: {}", blockName);
                 block = Blocks.CAVE_AIR;

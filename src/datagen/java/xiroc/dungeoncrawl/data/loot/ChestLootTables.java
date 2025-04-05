@@ -27,6 +27,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
@@ -42,6 +43,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
         consumer.accept(Loot.CHEST_FOOD, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("food")
                         .setRolls(UniformGenerator.between(9, 11))
@@ -123,6 +125,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(SuspiciousStew.suspiciousStew()))));
 
         consumer.accept(Loot.CHEST_SECRET_ROOM, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("secret room")
                         .setRolls(UniformGenerator.between(8, 8))
@@ -154,6 +157,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.MUSIC_DISC_WARD))));
 
         consumer.accept(Loot.CHEST_STAGE_1, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("stage one chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -268,10 +272,10 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.POTION)
                                 .setWeight(3)
                                 .apply(RandomPotion.randomPotion(0)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.WOODEN_AXE)
                                 .setWeight(12)
                                 .apply(RandomItem.randomItem(0)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.COBBLESTONE)
                                 .setWeight(4)
                                 .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.SHIELD)
@@ -279,6 +283,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(Shield.shield(0)))));
 
         consumer.accept(Loot.CHEST_STAGE_2, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("stage two chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -396,10 +401,10 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.POTION)
                                 .setWeight(5)
                                 .apply(RandomPotion.randomPotion(1)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.WOODEN_AXE)
                                 .setWeight(14)
                                 .apply(RandomItem.randomItem(1)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.COBBLESTONE)
                                 .setWeight(4)
                                 .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.SHIELD)
@@ -407,6 +412,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(Shield.shield(1)))));
 
         consumer.accept(Loot.CHEST_STAGE_3, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("stage three chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -496,10 +502,10 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.POTION)
                                 .setWeight(8)
                                 .apply(RandomPotion.randomPotion(2)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.WOODEN_AXE)
                                 .setWeight(10)
                                 .apply(RandomItem.randomItem(2)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.COBBLESTONE)
                                 .setWeight(4)
                                 .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.SHIELD)
@@ -507,6 +513,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(Shield.shield(2)))));
 
         consumer.accept(Loot.CHEST_STAGE_4, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("stage four chest")
                         .setRolls(UniformGenerator.between(7, 10))
@@ -595,10 +602,10 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.POTION)
                                 .setWeight(8)
                                 .apply(RandomPotion.randomPotion(3)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.WOODEN_AXE)
                                 .setWeight(10)
                                 .apply(RandomItem.randomItem(3)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.COBBLESTONE)
                                 .setWeight(4)
                                 .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.SHIELD)
@@ -606,6 +613,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(Shield.shield(3)))));
 
         consumer.accept(Loot.CHEST_STAGE_5, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("stage five chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -687,10 +695,10 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.POTION)
                                 .setWeight(5)
                                 .apply(RandomPotion.randomPotion(4)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.WOODEN_AXE)
                                 .setWeight(9)
                                 .apply(RandomItem.randomItem(4)))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.COBBLESTONE)
                                 .setWeight(3)
                                 .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.SHIELD)
@@ -698,10 +706,11 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(Shield.shield(4)))));
 
         consumer.accept(Loot.CHEST_SUPPLY, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("guaranteed items")
                         .setRolls(UniformGenerator.between(3, 6))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.WOODEN_AXE)
                                 .apply(RandomItem.randomItem(0))))
                 .withPool(LootPool.lootPool()
                         .name("guaranteed potions")
@@ -798,7 +807,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.FERMENTED_SPIDER_EYE))
                         .add(LootItem.lootTableItem(Items.SPIDER_EYE)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 7))))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.COBBLESTONE)
                                 .setWeight(5)
                                 .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.BOOK)
@@ -806,6 +815,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(EnchantWithLevelsFunction.enchantWithLevels(registries(), ConstantValue.exactly(10))))));
 
         consumer.accept(Loot.CHEST_TREASURE, LootTable.lootTable()
+                .setParamSet(LootContextParamSets.CHEST)
                 .withPool(LootPool.lootPool()
                         .name("treasure")
                         .setRolls(UniformGenerator.between(7, 8))
@@ -882,7 +892,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .setWeight(4)
                                 .apply(EnchantWithLevelsFunction
                                         .enchantWithLevels(registries(), UniformGenerator.between(20, 30))))
-                        .add(LootItem.lootTableItem(Items.AIR)
+                        .add(LootItem.lootTableItem(Items.WOODEN_AXE)
                                 .setWeight(12)
                                 .apply(RandomItem.randomItem(5)))
                         .add(LootItem.lootTableItem(Items.POTION)

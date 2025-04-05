@@ -1,27 +1,19 @@
 package xiroc.dungeoncrawl.data.tags.worldgen;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.data.tags.BiomeTagsProvider;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.init.ModTags;
 
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.tags.BiomeTags.IS_BADLANDS;
-import static net.minecraft.tags.BiomeTags.IS_FOREST;
-import static net.minecraft.tags.BiomeTags.IS_HILL;
-import static net.minecraft.tags.BiomeTags.IS_JUNGLE;
-import static net.minecraft.tags.BiomeTags.IS_MOUNTAIN;
-import static net.minecraft.tags.BiomeTags.IS_TAIGA;
+import static net.minecraft.tags.BiomeTags.*;
 
-public class BiomeTags extends TagsProvider<Biome> {
+public class BiomeTags extends BiomeTagsProvider {
 
-    public BiomeTags(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
-        super(packOutput, Registries.BIOME, provider, DungeonCrawl.MOD_ID, existingFileHelper);
+    public BiomeTags(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> provider) {
+        super(packOutput, provider, DungeonCrawl.MOD_ID);
     }
 
     @Override

@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,6 +32,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -246,7 +248,7 @@ public class RandomEquipment {
 
     public static Item getItem(ResourceLocation resourceLocation) {
         if (BuiltInRegistries.ITEM.containsKey(resourceLocation))
-            return BuiltInRegistries.ITEM.get(resourceLocation);
+            return BuiltInRegistries.ITEM.get(resourceLocation).map(Holder::value).orElse(Items.AIR);
         DungeonCrawl.LOGGER.warn("Failed to get {} from the item registry.", resourceLocation.toString());
         return null;
     }

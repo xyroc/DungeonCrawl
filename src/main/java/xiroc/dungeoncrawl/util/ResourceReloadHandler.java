@@ -21,7 +21,6 @@ package xiroc.dungeoncrawl.util;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
-import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.DungeonType;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
@@ -38,7 +37,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class ResourceReloadHandler implements PreparableReloadListener {
-
     /**
      * A list of all objects that need to get updated after the data pack files have been loaded.
      */
@@ -67,14 +65,14 @@ public class ResourceReloadHandler implements PreparableReloadListener {
     }
 
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier stage, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+    public CompletableFuture<Void> reload(PreparationBarrier stage, ResourceManager resourceManager, Executor backgroundExecutor, Executor gameExecutor) {
         return stage.wait(Unit.INSTANCE).thenRunAsync(() -> {
-            reloadProfiler.startTick();
-            reloadProfiler.push("listener");
             this.reload(resourceManager);
-            reloadProfiler.pop();
-            reloadProfiler.endTick();
         }, gameExecutor);
     }
 
+    @Override
+    public String getName() {
+        return "Dungeon Crawl Resource Reload Listener";
+    }
 }

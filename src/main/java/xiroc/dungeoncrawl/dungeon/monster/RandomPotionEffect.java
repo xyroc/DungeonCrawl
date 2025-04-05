@@ -108,7 +108,7 @@ public class RandomPotionEffect {
                                     effect.getAsJsonObject("amplifier").get("max").getAsInt())
                             : new Range(0, 0);
                     GUARANTEED_EFFECTS[stage][i] = new PotionEffect(
-                            BuiltInRegistries.MOB_EFFECT.getHolder(ResourceLocation.parse(effect.get("effect").getAsString())).orElseThrow(),
+                            BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effect.get("effect").getAsString())).orElseThrow(),
                             effect.get("duration").getAsInt(), amplifier);
                 }
             }

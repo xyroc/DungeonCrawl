@@ -21,6 +21,7 @@ package xiroc.dungeoncrawl.theme;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
@@ -235,7 +236,7 @@ public class JsonTheming {
                 for (JsonElement blockElement : blockObjects) {
                     JsonObject blockObject = (JsonObject) blockElement;
                     Block block = BuiltInRegistries.BLOCK
-                            .get(ResourceLocation.parse(blockObject.get("block").getAsString()));
+                            .get(ResourceLocation.parse(blockObject.get("block").getAsString())).map(Holder::value).orElse(null);
                     if (block != null) {
                         BlockState state = JSONUtils.deserializeBlockStateProperties(block, blockObject);
                         builder.add(state, JSONUtils.getWeight(blockObject));
@@ -246,7 +247,7 @@ public class JsonTheming {
                 return new WeightedRandomBlock(builder.build());
             } else if (type.equalsIgnoreCase("block")) {
                 Block block = BuiltInRegistries.BLOCK
-                        .get(ResourceLocation.parse(object.get("block").getAsString()));
+                        .get(ResourceLocation.parse(object.get("block").getAsString())).map(Holder::value).orElse(null);
                 if (block != null) {
                     BlockState state = JSONUtils.deserializeBlockStateProperties(block, object);
                     return new SingleBlock(state);

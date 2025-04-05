@@ -450,7 +450,7 @@
               "loot_level": 2
             }
           ],
-          "name": "minecraft:air",
+          "name": "minecraft:wooden_axe",
           "weight": 10
         },
         {
@@ -460,7 +460,7 @@
               "function": "dungeoncrawl:material_blocks"
             }
           ],
-          "name": "minecraft:air",
+          "name": "minecraft:cobblestone",
           "weight": 4
         },
         {

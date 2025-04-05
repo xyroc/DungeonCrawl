@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.monster;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -48,7 +49,9 @@ public class WeightedRandomEntity implements IRandom<EntityType<?>> {
         int i = 0;
         for (Tuple<String, Integer> entry : entries) {
             float weight = (float) entry.getB() / (float) totalWeight;
-            this.entries[i] = new WeightedRandomEntity.WeightedEntry(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(entry.getA())), weight + f);
+            this.entries[i] = new WeightedRandomEntity.WeightedEntry(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(entry.getA()))
+                    .map(Holder::value)
+                    .orElseThrow(), weight + f);
             f += weight;
             i++;
         }

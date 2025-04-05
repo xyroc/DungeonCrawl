@@ -81,7 +81,7 @@ public class DungeonBuilder {
                 .getNoiseBiome(QuartPos.fromBlock(groundPos.getX()), QuartPos.fromBlock(groundPos.getY()), QuartPos.fromBlock(groundPos.getZ()),
                         generationContext.randomState().sampler()).value();
 
-        DungeonType type = DungeonType.randomType(this.generationContext.registryAccess().registryOrThrow(Registries.BIOME).getKey(this.biome), this.generationContext.random());
+        DungeonType type = DungeonType.randomType(this.generationContext.registryAccess().lookupOrThrow(Registries.BIOME).getKey(this.biome), this.generationContext.random());
         generateLayout(type, DEFAULT_GENERATOR);
 
         List<DungeonPiece> pieces = Lists.newArrayList();
@@ -149,7 +149,7 @@ public class DungeonBuilder {
     }
 
     private void determineThemes() {
-        ResourceLocation registryName = this.generationContext.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome);
+        ResourceLocation registryName = this.generationContext.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome);
 
         if (registryName != null) {
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), this.generationContext.random());

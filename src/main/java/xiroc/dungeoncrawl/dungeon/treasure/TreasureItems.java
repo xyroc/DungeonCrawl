@@ -65,7 +65,8 @@ public class TreasureItems {
                         new MobEffectInstance(MobEffects.BLINDNESS, 100),
                         new MobEffectInstance(MobEffects.WEAKNESS, 100),
                         new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100),
-                        new MobEffectInstance(MobEffects.REGENERATION, 160, 1))));
+                        new MobEffectInstance(MobEffects.REGENERATION, 160, 1)),
+                Optional.of("Laudanum")));
         LAUDANUM.set(DataComponents.CUSTOM_NAME, Component.literal("Laudanum"));
         LAUDANUM.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A medicinal tincture."))));
         LAUDANUM.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
@@ -74,7 +75,8 @@ public class TreasureItems {
         ANIMUS.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(13050390),
                 List.of(new MobEffectInstance(MobEffects.WITHER, 40),
                         new MobEffectInstance(MobEffects.BLINDNESS, 40),
-                        new MobEffectInstance(MobEffects.DAMAGE_BOOST, 800))));
+                        new MobEffectInstance(MobEffects.DAMAGE_BOOST, 800)),
+                Optional.of("Animus")));
         ANIMUS.set(DataComponents.CUSTOM_NAME, Component.literal("Animus"));
         ANIMUS.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("An unstable mixture."))));
         ANIMUS.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
@@ -83,14 +85,17 @@ public class TreasureItems {
         NECTAR.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(15446551),
                 List.of(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 400),
                         new MobEffectInstance(MobEffects.BLINDNESS, 100),
-                        new MobEffectInstance(MobEffects.ABSORPTION, 600, 8))));
+                        new MobEffectInstance(MobEffects.ABSORPTION, 600, 8)),
+                Optional.of("Nectar")));
         NECTAR.set(DataComponents.CUSTOM_NAME, Component.literal("Nectar"));
         NECTAR.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A floral extract."))));
         NECTAR.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
         LUMA = new ItemStack(Items.POTION);
-        LUMA.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(16448000),
-                List.of(new MobEffectInstance(MobEffects.GLOWING, 12000))));
+        LUMA.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(),
+                Optional.of(16448000),
+                List.of(new MobEffectInstance(MobEffects.GLOWING, 12000)),
+                Optional.of("Luma")));
         LUMA.set(DataComponents.CUSTOM_NAME, Component.literal("Luma"));
         LUMA.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A glowstone extract."))));
         LUMA.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
@@ -99,37 +104,38 @@ public class TreasureItems {
         VELOCITAS.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(65327),
                 List.of(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 400, 1),
                         new MobEffectInstance(MobEffects.BLINDNESS, 40),
-                        new MobEffectInstance(MobEffects.DIG_SPEED, 400))));
+                        new MobEffectInstance(MobEffects.DIG_SPEED, 400)),
+                Optional.of("Velocitas")));
         VELOCITAS.set(DataComponents.CUSTOM_NAME, Component.literal("Velocitas"));
         VELOCITAS.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("An energetic beverage."))));
         VELOCITAS.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
         POTION_HEALING = new ItemStack(Items.POTION);
-        POTION_HEALING.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.HEALING), Optional.empty(), List.of()));
+        POTION_HEALING.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.HEALING), Optional.empty(), List.of(), Optional.empty()));
 
         POTION_HEALING_II = new ItemStack(Items.POTION);
-        POTION_HEALING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_HEALING), Optional.empty(), List.of()));
+        POTION_HEALING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_HEALING), Optional.empty(), List.of(), Optional.empty()));
 
         POTION_REGENERATION = new ItemStack(Items.POTION);
-        POTION_REGENERATION.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.REGENERATION), Optional.empty(), List.of()));
+        POTION_REGENERATION.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.REGENERATION), Optional.empty(), List.of(), Optional.empty()));
 
         POTION_REGENERATION_LONG = new ItemStack(Items.POTION);
-        POTION_REGENERATION_LONG.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.LONG_REGENERATION), Optional.empty(), List.of()));
+        POTION_REGENERATION_LONG.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.LONG_REGENERATION), Optional.empty(), List.of(), Optional.empty()));
 
         POTION_REGENERATION_II = new ItemStack(Items.POTION);
-        POTION_HEALING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_REGENERATION), Optional.empty(), List.of()));
+        POTION_HEALING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_REGENERATION), Optional.empty(), List.of(), Optional.empty()));
 
         SPLASH_POISON = new ItemStack(Items.SPLASH_POTION);
-        SPLASH_POISON.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.POISON), Optional.empty(), List.of()));
+        SPLASH_POISON.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.POISON), Optional.empty(), List.of(), Optional.empty()));
 
         SPLASH_POISON_LONG = new ItemStack(Items.SPLASH_POTION);
-        SPLASH_POISON_LONG.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.LONG_POISON), Optional.empty(), List.of()));
+        SPLASH_POISON_LONG.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.LONG_POISON), Optional.empty(), List.of(), Optional.empty()));
 
         SPLASH_HARMING = new ItemStack(Items.SPLASH_POTION);
-        SPLASH_HARMING.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.HARMING), Optional.empty(), List.of()));
+        SPLASH_HARMING.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.HARMING), Optional.empty(), List.of(), Optional.empty()));
 
         SPLASH_HARMING_II = new ItemStack(Items.SPLASH_POTION);
-        SPLASH_HARMING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_HARMING), Optional.empty(), List.of()));
+        SPLASH_HARMING_II.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.STRONG_HARMING), Optional.empty(), List.of(), Optional.empty()));
 
         POTIONS = new ItemStack[]{POTION_HEALING, POTION_HEALING_II, POTION_REGENERATION, POTION_REGENERATION_LONG,
                 POTION_REGENERATION_II, SPLASH_HARMING, SPLASH_HARMING_II, SPLASH_POISON, SPLASH_POISON_LONG};

@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -111,7 +112,7 @@ public class ModelBlockDefinition {
 
     public Block getBlock(DungeonModelBlock block) {
         if (block.type == DungeonModelBlockType.OTHER) {
-            return BuiltInRegistries.BLOCK.get(block.blockName);
+            return BuiltInRegistries.BLOCK.get(block.blockName).map(Holder::value).orElse(Blocks.CAVE_AIR);
         } else if (block.type == DungeonModelBlockType.CARPET) {
             if (block.block != null) {
                 return block.block;
@@ -157,7 +158,7 @@ public class ModelBlockDefinition {
             JsonObject object = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
             object.getAsJsonObject("definition").entrySet().forEach((entry) -> {
                 String key = entry.getKey();
-                Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(key));
+                Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(key)).map(Holder::value).orElse(null);
                 if (block != null) {
                     String value = entry.getValue().getAsString().toUpperCase();
                     if (DungeonModelBlockType.NAME_TO_TYPE.containsKey(value)) {

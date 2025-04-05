@@ -36,16 +36,16 @@ import java.util.List;
 public class DataGen {
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         Loot.init(); // Register loot function types
 
         DataGenerator generator = event.getGenerator();
-        boolean includeServer = event.includeServer();
 
-        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Loot.ALL_LOOT_TABLES,
-                List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
-        generator.addProvider(includeServer, new PrimaryThemes(generator.getPackOutput()));
-        generator.addProvider(includeServer, new SecondaryThemes(generator.getPackOutput()));
+        generator.addProvider(true, new LootTableProvider(event.getGenerator().getPackOutput(""),
+                Loot.ALL_LOOT_TABLES,
+                List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST)), event.getLookupProvider()));
+        generator.addProvider(true, new PrimaryThemes(generator.getPackOutput()));
+        generator.addProvider(true, new SecondaryThemes(generator.getPackOutput()));
     }
 
 }

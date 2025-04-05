@@ -20,6 +20,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
@@ -94,7 +95,7 @@ public enum DungeonModelBlockType {
     CARPET((block, rotation, world, pos, theme, subTheme, rand, variation, stage) -> {
         Block b = block.variation != null && variation != null ?
                 DungeonBlocks.CARPET[(block.variation + variation[block.variation % variation.length]) % DungeonBlocks.CARPET.length]
-                : BuiltInRegistries.BLOCK.get(block.blockName);
+                : BuiltInRegistries.BLOCK.get(block.blockName).map(Holder::value).orElse(Blocks.CAVE_AIR);
         if (b == null) {
             b = DungeonBlocks.CARPET[rand.nextInt(DungeonBlocks.CARPET.length)];
         }

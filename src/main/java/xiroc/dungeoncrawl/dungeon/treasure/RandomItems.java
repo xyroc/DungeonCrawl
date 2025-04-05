@@ -138,7 +138,7 @@ public class RandomItems {
     }
 
     private static Holder<Enchantment> enchantment(ResourceKey<Enchantment> key, RegistryAccess registryAccess) {
-        return registryAccess.registryOrThrow(Registries.ENCHANTMENT).getHolder(key).orElseThrow();
+        return registryAccess.lookupOrThrow(Registries.ENCHANTMENT).get(key).orElseThrow();
     }
 
 }

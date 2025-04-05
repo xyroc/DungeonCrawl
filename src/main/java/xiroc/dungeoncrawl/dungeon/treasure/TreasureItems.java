@@ -29,11 +29,18 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.item.component.TooltipDisplay;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.SequencedSet;
+import java.util.Set;
 
 public class TreasureItems {
+    private static final TooltipDisplay TOOLTIP_DISPLAY = new TooltipDisplay(false, new LinkedHashSet<>(Set.of(
+            DataComponents.POTION_CONTENTS
+    )));
 
     // Potions from the original Roguelike Dungeons
     private static final ItemStack LAUDANUM;
@@ -61,35 +68,35 @@ public class TreasureItems {
     static {
         LAUDANUM = new ItemStack(Items.POTION);
         LAUDANUM.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(7014144),
-                List.of(new MobEffectInstance(MobEffects.CONFUSION, 100),
+                List.of(new MobEffectInstance(MobEffects.NAUSEA, 100),
                         new MobEffectInstance(MobEffects.BLINDNESS, 100),
                         new MobEffectInstance(MobEffects.WEAKNESS, 100),
-                        new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100),
+                        new MobEffectInstance(MobEffects.MINING_FATIGUE, 100),
                         new MobEffectInstance(MobEffects.REGENERATION, 160, 1)),
                 Optional.of("Laudanum")));
         LAUDANUM.set(DataComponents.CUSTOM_NAME, Component.literal("Laudanum"));
         LAUDANUM.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A medicinal tincture."))));
-        LAUDANUM.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+        LAUDANUM.set(DataComponents.TOOLTIP_DISPLAY, TOOLTIP_DISPLAY);
 
         ANIMUS = new ItemStack(Items.POTION);
         ANIMUS.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(13050390),
                 List.of(new MobEffectInstance(MobEffects.WITHER, 40),
                         new MobEffectInstance(MobEffects.BLINDNESS, 40),
-                        new MobEffectInstance(MobEffects.DAMAGE_BOOST, 800)),
+                        new MobEffectInstance(MobEffects.STRENGTH, 800)),
                 Optional.of("Animus")));
         ANIMUS.set(DataComponents.CUSTOM_NAME, Component.literal("Animus"));
         ANIMUS.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("An unstable mixture."))));
-        ANIMUS.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+        ANIMUS.set(DataComponents.TOOLTIP_DISPLAY, TOOLTIP_DISPLAY);
 
         NECTAR = new ItemStack(Items.POTION);
         NECTAR.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(15446551),
-                List.of(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 400),
+                List.of(new MobEffectInstance(MobEffects.RESISTANCE, 400),
                         new MobEffectInstance(MobEffects.BLINDNESS, 100),
                         new MobEffectInstance(MobEffects.ABSORPTION, 600, 8)),
                 Optional.of("Nectar")));
         NECTAR.set(DataComponents.CUSTOM_NAME, Component.literal("Nectar"));
         NECTAR.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A floral extract."))));
-        NECTAR.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+        NECTAR.set(DataComponents.TOOLTIP_DISPLAY, TOOLTIP_DISPLAY);
 
         LUMA = new ItemStack(Items.POTION);
         LUMA.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(),
@@ -98,17 +105,17 @@ public class TreasureItems {
                 Optional.of("Luma")));
         LUMA.set(DataComponents.CUSTOM_NAME, Component.literal("Luma"));
         LUMA.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("A glowstone extract."))));
-        LUMA.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+        LUMA.set(DataComponents.TOOLTIP_DISPLAY, TOOLTIP_DISPLAY);
 
         VELOCITAS = new ItemStack(Items.POTION);
         VELOCITAS.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(65327),
-                List.of(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 400, 1),
+                List.of(new MobEffectInstance(MobEffects.SPEED, 400, 1),
                         new MobEffectInstance(MobEffects.BLINDNESS, 40),
-                        new MobEffectInstance(MobEffects.DIG_SPEED, 400)),
+                        new MobEffectInstance(MobEffects.HASTE, 400)),
                 Optional.of("Velocitas")));
         VELOCITAS.set(DataComponents.CUSTOM_NAME, Component.literal("Velocitas"));
         VELOCITAS.set(DataComponents.LORE, new ItemLore(List.of(Component.literal("An energetic beverage."))));
-        VELOCITAS.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+        VELOCITAS.set(DataComponents.TOOLTIP_DISPLAY, TOOLTIP_DISPLAY);
 
         POTION_HEALING = new ItemStack(Items.POTION);
         POTION_HEALING.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.of(Potions.HEALING), Optional.empty(), List.of(), Optional.empty()));

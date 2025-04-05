@@ -116,8 +116,11 @@ public interface Loot {
     }
 
     static Tuple<Theme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
-        CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID);
-        return new Tuple<>(Theme.getTheme(ResourceLocation.parse(data.getString("theme"))), Theme.getSecondaryTheme(ResourceLocation.parse(data.getString("secondaryTheme"))));
+        CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID).orElseThrow();
+        return new Tuple<>(
+                Theme.getTheme(ResourceLocation.parse(data.getString("theme").orElseThrow())),
+                Theme.getSecondaryTheme(ResourceLocation.parse(data.getString("secondaryTheme").orElseThrow()))
+        );
     }
 
 }

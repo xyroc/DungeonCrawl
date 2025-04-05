@@ -105,42 +105,31 @@ public abstract class DungeonPiece extends StructurePiece {
     public DungeonPiece(StructurePieceType p_i51343_1_, CompoundTag p_i51343_2_) {
         super(p_i51343_1_, p_i51343_2_);
         this.sides = new boolean[4];
-        this.sides[0] = p_i51343_2_.getBoolean("north");
-        this.sides[1] = p_i51343_2_.getBoolean("east");
-        this.sides[2] = p_i51343_2_.getBoolean("south");
-        this.sides[3] = p_i51343_2_.getBoolean("west");
-        this.connectedSides = p_i51343_2_.getInt("connectedSides");
-        this.gridPosition = new Position2D(p_i51343_2_.getInt("posX"), p_i51343_2_.getInt("posZ"));
-        this.x = p_i51343_2_.getInt("x");
-        this.y = p_i51343_2_.getInt("y");
-        this.z = p_i51343_2_.getInt("z");
-        this.stage = p_i51343_2_.getInt("stage");
-        this.rotation = Orientation.getRotation(p_i51343_2_.getInt("rotation"));
+        this.sides[0] = p_i51343_2_.getBoolean("north").orElseThrow();
+        this.sides[1] = p_i51343_2_.getBoolean("east").orElseThrow();
+        this.sides[2] = p_i51343_2_.getBoolean("south").orElseThrow();
+        this.sides[3] = p_i51343_2_.getBoolean("west").orElseThrow();
+        this.connectedSides = p_i51343_2_.getInt("connectedSides").orElseThrow();
+        this.gridPosition = new Position2D(
+                p_i51343_2_.getInt("posX").orElseThrow(),
+                p_i51343_2_.getInt("posZ").orElseThrow()
+        );
+        this.x = p_i51343_2_.getInt("x").orElseThrow();
+        this.y = p_i51343_2_.getInt("y").orElseThrow();
+        this.z = p_i51343_2_.getInt("z").orElseThrow();
+        this.stage = p_i51343_2_.getInt("stage").orElseThrow();
+        this.rotation = Orientation.getRotation(p_i51343_2_.getInt("rotation").orElseThrow());
 
-        if (p_i51343_2_.contains("theme", 99)) {
-            this.theme = Theme.getThemeByID(p_i51343_2_.getInt("theme"));
-        } else {
-            this.theme = Theme.getTheme(ResourceLocation.parse(p_i51343_2_.getString("theme")));
-        }
+        this.theme = Theme.getTheme(ResourceLocation.parse(p_i51343_2_.getString("theme").orElseThrow()));
+        this.secondaryTheme = Theme.getSecondaryTheme(ResourceLocation.parse(p_i51343_2_.getString("secondaryTheme").orElseThrow()));
+        this.model = DungeonModels.KEY_TO_MODEL.get(ResourceLocation.parse(p_i51343_2_.getString("model").orElseThrow()));
 
-        if (p_i51343_2_.contains("subTheme", 99)) {
-            this.secondaryTheme = Theme.getSecondaryThemeByID(p_i51343_2_.getInt("subTheme"));
-        } else {
-            this.secondaryTheme = Theme.getSecondaryTheme(ResourceLocation.parse(p_i51343_2_.getString("secondaryTheme")));
-        }
-
-        if (p_i51343_2_.contains("model", 99)) {
-            this.model = DungeonModels.ID_TO_MODEL.get(p_i51343_2_.getInt("model"));
-        } else {
-            this.model = DungeonModels.KEY_TO_MODEL.get(ResourceLocation.parse(p_i51343_2_.getString("model")));
-        }
-
-        if (p_i51343_2_.contains("features", 9)) {
-            this.features = readAllFeatures(p_i51343_2_.getList("features", 10));
+        if (p_i51343_2_.contains("features")) {
+            this.features = readAllFeatures(p_i51343_2_.getList("features").orElseThrow());
         }
 
         if (p_i51343_2_.contains("variation")) {
-            this.variation = p_i51343_2_.getByteArray("variation");
+            this.variation = p_i51343_2_.getByteArray("variation").orElseThrow();
         }
 
         createBoundingBox();
@@ -569,8 +558,12 @@ public abstract class DungeonPiece extends StructurePiece {
     protected static BlockPos[] positionsFromNbt(ListTag nbt) {
         BlockPos[] positions = new BlockPos[nbt.size()];
         for (int i = 0; i < nbt.size(); i++) {
-            CompoundTag pillar = nbt.getCompound(i);
-            positions[i] = new BlockPos(pillar.getInt("x"), pillar.getInt("y"), pillar.getInt("z"));
+            CompoundTag pillar = nbt.getCompound(i).orElseThrow();
+            positions[i] = new BlockPos(
+                    pillar.getInt("x").orElseThrow(),
+                    pillar.getInt("y").orElseThrow(),
+                    pillar.getInt("z").orElseThrow()
+            );
         }
         return positions;
 
@@ -580,7 +573,7 @@ public abstract class DungeonPiece extends StructurePiece {
         DungeonModelFeature.Instance[] features = new DungeonModelFeature.Instance[nbt.size()];
 
         for (int i = 0; i < features.length; i++) {
-            features[i] = DungeonModelFeature.Instance.read(nbt.getCompound(i));
+            features[i] = DungeonModelFeature.Instance.read(nbt.getCompound(i).orElseThrow());
         }
 
         return features;

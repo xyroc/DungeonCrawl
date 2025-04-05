@@ -215,7 +215,7 @@ public class RandomEquipment {
 
     public static void setArmorColor(ItemStack item, int color) {
         if (item.is(ItemTags.DYEABLE)) {
-            DyedItemColor colorComponent = new DyedItemColor(color, true);
+            DyedItemColor colorComponent = new DyedItemColor(color);
             item.set(DataComponents.DYED_COLOR, colorComponent);
         }
     }

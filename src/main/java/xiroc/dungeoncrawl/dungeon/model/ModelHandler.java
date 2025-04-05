@@ -95,7 +95,7 @@ public class ModelHandler {
     }
 
     public static DungeonModel loadModelFromNBT(CompoundTag nbt, ResourceLocation file, ResourceLocation key) {
-        int format = nbt.getInt("format");
+        int format = nbt.getInt("format").orElseThrow();
 
         if (format == 1) {
             return ModelLoader.VERSION_1.load(nbt, file, key);

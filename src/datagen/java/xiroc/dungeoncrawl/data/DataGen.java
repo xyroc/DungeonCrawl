@@ -36,7 +36,7 @@ import java.util.List;
 public class DataGen {
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent.Client event) {
+    public static void gatherData(GatherDataEvent.Server event) {
         Loot.init(); // Register loot function types
 
         DataGenerator generator = event.getGenerator();

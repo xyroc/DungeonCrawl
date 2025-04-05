@@ -135,7 +135,7 @@ public class DungeonModelBlock {
                 nbt.putString("value", holder.valueName);
                 properties.add(nbt);
             }
-            if (properties.size() > 0)
+            if (!properties.isEmpty())
                 tag.put("properties", properties);
         }
 
@@ -156,11 +156,13 @@ public class DungeonModelBlock {
         }
 
         if (nbt.contains("position")) {
-            CompoundTag pos = nbt.getCompound("position");
-            position = new Vec3i(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+            CompoundTag pos = nbt.getCompound("position").orElseThrow();
+            position = new Vec3i(pos.getInt("x").orElseThrow(),
+                    pos.getInt("y").orElseThrow(),
+                    pos.getInt("z").orElseThrow());
         }
 
-        String type = nbt.getString("type");
+        String type = nbt.getString("type").orElseThrow();
         if (!DungeonModelBlockType.NAME_TO_TYPE.containsKey(type)) {
             DungeonCrawl.LOGGER.warn("Unknown model block type: {}", type);
             return new DungeonModelBlock(DungeonModelBlockType.AIR, position);
@@ -171,7 +173,7 @@ public class DungeonModelBlock {
         ResourceLocation blockName = null;
 
         if (nbt.contains("resourceName")) {
-            blockName = ResourceLocation.parse(nbt.getString("resourceName"));
+            blockName = ResourceLocation.parse(nbt.getString("resourceName").orElseThrow());
             if (BuiltInRegistries.BLOCK.containsKey(blockName)) {
                 block = BuiltInRegistries.BLOCK.get(blockName).map(Holder::value).orElse(Blocks.CAVE_AIR);
             } else {
@@ -185,20 +187,20 @@ public class DungeonModelBlock {
         PropertyHolder[] properties = null;
 
         if (nbt.contains("properties")) {
-            ListTag nbtProperties = nbt.getList("properties", 10);
+            ListTag nbtProperties = nbt.getList("properties").orElseThrow();
 
             properties = new PropertyHolder[nbtProperties.size()];
 
             for (int i = 0; i < nbtProperties.size(); i++) {
                 CompoundTag data = (CompoundTag) nbtProperties.get(i);
-                properties[i] = new PropertyHolder(data.getString("property"), data.getString("value"));
+                properties[i] = new PropertyHolder(data.getString("property").orElseThrow(), data.getString("value").orElseThrow());
             }
         }
 
         Integer variation = null;
 
         if (nbt.contains("variation")) {
-            variation = nbt.getInt("variation");
+            variation = nbt.getInt("variation").orElseThrow();
         }
 
         return new DungeonModelBlock(blockType, position, properties, variation, block, blockName);

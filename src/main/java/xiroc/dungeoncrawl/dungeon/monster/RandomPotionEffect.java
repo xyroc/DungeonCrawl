@@ -25,6 +25,7 @@ import com.google.gson.stream.JsonReader;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -160,7 +161,7 @@ public class RandomPotionEffect {
      * Creates an NBT-representation of the given effect.
      */
     private static Tag toNBT(Holder<MobEffect> effect, int duration, int amplifier) {
-        return new MobEffectInstance(effect, duration, amplifier).save();
+        return MobEffectInstance.CODEC.encodeStart(NbtOps.INSTANCE, new MobEffectInstance(effect, duration, amplifier)).getOrThrow();
     }
 
     private record PotionEffect(Holder<MobEffect> effect, int duration,

@@ -58,8 +58,12 @@ public class DirectionalBlockPos {
     }
 
     public static DirectionalBlockPos fromNBT(CompoundTag nbt) {
-        return new DirectionalBlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"),
-                Direction.from3DDataValue(nbt.getInt("direction")), nbt.contains("rotation") ? Rotation.valueOf(nbt.getString("rotation")) : null);
+        return new DirectionalBlockPos(
+                nbt.getInt("x").orElseThrow(),
+                nbt.getInt("y").orElseThrow(),
+                nbt.getInt("z").orElseThrow(),
+                Direction.from3DDataValue(nbt.getInt("direction").orElseThrow()),
+                nbt.contains("rotation") ? Rotation.valueOf(nbt.getString("rotation").orElseThrow()) : null);
     }
 
 }

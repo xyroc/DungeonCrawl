@@ -52,7 +52,7 @@ public class DungeonEntrance extends DungeonPiece {
     public DungeonEntrance(CompoundTag nbt) {
         super(ModStructurePieceTypes.ENTRANCE.get(), nbt);
         if (nbt.contains(KEY_SURFACE_HEIGHT)) {
-            this.surfaceHeight = nbt.getInt(KEY_SURFACE_HEIGHT);
+            this.surfaceHeight = nbt.getInt(KEY_SURFACE_HEIGHT).orElseThrow();
         }
     }
 

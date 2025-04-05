@@ -45,18 +45,18 @@ public class SuspiciousStew extends LootItemConditionalFunction {
         SuspiciousStewEffects.Entry poison = new SuspiciousStewEffects.Entry(MobEffects.POISON, 160);
         SuspiciousStewEffects.Entry healthBoost = new SuspiciousStewEffects.Entry(MobEffects.HEALTH_BOOST, 320);
         SuspiciousStewEffects.Entry blindness = new SuspiciousStewEffects.Entry(MobEffects.BLINDNESS, 120);
-        SuspiciousStewEffects.Entry resistance = new SuspiciousStewEffects.Entry(MobEffects.DAMAGE_RESISTANCE, 320);
-        SuspiciousStewEffects.Entry nausea = new SuspiciousStewEffects.Entry(MobEffects.CONFUSION, 120);
+        SuspiciousStewEffects.Entry resistance = new SuspiciousStewEffects.Entry(MobEffects.RESISTANCE, 320);
+        SuspiciousStewEffects.Entry nausea = new SuspiciousStewEffects.Entry(MobEffects.NAUSEA, 120);
         SuspiciousStewEffects.Entry absorption = new SuspiciousStewEffects.Entry(MobEffects.ABSORPTION, 320);
         SuspiciousStewEffects.Entry hunger = new SuspiciousStewEffects.Entry(MobEffects.HUNGER, 200);
         SuspiciousStewEffects.Entry saturation = new SuspiciousStewEffects.Entry(MobEffects.SATURATION, 80);
         SuspiciousStewEffects.Entry fireResistance = new SuspiciousStewEffects.Entry(MobEffects.FIRE_RESISTANCE, 320);
-        SuspiciousStewEffects.Entry strength = new SuspiciousStewEffects.Entry(MobEffects.DAMAGE_BOOST, 320);
-        SuspiciousStewEffects.Entry speed = new SuspiciousStewEffects.Entry(MobEffects.MOVEMENT_SPEED, 220);
-        SuspiciousStewEffects.Entry slowness = new SuspiciousStewEffects.Entry(MobEffects.MOVEMENT_SLOWDOWN, 160);
-        SuspiciousStewEffects.Entry miningFatigue = new SuspiciousStewEffects.Entry(MobEffects.DIG_SLOWDOWN, 160);
-        SuspiciousStewEffects.Entry haste = new SuspiciousStewEffects.Entry(MobEffects.DIG_SPEED, 320);
-        SuspiciousStewEffects.Entry jumpBoost = new SuspiciousStewEffects.Entry(MobEffects.JUMP, 160);
+        SuspiciousStewEffects.Entry strength = new SuspiciousStewEffects.Entry(MobEffects.STRENGTH, 320);
+        SuspiciousStewEffects.Entry speed = new SuspiciousStewEffects.Entry(MobEffects.SPEED, 220);
+        SuspiciousStewEffects.Entry slowness = new SuspiciousStewEffects.Entry(MobEffects.SLOWNESS, 160);
+        SuspiciousStewEffects.Entry miningFatigue = new SuspiciousStewEffects.Entry(MobEffects.MINING_FATIGUE, 160);
+        SuspiciousStewEffects.Entry haste = new SuspiciousStewEffects.Entry(MobEffects.HASTE, 320);
+        SuspiciousStewEffects.Entry jumpBoost = new SuspiciousStewEffects.Entry(MobEffects.JUMP_BOOST, 160);
         SuspiciousStewEffects.Entry wither = new SuspiciousStewEffects.Entry(MobEffects.WITHER, 80);
 
         EFFECTS = new SuspiciousStewEffects.Entry[]{regeneration, weakness, poison, healthBoost, blindness, resistance, nausea,

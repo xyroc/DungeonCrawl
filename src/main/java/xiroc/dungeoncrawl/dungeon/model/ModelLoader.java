@@ -30,10 +30,10 @@ public interface ModelLoader {
     ModelLoader VERSION_1 = (nbt, file, key) -> {
         ImmutableList.Builder<DungeonModelBlock> modelBlocks = new ImmutableList.Builder<>();
 
-        ListTag blocks = nbt.getList("blocks", 10);
+        ListTag blocks = nbt.getList("blocks").orElseThrow();
 
         for (int i = 0; i < blocks.size(); i++) {
-            DungeonModelBlock block = DungeonModelBlock.fromNBT(blocks.getCompound(i));
+            DungeonModelBlock block = DungeonModelBlock.fromNBT(blocks.getCompound(i).orElseThrow());
             if (block != null) {
                 modelBlocks.add(block);
             } else {
@@ -41,22 +41,28 @@ public interface ModelLoader {
             }
         }
 
-        return new DungeonModel(key, modelBlocks.build(), nbt.getInt("width"), nbt.getInt("height"), nbt.getInt("length"));
+        return new DungeonModel(key,
+                modelBlocks.build(),
+                nbt.getInt("width").orElseThrow(),
+                nbt.getInt("height").orElseThrow(),
+                nbt.getInt("length").orElseThrow());
     };
 
     ModelLoader LEGACY = (nbt, file, key) -> {
-        int width = nbt.getInt("width"), height = nbt.getInt("height"), length = nbt.getInt("length");
+        int width = nbt.getInt("width").orElseThrow(),
+                height = nbt.getInt("height").orElseThrow(),
+                length = nbt.getInt("length").orElseThrow();
 
-        ListTag blocks = nbt.getList("model", 9);
+        ListTag blocks = nbt.getList("model").orElseThrow();
 
         ImmutableList.Builder<DungeonModelBlock> modelBlocks = new ImmutableList.Builder<>();
 
         for (int x = 0; x < width; x++) {
-            ListTag blocks2 = blocks.getList(x);
+            ListTag blocks2 = blocks.getList(x).orElseThrow();
             for (int y = 0; y < height; y++) {
-                ListTag blocks3 = blocks2.getList(y);
+                ListTag blocks3 = blocks2.getList(y).orElseThrow();
                 for (int z = 0; z < length; z++) {
-                    DungeonModelBlock block = DungeonModelBlock.fromNBT(blocks3.getCompound(z), new Vec3i(x, y, z));
+                    DungeonModelBlock block = DungeonModelBlock.fromNBT(blocks3.getCompound(z).orElseThrow(), new Vec3i(x, y, z));
                     if (block != null) {
                         modelBlocks.add(block);
                     } else {

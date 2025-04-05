@@ -120,11 +120,11 @@ public final class DungeonModelFeature {
         }
 
         public static Instance read(CompoundTag nbt) {
-            Type type = Type.TYPES.get(nbt.getString("type"));
-            ListTag nbtPositions = nbt.getList("positions", 10);
+            Type type = Type.TYPES.get(nbt.getString("type").orElseThrow());
+            ListTag nbtPositions = nbt.getList("positions").orElseThrow();
             DirectionalBlockPos[] positions = new DirectionalBlockPos[nbtPositions.size()];
             for (int i = 0; i < nbtPositions.size(); i++) {
-                positions[i] = DirectionalBlockPos.fromNBT(nbtPositions.getCompound(i));
+                positions[i] = DirectionalBlockPos.fromNBT(nbtPositions.getCompound(i).orElseThrow());
             }
             return new Instance(type, positions);
         }

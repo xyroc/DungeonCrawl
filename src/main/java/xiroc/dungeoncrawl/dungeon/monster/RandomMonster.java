@@ -59,7 +59,7 @@ public class RandomMonster {
             nbt.put("Offers", VILLAGER_OFFERS.copy());
             nbt.putInt("Xp", 1);
             nbt.putBoolean("Willing", false);
-            CompoundTag villagerData = nbt.getCompound("villagerData");
+            CompoundTag villagerData = nbt.getCompound("villagerData").orElseThrow();
             villagerData.putInt("level", 5);
         });
     }

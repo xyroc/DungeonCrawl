@@ -42,19 +42,27 @@ public class DungeonSpiderRoom extends DungeonPiece {
     public DungeonSpiderRoom(CompoundTag nbt) {
         super(ModStructurePieceTypes.SPIDER_ROOM.get(), nbt);
         if (nbt.contains("spawners")) {
-            ListTag list = nbt.getList("spawners", 10);
+            ListTag list = nbt.getList("spawners").orElseThrow();
             spawners = new BlockPos[list.size()];
             for (int i = 0; i < spawners.length; i++) {
-                CompoundTag pos = list.getCompound(i);
-                spawners[i] = new BlockPos(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+                CompoundTag pos = list.getCompound(i).orElseThrow();
+                spawners[i] = new BlockPos(
+                        pos.getInt("x").orElseThrow(),
+                        pos.getInt("y").orElseThrow(),
+                        pos.getInt("z").orElseThrow()
+                );
             }
         }
         if (nbt.contains("chests")) {
-            ListTag list = nbt.getList("chests", 10);
+            ListTag list = nbt.getList("chests").orElseThrow();
             chests = new BlockPos[list.size()];
             for (int i = 0; i < chests.length; i++) {
-                CompoundTag pos = list.getCompound(i);
-                chests[i] = new BlockPos(pos.getInt("x"), pos.getInt("y"), pos.getInt("z"));
+                CompoundTag pos = list.getCompound(i).orElseThrow();
+                chests[i] = new BlockPos(
+                        pos.getInt("x").orElseThrow(),
+                        pos.getInt("y").orElseThrow(),
+                        pos.getInt("z").orElseThrow()
+                );
             }
         }
     }

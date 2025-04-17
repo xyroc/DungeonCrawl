@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.dungeon.blueprint.template;
+package xiroc.dungeoncrawl.dungeon.blueprint.template.block;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Vec3i;

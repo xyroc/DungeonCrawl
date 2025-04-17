@@ -31,20 +31,20 @@ public record TunnelComponent(BlockPos start, Direction direction, int length, i
         PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
         BlockPos corner = start.relative(direction.getCounterClockWise(), width);
 
-        WorldEditor.fill(level, primaryTheme.floor(), corner.relative(direction.getClockWise()), corner.relative(direction.getClockWise(), 2 * width - 1)
-                .relative(direction, length - 1), worldGenBounds, random, true, true, false);
+        WorldEditor.fill(level, primaryTheme.floor(), null, corner.relative(direction.getClockWise()), corner.relative(direction.getClockWise(), 2 * width - 1)
+                .relative(direction, length - 1), worldGenBounds, random, false);
 
-        WorldEditor.fill(level, primaryTheme.masonry(), corner, corner.relative(direction, length - 1).above(height - 1), worldGenBounds, random, true, true, false);
+        WorldEditor.fill(level, primaryTheme.masonry(), null, corner, corner.relative(direction, length - 1).above(height - 1), worldGenBounds, random, false);
 
-        WorldEditor.fill(level, primaryTheme.masonry(), corner.relative(direction.getClockWise(), 2 * width),
+        WorldEditor.fill(level, primaryTheme.masonry(), null, corner.relative(direction.getClockWise(), 2 * width),
                 corner.relative(direction.getClockWise(), 2 * width).relative(direction, length - 1).above(height - 1),
-                worldGenBounds, random, true, true, false);
+                worldGenBounds, random, false);
 
-        WorldEditor.fill(level, primaryTheme.masonry(), corner.relative(direction.getClockWise()).above(height - 1),
-                corner.relative(direction.getClockWise(), 2 * width - 1).above(height - 1).relative(direction, length - 1), worldGenBounds, random, true, true, false);
+        WorldEditor.fill(level, primaryTheme.masonry(), null, corner.relative(direction.getClockWise()).above(height - 1),
+                corner.relative(direction.getClockWise(), 2 * width - 1).above(height - 1).relative(direction, length - 1), worldGenBounds, random, false);
 
-        WorldEditor.fill(level, new SingleBlock(Blocks.CAVE_AIR.defaultBlockState()), corner.above().relative(direction.getClockWise()),
-                corner.above(height - 2).relative(direction, length - 1).relative(direction.getClockWise(), 2 * width - 1), worldGenBounds, random, false, true, false);
+        WorldEditor.fill(level, new SingleBlock(Blocks.CAVE_AIR.defaultBlockState()), null, corner.above().relative(direction.getClockWise()),
+                corner.above(height - 2).relative(direction, length - 1).relative(direction.getClockWise(), 2 * width - 1), worldGenBounds, random, false);
     }
 
     @Override

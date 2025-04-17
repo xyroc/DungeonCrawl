@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
@@ -35,14 +36,16 @@ public interface WorldEditor {
     void placeStairs(BlockStateProvider stairs, BlockPos pos, Half half, Direction facing, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid,
                      boolean postProcess);
 
-    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        fill(world, stateProvider, from, to, Rotation.NONE, boundingBox, random, fillAir, fillSolid, postProcess);
-    }
-
-    static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+    static void fill(LevelAccessor world, @Nullable BlockStateProvider solid, @Nullable BlockStateProvider nonSolid, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean postProcess) {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
-        Unsafe.fill(world, stateProvider, startVec, endVec, rotation, random, fillAir, fillSolid, postProcess);
+        Unsafe.fill(world, solid, nonSolid, startVec, endVec, random, postProcess);
+    }
+
+    static void fill(LevelAccessor world, BlockStateProvider blocks, Vec3i from, Vec3i to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+        Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
+        Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
+        Unsafe.fill(world, blocks, startVec, endVec, random, fillAir, fillSolid, postProcess);
     }
 
     static void fillWalls(LevelAccessor world, BlockStateProvider stateProvider, BlockPos from, BlockPos to, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid) {
@@ -53,8 +56,8 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 BlockPos bottom = new BlockPos(x, from.getY(), z);
                 BlockPos top = new BlockPos(x, to.getY(), z);
-                Unsafe.placeBlock(world, stateProvider.get(bottom, random), bottom, fillAir, fillSolid, false);
-                Unsafe.placeBlock(world, stateProvider.get(top, random), top, fillAir, fillSolid, false);
+                Unsafe.placeBlock(world, bottom, stateProvider.get(bottom, random), fillAir, fillSolid, false);
+                Unsafe.placeBlock(world, top, stateProvider.get(top, random), fillAir, fillSolid, false);
             }
         }
 
@@ -62,7 +65,7 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(startVec.getX(), y, z);
-                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
                 }
             }
         }
@@ -71,7 +74,7 @@ public interface WorldEditor {
             for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(endVec.getX(), y, z);
-                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
                 }
             }
         }
@@ -80,7 +83,7 @@ public interface WorldEditor {
             for (int x = startVec.getX(); x <= endVec.getX(); x++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(x, y, startVec.getZ());
-                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
                 }
             }
         }
@@ -89,7 +92,7 @@ public interface WorldEditor {
             for (int x = startVec.getX(); x <= endVec.getX(); x++) {
                 for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
                     BlockPos pos = new BlockPos(x, y, endVec.getZ());
-                    Unsafe.placeBlock(world, stateProvider.get(pos, random), pos, fillAir, fillSolid, false);
+                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
                 }
             }
         }
@@ -98,7 +101,7 @@ public interface WorldEditor {
     static void fillRing(LevelAccessor world, BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, Random random,
                          boolean fillAir, boolean fillSolid) {
         if (thickness >= radius) {
-            fill(world, blocks, center.offset(-radius, 0, -radius), center.offset(radius, height - 1, radius), boundingBox, random, fillAir, fillSolid, false);
+            fill(world, blocks, null, center.offset(-radius, 0, -radius), center.offset(radius, height - 1, radius), boundingBox, random, false);
             return;
         }
         fill(world, blocks, center.offset(-radius, 0, -radius), center.offset(radius - thickness, height - 1, thickness - radius - 1), boundingBox, random, fillAir, fillSolid, false);
@@ -130,18 +133,24 @@ public interface WorldEditor {
         if (stair.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
             stair = stair.setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
         }
-        Unsafe.placeBlock(world, stair, pos, fillAir, fillSolid, postProcess);
+        Unsafe.placeBlock(world, pos, stair, fillAir, fillSolid, postProcess);
+    }
+
+    static void placeBlock(LevelAccessor world, BlockPos pos, @Nullable BlockStateProvider solid, @Nullable BlockStateProvider nonSolid, BoundingBox boundingBox, Random random, boolean postProcess) {
+        if (boundingBox.isInside(pos)) {
+            Unsafe.placeBlock(world, pos, solid, nonSolid, random, postProcess);
+        }
     }
 
     static void placeBlock(LevelAccessor world, BlockStateProvider block, BlockPos pos, BoundingBox boundingBox, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
-            Unsafe.placeBlock(world, block.get(pos, random), pos, fillAir, fillSolid, postProcess);
+            Unsafe.placeBlock(world, pos, block.get(pos, random), fillAir, fillSolid, postProcess);
         }
     }
 
     static void placeBlock(LevelAccessor world, BlockState block, BlockPos pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
-            Unsafe.placeBlock(world, block, pos, fillAir, fillSolid, postProcess);
+            Unsafe.placeBlock(world, pos, block, fillAir, fillSolid, postProcess);
         }
     }
 
@@ -150,11 +159,12 @@ public interface WorldEditor {
             return;
         }
         boolean pillar = ((pos.getX() & 2) | (pos.getZ() & 2)) == 0;
+        BlockStateProvider palette = context.primaryTheme().get().masonry();
         if (pillar) {
             int downwards = Math.max(Unsafe.countEmptyBlocksDownwards(world, pos.below()), 1);
-            fill(world, context.primaryTheme().get().masonry(), pos.below(), pos.below(downwards), worldGenBounds, random, true, true, false);
+            fill(world, palette, palette, pos.below(), pos.below(downwards), worldGenBounds, random, false);
         } else {
-            placeBlock(world, context.primaryTheme().get().masonry(), pos.below(), worldGenBounds, random, true, true, false);
+            placeBlock(world, palette, pos.below(), worldGenBounds, random, true, true, false);
         }
     }
 
@@ -163,31 +173,54 @@ public interface WorldEditor {
      * Use these only if you made sure beforehand that they won't exceed valid bounding boxes.
      */
     interface Unsafe {
-        static void fill(LevelAccessor world, BlockStateProvider stateProvider, Vec3i from, Vec3i to, Rotation rotation, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
+        static void fill(LevelAccessor world, BlockStateProvider blocks, Vec3i from, Vec3i to, Random random, boolean fillAir, boolean fillSolid, boolean postProcess) {
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
             for (int x = from.getX(); x <= to.getX(); x++) {
                 for (int y = from.getY(); y <= to.getY(); y++) {
                     for (int z = from.getZ(); z <= to.getZ(); z++) {
                         pos.set(x, y, z);
-                        placeBlock(world, stateProvider.get(pos, random).rotate(world, pos, rotation), pos, fillAir, fillSolid, postProcess);
+                        placeBlock(world, pos, blocks.get(pos, random), fillAir, fillSolid, postProcess);
                     }
                 }
             }
         }
 
-        static void placeBlock(LevelAccessor world, BlockState state, BlockPos pos, boolean fillAir, boolean fillSolid, boolean postProcess) {
+        static void fill(LevelAccessor world, @Nullable BlockStateProvider solid, @Nullable BlockStateProvider nonSolid, Vec3i from, Vec3i to, Random random, boolean postProcess) {
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+            for (int x = from.getX(); x <= to.getX(); x++) {
+                for (int y = from.getY(); y <= to.getY(); y++) {
+                    for (int z = from.getZ(); z <= to.getZ(); z++) {
+                        pos.set(x, y, z);
+                        placeBlock(world, pos, solid, nonSolid, random, postProcess);
+                    }
+                }
+            }
+        }
+
+        static void placeBlock(LevelAccessor world, BlockPos pos, BlockState state, boolean fillAir, boolean fillSolid, boolean postProcess) {
             if (isBlockProtected(world, pos)) {
                 return;
             }
-            if (world.isEmptyBlock(pos)) {
-                if (!fillAir) {
-                    return;
-                }
-            } else {
-                if (!fillSolid) {
-                    return;
-                }
+            if (!fillAir && world.isEmptyBlock(pos)) {
+                return;
+            } else if (!fillSolid && !world.isEmptyBlock(pos)) {
+                return;
             }
+            placeBlock(world, pos, state, postProcess);
+        }
+
+        static void placeBlock(LevelAccessor world, BlockPos pos, @Nullable BlockStateProvider solid, @Nullable BlockStateProvider nonSolid, Random random, boolean postProcess) {
+            if (isBlockProtected(world, pos)) {
+                return;
+            }
+            BlockStateProvider state = world.isEmptyBlock(pos) ? nonSolid : solid;
+            if (state == null) {
+                return;
+            }
+            placeBlock(world, pos, state.get(pos, random), postProcess);
+        }
+
+        private static void placeBlock(LevelAccessor world, BlockPos pos, BlockState state, boolean postProcess) {
             world.setBlock(pos, state, 3);
             if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
                 world.scheduleTick(pos, state.getBlock(), 1);

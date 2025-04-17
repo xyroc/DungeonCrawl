@@ -24,9 +24,9 @@ public record EmptyRoomBlueprint(ImmutableMap<ResourceLocation, ImmutableList<An
         BlockPos end = position.offset(8, 8, 8);
         WorldEditor.fillWalls(world, worldGenContext.primaryTheme().get().masonry(), position, end, worldGenBounds, random, false, true);
         WorldEditor.fill(world, SingleBlock.AIR,
-                position.offset(1, 1, 1),
+                null, position.offset(1, 1, 1),
                 end.offset(-1, -1, -1),
-                worldGenBounds, random, true, true, false);
+                worldGenBounds, random, false);
     }
 
     @Override

@@ -25,13 +25,13 @@ public record UpperStaircaseBlueprint(ImmutableMap<ResourceLocation, ImmutableLi
     public void build(LevelAccessor world, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
         BlockPos end = position.offset(8, 8, 8);
         BlockStateProvider wall = new SingleBlock(Blocks.RED_CONCRETE);
-        WorldEditor.fill(world, wall, position.offset(1, 8, 1), position.offset(7, 8, 7), worldGenBounds, random, true, true, false);
+        WorldEditor.fill(world, wall, null, position.offset(1, 8, 1), position.offset(7, 8, 7), worldGenBounds, random, false);
         WorldEditor.fillRing(world, wall, position.offset(4, 0, 4), 4, 1, 9, worldGenBounds, random, true, true);
         WorldEditor.fillRing(world, wall, position.offset(4, 0, 4), 4, 3, 1, worldGenBounds, random, true, true);
         WorldEditor.fill(world, SingleBlock.AIR,
-                position.offset(1, 1, 1),
+                null, position.offset(1, 1, 1),
                 end.offset(-1, -1, -1),
-                worldGenBounds, random, true, true, false);
+                worldGenBounds, random, false);
     }
 
     @Override

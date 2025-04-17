@@ -22,11 +22,16 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.MetaBlock;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlock;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockColumn;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -59,8 +64,7 @@ public record TemplateBlueprint(Vec3i size,
     private static final int THEORETICAL_MAX_BLUEPRINT_SIZE = (1 << 16) - 1;
 
     public static void gsonAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(TemplateBlock.PlacementProperties.class, new TemplateBlock.PlacementProperties.Serializer())
-                .registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
+        builder.registerTypeAdapter(TemplateBlueprintConfiguration.class, new TemplateBlueprintConfiguration.Serializer())
                 .registerTypeAdapter(TemplateBlueprintConfiguration.EntranceType.class, new TemplateBlueprintConfiguration.EntranceType.Serializer())
                 .registerTypeAdapter(Entrance.CustomParts.class, new Entrance.CustomParts.Serializer())
                 .registerTypeAdapter(BlueprintMultipart.class, new BlueprintMultipart.Serializer());
@@ -126,8 +130,8 @@ public record TemplateBlueprint(Vec3i size,
             // Ignore jigsaw blockColumns that turn into structure void.
             return;
         }
-        TemplateBlock.PlacementProperties properties = configuration.blockType(state.getBlock());
-        TemplateBlock block = new TemplateBlock(properties, info.pos, state.getBlock(), new MetaBlock(state));
+        TemplateBlockType type = configuration.blockType(state);
+        TemplateBlock block = new TemplateBlock(type, info.pos, new MetaBlock(state), configuration.blockPlacement(state.getBlock()));
         blocks.accept(block);
     }
 
@@ -163,19 +167,32 @@ public record TemplateBlueprint(Vec3i size,
 
     @Override
     public void build(LevelAccessor level, BlockPos position, Rotation rotation, BoundingBox worldGenBounds, Random random, DungeonWorldGenContext worldGenContext) {
-        CoordinateSpace coordinateSpace = coordinateSpace(position);
         PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
         SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().get();
+        CoordinateSpace coordinateSpace = coordinateSpace(position);
+
         this.blockColumns.forEach((column) -> {
             BlockPos columnPos = coordinateSpace.rotateAndTranslateToOrigin(column.x(), column.lowestY(), column.z(), rotation);
             if (!worldGenBounds.isInside(columnPos)) {
                 return;
             }
-            for (TemplateBlock block : column.blocks()) {
-                boolean solid = block.placementProperties().isSolid();
-                BlockPos pos = coordinateSpace.rotateAndTranslateToOrigin(block.position(), rotation);
-                BlockState state = block.placementProperties().blockType().blockFactory.get(block, level, pos, primaryTheme, secondaryTheme, random).rotate(level, pos, rotation);
-                WorldEditor.placeBlock(level, state, pos, worldGenBounds, solid, true, true);
+            for (TemplateBlock templateBlock : column.blocks()) {
+                BlockPos blockPosition = coordinateSpace.rotateAndTranslateToOrigin(templateBlock.position(), rotation);
+                if (!worldGenBounds.isInside(blockPosition)) {
+                    return;
+                }
+                boolean isAir = level.getBlockState(blockPosition).isAir();
+                TemplateBlockPlacementSettings placementSettings = templateBlock.settings();
+                TemplateBlockType templateBlockType = placementSettings.canPlace(isAir) ? templateBlock.type() : placementSettings.alternative();
+                if (templateBlockType == null) {
+                    continue;
+                }
+
+                BlockStateProvider provider = templateBlockType.chooseProvider(primaryTheme, secondaryTheme);
+                BlockState state = templateBlock.block()
+                        .applyProperties(provider.get(position, random))
+                        .rotate(level, position, rotation);
+                templateBlockType.handlePlacement(level, blockPosition, state, true);
             }
             if (columnPos.getY() <= worldGenContext.foundationHeight() && !level.getBlockState(columnPos).isAir()) {
                 WorldEditor.buildFoundation(level, columnPos, random, worldGenBounds, worldGenContext);

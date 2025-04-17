@@ -1,19 +1,17 @@
 package xiroc.dungeoncrawl.dungeon.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
 import java.util.Random;
 
 /**
- * A collection of block state properties and values which can be safely applied to any block state.
+ * A wrapper for a block state, allowing its properties to be applied safely to any block state.
  * Unsupported properties on the target block state are skipped.
  */
-public record MetaBlock(StateHolder<Block, BlockState> base) {
+public record MetaBlock(BlockState base) {
     public BlockStateProvider attach(BlockStateProvider provider) {
         return new Attached(this, provider);
     }

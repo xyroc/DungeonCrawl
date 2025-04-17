@@ -26,6 +26,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
@@ -37,6 +39,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.theme.ThemeSerializers;
 import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 import xiroc.dungeoncrawl.dungeon.type.DungeonTypeSerializers;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.json.BlockStateSerializer;
 import xiroc.dungeoncrawl.util.json.ItemSerializer;
 import xiroc.dungeoncrawl.util.random.IRandom;
@@ -64,17 +67,27 @@ public interface JSONUtils {
             IRandom::gsonAdapters,
             TieredResource::gsonAdapters)).create();
 
-    static void gsonAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(Item.class, new ItemSerializer())
-                .registerTypeAdapter(BlockState.class, new BlockStateSerializer());
-    }
-
     private static GsonBuilder withTypeAdapters(List<Consumer<GsonBuilder>> adapterProviders) {
         GsonBuilder builder = new GsonBuilder();
         for (var adapterProvider : adapterProviders) {
             adapterProvider.accept(builder);
         }
         return builder;
+    }
+
+    static void gsonAdapters(GsonBuilder builder) {
+        builder.registerTypeAdapter(Item.class, new ItemSerializer())
+                .registerTypeAdapter(BlockState.class, new BlockStateSerializer());
+    }
+
+    static <T> JsonElement encode(T instance, Codec<T> codec) {
+        return codec.encodeStart(JsonOps.INSTANCE, instance).result().orElseThrow();
+    }
+
+    static <T> T parse(JsonElement json, Codec<T> codec) {
+        return codec.parse(JsonOps.INSTANCE, json).getOrThrow(false, error -> {
+            throw new DatapackLoadException(error);
+        });
     }
 
     static <T> void serializeIfNonNull(JsonObject parent, String key, T thing, Function<T, JsonElement> serializer) {

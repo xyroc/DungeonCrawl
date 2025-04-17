@@ -24,9 +24,15 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
+import xiroc.dungeoncrawl.util.JSONUtils;
 
 import java.lang.reflect.Type;
 import java.util.Locale;
@@ -39,6 +45,28 @@ public interface BlockStateProvider {
                 .registerTypeAdapter(RandomBlock.class, new RandomBlock.Serializer())
                 .registerTypeAdapter(CheckerboardPattern.class, new CheckerboardPattern.Serializer());
     }
+
+    Codec<BlockStateProvider> CODEC = new Codec<>() {
+        @Override
+        public <T> DataResult<Pair<BlockStateProvider, T>> decode(DynamicOps<T> dynamicOps, T t) {
+            JsonElement asJson = dynamicOps.convertTo(JsonOps.INSTANCE, t);
+            try {
+                return DataResult.success(Pair.of(JSONUtils.GSON.fromJson(asJson, BlockStateProvider.class), dynamicOps.empty()));
+            } catch (Exception e) {
+                return DataResult.error("Error parsing block state provider: " + e.getMessage());
+            }
+        }
+
+        @Override
+        public <T> DataResult<T> encode(BlockStateProvider blockStateProvider, DynamicOps<T> dynamicOps, T t) {
+            JsonElement asJson = JSONUtils.GSON.toJsonTree(blockStateProvider);
+            try {
+                return DataResult.success(JsonOps.INSTANCE.convertTo(dynamicOps, asJson));
+            } catch (Exception e) {
+                return DataResult.error("Error serializing block state provider: " + e.getMessage());
+            }
+        }
+    };
 
     BlockState get(BlockPos pos, Random random);
 

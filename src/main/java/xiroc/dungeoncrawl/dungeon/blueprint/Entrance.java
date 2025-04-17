@@ -86,9 +86,9 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
     public interface Decoration {
         Decoration NONE = (level, placement, worldGenBounds, random, worldGenContext) ->
                 WorldEditor.fill(level, SingleBlock.AIR,
-                        placement.position().relative(placement.direction().getClockWise()),
+                        null, placement.position().relative(placement.direction().getClockWise()),
                         placement.position().relative(placement.direction().getCounterClockWise()).above(2),
-                        worldGenBounds, random, false, true, false);
+                        worldGenBounds, random, false);
 
         Decoration PRIMARY = (level, placement, worldGenBounds, random, worldGenContext) ->
                 WorldEditor.placeEntrance(level, worldGenContext.primaryTheme().get().stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);

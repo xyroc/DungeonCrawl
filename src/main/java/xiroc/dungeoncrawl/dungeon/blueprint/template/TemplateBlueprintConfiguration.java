@@ -15,51 +15,104 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
+import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.FixedTemplateBlockType;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
+import xiroc.dungeoncrawl.util.JSONUtils;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 
 public class TemplateBlueprintConfiguration {
-    private static final ImmutableMap<Block, TemplateBlock.PlacementProperties> DEFAULT_BLOCK_TYPES = ImmutableMap.<Block, TemplateBlock.PlacementProperties>builder()
-            .put(Blocks.COBBLESTONE, TemplateBlockType.MASONRY.placementProperties(false))
-            .put(Blocks.COBBLESTONE_STAIRS, TemplateBlockType.MASONRY_STAIRS.placementProperties(false))
-            .put(Blocks.COBBLESTONE_SLAB, TemplateBlockType.MASONRY_SLAB.placementProperties(false))
+    private static final ImmutableMap<Block, TemplateBlockType> DEFAULT_BLOCK_TYPES = ImmutableMap.<Block, TemplateBlockType>builder()
+            .put(Blocks.COBBLESTONE, TemplateBlockType.MASONRY.create())
+            .put(Blocks.COBBLESTONE_STAIRS, TemplateBlockType.MASONRY_STAIRS.create())
+            .put(Blocks.COBBLESTONE_SLAB, TemplateBlockType.MATERIAL_SLAB.create())
 
-            .put(Blocks.STONE_BRICKS, TemplateBlockType.MASONRY.placementProperties(true))
-            .put(Blocks.STONE_BRICK_STAIRS, TemplateBlockType.MASONRY_STAIRS.placementProperties(true))
-            .put(Blocks.STONE_BRICK_SLAB, TemplateBlockType.MASONRY_SLAB.placementProperties(true))
+            .put(Blocks.STONE_BRICKS, TemplateBlockType.MASONRY.create())
+            .put(Blocks.STONE_BRICK_STAIRS, TemplateBlockType.MASONRY_STAIRS.create())
+            .put(Blocks.STONE_BRICK_SLAB, TemplateBlockType.MASONRY_SLAB.create())
+            .put(Blocks.PURPUR_PILLAR, TemplateBlockType.MASONRY_PILLAR.create())
 
-            .put(Blocks.PURPUR_PILLAR, TemplateBlockType.MASONRY_PILLAR.placementProperties(true))
-            .put(Blocks.GRAVEL, TemplateBlockType.FLOOR.placementProperties(false))
-            .put(Blocks.POLISHED_ANDESITE, TemplateBlockType.FLOOR.placementProperties(true))
-            .put(Blocks.IRON_BARS, TemplateBlockType.FENCING.placementProperties(true))
-            .put(Blocks.WATER, TemplateBlockType.FLUID.placementProperties(false))
-            .put(Blocks.STONE_BRICK_WALL, TemplateBlockType.WALL.placementProperties(true))
+            .put(Blocks.GRAVEL, TemplateBlockType.FLOOR.create())
+            .put(Blocks.POLISHED_ANDESITE, TemplateBlockType.FLOOR.create())
 
-            .put(Blocks.OAK_LOG, TemplateBlockType.MATERIAL_PILLAR.placementProperties(false))
-            .put(Blocks.OAK_PLANKS, TemplateBlockType.MATERIAL.placementProperties(false))
-            .put(Blocks.OAK_STAIRS, TemplateBlockType.MATERIAL_STAIRS.placementProperties(false))
-            .put(Blocks.OAK_SLAB, TemplateBlockType.MATERIAL_SLAB.placementProperties(false))
+            .put(Blocks.IRON_BARS, TemplateBlockType.FENCING.create())
+            .put(Blocks.WATER, TemplateBlockType.FLUID.create())
 
-            .put(Blocks.SPRUCE_LOG, TemplateBlockType.MATERIAL_PILLAR.placementProperties(true))
-            .put(Blocks.SPRUCE_PLANKS, TemplateBlockType.MATERIAL.placementProperties(true))
-            .put(Blocks.SPRUCE_STAIRS, TemplateBlockType.MATERIAL_STAIRS.placementProperties(true))
-            .put(Blocks.SPRUCE_SLAB, TemplateBlockType.MATERIAL_SLAB.placementProperties(true))
+            .put(Blocks.COBBLESTONE_WALL, TemplateBlockType.WALL.create())
+            .put(Blocks.STONE_BRICK_WALL, TemplateBlockType.WALL.create())
 
-            .put(Blocks.OAK_BUTTON, TemplateBlockType.BUTTON.placementProperties(false))
-            .put(Blocks.OAK_PRESSURE_PLATE, TemplateBlockType.PRESSURE_PLATE.placementProperties(false))
-            .put(Blocks.OAK_DOOR, TemplateBlockType.DOOR.placementProperties(false))
-            .put(Blocks.OAK_TRAPDOOR, TemplateBlockType.TRAPDOOR.placementProperties(false))
-            .put(Blocks.OAK_FENCE, TemplateBlockType.FENCE.placementProperties(false))
-            .put(Blocks.OAK_FENCE_GATE, TemplateBlockType.FENCE_GATE.placementProperties(false))
+            .put(Blocks.OAK_PLANKS, TemplateBlockType.MATERIAL.create())
+            .put(Blocks.OAK_STAIRS, TemplateBlockType.MATERIAL_STAIRS.create())
+            .put(Blocks.OAK_SLAB, TemplateBlockType.MATERIAL_SLAB.create())
+            .put(Blocks.OAK_LOG, TemplateBlockType.MATERIAL_PILLAR.create())
+            .put(Blocks.OAK_BUTTON, TemplateBlockType.BUTTON.create())
+            .put(Blocks.OAK_PRESSURE_PLATE, TemplateBlockType.PRESSURE_PLATE.create())
+            .put(Blocks.OAK_TRAPDOOR, TemplateBlockType.TRAPDOOR.create())
+            .put(Blocks.OAK_FENCE, TemplateBlockType.FENCE.create())
+            .put(Blocks.OAK_FENCE_GATE, TemplateBlockType.FENCE_GATE.create())
+            .put(Blocks.OAK_DOOR, TemplateBlockType.DOOR.create(true))
+
+            .put(Blocks.SPRUCE_PLANKS, TemplateBlockType.MATERIAL.create())
+            .put(Blocks.SPRUCE_STAIRS, TemplateBlockType.MATERIAL_STAIRS.create())
+            .put(Blocks.SPRUCE_SLAB, TemplateBlockType.MATERIAL_SLAB.create())
+            .put(Blocks.SPRUCE_LOG, TemplateBlockType.MATERIAL_PILLAR.create())
+            .put(Blocks.SPRUCE_BUTTON, TemplateBlockType.BUTTON.create())
+            .put(Blocks.SPRUCE_PRESSURE_PLATE, TemplateBlockType.PRESSURE_PLATE.create())
+            .put(Blocks.SPRUCE_TRAPDOOR, TemplateBlockType.TRAPDOOR.create())
+            .put(Blocks.SPRUCE_FENCE, TemplateBlockType.FENCE.create())
+            .put(Blocks.SPRUCE_FENCE_GATE, TemplateBlockType.FENCE_GATE.create())
+            .put(Blocks.SPRUCE_DOOR, TemplateBlockType.DOOR.create(true))
+            .build();
+
+    private static final ImmutableMap<Block, TemplateBlockPlacementSettings> DEFAULT_BLOCK_PLACEMENTS = ImmutableMap.<Block, TemplateBlockPlacementSettings>builder()
+            .put(Blocks.COBBLESTONE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.COBBLESTONE_STAIRS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.COBBLESTONE_SLAB, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.GRAVEL, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.COBBLESTONE_WALL, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+
+            .put(Blocks.WATER, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.IRON_BARS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+
+            .put(Blocks.STONE_BRICKS, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.STONE_BRICK_STAIRS, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.STONE_BRICK_SLAB, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.POLISHED_ANDESITE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.STONE_BRICK_WALL, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+
+            .put(Blocks.OAK_PLANKS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_STAIRS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_SLAB, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_LOG, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_DOOR, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_BUTTON, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_PRESSURE_PLATE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_TRAPDOOR, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_FENCE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+            .put(Blocks.OAK_FENCE_GATE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+
+            .put(Blocks.SPRUCE_PLANKS, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_STAIRS, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_SLAB, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_LOG, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_DOOR, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_BUTTON, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_PRESSURE_PLATE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_TRAPDOOR, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_FENCE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.SPRUCE_FENCE_GATE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
             .build();
 
     private static final ImmutableMap<ResourceLocation, EntranceType> DEFAULT_ENTRANCE_TYPES = ImmutableMap.of(
@@ -67,49 +120,78 @@ public class TemplateBlueprintConfiguration {
     );
 
     protected final ResourceLocation template;
-    protected final ImmutableMap<Block, TemplateBlock.PlacementProperties> blockTypes;
+    protected final ImmutableMap<Block, TemplateBlockType> blockTypes;
     protected final boolean useDefaultTypes;
     protected final ImmutableList<BlueprintFeature> features;
     protected final ImmutableList<BlueprintMultipart> parts;
     protected final ImmutableMap<ResourceLocation, EntranceType> entranceTypes;
+    /**
+     * Custom placement settings for template blocks.
+     */
+    private final ImmutableMap<Block, TemplateBlockPlacementSettings> placementSettings;
+    /**
+     * Custom default placement settings for template blocks.
+     */
+    private final TemplateBlockPlacementSettings defaultPlacementSettings;
+    /**
+     * Whether the global default placement settings should be considered if no custom setting is found for a block.
+     */
+    private final boolean useGlobalDefaultPlacementSettings;
 
     protected TemplateBlueprintConfiguration(Builder builder) {
         this.template = builder.template;
         this.blockTypes = ImmutableMap.copyOf(builder.blockTypes);
-        this.useDefaultTypes = builder.useDefaultTypes;
+        this.useDefaultTypes = builder.useDefaultBlockTypes;
         this.features = builder.features.build();
         this.parts = builder.parts.build();
         this.entranceTypes = builder.entranceTypes == null ? DEFAULT_ENTRANCE_TYPES : builder.entranceTypes.build();
+        this.placementSettings = builder.placementSettings.build();
+        this.defaultPlacementSettings = builder.defaultPlacementSettings != null ? builder.defaultPlacementSettings : TemplateBlockPlacementSettings.DEFAULT;
+        this.useGlobalDefaultPlacementSettings = builder.useGlobalDefaultPlacementSettings;
     }
 
-    protected TemplateBlock.PlacementProperties blockType(Block block) {
-        TemplateBlock.PlacementProperties type = blockTypes.get(block);
+    protected TemplateBlockType blockType(BlockState block) {
+        TemplateBlockType type = blockTypes.get(block.getBlock());
         if (type == null && useDefaultTypes) {
-            type = DEFAULT_BLOCK_TYPES.get(block);
+            type = DEFAULT_BLOCK_TYPES.get(block.getBlock());
         }
-        return type != null ? type : TemplateBlockType.BLOCK.placementProperties(false);
+        return type != null ? type : new FixedTemplateBlockType(new SingleBlock(block));
+    }
+
+    protected TemplateBlockPlacementSettings blockPlacement(Block block) {
+        TemplateBlockPlacementSettings settings = placementSettings.get(block);
+        if (settings == null && useGlobalDefaultPlacementSettings) {
+            settings = DEFAULT_BLOCK_PLACEMENTS.get(block);
+        }
+        return settings != null ? settings : defaultPlacementSettings;
     }
 
     public static class Serializer implements JsonSerializer<TemplateBlueprintConfiguration>, JsonDeserializer<TemplateBlueprintConfiguration> {
         private static final String KEY_TEMPLATE = "template";
         private static final String KEY_BLOCK_TYPES = "block_types";
-        private static final String KEY_INHERIT_DEFAULT_BLOCK_TYPES = "inherit_default_block_types";
+        private static final String KEY_USE_DEFAULT_BLOCK_TYPES = "use_global_default_block_types";
         private static final String KEY_FEATURES = "features";
         private static final String KEY_PARTS = "parts";
         private static final String KEY_ENTRANCE_TYPES = "entrances";
+        private static final String KEY_PLACEMENT_SETTINGS = "placement_settings";
+        private static final String KEY_DEFAULT_PLACEMENT_SETTINGS = "default_placement_settings";
+        private static final String KEY_USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS = "use_global_default_placement_settings";
 
         @Override
         public TemplateBlueprintConfiguration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = json.getAsJsonObject();
             Builder builder = new Builder();
             builder.template = new ResourceLocation(object.get(KEY_TEMPLATE).getAsString());
-            if (object.has(KEY_INHERIT_DEFAULT_BLOCK_TYPES)) {
-                builder.useDefaultTypes = object.get(KEY_INHERIT_DEFAULT_BLOCK_TYPES).getAsBoolean();
+            if (object.has(KEY_USE_DEFAULT_BLOCK_TYPES)) {
+                builder.useDefaultBlockTypes = object.get(KEY_USE_DEFAULT_BLOCK_TYPES).getAsBoolean();
             }
             if (object.has(KEY_BLOCK_TYPES)) {
                 JsonObject map = object.getAsJsonObject(KEY_BLOCK_TYPES);
-                map.entrySet().forEach((entry) ->
-                        builder.blockTypes.put(Registry.BLOCK.get(new ResourceLocation(entry.getKey())), context.deserialize(entry.getValue(), TemplateBlock.PlacementProperties.class)));
+                map.entrySet().forEach((entry) -> {
+                            Block block = Registry.BLOCK.get(new ResourceLocation(entry.getKey()));
+                            builder.blockTypes.put(block, JSONUtils.parse(entry.getValue(), TemplateBlockType.CODEC));
+                        }
+                );
             }
             if (object.has(KEY_FEATURES)) {
                 for (JsonElement feature : object.getAsJsonArray(KEY_FEATURES)) {
@@ -118,12 +200,26 @@ public class TemplateBlueprintConfiguration {
             }
             if (object.has(KEY_PARTS)) {
                 for (JsonElement multipart : object.getAsJsonArray(KEY_PARTS)) {
-                    builder.multipart(context.deserialize(multipart, BlueprintMultipart.class));
+                    BlueprintMultipart part = context.deserialize(multipart, BlueprintMultipart.class);
+                    builder.parts.add(part);
                 }
             }
             if (object.has(KEY_ENTRANCE_TYPES)) {
                 object.getAsJsonObject(KEY_ENTRANCE_TYPES).entrySet().forEach((entry) ->
                         builder.entranceType(new ResourceLocation(entry.getKey()), context.deserialize(entry.getValue(), EntranceType.class)));
+            }
+            if (object.has(KEY_PLACEMENT_SETTINGS)) {
+                JsonObject map = object.getAsJsonObject(KEY_PLACEMENT_SETTINGS);
+                map.entrySet().forEach(entry -> {
+                    Block block = Registry.BLOCK.get(new ResourceLocation(entry.getKey()));
+                    builder.placementSettings.put(block, JSONUtils.parse(entry.getValue(), TemplateBlockPlacementSettings.CODEC));
+                });
+            }
+            if (object.has(KEY_DEFAULT_PLACEMENT_SETTINGS)) {
+                builder.defaultPlacementSettings = JSONUtils.parse(object.get(KEY_DEFAULT_PLACEMENT_SETTINGS), TemplateBlockPlacementSettings.CODEC);
+            }
+            if (object.has(KEY_USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS)) {
+                builder.useGlobalDefaultPlacementSettings = object.get(KEY_USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS).getAsBoolean();
             }
             return builder.build();
         }
@@ -133,16 +229,16 @@ public class TemplateBlueprintConfiguration {
             JsonObject object = new JsonObject();
             object.addProperty(KEY_TEMPLATE, src.template.toString());
             JsonObject map = new JsonObject();
-            src.blockTypes.forEach((block, properties) -> {
-                if (!src.useDefaultTypes || !properties.equals(DEFAULT_BLOCK_TYPES.get(block))) {
-                    map.add(Registry.BLOCK.getKey(block).toString(), context.serialize(properties));
+            src.blockTypes.forEach((block, type) -> {
+                if (!src.useDefaultTypes || !type.equals(DEFAULT_BLOCK_TYPES.get(block))) {
+                    map.add(Registry.BLOCK.getKey(block).toString(), JSONUtils.encode(type, TemplateBlockType.CODEC));
                 }
             });
             if (!map.entrySet().isEmpty()) {
                 object.add(KEY_BLOCK_TYPES, map);
             }
             if (!src.useDefaultTypes) {
-                object.addProperty(KEY_INHERIT_DEFAULT_BLOCK_TYPES, false);
+                object.addProperty(KEY_USE_DEFAULT_BLOCK_TYPES, false);
             }
             if (!src.features.isEmpty()) {
                 JsonArray features = new JsonArray();
@@ -162,6 +258,20 @@ public class TemplateBlueprintConfiguration {
                 JsonObject entrances = new JsonObject();
                 src.entranceTypes.forEach((key, value) -> entrances.add(key.toString(), context.serialize(value)));
                 object.add(KEY_ENTRANCE_TYPES, entrances);
+            }
+            JsonObject unmappedPlacements = new JsonObject();
+            src.placementSettings.forEach((block, settings) -> {
+                String name = Registry.BLOCK.getKey(block).toString();
+                unmappedPlacements.add(name, JSONUtils.encode(settings, TemplateBlockPlacementSettings.CODEC));
+            });
+            if (!unmappedPlacements.entrySet().isEmpty()) {
+                object.add(KEY_PLACEMENT_SETTINGS, unmappedPlacements);
+            }
+            if (!src.defaultPlacementSettings.equals(TemplateBlockPlacementSettings.DEFAULT)) {
+                object.add(KEY_DEFAULT_PLACEMENT_SETTINGS, JSONUtils.encode(src.defaultPlacementSettings, TemplateBlockPlacementSettings.CODEC));
+            }
+            if (!src.useGlobalDefaultPlacementSettings) {
+                object.addProperty(KEY_USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS, false);
             }
             return object;
         }
@@ -207,11 +317,16 @@ public class TemplateBlueprintConfiguration {
 
     public static class Builder {
         private ResourceLocation template;
-        private boolean useDefaultTypes = true;
-        private final HashMap<Block, TemplateBlock.PlacementProperties> blockTypes = new HashMap<>();
+        private boolean useDefaultBlockTypes = true;
+        private final HashMap<Block, TemplateBlockType> blockTypes = new HashMap<>();
         private final ImmutableList.Builder<BlueprintFeature> features = ImmutableList.builder();
         private final ImmutableList.Builder<BlueprintMultipart> parts = ImmutableList.builder();
+        @Nullable
         private ImmutableMap.Builder<ResourceLocation, EntranceType> entranceTypes = null;
+        private final ImmutableMap.Builder<Block, TemplateBlockPlacementSettings> placementSettings = ImmutableMap.builder();
+        @Nullable
+        private TemplateBlockPlacementSettings defaultPlacementSettings = null;
+        private boolean useGlobalDefaultPlacementSettings = true;
 
         public TemplateBlueprintConfiguration build() {
             Objects.requireNonNull(template);
@@ -233,13 +348,28 @@ public class TemplateBlueprintConfiguration {
             return this;
         }
 
-        public Builder doNotUseDefaultTypes() {
-            this.useDefaultTypes = false;
+        public Builder noGlobalDefaultTypes() {
+            this.useDefaultBlockTypes = false;
             return this;
         }
 
-        public Builder mapBlock(Block block, TemplateBlock.PlacementProperties properties) {
-            blockTypes.put(block, properties);
+        public Builder mapBlock(Block block, TemplateBlockType type) {
+            blockTypes.put(block, type);
+            return this;
+        }
+
+        public Builder configureBlock(Block block, TemplateBlockPlacementSettings settings) {
+            this.placementSettings.put(block, settings);
+            return this;
+        }
+
+        public Builder defaultPlacementSettings(TemplateBlockPlacementSettings settings) {
+            this.defaultPlacementSettings = settings;
+            return this;
+        }
+
+        public Builder noGlobalDefaultPlacementSettings() {
+            this.useGlobalDefaultPlacementSettings = false;
             return this;
         }
 

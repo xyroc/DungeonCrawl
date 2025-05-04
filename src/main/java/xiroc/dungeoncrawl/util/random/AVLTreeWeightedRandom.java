@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
-public class AVLTreeWeightedRandom<T> implements WeightedRandom<T> {
+public class AVLTreeWeightedRandom<T> implements IRandom<T> {
     private final int totalWeight;
     private final AVLTree<T> entries;
 
@@ -26,6 +26,11 @@ public class AVLTreeWeightedRandom<T> implements WeightedRandom<T> {
     @Override
     public T roll(Random rand) {
         return this.entries.findSupremum(rand.nextInt(totalWeight));
+    }
+
+    @Override
+    public int totalWeight() {
+        return totalWeight;
     }
 
     @Override

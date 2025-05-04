@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
-public class ListWeightedRandom<T> implements WeightedRandom<T> {
+public class ListWeightedRandom<T> implements IRandom<T> {
     private final ImmutableList<Entry<T>> entries;
     private final int totalWeight;
 
@@ -42,6 +42,11 @@ public class ListWeightedRandom<T> implements WeightedRandom<T> {
             consumer.accept(entry.value, entry.threshold - lastThreshold);
             lastThreshold = entry.threshold;
         }
+    }
+
+    @Override
+    public int totalWeight() {
+        return totalWeight;
     }
 
     private record Entry<T>(T value, int threshold) {

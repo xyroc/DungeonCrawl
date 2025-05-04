@@ -25,18 +25,25 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
+import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiConsumer;
 
 /**
  * Used to provide random objects of various types.
@@ -44,13 +51,23 @@ import java.util.Random;
 public interface IRandom<T> {
     T roll(Random rand);
 
+    int totalWeight();
+
+    void forEach(BiConsumer<T, Integer> consumer);
+
     class Builder<T> extends InheritingBuilder<IRandom<T>, Builder<T>> {
         private static final int DEFAULT_WEIGHT = 1;
 
         private final List<Tuple<T, Integer>> entries = new ArrayList<>();
+        private final List<Delegate<IRandom<T>>> pools = new ArrayList<>();
 
         public static <T> Builder<T> copy(IRandom<T> instance) {
             return new Builder<T>().add(instance);
+        }
+
+        public Builder<T> addPool(Delegate<IRandom<T>> pool) {
+            pools.add(pool);
+            return this;
         }
 
         public Builder<T> add(T value) {
@@ -68,13 +85,7 @@ public interface IRandom<T> {
         }
 
         public Builder<T> add(IRandom<T> random) {
-            if (random instanceof SingleValueRandom<T> singleValueRandom) {
-                add(singleValueRandom.value());
-            } else if (random instanceof WeightedRandom<T> weightedRandom) {
-                weightedRandom.forEach(this::add);
-            } else {
-                throw new IllegalArgumentException("Unsupported IRandom type: " + random.getClass());
-            }
+            random.forEach(this::add);
             return this;
         }
 
@@ -83,10 +94,10 @@ public interface IRandom<T> {
             return add(from);
         }
 
-        @Override
-        public IRandom<T> build() {
+        @Nullable
+        private IRandom<T> buildEntries() {
             if (entries.isEmpty()) {
-                throw new IllegalStateException("Need at least one entry");
+                return null;
             }
             if (entries.size() == 1) {
                 return new SingleValueRandom<>(entries.get(0).getA());
@@ -96,11 +107,30 @@ public interface IRandom<T> {
             }
             return new AVLTreeWeightedRandom<>(entries);
         }
+
+        @Override
+        public IRandom<T> build() {
+            IRandom<T> base = buildEntries();
+            if (base != null) {
+                if (pools.isEmpty()) {
+                    return base;
+                } else {
+                    pools.add(Delegate.of(base));
+                    return new PooledRandom<>(pools);
+                }
+            } else {
+                if (pools.isEmpty()) {
+                    throw new IllegalStateException("Random instance cannot be empty.");
+                } else {
+                    return new PooledRandom<>(pools);
+                }
+            }
+        }
     }
 
     static void gsonAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(VanillaTypes.Builder.BLOCK_STATE, new BuilderSerializer<BlockState>(BlockState.class, "block"))
-                .registerTypeAdapter(VanillaTypes.Builder.ITEM, new BuilderSerializer<Item>(Item.class, "item"))
+        builder.registerTypeAdapter(VanillaTypes.Builder.BLOCK_STATE, new BuilderSerializer<BlockState>(BlockState.class, "block", null).wrapped())
+                .registerTypeAdapter(VanillaTypes.Builder.ITEM, new BuilderSerializer<Item>(Item.class, "item", null).wrapped())
                 .registerTypeAdapter(VanillaTypes.BLOCK_STATE, new DirectSerializer<BlockState>(VanillaTypes.Builder.BLOCK_STATE));
     }
 
@@ -113,22 +143,44 @@ public interface IRandom<T> {
         }
     }
 
-    record BuilderSerializer<T>(Type valueType, String valueKey) implements JsonSerializer<Builder<T>>, JsonDeserializer<Builder<T>> {
-        private static final boolean REPLACE_BY_DEFAULT = InheritingBuilder.REPLACE_BY_DEFAULT;
-
-        private static final String KEY_REPLACE = InheritingBuilder.KEY_REPLACE;
+    record BuilderSerializer<T>(Type valueType, String valueKey, @Nullable DatapackRegistry<IRandom<T>> globalPools) implements JsonSerializer<Builder<T>>, JsonDeserializer<Builder<T>> {
         private static final String KEY_VALUES = "values";
         private static final String KEY_WEIGHT = "weight";
+        private static final String KEY_POOLS = "pools";
+
+        public BuilderSerializer(Type valueType, String valueKey) {
+            this(valueType, valueKey, null);
+        }
+
+        private void loadPool(JsonElement json, Builder<T> builder) {
+            if (globalPools != null) {
+                ResourceLocation poolKey = new ResourceLocation(json.getAsString());
+                builder.addPool(globalPools.delegateOrThrow(poolKey));
+            } else {
+                throw new DatapackLoadException("Global Pools are not supported for this type");
+            }
+        }
+
+        public InheritingBuilder.WrappedSerializer<IRandom<T>, Builder<T>> wrapped() {
+            return InheritingBuilder.WrappedSerializer.of(this);
+        }
 
         @Override
         public Builder<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             final Builder<T> builder = new Builder<>();
             if (json.isJsonPrimitive()) {
-                builder.add(context.<T>deserialize(json, valueType));
+                loadPool(json, builder);
             } else {
                 if (json.isJsonObject()) {
                     JsonObject object = json.getAsJsonObject();
-                    builder.replace(object.has(KEY_REPLACE) ? object.get(KEY_REPLACE).getAsBoolean() : REPLACE_BY_DEFAULT);
+                    if (object.has(KEY_POOLS)) {
+                        for (JsonElement poolName : object.getAsJsonArray(KEY_POOLS)) {
+                            loadPool(poolName, builder);
+                        }
+                    }
+                    if (!object.has(KEY_VALUES)) {
+                        return builder;
+                    }
                     json = object.get(KEY_VALUES);
                 }
                 for (JsonElement element : json.getAsJsonArray()) {
@@ -146,12 +198,8 @@ public interface IRandom<T> {
 
         @Override
         public JsonElement serialize(Builder<T> builder, Type typeOfSrc, JsonSerializationContext context) {
-            if (builder.entries.isEmpty()) {
-                throw new IllegalStateException("Need at least one entry");
-            }
-
             JsonArray entries = new JsonArray();
-            builder.entries.forEach(entry -> {
+            for (Tuple<T, Integer> entry : builder.entries) {
                 final T value = entry.getA();
                 final int weight = entry.getB();
 
@@ -165,22 +213,34 @@ public interface IRandom<T> {
                     jsonEntry = entryObject;
                 }
                 entries.add(jsonEntry);
-            });
-
-            JsonElement serialized = entries;
-
-            if (entries.size() == 1 && entries.get(0).isJsonPrimitive()) {
-                serialized = entries.get(0);
             }
 
-            if (builder.replace() != REPLACE_BY_DEFAULT) {
+            boolean needJsonObject = InheritingBuilder.mustSerializeToJsonObject(builder);
+            boolean serializeEntries = !entries.isEmpty();
+
+            if (!needJsonObject && !serializeEntries && builder.pools.size() == 1) {
+                return new JsonPrimitive(builder.pools.get(0).key().toString());
+            }
+
+            boolean serializePools = !builder.pools.isEmpty();
+            boolean wrapResult = needJsonObject || serializePools;
+
+            if (wrapResult) {
                 JsonObject wrapped = new JsonObject();
-                wrapped.add(KEY_VALUES, serialized);
-                wrapped.addProperty(KEY_REPLACE, builder.replace());
+                if (serializeEntries) {
+                    wrapped.add(KEY_VALUES, entries);
+                }
+                if (serializePools) {
+                    JsonArray pools = new JsonArray();
+                    for (Delegate<IRandom<T>> pool : builder.pools) {
+                        pools.add(pool.key().toString());
+                    }
+                    wrapped.add(KEY_POOLS, pools);
+                }
                 return wrapped;
             }
 
-            return serialized;
+            return entries;
         }
     }
 

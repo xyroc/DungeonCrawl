@@ -53,7 +53,7 @@ public record DungeonType(IRandom<Delegate<Blueprint>> entrances, ImmutableList<
 
         @Override
         public Builder inherit(Builder from) {
-            if (!replace && !from.sections.isEmpty()) {
+            if (!doesReplace && !from.sections.isEmpty()) {
                 sections.addAll(from.sections);
             }
             this.entrances = InheritingBuilder.inheritOrReplaceOrChoose(this.entrances, from.entrances);

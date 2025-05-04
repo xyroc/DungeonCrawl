@@ -1,22 +1,21 @@
 package xiroc.dungeoncrawl.datapack.registry;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.apache.commons.lang3.mutable.MutableObject;
+import net.minecraftforge.fml.loading.toposort.CyclePresentException;
+import net.minecraftforge.fml.loading.toposort.TopologicalSort;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.datapack.DatapackDirectory;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
-import javax.annotation.Nullable;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -37,11 +36,10 @@ public class InheritingDatapackRegistry<T, B extends InheritingBuilder<T, B>> ex
 
     @Override
     public void reload(ResourceManager resourceManager) {
-        final List<InheritanceTree<T, B>> trees = new ArrayList<>();
-        final HashMap<ResourceLocation, Node<T, B>> nodes = new HashMap<>();
-        final ImmutableMap.Builder<ResourceLocation, T> builder = ImmutableMap.builder();
+        final HashMap<ResourceLocation, Node> nodes = new HashMap<>();
+        final MutableGraph<Node> dependencyGraph = GraphBuilder.directed().allowsSelfLoops(false).build();
 
-        resourceManager.listResources(directory.path(), path -> path.endsWith(FILE_ENDING)).forEach(resource -> {
+        for (ResourceLocation resource : resourceManager.listResources(directory.path(), path -> path.endsWith(FILE_ENDING))) {
             try {
                 B valueBuilder = resourceManager.getResources(resource).stream()
                         .map(res -> parser.apply(new InputStreamReader(res.getInputStream())))
@@ -49,100 +47,90 @@ public class InheritingDatapackRegistry<T, B extends InheritingBuilder<T, B>> ex
                         .orElseThrow();
 
                 ResourceLocation key = directory.key(resource, FILE_ENDING);
-                final Node<T, B> node = nodes.computeIfAbsent(key, Node::new);
-                node.builder.setValue(valueBuilder);
+                final Node node = nodes.computeIfAbsent(key, Node::new);
+                node.builder = valueBuilder;
 
-                if (valueBuilder.parent() != null) {
-                    nodes.computeIfAbsent(valueBuilder.parent(), Node::new).children().add(node);
-                } else {
-                    trees.add(new InheritanceTree<>(node, (k, value) -> {
-                        builder.put(k, value);
-                        // Remove any node that is part of a tree.
-                        nodes.remove(k);
-                    }));
+                dependencyGraph.addNode(node);
+
+                for (ResourceLocation parentKey : valueBuilder.getParents()) {
+                    Node parentNode = nodes.computeIfAbsent(parentKey, Node::new);
+                    try {
+                        dependencyGraph.putEdge(parentNode, node);
+                    } catch (IllegalArgumentException e) {
+                        // Re-throw with a friendlier message.
+                        throw new DatapackLoadException("Node " + key + " inherits from itself, which is not allowed.");
+                    }
                 }
 
             } catch (Exception exception) {
                 throw new DatapackLoadException("Failed to load " + resource.toString() + ": " + exception.getMessage());
             }
-        });
-
-        trees.forEach(InheritanceTree::process);
-
-        // If there are any nodes left in the map, there is a cycle and/or a reference to a nonexistent entry.
-        while (!nodes.isEmpty()) {
-            nodes.entrySet().stream().findAny().ifPresent(entry -> {
-                final TreeInspector<T, B> treeInspector = new TreeInspector<>(nodes);
-                treeInspector.inspect(entry.getValue());
-            });
         }
 
-        values = builder.build();
+        final ImmutableMap.Builder<ResourceLocation, T> registryBuilder = ImmutableMap.builder();
+
+        try {
+            final List<Node> nodesInTopologicalOrder = TopologicalSort.topologicalSort(dependencyGraph, null);
+            for (Node node : nodesInTopologicalOrder) {
+                B builder = node.builder;
+                if (builder == null) {
+                    final var children = dependencyGraph.successors(node).stream().map(child -> child.key.toString() + " (" + child.key.toString().length() + ")").collect(Collectors.joining(","));
+                    throw new DatapackLoadException("Nonexistent entry " + node.key + " is inherited from by " + children);
+                }
+
+                for (ResourceLocation parentKey : node.builder.getParents()) {
+                    // Builder is nonnull due to the topological order.
+                    builder.inherit(nodes.get(parentKey).builder);
+                }
+
+                registryBuilder.put(node.key, builder.build());
+            }
+
+        } catch (CyclePresentException exception) {
+            reportCycles(exception);
+        }
+
+        values = registryBuilder.build();
         isUnloaded = false;
 
-        unresolvedReferences.forEach((key, reference) -> reference.resolve(this));
+        for (Delegate<T> reference : unresolvedReferences.values()) {
+            reference.resolve(this);
+        }
         unresolvedReferences.clear();
     }
 
-    private record InheritanceTree<T, B extends InheritingBuilder<T, B>>(Node<T, B> root, BiConsumer<ResourceLocation, T> collector) {
-        private void process() {
-            processRecursively(root, null);
+    private class Node {
+        private final ResourceLocation key;
+        @Nullable
+        private B builder;
+
+        public Node(ResourceLocation key, @Nullable B builder) {
+            this.builder = builder;
+            this.key = key;
         }
 
-        private void processRecursively(Node<T, B> node, @Nullable B parent) {
-            // Cannot be null because the node was recognized as part of a tree
-            final B builder = node.builder.getValue();
-
-            if (parent != null) {
-                builder.inherit(parent);
-            }
-
-            final T value = builder.build();
-            collector.accept(node.key, value);
-
-            for (final var child : node.children) {
-                processRecursively(child, builder);
-            }
-        }
-    }
-
-    private record Node<T, B extends InheritingBuilder<T, B>>(ResourceLocation key, MutableObject<B> builder, List<Node<T, B>> children) {
         private Node(ResourceLocation key) {
-            this(key, new MutableObject<>(null), new ArrayList<>());
+            this(key, null);
         }
     }
 
-    private record TreeInspector<T, B extends InheritingBuilder<T, B>>(Stack<ResourceLocation> stack, Set<ResourceLocation> onStack, Map<ResourceLocation, Node<T, B>> nodes) {
-        public TreeInspector(Map<ResourceLocation, Node<T, B>> nodes) {
-            this(new Stack<>(), new HashSet<>(), nodes);
+    /**
+     * Throws an exception that lists all cycles.
+     * @param exception The CyclePresentException holding the set of cycles to report.
+     */
+    private void reportCycles(CyclePresentException exception) {
+        Set<Set<Node>> cycles = exception.getCycles();
+
+        StringBuilder errorMessage = new StringBuilder("Inheritance Cycle(s) detected:").append("\n");
+        for (Set<Node> cycle : cycles) {
+            for (Node node : cycle) {
+                errorMessage.append(node.key);
+                errorMessage.append("->");
+            }
+            errorMessage.append(cycle.iterator().next().key);
+            errorMessage.append("\n");
         }
 
-        private void inspect(Node<T, B> node) {
-            nodes.remove(node.key);
-
-            if (node.builder.getValue() == null) {
-                // Not a cycle, but a nonexistent entry
-                final var children = node.children.stream().map(child -> child.key.toString()).collect(Collectors.joining(","));
-                throw new DatapackLoadException("Nonexistent entry " + node.key + " is inherited from by " + children);
-            }
-
-            stack.push(node.key);
-
-            if (onStack.contains(node.key)) {
-                final var cycleStart = stack.indexOf(node.key);
-                final var cycleEnd = stack.lastIndexOf(node.key);
-                final var cycle = stack.subList(cycleStart, cycleEnd + 1).stream().map(ResourceLocation::toString).collect(Collectors.joining("->"));
-                throw new DatapackLoadException("Inheritance cycle detected: " + cycle);
-            }
-
-            onStack.add(node.key);
-
-            for (final var child : node.children) {
-                inspect(child);
-            }
-
-            stack.pop();
-            onStack.remove(node.key);
-        }
+        throw new DatapackLoadException(errorMessage.toString());
     }
 }

@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 public class ResourceReloadHandler implements PreparableReloadListener {
     private static final ImmutableList<DatapackRegistry<?>> REGISTRIES = ImmutableList.<DatapackRegistry<?>>builder()
+            .add(DatapackRegistries.BLUEPRINT_POOLS)
             .add(DatapackRegistries.PRIMARY_THEME)
             .add(DatapackRegistries.SECONDARY_THEME)
             .add(DatapackRegistries.PRIMARY_THEME_MAPPINGS)

@@ -9,9 +9,9 @@ public interface ThemeSerializers {
     static void gsonAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(PrimaryTheme.class, new PrimaryTheme.Serializer())
                 .registerTypeAdapter(PrimaryTheme.Types.DELEGATE, new Delegate.Serializer<>(DatapackRegistries.PRIMARY_THEME, null))
-                .registerTypeAdapter(PrimaryTheme.Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<PrimaryTheme>>(PrimaryTheme.Types.DELEGATE, "theme"))
+                .registerTypeAdapter(PrimaryTheme.Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<PrimaryTheme>>(PrimaryTheme.Types.DELEGATE, "theme").wrapped())
                 .registerTypeAdapter(SecondaryTheme.class, new SecondaryTheme.Serializer())
                 .registerTypeAdapter(SecondaryTheme.Types.DELEGATE, new Delegate.Serializer<>(DatapackRegistries.SECONDARY_THEME, null))
-                .registerTypeAdapter(SecondaryTheme.Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<SecondaryTheme>>(SecondaryTheme.Types.DELEGATE, "theme"));
+                .registerTypeAdapter(SecondaryTheme.Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<SecondaryTheme>>(SecondaryTheme.Types.DELEGATE, "theme").wrapped());
     }
 }

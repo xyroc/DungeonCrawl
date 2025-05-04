@@ -120,14 +120,14 @@ public class RandomMapping<V> {
         public Builder<V> inherit(Builder<V> from) {
             this.fallback = InheritingBuilder.inheritOrReplaceOrChoose(this.fallback, from.fallback);
             from.entries.forEach((key, entriesBuilder) -> {
-                if (entriesBuilder.replace()) {
+                if (entriesBuilder.doesReplace()) {
                     this.entries.put(key, entriesBuilder);
                 } else {
                     this.entries.get(key).inherit(entriesBuilder);
                 }
             });
             from.tagEntries.forEach((tagKey, entriesBuilder) -> {
-                if (entriesBuilder.replace()) {
+                if (entriesBuilder.doesReplace()) {
                     this.tagEntries.put(tagKey, entriesBuilder);
                 } else {
                     this.tagEntries.get(tagKey).inherit(entriesBuilder);

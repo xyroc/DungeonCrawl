@@ -109,7 +109,7 @@ public class DatapackRegistry<T> {
         };
     }
 
-    interface Parser<T> {
+    public interface Parser<T> {
         static <T> Parser<T> simple(Function<Reader, T> parser) {
             return keyed((key, reader) -> parser.apply(reader));
         }

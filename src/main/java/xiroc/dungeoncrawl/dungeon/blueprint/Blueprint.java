@@ -39,7 +39,7 @@ public interface Blueprint {
 
     static void gsonAdapters(GsonBuilder builder) {
         builder.registerTypeAdapter(Types.DELEGATE, new Delegate.Serializer<>(DatapackRegistries.BLUEPRINT, null));
-        builder.registerTypeAdapter(Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<Blueprint>>(Types.DELEGATE, "blueprint"));
+        builder.registerTypeAdapter(Types.RANDOM_BUILDER, new IRandom.BuilderSerializer<Delegate<Blueprint>>(Types.DELEGATE, "blueprint").wrapped());
         builder.registerTypeAdapter(Types.RANDOM, new IRandom.DirectSerializer<Delegate<Blueprint>>(Types.RANDOM_BUILDER));
         builder.registerTypeAdapter(Types.RANDOM_RANDOM_BUILDER, new IRandom.BuilderSerializer<IRandom<Delegate<Blueprint>>>(Types.RANDOM, "blueprints"));
     }

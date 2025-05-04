@@ -14,12 +14,17 @@ import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public interface DatapackRegistries {
+    DatapackRegistry<IRandom<Delegate<Blueprint>>> BLUEPRINT_POOLS = new InheritingDatapackRegistry<IRandom<Delegate<Blueprint>>,
+            IRandom.Builder<Delegate<Blueprint>>>(DatapackDirectories.BLUEPRINT_POOLS, none(),
+            (reader) -> JSONUtils.GSON.fromJson(reader, Blueprint.Types.RANDOM_BUILDER));
+
     DatapackRegistry<SpawnerType> SPAWNER_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.SPAWNER_TYPES, none(),
             (reader) -> JSONUtils.GSON.fromJson(reader, SpawnerType.Builder.class));
 

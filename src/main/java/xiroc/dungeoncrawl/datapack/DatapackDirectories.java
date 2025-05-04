@@ -25,4 +25,7 @@ public interface DatapackDirectories {
     DatapackDirectory THEME_MAPPINGS = MAPPINGS.subdirectory("themes");
     DatapackDirectory PRIMARY_THEME_MAPPINGS = THEME_MAPPINGS.subdirectory("primary");
     DatapackDirectory SECONDARY_THEME_MAPPINGS = THEME_MAPPINGS.subdirectory("secondary");
+
+    DatapackDirectory POOLS = BASE.subdirectory("pools");
+    DatapackDirectory BLUEPRINT_POOLS = POOLS.subdirectory("blueprint");
 }

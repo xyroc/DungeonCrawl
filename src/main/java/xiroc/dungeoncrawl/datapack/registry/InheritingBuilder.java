@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.datapack.registry;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -11,38 +12,46 @@ import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class InheritingBuilder<T, B extends InheritingBuilder<T, B>> {
     public static final boolean REPLACE_BY_DEFAULT = true;
     public static final String KEY_REPLACE = "replace";
-    private static final String KEY_PARENT = "inherit";
+    private static final String KEY_PARENTS = "inherit";
 
-    @Nullable
-    protected ResourceLocation parent = null;
-    protected boolean replace = REPLACE_BY_DEFAULT;
+    protected boolean doesReplace = REPLACE_BY_DEFAULT;
+    /**
+     * List of parents to inherit from, in order.
+     */
+    protected final List<ResourceLocation> parents = new ArrayList<>(1);
 
     @SuppressWarnings("unchecked")
     private B self() {
         return (B) this;
     }
 
-    public B parent(@Nullable ResourceLocation parent) {
-        this.parent = parent;
+    public B addParent(ResourceLocation parent) {
+        this.parents.add(parent);
+        return self();
+    }
+
+    public B addParents(List<ResourceLocation> parents) {
+        this.parents.addAll(parents);
         return self();
     }
 
     public B replace(boolean replace) {
-        this.replace = replace;
+        this.doesReplace = replace;
         return self();
     }
 
-    @Nullable
-    public ResourceLocation parent() {
-        return parent;
+    public List<ResourceLocation> getParents() {
+        return parents;
     }
 
-    public boolean replace() {
-        return replace;
+    public boolean doesReplace() {
+        return doesReplace;
     }
 
     /**
@@ -68,7 +77,7 @@ public abstract class InheritingBuilder<T, B extends InheritingBuilder<T, B>> {
     public abstract T build();
 
     public static <T, B extends InheritingBuilder<T, B>> B inheritOrReplace(B primary, B secondary) {
-        return primary.replace() ? primary : primary.inherit(secondary);
+        return primary.doesReplace() ? primary : primary.inherit(secondary);
     }
 
     @Nullable
@@ -85,7 +94,17 @@ public abstract class InheritingBuilder<T, B extends InheritingBuilder<T, B>> {
     }
 
     /**
-     * Wrapper for a type adapter for an inheriting builder. Handles the serialization of the common values of an inheriting builder.
+     * Checks for a given builder whether it must be serialized to a JSON object.
+     *
+     * @param builder The builder to check.
+     * @return True if the builder must be serialized to a JSON object, false otherwise.
+     */
+    public static <B extends InheritingBuilder<?, B>> boolean mustSerializeToJsonObject(B builder) {
+        return builder.doesReplace != REPLACE_BY_DEFAULT || !builder.parents.isEmpty();
+    }
+
+    /**
+     * Wrapper for a type adapter for an inheriting builder. Handles the serialization of common values.
      *
      * @param serializer   the type adapter for serialization
      * @param deserializer the type adapter for deserialization
@@ -100,23 +119,48 @@ public abstract class InheritingBuilder<T, B extends InheritingBuilder<T, B>> {
         @Override
         public B deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             B builder = deserializer.deserialize(json, type, context);
+            if (!json.isJsonObject()) {
+                return builder;
+            }
+
             JsonObject object = json.getAsJsonObject();
-            builder.parent = object.has(KEY_PARENT) ? new ResourceLocation(object.get(KEY_PARENT).getAsString()) : null;
-            builder.replace = object.has(KEY_REPLACE) ? object.get(KEY_REPLACE).getAsBoolean() : REPLACE_BY_DEFAULT;
+            if (object.has(KEY_PARENTS)) {
+                JsonElement parents = object.get(KEY_PARENTS);
+                if (parents.isJsonArray()) {
+                    for (JsonElement parent : parents.getAsJsonArray()) {
+                        builder.parents.add(new ResourceLocation(parent.getAsString()));
+                    }
+                } else {
+                    builder.parents.add(new ResourceLocation(parents.getAsString()));
+                }
+            }
+
+            builder.doesReplace = object.has(KEY_REPLACE) ? object.get(KEY_REPLACE).getAsBoolean() : REPLACE_BY_DEFAULT;
             return builder;
         }
 
         @Override
         public JsonElement serialize(B builder, Type type, JsonSerializationContext context) {
-            JsonObject object = serializer.serialize(builder, type, context).getAsJsonObject();
-            // Make sure that the serialized builder doesn't use any of the keys we require to be free
-            checkForCollision(object, KEY_PARENT, serializer);
-            checkForCollision(object, KEY_REPLACE, serializer);
-            if (builder.parent != null) {
-                object.addProperty(KEY_PARENT, builder.parent.toString());
+            JsonElement json = serializer.serialize(builder, type, context);
+            if (!json.isJsonObject()) {
+                if (mustSerializeToJsonObject(builder)) {
+                    throw new IllegalStateException("Inheriting builder with non-default configuration must serialize to a json object.");
+                }
+                return json;
             }
-            if (builder.replace != REPLACE_BY_DEFAULT) {
-                object.addProperty(KEY_REPLACE, builder.replace);
+            JsonObject object = json.getAsJsonObject();
+            // Make sure that the serialized builder doesn't use any of the keys we require to be free
+            checkForCollision(object, KEY_PARENTS, serializer);
+            checkForCollision(object, KEY_REPLACE, serializer);
+            if (!builder.parents.isEmpty()) {
+                JsonArray parents = new JsonArray();
+                for (ResourceLocation key : builder.parents) {
+                    parents.add(key.toString());
+                }
+                object.add(KEY_PARENTS, parents.size() == 1 ? parents.get(0) : parents);
+            }
+            if (builder.doesReplace != REPLACE_BY_DEFAULT) {
+                object.addProperty(KEY_REPLACE, builder.doesReplace);
             }
             return object;
         }

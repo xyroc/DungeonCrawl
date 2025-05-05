@@ -21,6 +21,7 @@ public interface TemplateBlockType extends BlockChooser {
      * May result in multiple or no blocks being placed depending on type-specific logic.
      * <p>
      * <b>Note:</b> This method is unsafe, no bounding box checks are made.
+     * It is assumed that the {@code position} parameter is within valid bounds.
      * Perform adequate checks beforehand.
      *
      * @param level the level to place the block in.

@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.resources.ResourceLocation;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
@@ -31,7 +32,7 @@ public record ChestSettings(Optional<TieredResource<ResourceLocation>> lootTable
         public ChestSettings deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
             final JsonObject object = jsonElement.getAsJsonObject();
             final Optional<TieredResource<ResourceLocation>> lootTable = object.has(KEY_LOOT_TABLE) ?
-                    Optional.of(context.<TieredResource.Builder<ResourceLocation>>deserialize(object.get(KEY_LOOT_TABLE), TieredResource.Types.IDENTIFIER).build()) :
+                    Optional.of(TieredResource.Codecs.IDENTIFIER.parse(JsonOps.INSTANCE, object.get(KEY_LOOT_TABLE)).result().orElseThrow().build()) :
                     Optional.empty();
             return new ChestSettings(lootTable);
         }
@@ -40,7 +41,7 @@ public record ChestSettings(Optional<TieredResource<ResourceLocation>> lootTable
         public JsonElement serialize(ChestSettings chestSettings, Type type, JsonSerializationContext context) {
             final JsonObject object = new JsonObject();
             chestSettings.lootTable.ifPresent(lootTables ->
-                    object.add(KEY_LOOT_TABLE, context.serialize(new TieredResource.Builder<>(lootTables), TieredResource.Types.IDENTIFIER)));
+                    object.add(KEY_LOOT_TABLE, TieredResource.Codecs.IDENTIFIER.encodeStart(JsonOps.INSTANCE, new TieredResource.Builder<>(lootTables)).result().orElseThrow()));
             return object;
         }
     }

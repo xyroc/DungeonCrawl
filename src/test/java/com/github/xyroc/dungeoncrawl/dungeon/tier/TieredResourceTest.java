@@ -1,49 +1,38 @@
 package com.github.xyroc.dungeoncrawl.dungeon.tier;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 
-import java.lang.reflect.Type;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 public class TieredResourceTest {
-
-    private static final Type TIERED_STRING_TYPE = TypeToken.getParameterized(TieredResource.class, String.class).getType();
-
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(TIERED_STRING_TYPE, new TieredResource.BuilderSerializer<String>(String.class))
-            .create();
+    private static final Codec<TieredResource.Builder<String>> STRING_CODEC = new TieredResource.BuilderCodec<>(Codec.STRING);
 
     @Test
     void serializesSingleTierBuilderCorrectly() {
         final var builder = new TieredResource.Builder<>("first tier");
-        final JsonElement json = GSON.toJsonTree(builder, TIERED_STRING_TYPE);
+        final JsonElement json = STRING_CODEC.encodeStart(JsonOps.INSTANCE, builder).result().orElseThrow();
 
         assertThat(json).isNotNull();
         assertThat(json.getAsString()).isEqualTo("first tier");
-
-        final var deserializedBuilder = GSON.fromJson(json, TIERED_STRING_TYPE);
-        assertThat(deserializedBuilder).isNotNull();
-        assertThat(deserializedBuilder).usingRecursiveComparison().isEqualTo(builder);
     }
 
     @Test
     void serializesMultiTierBuilderCorrectly() {
         final var builder = new TieredResource.Builder<>("first tier")
-                .tier("second tier", 2)
-                .tier("third tier", 5);
-        final JsonElement json = GSON.toJsonTree(builder, TIERED_STRING_TYPE);
+                .tier("third tier", 5)
+                .tier("second tier", 2);
+        final JsonElement json = STRING_CODEC.encodeStart(JsonOps.INSTANCE, builder).result().orElseThrow();
 
         assertThat(json).isNotNull();
         assertThat(json.isJsonObject()).isTrue();
@@ -53,19 +42,46 @@ public class TieredResourceTest {
         assertThat(json.getAsJsonObject().get("tier_2").getAsString()).isEqualTo("second tier");
         assertThat(json.getAsJsonObject().has("tier_5")).isTrue();
         assertThat(json.getAsJsonObject().get("tier_5").getAsString()).isEqualTo("third tier");
-
-        final var deserializedBuilder = GSON.fromJson(json, TIERED_STRING_TYPE);
-        assertThat(deserializedBuilder).isNotNull();
-        assertThat(deserializedBuilder).usingRecursiveComparison().isEqualTo(builder);
     }
 
     @Test
-    void deserializeThrowsWhenMissingTierZero() {
+    void deserializeErrorsWhenMissingTierZero() {
         final JsonObject json = new JsonObject();
         json.addProperty("tier_1", "second tier");
         json.addProperty("tier_4", "third tier");
 
-        assertThatThrownBy(() -> GSON.fromJson(json, TIERED_STRING_TYPE)).isInstanceOf(JsonParseException.class);
+        final DataResult<?> decoded = STRING_CODEC.decode(JsonOps.INSTANCE, json);
+
+        assertThat(decoded.error().isPresent()).isTrue();
+    }
+
+    @Test
+    void deserializesSingleTierBuilderCorrectly() {
+        final JsonElement json = new JsonPrimitive("first tier");
+
+        final var actualBuilder = STRING_CODEC.decode(JsonOps.INSTANCE, json).result().orElseThrow().getFirst();
+
+        assertThat(actualBuilder).isNotNull();
+        final var actualResource = actualBuilder.build();
+
+        assertThat(actualResource).isInstanceOf(TieredResource.SingleTier.class);
+        assertThat(actualResource.forTier(0)).isEqualTo("first tier");
+    }
+
+    @Test
+    void deserializesMultiTierBuilderCorrectly() {
+        final JsonObject json = new JsonObject();
+        json.addProperty("tier_0", "first tier");
+        json.addProperty("tier_3", "second tier");
+
+        final var actualBuilder = STRING_CODEC.decode(JsonOps.INSTANCE, json).result().orElseThrow().getFirst();
+
+        assertThat(actualBuilder).isNotNull();
+        final var actualResource = actualBuilder.build();
+
+        assertThat(actualResource).isInstanceOf(TieredResource.MultiTier.class);
+        assertThat(actualResource.forTier(0)).isEqualTo("first tier");
+        assertThat(actualResource.forTier(3)).isEqualTo("second tier");
     }
 
     @Test

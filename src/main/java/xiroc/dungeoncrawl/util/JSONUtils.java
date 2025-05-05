@@ -37,7 +37,6 @@ import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
 import xiroc.dungeoncrawl.dungeon.theme.ThemeSerializers;
-import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 import xiroc.dungeoncrawl.dungeon.type.DungeonTypeSerializers;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.json.BlockStateSerializer;
@@ -64,8 +63,8 @@ public interface JSONUtils {
             DungeonTypeSerializers::gsonAdapters,
             RandomMapping::gsonAdapters,
             RandomValue::gsonAdapters,
-            IRandom::gsonAdapters,
-            TieredResource::gsonAdapters)).create();
+            IRandom::gsonAdapters
+    )).create();
 
     private static GsonBuilder withTypeAdapters(List<Consumer<GsonBuilder>> adapterProviders) {
         GsonBuilder builder = new GsonBuilder();

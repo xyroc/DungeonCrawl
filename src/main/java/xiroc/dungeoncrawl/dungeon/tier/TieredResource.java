@@ -1,18 +1,15 @@
 package xiroc.dungeoncrawl.dungeon.tier;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapLike;
+import com.mojang.serialization.RecordBuilder;
 import net.minecraft.resources.ResourceLocation;
+import xiroc.dungeoncrawl.util.StorageHelper;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,13 +25,8 @@ import java.util.List;
  */
 public interface TieredResource<T> {
 
-    interface Types {
-        Type IDENTIFIER = new TypeToken<Builder<ResourceLocation>>() {}.getType();
-    }
-
-    static void gsonAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer());
-        builder.registerTypeAdapter(Types.IDENTIFIER, new BuilderSerializer<>(ResourceLocation.class));
+    interface Codecs {
+        Codec<TieredResource.Builder<ResourceLocation>> IDENTIFIER = new BuilderCodec<>(ResourceLocation.CODEC);
     }
 
     /**
@@ -51,7 +43,8 @@ public interface TieredResource<T> {
         }
     }
 
-    record MultiTier<T>(T firstTier, ImmutableList<TieredResource.Tier<T>> followingTiers) implements TieredResource<T> {
+    record MultiTier<T>(T firstTier,
+                        ImmutableList<TieredResource.Tier<T>> followingTiers) implements TieredResource<T> {
         @Override
         public T forTier(int tier) {
             T result = firstTier;
@@ -67,7 +60,8 @@ public interface TieredResource<T> {
 
     }
 
-    record Tier<T>(T resource, int startingFrom) {}
+    record Tier<T>(T resource, int startingFrom) {
+    }
 
     class Builder<T> {
         private final T firstTier;
@@ -88,6 +82,25 @@ public interface TieredResource<T> {
             this.firstTier = firstTier;
         }
 
+        private Builder(List<Pair<Integer, T>> tiers) {
+            if (tiers.isEmpty()) {
+                throw new IllegalArgumentException("Specify at least one tier.");
+            }
+            tiers.sort(Comparator.comparingInt(Pair::getFirst));
+            var iterator = tiers.iterator();
+
+            var firstTier = iterator.next();
+            if (firstTier.getFirst() != 0) {
+                throw new IllegalArgumentException("Missing tier 0.");
+            }
+            this.firstTier = firstTier.getSecond();
+
+            while (iterator.hasNext()) {
+                var tier = iterator.next();
+                tier(tier.getSecond(), tier.getFirst());
+            }
+        }
+
         public Builder<T> tier(T resource, int startingFrom) {
             followingTiers.add(new Tier<>(resource, startingFrom));
             return this;
@@ -100,69 +113,80 @@ public interface TieredResource<T> {
             sortTiers();
             return new MultiTier<>(firstTier, ImmutableList.copyOf(followingTiers));
         }
+
         private void sortTiers() {
             followingTiers.sort(Comparator.comparingInt(Tier::startingFrom));
         }
     }
 
-    class BuilderSerializer<T> implements JsonSerializer<Builder<T>>, JsonDeserializer<Builder<T>> {
-
+    record BuilderCodec<T>(Codec<T> resourceCodec) implements Codec<Builder<T>> {
         private static final String TIER_PREFIX = "tier_";
 
-        private final Type resourceType;
-
-        public BuilderSerializer(Type resourceType) {
-            this.resourceType = resourceType;
-        }
-
         @Override
-        public Builder<T> deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            if (!json.isJsonObject()) {
-                final T firstTier = context.deserialize(json, resourceType);
-                return new Builder<>(firstTier);
+        public <D> DataResult<Pair<Builder<T>, D>> decode(DynamicOps<D> dynamicOps, D input) {
+            final var asMap = dynamicOps.getMap(input).result();
+            if (asMap.isEmpty()) {
+                return resourceCodec.decode(dynamicOps, input).map(pair -> pair.mapFirst(Builder::new));
             }
-            final JsonObject jsonObject = json.getAsJsonObject();
 
-            final String firstTierKey = TIER_PREFIX + '0';
-            if (!jsonObject.has(firstTierKey)) {
-                throw new JsonParseException("tier_0 is missing");
-            }
-            final T firstTier = context.deserialize(jsonObject.remove(firstTierKey), resourceType);
+            final MapLike<D> tierMap = asMap.get();
 
-            final Builder<T> builder = new Builder<>(firstTier);
-            jsonObject.entrySet().forEach(entry -> {
-                final String key = entry.getKey();
-                if (!key.startsWith(TIER_PREFIX)) {
-                    throw new JsonParseException("Invalid key: " + key + " does not start with " + TIER_PREFIX);
-                }
-                final String tierString = key.substring(TIER_PREFIX.length());
+            final DataResult<List<Pair<Integer, T>>> tiers = tierMap.entries()
+                    // Parse keys.
+                    .map(pair -> pair.mapFirst(dynamicOps::getStringValue))
+                    // Parse values.
+                    .map(pair -> pair.mapSecond(d -> resourceCodec.decode(dynamicOps, d)))
+                    // Parse tiers.
+                    .reduce(DataResult.success(new ArrayList<>()), (tierListResult, rawTier) ->
+                            tierListResult.flatMap(tierList -> {
+                                DataResult<Pair<Integer, T>> tier = StorageHelper.unpack(rawTier).flatMap(tierDef -> {
+                                    String tierName = tierDef.getFirst();
+                                    if (!tierName.startsWith(TIER_PREFIX)) {
+                                        return DataResult.error("Invalid tier: " + tierName + " does not start with " + TIER_PREFIX);
+                                    }
+                                    String tierAsString = tierName.substring(TIER_PREFIX.length());
+                                    try {
+                                        T resource = tierDef.getSecond().getFirst();
+                                        return DataResult.success(Pair.of(Integer.parseUnsignedInt(tierAsString), resource));
+                                    } catch (NumberFormatException e) {
+                                        return DataResult.error("Invalid tier: " + tierAsString + " is not a non-negative integer");
+                                    }
+                                });
+                                return StorageHelper.addToList(tierList, tier);
+                            }), StorageHelper::concatenateLists);
+
+            return tiers.flatMap(actualTiers -> {
                 try {
-                    final int tier = Integer.parseUnsignedInt(tierString);
-                    builder.tier(context.deserialize(entry.getValue(), resourceType), tier);
-                } catch (NumberFormatException e) {
-                    throw new JsonParseException("Invalid tier: " + tierString + " is not a non-negative integer");
+                    return DataResult.success(Pair.of(new Builder<>(actualTiers), dynamicOps.empty()));
+                } catch (Exception e) {
+                    return DataResult.error(e.getMessage());
                 }
             });
-
-            return builder;
         }
 
         @Override
-        public JsonElement serialize(Builder<T> builder, Type type, JsonSerializationContext context) {
-            final JsonElement firstTier = context.serialize(builder.firstTier, resourceType);
-            if (builder.followingTiers.isEmpty() && !firstTier.isJsonObject()) {
-                return firstTier;
+        public <D> DataResult<D> encode(Builder<T> builder, DynamicOps<D> dynamicOps, D prefix) {
+            if (builder.followingTiers.isEmpty()) {
+                DataResult<D> encoded = resourceCodec.encode(builder.firstTier, dynamicOps, prefix);
+                if (encoded.result().isPresent() && dynamicOps.getMap(encoded.result().get()).result().isEmpty()) {
+                    return encoded;
+                }
             }
 
-            builder.sortTiers();
+            DataResult<RecordBuilder<D>> tiers = DataResult.success(dynamicOps.mapBuilder()).flatMap(tierMap -> {
+                DataResult<D> resource = resourceCodec.encode(builder.firstTier, dynamicOps, prefix);
+                return StorageHelper.addToMap(tierMap, Codec.STRING.encode(TIER_PREFIX + '0', dynamicOps, dynamicOps.empty()), resource);
+            });
 
-            final JsonObject object = new JsonObject();
-            object.add(TIER_PREFIX + '0', firstTier);
-            for (Tier<T> followingTier : builder.followingTiers) {
-                object.add(TIER_PREFIX + followingTier.startingFrom, context.serialize(followingTier.resource, resourceType));
+            for (Tier<T> tier : builder.followingTiers) {
+                DataResult<D> resource = resourceCodec.encode(tier.resource, dynamicOps, dynamicOps.empty());
+                tiers = tiers.flatMap(tierMap ->
+                        StorageHelper.addToMap(tierMap,
+                                Codec.STRING.encode(TIER_PREFIX + tier.startingFrom, dynamicOps, dynamicOps.empty()),
+                                resource));
             }
-            return object;
+
+            return tiers.flatMap(map -> map.build(dynamicOps.empty()));
         }
-
     }
 }

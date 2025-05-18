@@ -26,6 +26,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.loot.ChestLootTables;
+import xiroc.dungeoncrawl.data.tags.worldgen.DBiomeTags;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
@@ -46,6 +47,8 @@ public class DataGen {
                 List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST)), event.getLookupProvider()));
         generator.addProvider(true, new PrimaryThemes(generator.getPackOutput()));
         generator.addProvider(true, new SecondaryThemes(generator.getPackOutput()));
+
+        generator.addProvider(true, new DBiomeTags(generator.getPackOutput(), event.getLookupProvider()));
     }
 
 }

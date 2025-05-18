@@ -1,0 +1,19 @@
+{
+  "values": [
+    "#c:is_badlands",
+    "#c:is_beach",
+    "#c:is_birch_forest",
+    "#c:is_desert",
+    "#c:is_forest",
+    "#c:is_hill",
+    "#c:is_jungle",
+    "#c:is_plains",
+    "#c:is_mountain",
+    "#c:is_savanna",
+    "#c:is_snowy_plains",
+    "#c:is_swamp",
+    "#c:is_taiga",
+    "minecraft:ice_spikes",
+    "minecraft:stony_shore"
+  ]
+}

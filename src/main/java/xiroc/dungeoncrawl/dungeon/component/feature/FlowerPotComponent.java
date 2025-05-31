@@ -15,8 +15,8 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
@@ -25,8 +25,8 @@ import java.util.Random;
 public record FlowerPotComponent(BlockPos position, Block soil, Block flower) implements DungeonComponent {
     public static final Codec<FlowerPotComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             BlockPos.CODEC.fieldOf("position").forGetter(FlowerPotComponent::position),
-            StorageHelper.BLOCK_CODEC.fieldOf("soil").forGetter(FlowerPotComponent::soil),
-            StorageHelper.BLOCK_CODEC.fieldOf("flower").forGetter(FlowerPotComponent::flower)
+            GlobalCodecs.BLOCK.fieldOf("soil").forGetter(FlowerPotComponent::soil),
+            GlobalCodecs.BLOCK.fieldOf("flower").forGetter(FlowerPotComponent::flower)
     ).apply(builder, FlowerPotComponent::new));
 
     private boolean isDoublePlant() {

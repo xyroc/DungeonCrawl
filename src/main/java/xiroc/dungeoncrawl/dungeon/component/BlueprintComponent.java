@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.Random;
@@ -20,7 +20,7 @@ public record BlueprintComponent(Delegate<Blueprint> blueprint, BlockPos positio
     public static final Codec<BlueprintComponent> CODEC = RecordCodecBuilder.create(builder ->
             builder.group(Blueprint.CODEC.fieldOf("blueprint").forGetter(BlueprintComponent::blueprint),
                             BlockPos.CODEC.fieldOf("pos").forGetter(BlueprintComponent::position),
-                            StorageHelper.ROTATION_CODEC.fieldOf("rot").forGetter(BlueprintComponent::rotation))
+                            GlobalCodecs.ROTATION.fieldOf("rot").forGetter(BlueprintComponent::rotation))
                     .apply(builder, BlueprintComponent::new));
 
     @Override

@@ -24,34 +24,15 @@ public interface TemplateBlockType extends BlockChooser {
      * It is assumed that the {@code position} parameter is within valid bounds.
      * Perform adequate checks beforehand.
      *
-     * @param level the level to place the block in.
+     * @param level    the level to place the block in.
      * @param position the position to place the block at.
-     * @param state the block state to place.
-     * @param isSolid whether this block state replaces air blocks or not.
+     * @param state    the block state to place.
+     * @param isSolid  whether this block state replaces air blocks or not.
      */
     default void handlePlacement(LevelAccessor level, BlockPos position, BlockState state, boolean isSolid) {
         WorldEditor.Unsafe.placeBlock(level, position, state, isSolid, true, true);
     }
 
-
-    // Codec^2
-    Codec<Codec<? extends TemplateBlockType>> CODEC_CODEC = Codec.STRING.flatXmap(name -> {
-        var codecs = getCodecsMap();
-        if (codecs.containsKey(name)) {
-            return DataResult.success(codecs.get(name));
-        } else {
-            return DataResult.error("Unknown template block type: " + name);
-        }
-    }, type -> {
-        var codecs = getCodecsMap();
-        if (codecs.containsValue(type)) {
-            return DataResult.success(codecs.inverse().get(type));
-        } else {
-            return DataResult.error("Unknown template block type: " + type);
-        }
-    });
-
-    Codec<TemplateBlockType> CODEC = CODEC_CODEC.dispatch(TemplateBlockType::codec, Function.identity());
 
     /**
      * Names for all template block type codecs.
@@ -120,8 +101,22 @@ public interface TemplateBlockType extends BlockChooser {
             .put(Names.FENCE_GATE, FENCE_GATE.getCodec())
             .build();
 
-    // Indirection to break up circular dependency between the Codec and the Map of Codecs during class init
-    private static ImmutableBiMap<String, Codec<? extends TemplateBlockType>> getCodecsMap() {
-        return CODECS;
-    }
+    // Codec^2
+    Codec<Codec<? extends TemplateBlockType>> CODEC_CODEC = Codec.STRING.flatXmap(name -> {
+        var codecs = CODECS;
+        if (codecs.containsKey(name)) {
+            return DataResult.success(codecs.get(name));
+        } else {
+            return DataResult.error("Unknown template block type: " + name);
+        }
+    }, type -> {
+        var codecs = CODECS;
+        if (codecs.containsValue(type)) {
+            return DataResult.success(codecs.inverse().get(type));
+        } else {
+            return DataResult.error("Unknown template block type: " + type);
+        }
+    });
+
+    Codec<TemplateBlockType> CODEC = CODEC_CODEC.dispatch(TemplateBlockType::codec, Function.identity());
 }

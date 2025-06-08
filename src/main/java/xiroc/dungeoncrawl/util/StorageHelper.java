@@ -57,9 +57,20 @@ public interface StorageHelper {
 
     /**
      * Transforms a pair of data results into a data result of a pair.
+     * If either of the two results is an error, that error is returned, prioritizing the first one.
+     *
      * @return The pair data result.
      */
     static <T, U> DataResult<Pair<T, U>> unpack(Pair<DataResult<T>, DataResult<U>> input) {
         return input.getFirst().flatMap(first -> input.getSecond().map(second -> Pair.of(first, second)));
+    }
+
+    /**
+     * Converts a {@code Pair<? extends A, T>} to a {@code Pair<A, T>}.
+     *
+     * @return The converted pair.
+     */
+    static <A, B extends A, T> Pair<A, T> repack(Pair<B, T> pair) {
+        return Pair.of(pair.getFirst(), pair.getSecond());
     }
 }

@@ -18,14 +18,9 @@
 
 package xiroc.dungeoncrawl.dungeon.generator.level;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
+import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
 import javax.annotation.Nullable;
@@ -159,24 +154,36 @@ public class LevelGeneratorSettings {
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             Builder builder = new Builder();
             JsonObject object = json.getAsJsonObject();
-            if (object.has(KEY_MAX_ROOMS)) builder.maxRooms = object.get(KEY_MAX_ROOMS).getAsInt();
-            if (object.has(KEY_MAX_CLUSTER_NODES)) builder.maxClusterNodes = object.get(KEY_MAX_CLUSTER_NODES).getAsInt();
-            if (object.has(KEY_MAX_GENERATION_DEPTH)) builder.maxDepth = object.get(KEY_MAX_GENERATION_DEPTH).getAsInt();
-            if (object.has(KEY_MIN_STAIRCASE_DEPTH)) builder.minStaircaseDepth = object.get(KEY_MIN_STAIRCASE_DEPTH).getAsInt();
-            if (object.has(KEY_MIN_SEPARATION)) builder.minSeparation = object.get(KEY_MIN_SEPARATION).getAsInt();
-            if (object.has(KEY_CORRIDOR_LENGTH)) builder.corridorLength = context.deserialize(object.get(KEY_CORRIDOR_LENGTH), RandomValue.class);
+            if (object.has(KEY_MAX_ROOMS))
+                builder.maxRooms = object.get(KEY_MAX_ROOMS).getAsInt();
+            if (object.has(KEY_MAX_CLUSTER_NODES))
+                builder.maxClusterNodes = object.get(KEY_MAX_CLUSTER_NODES).getAsInt();
+            if (object.has(KEY_MAX_GENERATION_DEPTH))
+                builder.maxDepth = object.get(KEY_MAX_GENERATION_DEPTH).getAsInt();
+            if (object.has(KEY_MIN_STAIRCASE_DEPTH))
+                builder.minStaircaseDepth = object.get(KEY_MIN_STAIRCASE_DEPTH).getAsInt();
+            if (object.has(KEY_MIN_SEPARATION))
+                builder.minSeparation = object.get(KEY_MIN_SEPARATION).getAsInt();
+            if (object.has(KEY_CORRIDOR_LENGTH))
+                builder.corridorLength = JSONUtils.parse(object.get(KEY_CORRIDOR_LENGTH), RandomValue.CODEC);
             return builder;
         }
 
         @Override
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            if (builder.maxRooms != null) object.addProperty(KEY_MAX_ROOMS, builder.maxRooms);
-            if (builder.maxClusterNodes != null) object.addProperty(KEY_MAX_CLUSTER_NODES, builder.maxClusterNodes);
-            if (builder.maxDepth != null) object.addProperty(KEY_MAX_GENERATION_DEPTH, builder.maxDepth);
-            if (builder.minStaircaseDepth != null) object.addProperty(KEY_MIN_STAIRCASE_DEPTH, builder.minStaircaseDepth);
-            if (builder.minSeparation != null) object.addProperty(KEY_MIN_SEPARATION, builder.minSeparation);
-            if (builder.corridorLength != null) object.add(KEY_CORRIDOR_LENGTH, context.serialize(builder.corridorLength));
+            if (builder.maxRooms != null)
+                object.addProperty(KEY_MAX_ROOMS, builder.maxRooms);
+            if (builder.maxClusterNodes != null)
+                object.addProperty(KEY_MAX_CLUSTER_NODES, builder.maxClusterNodes);
+            if (builder.maxDepth != null)
+                object.addProperty(KEY_MAX_GENERATION_DEPTH, builder.maxDepth);
+            if (builder.minStaircaseDepth != null)
+                object.addProperty(KEY_MIN_STAIRCASE_DEPTH, builder.minStaircaseDepth);
+            if (builder.minSeparation != null)
+                object.addProperty(KEY_MIN_SEPARATION, builder.minSeparation);
+            if (builder.corridorLength != null)
+                object.add(KEY_CORRIDOR_LENGTH, JSONUtils.encode(builder.corridorLength, RandomValue.CODEC));
             return object;
         }
     }

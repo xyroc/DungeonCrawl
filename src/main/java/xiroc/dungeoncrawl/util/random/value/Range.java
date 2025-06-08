@@ -18,19 +18,19 @@
 
 package xiroc.dungeoncrawl.util.random.value;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Mth;
 
-import java.lang.reflect.Type;
 import java.util.Random;
 
 public record Range(int min, int max) implements RandomValue {
+    public static final Codec<Range> CODEC = RecordCodecBuilder.create(builder ->
+            builder.group(
+                    Codec.INT.fieldOf("min").forGetter(Range::min),
+                    Codec.INT.fieldOf("max").forGetter(Range::max)
+            ).apply(builder, Range::new));
+
     @Override
     public int nextInt(Random random) {
         return Mth.nextInt(random, min, max);
@@ -39,24 +39,5 @@ public record Range(int min, int max) implements RandomValue {
     @Override
     public boolean isAlwaysWithin(int lowerBound, int upperBound) {
         return min >= lowerBound && max <= upperBound;
-    }
-
-    public static class Serializer implements JsonSerializer<Range>, JsonDeserializer<Range> {
-        private static final String KEY_MIN_VALUE = "min";
-        private static final String KEY_MAX_VALUE = "max";
-
-        @Override
-        public Range deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            return new Range(object.get(KEY_MIN_VALUE).getAsInt(), object.get(KEY_MAX_VALUE).getAsInt());
-        }
-
-        @Override
-        public JsonElement serialize(Range range, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.addProperty(KEY_MIN_VALUE, range.min);
-            object.addProperty(KEY_MAX_VALUE, range.max);
-            return object;
-        }
     }
 }

@@ -1,22 +1,18 @@
 package xiroc.dungeoncrawl.dungeon.type;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-public record SecretRoom(IRandom<Delegate<Blueprint>> variants, @Nullable RandomValue level, RandomValue amount, IRandom<Delegate<Blueprint>> entrances) {
+public record SecretRoom(IRandom<Delegate<Blueprint>> variants, @Nullable RandomValue level, RandomValue amount,
+                         IRandom<Delegate<Blueprint>> entrances) {
     public static class Builder {
         @Nullable
         private IRandom.Builder<Delegate<Blueprint>> variants;
@@ -76,9 +72,9 @@ public record SecretRoom(IRandom<Delegate<Blueprint>> variants, @Nullable Random
             final JsonObject object = json.getAsJsonObject();
             builder.variants = context.deserialize(object.get(KEY_VARIANTS), Blueprint.Types.RANDOM_BUILDER);
             if (object.has(KEY_LEVEL)) {
-                builder.level = context.deserialize(object.get(KEY_LEVEL), RandomValue.class);
+                builder.level = JSONUtils.parse(object.get(KEY_LEVEL), RandomValue.CODEC);
             }
-            builder.amount = context.deserialize(object.get(KEY_AMOUNT), RandomValue.class);
+            builder.amount = JSONUtils.parse(object.get(KEY_AMOUNT), RandomValue.CODEC);
             builder.entrances = context.deserialize(object.get(KEY_ENTRANCES), Blueprint.Types.RANDOM_BUILDER);
             return builder;
         }
@@ -88,9 +84,9 @@ public record SecretRoom(IRandom<Delegate<Blueprint>> variants, @Nullable Random
             final JsonObject object = new JsonObject();
             object.add(KEY_VARIANTS, context.serialize(src.variants, Blueprint.Types.RANDOM_BUILDER));
             if (src.level != null) {
-                object.add(KEY_LEVEL, context.serialize(src.level));
+                object.add(KEY_LEVEL, JSONUtils.encode(src.level, RandomValue.CODEC));
             }
-            object.add(KEY_AMOUNT, context.serialize(src.amount));
+            object.add(KEY_AMOUNT, JSONUtils.encode(src.amount, RandomValue.CODEC));
             object.add(KEY_ENTRANCES, context.serialize(src.entrances, Blueprint.Types.RANDOM_BUILDER));
             return object;
         }

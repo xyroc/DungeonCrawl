@@ -19,13 +19,7 @@
 package xiroc.dungeoncrawl.util;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.world.item.Item;
@@ -43,7 +37,6 @@ import xiroc.dungeoncrawl.util.json.BlockStateSerializer;
 import xiroc.dungeoncrawl.util.json.ItemSerializer;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
-import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -62,7 +55,6 @@ public interface JSONUtils {
             ThemeSerializers::gsonAdapters,
             DungeonTypeSerializers::gsonAdapters,
             RandomMapping::gsonAdapters,
-            RandomValue::gsonAdapters,
             IRandom::gsonAdapters
     )).create();
 

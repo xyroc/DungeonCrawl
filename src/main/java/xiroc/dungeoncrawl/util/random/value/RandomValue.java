@@ -1,20 +1,35 @@
 package xiroc.dungeoncrawl.util.random.value;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import xiroc.dungeoncrawl.util.StorageHelper;
 
-import java.lang.reflect.Type;
 import java.util.Random;
 
 public interface RandomValue {
-    static void gsonAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(RandomValue.class, new Deserializer())
-                .registerTypeAdapter(Range.class, new Range.Serializer())
-                .registerTypeAdapter(Constant.class, new Constant.Serializer());
-    }
+    Codec<RandomValue> CODEC = new Codec<>() {
+        @Override
+        public <T> DataResult<Pair<RandomValue, T>> decode(DynamicOps<T> ops, T input) {
+            var range = Range.CODEC.decode(ops, input);
+            if (range.result().isPresent()) {
+                return range.map(StorageHelper::repack);
+            }
+            return Constant.CODEC.decode(ops, input).map(StorageHelper::repack);
+        }
+
+        @Override
+        public <T> DataResult<T> encode(RandomValue input, DynamicOps<T> ops, T prefix) {
+            if (input instanceof Range range) {
+                return Range.CODEC.encode(range, ops, prefix);
+            }
+            if (input instanceof Constant constant) {
+                return Constant.CODEC.encode(constant, ops, prefix);
+            }
+            return DataResult.error("Invalid random value type: " + input.getClass().getName());
+        }
+    };
 
     int nextInt(Random random);
 
@@ -49,15 +64,5 @@ public interface RandomValue {
      */
     default boolean isAlwaysNonPositive() {
         return isAlwaysWithin(Integer.MIN_VALUE, 0);
-    }
-
-    class Deserializer implements JsonDeserializer<RandomValue> {
-        @Override
-        public RandomValue deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if (json.isJsonPrimitive()) {
-                return context.deserialize(json, Constant.class);
-            }
-            return context.deserialize(json, Range.class);
-        }
     }
 }

@@ -1,12 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.monster;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
@@ -18,6 +12,7 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
 import xiroc.dungeoncrawl.datapack.registry.InheritingDelegate;
+import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
@@ -41,9 +36,12 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
      * Holds types representing the different contexts this class is serialized in.
      */
     public interface Types {
-        Type DELEGATE = new TypeToken<Delegate<SpawnerType>>() {}.getType();
-        Type RANDOM = new TypeToken<IRandom<Delegate<SpawnerType>>>() {}.getType();
-        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<SpawnerType>>>() {}.getType();
+        Type DELEGATE = new TypeToken<Delegate<SpawnerType>>() {
+        }.getType();
+        Type RANDOM = new TypeToken<IRandom<Delegate<SpawnerType>>>() {
+        }.getType();
+        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<SpawnerType>>>() {
+        }.getType();
     }
 
     public CompoundTag createData(Random random, int stage) {
@@ -239,26 +237,38 @@ public record SpawnerType(IRandom<Delegate<SpawnerEntityType>> entities,
         public Builder deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
             Builder builder = new Builder();
             JsonObject object = json.getAsJsonObject();
-            if (object.has(KEY_ENTITIES)) builder.entities = context.deserialize(object.get(KEY_ENTITIES), SpawnerEntityType.Types.RANDOM_BUILDER);
-            if (object.has(KEY_SPAWN_AMOUNT)) builder.spawnAmount = context.deserialize(object.get(KEY_SPAWN_AMOUNT), RandomValue.class);
-            if (object.has(KEY_SPAWN_DELAY)) builder.spawnDelay = context.deserialize(object.get(KEY_SPAWN_DELAY), RandomValue.class);
-            if (object.has(KEY_INITIAL_SPAWN_DELAY)) builder.initialSpawnDelay = context.deserialize(object.get(KEY_INITIAL_SPAWN_DELAY), RandomValue.class);
+            if (object.has(KEY_ENTITIES))
+                builder.entities = context.deserialize(object.get(KEY_ENTITIES), SpawnerEntityType.Types.RANDOM_BUILDER);
+            if (object.has(KEY_SPAWN_AMOUNT))
+                builder.spawnAmount = JSONUtils.parse(object.get(KEY_SPAWN_DELAY), RandomValue.CODEC);
+            if (object.has(KEY_SPAWN_DELAY))
+                builder.spawnDelay = JSONUtils.parse(object.get(KEY_SPAWN_DELAY), Range.CODEC);
+            if (object.has(KEY_INITIAL_SPAWN_DELAY))
+                builder.initialSpawnDelay = JSONUtils.parse(object.get(KEY_INITIAL_SPAWN_DELAY), RandomValue.CODEC);
             if (object.has(KEY_ENTITY_PROPERTIES)) builder.properties = InheritingDelegate.ofBuilder(
                     context.<SpawnerEntityProperties.Builder>deserialize(object.get(KEY_ENTITY_PROPERTIES), SpawnerEntityProperties.Builder.class));
-            if (object.has(KEY_ACTIVATION_RANGE)) builder.activationRange = object.get(KEY_ACTIVATION_RANGE).getAsShort();
-            if (object.has(KEY_MAX_LIGHT_LEVEL)) builder.maxLightLevel = object.get(KEY_MAX_LIGHT_LEVEL).getAsInt();
+            if (object.has(KEY_ACTIVATION_RANGE))
+                builder.activationRange = object.get(KEY_ACTIVATION_RANGE).getAsShort();
+            if (object.has(KEY_MAX_LIGHT_LEVEL))
+                builder.maxLightLevel = object.get(KEY_MAX_LIGHT_LEVEL).getAsInt();
             return builder;
         }
 
         @Override
         public JsonElement serialize(Builder builder, Type type, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-            if (builder.entities != null) object.add(KEY_ENTITIES, context.serialize(builder.entities, SpawnerEntityType.Types.RANDOM_BUILDER));
-            if (builder.spawnAmount != null) object.add(KEY_SPAWN_AMOUNT, context.serialize(builder.spawnAmount));
-            if (builder.spawnDelay != null) object.add(KEY_SPAWN_DELAY, context.serialize(builder.spawnDelay));
-            if (builder.initialSpawnDelay != null) object.add(KEY_INITIAL_SPAWN_DELAY, context.serialize(builder.initialSpawnDelay));
-            if (builder.properties != null) object.add(KEY_ENTITY_PROPERTIES, builder.properties.serialize(context::serialize));
-            if (builder.maxLightLevel >= 0) object.addProperty(KEY_MAX_LIGHT_LEVEL, builder.maxLightLevel);
+            if (builder.entities != null)
+                object.add(KEY_ENTITIES, context.serialize(builder.entities, SpawnerEntityType.Types.RANDOM_BUILDER));
+            if (builder.spawnAmount != null)
+                object.add(KEY_SPAWN_AMOUNT, JSONUtils.encode(builder.spawnAmount, RandomValue.CODEC));
+            if (builder.spawnDelay != null)
+                object.add(KEY_SPAWN_DELAY, JSONUtils.encode(builder.spawnDelay, Range.CODEC));
+            if (builder.initialSpawnDelay != null)
+                object.add(KEY_INITIAL_SPAWN_DELAY, JSONUtils.encode(builder.initialSpawnDelay, RandomValue.CODEC));
+            if (builder.properties != null)
+                object.add(KEY_ENTITY_PROPERTIES, builder.properties.serialize(context::serialize));
+            if (builder.maxLightLevel >= 0)
+                object.addProperty(KEY_MAX_LIGHT_LEVEL, builder.maxLightLevel);
             return object;
         }
     }

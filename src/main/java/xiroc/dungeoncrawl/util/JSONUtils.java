@@ -18,120 +18,94 @@
 
 package xiroc.dungeoncrawl.util;
 
+import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.fml.ModList;
-import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
+import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
+import xiroc.dungeoncrawl.dungeon.theme.ThemeSerializers;
+import xiroc.dungeoncrawl.dungeon.type.DungeonTypeSerializers;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.random.RandomMapping;
 
-import java.util.Optional;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class JSONUtils {
+public interface JSONUtils {
+    Gson GSON = withTypeAdapters(List.of(
+            BlockStateProvider::gsonAdapters,
+            BlueprintFeature::gsonAdapters,
+            Blueprint::gsonAdapters,
+            TemplateBlueprint::gsonAdapters,
+            DungeonDecoration::gsonAdapters,
+            SpawnerSerializers::gsonAdapters,
+            ThemeSerializers::gsonAdapters,
+            DungeonTypeSerializers::gsonAdapters,
+            RandomMapping::gsonAdapters
+    )).create();
 
-    public static boolean areRequirementsMet(JsonObject object) {
-        if (object.has("requirements")) {
-            JsonObject conditions = object.getAsJsonObject("requirements");
-            if (conditions.has("present")) {
-                JsonArray present = conditions.getAsJsonArray("present");
-                for (JsonElement mod : present) {
-                    if (!ModList.get().isLoaded(mod.getAsString())) return false;
-                }
-            }
-            if (conditions.has("absent")) {
-                JsonArray present = conditions.getAsJsonArray("absent");
-                for (JsonElement mod : present) {
-                    if (ModList.get().isLoaded(mod.getAsString())) return false;
-                }
-            }
+    private static GsonBuilder withTypeAdapters(List<Consumer<GsonBuilder>> adapterProviders) {
+        GsonBuilder builder = new GsonBuilder();
+        for (var adapterProvider : adapterProviders) {
+            adapterProvider.accept(builder);
         }
-        return true;
+        return builder;
     }
 
-    public static BlockState deserializeBlockStateProperties(Block block, JsonObject element) {
-        BlockState state = block.defaultBlockState();
-        if (element.has("properties")) {
-            JsonObject data = element.get("properties").getAsJsonObject();
-            for (Property<?> property : state.getProperties()) {
-                if (data.has(property.getName())) {
-                    state = parseProperty(state, property, data.get(property.getName()).getAsString());
-                }
-            }
-        }
-        return state;
+    static <T> JsonElement encode(T instance, Codec<T> codec) {
+        return codec.encodeStart(JsonOps.INSTANCE, instance).result().orElseThrow();
     }
 
-    public static int getWeight(JsonObject object) {
-        return object.has("weight") ? object.get("weight").getAsInt() : 1;
+    static <T> T parse(JsonElement json, Codec<T> codec) {
+        return codec.parse(JsonOps.INSTANCE, json).getOrThrow(DatapackLoadException::new);
     }
 
-    public static Vec3i getOffset(JsonObject jsonObject) {
-        int x = 0, y = 0, z = 0;
-        if (jsonObject.has("x")) {
-            x = jsonObject.get("x").getAsInt();
+    static <T> void serializeIfNonNull(JsonObject parent, String key, T thing, Function<T, JsonElement> serializer) {
+        if (thing != null) {
+            parent.add(key, serializer.apply(thing));
         }
-        if (jsonObject.has("y")) {
-            y = jsonObject.get("y").getAsInt();
+    }
+
+    static <T> T deserializeOrNull(JsonObject parent, String key, Function<JsonElement, T> deserializer) {
+        if (parent.has(key)) {
+            return deserializer.apply(parent.get(key));
         }
-        if (jsonObject.has("z")) {
-            z = jsonObject.get("z").getAsInt();
-        }
-        if (x == 0 && y == 0 && z == 0) {
-            return DungeonModels.NO_OFFSET;
-        }
-        return new Vec3i(x, y, z);
+        return null;
     }
 
     /**
-     * Applies the property value to the BlockState. It is required that the BlockState supports that property.
+     * Deserialize a json array into an immutable list of any type.
      *
-     * @return the resulting block state
+     * @param list    the json array
+     * @param entryType    the type used to fetch the type adapter to deserialize the list entries
+     * @param context the deserialization context
      */
-    private static <T extends Comparable<T>> BlockState parseProperty(BlockState state, Property<T> property,
-                                                                      String value) {
-        Optional<T> optional = property.getValue(value);
-        if (optional.isPresent()) {
-            T t = optional.get();
-            return state.setValue(property, t);
-        } else {
-            DungeonCrawl.LOGGER.warn("Couldn't apply property {} with value {} to {}", property.getName(), value, BuiltInRegistries.BLOCK.getKey(state.getBlock()));
+    static <T> ImmutableList<T> deserializeList(JsonArray list, Type entryType, JsonDeserializationContext context) {
+        final ImmutableList.Builder<T> listBuilder = ImmutableList.builder();
+        for (JsonElement entry : list) {
+            listBuilder.add(context.<T>deserialize(entry, entryType));
         }
-        return state;
+        return listBuilder.build();
     }
 
-    /**
-     * Serializes the given block state and stores it in the given json object.
-     *
-     * @param object the serialized block state will be stored here
-     * @param state  the block state
-     * @return the json object containing the serialized form of the block state
-     */
-    public static JsonObject serializeBlockState(JsonObject object, BlockState state) {
-        Block block = state.getBlock();
-        ResourceLocation registryName = BuiltInRegistries.BLOCK.getKey(block);
-        if (registryName == null) {
-            DungeonCrawl.LOGGER.error("No registry name found for block {} ({})", block, block.getClass());
-            return new JsonObject();
+    static <T> JsonArray serializeList(List<T> list, Type entryType, JsonSerializationContext context) {
+        final JsonArray jsonArray = new JsonArray();
+        for (T entry : list) {
+            jsonArray.add(context.serialize(entry, entryType));
         }
-        object.addProperty("block", registryName.toString());
-
-        BlockState defaultState = block.defaultBlockState();
-        JsonObject properties = new JsonObject();
-        state.getProperties().forEach((property) -> {
-            if (!state.getValue(property).equals(defaultState.getValue(property))) {
-                properties.addProperty(property.getName(), state.getValue(property).toString());
-            }
-        });
-        if (properties.size() > 0) {
-            object.add("properties", properties);
-        }
-        return object;
+        return jsonArray;
     }
-
 }

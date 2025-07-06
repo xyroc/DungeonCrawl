@@ -1,37 +1,49 @@
 package xiroc.dungeoncrawl.dungeon.block.provider.pattern;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
-public record CheckerboardPattern(BlockStateProvider block1,
-                                  BlockStateProvider block2) implements BlockStateProvider {
+import java.lang.reflect.Type;
 
-    public static final String TYPE = "pattern";
-    public static final String PATTERN_TYPE = "checkerboard_pattern";
-
+public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider block2) implements BlockStateProvider {
     @Override
-    public BlockState get(LevelAccessor world, BlockPos pos, RandomSource random, Rotation rotation) {
+    public BlockState get(BlockPos pos, RandomSource random) {
         if (((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
-            return block1.get(world, pos, random, rotation);
+            return block1.get(pos, random);
         } else {
-            return block2.get(world, pos, random, rotation);
+            return block2.get(pos, random);
         }
     }
 
-    @Override
-    public JsonObject serialize() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", TYPE);
-        object.addProperty("pattern_type", PATTERN_TYPE);
+    public static class Serializer implements JsonSerializer<CheckerboardPattern>, JsonDeserializer<CheckerboardPattern> {
+        private static final String KEY_BLOCK_1 = "block_1";
+        private static final String KEY_BLOCK_2 = "block_2";
 
-        object.add("block_1", block1.serialize());
-        object.add("block_2", block2.serialize());
-        return object;
+        @Override
+        public CheckerboardPattern deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+            BlockStateProvider block1 = context.deserialize(object.get(KEY_BLOCK_1), BlockStateProvider.class);
+            BlockStateProvider block2 = context.deserialize(object.get(KEY_BLOCK_2), BlockStateProvider.class);
+            return new CheckerboardPattern(block1, block2);
+        }
+
+        @Override
+        public JsonElement serialize(CheckerboardPattern src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_CHECKERBOARD_PATTERN);
+
+            object.add(KEY_BLOCK_1, context.serialize(src.block1));
+            object.add(KEY_BLOCK_2, context.serialize(src.block2));
+            return object;
+        }
     }
-
 }

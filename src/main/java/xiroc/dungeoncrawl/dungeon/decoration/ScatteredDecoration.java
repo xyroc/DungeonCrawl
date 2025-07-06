@@ -18,34 +18,39 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.dungeon.model.DungeonModel;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
+import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.worldgen.WorldEditor;
+
+import java.lang.reflect.Type;
 
 public record ScatteredDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
-
     @Override
-    public void decorate(DungeonModel model, LevelAccessor world, BlockPos pos, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds, DungeonPiece piece) {
-        boolean ew = piece.rotation == Rotation.NONE || piece.rotation == Rotation.CLOCKWISE_180;
-        int maxX = ew ? model.width : model.length;
-        int maxZ = ew ? model.length : model.width;
+    public void decorate(Blueprint blueprint, LevelAccessor world, BlockPos pos, Rotation rotation, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds) {
+        boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
+        int maxX = ew ? blueprint.xSpan() : blueprint.zSpan();
+        int maxZ = ew ? blueprint.zSpan() : blueprint.xSpan();
         for (int x = 1; x < maxX - 1; x++) {
-            for (int y = 0; y < model.height; y++) {
+            for (int y = 0; y < blueprint.ySpan(); y++) {
                 for (int z = 1; z < maxZ - 1; z++) {
                     BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
                     if (worldGenBounds.isInside(currentPos)
                             && structureBounds.isInside(currentPos)
-                            && !DungeonBuilder.isBlockProtected(world, currentPos)
+                            && !WorldEditor.Unsafe.isBlockProtected(world, currentPos)
                             && world.isEmptyBlock(currentPos)
                             && random.nextFloat() < chance) {
-
                         BlockPos north = currentPos.north();
                         BlockPos east = currentPos.east();
                         BlockPos south = currentPos.south();
@@ -59,23 +64,31 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
                         boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).canOcclude();
 
                         if (_north || _east || _south || _west || _up) {
-                            world.setBlock(currentPos, blockStateProvider.get(world, currentPos, random), 2);
+                            world.setBlock(currentPos, blockStateProvider.get(currentPos, random), 2);
                         }
-
                     }
                 }
             }
         }
     }
 
-    @Override
-    public JsonObject serialize() {
-        JsonObject object = new JsonObject();
-        object.addProperty("type", DungeonDecoration.SCATTERED_DECORATION);
-        object.addProperty("chance", this.chance);
+    public static class Serializer implements JsonSerializer<ScatteredDecoration>, JsonDeserializer<ScatteredDecoration> {
+        private static final String KEY_BLOCK = "block";
+        private static final String KEY_CHANCE = "chance";
 
-        object.add("block", this.blockStateProvider.serialize());
-        return object;
+        @Override
+        public ScatteredDecoration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+            return new ScatteredDecoration(context.deserialize(object.get(KEY_BLOCK), BlockStateProvider.class), object.get(KEY_CHANCE).getAsFloat());
+        }
+
+        @Override
+        public JsonElement serialize(ScatteredDecoration src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            object.addProperty(SharedSerializationConstants.KEY_DECORATION_TYPE, SharedSerializationConstants.DECORATION_TYPE_SCATTERED);
+            object.add(KEY_BLOCK, context.serialize(src.blockStateProvider));
+            object.addProperty(KEY_CHANCE, src.chance);
+            return object;
+        }
     }
-
 }

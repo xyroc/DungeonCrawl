@@ -18,38 +18,19 @@
 
 package xiroc.dungeoncrawl.init;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonEntrance;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonNodeConnector;
-import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonMegaNodePart;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSecretRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSpiderRoom;
+import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 
 public interface ModStructurePieceTypes {
-    DeferredHolder<StructurePieceType,?> ENTRANCE = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("entrance", () -> noContext(DungeonEntrance::new));
-    DeferredHolder<StructurePieceType,?> ROOM = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("room", () -> noContext(DungeonRoom::new));
-    DeferredHolder<StructurePieceType,?> CORRIDOR = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("corridor", () -> noContext(DungeonCorridor::new));
-    DeferredHolder<StructurePieceType,?> STAIRS = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("stairs", () -> noContext(DungeonStairs::new));
-    DeferredHolder<StructurePieceType,?> SIDE_ROOM = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("side_room", () -> noContext(DungeonSideRoom::new));
-    DeferredHolder<StructurePieceType,?> NODE_ROOM = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("node_room", () -> noContext(DungeonNodeRoom::new));
-    DeferredHolder<StructurePieceType,?> NODE_CONNECTOR = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("node_connector", () -> noContext(DungeonNodeConnector::new));
-    DeferredHolder<StructurePieceType,?> SECRET_ROOM = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("secret_room", () -> noContext(DungeonSecretRoom::new));
-    DeferredHolder<StructurePieceType,?> SPIDER_ROOM = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("spider_room", () -> noContext(DungeonSpiderRoom::new));
-    DeferredHolder<StructurePieceType,?> MULTIPART_MODEL_PIECE = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("multipart_model_piece", () -> noContext(DungeonMultipartModelPiece::new));
-    DeferredHolder<StructurePieceType,?> MEGA_NODE_PART = DungeonCrawl.STRUCTURE_PIECE_TYPE.register("mega_node_part", () -> noContext(DungeonMegaNodePart::new));
+    DeferredRegister<StructurePieceType> REGISTER = DeferredRegister.create(Registries.STRUCTURE_PIECE, DungeonCrawl.MOD_ID);
 
-    private static StructurePieceType noContext(StructurePieceType.ContextlessType type) {
+    DeferredHolder<StructurePieceType, ?> GENERIC = REGISTER.register("generic", () -> contextless(DungeonPiece::new));
+
+    private static StructurePieceType contextless(StructurePieceType.ContextlessType type) {
         return type;
-    }
-
-    static void init() {
     }
 }

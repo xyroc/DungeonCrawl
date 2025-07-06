@@ -25,27 +25,35 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.data.blueprint.TemplateConfigurations;
 import xiroc.dungeoncrawl.data.loot.ChestLootTables;
+import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
+import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
+import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
+import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
-import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 import java.util.List;
+import java.util.Set;
 
 @EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class DataGen {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
-        Loot.init(); // Register loot function types
-
         DataGenerator generator = event.getGenerator();
         boolean includeServer = event.includeServer();
-
-        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Loot.ALL_LOOT_TABLES,
-                List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.BLOCK)), event.getLookupProvider()));
+        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Set.of(),
+                List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST)), event.getLookupProvider()));
         generator.addProvider(includeServer, new PrimaryThemes(generator.getPackOutput()));
         generator.addProvider(includeServer, new SecondaryThemes(generator.getPackOutput()));
+        generator.addProvider(includeServer, new PrimaryThemeMappings(generator.getPackOutput()));
+        generator.addProvider(includeServer, new SecondaryThemeMappings(generator.getPackOutput()));
+        generator.addProvider(includeServer, new SpawnerEntityTypes(generator.getPackOutput()));
+        generator.addProvider(includeServer, new SpawnerTypes(generator.getPackOutput()));
+        generator.addProvider(includeServer, new TemplateConfigurations(generator.getPackOutput()));
+
     }
 
 }

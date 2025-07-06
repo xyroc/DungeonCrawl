@@ -1,8 +1,0 @@
-{
-  "fallback": "dungeoncrawl:default",
-  "definition": {
-    "minecraft:nether_bricks": "solid",
-    "minecraft:red_nether_bricks": "floor",
-    "minecraft:netherrack": "normal"
-  }
-}

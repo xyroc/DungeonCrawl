@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.data.loot;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
@@ -29,19 +30,14 @@ import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunctio
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import xiroc.dungeoncrawl.dungeon.treasure.Loot;
-import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
-import xiroc.dungeoncrawl.dungeon.treasure.function.RandomItem;
-import xiroc.dungeoncrawl.dungeon.treasure.function.RandomPotion;
-import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
-import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
+import xiroc.dungeoncrawl.DungeonCrawl;
 
 import java.util.function.BiConsumer;
 
 public record ChestLootTables(HolderLookup.Provider registries) implements LootTableSubProvider {
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
-        consumer.accept(Loot.CHEST_FOOD, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/food")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("food")
                         .setRolls(UniformGenerator.between(9, 11))
@@ -117,12 +113,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .setWeight(3))
                         .add(LootItem.lootTableItem(Items.SWEET_BERRIES)
                                 .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
-                        .add(LootItem.lootTableItem(Items.SUSPICIOUS_STEW)
-                                .setWeight(6)
-                                .apply(SuspiciousStew.suspiciousStew()))));
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))));
 
-        consumer.accept(Loot.CHEST_SECRET_ROOM, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/secret_room")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("secret room")
                         .setRolls(UniformGenerator.between(8, 8))
@@ -153,7 +146,7 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.MUSIC_DISC_WAIT))
                         .add(LootItem.lootTableItem(Items.MUSIC_DISC_WARD))));
 
-        consumer.accept(Loot.CHEST_STAGE_1, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/stage_1")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage one chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -264,21 +257,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.FERMENTED_SPIDER_EYE)
                                 .setWeight(3))
                         .add(LootItem.lootTableItem(Items.SPIDER_EYE)
-                                .setWeight(6))
-                        .add(LootItem.lootTableItem(Items.POTION)
-                                .setWeight(3)
-                                .apply(RandomPotion.randomPotion(0)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(12)
-                                .apply(RandomItem.randomItem(0)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(4)
-                                .apply(MaterialBlocks.materialBlocks()))
-                        .add(LootItem.lootTableItem(Items.SHIELD)
-                                .setWeight(2)
-                                .apply(Shield.shield(0)))));
+                                .setWeight(6))));
 
-        consumer.accept(Loot.CHEST_STAGE_2, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/stage_2")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage two chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -392,21 +373,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.FERMENTED_SPIDER_EYE)
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.SPIDER_EYE)
-                                .setWeight(4))
-                        .add(LootItem.lootTableItem(Items.POTION)
-                                .setWeight(5)
-                                .apply(RandomPotion.randomPotion(1)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(14)
-                                .apply(RandomItem.randomItem(1)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(4)
-                                .apply(MaterialBlocks.materialBlocks()))
-                        .add(LootItem.lootTableItem(Items.SHIELD)
-                                .setWeight(2)
-                                .apply(Shield.shield(1)))));
+                                .setWeight(4))));
 
-        consumer.accept(Loot.CHEST_STAGE_3, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/stage_3")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage three chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -492,21 +461,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.DIAMOND_HORSE_ARMOR))
                         .add(LootItem.lootTableItem(Items.ENDER_PEARL)
                                 .setWeight(3)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
-                        .add(LootItem.lootTableItem(Items.POTION)
-                                .setWeight(8)
-                                .apply(RandomPotion.randomPotion(2)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(10)
-                                .apply(RandomItem.randomItem(2)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(4)
-                                .apply(MaterialBlocks.materialBlocks()))
-                        .add(LootItem.lootTableItem(Items.SHIELD)
-                                .setWeight(6)
-                                .apply(Shield.shield(2)))));
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))));
 
-        consumer.accept(Loot.CHEST_STAGE_4, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/stage_4")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage four chest")
                         .setRolls(UniformGenerator.between(7, 10))
@@ -591,21 +548,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.DIAMOND_HORSE_ARMOR))
                         .add(LootItem.lootTableItem(Items.ENDER_PEARL)
                                 .setWeight(3)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
-                        .add(LootItem.lootTableItem(Items.POTION)
-                                .setWeight(8)
-                                .apply(RandomPotion.randomPotion(3)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(10)
-                                .apply(RandomItem.randomItem(3)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(4)
-                                .apply(MaterialBlocks.materialBlocks()))
-                        .add(LootItem.lootTableItem(Items.SHIELD)
-                                .setWeight(6)
-                                .apply(Shield.shield(3)))));
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))));
 
-        consumer.accept(Loot.CHEST_STAGE_5, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/stage_5")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("stage five chest")
                         .setRolls(UniformGenerator.between(6, 9))
@@ -683,31 +628,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 9))))
                         .add(LootItem.lootTableItem(Items.IRON_NUGGET)
                                 .setWeight(5)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(5, 10))))
-                        .add(LootItem.lootTableItem(Items.POTION)
-                                .setWeight(5)
-                                .apply(RandomPotion.randomPotion(4)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(9)
-                                .apply(RandomItem.randomItem(4)))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(3)
-                                .apply(MaterialBlocks.materialBlocks()))
-                        .add(LootItem.lootTableItem(Items.SHIELD)
-                                .setWeight(3)
-                                .apply(Shield.shield(4)))));
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(5, 10))))));
 
-        consumer.accept(Loot.CHEST_SUPPLY, LootTable.lootTable()
-                .withPool(LootPool.lootPool()
-                        .name("guaranteed items")
-                        .setRolls(UniformGenerator.between(3, 6))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .apply(RandomItem.randomItem(0))))
-                .withPool(LootPool.lootPool()
-                        .name("guaranteed potions")
-                        .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.POTION)
-                                .apply(RandomPotion.randomPotion(1))))
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/supply")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("guaranteed torches")
                         .setRolls(ConstantValue.exactly(1))
@@ -798,14 +721,11 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.FERMENTED_SPIDER_EYE))
                         .add(LootItem.lootTableItem(Items.SPIDER_EYE)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 7))))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(5)
-                                .apply(MaterialBlocks.materialBlocks()))
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(5)
                                 .apply(EnchantWithLevelsFunction.enchantWithLevels(registries(), ConstantValue.exactly(10))))));
 
-        consumer.accept(Loot.CHEST_TREASURE, LootTable.lootTable()
+        consumer.accept(ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate("chests/treasure")), LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("treasure")
                         .setRolls(UniformGenerator.between(7, 8))
@@ -881,12 +801,6 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(4)
                                 .apply(EnchantWithLevelsFunction
-                                        .enchantWithLevels(registries(), UniformGenerator.between(20, 30))))
-                        .add(LootItem.lootTableItem(Items.AIR)
-                                .setWeight(12)
-                                .apply(RandomItem.randomItem(5)))
-                        .add(LootItem.lootTableItem(Items.POTION)
-                                .setWeight(5)
-                                .apply(RandomPotion.randomPotion(4)))));
+                                        .enchantWithLevels(registries(), UniformGenerator.between(20, 30))))));
     }
 }

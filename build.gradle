@@ -70,18 +70,35 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
+
+    testImplementation(platform("org.junit:junit-bom:${junit_bom}"))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.assertj:assertj-core:${assertj_core}"
+    testImplementation "org.mockito:mockito-core:5.+"
+}
+
+test {
+    useJUnitPlatform()
 }
 
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
-            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-            neo_version         : neo_version, neo_version_range: neo_version_range,
+            minecraft_version: minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version: neo_version,
+            neo_version_range: neo_version_range,
             loader_version_range: loader_version_range,
-            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version, mod_issue_tracker: mod_issue_tracker, mod_data_pack_format: mod_data_pack_format,
-            mod_authors         : mod_authors, mod_description: mod_description, mod_credits: mod_credits,
+            mod_id: mod_id,
+            mod_name: mod_name,
+            mod_license: mod_license,
+            mod_version: mod_version,
+            mod_issue_tracker: mod_issue_tracker,
+            mod_data_pack_format: mod_data_pack_format,
+            mod_authors: mod_authors,
+            mod_description: mod_description,
+            mod_credits: mod_credits,
     ]
     inputs.properties replaceProperties
-
     filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }

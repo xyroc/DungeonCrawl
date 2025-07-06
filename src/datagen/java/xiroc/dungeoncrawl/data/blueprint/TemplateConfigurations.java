@@ -1,0 +1,21 @@
+package xiroc.dungeoncrawl.data.blueprint;
+
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
+import xiroc.dungeoncrawl.data.JsonDataProvider;
+import xiroc.dungeoncrawl.datapack.DatapackDirectories;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprintConfiguration;
+import xiroc.dungeoncrawl.util.JSONUtils;
+
+import java.util.function.BiConsumer;
+
+public class TemplateConfigurations extends JsonDataProvider<TemplateBlueprintConfiguration> {
+    public TemplateConfigurations(PackOutput packOutput) {
+        super(packOutput, "Template Configurations", DatapackDirectories.BLUEPRINTS.path(), JSONUtils.GSON::toJsonTree);
+    }
+
+    @Override
+    public void collect(BiConsumer<ResourceLocation, TemplateBlueprintConfiguration> collector) {
+        // TODO: add template configurations
+    }
+}

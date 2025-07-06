@@ -1,6 +1,0 @@
-{
-  "fallback": "dungeoncrawl:default",
-  "definition": {
-    "minecraft:lava": "fluid"
-  }
-}

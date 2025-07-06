@@ -1,8 +1,0 @@
-{
-  "offset": {
-    "x": -4,
-    "z": -8
-  },
-  "loot": "dungeoncrawl:chests/supply",
-  "variation": true
-}

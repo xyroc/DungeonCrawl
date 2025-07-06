@@ -18,17 +18,32 @@
 
 package xiroc.dungeoncrawl.dungeon.generator;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
-import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+
+import java.lang.reflect.Type;
 
 public record DungeonGeneratorSettings(int maxLayers) {
 
-    public static DungeonGeneratorSettings fromJson(JsonObject settings, ResourceLocation file) {
-        if (settings.has("max_layers")) {
-            return new DungeonGeneratorSettings(settings.get("max_layers").getAsInt());
-        } else {
-            throw new DatapackLoadException("Missing entry max_layers in " + file);
+    public static class Serializer implements JsonSerializer<DungeonGeneratorSettings>, JsonDeserializer<DungeonGeneratorSettings> {
+        private static final String KEY_MAX_LAYERS = "max_layers";
+
+        @Override
+        public DungeonGeneratorSettings deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            int maxLayers = json.getAsJsonObject().get(KEY_MAX_LAYERS).getAsInt();
+            return new DungeonGeneratorSettings(maxLayers);
+        }
+
+        @Override
+        public JsonElement serialize(DungeonGeneratorSettings src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject object = new JsonObject();
+            object.addProperty(KEY_MAX_LAYERS, src.maxLayers);
+            return object;
         }
     }
 

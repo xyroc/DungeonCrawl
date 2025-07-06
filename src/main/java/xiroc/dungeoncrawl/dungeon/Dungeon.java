@@ -71,23 +71,27 @@ public class Dungeon extends Structure {
     }
 
     private void generatePieces(StructurePiecesBuilder structurePiecesBuilder, GenerationContext context, BlockPos position, int startHeight) {
-        DungeonBuilder builder = new DungeonBuilder(context, startHeight, position);
-        builder.build().forEach(structurePiecesBuilder::addPiece);
+        DungeonBuilder builder = new DungeonBuilder(context, structurePiecesBuilder, startHeight, position);
+        builder.generateDungeon();
     }
 
     @Override
     public StructureType<?> type() {
-        return ModStructureTypes.dungeon();
+        return ModStructureTypes.DUNGEON.get();
     }
 
     private static boolean isInvalidSpot(GenerationContext context, int radius) {
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 ChunkPos pos = new ChunkPos(context.chunkPos().x + x, context.chunkPos().z + z);
-                int centerX = QuartPos.fromBlock(pos.getBlockX(7));
-                int centerZ = QuartPos.fromBlock(pos.getBlockZ(7));
-                Holder<Biome> centerBiome = context.chunkGenerator().getBiomeSource().getNoiseBiome(centerX, context.chunkGenerator()
-                        .getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState()), centerZ, context.randomState().sampler());
+                int centerX = pos.getBlockX(7);
+                int centerZ = pos.getBlockZ(7);
+                int centerHeight = context.chunkGenerator().getFirstOccupiedHeight(centerX, centerZ, Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
+                Holder<Biome> centerBiome = context.chunkGenerator().getBiomeSource().getNoiseBiome(
+                        QuartPos.fromBlock(centerX),
+                        QuartPos.fromBlock(centerHeight),
+                        QuartPos.fromBlock(centerZ),
+                        context.randomState().sampler());
                 if (!context.validBiome().test(centerBiome)) {
                     return true;
                 }

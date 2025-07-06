@@ -18,42 +18,30 @@
 
 package xiroc.dungeoncrawl;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
-import xiroc.dungeoncrawl.dungeon.treasure.Loot;
+import xiroc.dungeoncrawl.datapack.registry.ResourceReloadHandler;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructureTypes;
-import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 
 import java.util.Objects;
 
 @Mod(DungeonCrawl.MOD_ID)
 public class DungeonCrawl {
-
     public static final String MOD_ID = "dungeoncrawl";
     public static final String NAME = "Dungeon Crawl";
     public static final String VERSION = "2.3.15";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
-
-    public static final DeferredRegister<LootItemFunctionType<?>> LOOT_FUNCTION_TYPE = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MOD_ID);
-    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPE = DeferredRegister.create(Registries.STRUCTURE_TYPE, MOD_ID);
-    public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPE = DeferredRegister.create(Registries.STRUCTURE_PIECE, MOD_ID);
 
     public DungeonCrawl(ModContainer modContainer) {
         LOGGER.info("Here we go! Launching Dungeon Crawl {}...", VERSION);
@@ -62,20 +50,23 @@ public class DungeonCrawl {
 
         IEventBus modEventBus = Objects.requireNonNull(modContainer.getEventBus());
 
-        LOOT_FUNCTION_TYPE.register(modEventBus);
-        STRUCTURE_TYPE.register(modEventBus);
-        STRUCTURE_PIECE_TYPE.register(modEventBus);
+        ModStructureTypes.REGISTER.register(modEventBus);
+        ModStructurePieceTypes.REGISTER.register(modEventBus);
 
         IEventBus forgeEventBus = NeoForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
-
-        Loot.init();
-        ModStructureTypes.init();
-        ModStructurePieceTypes.init();
+        forgeEventBus.addListener(this::onTagsUpdated);
     }
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {
         event.addListener(new ResourceReloadHandler());
+    }
+
+    private void onTagsUpdated(final TagsUpdatedEvent event) {
+        if (event.getUpdateCause() != TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD) {
+            return;
+        }
+        ResourceReloadHandler.onTagsUpdated(event.getRegistryAccess());
     }
 
     public static ResourceLocation locate(String path) {
@@ -86,7 +77,7 @@ public class DungeonCrawl {
      * Creates a key for a given resource location. Removes the base directory, the following slash and the file ending.
      *
      * @param resourceLocation the initial resource location.
-     * @param baseDirectory    the base path without the last slash. ( dirA/dirB not dirA/dirB/ )
+     * @param baseDirectory    the base path without the last slash, e.g., dirA/dirB instead of dirA/dirB/
      * @param fileEnding       the file ending to remove at the end of the path
      * @return the key
      */
@@ -94,5 +85,4 @@ public class DungeonCrawl {
         String path = resourceLocation.getPath();
         return ResourceLocation.fromNamespaceAndPath(resourceLocation.getNamespace(), path.substring(baseDirectory.length() + 1, path.length() - fileEnding.length()));
     }
-
 }

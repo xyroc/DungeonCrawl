@@ -27,4 +27,8 @@ public class DatapackLoadException extends RuntimeException {
         super(message);
     }
 
+    public DatapackLoadException(String message, Exception cause) {
+        super(message, cause);
+    }
+
 }

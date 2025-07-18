@@ -28,9 +28,5 @@ import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 public interface ModStructurePieceTypes {
     DeferredRegister<StructurePieceType> REGISTER = DeferredRegister.create(Registries.STRUCTURE_PIECE, DungeonCrawl.MOD_ID);
 
-    DeferredHolder<StructurePieceType, ?> GENERIC = REGISTER.register("generic", () -> contextless(DungeonPiece::new));
-
-    private static StructurePieceType contextless(StructurePieceType.ContextlessType type) {
-        return type;
-    }
+    DeferredHolder<StructurePieceType, ?> GENERIC = REGISTER.register("generic", () -> DungeonPiece::new);
 }

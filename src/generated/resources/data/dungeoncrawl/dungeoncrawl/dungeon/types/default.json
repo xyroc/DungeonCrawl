@@ -1,0 +1,40 @@
+{
+  "entrances": [
+    "dungeoncrawl:entrance/eniko_tower"
+  ],
+  "secret_rooms": [
+    {
+      "amount": 5,
+      "entrances": [
+        "dungeoncrawl:corridor/side/door"
+      ],
+      "level": {
+        "max": 5,
+        "min": 1
+      },
+      "variants": [
+        "dungeoncrawl:room/smithy"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "levels": [
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default",
+        "dungeoncrawl:default"
+      ],
+      "primary_themes": "dungeoncrawl:default",
+      "secondary_themes": "dungeoncrawl:default"
+    }
+  ]
+}

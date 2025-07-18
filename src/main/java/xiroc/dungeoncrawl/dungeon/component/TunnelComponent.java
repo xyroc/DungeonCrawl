@@ -28,7 +28,7 @@ public record TunnelComponent(BlockPos start, Direction direction, int length, i
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
-        PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
+        PrimaryTheme primaryTheme = worldGenContext.primaryTheme().value();
         BlockPos corner = start.relative(direction.getCounterClockWise(), width);
 
         WorldEditor.fill(level, primaryTheme.floor(), null, corner.relative(direction.getClockWise()), corner.relative(direction.getClockWise(), 2 * width - 1)

@@ -1,0 +1,26 @@
+{
+  "entrance_types": {
+    "dungeoncrawl:entrance": {
+      "custom_parts": {
+        "closed": [
+          "dungeoncrawl:room/library/desk",
+          "dungeoncrawl:room/library/flowers"
+        ],
+        "open": [
+          "dungeoncrawl:room/library/entrance"
+        ]
+      }
+    }
+  },
+  "placement_settings": {
+    "minecraft:redstone_block": {
+      "fill_air": true,
+      "fill_solid": true
+    },
+    "minecraft:redstone_lamp": {
+      "fill_air": true,
+      "fill_solid": true
+    }
+  },
+  "template": "dungeoncrawl:room/library"
+}

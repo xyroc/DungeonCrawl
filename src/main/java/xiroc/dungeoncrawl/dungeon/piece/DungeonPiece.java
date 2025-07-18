@@ -19,8 +19,12 @@
 package xiroc.dungeoncrawl.dungeon.piece;
 
 import com.google.common.collect.Lists;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -29,10 +33,8 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
-import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
-import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
@@ -65,21 +67,19 @@ public class DungeonPiece extends StructurePiece {
         }
     }
 
-    public DungeonPiece(CompoundTag nbt) {
-        this(ModStructurePieceTypes.GENERIC.get(), nbt);
-    }
-
-    public DungeonPiece(StructurePieceType type, CompoundTag nbt) {
-        super(type, nbt);
-        this.worldGenContext = StorageHelper.decode(nbt.get(NBT_KEY_WORLD_GEN_CONTEXT), DungeonWorldGenContext.CODEC);
-        this.components = StorageHelper.decode(nbt.get(NBT_KEY_COMPONENTS), DungeonComponent.CODEC.listOf());
+    public DungeonPiece(StructurePieceSerializationContext context, CompoundTag nbt) {
+        super(ModStructurePieceTypes.GENERIC.get(), nbt);
+        DynamicOps<Tag> registryNbtOps = RegistryOps.create(NbtOps.INSTANCE, context.registryAccess());
+        this.worldGenContext = DungeonWorldGenContext.CODEC.parse(registryNbtOps, nbt.get(NBT_KEY_WORLD_GEN_CONTEXT)).getOrThrow();
+        this.components = DungeonComponent.CODEC.listOf().parse(registryNbtOps, nbt.get(NBT_KEY_COMPONENTS)).getOrThrow();
         updateBoundingBox();
     }
 
     @Override
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
-        nbt.put(NBT_KEY_WORLD_GEN_CONTEXT, StorageHelper.encode(worldGenContext, DungeonWorldGenContext.CODEC));
-        nbt.put(NBT_KEY_COMPONENTS, StorageHelper.encode(components, DungeonComponent.CODEC.listOf()));
+        DynamicOps<Tag> registryNbtOps = RegistryOps.create(NbtOps.INSTANCE, context.registryAccess());
+        nbt.put(NBT_KEY_WORLD_GEN_CONTEXT, DungeonWorldGenContext.CODEC.encodeStart(registryNbtOps, worldGenContext).getOrThrow());
+        nbt.put(NBT_KEY_COMPONENTS, DungeonComponent.CODEC.listOf().encodeStart(registryNbtOps, components).getOrThrow());
     }
 
     @Override

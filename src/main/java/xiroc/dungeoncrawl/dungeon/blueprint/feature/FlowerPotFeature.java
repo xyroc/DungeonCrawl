@@ -1,54 +1,30 @@
 package xiroc.dungeoncrawl.dungeon.blueprint.feature;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.FlowerPotComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
-
-import java.lang.reflect.Type;
+import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 
 public record FlowerPotFeature(PlacementSettings placement, Block soil, BlockStateProvider flowers) implements BlueprintFeature.AnchorBased {
+    public static final MapCodec<FlowerPotFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            PlacementSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_PLACEMENT_SETTINGS).forGetter(FlowerPotFeature::placement),
+            GlobalCodecs.BLOCK.fieldOf("soil").forGetter(FlowerPotFeature::soil),
+            BlockStateProvider.CODEC.fieldOf("flowers").forGetter(FlowerPotFeature::flowers)
+    ).apply(instance, FlowerPotFeature::new));
+
     @Override
     public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
         return new FlowerPotComponent(anchor.position(), soil, flowers.get(anchor.position(), levelGenerator.random).getBlock());
     }
 
-    public static class Serializer implements JsonSerializer<FlowerPotFeature>, JsonDeserializer<FlowerPotFeature> {
-        private static final String KEY_SOIL = "soil";
-        private static final String KEY_FLOWERS = "flowers";
-
-        @Override
-        public FlowerPotFeature deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            PlacementSettings placement = context.deserialize(object, PlacementSettings.class);
-            Block soil = Blocks.PODZOL;
-            if (object.has(KEY_SOIL)) {
-                soil = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(object.get(KEY_SOIL).getAsString()));
-            }
-            BlockStateProvider flowers = context.deserialize(object.get(KEY_FLOWERS), BlockStateProvider.class);
-            return new FlowerPotFeature(placement, soil, flowers);
-        }
-
-        @Override
-        public JsonElement serialize(FlowerPotFeature configuration, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = context.serialize(configuration.placement).getAsJsonObject();
-            object.addProperty(KEY_SOIL, BuiltInRegistries.BLOCK.getKey(configuration.soil).toString());
-            object.add(KEY_FLOWERS, context.serialize(configuration.flowers));
-            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_FLOWER_POT);
-            return object;
-        }
+    @Override
+    public MapCodec<? extends BlueprintFeature> type() {
+        return CODEC;
     }
 }

@@ -3,7 +3,6 @@ package com.github.xyroc.dungeoncrawl.util.random;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -44,9 +43,6 @@ public class IRandomTest {
 
     private static final Codec<IRandom.Builder<TestObject>> BUILDER_TEST_OBJECT_CODEC = IRandom.makeBuilderCodec(TestObject.CODEC, "test_object", null);
     private static final Codec<IRandom.Builder<Integer>> BUILDER_INT_CODEC = IRandom.makeBuilderCodec(Codec.INT, "integer", null);
-    private static final Codec<IRandom.Builder<Either<TestObject, Integer>>> BUILDER_POTENTIALLY_INLINED_OBJECT_CODEC = IRandom.makeBuilderCodec(
-            Codec.either(TestObject.CODEC, Codec.INT), "1", null
-    );
 
     @Test
     void serializesEmptyBuilderCorrectly() {

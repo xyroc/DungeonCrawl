@@ -1,61 +1,62 @@
 package xiroc.dungeoncrawl.datapack.registry;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.builtin.BuiltinBlueprints;
-import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityProperties;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.dungeon.theme.BuiltinThemes;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
-import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
 public interface DatapackRegistries {
-    DatapackRegistry<IRandom<Delegate<Blueprint>>> BLUEPRINT_POOLS = new InheritingDatapackRegistry<IRandom<Delegate<Blueprint>>,
-            IRandom.Builder<Delegate<Blueprint>>>(DatapackDirectories.BLUEPRINT_POOLS, none(),
-            (reader) -> JSONUtils.GSON.fromJson(reader, Blueprint.Types.RANDOM_BUILDER));
+    ResourceKey<Registry<SpawnerEntityProperties>> SPAWNER_ENTITY_PROPERTIES = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_ENTITY_PROPERTIES.path()));
+    ResourceKey<Registry<SpawnerEntityType>> SPAWNER_ENTITY_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_ENTITIES.path()));
+    ResourceKey<Registry<SpawnerType>> SPAWNER_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_TYPES.path()));
 
-    DatapackRegistry<SpawnerType> SPAWNER_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.SPAWNER_TYPES, none(),
-            (reader) -> JSONUtils.GSON.fromJson(reader, SpawnerType.Builder.class));
+    ResourceKey<Registry<LevelType>> LEVEL_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_LAYER_TYPES.path()));
+    ResourceKey<Registry<DungeonType>> DUNGEON_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_TYPES.path()));
+    ResourceKey<Registry<IRandom<Holder<DungeonType>>>> DUNGEON_TYPE_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_TYPE_POOLS.path()));
+    ResourceKey<Registry<RandomMapping<Biome, DungeonType>>> DUNGEON_TYPE_MAPPINGS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_TYPE_MAPPINGS.path()));
 
-    DatapackRegistry<SpawnerEntityType> SPAWNER_ENTITY_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.SPAWNER_ENTITIES, none(),
-            (reader) -> JSONUtils.GSON.fromJson(reader, SpawnerEntityType.Builder.class));
+    ResourceKey<Registry<PrimaryTheme>> PRIMARY_THEME = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.PRIMARY_THEMES.path()));
+    ResourceKey<Registry<SecondaryTheme>> SECONDARY_THEME = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SECONDARY_THEMES.path()));
+    ResourceKey<Registry<IRandom<Holder<PrimaryTheme>>>> PRIMARY_THEME_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.PRIMARY_THEME_POOLS.path()));
+    ResourceKey<Registry<IRandom<Holder<SecondaryTheme>>>> SECONDARY_THEME_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SECONDARY_THEME_POOLS.path()));
+    ResourceKey<Registry<RandomMapping<Biome, PrimaryTheme>>> PRIMARY_THEME_MAPPINGS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.PRIMARY_THEME_MAPPINGS.path()));
+    ResourceKey<Registry<RandomMapping<Biome, SecondaryTheme>>> SECONDARY_THEME_MAPPINGS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SECONDARY_THEME_MAPPINGS.path()));
 
-    DatapackRegistry<SpawnerEntityProperties> SPAWNER_ENTITY_PROPERTIES = new InheritingDatapackRegistry<>(DatapackDirectories.SPAWNER_ENTITY_PROPERTIES, none(),
-            (reader) -> JSONUtils.GSON.fromJson(reader, SpawnerEntityProperties.Builder.class));
+    ResourceKey<Registry<Blueprint>> BLUEPRINT = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.BLUEPRINTS.path()));
+    ResourceKey<Registry<IRandom<Holder<Blueprint>>>> BLUEPRINT_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.BLUEPRINT_POOLS.path()));
 
-    DatapackRegistry<PrimaryTheme> PRIMARY_THEME = new DatapackRegistry<>(DatapackDirectories.PRIMARY_THEMES, BuiltinThemes::registerPrimary,
-            (reader) -> JSONUtils.GSON.fromJson(reader, PrimaryTheme.class));
+    static void register(final DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(SPAWNER_ENTITY_PROPERTIES, SpawnerEntityProperties.DIRECT_CODEC);
+        event.dataPackRegistry(SPAWNER_ENTITY_TYPE, SpawnerEntityType.DIRECT_CODEC);
+        event.dataPackRegistry(SPAWNER_TYPE, SpawnerType.DIRECT_CODEC);
 
-    DatapackRegistry<SecondaryTheme> SECONDARY_THEME = new DatapackRegistry<>(DatapackDirectories.SECONDARY_THEMES, BuiltinThemes::registerSecondary,
-            (reader) -> JSONUtils.GSON.fromJson(reader, SecondaryTheme.class));
+        event.dataPackRegistry(LEVEL_TYPE, LevelType.DIRECT_CODEC);
+        event.dataPackRegistry(DUNGEON_TYPE, DungeonType.DIRECT_CODEC);
+        event.dataPackRegistry(DUNGEON_TYPE_POOLS, DungeonType.RANDOM_HOLDER_CODEC);
+        event.dataPackRegistry(DUNGEON_TYPE_MAPPINGS, DungeonType.BIOME_MAPPING_DIRECT_CODEC);
 
-    DatapackRegistry<RandomMapping<PrimaryTheme>> PRIMARY_THEME_MAPPINGS = new InheritingDatapackRegistry<>(DatapackDirectories.PRIMARY_THEME_MAPPINGS, none(),
-            (reader) -> JSONUtils.GSON.<RandomMapping.Builder<PrimaryTheme>>fromJson(reader, RandomMapping.Types.PRIMARY_THEME));
+        event.dataPackRegistry(PRIMARY_THEME, PrimaryTheme.DIRECT_CODEC);
+        event.dataPackRegistry(PRIMARY_THEME_POOLS, PrimaryTheme.RANDOM_HOLDER_CODEC);
+        event.dataPackRegistry(PRIMARY_THEME_MAPPINGS, PrimaryTheme.BIOME_MAPPING_DIRECT_CODEC);
 
-    DatapackRegistry<RandomMapping<SecondaryTheme>> SECONDARY_THEME_MAPPINGS = new InheritingDatapackRegistry<>(DatapackDirectories.SECONDARY_THEME_MAPPINGS, none(),
-            (reader) -> JSONUtils.GSON.<RandomMapping.Builder<SecondaryTheme>>fromJson(reader, RandomMapping.Types.SECONDARY_THEME));
+        event.dataPackRegistry(SECONDARY_THEME, SecondaryTheme.DIRECT_CODEC);
+        event.dataPackRegistry(SECONDARY_THEME_POOLS, SecondaryTheme.RANDOM_HOLDER_CODEC);
+        event.dataPackRegistry(SECONDARY_THEME_MAPPINGS, SecondaryTheme.BIOME_MAPPING_DIRECT_CODEC);
 
-    DatapackRegistry<Blueprint> BLUEPRINT = new DatapackRegistry<>(DatapackDirectories.BLUEPRINTS, BuiltinBlueprints::register, TemplateBlueprint::load);
-
-    DatapackRegistry<LevelType> LEVEL_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.DUNGEON_LAYER_TYPES, none(),
-            (reader) -> JSONUtils.GSON.fromJson(reader, LevelType.Builder.class));
-
-    DatapackRegistry<DungeonType> DUNGEON_TYPE = new InheritingDatapackRegistry<>(DatapackDirectories.DUNGEON_TYPES, none(),
-            (reader) -> JSONUtils.GSON.fromJson(reader, DungeonType.Builder.class));
-
-    private static <T> Consumer<BiConsumer<ResourceLocation, T>> none() {
-        return (collector) -> {
-        };
+        event.dataPackRegistry(BLUEPRINT, Blueprint.DIRECT_CODEC);
+        event.dataPackRegistry(BLUEPRINT_POOLS, Blueprint.RANDOM_HOLDER_CODEC);
     }
 }

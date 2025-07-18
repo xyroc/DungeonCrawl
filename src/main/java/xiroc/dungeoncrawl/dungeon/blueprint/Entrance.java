@@ -1,18 +1,14 @@
 package xiroc.dungeoncrawl.dungeon.blueprint;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.common.collect.ImmutableBiMap;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.IdMapper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.EntranceComponent;
@@ -21,7 +17,6 @@ import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -41,42 +36,26 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
         return decoration.map(value -> new EntranceComponent(new Anchor(placement.position().above(), placement.direction()), value)).orElse(null);
     }
 
-    public record CustomParts(IRandom<Delegate<Blueprint>> open, IRandom<Delegate<Blueprint>> closed) {
-        public static class Serializer implements JsonSerializer<CustomParts>, JsonDeserializer<CustomParts> {
-            private static final String KEY_OPEN = "open";
-            private static final String KEY_CLOSED = "closed";
-
-            @Override
-            public CustomParts deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-                JsonObject object = json.getAsJsonObject();
-                IRandom<Delegate<Blueprint>> open = context.deserialize(object.get(KEY_OPEN), Blueprint.Types.RANDOM);
-                IRandom<Delegate<Blueprint>> closed = context.deserialize(object.get(KEY_CLOSED), Blueprint.Types.RANDOM);
-                return new CustomParts(open, closed);
-            }
-
-            @Override
-            public JsonElement serialize(CustomParts customParts, Type type, JsonSerializationContext context) {
-                JsonObject object = new JsonObject();
-                object.add(KEY_OPEN, context.serialize(customParts.open, Blueprint.Types.RANDOM));
-                object.add(KEY_CLOSED, context.serialize(customParts.closed, Blueprint.Types.RANDOM));
-                return object;
-            }
-        }
+    public record CustomParts(IRandom<Holder<Blueprint>> open, IRandom<Holder<Blueprint>> closed) {
+        public static final Codec<CustomParts> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Blueprint.RANDOM_HOLDER_CODEC.fieldOf("open").forGetter(CustomParts::open),
+                Blueprint.RANDOM_HOLDER_CODEC.fieldOf("closed").forGetter(CustomParts::closed)
+        ).apply(instance, CustomParts::new));
 
         public static class Builder {
-            private IRandom<Delegate<Blueprint>> open = null;
-            private IRandom<Delegate<Blueprint>> closed = null;
+            private IRandom<Holder<Blueprint>> open = null;
+            private IRandom<Holder<Blueprint>> closed = null;
 
             public CustomParts build() {
                 return new CustomParts(Objects.requireNonNull(open), Objects.requireNonNull(closed));
             }
 
-            public Builder open(IRandom<Delegate<Blueprint>> open) {
+            public Builder open(IRandom<Holder<Blueprint>> open) {
                 this.open = Objects.requireNonNull(open);
                 return this;
             }
 
-            public Builder closed(IRandom<Delegate<Blueprint>> closed) {
+            public Builder closed(IRandom<Holder<Blueprint>> closed) {
                 this.closed = Objects.requireNonNull(closed);
                 return this;
             }
@@ -91,10 +70,10 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
                         worldGenBounds, random, false);
 
         Decoration PRIMARY = (level, placement, worldGenBounds, random, worldGenContext) ->
-                WorldEditor.placeEntrance(level, worldGenContext.primaryTheme().get().stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
+                WorldEditor.placeEntrance(level, worldGenContext.primaryTheme().value().stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
 
         Decoration SECONDARY = (level, placement, worldGenBounds, random, worldGenContext) ->
-                WorldEditor.placeEntrance(level, worldGenContext.secondaryTheme().get().stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
+                WorldEditor.placeEntrance(level, worldGenContext.secondaryTheme().value().stairs(), placement.position(), placement.direction().getClockWise(), worldGenBounds, random, false, true);
 
         private static IdMapper<Decoration> gatherDecorations() {
             IdMapper<Decoration> decorations = new IdMapper<>();
@@ -107,6 +86,26 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
         IdMapper<Decoration> DECORATIONS = gatherDecorations();
 
         Codec<Decoration> CODEC = Codec.INT.xmap(DECORATIONS::byId, DECORATIONS::getId);
+
+        ImmutableBiMap<String, Decoration> BY_NAME = ImmutableBiMap.<String, Entrance.Decoration>builder()
+                .put("none", NONE)
+                .put("primary", PRIMARY)
+                .put("secondary", SECONDARY)
+                .build();
+
+        Codec<Decoration> BY_NAME_CODEC = Codec.STRING.flatXmap(name -> {
+            Decoration decoration = BY_NAME.get(name);
+            if (decoration == null) {
+                return DataResult.error(() -> "Invalid decoration: " + name);
+            }
+            return DataResult.success(decoration);
+        }, decoration -> {
+            String name = BY_NAME.inverse().get(decoration);
+            if (name == null) {
+                return DataResult.error(() -> "Decoration does not have a name");
+            }
+            return DataResult.success(name);
+        });
 
         void generate(LevelAccessor level, Anchor placement, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext);
     }

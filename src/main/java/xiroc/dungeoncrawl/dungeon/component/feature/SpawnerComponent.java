@@ -5,7 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
@@ -13,17 +13,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
-public record SpawnerComponent(BlockPos position, Delegate<SpawnerType> type) implements DungeonComponent {
+public record SpawnerComponent(BlockPos position, Holder<SpawnerType> type) implements DungeonComponent {
     public static final Codec<SpawnerComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             BlockPos.CODEC.fieldOf("position").forGetter(SpawnerComponent::position),
-            ResourceLocation.CODEC.xmap(DatapackRegistries.SPAWNER_TYPE::delegateOrThrow, Delegate::key).fieldOf("type").forGetter(SpawnerComponent::type)
+            SpawnerType.HOLDER_CODEC.fieldOf("type").forGetter(SpawnerComponent::type)
     ).apply(builder, SpawnerComponent::new));
 
     @Override
@@ -34,7 +32,7 @@ public record SpawnerComponent(BlockPos position, Delegate<SpawnerType> type) im
         level.setBlock(position, Blocks.SPAWNER.defaultBlockState(), 2);
         BlockEntity blockEntity = level.getBlockEntity(position);
         if (blockEntity instanceof SpawnerBlockEntity spawner) {
-            spawner.getSpawner().load(spawner.getLevel(), position, type.get().createData(random, worldGenContext.level(), level.registryAccess()));
+            spawner.getSpawner().load(spawner.getLevel(), position, type.value().createData(random, worldGenContext.level(), level.registryAccess()));
         } else {
             DungeonCrawl.LOGGER.warn("Could not fetch a spawner entity at {}", position);
         }

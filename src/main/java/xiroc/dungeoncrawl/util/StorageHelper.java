@@ -1,21 +1,21 @@
 package xiroc.dungeoncrawl.util;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.RecordBuilder;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface StorageHelper {
-    static <T> Tag encode(T value, Codec<T> codec) {
-        return codec.encodeStart(NbtOps.INSTANCE, value).result().orElseThrow();
-    }
-
-    static <T> T decode(Tag tag, Codec<T> codec) {
-        return codec.decode(NbtOps.INSTANCE, tag).result().map(Pair::getFirst).orElseThrow();
+    /**
+     * Maps the list and entry results to a result of the list containing the entry.
+     * @param list The result for the list to add the entry to.
+     * @param entry The result for the entry to add to the list.
+     * @return The result for the resulting list.
+     */
+    static <T> DataResult<List<T>> addToList(DataResult<List<T>> list, DataResult<T> entry) {
+        return list.flatMap(actualList -> StorageHelper.addToList(actualList, entry));
     }
 
     /**
@@ -72,5 +72,22 @@ public interface StorageHelper {
      */
     static <A, B extends A, T> Pair<A, T> repack(Pair<B, T> pair) {
         return Pair.of(pair.getFirst(), pair.getSecond());
+    }
+
+    /**
+     * Creates a function that returns a data result of the original function's output.
+     * If any exception is thrown, it produces an error result with the exception message.
+     *
+     * @param function The original function.
+     * @return The wrapped function.
+     */
+    static <A, B> Function<A, DataResult<B>> tryToApply(Function<A, B> function) {
+        return input -> {
+            try {
+                return DataResult.success(function.apply(input));
+            } catch (Exception e) {
+                return DataResult.error(e::getMessage);
+            }
+        };
     }
 }

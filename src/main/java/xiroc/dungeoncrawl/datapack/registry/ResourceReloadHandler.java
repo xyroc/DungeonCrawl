@@ -18,51 +18,41 @@
 
 package xiroc.dungeoncrawl.datapack.registry;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.blueprint.TemplateLoader;
 import xiroc.dungeoncrawl.dungeon.type.DungeonTypes;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.random.RandomMapping;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 
-public class ResourceReloadHandler implements PreparableReloadListener {
-    private static final ImmutableList<DatapackRegistry<?>> REGISTRIES = ImmutableList.<DatapackRegistry<?>>builder()
-            .add(DatapackRegistries.BLUEPRINT_POOLS)
-            .add(DatapackRegistries.PRIMARY_THEME)
-            .add(DatapackRegistries.SECONDARY_THEME)
-            .add(DatapackRegistries.PRIMARY_THEME_MAPPINGS)
-            .add(DatapackRegistries.SECONDARY_THEME_MAPPINGS)
-            .add(DatapackRegistries.SPAWNER_ENTITY_TYPE)
-            .add(DatapackRegistries.SPAWNER_TYPE)
-            .add(DatapackRegistries.BLUEPRINT)
-            .add(DatapackRegistries.LEVEL_TYPE)
-            .add(DatapackRegistries.DUNGEON_TYPE)
-            .build();
-
-    private static void reload(ResourceManager resourceManager) {
-        REGISTRIES.forEach(DatapackRegistry::unload);
-        REGISTRIES.forEach(registry -> registry.reload(resourceManager));
-        DungeonTypes.load(resourceManager);
-
-        final var statistics = REGISTRIES.stream().collect(Collectors.summarizingInt(DatapackRegistry::entryCount));
-        DungeonCrawl.LOGGER.info("Loaded {} registries with a total of {} data entries.", statistics.getCount(), statistics.getSum());
+public record ResourceReloadHandler(RegistryAccess registryAccess) implements PreparableReloadListener {
+    private void reload(ResourceManager resourceManager) {
+        final var blueprints = registryAccess.registryOrThrow(DatapackRegistries.BLUEPRINT);
+        int blueprintCounter = 0;
+        for (var blueprint : blueprints) {
+            try {
+                TemplateLoader.loadTemplateForBlueprint(resourceManager, blueprint);
+                ++blueprintCounter;
+            } catch (Exception e) {
+                throw new DatapackLoadException("Failed to load blueprint " + blueprints.getKey(blueprint), e);
+            }
+        }
+        DungeonCrawl.LOGGER.info("Updated {} blueprints.", blueprintCounter);
+        DungeonTypes.buildMapping(registryAccess);
     }
 
     public static void onTagsUpdated(RegistryAccess registryAccess) {
-        final var biomeMappings = List.of(DatapackRegistries.PRIMARY_THEME_MAPPINGS, DatapackRegistries.SECONDARY_THEME_MAPPINGS);
-        final var biomeRegistry = registryAccess.registry(Registries.BIOME).orElseThrow();
-        biomeMappings.forEach(mappings ->
-                mappings.getValues().forEach((ignored, mapping) ->
-                        mapping.resolveTagReferences(biomeRegistry)));
-        DungeonTypes.biomeMapping().resolveTagReferences(biomeRegistry);
+        final var mappingRegistries = List.of(DatapackRegistries.PRIMARY_THEME_MAPPINGS, DatapackRegistries.SECONDARY_THEME_MAPPINGS);
+        mappingRegistries.forEach(mappingRegistry -> registryAccess.registryOrThrow(mappingRegistry).forEach(RandomMapping::compile));
+        DungeonTypes.updateMapping(registryAccess);
         DungeonCrawl.LOGGER.info("Updated biome mappings.");
     }
 
@@ -70,8 +60,8 @@ public class ResourceReloadHandler implements PreparableReloadListener {
     public CompletableFuture<Void> reload(PreparationBarrier stage, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
         return stage.wait(Unit.INSTANCE).thenRunAsync(() -> {
             reloadProfiler.startTick();
-            reloadProfiler.push("listener");
-            ResourceReloadHandler.reload(resourceManager);
+            reloadProfiler.push("Dungeon Crawl resource reload listener");
+            reload(resourceManager);
             reloadProfiler.pop();
             reloadProfiler.endTick();
         }, gameExecutor);

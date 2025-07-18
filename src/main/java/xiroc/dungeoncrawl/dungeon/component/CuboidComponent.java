@@ -18,7 +18,7 @@ public record CuboidComponent(BoundingBox size) implements DungeonComponent {
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
         final BlockPos start = new BlockPos(size.minX(), size.minY(), size.minZ());
         final BlockPos end = new BlockPos(size.maxX(), size.maxY(), size.maxZ());
-        WorldEditor.fill(level, worldGenContext.primaryTheme().get().masonry(), null, start, end, worldGenBounds, random, false);
+        WorldEditor.fill(level, worldGenContext.primaryTheme().value().masonry(), null, start, end, worldGenBounds, random, false);
     }
 
     @Override

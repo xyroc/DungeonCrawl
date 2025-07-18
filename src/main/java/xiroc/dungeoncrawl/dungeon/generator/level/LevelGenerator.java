@@ -1,14 +1,13 @@
 package xiroc.dungeoncrawl.dungeon.generator.level;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
@@ -38,8 +37,8 @@ public class LevelGenerator {
     public final int startHeight;
     public final int stage;
     public final RandomSource random;
-    public final Delegate<PrimaryTheme> primaryTheme;
-    public final Delegate<SecondaryTheme> secondaryTheme;
+    public final Holder<PrimaryTheme> primaryTheme;
+    public final Holder<SecondaryTheme> secondaryTheme;
     public final GeneratorContext generatorContext;
     public final RoomChooser roomChooser;
 
@@ -56,8 +55,8 @@ public class LevelGenerator {
                           int startHeight,
                           int stage,
                           RandomSource random,
-                          Delegate<PrimaryTheme> primaryTheme,
-                          Delegate<SecondaryTheme> secondaryTheme,
+                          Holder<PrimaryTheme> primaryTheme,
+                          Holder<SecondaryTheme> secondaryTheme,
                           boolean placeExit,
                           List<SecretRoom> extraSecretRooms) {
         this.levelType = levelType;
@@ -68,12 +67,12 @@ public class LevelGenerator {
         this.primaryTheme = primaryTheme;
         this.secondaryTheme = secondaryTheme;
 
-        this.clusterNodesLeft = levelType.clusterRooms() != null ? levelType.settings().maxClusterNodes : 0;
+        this.clusterNodesLeft = levelType.rooms().cluster() != null ? levelType.settings().maxClusterNodes : 0;
         this.generatorContext = new GeneratorContext(plan, this);
 
         final List<RoomChooser.RoomEntry> additionalSpecialRooms = new ArrayList<>(1);
         if (placeExit) {
-            additionalSpecialRooms.add(new RoomChooser.RoomEntry(levelType.upperStaircaseRooms(), 3, 1, this::setEndStaircase));
+            additionalSpecialRooms.add(new RoomChooser.RoomEntry(levelType.rooms().upperStaircase(), 3, 1, this::setEndStaircase));
         }
         this.roomChooser = new RoomChooser(levelType, additionalSpecialRooms, random);
 
@@ -84,17 +83,17 @@ public class LevelGenerator {
     }
 
     private boolean createStart(StaircasePlanner staircasePlanner) {
-        final Delegate<Blueprint> roomDelegate = levelType.lowerStaircaseRooms().roll(random);
-        final Blueprint room = roomDelegate.get();
-        final ImmutableList<Anchor> staircaseAnchors = room.anchors().get(BuiltinAnchorTypes.STAIRCASE);
+        final Holder<Blueprint> roomHolder = levelType.rooms().lowerStaircase().roll(random);
+        final Blueprint room = roomHolder.value();
+        final List<Anchor> staircaseAnchors = room.anchors().get(BuiltinAnchorTypes.STAIRCASE);
         if (staircaseAnchors == null) {
-            DungeonCrawl.LOGGER.warn("Blueprint {} is used as a lower staircase room but does not have any staircase anchors.", roomDelegate.key());
+            DungeonCrawl.LOGGER.warn("Blueprint {} is used as a lower staircase room but does not have any staircase anchors.", roomHolder.getKey());
             return true;
         }
         final Anchor staircaseAnchor = staircaseAnchors.get(random.nextInt(staircaseAnchors.size()));
         if (staircaseAnchor.direction() == Direction.DOWN) {
             DungeonCrawl.LOGGER.warn("Blueprint {} has a downwards facing staircase anchor but it used as a lower staircase room, which requires an upwards facing staircase",
-                    roomDelegate.key());
+                    roomHolder.getKey());
             return true;
         }
 
@@ -118,7 +117,7 @@ public class LevelGenerator {
             return true;
         }
 
-        final BlueprintPiece piece = assemblePiece(roomDelegate, roomPos, rotation);
+        final BlueprintPiece piece = assemblePiece(roomHolder, roomPos, rotation);
         if (piece == null) {
             return true;
         }
@@ -150,7 +149,7 @@ public class LevelGenerator {
 
     private void growNode(NodeElement node) {
         final BlueprintPiece piece = node.piece();
-        final CoordinateSpace coordinateSpace = piece.base.blueprint().get().coordinateSpace(piece.base.position());
+        final CoordinateSpace coordinateSpace = piece.base.blueprint().value().coordinateSpace(piece.base.position());
         final int nextDepth = node.depth + 1;
         int maxRooms = 1 + (1 + random.nextInt(4)) / 2;
         for (int attempt = 0; !node.unusedEntrances.isEmpty() && attempt < 4 && maxRooms > 0; ++attempt) {
@@ -178,7 +177,7 @@ public class LevelGenerator {
     @Nullable
     private NodeElement attachRoomWithCorridor(Anchor placement, int depth) {
         for (int attempt = 0; attempt < 3; ++attempt) {
-            final Delegate<Blueprint> room = roomChooser.nextRoom(depth, random);
+            final Holder<Blueprint> room = roomChooser.nextRoom(depth, random);
             final NodeElement node = NodeElement.attachRoomWithCorridor(generatorContext, placement, room, depth);
             if (node != null) {
                 roomChooser.commit(node);
@@ -189,15 +188,15 @@ public class LevelGenerator {
     }
 
     @Nullable
-    public BlueprintPiece assemblePiece(Delegate<Blueprint> blueprint, BlockPos position, Rotation rotation) {
+    public BlueprintPiece assemblePiece(Holder<Blueprint> blueprint, BlockPos position, Rotation rotation) {
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
         BlueprintPiece piece = new BlueprintPiece(baseComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, baseComponent.position().getY(), stage));
 
-        for (var feature : blueprint.get().features()) {
-            feature.create(this, piece::addComponent, null, blueprint.get(), piece.base.position(), piece.base.rotation());
+        for (var feature : blueprint.value().features()) {
+            feature.create(this, piece::addComponent, null, blueprint.value(), piece.base.position(), piece.base.rotation());
         }
 
-        ImmutableList<BlueprintMultipart> parts = blueprint.get().parts();
+        List<BlueprintMultipart> parts = blueprint.value().parts();
         if (parts.isEmpty()) {
             return piece;
         }

@@ -1,0 +1,14 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:sarcophagus",
+      "chest": {},
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:feature/sarcophagus"
+      },
+      "spawner": {}
+    }
+  ],
+  "template": "dungeoncrawl:room/sarcophagus"
+}

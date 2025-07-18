@@ -1,8 +1,8 @@
 package xiroc.dungeoncrawl.dungeon.generator.level;
 
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class RoomChooser {
-    private final IRandom<Delegate<Blueprint>> standardRooms;
+    private final IRandom<Holder<Blueprint>> standardRooms;
     private final List<RoomEntry> specialRooms;
 
     /**
@@ -29,7 +29,7 @@ public class RoomChooser {
     private int roomsPlaced = 0;
 
     public RoomChooser(LevelType levelType, List<RoomEntry> additionalSpecialRooms, RandomSource random) {
-        this.standardRooms = levelType.rooms();
+        this.standardRooms = levelType.rooms().ordinary();
         this.specialRooms = new ArrayList<>();
         this.specialRooms.addAll(additionalSpecialRooms);
         for (SpecialRoom specialRoom : levelType.specialRooms()) {
@@ -46,7 +46,7 @@ public class RoomChooser {
      * @param random Random number generator.
      * @return The room choice.
      */
-    public Delegate<Blueprint> nextRoom(int depth, RandomSource random) {
+    public Holder<Blueprint> nextRoom(int depth, RandomSource random) {
         final int eligibleSpecialRooms = numberOfEligibleSpecialRooms(depth);
         for (int attempt = 0; attempt < eligibleSpecialRooms; ++attempt) {
             currentChoice = random.nextInt(eligibleSpecialRooms);
@@ -104,7 +104,7 @@ public class RoomChooser {
     }
 
     public static class RoomEntry {
-        private final IRandom<Delegate<Blueprint>> variants;
+        private final IRandom<Holder<Blueprint>> variants;
         private final int minDepth;
         private int amountLeft;
         @Nullable
@@ -115,14 +115,14 @@ public class RoomChooser {
          */
         private int nextPlacement = 0;
 
-        public RoomEntry(IRandom<Delegate<Blueprint>> variants, int minDepth, int amount, @Nullable Consumer<NodeElement> callback) {
+        public RoomEntry(IRandom<Holder<Blueprint>> variants, int minDepth, int amount, @Nullable Consumer<NodeElement> callback) {
             this.variants = variants;
             this.minDepth = minDepth;
             this.amountLeft = amount;
             this.callback = callback;
         }
 
-        public RoomEntry(IRandom<Delegate<Blueprint>> variants, int minDepth, int amount) {
+        public RoomEntry(IRandom<Holder<Blueprint>> variants, int minDepth, int amount) {
             this(variants, minDepth, amount, null);
         }
     }

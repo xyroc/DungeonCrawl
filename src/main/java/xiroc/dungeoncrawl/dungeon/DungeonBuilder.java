@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.dungeon;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.generator.RoguelikeDungeonGenerator;
 import xiroc.dungeoncrawl.dungeon.type.DungeonType;
@@ -43,7 +43,7 @@ public class DungeonBuilder {
 
     public final Structure.GenerationContext context;
     public final RandomSource random;
-    public final Delegate<DungeonType> dungeonType;
+    public final Holder<DungeonType> dungeonType;
     public final ResourceLocation biome;
     public final int startHeight;
     public final BlockPos groundPos;

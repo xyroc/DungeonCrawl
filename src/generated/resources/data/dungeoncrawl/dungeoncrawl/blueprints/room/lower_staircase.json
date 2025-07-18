@@ -1,0 +1,12 @@
+{
+  "placement_settings": {
+    "minecraft:cobblestone": {
+      "alternative": {
+        "type": "fencing"
+      },
+      "fill_air": false,
+      "fill_solid": true
+    }
+  },
+  "template": "dungeoncrawl:room/lower_staircase"
+}

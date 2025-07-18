@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
@@ -49,6 +50,10 @@ public record RotatingWorldEditor(LevelAccessor level, CoordinateSpace coordinat
     @Override
     public void placeStairs(BlockStateProvider stairs, BlockPos pos, Half half, Direction facing, BoundingBox boundingBox, RandomSource random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         WorldEditor.placeStairs(level, stairs, coordinateSpace.rotateAndTranslateToOrigin(pos, rotation), boundingBox, half, rotation.rotate(facing), random, fillAir, fillSolid, postProcess);
+    }
+
+    public void placeBlock(@Nullable BlockStateProvider nonSolid, @Nullable BlockStateProvider solid, Vec3i pos, BoundingBox boundingBox, RandomSource random, boolean postProcess) {
+        WorldEditor.placeBlock(level, coordinateSpace.rotateAndTranslateToOrigin(pos, rotation), solid, nonSolid, boundingBox, random, postProcess);
     }
 
     @Override

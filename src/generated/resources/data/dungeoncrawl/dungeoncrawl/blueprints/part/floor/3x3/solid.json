@@ -1,0 +1,8 @@
+{
+  "block_types": {
+    "minecraft:stone_bricks": {
+      "type": "floor"
+    }
+  },
+  "template": "dungeoncrawl:part/floor/3x3"
+}

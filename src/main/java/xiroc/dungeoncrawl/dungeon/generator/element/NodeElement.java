@@ -3,11 +3,11 @@ package xiroc.dungeoncrawl.dungeon.generator.element;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import org.jetbrains.annotations.Nullable;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
@@ -32,11 +32,11 @@ public class NodeElement extends DungeonElement {
         super(piece.getBoundingBox());
         this.piece = piece;
         this.depth = depth;
-        this.unusedEntrances = Lists.newArrayList(piece.base.blueprint().get().entrances());
+        this.unusedEntrances = Lists.newArrayList(piece.base.blueprint().value().entrances());
     }
 
     @Nullable
-    public static NodeElement attachRoomWithCorridor(GeneratorContext context, Anchor attachmentPoint, Delegate<Blueprint> room, int depth) {
+    public static NodeElement attachRoomWithCorridor(GeneratorContext context, Anchor attachmentPoint, Holder<Blueprint> room, int depth) {
         final LevelGenerator levelGenerator = context.levelGenerator();
 
         final BlockPos corridorStart = attachmentPoint.position().relative(attachmentPoint.direction());
@@ -59,18 +59,18 @@ public class NodeElement extends DungeonElement {
     }
 
     @Nullable
-    public static NodeElement attachRoom(GeneratorContext context, Anchor attachmentPoint, Delegate<Blueprint> room, int depth) {
+    public static NodeElement attachRoom(GeneratorContext context, Anchor attachmentPoint, Holder<Blueprint> room, int depth) {
         final LevelGenerator levelGenerator = context.levelGenerator();
-        final var entrances = room.get().entrances();
+        final var entrances = room.value().entrances();
         if (entrances.isEmpty()) {
             return null;
         }
         final int chosenEntrance = levelGenerator.random.nextInt(entrances.size());
         final Entrance entrance = entrances.get(chosenEntrance);
-        final var roomPlacement = entrance.placement().latchOnto(attachmentPoint, room.get());
+        final var roomPlacement = entrance.placement().latchOnto(attachmentPoint, room.value());
         final BlockPos roomPosition = roomPlacement.getFirst();
         final Rotation roomRotation = roomPlacement.getSecond();
-        final BoundingBoxBuilder roomBox = room.get().boundingBox(roomRotation).move(roomPosition);
+        final BoundingBoxBuilder roomBox = room.value().boundingBox(roomRotation).move(roomPosition);
 
         if (!context.dungeonPlan().isFree(roomBox)) {
             return null;
@@ -84,7 +84,7 @@ public class NodeElement extends DungeonElement {
         final NodeElement node = new NodeElement(roomPiece, depth);
         context.dungeonPlan().add(node);
         node.unusedEntrances.remove(chosenEntrance);
-        final Anchor rotatedEntrance = room.get().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), roomRotation);
+        final Anchor rotatedEntrance = room.value().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), roomRotation);
         node.addEntrance(rotatedEntrance, entrance, levelGenerator.random);
         return node;
     }
@@ -99,7 +99,7 @@ public class NodeElement extends DungeonElement {
 
     @Override
     public void createPieces(Consumer<StructurePiece> consumer, RandomSource random) {
-        CoordinateSpace coordinateSpace = piece.base.blueprint().get().coordinateSpace(piece.base.position());
+        CoordinateSpace coordinateSpace = piece.base.blueprint().value().coordinateSpace(piece.base.position());
         for (Entrance entrance : unusedEntrances) {
             Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
             entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(position.opposite(), parts.closed(), piece, piece.base, random));

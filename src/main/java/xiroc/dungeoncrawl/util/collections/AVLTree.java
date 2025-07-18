@@ -18,9 +18,7 @@ public class AVLTree<T> {
         traverseInOrder(consumer, root);
     }
 
-    /*
-     * Only used in data gen, so no need for this to be particularly fast.
-     */
+    // Only used in data gen, so no need for this to be particularly fast.
     private void traverseInOrder(BiConsumer<T, Integer> consumer, Node<T> node) {
         if (node.left != null) {
             traverseInOrder(consumer, node.left);

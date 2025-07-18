@@ -5,7 +5,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -35,7 +34,7 @@ public record FlowerPotComponent(BlockPos position, Block soil, Block flower) im
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
-        SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().get();
+        SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().value();
         WorldEditor.placeBlock(level, soil.defaultBlockState(), position, worldGenBounds, true, true, false);
         BlockState flowerState = flower.defaultBlockState();
         if (flowerState.canSurvive(level, position.above())) {

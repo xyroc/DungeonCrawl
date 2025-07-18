@@ -18,21 +18,35 @@
 
 package xiroc.dungeoncrawl.data;
 
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.data.blueprint.TemplateConfigurations;
-import xiroc.dungeoncrawl.data.loot.ChestLootTables;
+import xiroc.dungeoncrawl.data.blueprint.Blueprints;
+import xiroc.dungeoncrawl.data.loot.chest.ChestLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.base.FoodLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.base.ScrapLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.speciality.SpecialityLootTables;
+import xiroc.dungeoncrawl.data.mappings.DungeonTypeMappings;
 import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
 import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
+import xiroc.dungeoncrawl.data.pool.BlueprintPools;
+import xiroc.dungeoncrawl.data.spawner.EntityProperties;
 import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
+import xiroc.dungeoncrawl.data.tags.worldgen.BlueprintPoolTags;
+import xiroc.dungeoncrawl.data.tags.worldgen.ModBiomeTags;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
+import xiroc.dungeoncrawl.data.type.DungeonTypes;
+import xiroc.dungeoncrawl.data.type.LevelTypes;
+import xiroc.dungeoncrawl.datapack.DatapackNamespaces;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 
 import java.util.List;
 import java.util.Set;
@@ -44,16 +58,39 @@ public class DataGen {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         boolean includeServer = event.includeServer();
-        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(""), Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST)), event.getLookupProvider()));
-        generator.addProvider(includeServer, new PrimaryThemes(generator.getPackOutput()));
-        generator.addProvider(includeServer, new SecondaryThemes(generator.getPackOutput()));
-        generator.addProvider(includeServer, new PrimaryThemeMappings(generator.getPackOutput()));
-        generator.addProvider(includeServer, new SecondaryThemeMappings(generator.getPackOutput()));
-        generator.addProvider(includeServer, new SpawnerEntityTypes(generator.getPackOutput()));
-        generator.addProvider(includeServer, new SpawnerTypes(generator.getPackOutput()));
-        generator.addProvider(includeServer, new TemplateConfigurations(generator.getPackOutput()));
 
+        final DatapackBuiltinEntriesProvider builtinEntriesProvider = new DatapackBuiltinEntriesProvider(
+                event.getGenerator().getPackOutput(),
+                event.getLookupProvider(),
+                new RegistrySetBuilder()
+                        .add(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, EntityProperties::generate)
+                        .add(DatapackRegistries.SPAWNER_ENTITY_TYPE, SpawnerEntityTypes::generate)
+                        .add(DatapackRegistries.SPAWNER_TYPE, SpawnerTypes::generate)
+                        .add(DatapackRegistries.PRIMARY_THEME, PrimaryThemes::generate)
+                        .add(DatapackRegistries.SECONDARY_THEME, SecondaryThemes::generate)
+                        .add(DatapackRegistries.PRIMARY_THEME_POOLS, bootstrap -> {})
+                        .add(DatapackRegistries.SECONDARY_THEME_POOLS, bootstrap -> {})
+                        .add(DatapackRegistries.PRIMARY_THEME_MAPPINGS, PrimaryThemeMappings::generate)
+                        .add(DatapackRegistries.SECONDARY_THEME_MAPPINGS, SecondaryThemeMappings::generate)
+                        .add(DatapackRegistries.LEVEL_TYPE, LevelTypes::generate)
+                        .add(DatapackRegistries.DUNGEON_TYPE, DungeonTypes::generate)
+                        .add(DatapackRegistries.DUNGEON_TYPE_POOLS, bootstrap -> {})
+                        .add(DatapackRegistries.DUNGEON_TYPE_MAPPINGS, DungeonTypeMappings::generate)
+                        .add(DatapackRegistries.BLUEPRINT, Blueprints::generate)
+                        .add(DatapackRegistries.BLUEPRINT_POOLS, BlueprintPools::generate),
+                Set.of(DatapackNamespaces.DEFAULT)
+        );
+
+        generator.addProvider(includeServer, builtinEntriesProvider);
+
+        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(), Set.of(),
+                List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(SpecialityLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(FoodLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(ScrapLootTables::new, LootContextParamSets.CHEST)), event.getLookupProvider()));
+
+        generator.addProvider(includeServer, new ModBiomeTags(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
+        generator.addProvider(includeServer, new BlueprintPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
     }
 
 }

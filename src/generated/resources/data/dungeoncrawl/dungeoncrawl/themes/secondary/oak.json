@@ -1,0 +1,15 @@
+{
+  "button": "minecraft:oak_button",
+  "door": [
+    "minecraft:oak_door",
+    "minecraft:spruce_door"
+  ],
+  "fence": "minecraft:oak_fence",
+  "fence_gate": "minecraft:oak_fence_gate",
+  "material": "minecraft:oak_planks",
+  "pillar": "minecraft:oak_log",
+  "pressure_plate": "minecraft:oak_pressure_plate",
+  "slab": "minecraft:oak_slab",
+  "stairs": "minecraft:oak_stairs",
+  "trapdoor": "minecraft:oak_trapdoor"
+}

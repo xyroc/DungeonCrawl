@@ -1,0 +1,18 @@
+{
+  "activation_range": 0,
+  "entities": [
+    "dungeoncrawl:zombie"
+  ],
+  "initial_spawn_delay": {
+    "max": 200,
+    "min": 100
+  },
+  "spawn_amount": {
+    "max": 2,
+    "min": 1
+  },
+  "spawn_delay": {
+    "max": 200,
+    "min": 100
+  }
+}

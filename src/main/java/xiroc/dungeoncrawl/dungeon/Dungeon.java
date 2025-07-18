@@ -24,7 +24,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -35,9 +34,6 @@ import xiroc.dungeoncrawl.init.ModStructureTypes;
 import java.util.Optional;
 
 public class Dungeon extends Structure {
-
-    public static final GenerationStep.Decoration GENERATION_STEP = GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
-
     public static final MapCodec<Structure> CODEC = simpleCodec(Dungeon::new);
 
     private static final int BIOME_CHECK_RADIUS = 1;
@@ -118,10 +114,4 @@ public class Dungeon extends Structure {
         height = Math.min(height, context.chunkGenerator().getFirstFreeHeight(x + sizeX, z + sizeZ, Heightmap.Types.OCEAN_FLOOR_WG, context.heightAccessor(), context.randomState()));
         return height;
     }
-
-    @Override
-    public GenerationStep.Decoration step() {
-        return GENERATION_STEP;
-    }
-
 }

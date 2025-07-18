@@ -1,0 +1,66 @@
+{
+  "corridor_styles": [
+    {
+      "style": {
+        "segments": [
+          [
+            "dungeoncrawl:corridor/segment/base"
+          ],
+          [
+            "dungeoncrawl:corridor/segment/arch"
+          ]
+        ],
+        "side_segments": [
+          "dungeoncrawl:corridor/side/base",
+          "dungeoncrawl:corridor/side/crops",
+          "dungeoncrawl:corridor/side/fire",
+          "dungeoncrawl:corridor/side/flower_pot",
+          "dungeoncrawl:corridor/side/masonry"
+        ]
+      }
+    }
+  ],
+  "loot_table": "dungeoncrawl:chest/base/food/level_0",
+  "rooms": {
+    "lower_staircase": [
+      "dungeoncrawl:room/lower_staircase"
+    ],
+    "ordinary": [
+      "dungeoncrawl:room/eniko",
+      "dungeoncrawl:room/dark_hall",
+      "dungeoncrawl:room/sarcophagus"
+    ],
+    "upper_staircase": [
+      "dungeoncrawl:room/upper_staircase"
+    ]
+  },
+  "secret_rooms": [
+    {
+      "amount": 1,
+      "entrances": [
+        "dungeoncrawl:corridor/side/door"
+      ],
+      "level": {
+        "max": 2,
+        "min": 1
+      },
+      "variants": [
+        "dungeoncrawl:room/smithy"
+      ]
+    }
+  ],
+  "settings": {
+    "corridor_length": {
+      "max": 20,
+      "min": 3
+    },
+    "max_cluster_nodes": 0,
+    "max_depth": 8,
+    "max_rooms": 64,
+    "min_separation": 10,
+    "min_staircase_depth": 3
+  },
+  "spawner_types": [
+    "dungeoncrawl:default"
+  ]
+}

@@ -1,29 +1,38 @@
 package xiroc.dungeoncrawl.util.random;
 
 import com.google.common.base.Suppliers;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.util.RandomSource;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * Wraps a list of {@code IRandom<T>} instances, referred to via delegate, and interprets it as a single
- *  instance of {@code IRandom<T>} which is logically equivalent to combining all instances into one
- *  via {@code IRandom.Builder<T>}.
+ * Wraps a set of {@code IRandom<T>} instances and interprets it as a single instance of {@code IRandom<T>}
+ * which is logically equivalent to combining all instances into one via {@code IRandom.Builder<T>}.
  */
 public class PooledRandom<T> implements IRandom<T> {
+    @Nullable
+    private final IRandom<T> base;
+    private final HolderSet<IRandom<T>> pools;
     private final Supplier<IRandom<IRandom<T>>> weightedPools;
 
-    public PooledRandom(List<Delegate<IRandom<T>>> rawPools) {
-        if (rawPools.isEmpty()) {
-            throw new IllegalArgumentException("The list of pools must not be empty.");
-        }
+    public PooledRandom(HolderSet<IRandom<T>> pools) {
+        this(null, pools);
+    }
+
+    public PooledRandom(@Nullable IRandom<T> base, HolderSet<IRandom<T>> pools) {
+        this.base = base;
+        this.pools = pools;
         this.weightedPools = Suppliers.memoize(() -> {
             IRandom.Builder<IRandom<T>> builder = new IRandom.Builder<>();
-            for (Delegate<IRandom<T>> pool : rawPools) {
-                IRandom<T> actualPool = pool.get();
+            if (this.base != null) {
+                builder.add(base, base.totalWeight());
+            }
+            for (Holder<IRandom<T>> pool : this.pools) {
+                IRandom<T> actualPool = pool.value();
                 builder.add(actualPool, actualPool.totalWeight());
             }
             return builder.build();

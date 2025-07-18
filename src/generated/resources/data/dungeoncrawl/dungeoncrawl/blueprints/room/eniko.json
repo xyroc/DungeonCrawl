@@ -1,0 +1,46 @@
+{
+  "entrance_types": {
+    "dungeoncrawl:entrance": {
+      "custom_parts": {
+        "closed": [
+          "dungeoncrawl:part/floor/3x3/masonry"
+        ],
+        "open": [
+          "dungeoncrawl:part/floor/3x3/solid"
+        ]
+      },
+      "decoration": "primary"
+    }
+  },
+  "features": [
+    {
+      "type": "dungeoncrawl:spawner",
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:feature/spawner"
+      },
+      "spawner": {}
+    },
+    {
+      "type": "dungeoncrawl:chest",
+      "chest": {},
+      "placement": {
+        "amount": {
+          "max": 2,
+          "min": 1
+        },
+        "positions": "dungeoncrawl:feature/chest"
+      }
+    }
+  ],
+  "parts": [
+    {
+      "blueprints": [
+        "dungeoncrawl:part/floor/5x5/solid",
+        "dungeoncrawl:part/floor/5x5/fragile"
+      ],
+      "positions": "dungeoncrawl:floor"
+    }
+  ],
+  "template": "dungeoncrawl:room/eniko"
+}

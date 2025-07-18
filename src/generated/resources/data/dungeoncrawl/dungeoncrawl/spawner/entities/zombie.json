@@ -1,0 +1,11 @@
+{
+  "entity_type": "minecraft:zombie",
+  "properties": {
+    "helmet": [
+      "minecraft:golden_helmet"
+    ],
+    "main_hand": [
+      "minecraft:stone_sword"
+    ]
+  }
+}

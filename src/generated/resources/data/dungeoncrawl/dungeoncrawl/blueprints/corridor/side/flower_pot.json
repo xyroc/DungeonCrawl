@@ -1,0 +1,39 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:flower_pot",
+      "flowers": [
+        {
+          "block": "minecraft:rose_bush",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:lilac",
+          "weight": 2
+        },
+        {
+          "block": "minecraft:peony",
+          "weight": 2
+        },
+        "minecraft:dandelion",
+        "minecraft:oxeye_daisy",
+        "minecraft:red_tulip",
+        "minecraft:orange_tulip",
+        "minecraft:white_tulip",
+        "minecraft:pink_tulip",
+        "minecraft:poppy",
+        "minecraft:cornflower",
+        "minecraft:lily_of_the_valley",
+        "minecraft:azure_bluet",
+        "minecraft:allium",
+        "minecraft:dead_bush"
+      ],
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:feature/flower_pot"
+      },
+      "soil": "minecraft:podzol"
+    }
+  ],
+  "template": "dungeoncrawl:corridor/side/flower_pot"
+}

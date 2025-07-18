@@ -1,12 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.blueprint.feature;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
@@ -14,29 +9,19 @@ import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.ChestComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
-import java.lang.reflect.Type;
-
 public record ChestFeature(PlacementSettings placement, ChestSettings chest) implements BlueprintFeature.AnchorBased {
+    public static final MapCodec<ChestFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            PlacementSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_PLACEMENT_SETTINGS).forGetter(ChestFeature::placement),
+            ChestSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_CHEST_SETTINGS).forGetter(ChestFeature::chest)
+    ).apply(instance, ChestFeature::new));
+
     @Override
     public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
         return new ChestComponent(anchor, chest.getLootTable(levelGenerator));
     }
 
-    public static class Serializer implements JsonSerializer<ChestFeature>, JsonDeserializer<ChestFeature> {
-        @Override
-        public ChestFeature deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            PlacementSettings placement = context.deserialize(object, PlacementSettings.class);
-            ChestSettings chest = context.deserialize(object.get(SharedSerializationConstants.KEY_CHEST_SETTINGS), ChestSettings.class);
-            return new ChestFeature(placement, chest);
-        }
-
-        @Override
-        public JsonElement serialize(ChestFeature configuration, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = context.serialize(configuration.placement).getAsJsonObject();
-            object.add(SharedSerializationConstants.KEY_CHEST_SETTINGS, context.serialize(configuration.chest));
-            object.addProperty(SharedSerializationConstants.KEY_FEATURE_TYPE, SharedSerializationConstants.TYPE_CHEST);
-            return object;
-        }
+    @Override
+    public MapCodec<? extends BlueprintFeature> type() {
+        return CODEC;
     }
 }

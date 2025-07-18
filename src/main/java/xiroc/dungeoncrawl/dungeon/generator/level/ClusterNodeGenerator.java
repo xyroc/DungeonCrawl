@@ -1,8 +1,8 @@
 package xiroc.dungeoncrawl.dungeon.generator.level;
 
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
@@ -35,7 +35,7 @@ public class ClusterNodeGenerator {
     /**
      * All eligible blueprints for parts of the cluster node.
      */
-    private final IRandom<Delegate<Blueprint>> roomSet;
+    private final IRandom<Holder<Blueprint>> roomSet;
 
     /**
      * A dungeon plan holding all nodes making up the cluster node.
@@ -70,7 +70,7 @@ public class ClusterNodeGenerator {
         this.start = start;
         this.random = random;
         this.depth = depth;
-        this.roomSet = Objects.requireNonNull(upperContext.levelGenerator().levelType.clusterRooms(), "No cluster room blueprints present").roll(random);
+        this.roomSet = Objects.requireNonNull(upperContext.levelGenerator().levelType.rooms().cluster(), "No cluster room blueprints present").roll(random);
 
         this.preliminaryPlan = new ListPlan(BoundingBox.infinite());
         // Use a combined plan to allow for collision checks on the preliminary cluster node layout
@@ -84,8 +84,8 @@ public class ClusterNodeGenerator {
         final int nextDepth = isClusterNode ? depth : depth + 1;
 
         for (int roomAttempt = 0; roomAttempt < 3; ++roomAttempt) {
-            final Delegate<Blueprint> room = isClusterNode ? roomSet.roll(random) : levelGenerator.roomChooser.nextRoom(nextDepth, random);
-            final var entrances = room.get().entrances();
+            final Holder<Blueprint> room = isClusterNode ? roomSet.roll(random) : levelGenerator.roomChooser.nextRoom(nextDepth, random);
+            final var entrances = room.value().entrances();
             if (entrances.isEmpty()) {
                 continue;
             }
@@ -124,7 +124,7 @@ public class ClusterNodeGenerator {
             int chosenEntrance = random.nextInt(node.unusedEntrances.size());
             Entrance entrance = node.unusedEntrances.get(chosenEntrance);
             BlueprintComponent base = node.piece().base;
-            Anchor attachmentPoint = base.blueprint().get().coordinateSpace(base.position()).rotateAndTranslateToOrigin(entrance.placement(), base.rotation());
+            Anchor attachmentPoint = base.blueprint().value().coordinateSpace(base.position()).rotateAndTranslateToOrigin(entrance.placement(), base.rotation());
             if (attachNode(attachmentPoint, attachClusterNodes)) {
                 ++nodesAdded;
                 node.unusedEntrances.remove(chosenEntrance);

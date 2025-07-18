@@ -1,14 +1,13 @@
 package xiroc.dungeoncrawl.dungeon.generator.element;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
@@ -68,8 +67,8 @@ public class CorridorElement extends DungeonElement {
         final int segments = style.segments().size();
 
         while (remaining >= FRAGMENT_LENGTH) {
-            final Delegate<Blueprint> segmentDelegate = style.segments().get(currentSegment).roll(levelGenerator.random);
-            final Blueprint segment = segmentDelegate.get();
+            final Holder<Blueprint> segmentDelegate = style.segments().get(currentSegment).roll(levelGenerator.random);
+            final Blueprint segment = segmentDelegate.value();
 
             final Anchor attachmentPoint = new Anchor(pos.relative(direction.getOpposite()), direction);
             final List<Anchor> corridorAnchors = segment.anchors().get(BuiltinAnchorTypes.CORRIDOR);
@@ -77,14 +76,14 @@ public class CorridorElement extends DungeonElement {
             boolean placementFailed = false;
 
             if (corridorAnchors == null || corridorAnchors.isEmpty()) {
-                DungeonCrawl.LOGGER.warn("Corridor segment blueprint {} does not have any anchors of the type {} and can therefore not generate.", segmentDelegate.key(),
+                DungeonCrawl.LOGGER.warn("Corridor segment blueprint {} does not have any anchors of the type {} and can therefore not generate.", segmentDelegate.getKey(),
                         BuiltinAnchorTypes.CORRIDOR);
                 placementFailed = true;
             }
 
             if (!placementFailed) {
                 final Anchor corridorAnchor = corridorAnchors.get(levelGenerator.random.nextInt(corridorAnchors.size()));
-                final var placement = corridorAnchor.latchOnto(attachmentPoint, segmentDelegate.get());
+                final var placement = corridorAnchor.latchOnto(attachmentPoint, segmentDelegate.value());
                 final BlueprintPiece corridor = levelGenerator.assemblePiece(segmentDelegate, placement.getFirst(), placement.getSecond());
                 if (corridor != null) {
                     fragments.add(new Fragment(corridor));
@@ -105,7 +104,7 @@ public class CorridorElement extends DungeonElement {
 
     private void addSideSegments() {
         for (Fragment fragment : this.fragments) {
-            final Blueprint mainSegment = fragment.piece.base.blueprint().get();
+            final Blueprint mainSegment = fragment.piece.base.blueprint().value();
             final CoordinateSpace coordinateSpace = mainSegment.coordinateSpace(fragment.piece.base.position());
 
             for (Anchor juncture : fragment.unusedJunctures) {
@@ -118,8 +117,8 @@ public class CorridorElement extends DungeonElement {
 
                 if (sideSegment != null) {
                     fragment.piece.addComponent(sideSegment);
-                    for (BlueprintFeature feature : sideSegment.blueprint().get().features()) {
-                        feature.create(levelGenerator, fragment.piece::addComponent, null, sideSegment.blueprint().get(), sideSegment.position(), sideSegment.rotation());
+                    for (BlueprintFeature feature : sideSegment.blueprint().value().features()) {
+                        feature.create(levelGenerator, fragment.piece::addComponent, null, sideSegment.blueprint().value(), sideSegment.position(), sideSegment.rotation());
                     }
                 } else {
                     // Side segment could not be placed, close the side off with a wall
@@ -157,8 +156,8 @@ public class CorridorElement extends DungeonElement {
     }
 
     @Nullable
-    private BlueprintComponent createSideSegment(Delegate<Blueprint> segment, Anchor attachmentPoint) {
-        final ImmutableList<Anchor> junctures = segment.get().anchors().get(BuiltinAnchorTypes.JUNCTURE);
+    private BlueprintComponent createSideSegment(Holder<Blueprint> segment, Anchor attachmentPoint) {
+        final List<Anchor> junctures = segment.value().anchors().get(BuiltinAnchorTypes.JUNCTURE);
         if (junctures == null || junctures.isEmpty()) {
             return null;
         }
@@ -166,7 +165,7 @@ public class CorridorElement extends DungeonElement {
         for (int attempt = 0; attempt < junctures.size(); ++attempt) {
             final int chosenJuncture = levelGenerator.random.nextInt(junctures.size());
             final Anchor juncture = junctures.get(chosenJuncture);
-            final var placement = juncture.latchOnto(attachmentPoint, segment.get());
+            final var placement = juncture.latchOnto(attachmentPoint, segment.value());
             final BlueprintComponent segmentComponent = new BlueprintComponent(segment, placement.getFirst(), placement.getSecond());
 
             if (levelGenerator.plan.anyMatch(segmentComponent.boundingBox(), element -> element != this)) {
@@ -185,7 +184,7 @@ public class CorridorElement extends DungeonElement {
         for (int fragmentAttempt = 0; fragmentAttempt < fragments.size(); fragmentAttempt++) {
             final Fragment fragment = fragments.get(random.nextInt(fragments.size()));
             final List<Anchor> junctures = fragment.unusedJunctures;
-            final CoordinateSpace coordinateSpace = fragment.piece.base.blueprint().get().coordinateSpace(fragment.piece.base.position());
+            final CoordinateSpace coordinateSpace = fragment.piece.base.blueprint().value().coordinateSpace(fragment.piece.base.position());
 
             for (int junctureAttempt = 0; junctureAttempt < junctures.size(); junctureAttempt++) {
                 final int chosenJuncture = random.nextInt(junctures.size());
@@ -205,19 +204,19 @@ public class CorridorElement extends DungeonElement {
 
     @Nullable
     private BlueprintComponent attachSecretRoomWithEntrance(SecretRoom room, Anchor attachmentPoint) {
-        final Delegate<Blueprint> entranceBlueprint = room.entrances().roll(levelGenerator.random);
+        final Holder<Blueprint> entranceBlueprint = room.entrances().roll(levelGenerator.random);
 
         final BlueprintComponent entranceSegment = createSideSegment(entranceBlueprint, attachmentPoint);
         if (entranceSegment == null) {
             return null;
         }
 
-        final ImmutableList<Anchor> entrances = entranceSegment.blueprint().get().anchors().get(BuiltinAnchorTypes.ENTRANCE);
+        final List<Anchor> entrances = entranceSegment.blueprint().value().anchors().get(BuiltinAnchorTypes.ENTRANCE);
         if (entrances == null || entrances.isEmpty()) {
             return null;
         }
 
-        final CoordinateSpace coordinateSpace = entranceSegment.blueprint().get().coordinateSpace(entranceSegment.position());
+        final CoordinateSpace coordinateSpace = entranceSegment.blueprint().value().coordinateSpace(entranceSegment.position());
         for (int entranceAttempt = 0; entranceAttempt < entrances.size(); entranceAttempt++) {
             final Anchor entrance = entrances.get(levelGenerator.random.nextInt(entrances.size()));
             final Anchor roomAttachmentPoint = coordinateSpace.rotateAndTranslateToOrigin(entrance, entranceSegment.rotation());
@@ -241,7 +240,7 @@ public class CorridorElement extends DungeonElement {
         }
 
         final Anchor roomAttachmentPoint = new Anchor(tunnelStart.relative(attachmentPoint.direction(), entranceTunnelLength - 1), attachmentPoint.direction());
-        final Delegate<Blueprint> roomVariant = room.variants().roll(levelGenerator.random);
+        final Holder<Blueprint> roomVariant = room.variants().roll(levelGenerator.random);
         final NodeElement node = NodeElement.attachRoom(levelGenerator.generatorContext, roomAttachmentPoint, roomVariant, 0);
 
         if (node != null) {
@@ -259,8 +258,8 @@ public class CorridorElement extends DungeonElement {
         addSideSegments();
         fragments.forEach(fragment -> consumer.accept(fragment.piece));
 
-        Delegate<PrimaryTheme> primaryTheme = levelGenerator.primaryTheme;
-        Delegate<SecondaryTheme> secondaryTheme = levelGenerator.secondaryTheme;
+        Holder<PrimaryTheme> primaryTheme = levelGenerator.primaryTheme;
+        Holder<SecondaryTheme> secondaryTheme = levelGenerator.secondaryTheme;
 
         final int stage = levelGenerator.stage;
         final DungeonWorldGenContext tunnelGenContext = new DungeonWorldGenContext(primaryTheme, secondaryTheme, start.getY() - 1, stage);
@@ -284,7 +283,7 @@ public class CorridorElement extends DungeonElement {
 
         public Fragment(BlueprintPiece piece) {
             this.piece = piece;
-            var junctures = piece.base.blueprint().get().anchors().get(BuiltinAnchorTypes.JUNCTURE);
+            var junctures = piece.base.blueprint().value().anchors().get(BuiltinAnchorTypes.JUNCTURE);
             this.unusedJunctures = junctures != null ? new ArrayList<>(junctures) : new ArrayList<>(0);
         }
     }

@@ -55,7 +55,7 @@ public record StaircaseComponent(BlockPos center, int height, int wallBottom, in
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
-        final PrimaryTheme primaryTheme = worldGenContext.primaryTheme().get();
+        final PrimaryTheme primaryTheme = worldGenContext.primaryTheme().value();
         for (int i = 0; i < height; ++i) {
             placeSpiralStairStep(level, primaryTheme.pillar(), primaryTheme.stairs(), this.center.above(i), worldGenBounds, random);
         }

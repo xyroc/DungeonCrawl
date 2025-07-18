@@ -2,8 +2,8 @@ package xiroc.dungeoncrawl.dungeon.generator.staircase;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.component.StaircaseComponent;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
@@ -100,7 +100,7 @@ public class StaircasePlanner {
         return wallTop;
     }
 
-    public DungeonPiece make(int stage, Delegate<PrimaryTheme> primaryTheme, Delegate<SecondaryTheme> secondaryTheme) {
+    public DungeonPiece make(int stage, Holder<PrimaryTheme> primaryTheme, Holder<SecondaryTheme> secondaryTheme) {
         BlockPos position = new BlockPos(centerX, staircaseBottom, centerZ);
         int height = staircaseTop - staircaseBottom + 1;
         StaircaseComponent staircase = new StaircaseComponent(position, height, wallBottom, wallTop, rotation);

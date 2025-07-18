@@ -1,0 +1,15 @@
+{
+  "entrance_types": {
+    "dungeoncrawl:entrance": {
+      "custom_parts": {
+        "closed": [
+          "dungeoncrawl:room/dark_hall/closed"
+        ],
+        "open": [
+          "dungeoncrawl:room/dark_hall/open"
+        ]
+      }
+    }
+  },
+  "template": "dungeoncrawl:room/dark_hall"
+}

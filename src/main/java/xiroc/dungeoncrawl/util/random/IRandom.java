@@ -18,32 +18,19 @@
 
 package xiroc.dungeoncrawl.util.random;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderSet;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import xiroc.dungeoncrawl.datapack.registry.DatapackRegistry;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
-import xiroc.dungeoncrawl.datapack.registry.InheritingBuilder;
-import xiroc.dungeoncrawl.exception.DatapackLoadException;
+import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -62,19 +49,19 @@ public interface IRandom<T> {
 
     record Entry<T>(T value, int weight) {}
 
-    class Builder<T> extends InheritingBuilder<IRandom<T>, Builder<T>> {
+    static <T> Builder<T> builder() {
+        return new Builder<>();
+    }
+
+    class Builder<T>  {
         private static final int DEFAULT_WEIGHT = 1;
 
         private final List<Entry<T>> entries = new ArrayList<>();
-        private final List<Delegate<IRandom<T>>> pools = new ArrayList<>();
+        @Nullable
+        private HolderSet<IRandom<T>> pools = null;
 
         public static <T> Builder<T> copy(IRandom<T> instance) {
-            return new Builder<T>().add(instance);
-        }
-
-        public Builder<T> addPool(Delegate<IRandom<T>> pool) {
-            pools.add(pool);
-            return this;
+            return new Builder<T>().addInstance(instance);
         }
 
         public Builder<T> add(T value) {
@@ -86,12 +73,12 @@ public interface IRandom<T> {
             return this;
         }
 
-        public Builder<T> add(Builder<T> builder) {
+        public Builder<T> addBuilder(Builder<T> builder) {
             entries.addAll(builder.entries);
             return this;
         }
 
-        public Builder<T> add(IRandom<T> random) {
+        public Builder<T> addInstance(IRandom<T> random) {
             random.forEach(this::add);
             return this;
         }
@@ -101,9 +88,12 @@ public interface IRandom<T> {
             return this;
         }
 
-        @Override
-        public Builder<T> inherit(Builder<T> from) {
-            return add(from);
+        public Builder<T> setPools(HolderSet<IRandom<T>> pools) {
+            if (this.pools != null) {
+                throw new IllegalStateException("Tried to set the pools set twice!");
+            }
+            this.pools = pools;
+            return this;
         }
 
         @Nullable
@@ -112,7 +102,7 @@ public interface IRandom<T> {
                 return null;
             }
             if (entries.size() == 1) {
-                return new SingleValueRandom<>(entries.get(0).value());
+                return new SingleValueRandom<>(entries.getFirst().value());
             }
             if (entries.size() < 32) {
                 return new ListWeightedRandom<>(entries);
@@ -120,18 +110,16 @@ public interface IRandom<T> {
             return new AVLTreeWeightedRandom<>(entries);
         }
 
-        @Override
         public IRandom<T> build() {
             IRandom<T> base = buildEntries();
             if (base != null) {
-                if (pools.isEmpty()) {
+                if (pools == null) {
                     return base;
                 } else {
-                    pools.add(Delegate.of(base));
-                    return new PooledRandom<>(pools);
+                    return new PooledRandom<>(base, pools);
                 }
             } else {
-                if (pools.isEmpty()) {
+                if (pools == null) {
                     throw new IllegalStateException("Random instance cannot be empty.");
                 } else {
                     return new PooledRandom<>(pools);
@@ -142,20 +130,20 @@ public interface IRandom<T> {
 
     interface BaseCodecs {
         Codec<Builder<BlockState>> BLOCK_STATE = makeBuilderCodec(GlobalCodecs.BLOCK_STATE, "block", null);
-        Codec<Builder<Item>> ITEM = makeBuilderCodec(GlobalCodecs.ITEM, "item", null);
+        Codec<IRandom<Item>> ITEM = makeCodec(makeBuilderCodec(GlobalCodecs.ITEM, "item", null));
     }
 
     /**
      * Constructs a codec for a random instance builder using values encoded/decoded by the provided value codec.
      * Optionally supports global pools, if provided.
      *
+     * @param <S>        The type of values the builder is supposed to accept.
      * @param valueCodec The codec for values.
-     * @param valueName The name of a value field when encoded in a map together with a weight.
-     * @param globalPools A data pack registry for random instances of the same type, which are to be used as global pools.
+     * @param valueName  The name of a value field when encoded in a map together with a weight.
+     * @param poolCodec  Optionally, a codec for holder sets
      * @return The codec.
-     * @param <S> The type of values the builder is supposed to accept.
      */
-    static <S> Codec<Builder<S>> makeBuilderCodec(Codec<S> valueCodec, String valueName, @Nullable DatapackRegistry<IRandom<S>> globalPools) {
+    static <S> Codec<Builder<S>> makeBuilderCodec(Codec<S> valueCodec, String valueName, @Nullable Codec<HolderSet<IRandom<S>>> poolCodec) {
         final Codec<Entry<S>> entryCodec = RecordCodecBuilder.create(instance -> instance.group(
                 valueCodec.fieldOf(valueName).forGetter(Entry::value),
                 // Only encode the weight if it isn't the default weight.
@@ -187,19 +175,24 @@ public interface IRandom<T> {
             }
         };
 
-        final Codec<Builder<S>> nonPooledBuilderCodec = optionallyInlinedEntryCodec.listOf().xmap(entries -> new Builder<S>().addAll(entries), builder -> builder.entries);
+        final Codec<Builder<S>> nonPooledBuilderCodec = optionallyInlinedEntryCodec.listOf().flatComapMap(entries -> new Builder<S>().addAll(entries), builder -> {
+            if (builder.pools == null) {
+                return DataResult.success(builder.entries);
+            }
+            return DataResult.error(() -> "Pools are not supported by this type.");
+        });
 
-        if (globalPools == null) {
+        if (poolCodec == null) {
             return nonPooledBuilderCodec;
         }
 
         final Codec<Builder<S>> pooledBuilderCodec = RecordCodecBuilder.create(instance -> instance.group(
-                optionallyInlinedEntryCodec.listOf().optionalFieldOf("values").forGetter(builder -> Optional.ofNullable(builder.entries.isEmpty() ? null : builder.entries)),
-                globalPools.delegateCodec().listOf().optionalFieldOf("pools").forGetter(builder -> Optional.ofNullable(builder.pools.isEmpty() ? null : builder.pools))
-        ).apply(instance, (entries, pools) -> {
+                poolCodec.optionalFieldOf("pools").forGetter(builder -> Optional.ofNullable(builder.pools)),
+                optionallyInlinedEntryCodec.listOf().optionalFieldOf("values").forGetter(builder -> Optional.ofNullable(builder.entries.isEmpty() ? null : builder.entries))
+        ).apply(instance, (pools, entries) -> {
             final Builder<S> builder = new Builder<>();
             builder.addAll(entries.orElse(List.of()));
-            builder.pools.addAll(pools.orElse(List.of()));
+            builder.pools = pools.orElse(null);
             return builder;
         }));
 
@@ -216,7 +209,7 @@ public interface IRandom<T> {
 
             @Override
             public <T> DataResult<T> encode(Builder<S> input, DynamicOps<T> ops, T prefix) {
-                if (input.pools.isEmpty()) {
+                if (input.pools == null) {
                     return nonPooledBuilderCodec.encode(input, ops, prefix);
                 }
                 return pooledBuilderCodec.encode(input, ops, prefix);
@@ -224,120 +217,13 @@ public interface IRandom<T> {
         };
     }
 
-    record BuilderSerializer<T>(Type valueType, String valueKey,
-                                @Nullable DatapackRegistry<IRandom<T>> globalPools) implements JsonSerializer<Builder<T>>, JsonDeserializer<Builder<T>> {
-        private static final String KEY_VALUES = "values";
-        private static final String KEY_WEIGHT = "weight";
-        private static final String KEY_POOLS = "pools";
-
-        public BuilderSerializer(Type valueType, String valueKey) {
-            this(valueType, valueKey, null);
-        }
-
-        private void loadPool(JsonElement json, Builder<T> builder) {
-            if (globalPools != null) {
-                ResourceLocation poolKey = ResourceLocation.parse(json.getAsString());
-                builder.addPool(globalPools.delegateOrThrow(poolKey));
-            } else {
-                throw new DatapackLoadException("Global Pools are not supported for this type");
-            }
-        }
-
-        public InheritingBuilder.WrappedSerializer<IRandom<T>, Builder<T>> wrapped() {
-            return InheritingBuilder.WrappedSerializer.of(this);
-        }
-
-        @Override
-        public Builder<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            final Builder<T> builder = new Builder<>();
-            if (json.isJsonPrimitive()) {
-                loadPool(json, builder);
-            } else {
-                if (json.isJsonObject()) {
-                    JsonObject object = json.getAsJsonObject();
-                    if (object.has(KEY_POOLS)) {
-                        for (JsonElement poolName : object.getAsJsonArray(KEY_POOLS)) {
-                            loadPool(poolName, builder);
-                        }
-                    }
-                    if (!object.has(KEY_VALUES)) {
-                        return builder;
-                    }
-                    json = object.get(KEY_VALUES);
-                }
-                for (JsonElement element : json.getAsJsonArray()) {
-                    if (element.isJsonPrimitive()) {
-                        builder.add(context.<T>deserialize(element, valueType));
-                        continue;
-                    }
-                    JsonObject object = element.getAsJsonObject();
-                    int weight = object.has(KEY_WEIGHT) ? object.get(KEY_WEIGHT).getAsInt() : Builder.DEFAULT_WEIGHT;
-                    builder.add(context.deserialize(object.get(valueKey), valueType), weight);
-                }
-            }
-            return builder;
-        }
-
-        @Override
-        public JsonElement serialize(Builder<T> builder, Type typeOfSrc, JsonSerializationContext context) {
-            JsonArray entries = new JsonArray();
-            for (Entry<T> entry : builder.entries) {
-                final T value = entry.value();
-                final int weight = entry.weight();
-
-                JsonElement jsonEntry = context.serialize(value, valueType);
-                if (weight != Builder.DEFAULT_WEIGHT || jsonEntry.isJsonObject()) {
-                    JsonObject entryObject = new JsonObject();
-                    entryObject.add(valueKey, jsonEntry);
-                    if (weight != Builder.DEFAULT_WEIGHT) {
-                        entryObject.addProperty(KEY_WEIGHT, weight);
-                    }
-                    jsonEntry = entryObject;
-                }
-                entries.add(jsonEntry);
-            }
-
-            boolean needJsonObject = InheritingBuilder.mustSerializeToJsonObject(builder);
-            boolean serializeEntries = !entries.isEmpty();
-
-            if (!needJsonObject && !serializeEntries && builder.pools.size() == 1) {
-                return new JsonPrimitive(builder.pools.get(0).key().toString());
-            }
-
-            boolean serializePools = !builder.pools.isEmpty();
-            boolean wrapResult = needJsonObject || serializePools;
-
-            if (wrapResult) {
-                JsonObject wrapped = new JsonObject();
-                if (serializeEntries) {
-                    wrapped.add(KEY_VALUES, entries);
-                }
-                if (serializePools) {
-                    JsonArray pools = new JsonArray();
-                    for (Delegate<IRandom<T>> pool : builder.pools) {
-                        pools.add(pool.key().toString());
-                    }
-                    wrapped.add(KEY_POOLS, pools);
-                }
-                return wrapped;
-            }
-
-            return entries;
-        }
-    }
-
-    record DirectSerializer<T>(Type builderType) implements JsonSerializer<IRandom<T>>, JsonDeserializer<IRandom<T>> {
-        @Override
-        public IRandom<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            final Builder<T> builder = context.deserialize(json, builderType);
-            return builder.build();
-        }
-
-        @Override
-        public JsonElement serialize(IRandom<T> src, Type typeOfSrc, JsonSerializationContext context) {
-            final Builder<T> builder = new Builder<>();
-            builder.add(src);
-            return context.serialize(builder, builderType);
-        }
+    /**
+     * Constructs a codec for random instances from a codec for random instance builders.
+     * @param builderCodec A codec for builders of the type {@code T}.
+     * @return The codec.
+     * @param <T> The type of object that is randomized over.
+     */
+    static <T> Codec<IRandom<T>> makeCodec(Codec<Builder<T>> builderCodec) {
+        return builderCodec.comapFlatMap(StorageHelper.tryToApply(Builder::build), instance -> new Builder<T>().addInstance(instance));
     }
 }

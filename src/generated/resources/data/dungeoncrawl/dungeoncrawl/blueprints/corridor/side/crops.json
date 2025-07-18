@@ -1,0 +1,18 @@
+{
+  "block_types": {
+    "minecraft:lime_stained_glass": {
+      "type": "block",
+      "block": [
+        {
+          "block": "minecraft:cave_air",
+          "weight": 2
+        },
+        "minecraft:wheat",
+        "minecraft:carrots",
+        "minecraft:potatoes",
+        "minecraft:beetroots"
+      ]
+    }
+  },
+  "template": "dungeoncrawl:corridor/side/crops"
+}

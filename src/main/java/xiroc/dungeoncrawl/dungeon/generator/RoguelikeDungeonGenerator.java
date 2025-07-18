@@ -1,13 +1,12 @@
 package xiroc.dungeoncrawl.dungeon.generator;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
@@ -44,46 +43,46 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
         StaircasePlanner staircasePlanner = new StaircasePlanner(dungeonBuilder.groundPos.getX(), dungeonBuilder.groundPos.getZ());
 
         if (!createEntrance(dungeonBuilder, staircasePlanner, random)) {
-            DungeonCrawl.LOGGER.warn("Could not create an entrance for dungeon of type {}. Aborting dungeon generation.", dungeonBuilder.dungeonType.key());
+            DungeonCrawl.LOGGER.warn("Could not create an entrance for dungeon of type {}. Aborting dungeon generation.", dungeonBuilder.dungeonType.getKey());
             return;
         }
 
         int startHeight = dungeonBuilder.startHeight;
 
-        final ImmutableList<DungeonSection> sections = dungeonBuilder.dungeonType.get().sections();
+        final List<DungeonSection> sections = dungeonBuilder.dungeonType.value().sections();
         // Secret rooms defined via the dungeon type, which could be applied to any layer.
         final Map<Integer, List<SecretRoom>> globalSecretRooms = gatherGlobalSecretRooms(dungeonBuilder.dungeonType, random);
 
         outerLoop:
         for (int sectionIndex = 0; sectionIndex < sections.size(); sectionIndex++) {
             final DungeonSection section = sections.get(sectionIndex);
-            final Delegate<PrimaryTheme> primaryTheme = section.primaryThemes().get().roll(dungeonBuilder.biome, random);
-            final Delegate<SecondaryTheme> secondaryTheme = section.secondaryThemes().get().roll(dungeonBuilder.biome, random);
+            final Holder<PrimaryTheme> primaryTheme = section.primaryThemes().value().roll(dungeonBuilder.biome, random);
+            final Holder<SecondaryTheme> secondaryTheme = section.secondaryThemes().value().roll(dungeonBuilder.biome, random);
 
-            final ImmutableList<Delegate<LevelType>> levels = section.levels();
+            final List<Holder<LevelType>> levels = section.levels();
 
             final boolean lastSection = sectionIndex == sections.size() - 1;
 
             for (int levelIndex = 0; levelIndex < levels.size(); levelIndex++) {
-                final Delegate<LevelType> levelType = levels.get(levelIndex);
+                final Holder<LevelType> levelType = levels.get(levelIndex);
 
                 // Try to determine whether there will be another layer below this one.
                 // This information is needed to tell the generator for this layer whether it should generate a staircase room or not.
                 final int approximateBlocksBelowLayer = startHeight
-                        - levelType.get().settings().minSeparation
+                        - levelType.value().settings().minSeparation
                         - dungeonBuilder.context.heightAccessor().getMinBuildHeight()
                         - DungeonBuilder.WORLD_BOTTOM_CUTOFF; // The lowest layers of blocks are usually bedrock and should not be considered usable.
                 final boolean lastLayerInSection = levelIndex == levels.size() - 1;
-                final Delegate<LevelType> nextLevel = lastLayerInSection ? (lastSection ? null : sections.get(sectionIndex + 1).levels().get(0)) : levels.get(levelIndex + 1);
-                final boolean lastLayer = lastSection && lastLayerInSection || nextLevel.get().settings().minSeparation >= approximateBlocksBelowLayer;
+                final Holder<LevelType> nextLevel = lastLayerInSection ? (lastSection ? null : sections.get(sectionIndex + 1).levels().getFirst()) : levels.get(levelIndex + 1);
+                final boolean lastLayer = lastSection && lastLayerInSection || nextLevel.value().settings().minSeparation >= approximateBlocksBelowLayer;
 
                 final List<SecretRoom> additionalSecretRooms = globalSecretRooms.getOrDefault(stage, List.of());
-                final LevelGenerator levelGenerator = new LevelGenerator(levelType.get(), plan, startHeight, stage, random, primaryTheme, secondaryTheme, !lastLayer, additionalSecretRooms);
+                final LevelGenerator levelGenerator = new LevelGenerator(levelType.value(), plan, startHeight, stage, random, primaryTheme, secondaryTheme, !lastLayer, additionalSecretRooms);
                 ++stage;
 
                 levelGenerator.generateLevel(staircasePlanner);
                 if (levelGenerator.start() == null) {
-                    DungeonCrawl.LOGGER.debug("Ending dungeon generation early because level generation failed. The level type was {}.", levelType.key());
+                    DungeonCrawl.LOGGER.debug("Ending dungeon generation early because level generation failed. The level type was {}.", levelType.getKey());
                     break outerLoop;
                 }
                 dungeonBuilder.structurePiecesBuilder.addPiece(staircasePlanner.make(stage, primaryTheme, secondaryTheme));
@@ -101,17 +100,13 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             }
         }
 
-        DungeonCrawl.LOGGER.debug("Generated a dungeon of type {} with {} pieces.", dungeonBuilder.dungeonType.key(), plan.pieceCount());
+        DungeonCrawl.LOGGER.debug("Generated a dungeon of type {} with {} pieces.", dungeonBuilder.dungeonType.getKey(), plan.pieceCount());
         plan.forEach((element) -> element.createPieces(dungeonBuilder.structurePiecesBuilder::addPiece, random));
     }
 
-    private Map<Integer, List<SecretRoom>> gatherGlobalSecretRooms(Delegate<DungeonType> dungeonType, RandomSource random) {
+    private Map<Integer, List<SecretRoom>> gatherGlobalSecretRooms(Holder<DungeonType> dungeonType, RandomSource random) {
         final Map<Integer, List<SecretRoom>> globalSecretRooms = new HashMap<>();
-        for (final SecretRoom secretRoom : dungeonType.get().secretRooms()) {
-            if (secretRoom.level() == null) {
-                DungeonCrawl.LOGGER.warn("A secret room type defined in the dungeon type {} does not have a specified range of levels to generate in. It cannot generate.", dungeonType.key());
-                continue;
-            }
+        for (final SecretRoom secretRoom : dungeonType.value().secretRooms()) {
             final int amount = secretRoom.amount().nextInt(random);
             for (int i = 0; i < amount; ++i) {
                 final int level = secretRoom.level().nextInt(random);
@@ -122,30 +117,30 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
     }
 
     @Nullable
-    private Anchor randomStaircaseAnchor(Delegate<Blueprint> upperStaircaseRoom, RandomSource random) {
-        final ImmutableList<Anchor> staircaseAnchors = upperStaircaseRoom.get().anchors().get(BuiltinAnchorTypes.STAIRCASE);
+    private Anchor randomStaircaseAnchor(Holder<Blueprint> upperStaircaseRoom, RandomSource random) {
+        final List<Anchor> staircaseAnchors = upperStaircaseRoom.value().anchors().get(BuiltinAnchorTypes.STAIRCASE);
         if (staircaseAnchors == null) {
-            DungeonCrawl.LOGGER.warn("Blueprint {} is used as an upper staircase room but does not have any staircase anchors.", upperStaircaseRoom.key());
+            DungeonCrawl.LOGGER.warn("Blueprint {} is used as an upper staircase room but does not have any staircase anchors.", upperStaircaseRoom.getKey());
             return null;
         }
         final Anchor staircaseAnchor = staircaseAnchors.get(random.nextInt(staircaseAnchors.size()));
         if (staircaseAnchor.direction() == Direction.UP) {
             DungeonCrawl.LOGGER.warn("Blueprint {} has a staircase anchor that is facing upwards but is used as an upper staircase room, which requires a downwards facing staircase",
-                    upperStaircaseRoom.key());
+                    upperStaircaseRoom.getKey());
             return null;
         }
         return staircaseAnchor;
     }
 
     private boolean createEntrance(DungeonBuilder dungeonBuilder, StaircasePlanner staircasePlanner, RandomSource random) {
-        final Delegate<Blueprint> entrance = dungeonBuilder.dungeonType.get().entrances().roll(random);
+        final Holder<Blueprint> entrance = dungeonBuilder.dungeonType.value().entrances().roll(random);
         Anchor staircaseAnchor = randomStaircaseAnchor(entrance, random);
         if (staircaseAnchor == null) {
             return false;
         }
 
         final Rotation entranceRotation = Rotation.getRandom(random);
-        staircaseAnchor = entrance.get().coordinateSpace(BlockPos.ZERO).rotateAndTranslateToOrigin(staircaseAnchor, entranceRotation);
+        staircaseAnchor = entrance.value().coordinateSpace(BlockPos.ZERO).rotateAndTranslateToOrigin(staircaseAnchor, entranceRotation);
         final BlockPos entrancePosition = dungeonBuilder.groundPos.above().offset(
                 -staircaseAnchor.position().getX(),
                 0,
@@ -155,9 +150,9 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
         final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
         staircasePlanner.setTop(staircaseAnchor.position().getY(), entrancePosition.getY(), staircaseConstraint);
 
-        final var section = dungeonBuilder.dungeonType.get().sections().get(0);
-        final var primaryTheme = section.primaryThemes().get().roll(dungeonBuilder.biome, random);
-        final var secondaryTheme = section.secondaryThemes().get().roll(dungeonBuilder.biome, random);
+        final var section = dungeonBuilder.dungeonType.value().sections().getFirst();
+        final var primaryTheme = section.primaryThemes().value().roll(dungeonBuilder.biome, random);
+        final var secondaryTheme = section.secondaryThemes().value().roll(dungeonBuilder.biome, random);
         final BlueprintComponent entranceComponent = new BlueprintComponent(entrance, entrancePosition, entranceRotation);
         final DungeonPiece entrancePiece = new BlueprintPiece(entranceComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, entranceComponent.position().getY(), 0));
         dungeonBuilder.structurePiecesBuilder.addPiece(entrancePiece);
@@ -173,7 +168,7 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
 
         // Horizontal anchor is interpreted as downwards anchor with a staircase facing constraint.
         final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
-        final BlockPos offset = CoordinateSpace.rotate(staircaseAnchor.position(), piece.base.rotation(), piece.base.blueprint().get().xSpan(), piece.base.blueprint().get().zSpan());
+        final BlockPos offset = CoordinateSpace.rotate(staircaseAnchor.position(), piece.base.rotation(), piece.base.blueprint().value().xSpan(), piece.base.blueprint().value().zSpan());
         final StaircasePlanner staircasePlanner = new StaircasePlanner(piece.base.position().getX() + offset.getX(), piece.base.position().getZ() + offset.getZ());
         staircasePlanner.setTop(offset.getY(), piece.base.position().getY(), staircaseConstraint);
         return staircasePlanner;

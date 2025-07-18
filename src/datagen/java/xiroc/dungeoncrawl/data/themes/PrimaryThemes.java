@@ -18,22 +18,35 @@
 
 package xiroc.dungeoncrawl.data.themes;
 
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import xiroc.dungeoncrawl.data.JsonDataProvider;
-import xiroc.dungeoncrawl.datapack.DatapackDirectories;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
-import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
-import java.util.function.BiConsumer;
-
-public class PrimaryThemes extends JsonDataProvider<PrimaryTheme> {
-    public PrimaryThemes(PackOutput packOutput) {
-        super(packOutput, "Primary Themes", DatapackDirectories.PRIMARY_THEMES.path(), JSONUtils.GSON::toJsonTree);
-    }
-
-    @Override
-    public void collect(BiConsumer<ResourceLocation, PrimaryTheme> collector) {
-        // TODO: add primary themes
+public interface PrimaryThemes {
+    static void generate(BootstrapContext<PrimaryTheme> context) {
+        context.register(SharedKeys.Theme.Primary.FOREST, PrimaryTheme.builder()
+                .masonry(new RandomBlock(new IRandom.Builder<BlockState>()
+                        .add(Blocks.STONE_BRICKS.defaultBlockState(), 4)
+                        .add(Blocks.CRACKED_STONE_BRICKS.defaultBlockState(), 2)
+                        .add(Blocks.MOSSY_STONE_BRICKS.defaultBlockState())
+                        .build()))
+                .pillar(new RandomBlock(new IRandom.Builder<BlockState>()
+                        .add(Blocks.CRACKED_STONE_BRICKS.defaultBlockState(), 3)
+                        .add(Blocks.MOSSY_STONE_BRICKS.defaultBlockState())
+                        .build()))
+                .floor(new SingleBlock(Blocks.SMOOTH_STONE_SLAB.defaultBlockState().setValue(BlockStateProperties.SLAB_TYPE, SlabType.DOUBLE)))
+                .stairs(new SingleBlock(Blocks.STONE_BRICK_STAIRS))
+                .slab(new SingleBlock(Blocks.STONE_BRICK_SLAB))
+                .fluid(new SingleBlock(Blocks.WATER))
+                .fencing(new SingleBlock(Blocks.IRON_BARS))
+                .wall(new SingleBlock(Blocks.MOSSY_STONE_BRICK_WALL))
+                .build());
     }
 }

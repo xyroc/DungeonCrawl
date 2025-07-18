@@ -1,0 +1,26 @@
+{
+  "fencing": "minecraft:iron_bars",
+  "floor": "minecraft:smooth_stone_slab[type=double]",
+  "fluid": "minecraft:water",
+  "masonry": [
+    {
+      "block": "minecraft:stone_bricks",
+      "weight": 4
+    },
+    {
+      "block": "minecraft:cracked_stone_bricks",
+      "weight": 2
+    },
+    "minecraft:mossy_stone_bricks"
+  ],
+  "pillar": [
+    {
+      "block": "minecraft:cracked_stone_bricks",
+      "weight": 3
+    },
+    "minecraft:mossy_stone_bricks"
+  ],
+  "slab": "minecraft:stone_brick_slab",
+  "stairs": "minecraft:stone_brick_stairs",
+  "wall": "minecraft:mossy_stone_brick_wall"
+}

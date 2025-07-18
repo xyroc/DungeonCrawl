@@ -159,7 +159,7 @@ public interface WorldEditor {
             return;
         }
         boolean pillar = ((pos.getX() & 2) | (pos.getZ() & 2)) == 0;
-        BlockStateProvider palette = context.primaryTheme().get().masonry();
+        BlockStateProvider palette = context.primaryTheme().value().masonry();
         if (pillar) {
             int downwards = Math.max(Unsafe.countEmptyBlocksDownwards(world, pos.below()), 1);
             fill(world, palette, palette, pos.below(), pos.below(downwards), worldGenBounds, random, false);

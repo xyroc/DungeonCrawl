@@ -1,0 +1,25 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:chest",
+      "chest": {
+        "loot_table": "dungeoncrawl:chest/speciality/tempered_blade"
+      },
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:chest"
+      }
+    }
+  ],
+  "parts": [
+    {
+      "blueprints": [
+        "dungeoncrawl:part/floor/5x5/solid",
+        "dungeoncrawl:part/floor/5x5/fragile"
+      ],
+      "positions": "dungeoncrawl:floor"
+    }
+  ],
+  "template": "dungeoncrawl:room/smithy",
+  "use_global_default_placement_settings": false
+}

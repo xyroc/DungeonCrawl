@@ -23,21 +23,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
-import xiroc.dungeoncrawl.dungeon.blueprint.template.TemplateBlueprint;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
-import xiroc.dungeoncrawl.dungeon.monster.SpawnerSerializers;
-import xiroc.dungeoncrawl.dungeon.theme.ThemeSerializers;
-import xiroc.dungeoncrawl.dungeon.type.DungeonTypeSerializers;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
-import xiroc.dungeoncrawl.util.random.RandomMapping;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -47,14 +45,7 @@ import java.util.function.Function;
 public interface JSONUtils {
     Gson GSON = withTypeAdapters(List.of(
             BlockStateProvider::gsonAdapters,
-            BlueprintFeature::gsonAdapters,
-            Blueprint::gsonAdapters,
-            TemplateBlueprint::gsonAdapters,
-            DungeonDecoration::gsonAdapters,
-            SpawnerSerializers::gsonAdapters,
-            ThemeSerializers::gsonAdapters,
-            DungeonTypeSerializers::gsonAdapters,
-            RandomMapping::gsonAdapters
+            DungeonDecoration::gsonAdapters
     )).create();
 
     private static GsonBuilder withTypeAdapters(List<Consumer<GsonBuilder>> adapterProviders) {
@@ -107,5 +98,33 @@ public interface JSONUtils {
             jsonArray.add(context.serialize(entry, entryType));
         }
         return jsonArray;
+    }
+
+    // Convenience function to create a codec that converts from/to JSON and delegates the actual serialization to a Gson serializer.
+    // Used in a handful of places where a JSON serializer is more concise and readable than any codec (that I could write).
+    static <T, S extends JsonSerializer<T> & JsonDeserializer<T>> Codec<T> codecFromJsonAdapter(Type type, S adapter) {
+        return new Codec<>() {
+            private final Gson GSON = new GsonBuilder().registerTypeAdapter(type, adapter).create();
+
+            @Override
+            public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input) {
+                try {
+                    final JsonElement jsonInput = ops.convertTo(JsonOps.INSTANCE, input);
+                    return DataResult.success(Pair.of(GSON.fromJson(jsonInput, type), ops.empty()));
+                } catch (Exception e) {
+                    return DataResult.error(e::getMessage);
+                }
+            }
+
+            @Override
+            public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix) {
+                try {
+                    final JsonElement jsonOutput = GSON.toJsonTree(input, type);
+                    return DataResult.success(JsonOps.INSTANCE.convertTo(ops, jsonOutput));
+                } catch (Exception e) {
+                    return DataResult.error(e::getMessage);
+                }
+            }
+        };
     }
 }

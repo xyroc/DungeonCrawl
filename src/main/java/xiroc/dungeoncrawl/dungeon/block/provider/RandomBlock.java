@@ -69,7 +69,7 @@ public class RandomBlock implements BlockStateProvider {
 
         @Override
         public JsonElement serialize(RandomBlock src, Type typeOfSrc, JsonSerializationContext context) {
-            var json = JSONUtils.encode(new IRandom.Builder<BlockState>().add(src.states), IRandom.BaseCodecs.BLOCK_STATE);
+            var json = JSONUtils.encode(new IRandom.Builder<BlockState>().addInstance(src.states), IRandom.BaseCodecs.BLOCK_STATE);
             if (json.isJsonObject()) {
                 json.getAsJsonObject().addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_RANDOM_BLOCK);
             }

@@ -18,22 +18,31 @@
 
 package xiroc.dungeoncrawl.data.themes;
 
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import xiroc.dungeoncrawl.data.JsonDataProvider;
-import xiroc.dungeoncrawl.datapack.DatapackDirectories;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
-import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
-import java.util.function.BiConsumer;
-
-public class SecondaryThemes extends JsonDataProvider<SecondaryTheme> {
-    public SecondaryThemes(PackOutput packOutput) {
-        super(packOutput, "Secondary Themes", DatapackDirectories.SECONDARY_THEMES.path(), JSONUtils.GSON::toJsonTree);
-    }
-
-    @Override
-    public void collect(BiConsumer<ResourceLocation, SecondaryTheme> collector) {
-        //  TODO: add secondary themes
+public interface SecondaryThemes {
+    static void generate(BootstrapContext<SecondaryTheme> context) {
+        context.register(SharedKeys.Theme.Secondary.OAK, SecondaryTheme.builder()
+                .material(new SingleBlock(Blocks.OAK_PLANKS))
+                .pillar(new SingleBlock(Blocks.OAK_LOG))
+                .stairs(new SingleBlock(Blocks.OAK_STAIRS))
+                .slab(new SingleBlock(Blocks.OAK_SLAB))
+                .door(new RandomBlock(new IRandom.Builder<BlockState>()
+                        .add(Blocks.OAK_DOOR.defaultBlockState())
+                        .add(Blocks.SPRUCE_DOOR.defaultBlockState())
+                        .build()))
+                .button(new SingleBlock(Blocks.OAK_BUTTON))
+                .fence(new SingleBlock(Blocks.OAK_FENCE))
+                .fenceGate(new SingleBlock(Blocks.OAK_FENCE_GATE))
+                .pressurePlate(new SingleBlock(Blocks.OAK_PRESSURE_PLATE))
+                .trapdoor(new SingleBlock(Blocks.OAK_TRAPDOOR))
+                .build());
     }
 }

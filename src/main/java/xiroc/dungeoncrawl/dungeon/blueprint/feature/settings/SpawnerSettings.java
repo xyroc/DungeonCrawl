@@ -1,47 +1,21 @@
 package xiroc.dungeoncrawl.dungeon.blueprint.feature.settings;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
-import java.lang.reflect.Type;
 import java.util.Optional;
 
-public record SpawnerSettings(Optional<IRandom<Delegate<SpawnerType>>> types) {
-    public SpawnerSettings() {
-        this(Optional.empty());
-    }
+public record SpawnerSettings(Optional<IRandom<Holder<SpawnerType>>> types) {
+    public static final Codec<SpawnerSettings> CODEC = RecordCodecBuilder.create(instance -> instance
+            .group(
+                    SpawnerType.RANDOM_CODEC.optionalFieldOf("type").forGetter(SpawnerSettings::types)
+            ).apply(instance, SpawnerSettings::new));
 
-    public IRandom<Delegate<SpawnerType>> getSpawnerTypes(LevelGenerator levelGenerator) {
+    public IRandom<Holder<SpawnerType>> getSpawnerTypes(LevelGenerator levelGenerator) {
         return types.orElse(levelGenerator.levelType.spawners());
-    }
-
-    public static class Serializer implements JsonSerializer<SpawnerSettings>, JsonDeserializer<SpawnerSettings> {
-        private static final String KEY_TYPES = "type";
-
-        @Override
-        public SpawnerSettings deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = jsonElement.getAsJsonObject();
-            Optional<IRandom<Delegate<SpawnerType>>> spawnerTypes = Optional.empty();
-            if (object.has(KEY_TYPES)) {
-                spawnerTypes = Optional.of(context.deserialize(object.get(KEY_TYPES), SpawnerType.Types.RANDOM));
-            }
-            return new SpawnerSettings(spawnerTypes);
-        }
-
-        @Override
-        public JsonElement serialize(SpawnerSettings spawnerSettings, Type type, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            spawnerSettings.types.ifPresent(spawnerTypes -> object.add(KEY_TYPES, context.serialize(spawnerTypes, SpawnerType.Types.RANDOM)));
-            return object;
-        }
     }
 }

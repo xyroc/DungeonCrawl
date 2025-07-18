@@ -1,0 +1,8 @@
+{
+  "default_placement_settings": {
+    "fill_air": true,
+    "fill_solid": true
+  },
+  "template": "dungeoncrawl:entrance/eniko_tower",
+  "use_global_default_placement_settings": false
+}

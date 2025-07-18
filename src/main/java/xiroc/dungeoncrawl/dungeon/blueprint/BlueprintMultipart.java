@@ -1,19 +1,14 @@
 package xiroc.dungeoncrawl.dungeon.blueprint;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
@@ -23,15 +18,18 @@ import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
-import java.lang.reflect.Type;
+public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blueprint>> blueprints) {
+    public static final Codec<BlueprintMultipart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ResourceLocation.CODEC.fieldOf("positions").forGetter(BlueprintMultipart::anchorType),
+            Blueprint.RANDOM_HOLDER_CODEC.fieldOf("blueprints").forGetter(BlueprintMultipart::blueprints)
+    ).apply(instance, BlueprintMultipart::new));
 
-public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Delegate<Blueprint>> blueprints) {
     public boolean addParts(DungeonPiece piece, BlueprintComponent parent, RandomSource random) {
-        var anchors = parent.blueprint().get().anchors().get(anchorType);
+        var anchors = parent.blueprint().value().anchors().get(anchorType);
         if (anchors == null) {
             return true;
         }
-        CoordinateSpace parentCoordinateSpace = parent.blueprint().get().coordinateSpace(parent.position());
+        CoordinateSpace parentCoordinateSpace = parent.blueprint().value().coordinateSpace(parent.position());
         for (Anchor anchor : anchors) {
             anchor = parentCoordinateSpace.rotateAndTranslateToOrigin(anchor, parent.rotation());
             if (!addPart(anchor, blueprints, piece, parent, random)) {
@@ -41,9 +39,9 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Delegate<B
         return true;
     }
 
-    public static boolean addPart(Anchor anchor, IRandom<Delegate<Blueprint>> parts, DungeonPiece piece, BlueprintComponent parent, RandomSource random) {
+    public static boolean addPart(Anchor anchor, IRandom<Holder<Blueprint>> parts, DungeonPiece piece, BlueprintComponent parent, RandomSource random) {
         for (int attempt = 0; attempt < 4; ++attempt) {
-            Delegate<Blueprint> part = parts.roll(random);
+            Holder<Blueprint> part = parts.roll(random);
             if (addPart(anchor, part, piece, parent, random)) {
                 return true;
             }
@@ -51,9 +49,9 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Delegate<B
         return false;
     }
 
-    private static boolean addPart(Anchor anchor, Delegate<Blueprint> part, DungeonPiece piece, BlueprintComponent parent, RandomSource random) {
+    private static boolean addPart(Anchor anchor, Holder<Blueprint> part, DungeonPiece piece, BlueprintComponent parent, RandomSource random) {
         BoundingBoxBuilder parentBox = parent.boundingBox();
-        Blueprint blueprint = part.get();
+        Blueprint blueprint = part.value();
         var junctures = blueprint.anchors().get(BuiltinAnchorTypes.JUNCTURE);
         if (junctures == null || junctures.isEmpty()) {
             return false;
@@ -71,33 +69,12 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Delegate<B
             BoundingBoxBuilder boundingBox = blueprint.boundingBox(rotation).move(pos);
             if (!parentBox.encapsulates(boundingBox)) {
                 DungeonCrawl.LOGGER.warn("Blueprint part {} does not fit inside its parent blueprint {} when placed at anchor {}." +
-                                " This should never happen and indicates a broken blueprint configuration.", part.key(), parent.blueprint().key(), juncture);
+                        " This should never happen and indicates a broken blueprint configuration.", part.getKey(), parent.blueprint().getKey(), juncture);
                 continue;
             }
             piece.addComponent(new BlueprintComponent(part, pos, rotation));
             return true;
         }
         return false;
-    }
-
-    public static class Serializer implements JsonSerializer<BlueprintMultipart>, JsonDeserializer<BlueprintMultipart> {
-        private static final String KEY_BLUEPRINTS = "blueprints";
-        private static final String KEY_POSITIONS = "positions";
-
-        @Override
-        public BlueprintMultipart deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            ResourceLocation anchorType = ResourceLocation.parse(object.get(KEY_POSITIONS).getAsString());
-            IRandom<Delegate<Blueprint>> blueprints = context.deserialize(object.get(KEY_BLUEPRINTS), Blueprint.Types.RANDOM);
-            return new BlueprintMultipart(anchorType, blueprints);
-        }
-
-        @Override
-        public JsonElement serialize(BlueprintMultipart src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.addProperty(KEY_POSITIONS, src.anchorType.toString());
-            object.add(KEY_BLUEPRINTS, context.serialize(src.blueprints, Blueprint.Types.RANDOM));
-            return object;
-        }
     }
 }

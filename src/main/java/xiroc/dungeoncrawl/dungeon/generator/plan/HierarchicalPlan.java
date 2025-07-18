@@ -11,7 +11,8 @@ import java.util.function.Predicate;
  * <p>
  * Except for adding an element, operations are executed first on the primary and then on the secondary plan.
  * Elements are only added to the primary plan.
- * @param primary The primary plan
+ *
+ * @param primary   The primary plan
  * @param secondary The secondary plan
  */
 public record HierarchicalPlan(DungeonPlan primary, DungeonPlan secondary) implements DungeonPlan {

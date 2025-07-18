@@ -1,19 +1,18 @@
 package xiroc.dungeoncrawl.dungeon.theme;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.google.gson.reflect.TypeToken;
-import xiroc.dungeoncrawl.datapack.registry.Delegate;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
+import net.minecraft.resources.RegistryFileCodec;
+import net.minecraft.world.level.biome.Biome;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.util.random.IRandom;
+import xiroc.dungeoncrawl.util.random.RandomMapping;
 
-import java.lang.reflect.Type;
 import java.util.Objects;
 
 public record PrimaryTheme(BlockStateProvider masonry,
@@ -25,53 +24,22 @@ public record PrimaryTheme(BlockStateProvider masonry,
                            BlockStateProvider slab,
                            BlockStateProvider wall) {
 
-    /**
-     * Holds types representing the different contexts this class is serialized in.
-     */
-    public interface Types {
-        Type DELEGATE = new TypeToken<Delegate<PrimaryTheme>>() {}.getType();
-        Type RANDOM_BUILDER = new TypeToken<IRandom.Builder<Delegate<PrimaryTheme>>>() {}.getType();
-    }
+    public static final Codec<PrimaryTheme> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BlockStateProvider.CODEC.fieldOf("masonry").forGetter(PrimaryTheme::masonry),
+            BlockStateProvider.CODEC.fieldOf("pillar").forGetter(PrimaryTheme::pillar),
+            BlockStateProvider.CODEC.fieldOf("floor").forGetter(PrimaryTheme::floor),
+            BlockStateProvider.CODEC.fieldOf("fluid").forGetter(PrimaryTheme::fluid),
+            BlockStateProvider.CODEC.fieldOf("fencing").forGetter(PrimaryTheme::fencing),
+            BlockStateProvider.CODEC.fieldOf("stairs").forGetter(PrimaryTheme::stairs),
+            BlockStateProvider.CODEC.fieldOf("slab").forGetter(PrimaryTheme::slab),
+            BlockStateProvider.CODEC.fieldOf("wall").forGetter(PrimaryTheme::wall)
+    ).apply(instance, PrimaryTheme::new));
 
-    public static class Serializer implements JsonSerializer<PrimaryTheme>, JsonDeserializer<PrimaryTheme> {
-        private static final String KEY_MASONRY = "masonry";
-        private static final String KEY_PILLAR = "pillar";
-        private static final String KEY_FLOOR = "floor";
-        private static final String KEY_FLUID = "fluid";
-        private static final String KEY_FENCING = "fencing";
-        private static final String KEY_STAIRS = "stairs";
-        private static final String KEY_SLAB = "slab";
-        private static final String KEY_WALL = "wall";
-
-        @Override
-        public PrimaryTheme deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            Builder builder = new Builder()
-                    .masonry(context.deserialize(object.get(KEY_MASONRY), BlockStateProvider.class))
-                    .pillar(context.deserialize(object.get(KEY_PILLAR), BlockStateProvider.class))
-                    .floor(context.deserialize(object.get(KEY_FLOOR), BlockStateProvider.class))
-                    .fluid(context.deserialize(object.get(KEY_FLUID), BlockStateProvider.class))
-                    .fencing(context.deserialize(object.get(KEY_FENCING), BlockStateProvider.class))
-                    .stairs(context.deserialize(object.get(KEY_STAIRS), BlockStateProvider.class))
-                    .slab(context.deserialize(object.get(KEY_SLAB), BlockStateProvider.class))
-                    .wall(context.deserialize(object.get(KEY_WALL), BlockStateProvider.class));
-            return builder.build();
-        }
-
-        @Override
-        public JsonElement serialize(PrimaryTheme theme, Type type, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.add(KEY_MASONRY, context.serialize(theme.masonry));
-            object.add(KEY_PILLAR, context.serialize(theme.pillar));
-            object.add(KEY_FLOOR, context.serialize(theme.floor));
-            object.add(KEY_FLUID, context.serialize(theme.fluid));
-            object.add(KEY_FENCING, context.serialize(theme.fencing));
-            object.add(KEY_STAIRS, context.serialize(theme.stairs));
-            object.add(KEY_SLAB, context.serialize(theme.slab));
-            object.add(KEY_WALL, context.serialize(theme.wall));
-            return object;
-        }
-    }
+    public static final Codec<Holder<PrimaryTheme>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.PRIMARY_THEME, DIRECT_CODEC, false);
+    public static final Codec<IRandom<Holder<PrimaryTheme>>> RANDOM_HOLDER_CODEC = IRandom.makeCodec(IRandom.makeBuilderCodec(HOLDER_CODEC, "theme", null));
+    public static final Codec<HolderSet<IRandom<Holder<PrimaryTheme>>>> LIST_OF_RANDOM_HOLDER_CODEC = RegistryCodecs.homogeneousList(DatapackRegistries.PRIMARY_THEME_POOLS, RANDOM_HOLDER_CODEC, true);
+    public static final Codec<RandomMapping<Biome, PrimaryTheme>> BIOME_MAPPING_DIRECT_CODEC = RandomMapping.makeDirectCodec(Biome.LIST_CODEC, LIST_OF_RANDOM_HOLDER_CODEC);
+    public static final Codec<Holder<RandomMapping<Biome, PrimaryTheme>>> BIOME_MAPPING_HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.PRIMARY_THEME_MAPPINGS, BIOME_MAPPING_DIRECT_CODEC);
 
     public static Builder builder() {
         return new Builder();

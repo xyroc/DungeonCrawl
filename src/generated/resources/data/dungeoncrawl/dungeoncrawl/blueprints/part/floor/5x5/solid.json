@@ -1,0 +1,9 @@
+{
+  "placement_settings": {
+    "minecraft:gravel": {
+      "fill_air": true,
+      "fill_solid": true
+    }
+  },
+  "template": "dungeoncrawl:part/floor/5x5"
+}

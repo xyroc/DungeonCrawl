@@ -1,21 +1,23 @@
 package xiroc.dungeoncrawl.data.spawner;
 
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import xiroc.dungeoncrawl.data.JsonDataProvider;
-import xiroc.dungeoncrawl.datapack.DatapackDirectories;
+import net.minecraft.core.Holder;
+import net.minecraft.data.worldgen.BootstrapContext;
+import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
-import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.random.IRandom;
+import xiroc.dungeoncrawl.util.random.value.Range;
 
-import java.util.function.BiConsumer;
+public interface SpawnerTypes {
+    static void generate(BootstrapContext<SpawnerType> context) {
+        var spawnerEntityTypes = context.lookup(DatapackRegistries.SPAWNER_ENTITY_TYPE);
 
-public class SpawnerTypes extends JsonDataProvider<SpawnerType> {
-    public SpawnerTypes(PackOutput packOutput) {
-        super(packOutput, "Spawner Types", DatapackDirectories.SPAWNER_TYPES.path(), JSONUtils.GSON::toJsonTree);
-    }
-
-    @Override
-    public void collect(BiConsumer<ResourceLocation, SpawnerType> collector) {
-        // TODO: add spawner types
+        context.register(SharedKeys.Spawner.Type.DEFAULT, new SpawnerType.Builder()
+                        .entities(IRandom.<Holder<SpawnerEntityType>>builder()
+                                .add(spawnerEntityTypes.getOrThrow(SharedKeys.Spawner.EntityType.ZOMBIE)))
+                        .spawnAmount(new Range(1, 2))
+                        .spawnDelay(new Range(100, 200))
+                .build());
     }
 }

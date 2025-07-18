@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.MapLike;
 import com.mojang.serialization.RecordBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -28,7 +27,8 @@ import java.util.List;
 public interface TieredResource<T> {
 
     interface Codecs {
-        Codec<TieredResource.Builder<ResourceKey<LootTable>>> LOOT_TABLE = new BuilderCodec<>(GlobalCodecs.LOOT_TABLE);
+        Codec<TieredResource.Builder<ResourceKey<LootTable>>> LOOT_TABLE_BUILDER = new BuilderCodec<>(GlobalCodecs.LOOT_TABLE);
+        Codec<TieredResource<ResourceKey<LootTable>>> LOOT_TABLE = LOOT_TABLE_BUILDER.comapFlatMap(StorageHelper.tryToApply(Builder::build), Builder::new);
     }
 
     /**
@@ -89,18 +89,16 @@ public interface TieredResource<T> {
                 throw new IllegalArgumentException("Specify at least one tier.");
             }
             tiers.sort(Comparator.comparingInt(Pair::getFirst));
-            var iterator = tiers.iterator();
 
-            var firstTier = iterator.next();
+            var firstTier = tiers.getFirst();
             if (firstTier.getFirst() != 0) {
-                throw new IllegalArgumentException("Missing tier 0.");
+                throw new IllegalArgumentException("First tier must be zero, was " + firstTier.getFirst());
             }
             this.firstTier = firstTier.getSecond();
 
-            while (iterator.hasNext()) {
-                var tier = iterator.next();
-                tier(tier.getSecond(), tier.getFirst());
-            }
+            tiers.subList(1, tiers.size()).stream()
+                    .map(pair -> new Tier<>(pair.getSecond(), pair.getFirst()))
+                    .forEach(followingTiers::add);
         }
 
         public Builder<T> tier(T resource, int startingFrom) {
@@ -126,18 +124,17 @@ public interface TieredResource<T> {
 
         @Override
         public <D> DataResult<Pair<Builder<T>, D>> decode(DynamicOps<D> dynamicOps, D input) {
-            final var asMap = dynamicOps.getMap(input).result();
+            final var asMap = dynamicOps.getMapValues(input).result();
             if (asMap.isEmpty()) {
                 return resourceCodec.decode(dynamicOps, input).map(pair -> pair.mapFirst(Builder::new));
             }
 
-            final MapLike<D> tierMap = asMap.get();
-
-            final DataResult<List<Pair<Integer, T>>> tiers = tierMap.entries()
-                    // Parse keys.
-                    .map(pair -> pair.mapFirst(dynamicOps::getStringValue))
-                    // Parse values.
-                    .map(pair -> pair.mapSecond(d -> resourceCodec.decode(dynamicOps, d)))
+            final DataResult<List<Pair<Integer, T>>> tiers = asMap.get()
+                    .map(pair -> pair
+                            // Parse keys.
+                            .mapFirst(dynamicOps::getStringValue)
+                            // Parse values.
+                            .mapSecond(d -> resourceCodec.decode(dynamicOps, d)))
                     // Parse tiers.
                     .reduce(DataResult.success(new ArrayList<>()), (tierListResult, rawTier) ->
                             tierListResult.flatMap(tierList -> {
@@ -157,13 +154,7 @@ public interface TieredResource<T> {
                                 return StorageHelper.addToList(tierList, tier);
                             }), StorageHelper::concatenateLists);
 
-            return tiers.flatMap(actualTiers -> {
-                try {
-                    return DataResult.success(Pair.of(new Builder<>(actualTiers), dynamicOps.empty()));
-                } catch (Exception e) {
-                    return DataResult.error(e::getMessage);
-                }
-            });
+            return tiers.flatMap(StorageHelper.tryToApply(Builder::new)).map(builder -> Pair.of(builder, dynamicOps.empty()));
         }
 
         @Override
@@ -175,20 +166,14 @@ public interface TieredResource<T> {
                 }
             }
 
-            DataResult<RecordBuilder<D>> tiers = DataResult.success(dynamicOps.mapBuilder()).flatMap(tierMap -> {
-                DataResult<D> resource = resourceCodec.encode(builder.firstTier, dynamicOps, prefix);
-                return StorageHelper.addToMap(tierMap, Codec.STRING.encode(TIER_PREFIX + '0', dynamicOps, dynamicOps.empty()), resource);
-            });
+            RecordBuilder<D> tiers = dynamicOps.mapBuilder();
+            tiers.add(TIER_PREFIX + '0', resourceCodec.encodeStart(dynamicOps, builder.firstTier));
 
             for (Tier<T> tier : builder.followingTiers) {
-                DataResult<D> resource = resourceCodec.encode(tier.resource, dynamicOps, dynamicOps.empty());
-                tiers = tiers.flatMap(tierMap ->
-                        StorageHelper.addToMap(tierMap,
-                                Codec.STRING.encode(TIER_PREFIX + tier.startingFrom, dynamicOps, dynamicOps.empty()),
-                                resource));
+                tiers.add(TIER_PREFIX + tier.startingFrom, resourceCodec.encodeStart(dynamicOps, tier.resource));
             }
 
-            return tiers.flatMap(map -> map.build(dynamicOps.empty()));
+            return tiers.build(prefix);
         }
     }
 }

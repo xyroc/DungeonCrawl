@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.data;
 
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -39,6 +40,8 @@ import xiroc.dungeoncrawl.data.pool.BlueprintPools;
 import xiroc.dungeoncrawl.data.spawner.EntityProperties;
 import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
+import xiroc.dungeoncrawl.data.structure.ModStructureSets;
+import xiroc.dungeoncrawl.data.structure.ModStructures;
 import xiroc.dungeoncrawl.data.tags.worldgen.BlueprintPoolTags;
 import xiroc.dungeoncrawl.data.tags.worldgen.ModBiomeTags;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
@@ -63,6 +66,8 @@ public class DataGen {
                 event.getGenerator().getPackOutput(),
                 event.getLookupProvider(),
                 new RegistrySetBuilder()
+                        .add(Registries.STRUCTURE, ModStructures::generate)
+                        .add(Registries.STRUCTURE_SET, ModStructureSets::generate)
                         .add(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, EntityProperties::generate)
                         .add(DatapackRegistries.SPAWNER_ENTITY_TYPE, SpawnerEntityTypes::generate)
                         .add(DatapackRegistries.SPAWNER_TYPE, SpawnerTypes::generate)

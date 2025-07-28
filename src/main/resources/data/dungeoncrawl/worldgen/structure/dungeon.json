@@ -1,8 +1,0 @@
-{
-  "type": "dungeoncrawl:dungeon",
-  "biomes": "#dungeoncrawl:has_structure/dungeon",
-  "step": "underground_structures",
-  "terrain_adaptation": "none",
-  "config": {},
-  "spawn_overrides": {}
-}

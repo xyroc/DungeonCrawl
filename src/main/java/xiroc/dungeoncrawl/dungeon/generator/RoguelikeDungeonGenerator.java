@@ -3,6 +3,8 @@ package xiroc.dungeoncrawl.dungeon.generator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class RoguelikeDungeonGenerator implements DungeonGenerator {
     @Override
@@ -100,7 +103,11 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
             }
         }
 
-        DungeonCrawl.LOGGER.debug("Generated a dungeon of type {} with {} pieces.", dungeonBuilder.dungeonType.getKey(), plan.pieceCount());
+        final String dungeonTypeName = Optional.ofNullable(dungeonBuilder.dungeonType.getKey())
+                .map(ResourceKey::location)
+                .map(ResourceLocation::toString)
+                .orElse("null");
+        DungeonCrawl.LOGGER.debug("Generated a dungeon of type {} with {} pieces.", dungeonTypeName, plan.pieceCount());
         plan.forEach((element) -> element.createPieces(dungeonBuilder.structurePiecesBuilder::addPiece, random));
     }
 

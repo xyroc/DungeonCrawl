@@ -20,9 +20,6 @@ package xiroc.dungeoncrawl.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.util.Iterator;
-import java.util.function.Function;
-
 public class Config {
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -99,17 +96,6 @@ public class Config {
         BUILDER.pop();
 
         CONFIG = BUILDER.build();
-    }
-
-    private static <T> String commaSeparated(Iterator<T> elements, Function<T, String> toString) {
-        StringBuilder builder = new StringBuilder();
-        while (elements.hasNext()) {
-            builder.append(toString.apply(elements.next()));
-            if (elements.hasNext()) {
-                builder.append(", ");
-            }
-        }
-        return builder.toString();
     }
 
 }

@@ -25,3 +25,6 @@ run
 logs
 
 repo
+
+# data gen file caches
+.cache

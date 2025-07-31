@@ -22,6 +22,7 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -98,4 +99,19 @@ public class DataGen {
         generator.addProvider(includeServer, new BlueprintPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
     }
 
+    public static ResourceLocation resource(String path) {
+        return ResourceLocation.fromNamespaceAndPath(DatapackNamespaces.DEFAULT, path);
+    }
+
+    public static ResourceLocation resource(ResourceLocation directory, String name) {
+        return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/" + name);
+    }
+
+    public static ResourceLocation tieredResource(ResourceLocation directory, int tier) {
+        return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/level_" + tier);
+    }
+
+    public static ResourceLocation subdirectory(ResourceLocation directory, String subdirectory) {
+        return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/" + subdirectory);
+    }
 }

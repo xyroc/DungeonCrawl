@@ -1,0 +1,31 @@
+{
+  "entrance_types": {
+    "dungeoncrawl:entrance": {
+      "custom_parts": {
+        "closed": [
+          "dungeoncrawl:room/diner/closed/table",
+          "dungeoncrawl:room/diner/closed/storage"
+        ],
+        "open": [
+          "dungeoncrawl:room/diner/open"
+        ]
+      },
+      "decoration": "primary"
+    }
+  },
+  "placement_settings": {
+    "minecraft:fire": {
+      "fill_air": true,
+      "fill_solid": true
+    },
+    "minecraft:iron_bars": {
+      "fill_air": true,
+      "fill_solid": true
+    },
+    "minecraft:netherrack": {
+      "fill_air": true,
+      "fill_solid": true
+    }
+  },
+  "template": "dungeoncrawl:room/diner"
+}

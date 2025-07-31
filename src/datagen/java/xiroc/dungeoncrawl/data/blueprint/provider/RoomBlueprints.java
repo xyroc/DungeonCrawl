@@ -5,6 +5,8 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.block.Blocks;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
+import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
@@ -30,27 +32,44 @@ public interface RoomBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         final var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);
 
-        context.register(SharedKeys.Blueprints.Room.DARK_HALL, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Room.DARK_HALL)
+        context.register(BlueprintKeys.Room.DARK_HALL, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.DARK_HALL)
                 .entranceType(BuiltinAnchorTypes.ENTRANCE, null, new Entrance.CustomParts.Builder()
                         .open(new IRandom.Builder<Holder<Blueprint>>()
-                                .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.DARK_HALL_OPEN))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.DARK_HALL_OPEN))
                                 .build())
                         .closed(new IRandom.Builder<Holder<Blueprint>>()
-                                .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.DARK_HALL_CLOSED))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.DARK_HALL_CLOSED))
                                 .build())
                         .build())
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Room.ENIKO, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Room.ENIKO)
+        context.register(BlueprintKeys.Room.DINER, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.DINER)
+                .entranceType(BuiltinAnchorTypes.ENTRANCE, Entrance.Decoration.PRIMARY, new Entrance.CustomParts.Builder()
+                        .open(IRandom.<Holder<Blueprint>>builder()
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.DINER_OPEN))
+                                .build())
+                        .closed(IRandom.<Holder<Blueprint>>builder()
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.DINER_CLOSED_TABLE))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.DINER_CLOSED_STORAGE))
+                                .build())
+                        .build())
+                // The iron bars in front of the fireplace should be solid
+                .configureBlock(Blocks.IRON_BARS, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .configureBlock(Blocks.NETHERRACK, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .configureBlock(Blocks.FIRE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .build()));
+
+        context.register(BlueprintKeys.Room.ENIKO, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.ENIKO)
                 .entranceType(BuiltinAnchorTypes.ENTRANCE, Entrance.Decoration.PRIMARY,
                         new Entrance.CustomParts.Builder()
                                 .open(new IRandom.Builder<Holder<Blueprint>>()
-                                        .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.FLOOR_3x3_SOLID))
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_3x3_SOLID))
                                         .build())
                                 .closed(new IRandom.Builder<Holder<Blueprint>>()
-                                        .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.FLOOR_3x3_MASONRY))
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_3x3_MASONRY))
                                         .build())
                                 .build())
                 .feature(new SpawnerFeature(
@@ -60,20 +79,20 @@ public interface RoomBlueprints {
                         new PlacementSettings(Optional.of(SharedKeys.Anchor.Feature.CHEST), new Range(1, 2)),
                         new ChestSettings(Optional.empty())))
                 .multipart(new BlueprintMultipart(SharedKeys.Anchor.FLOOR, new IRandom.Builder<Holder<Blueprint>>()
-                        .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.FLOOR_5x5_SOLID))
-                        .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.FLOOR_5x5_FRAGILE))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_5x5_SOLID))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_5x5_FRAGILE))
                         .build()))
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Room.LIBRARY, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Room.LIBRARY)
+        context.register(BlueprintKeys.Room.LIBRARY, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.LIBRARY)
                 .entranceType(BuiltinAnchorTypes.ENTRANCE, null, new Entrance.CustomParts.Builder()
                         .open(new IRandom.Builder<Holder<Blueprint>>()
-                                .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.LIBRARY_ENTRANCE))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.LIBRARY_ENTRANCE))
                                 .build())
                         .closed(new IRandom.Builder<Holder<Blueprint>>()
-                                .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.LIBRARY_DESK))
-                                .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.LIBRARY_FLOWERS))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.LIBRARY_DESK))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.LIBRARY_FLOWERS))
                                 .build())
                         .build())
                 .configureBlock(Blocks.REDSTONE_BLOCK, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
@@ -81,13 +100,13 @@ public interface RoomBlueprints {
                 .build()));
 
         // TODO: map cobblestone and entrance types
-        context.register(SharedKeys.Blueprints.Room.LOWER_STAIRCASE, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Room.LOWER_STAIRCASE)
+        context.register(BlueprintKeys.Room.LOWER_STAIRCASE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.LOWER_STAIRCASE)
                 .configureBlock(Blocks.COBBLESTONE, new TemplateBlockPlacementSettings(false, true, TemplateBlockType.FENCING.create()))
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Room.SARCOPHAGUS, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Room.SARCOPHAGUS)
+        context.register(BlueprintKeys.Room.SARCOPHAGUS, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.SARCOPHAGUS)
                 .feature(new SarcophagusFeature(
                         new PlacementSettings(Optional.of(SharedKeys.Anchor.Feature.SARCOPHAGUS),
                                 new Constant(1)),
@@ -95,22 +114,22 @@ public interface RoomBlueprints {
                         new SpawnerSettings(Optional.empty())))
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Room.SMITHY, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Room.SMITHY)
+        context.register(BlueprintKeys.Room.SMITHY, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.SMITHY)
                 .feature(new ChestFeature(
                         new PlacementSettings(Optional.of(DungeonCrawl.locate("chest")), new Constant(1)),
                         new ChestSettings(Optional.of(new TieredResource.Builder<>(SharedKeys.Loot.Specialities.TEMPERED_BLADE).build()))))
                 .multipart(new BlueprintMultipart(SharedKeys.Anchor.FLOOR, new IRandom.Builder<Holder<Blueprint>>()
-                        .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.FLOOR_5x5_SOLID))
-                        .add(blueprints.getOrThrow(SharedKeys.Blueprints.Part.FLOOR_5x5_FRAGILE))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_5x5_SOLID))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_5x5_FRAGILE))
                         .build()))
                 .noGlobalDefaultPlacementSettings()
                 .configureBlock(Blocks.COBBLESTONE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
                 .configureBlock(Blocks.COBBLESTONE_STAIRS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Room.UPPER_STAIRCASE, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Room.UPPER_STAIRCASE)
+        context.register(BlueprintKeys.Room.UPPER_STAIRCASE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.UPPER_STAIRCASE)
                 .build()));
     }
 }

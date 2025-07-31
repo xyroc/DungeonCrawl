@@ -4,6 +4,8 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
+import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
 import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
@@ -18,21 +20,21 @@ import java.util.Optional;
 public interface CorridorBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         // Corridor Segments
-        context.register(SharedKeys.Blueprints.Corridor.Segment.ARCH, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Segment.ARCH)
+        context.register(BlueprintKeys.Corridor.Segment.ARCH, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Segment.ARCH)
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Corridor.Segment.BASE, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Segment.BASE)
+        context.register(BlueprintKeys.Corridor.Segment.BASE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Segment.BASE)
                 .build()));
 
         // Corridor Side Segments
-        context.register(SharedKeys.Blueprints.Corridor.Side.BASE, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Side.BASE)
+        context.register(BlueprintKeys.Corridor.Side.BASE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Side.BASE)
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Corridor.Side.CROPS, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Side.CROPS)
+        context.register(BlueprintKeys.Corridor.Side.CROPS, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Side.CROPS)
                 .mapBlock(Blocks.LIME_STAINED_GLASS, new FixedTemplateBlockType(new RandomBlock(new IRandom.Builder<BlockState>()
                         .add(Blocks.CAVE_AIR.defaultBlockState(), 2)
                         .add(Blocks.WHEAT.defaultBlockState())
@@ -42,16 +44,16 @@ public interface CorridorBlueprints {
                         .build())))
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Corridor.Side.DOOR, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Side.DOOR)
+        context.register(BlueprintKeys.Corridor.Side.DOOR, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Side.DOOR)
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Corridor.Side.FIRE, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Side.FIRE)
+        context.register(BlueprintKeys.Corridor.Side.FIRE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Side.FIRE)
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Corridor.Side.FLOWER_POT, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Side.FLOWER_POT)
+        context.register(BlueprintKeys.Corridor.Side.FLOWER_POT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Side.FLOWER_POT)
                 .feature(new FlowerPotFeature(
                         new PlacementSettings(Optional.of(SharedKeys.Anchor.Feature.FLOWER_POT), new Constant(1)),
                         Blocks.PODZOL,
@@ -74,8 +76,8 @@ public interface CorridorBlueprints {
                                 .build())))
                 .build()));
 
-        context.register(SharedKeys.Blueprints.Corridor.Side.MASONRY, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(SharedKeys.Template.Corridor.Side.MASONRY)
+        context.register(BlueprintKeys.Corridor.Side.MASONRY, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Corridor.Side.MASONRY)
                 .build()));
     }
 }

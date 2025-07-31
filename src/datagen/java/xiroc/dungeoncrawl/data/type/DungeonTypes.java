@@ -3,6 +3,7 @@ package xiroc.dungeoncrawl.data.type;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.type.DungeonSection;
@@ -21,7 +22,7 @@ public interface DungeonTypes {
 
         context.register(SharedKeys.Dungeon.DEFAULT, new DungeonType.Builder()
                 .entrances(new IRandom.Builder<Holder<Blueprint>>()
-                        .add(blueprints.getOrThrow(SharedKeys.Blueprints.Entrance.ENIKO_TOWER))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Entrance.ENIKO_TOWER))
                         .build())
                 .section(new DungeonSection.Builder()
                         .primaryThemes(primaryThemeMappings.getOrThrow(SharedKeys.ThemeMappings.Primary.DEFAULT))
@@ -41,12 +42,12 @@ public interface DungeonTypes {
                         .build())
                 .secretRoom(new SecretRoom.Builder()
                         .variants(new IRandom.Builder<Holder<Blueprint>>()
-                                .add(blueprints.getOrThrow(SharedKeys.Blueprints.Room.SMITHY))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.SMITHY))
                                 .build())
                         .level(new Range(1, 5))
                         .amount(new Constant(5))
                         .entrances(new IRandom.Builder<Holder<Blueprint>>()
-                                .add(blueprints.getOrThrow(SharedKeys.Blueprints.Corridor.Side.DOOR))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Corridor.Side.DOOR))
                                 .build()))
                 .build());
     }

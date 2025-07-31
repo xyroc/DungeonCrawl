@@ -36,6 +36,7 @@ public class BlueprintConfiguration {
             .put(Blocks.STONE_BRICK_STAIRS, TemplateBlockType.MASONRY_STAIRS.create())
             .put(Blocks.STONE_BRICK_SLAB, TemplateBlockType.MASONRY_SLAB.create())
             .put(Blocks.PURPUR_PILLAR, TemplateBlockType.MASONRY_PILLAR.create())
+            .put(Blocks.POLISHED_BASALT, TemplateBlockType.MASONRY_PILLAR.create())
 
             .put(Blocks.GRAVEL, TemplateBlockType.FLOOR.create())
             .put(Blocks.POLISHED_ANDESITE, TemplateBlockType.FLOOR.create())
@@ -84,6 +85,8 @@ public class BlueprintConfiguration {
             .put(Blocks.STONE_BRICK_SLAB, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
             .put(Blocks.POLISHED_ANDESITE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
             .put(Blocks.STONE_BRICK_WALL, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.PURPUR_PILLAR, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+            .put(Blocks.POLISHED_BASALT, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
 
             .put(Blocks.OAK_PLANKS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
             .put(Blocks.OAK_STAIRS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)

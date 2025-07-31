@@ -32,6 +32,10 @@ public interface RoomBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         final var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);
 
+        context.register(BlueprintKeys.Room.CORNER, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.CORNER)
+                .build()));
+
         context.register(BlueprintKeys.Room.DARK_HALL, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.DARK_HALL)
                 .entranceType(BuiltinAnchorTypes.ENTRANCE, null, new Entrance.CustomParts.Builder()

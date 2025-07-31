@@ -30,6 +30,7 @@ public interface LevelTypes {
                         .maxClusterNodes(0))
                         .rooms(new LevelType.LevelRooms.Builder()
                                 .ordinary(new IRandom.Builder<Holder<Blueprint>>()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Room.CORNER))
                                         .add(blueprints.getOrThrow(BlueprintKeys.Room.DARK_HALL))
                                         .add(blueprints.getOrThrow(BlueprintKeys.Room.ENIKO))
                                         .add(blueprints.getOrThrow(BlueprintKeys.Room.SARCOPHAGUS)))

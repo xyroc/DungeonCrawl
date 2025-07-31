@@ -26,8 +26,9 @@
       "dungeoncrawl:room/lower_staircase"
     ],
     "ordinary": [
-      "dungeoncrawl:room/eniko",
+      "dungeoncrawl:room/corner",
       "dungeoncrawl:room/dark_hall",
+      "dungeoncrawl:room/eniko",
       "dungeoncrawl:room/sarcophagus"
     ],
     "upper_staircase": [

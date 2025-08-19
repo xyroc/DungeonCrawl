@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.data.loot.chest.speciality;
+package xiroc.dungeoncrawl.data.loot.chest.contents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.loot.functions.SetNameFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
 
 import java.util.function.BiConsumer;
 
@@ -28,7 +28,7 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> collector) {
         final HolderLookup<Enchantment> enchantments = registries.lookupOrThrow(Registries.ENCHANTMENT);
 
-        collector.accept(SharedKeys.Loot.Specialities.TEMPERED_BLADE, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.Speciality.TEMPERED_BLADE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Tempered Blade")
                         .setRolls(ConstantValue.exactly(1))
@@ -45,7 +45,7 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
                                         .when(LootItemRandomChanceCondition.randomChance(0.5f))
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.SHARPNESS), ConstantValue.exactly(1))))));
 
-        collector.accept(SharedKeys.Loot.Specialities.CASE_HARDENED_PICK, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.Speciality.CASE_HARDENED_PICK, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Case Hardened Pick")
                         .setRolls(ConstantValue.exactly(1))
@@ -73,7 +73,7 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.UNBREAKING), UniformGenerator.between(1, 2))
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.FORTUNE), UniformGenerator.between(1, 3))))));
 
-        collector.accept(SharedKeys.Loot.Specialities.CRYSTAL_PICK, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.Speciality.CRYSTAL_PICK, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Crystal Pick")
                         .setRolls(ConstantValue.exactly(1))
@@ -98,7 +98,7 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.UNBREAKING), ConstantValue.exactly(3))
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.FORTUNE), UniformGenerator.between(2, 3))))));
 
-        collector.accept(SharedKeys.Loot.Specialities.WOODLAND_HATCHET, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.Speciality.WOODLAND_HATCHET, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Woodland Hatchet")
                         .setRolls(ConstantValue.exactly(1))
@@ -108,7 +108,7 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.UNBREAKING), UniformGenerator.between(1, 2))
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.EFFICIENCY), UniformGenerator.between(1, 2))))));
 
-        collector.accept(SharedKeys.Loot.Specialities.CRYSTAL_AXE, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.Speciality.CRYSTAL_AXE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Crystal Head Axe")
                         .setRolls(ConstantValue.exactly(1))
@@ -118,7 +118,7 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.UNBREAKING), ConstantValue.exactly(3))
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.EFFICIENCY), UniformGenerator.between(3, 5))))));
 
-        collector.accept(SharedKeys.Loot.Specialities.GRAVE_SPADE, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.Speciality.GRAVE_SPADE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Grave Spade")
                         .setRolls(ConstantValue.exactly(1))
@@ -128,7 +128,7 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.UNBREAKING), UniformGenerator.between(1, 2))
                                         .withEnchantment(enchantments.getOrThrow(Enchantments.EFFICIENCY), UniformGenerator.between(1, 2))))));
 
-        collector.accept(SharedKeys.Loot.Specialities.SOUL_SPADE, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.Speciality.SOUL_SPADE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Soul Spade")
                         .setRolls(ConstantValue.exactly(1))

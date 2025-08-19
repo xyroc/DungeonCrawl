@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.data.loot.chest.base;
+package xiroc.dungeoncrawl.data.loot.chest.contents;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
@@ -10,14 +10,14 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
 
 import java.util.function.BiConsumer;
 
 public record FoodLootTables(HolderLookup.Provider registries) implements LootTableSubProvider {
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> collector) {
-        collector.accept(SharedKeys.Loot.FOOD_LEVEL_0, LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.FOOD_LEVEL_0, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("food")
                         .setRolls(ConstantValue.exactly(1))
@@ -66,7 +66,7 @@ public record FoodLootTables(HolderLookup.Provider registries) implements LootTa
                 )
         );
 
-        collector.accept(SharedKeys.Loot.FOOD_LEVEL_1, net.minecraft.world.level.storage.loot.LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.FOOD_LEVEL_1, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("food")
                         .setRolls(ConstantValue.exactly(1))
@@ -123,7 +123,7 @@ public record FoodLootTables(HolderLookup.Provider registries) implements LootTa
                 )
         );
 
-        collector.accept(SharedKeys.Loot.FOOD_LEVEL_2, net.minecraft.world.level.storage.loot.LootTable.lootTable()
+        collector.accept(ChestLootTableKeys.FOOD_LEVEL_2, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("food")
                         .setRolls(ConstantValue.exactly(1))
@@ -161,21 +161,6 @@ public record FoodLootTables(HolderLookup.Provider registries) implements LootTa
                         .add(LootItem.lootTableItem(Items.RABBIT)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
                         .add(LootItem.lootTableItem(Items.CHICKEN)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
-                        .add(LootItem.lootTableItem(Items.COOKED_PORKCHOP)
-                                .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
-                        .add(LootItem.lootTableItem(Items.COOKED_MUTTON)
-                                .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
-                        .add(LootItem.lootTableItem(Items.COOKED_BEEF)
-                                .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
-                        .add(LootItem.lootTableItem(Items.COOKED_RABBIT)
-                                .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
-                        .add(LootItem.lootTableItem(Items.COOKED_CHICKEN)
-                                .setWeight(2)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
                         .add(LootItem.lootTableItem(Items.GOLDEN_APPLE)
                                 .setWeight(2)

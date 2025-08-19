@@ -20,7 +20,7 @@
       }
     }
   ],
-  "loot_table": "dungeoncrawl:chest/base/food/level_0",
+  "loot_table": "dungeoncrawl:chest/contents/food/level_0",
   "rooms": {
     "lower_staircase": [
       "dungeoncrawl:room/lower_staircase"

@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
+import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
@@ -66,7 +67,7 @@ public interface LevelTypes {
                                 .build()))
                 .spawnerTypes(new IRandom.Builder<Holder<SpawnerType>>()
                         .add(spawnerTypes.get(SharedKeys.Spawner.Type.DEFAULT).orElseThrow()))
-                .lootTable(SharedKeys.Loot.FOOD_LEVEL_0)
+                .lootTable(ChestLootTableKeys.FOOD_LEVEL_0)
                 .build());
     }
 }

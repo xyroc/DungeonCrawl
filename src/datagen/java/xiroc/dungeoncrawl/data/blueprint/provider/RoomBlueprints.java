@@ -7,6 +7,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
+import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
@@ -122,7 +123,7 @@ public interface RoomBlueprints {
                 .template(TemplateKeys.Room.SMITHY)
                 .feature(new ChestFeature(
                         new PlacementSettings(Optional.of(DungeonCrawl.locate("chest")), new Constant(1)),
-                        new ChestSettings(Optional.of(new TieredResource.Builder<>(SharedKeys.Loot.Specialities.TEMPERED_BLADE).build()))))
+                        new ChestSettings(Optional.of(new TieredResource.Builder<>(ChestLootTableKeys.Speciality.TEMPERED_BLADE).build()))))
                 .multipart(new BlueprintMultipart(SharedKeys.Anchor.FLOOR, new IRandom.Builder<Holder<Blueprint>>()
                         .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_5x5_SOLID))
                         .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_5x5_FRAGILE))

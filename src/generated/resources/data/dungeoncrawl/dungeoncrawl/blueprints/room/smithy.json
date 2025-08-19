@@ -3,7 +3,7 @@
     {
       "type": "dungeoncrawl:chest",
       "chest": {
-        "loot_table": "dungeoncrawl:chest/speciality/tempered_blade"
+        "loot_table": "dungeoncrawl:chest/contents/speciality/raw/tempered_blade"
       },
       "placement": {
         "amount": 1,

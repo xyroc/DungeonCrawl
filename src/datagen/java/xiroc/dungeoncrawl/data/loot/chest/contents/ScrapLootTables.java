@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.data.loot.chest.base;
+package xiroc.dungeoncrawl.data.loot.chest.contents;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
@@ -10,14 +10,14 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import xiroc.dungeoncrawl.data.SharedKeys;
+import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
 
 import java.util.function.BiConsumer;
 
 public record ScrapLootTables(HolderLookup.Provider registries) implements LootTableSubProvider {
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> collector) {
-        collector.accept(SharedKeys.Loot.SCRAP_LEVEL_0, new LootTable.Builder()
+        collector.accept(ChestLootTableKeys.SCRAP_LEVEL_0, new LootTable.Builder()
                 .withPool(LootPool.lootPool()
                         .name("scrap")
                         .setRolls(ConstantValue.exactly(1))

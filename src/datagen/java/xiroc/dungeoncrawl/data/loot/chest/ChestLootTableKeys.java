@@ -21,6 +21,8 @@ public interface ChestLootTableKeys {
     ResourceKey<LootTable> FOOD_LEVEL_0 = key(DataGen.tieredResource(__FOOD, 0));
     ResourceKey<LootTable> FOOD_LEVEL_1 = key(DataGen.tieredResource(__FOOD, 1));
     ResourceKey<LootTable> FOOD_LEVEL_2 = key(DataGen.tieredResource(__FOOD, 2));
+    ResourceKey<LootTable> FOOD_LEVEL_3 = key(DataGen.tieredResource(__FOOD, 3));
+    ResourceKey<LootTable> FOOD_LEVEL_4 = key(DataGen.tieredResource(__FOOD, 4));
 
     ResourceLocation __BLOCKS = DataGen.subdirectory(__CONTENTS, "blocks");
     ResourceKey<LootTable> BLOCKS_LEVEL_0 = key(DataGen.tieredResource(__BLOCKS, 0));

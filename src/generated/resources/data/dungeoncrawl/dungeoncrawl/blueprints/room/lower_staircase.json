@@ -2,7 +2,7 @@
   "placement_settings": {
     "minecraft:cobblestone": {
       "alternative": {
-        "type": "fencing"
+        "type": "dungeoncrawl:fencing"
       },
       "fill_air": false,
       "fill_solid": true

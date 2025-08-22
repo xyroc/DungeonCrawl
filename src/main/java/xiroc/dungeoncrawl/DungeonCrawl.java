@@ -26,13 +26,11 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.datapack.registry.ResourceReloadHandler;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.init.ModRegistries;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.init.ModStructureTypes;
@@ -57,16 +55,12 @@ public class DungeonCrawl {
         ModStructureTypes.REGISTER.register(modEventBus);
         ModStructurePieceTypes.REGISTER.register(modEventBus);
         modEventBus.addListener(DatapackRegistries::register);
-        modEventBus.addListener(ModRegistries::register);
-        modEventBus.addListener(this::register);
+        modEventBus.addListener(ModRegistries::addRegistries);
+        modEventBus.addListener(ModRegistries::registerEntries);
 
         IEventBus forgeEventBus = NeoForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
         forgeEventBus.addListener(this::onTagsUpdated);
-    }
-
-    private void register(final RegisterEvent event) {
-        event.register(ModRegistries.BLUEPRINT_FEATURE_KEY, BlueprintFeature::register);
     }
 
     private void onAddReloadListener(final AddReloadListenerEvent event) {

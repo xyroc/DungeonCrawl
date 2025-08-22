@@ -1,7 +1,7 @@
 {
   "block_types": {
     "minecraft:stone_bricks": {
-      "type": "floor"
+      "type": "dungeoncrawl:floor"
     }
   },
   "template": "dungeoncrawl:part/floor/3x3"

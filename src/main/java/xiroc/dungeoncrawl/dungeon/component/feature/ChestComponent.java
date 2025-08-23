@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.component.feature;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +19,7 @@ import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 public record ChestComponent(Anchor placement, ResourceKey<LootTable> lootTable) implements DungeonComponent {
-    public static final Codec<ChestComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<ChestComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             Anchor.CODEC.fieldOf("placement").forGetter(ChestComponent::placement),
             GlobalCodecs.LOOT_TABLE.fieldOf("loot_table").forGetter(ChestComponent::lootTable)
     ).apply(builder, ChestComponent::new));
@@ -47,12 +45,7 @@ public record ChestComponent(Anchor placement, ResourceKey<LootTable> lootTable)
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

@@ -1,8 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.component.feature;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -22,7 +21,7 @@ import xiroc.dungeoncrawl.util.random.value.Range;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 public record FurnaceComponent(Anchor placement, boolean lit) implements DungeonComponent {
-    public static final Codec<FurnaceComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<FurnaceComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             Anchor.CODEC.fieldOf("pos").forGetter(FurnaceComponent::placement),
             Codec.BOOL.fieldOf("lit").forGetter(FurnaceComponent::lit)
     ).apply(builder, FurnaceComponent::new));
@@ -50,12 +49,7 @@ public record FurnaceComponent(Anchor placement, boolean lit) implements Dungeon
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

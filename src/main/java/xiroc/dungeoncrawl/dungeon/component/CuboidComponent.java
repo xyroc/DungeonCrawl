@@ -1,8 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.component;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
@@ -11,28 +10,25 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
-public record CuboidComponent(BoundingBox size) implements DungeonComponent {
-    public static final Codec<CuboidComponent> CODEC = BoundingBox.CODEC.xmap(CuboidComponent::new, CuboidComponent::size);
+public record CuboidComponent(BoundingBox extent) implements DungeonComponent {
+    public static final MapCodec<CuboidComponent> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BoundingBox.CODEC.fieldOf("extent").forGetter(CuboidComponent::extent)
+    ).apply(instance, CuboidComponent::new));
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
-        final BlockPos start = new BlockPos(size.minX(), size.minY(), size.minZ());
-        final BlockPos end = new BlockPos(size.maxX(), size.maxY(), size.maxZ());
+        final BlockPos start = new BlockPos(extent.minX(), extent.minY(), extent.minZ());
+        final BlockPos end = new BlockPos(extent.maxX(), extent.maxY(), extent.maxZ());
         WorldEditor.fill(level, worldGenContext.primaryTheme().value().masonry(), null, start, end, worldGenBounds, random, false);
     }
 
     @Override
     public BoundingBoxBuilder boundingBox() {
-        return new BoundingBoxBuilder(size);
+        return new BoundingBoxBuilder(extent);
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.component;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
@@ -13,7 +11,7 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 public record EntranceComponent(Anchor placement, Entrance.Decoration decoration) implements DungeonComponent {
-    public static final Codec<EntranceComponent> CODEC = RecordCodecBuilder.create(builder ->
+    public static final MapCodec<EntranceComponent> CODEC = RecordCodecBuilder.mapCodec(builder ->
             builder.group(Anchor.CODEC.fieldOf("placement").forGetter(EntranceComponent::placement),
                             Entrance.Decoration.CODEC.fieldOf("decoration").forGetter(EntranceComponent::decoration))
                     .apply(builder, EntranceComponent::new));
@@ -32,12 +30,7 @@ public record EntranceComponent(Anchor placement, Entrance.Decoration decoration
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.component;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -16,7 +14,7 @@ import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 public record BlueprintComponent(Holder<Blueprint> blueprint, BlockPos position, Rotation rotation) implements DungeonComponent {
-    public static final Codec<BlueprintComponent> CODEC = RecordCodecBuilder.create(builder ->
+    public static final MapCodec<BlueprintComponent> CODEC = RecordCodecBuilder.mapCodec(builder ->
             builder.group(Blueprint.HOLDER_CODEC.fieldOf("blueprint").forGetter(BlueprintComponent::blueprint),
                             BlockPos.CODEC.fieldOf("pos").forGetter(BlueprintComponent::position),
                             GlobalCodecs.ROTATION.fieldOf("rot").forGetter(BlueprintComponent::rotation))
@@ -33,12 +31,7 @@ public record BlueprintComponent(Holder<Blueprint> blueprint, BlockPos position,
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

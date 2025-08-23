@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.component.feature;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -19,9 +17,9 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 public record SpawnerComponent(BlockPos position, Holder<SpawnerType> type) implements DungeonComponent {
-    public static final Codec<SpawnerComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<SpawnerComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             BlockPos.CODEC.fieldOf("position").forGetter(SpawnerComponent::position),
-            SpawnerType.HOLDER_CODEC.fieldOf("type").forGetter(SpawnerComponent::type)
+            SpawnerType.HOLDER_CODEC.fieldOf("spawner_type").forGetter(SpawnerComponent::type)
     ).apply(builder, SpawnerComponent::new));
 
     @Override
@@ -44,12 +42,7 @@ public record SpawnerComponent(BlockPos position, Holder<SpawnerType> type) impl
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

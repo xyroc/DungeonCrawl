@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.component.feature;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -22,7 +20,7 @@ import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 public record FlowerPotComponent(BlockPos position, Block soil, Block flower) implements DungeonComponent {
-    public static final Codec<FlowerPotComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<FlowerPotComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             BlockPos.CODEC.fieldOf("position").forGetter(FlowerPotComponent::position),
             GlobalCodecs.BLOCK.fieldOf("soil").forGetter(FlowerPotComponent::soil),
             GlobalCodecs.BLOCK.fieldOf("flower").forGetter(FlowerPotComponent::flower)
@@ -58,12 +56,7 @@ public record FlowerPotComponent(BlockPos position, Block soil, Block flower) im
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

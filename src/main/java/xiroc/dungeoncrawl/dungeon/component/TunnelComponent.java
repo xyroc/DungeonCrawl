@@ -1,9 +1,8 @@
 package xiroc.dungeoncrawl.dungeon.component;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import net.minecraft.Util;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -16,15 +15,14 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
-import java.util.stream.IntStream;
-
 public record TunnelComponent(BlockPos start, Direction direction, int length, int height, int width) implements DungeonComponent {
-    public static final Codec<TunnelComponent> CODEC = Codec.INT_STREAM.comapFlatMap(
-            encoded -> Util.fixedSize(encoded, 7).map(
-                    values -> new TunnelComponent(new BlockPos(values[0], values[1], values[2]), Direction.from3DDataValue(values[3]), values[4], values[5], values[6])),
-            decoded -> IntStream.of(
-                    decoded.start.getX(), decoded.start.getY(), decoded.start.getZ(), decoded.direction.get3DDataValue(), decoded.length, decoded.height, decoded.width)
-    ).stable();
+    public static final MapCodec<TunnelComponent> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BlockPos.CODEC.fieldOf("start").forGetter(TunnelComponent::start),
+            Direction.CODEC.fieldOf("direction").forGetter(TunnelComponent::direction),
+            Codec.INT.fieldOf("length").forGetter(TunnelComponent::length),
+            Codec.INT.fieldOf("height").forGetter(TunnelComponent::height),
+            Codec.INT.fieldOf("width").forGetter(TunnelComponent::width)
+    ).apply(instance, TunnelComponent::new));
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
@@ -53,12 +51,7 @@ public record TunnelComponent(BlockPos start, Direction direction, int length, i
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

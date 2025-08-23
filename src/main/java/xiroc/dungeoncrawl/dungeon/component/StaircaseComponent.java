@@ -1,9 +1,8 @@
 package xiroc.dungeoncrawl.dungeon.component;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import net.minecraft.Util;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -17,13 +16,14 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
-import java.util.stream.IntStream;
-
 public record StaircaseComponent(BlockPos center, int height, int wallBottom, int wallTop, int rotation) implements DungeonComponent {
-    public static final Codec<StaircaseComponent> CODEC = Codec.INT_STREAM.comapFlatMap(
-            encoded -> Util.fixedSize(encoded, 7).map(values -> new StaircaseComponent(new BlockPos(values[0], values[1], values[2]), values[3], values[4], values[5], values[6])),
-            decoded -> IntStream.of(decoded.center.getX(), decoded.center.getY(), decoded.center.getZ(), decoded.height, decoded.wallBottom, decoded.wallTop, decoded.rotation)
-    ).stable();
+    public static final MapCodec<StaircaseComponent> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            BlockPos.CODEC.fieldOf("center").forGetter(StaircaseComponent::center),
+            Codec.INT.fieldOf("height").forGetter(StaircaseComponent::height),
+            Codec.INT.fieldOf("wall_bottom").forGetter(StaircaseComponent::wallBottom),
+            Codec.INT.fieldOf("wall_top").forGetter(StaircaseComponent::wallTop),
+            Codec.INT.fieldOf("rotation").forGetter(StaircaseComponent::rotation)
+    ).apply(instance, StaircaseComponent::new));
 
     /**
      * Staircase facings, in the order of clockwise 90 degree rotations, starting from north.
@@ -72,12 +72,7 @@ public record StaircaseComponent(BlockPos center, int height, int wallBottom, in
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

@@ -1,8 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.component.feature;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +26,7 @@ import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 public record SarcophagusComponent(Anchor placement, Holder<SpawnerType> spawnerType, ResourceKey<LootTable> lootTable) implements DungeonComponent {
-    public static final Codec<SarcophagusComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<SarcophagusComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             Anchor.CODEC.fieldOf("placement").forGetter(SarcophagusComponent::placement),
             SpawnerType.HOLDER_CODEC.fieldOf("spawner_type").forGetter(SarcophagusComponent::spawnerType),
             GlobalCodecs.LOOT_TABLE.fieldOf("loot_table").forGetter(SarcophagusComponent::lootTable)
@@ -83,12 +81,7 @@ public record SarcophagusComponent(Anchor placement, Holder<SpawnerType> spawner
     }
 
     @Override
-    public int componentType() {
-        return DECODERS.getId(CODEC);
-    }
-
-    @Override
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        return CODEC.encodeStart(ops, this);
+    public MapCodec<? extends DungeonComponent> codec() {
+        return CODEC;
     }
 }

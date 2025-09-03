@@ -108,7 +108,7 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
                 .map(ResourceLocation::toString)
                 .orElse("null");
         DungeonCrawl.LOGGER.debug("Generated a dungeon of type {} with {} pieces.", dungeonTypeName, plan.pieceCount());
-        plan.forEach((element) -> element.createPieces(dungeonBuilder.structurePiecesBuilder::addPiece, random));
+        plan.forEach((element) -> element.createPieces(dungeonBuilder.structurePiecesBuilder::addPiece));
     }
 
     private Map<Integer, List<SecretRoom>> gatherGlobalSecretRooms(Holder<DungeonType> dungeonType, RandomSource random) {

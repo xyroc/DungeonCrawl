@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import org.jetbrains.annotations.Nullable;
@@ -24,13 +23,15 @@ import java.util.function.Consumer;
 
 public class NodeElement extends DungeonElement {
     private final BlueprintPiece piece;
+    private final GeneratorContext context;
 
     public final int depth;
     public final ArrayList<Entrance> unusedEntrances;
 
-    public NodeElement(BlueprintPiece piece, int depth) {
+    public NodeElement(BlueprintPiece piece, GeneratorContext context, int depth) {
         super(piece.getBoundingBox());
         this.piece = piece;
+        this.context = context;
         this.depth = depth;
         this.unusedEntrances = Lists.newArrayList(piece.base.blueprint().value().entrances());
     }
@@ -81,28 +82,28 @@ public class NodeElement extends DungeonElement {
             return null;
         }
 
-        final NodeElement node = new NodeElement(roomPiece, depth);
+        final NodeElement node = new NodeElement(roomPiece, context, depth);
         context.dungeonPlan().add(node);
         node.unusedEntrances.remove(chosenEntrance);
         final Anchor rotatedEntrance = room.value().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), roomRotation);
-        node.addEntrance(rotatedEntrance, entrance, levelGenerator.random);
+        node.addEntrance(rotatedEntrance, entrance);
         return node;
     }
 
-    public void addEntrance(Anchor placement, Entrance entrance, RandomSource random) {
+    public void addEntrance(Anchor placement, Entrance entrance) {
         EntranceComponent placedEntrance = entrance.place(placement);
         if (placedEntrance != null) {
             piece.addComponent(placedEntrance);
         }
-        entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.open(), piece, piece.base, random));
+        entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.open(), piece, piece.base, context.levelGenerator()));
     }
 
     @Override
-    public void createPieces(Consumer<StructurePiece> consumer, RandomSource random) {
+    public void createPieces(Consumer<StructurePiece> consumer) {
         CoordinateSpace coordinateSpace = piece.base.blueprint().value().coordinateSpace(piece.base.position());
         for (Entrance entrance : unusedEntrances) {
             Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
-            entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(position.opposite(), parts.closed(), piece, piece.base, random));
+            entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(position.opposite(), parts.closed(), piece, piece.base, context.levelGenerator()));
         }
         piece.updateBoundingBox();
         consumer.accept(piece);

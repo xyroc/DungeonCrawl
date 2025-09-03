@@ -11,11 +11,11 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
-import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.component.CuboidComponent;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.TunnelComponent;
+import xiroc.dungeoncrawl.dungeon.generator.level.GeneratorContext;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 public class CorridorElement extends DungeonElement {
     private static final int FRAGMENT_LENGTH = 3;
 
-    private final LevelGenerator levelGenerator;
+    private final GeneratorContext context;
     private final Direction direction;
     private final BlockPos start;
     private final CorridorStyle style;
@@ -43,12 +43,12 @@ public class CorridorElement extends DungeonElement {
     private final List<Fragment> fragments;
     private final List<DungeonComponent> additionalComponents;
 
-    public CorridorElement(LevelGenerator levelGenerator, BlockPos start, Direction direction, BoundingBox boundingBox) {
+    public CorridorElement(GeneratorContext context, BlockPos start, Direction direction, BoundingBox boundingBox) {
         super(boundingBox);
-        this.levelGenerator = levelGenerator;
+        this.context = context;
         this.start = start;
         this.direction = direction;
-        this.style = levelGenerator.levelType.corridorStyles().roll(levelGenerator.random);
+        this.style = context.levelGenerator().levelType.corridorStyles().roll(context.levelGenerator().random);
         this.fragmentationStart = (length() % FRAGMENT_LENGTH) / 2;
         this.fragments = new ArrayList<>();
         this.additionalComponents = new ArrayList<>(0);
@@ -67,7 +67,7 @@ public class CorridorElement extends DungeonElement {
         final int segments = style.segments().size();
 
         while (remaining >= FRAGMENT_LENGTH) {
-            final Holder<Blueprint> segmentDelegate = style.segments().get(currentSegment).roll(levelGenerator.random);
+            final Holder<Blueprint> segmentDelegate = style.segments().get(currentSegment).roll(context.levelGenerator().random);
             final Blueprint segment = segmentDelegate.value();
 
             final Anchor attachmentPoint = new Anchor(pos.relative(direction.getOpposite()), direction);
@@ -82,9 +82,9 @@ public class CorridorElement extends DungeonElement {
             }
 
             if (!placementFailed) {
-                final Anchor corridorAnchor = corridorAnchors.get(levelGenerator.random.nextInt(corridorAnchors.size()));
+                final Anchor corridorAnchor = corridorAnchors.get(context.levelGenerator().random.nextInt(corridorAnchors.size()));
                 final var placement = corridorAnchor.latchOnto(attachmentPoint, segmentDelegate.value());
-                final BlueprintPiece corridor = levelGenerator.assemblePiece(segmentDelegate, placement.getFirst(), placement.getSecond());
+                final BlueprintPiece corridor = context.levelGenerator().assemblePiece(segmentDelegate, placement.getFirst(), placement.getSecond());
                 if (corridor != null) {
                     fragments.add(new Fragment(corridor));
                 } else {
@@ -103,6 +103,7 @@ public class CorridorElement extends DungeonElement {
     }
 
     private void addSideSegments() {
+        final LevelGenerator levelGenerator = context.levelGenerator();
         for (Fragment fragment : this.fragments) {
             final Blueprint mainSegment = fragment.piece.base.blueprint().value();
             final CoordinateSpace coordinateSpace = mainSegment.coordinateSpace(fragment.piece.base.position());
@@ -117,9 +118,7 @@ public class CorridorElement extends DungeonElement {
 
                 if (sideSegment != null) {
                     fragment.piece.addComponent(sideSegment);
-                    for (BlueprintFeature feature : sideSegment.blueprint().value().features()) {
-                        feature.create(levelGenerator, fragment.piece::addComponent, null, sideSegment.blueprint().value(), sideSegment.position(), sideSegment.rotation());
-                    }
+                    sideSegment.blueprint().value().populateFeatures(levelGenerator, sideSegment.position(), sideSegment.rotation(), fragment.piece::addComponent);
                 } else {
                     // Side segment could not be placed, close the side off with a wall
                     final BlockPos wallPlacement = attachmentPoint.position().relative(attachmentPoint.direction()).above();
@@ -162,6 +161,8 @@ public class CorridorElement extends DungeonElement {
             return null;
         }
 
+        final LevelGenerator levelGenerator = context.levelGenerator();
+
         for (int attempt = 0; attempt < junctures.size(); ++attempt) {
             final int chosenJuncture = levelGenerator.random.nextInt(junctures.size());
             final Anchor juncture = junctures.get(chosenJuncture);
@@ -180,7 +181,7 @@ public class CorridorElement extends DungeonElement {
     }
 
     public boolean attachSecretRoomWithEntrance(SecretRoom room) {
-        final RandomSource random = levelGenerator.random;
+        final RandomSource random = context.levelGenerator().random;
         for (int fragmentAttempt = 0; fragmentAttempt < fragments.size(); fragmentAttempt++) {
             final Fragment fragment = fragments.get(random.nextInt(fragments.size()));
             final List<Anchor> junctures = fragment.unusedJunctures;
@@ -204,6 +205,7 @@ public class CorridorElement extends DungeonElement {
 
     @Nullable
     private BlueprintComponent attachSecretRoomWithEntrance(SecretRoom room, Anchor attachmentPoint) {
+        final LevelGenerator levelGenerator = context.levelGenerator();
         final Holder<Blueprint> entranceBlueprint = room.entrances().roll(levelGenerator.random);
 
         final BlueprintComponent entranceSegment = createSideSegment(entranceBlueprint, attachmentPoint);
@@ -230,6 +232,7 @@ public class CorridorElement extends DungeonElement {
     }
 
     private boolean attachSecretRoom(SecretRoom room, Anchor attachmentPoint) {
+        final LevelGenerator levelGenerator = context.levelGenerator();
         final int entranceTunnelLength = 3 + levelGenerator.random.nextInt(5);
 
         final BlockPos tunnelStart = attachmentPoint.position().relative(attachmentPoint.direction());
@@ -241,7 +244,7 @@ public class CorridorElement extends DungeonElement {
 
         final Anchor roomAttachmentPoint = new Anchor(tunnelStart.relative(attachmentPoint.direction(), entranceTunnelLength - 1), attachmentPoint.direction());
         final Holder<Blueprint> roomVariant = room.variants().roll(levelGenerator.random);
-        final NodeElement node = NodeElement.attachRoom(levelGenerator.generatorContext, roomAttachmentPoint, roomVariant, 0);
+        final NodeElement node = NodeElement.attachRoom(context, roomAttachmentPoint, roomVariant, 0);
 
         if (node != null) {
             // TODO: create component dungeon element type, instantiate one to hold the tunnel
@@ -254,13 +257,13 @@ public class CorridorElement extends DungeonElement {
     }
 
     @Override
-    public void createPieces(Consumer<StructurePiece> consumer, RandomSource random) {
+    public void createPieces(Consumer<StructurePiece> consumer) {
         addSideSegments();
         fragments.forEach(fragment -> consumer.accept(fragment.piece));
 
-        Holder<PrimaryTheme> primaryTheme = levelGenerator.primaryTheme;
-        Holder<SecondaryTheme> secondaryTheme = levelGenerator.secondaryTheme;
-
+        final LevelGenerator levelGenerator = context.levelGenerator();
+        final Holder<PrimaryTheme> primaryTheme = levelGenerator.primaryTheme;
+        final Holder<SecondaryTheme> secondaryTheme = levelGenerator.secondaryTheme;
         final int stage = levelGenerator.stage;
         final DungeonWorldGenContext tunnelGenContext = new DungeonWorldGenContext(primaryTheme, secondaryTheme, start.getY() - 1, stage);
 

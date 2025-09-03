@@ -124,7 +124,7 @@ public class LevelGenerator {
 
         staircasePlanner.setBottom(boundingBox.minY + offset.getY(), boundingBox.maxY);
 
-        final NodeElement staircase = new NodeElement(piece, 0);
+        final NodeElement staircase = new NodeElement(piece, generatorContext, 0);
         plan.add(staircase);
         this.start = staircase;
         this.nodes.add(staircase);
@@ -166,10 +166,10 @@ public class LevelGenerator {
             }
 
             if (nodeCreated) {
-                node.addEntrance(placement, entrance, random);
+                node.addEntrance(placement, entrance);
                 --maxRooms;
             } else {
-                entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.closed(), piece, piece.base, random));
+                entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.closed(), piece, piece.base, this));
             }
         }
     }
@@ -192,9 +192,7 @@ public class LevelGenerator {
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
         BlueprintPiece piece = new BlueprintPiece(baseComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, baseComponent.position().getY(), stage));
 
-        for (var feature : blueprint.value().features()) {
-            feature.create(this, piece::addComponent, null, blueprint.value(), piece.base.position(), piece.base.rotation());
-        }
+        blueprint.value().populateFeatures(this, piece.base.position(), piece.base.rotation(), piece::addComponent);
 
         List<BlueprintMultipart> parts = blueprint.value().parts();
         if (parts.isEmpty()) {
@@ -202,7 +200,7 @@ public class LevelGenerator {
         }
 
         for (BlueprintMultipart part : parts) {
-            if (!part.addParts(piece, baseComponent, random)) {
+            if (!part.addParts(piece, baseComponent, this)) {
                 return null;
             }
         }
@@ -211,7 +209,7 @@ public class LevelGenerator {
     }
 
     public void createCorridor(BlockPos start, Direction direction, BoundingBox boundingBox) {
-        CorridorElement corridor = new CorridorElement(this, start, direction, boundingBox);
+        CorridorElement corridor = new CorridorElement(generatorContext, start, direction, boundingBox);
         this.plan.add(corridor);
         this.corridors.add(corridor);
     }

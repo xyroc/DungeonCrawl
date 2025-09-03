@@ -21,6 +21,8 @@ import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockColumn;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
+import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
+import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.dungeon.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
@@ -31,6 +33,7 @@ import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Blueprint {
     // Lazy initialization to break up cycle on class load
@@ -87,6 +90,19 @@ public class Blueprint {
                 WorldEditor.buildFoundation(level, columnPos, random, worldGenBounds, worldGenContext);
             }
         });
+    }
+
+    /**
+     * Instantiates the features of this blueprint and passes them to the consumer.
+     * @param levelGenerator The generator for the level this blueprint is placed in. Holds the source of randomness.
+     * @param offset The offset in the world where this blueprint is placed.
+     * @param rotation The rotation this blueprint was placed with.
+     * @param collector A consumer to receive the resulting components.
+     */
+    public void populateFeatures(LevelGenerator levelGenerator, BlockPos offset, Rotation rotation, Consumer<DungeonComponent> collector) {
+        for (BlueprintFeature feature : features()) {
+            feature.create(levelGenerator, collector, null, this, offset, rotation);
+        }
     }
 
     public int xSpan() {

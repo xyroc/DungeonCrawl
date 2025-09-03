@@ -1,6 +1,5 @@
 package xiroc.dungeoncrawl.dungeon.generator.element;
 
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import xiroc.dungeoncrawl.util.bounds.Bounded;
@@ -14,7 +13,7 @@ public abstract class DungeonElement implements Bounded {
         this.boundingBox = boundingBox;
     }
 
-    public abstract void createPieces(Consumer<StructurePiece> consumer, RandomSource random);
+    public abstract void createPieces(Consumer<StructurePiece> consumer);
 
     @Override
     public int minX() {

@@ -128,7 +128,7 @@ public class ClusterNodeGenerator {
             if (attachNode(attachmentPoint, attachClusterNodes)) {
                 ++nodesAdded;
                 node.unusedEntrances.remove(chosenEntrance);
-                node.addEntrance(attachmentPoint, entrance, context.levelGenerator().random);
+                node.addEntrance(attachmentPoint, entrance);
             }
         }
         return nodesAdded;

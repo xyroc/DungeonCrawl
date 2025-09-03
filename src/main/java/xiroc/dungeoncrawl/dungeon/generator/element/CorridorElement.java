@@ -169,7 +169,7 @@ public class CorridorElement extends DungeonElement {
             final var placement = juncture.latchOnto(attachmentPoint, segment.value());
             final BlueprintComponent segmentComponent = new BlueprintComponent(segment, placement.getFirst(), placement.getSecond());
 
-            if (levelGenerator.plan.anyMatch(segmentComponent.boundingBox(), element -> element != this)) {
+            if (context.dungeonPlan().anyMatch(segmentComponent.boundingBox(), element -> element != this)) {
                 // Collision with another element.
                 continue;
             }
@@ -238,7 +238,7 @@ public class CorridorElement extends DungeonElement {
         final BlockPos tunnelStart = attachmentPoint.position().relative(attachmentPoint.direction());
         final DungeonComponent tunnelComponent = new TunnelComponent(tunnelStart, attachmentPoint.direction(), entranceTunnelLength, 4, 1);
 
-        if (!levelGenerator.plan.isFree(tunnelComponent.boundingBox())) {
+        if (!context.dungeonPlan().isFree(tunnelComponent.boundingBox())) {
             return false;
         }
 

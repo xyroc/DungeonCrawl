@@ -33,15 +33,15 @@ import java.util.List;
 
 public class LevelGenerator {
     public final LevelType levelType;
-    public final DungeonPlan plan;
     public final int startHeight;
     public final int stage;
     public final RandomSource random;
     public final Holder<PrimaryTheme> primaryTheme;
     public final Holder<SecondaryTheme> secondaryTheme;
     public final GeneratorContext generatorContext;
-    public final RoomChooser roomChooser;
 
+    private final DungeonPlan plan;
+    protected final RoomChooser roomChooser;
     private final SecretRoomGenerator secretRoomGenerator;
     private final List<NodeElement> nodes = new ArrayList<>();
     protected final List<CorridorElement> corridors = new ArrayList<>();

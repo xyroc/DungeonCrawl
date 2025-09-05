@@ -47,7 +47,7 @@ public interface TemplateKeys {
         ResourceLocation __CORRIDOR = DataGen.resource("corridor");
 
         interface Side {
-            ResourceLocation __SIDE = DataGen.subdirectory(__CORRIDOR, "side");
+            ResourceLocation __SIDE = DataGen.resource(__CORRIDOR, "side");
 
             ResourceLocation BASE = DataGen.resource(__SIDE, "base");
             ResourceLocation CROPS = DataGen.resource(__SIDE, "crops");
@@ -58,7 +58,7 @@ public interface TemplateKeys {
         }
 
         interface Segment {
-            ResourceLocation __SEGMENT = DataGen.subdirectory(__CORRIDOR, "segment");
+            ResourceLocation __SEGMENT = DataGen.resource(__CORRIDOR, "segment");
 
             ResourceLocation ARCH = DataGen.resource(__SEGMENT, "arch");
             ResourceLocation BASE = DataGen.resource(__SEGMENT, "base");

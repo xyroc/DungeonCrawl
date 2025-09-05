@@ -107,11 +107,7 @@ public class DataGen {
         return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/" + name);
     }
 
-    public static ResourceLocation tieredResource(ResourceLocation directory, int tier) {
-        return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/level_" + tier);
-    }
-
-    public static ResourceLocation subdirectory(ResourceLocation directory, String subdirectory) {
-        return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/" + subdirectory);
+    public static ResourceLocation resourceLevel(ResourceLocation directory, int level) {
+        return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/level_" + level);
     }
 }

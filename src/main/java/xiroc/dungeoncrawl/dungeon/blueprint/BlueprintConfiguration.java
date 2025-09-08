@@ -112,7 +112,7 @@ public class BlueprintConfiguration {
             .build();
 
     private static final ImmutableMap<ResourceLocation, EntranceType> DEFAULT_ENTRANCE_TYPES = ImmutableMap.of(
-            BuiltinAnchorTypes.ENTRANCE, new EntranceType(Optional.of(Entrance.Decoration.PRIMARY), Optional.empty())
+            BuiltinAnchorTypes.ENTRANCE, new EntranceType(Optional.of(Entrance.Decoration.PRIMARY), Optional.empty(), false)
     );
 
     // Default values for optional fields
@@ -266,11 +266,12 @@ public class BlueprintConfiguration {
         return settings != null ? settings : defaultPlacementSettings;
     }
 
-    protected record EntranceType(Optional<Entrance.Decoration> decoration, Optional<Entrance.CustomParts> customParts) {
+    protected record EntranceType(Optional<Entrance.Decoration> decoration, Optional<Entrance.CustomParts> customParts, boolean isClusterEntrance) {
         public static final Codec<EntranceType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Entrance.Decoration.BY_NAME_CODEC.optionalFieldOf("decoration").forGetter(EntranceType::decoration),
-                Entrance.CustomParts.CODEC.optionalFieldOf("custom_parts").forGetter(EntranceType::customParts)
-        ).apply(instance, EntranceType::new));
+                Entrance.CustomParts.CODEC.optionalFieldOf("custom_parts").forGetter(EntranceType::customParts),
+                Codec.BOOL.optionalFieldOf("is_cluster_entrance").forGetter(type -> type.isClusterEntrance ? Optional.of(true) : Optional.empty())
+        ).apply(instance, (decoration, customParts, isCluster) -> new EntranceType(decoration, customParts, isCluster.orElse(false))));
 
         public Entrance make(Anchor placement) {
             return new Entrance(placement, decoration, customParts);
@@ -336,7 +337,11 @@ public class BlueprintConfiguration {
         }
 
         public Builder entranceType(ResourceLocation anchorType, @Nullable Entrance.Decoration decoration, @Nullable Entrance.CustomParts customParts) {
-            return entranceType(anchorType, new EntranceType(Optional.ofNullable(decoration), Optional.ofNullable(customParts)));
+            return entranceType(anchorType, new EntranceType(Optional.ofNullable(decoration), Optional.ofNullable(customParts), false));
+        }
+
+        public Builder clusterEntranceType(ResourceLocation anchorType, @Nullable Entrance.Decoration decoration, @Nullable Entrance.CustomParts customParts) {
+            return entranceType(anchorType, new EntranceType(Optional.ofNullable(decoration), Optional.ofNullable(customParts), true));
         }
 
         private Builder entranceType(ResourceLocation anchorType, EntranceType type) {

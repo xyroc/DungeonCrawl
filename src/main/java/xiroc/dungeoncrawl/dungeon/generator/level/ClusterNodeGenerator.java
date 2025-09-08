@@ -80,7 +80,6 @@ public class ClusterNodeGenerator {
 
     private boolean attachNode(Anchor anchor, boolean isClusterNode) {
         final LevelGenerator levelGenerator = context.levelGenerator();
-
         final int nextDepth = isClusterNode ? depth : depth + 1;
 
         for (int roomAttempt = 0; roomAttempt < 3; ++roomAttempt) {
@@ -91,7 +90,7 @@ public class ClusterNodeGenerator {
             }
 
             for (int entranceAttempt = 0; entranceAttempt < 4; ++entranceAttempt) {
-                final NodeElement node = NodeElement.attachRoom(this.context, anchor, room, nextDepth);
+                final NodeElement node = NodeElement.attachRoom(this.context, anchor, room, nextDepth, isClusterNode);
                 if (node != null) {
                     if (!isClusterNode) {
                         // Mark the node as active so that the layer generator can use it for further generation
@@ -114,20 +113,21 @@ public class ClusterNodeGenerator {
      * @return the number of nodes added
      */
     private int grow(NodeElement node, boolean attachClusterNodes) {
-        if (node.unusedEntrances.isEmpty()) {
+        final List<Entrance> unusedEntrances = attachClusterNodes ? node.unusedClusterEntrances : node.unusedEntrances;
+        if (unusedEntrances.isEmpty()) {
             return 0;
         }
-        final int maxAttempts = node.unusedEntrances.size() * 2;
-        final int maxNodesAdded = Math.min(3, node.unusedEntrances.size());
+        final int maxAttempts = unusedEntrances.size() * 2;
+        final int maxNodesAdded = Math.min(3, unusedEntrances.size());
         int nodesAdded = 0;
         for (int attempt = 0; attempt < maxAttempts && nodesAdded < maxNodesAdded; ++attempt) {
-            int chosenEntrance = random.nextInt(node.unusedEntrances.size());
-            Entrance entrance = node.unusedEntrances.get(chosenEntrance);
+            int chosenEntrance = random.nextInt(unusedEntrances.size());
+            Entrance entrance = unusedEntrances.get(chosenEntrance);
             BlueprintComponent base = node.piece().base;
             Anchor attachmentPoint = base.blueprint().value().coordinateSpace(base.position()).rotateAndTranslateToOrigin(entrance.placement(), base.rotation());
             if (attachNode(attachmentPoint, attachClusterNodes)) {
                 ++nodesAdded;
-                node.unusedEntrances.remove(chosenEntrance);
+                unusedEntrances.remove(chosenEntrance);
                 node.addEntrance(attachmentPoint, entrance);
             }
         }

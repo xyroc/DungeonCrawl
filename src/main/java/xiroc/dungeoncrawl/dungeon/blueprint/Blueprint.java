@@ -47,12 +47,12 @@ public class Blueprint {
         return RANDOM_HOLDER_CODEC;
     }
 
-    public final BlueprintConfiguration configuration;
-
+    protected final BlueprintConfiguration configuration;
     protected Vec3i size;
     protected List<TemplateBlockColumn> blockColumns;
     protected Map<ResourceLocation, List<Anchor>> anchors;
     protected List<Entrance> entrances;
+    protected List<Entrance> clusterEntrances;
 
     public Blueprint(BlueprintConfiguration configuration) {
         this.configuration = configuration;
@@ -131,6 +131,10 @@ public class Blueprint {
 
     public List<Entrance> entrances() {
         return this.entrances;
+    }
+
+    public List<Entrance> clusterEntrances() {
+        return clusterEntrances;
     }
 
     public BoundingBoxBuilder boundingBox(Rotation rotation) {

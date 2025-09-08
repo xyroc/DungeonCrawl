@@ -18,7 +18,7 @@ import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class NodeElement extends DungeonElement {
@@ -26,7 +26,8 @@ public class NodeElement extends DungeonElement {
     private final GeneratorContext context;
 
     public final int depth;
-    public final ArrayList<Entrance> unusedEntrances;
+    public final List<Entrance> unusedEntrances;
+    public final List<Entrance> unusedClusterEntrances;
 
     public NodeElement(BlueprintPiece piece, GeneratorContext context, int depth) {
         super(piece.getBoundingBox());
@@ -34,6 +35,7 @@ public class NodeElement extends DungeonElement {
         this.context = context;
         this.depth = depth;
         this.unusedEntrances = Lists.newArrayList(piece.base.blueprint().value().entrances());
+        this.unusedClusterEntrances = Lists.newArrayList(piece.base.blueprint().value().clusterEntrances());
     }
 
     @Nullable
@@ -61,8 +63,13 @@ public class NodeElement extends DungeonElement {
 
     @Nullable
     public static NodeElement attachRoom(GeneratorContext context, Anchor attachmentPoint, Holder<Blueprint> room, int depth) {
+        return attachRoom(context, attachmentPoint, room, depth, false);
+    }
+
+    @Nullable
+    public static NodeElement attachRoom(GeneratorContext context, Anchor attachmentPoint, Holder<Blueprint> room, int depth, boolean useClusterEntrances) {
         final LevelGenerator levelGenerator = context.levelGenerator();
-        final var entrances = room.value().entrances();
+        final var entrances = useClusterEntrances ? room.value().clusterEntrances() : room.value().entrances();
         if (entrances.isEmpty()) {
             return null;
         }

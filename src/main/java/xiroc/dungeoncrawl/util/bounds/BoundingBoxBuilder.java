@@ -84,6 +84,18 @@ public class BoundingBoxBuilder implements Bounded {
         return move(offset.getX(), offset.getY(), offset.getZ());
     }
 
+    public BoundingBoxBuilder resize(Direction direction, int amount) {
+        switch (direction) {
+            case UP -> maxY += amount;
+            case DOWN -> minY -= amount;
+            case SOUTH -> maxZ += amount;
+            case NORTH -> minZ -= amount;
+            case EAST -> maxX += amount;
+            case WEST -> minX -= amount;
+        }
+        return this;
+    }
+
     @Override
     public int minX() {
         return minX;

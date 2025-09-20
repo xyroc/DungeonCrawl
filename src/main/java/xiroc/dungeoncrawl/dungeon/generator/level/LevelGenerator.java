@@ -15,6 +15,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.generator.element.CorridorElement;
+import xiroc.dungeoncrawl.dungeon.generator.element.FreeEntranceElement;
 import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.generator.staircase.StaircasePlanner;
@@ -148,12 +149,17 @@ public class LevelGenerator {
     }
 
     private void growNode(NodeElement node) {
+        node.connectToAdjacentNodes();
+
         final BlueprintPiece piece = node.piece();
         final CoordinateSpace coordinateSpace = piece.base.blueprint().value().coordinateSpace(piece.base.position());
         final int nextDepth = node.depth + 1;
-        int maxRooms = 1 + (1 + random.nextInt(4)) / 2;
-        for (int attempt = 0; !node.unusedEntrances.isEmpty() && attempt < 4 && maxRooms > 0; ++attempt) {
-            final Entrance entrance = node.unusedEntrances.remove(random.nextInt(node.unusedEntrances.size()));
+        int placementsLeft = 1 + (1 + random.nextInt(4)) / 2;
+        final List<Entrance> entrances = node.unusedEntrances;
+
+        for (int attempt = 0; !entrances.isEmpty() && attempt < 4 && placementsLeft > 0; ++attempt) {
+            final int entranceIndex = random.nextInt(entrances.size());
+            final Entrance entrance = entrances.get(entranceIndex);
             final Anchor placement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
 
             boolean nodeCreated = createClusterNode(placement, nextDepth);
@@ -167,10 +173,18 @@ public class LevelGenerator {
 
             if (nodeCreated) {
                 node.addEntrance(placement, entrance);
-                --maxRooms;
-            } else {
-                entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.closed(), piece, piece.base, this));
+                --placementsLeft;
+                entrances.remove(entranceIndex);
             }
+        }
+
+        // Add marker elements for unused entrances.
+        for (Entrance entrance : node.unusedEntrances) {
+            final Anchor placement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
+            final BoundingBox boundingBox = BoundingBoxBuilder.fromPosition(placement.position())
+                    .resize(placement.direction(), 16)
+                    .create();
+            plan.add(new FreeEntranceElement(node, entrance, placement, boundingBox));
         }
     }
 

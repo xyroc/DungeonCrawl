@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import org.jetbrains.annotations.Nullable;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 public class NodeElement extends DungeonElement {
     private final BlueprintPiece piece;
     private final GeneratorContext context;
+    private final CoordinateSpace coordinateSpace;
 
     public final int depth;
     public final List<Entrance> unusedEntrances;
@@ -33,9 +35,64 @@ public class NodeElement extends DungeonElement {
         super(piece.getBoundingBox());
         this.piece = piece;
         this.context = context;
+        this.coordinateSpace = piece.base
+                .blueprint()
+                .value()
+                .coordinateSpace(piece.base.position());
         this.depth = depth;
         this.unusedEntrances = Lists.newArrayList(piece.base.blueprint().value().entrances());
         this.unusedClusterEntrances = Lists.newArrayList(piece.base.blueprint().value().clusterEntrances());
+    }
+
+    public void connectToAdjacentNodes() {
+        if (unusedEntrances.isEmpty()) {
+            return;
+        }
+
+        final List<FreeEntranceElement> nearbyUnusedEntrances = Lists.newArrayList();
+        context.dungeonPlan().forEachIn(this, element -> {
+            if (element instanceof FreeEntranceElement freeEntranceElement && freeEntranceElement.isValid()) {
+                nearbyUnusedEntrances.add(freeEntranceElement);
+            }
+        });
+
+        if (nearbyUnusedEntrances.isEmpty()) {
+            return;
+        }
+
+        for (Entrance entrance : unusedEntrances) {
+            final Anchor entrancePlacement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
+            for (FreeEntranceElement marker : nearbyUnusedEntrances) {
+                // Check alignment.
+                if (entrancePlacement.direction() != marker.placement.direction().getOpposite()) {
+                    continue;
+                }
+                final boolean aligned = switch (entrancePlacement.direction().getAxis()) {
+                    case X -> entrancePlacement.position().getZ() == marker.placement.position().getZ();
+                    case Z -> entrancePlacement.position().getX() == marker.placement.position().getX();
+                    case Y -> false; // Vertical connections not allowed.
+                };
+                if (!aligned) {
+                    continue;
+                }
+                final int distance = switch (entrancePlacement.direction().getAxis()) {
+                    case X -> Math.abs(entrancePlacement.position().getX() - marker.placement.position().getX()) - 1;
+                    case Z -> Math.abs(entrancePlacement.position().getZ() - marker.placement.position().getZ()) - 1;
+                    default -> 0; // Unreachable.
+                };
+                final BlockPos corridorStart = entrancePlacement.position().relative(entrancePlacement.direction());
+                final BoundingBoxBuilder corridorBox = BoundingBoxBuilder.tunnel(corridorStart, entrancePlacement.direction(), distance, 8, 2);
+                if (!context.dungeonPlan().isFree(corridorBox)) {
+                    continue;
+                }
+                DungeonCrawl.LOGGER.info("Connected to adjacent node, starting at {}", corridorStart);
+                context.levelGenerator().createCorridor(corridorStart, entrancePlacement.direction(), corridorBox.create());
+                addEntrance(entrancePlacement, entrance);
+                marker.node.addEntrance(marker.placement,  marker.entrance);
+                marker.node.unusedEntrances.remove(marker.entrance);
+                marker.invalidate();
+            }
+        }
     }
 
     @Nullable
@@ -107,7 +164,6 @@ public class NodeElement extends DungeonElement {
 
     @Override
     public void createPieces(Consumer<StructurePiece> consumer) {
-        CoordinateSpace coordinateSpace = piece.base.blueprint().value().coordinateSpace(piece.base.position());
         for (Entrance entrance : unusedEntrances) {
             Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
             entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(position.opposite(), parts.closed(), piece, piece.base, context.levelGenerator()));

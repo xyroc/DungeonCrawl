@@ -23,7 +23,7 @@ public class ListPlan implements DungeonPlan {
 
     @Override
     public boolean isFree(Bounded boundingBox) {
-        return boundingBox.encapsulatedBy(this.boundingBox) && elements.stream().noneMatch((element) -> element.intersects(boundingBox));
+        return boundingBox.encapsulatedBy(this.boundingBox) && elements.stream().noneMatch((element) -> element.collides(boundingBox));
     }
 
     @Override

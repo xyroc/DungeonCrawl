@@ -19,13 +19,36 @@
 package xiroc.dungeoncrawl.dungeon.decoration;
 
 
-import net.minecraft.core.BlockPos;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.init.ModRegistries;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
+
+import java.util.function.Function;
 
 public interface DungeonDecoration {
-    void decorate(Blueprint blueprint, LevelAccessor world, BlockPos pos, Rotation rotation, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds);
+    static void register(RegisterEvent.RegisterHelper<MapCodec<? extends DungeonDecoration>> registry) {
+        registry.register(DungeonCrawl.locate("scattered"), ScatteredDecoration.CODEC);
+    }
+
+    Codec<DungeonDecoration> CODEC = ModRegistries.DECORATION_TYPE
+            .byNameCodec()
+            .dispatch(DungeonDecoration::type, Function.identity());
+
+    MapCodec<? extends DungeonDecoration> type();
+
+    /**
+     * Decorates the designated working area, which is assumed to be within valid bounds.
+     *
+     * @param level           The level the working area is located in.
+     * @param workingArea     The area to decorate. Must be within valid bounds.
+     * @param worldGenContext The dungeon world generation context for the location this decoration is called in.
+     * @param random          A source of randomness.
+     */
+    void decorate(LevelAccessor level, BoundingBox workingArea, DungeonWorldGenContext worldGenContext, RandomSource random);
 }

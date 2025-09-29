@@ -18,48 +18,68 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import xiroc.dungeoncrawl.dungeon.block.DungeonBlocks;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
-import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 public record ScatteredDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
+    public static final MapCodec<ScatteredDecoration> CODEC = RecordCodecBuilder.mapCodec(builder ->builder.group(
+            BlockStateProvider.CODEC.fieldOf("block").forGetter(ScatteredDecoration::blockStateProvider),
+            Codec.FLOAT.fieldOf("chance").forGetter(ScatteredDecoration::chance)
+    ).apply(builder, ScatteredDecoration::new));
+
     @Override
-    public void decorate(Blueprint blueprint, LevelAccessor world, BlockPos pos, Rotation rotation, RandomSource random, BoundingBox worldGenBounds, BoundingBox structureBounds) {
-        boolean ew = rotation == Rotation.NONE || rotation == Rotation.CLOCKWISE_180;
-        int maxX = ew ? blueprint.xSpan() : blueprint.zSpan();
-        int maxZ = ew ? blueprint.zSpan() : blueprint.xSpan();
-        for (int x = 1; x < maxX - 1; x++) {
-            for (int y = 0; y < blueprint.ySpan(); y++) {
-                for (int z = 1; z < maxZ - 1; z++) {
-                    BlockPos currentPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                    if (worldGenBounds.isInside(currentPos)
-                            && structureBounds.isInside(currentPos)
-                            && !WorldEditor.Unsafe.isBlockProtected(world, currentPos)
-                            && world.isEmptyBlock(currentPos)
+    public void decorate(LevelAccessor level, BoundingBox workingArea, DungeonWorldGenContext worldGenContext, RandomSource random) {
+        final BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int x = workingArea.minX(); x < workingArea.maxX(); x++) {
+            for (int y = workingArea.minY(); y < workingArea.maxY(); y++) {
+                for (int z = workingArea.minZ(); z < workingArea.maxZ(); z++) {
+                    cursor.set(x, y, z);
+                    if (workingArea.isInside(cursor)
+                            && !WorldEditor.Unsafe.isBlockProtected(level, cursor)
+                            && level.isEmptyBlock(cursor)
                             && random.nextFloat() < chance) {
-                        BlockPos north = currentPos.north();
-                        BlockPos east = currentPos.east();
-                        BlockPos south = currentPos.south();
-                        BlockPos west = currentPos.west();
-                        BlockPos up = currentPos.above();
 
-                        boolean _north = worldGenBounds.isInside(north) && structureBounds.isInside(north) && world.getBlockState(north).canOcclude();
-                        boolean _east = worldGenBounds.isInside(east) && structureBounds.isInside(east) && world.getBlockState(east).canOcclude();
-                        boolean _south = worldGenBounds.isInside(south) && structureBounds.isInside(south) && world.getBlockState(south).canOcclude();
-                        boolean _west = worldGenBounds.isInside(west) && structureBounds.isInside(west) && world.getBlockState(west).canOcclude();
-                        boolean _up = worldGenBounds.isInside(up) && structureBounds.isInside(up) && world.getBlockState(up).canOcclude();
+                        BlockPos north = cursor.north();
+                        BlockPos east = cursor.east();
+                        BlockPos south = cursor.south();
+                        BlockPos west = cursor.west();
+                        BlockPos up = cursor.above();
 
-                        if (_north || _east || _south || _west || _up) {
-                            world.setBlock(currentPos, blockStateProvider.get(currentPos, random), 2);
+                        boolean supportedNorth = workingArea.isInside(north) && level.getBlockState(north).isFaceSturdy(level, north, Direction.SOUTH);
+                        boolean supportedEast = workingArea.isInside(east) && level.getBlockState(east).isFaceSturdy(level, east, Direction.WEST);
+                        boolean supportedSouth = workingArea.isInside(south) && level.getBlockState(south).isFaceSturdy(level, south, Direction.NORTH);
+                        boolean supportedWest = workingArea.isInside(west) && level.getBlockState(west).isFaceSturdy(level, west, Direction.EAST);
+                        boolean supportedUp = workingArea.isInside(up) && level.getBlockState(up).isFaceSturdy(level, up, Direction.DOWN);
+
+                        if (supportedNorth || supportedEast || supportedSouth || supportedWest || supportedUp) {
+                            BlockState state = blockStateProvider.get(cursor, random);
+                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.NORTH, supportedNorth);
+                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.EAST, supportedEast);
+                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.SOUTH, supportedSouth);
+                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.WEST, supportedWest);
+                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.UP, supportedUp);
+                            level.setBlock(cursor, state, 2);
                         }
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public MapCodec<? extends DungeonDecoration> type() {
+        return CODEC;
     }
 }

@@ -34,8 +34,10 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.List;
@@ -86,6 +88,10 @@ public class DungeonPiece extends StructurePiece {
     public void postProcess(WorldGenLevel level, StructureManager p_73428_, ChunkGenerator chunkGenerator, RandomSource random, BoundingBox worldGenBounds, ChunkPos p_73432_, BlockPos pos) {
         for (DungeonComponent component : components) {
             component.generate(level, worldGenBounds, random, worldGenContext);
+        }
+        final BoundingBox decorationArea = BoundingBoxUtils.intersection(this.boundingBox, worldGenBounds);
+        for (DungeonDecoration decoration : worldGenContext.primaryTheme().value().decorations()) {
+            decoration.decorate(level, decorationArea, worldGenContext, random);
         }
     }
 

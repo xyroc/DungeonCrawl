@@ -10,10 +10,14 @@ import net.minecraft.world.level.biome.Biome;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
+import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public record PrimaryTheme(BlockStateProvider masonry,
                            BlockStateProvider pillar,
@@ -22,7 +26,8 @@ public record PrimaryTheme(BlockStateProvider masonry,
                            BlockStateProvider fencing,
                            BlockStateProvider stairs,
                            BlockStateProvider slab,
-                           BlockStateProvider wall) {
+                           BlockStateProvider wall,
+                           List<DungeonDecoration> decorations) {
 
     public static final Codec<PrimaryTheme> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockStateProvider.CODEC.fieldOf("masonry").forGetter(PrimaryTheme::masonry),
@@ -32,8 +37,29 @@ public record PrimaryTheme(BlockStateProvider masonry,
             BlockStateProvider.CODEC.fieldOf("fencing").forGetter(PrimaryTheme::fencing),
             BlockStateProvider.CODEC.fieldOf("stairs").forGetter(PrimaryTheme::stairs),
             BlockStateProvider.CODEC.fieldOf("slab").forGetter(PrimaryTheme::slab),
-            BlockStateProvider.CODEC.fieldOf("wall").forGetter(PrimaryTheme::wall)
-    ).apply(instance, PrimaryTheme::new));
+            BlockStateProvider.CODEC.fieldOf("wall").forGetter(PrimaryTheme::wall),
+            DungeonDecoration.CODEC.listOf().optionalFieldOf("decorations").forGetter(primaryTheme ->
+                    primaryTheme.decorations.isEmpty() ? Optional.empty() : Optional.of(primaryTheme.decorations))
+    ).apply(instance, (masonry,
+                       pillar,
+                       floor,
+                       fluid,
+                       fencing,
+                       stairs,
+                       slab,
+                       wall,
+                       decorations) ->
+            new PrimaryTheme(
+                    masonry,
+                    pillar,
+                    floor,
+                    fluid,
+                    fencing,
+                    stairs,
+                    slab,
+                    wall,
+                    decorations.orElse(List.of())
+            )));
 
     public static final Codec<Holder<PrimaryTheme>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.PRIMARY_THEME, DIRECT_CODEC, false);
     public static final Codec<IRandom<Holder<PrimaryTheme>>> RANDOM_HOLDER_CODEC = IRandom.makeCodec(IRandom.makeBuilderCodec(HOLDER_CODEC, "theme", null));
@@ -54,6 +80,7 @@ public record PrimaryTheme(BlockStateProvider masonry,
         private BlockStateProvider slab = SingleBlock.AIR;
         private BlockStateProvider fencing = SingleBlock.AIR;
         private BlockStateProvider fluid = SingleBlock.AIR;
+        private final List<DungeonDecoration> decorations = new ArrayList<>(0);
 
         public Builder pillar(BlockStateProvider pillar) {
             this.pillar = pillar;
@@ -95,6 +122,11 @@ public record PrimaryTheme(BlockStateProvider masonry,
             return this;
         }
 
+        public Builder withDecoration(DungeonDecoration decoration) {
+            this.decorations.add(decoration);
+            return this;
+        }
+
         public PrimaryTheme build() {
             Objects.requireNonNull(pillar);
             Objects.requireNonNull(masonry);
@@ -104,7 +136,7 @@ public record PrimaryTheme(BlockStateProvider masonry,
             Objects.requireNonNull(stairs);
             Objects.requireNonNull(slab);
             Objects.requireNonNull(wall);
-            return new PrimaryTheme(masonry, pillar, floor, fluid, fencing, stairs, slab, wall);
+            return new PrimaryTheme(masonry, pillar, floor, fluid, fencing, stairs, slab, wall, decorations);
         }
     }
 }

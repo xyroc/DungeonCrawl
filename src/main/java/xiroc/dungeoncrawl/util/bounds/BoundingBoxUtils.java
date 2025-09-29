@@ -23,6 +23,25 @@ public interface BoundingBoxUtils {
     }
 
     /**
+     * Calculates a bounding box that encapsulates exactly all positions that are within both
+     * the provided bounding boxes.
+     *
+     * @param boxOne The first bounding box.
+     * @param boxTwo The second bounding box.
+     * @return A bounding box covering the intersection of the two boxes.
+     */
+    static BoundingBox intersection(BoundingBox boxOne, BoundingBox boxTwo) {
+        return new BoundingBox(
+                Math.max(boxOne.minX(), boxTwo.minX()),
+                Math.max(boxOne.minY(), boxTwo.minY()),
+                Math.max(boxOne.minZ(), boxTwo.minZ()),
+                Math.min(boxOne.maxX(), boxTwo.maxX()),
+                Math.min(boxOne.maxY(), boxTwo.maxY()),
+                Math.min(boxOne.maxZ(), boxTwo.maxZ())
+        );
+    }
+
+    /**
      * A debug method to visualize bounding boxes ingame.
      */
     static void build(WorldGenLevel world, BoundingBox box, Block block) {

@@ -18,13 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -36,8 +29,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
-
-import java.lang.reflect.Type;
 
 public record VineDecoration(float chance) implements DungeonDecoration {
     @Override
@@ -73,24 +64,6 @@ public record VineDecoration(float chance) implements DungeonDecoration {
                     }
                 }
             }
-        }
-    }
-
-    public static class Serializer implements JsonSerializer<VineDecoration>, JsonDeserializer<VineDecoration> {
-        private static final String KEY_CHANCE = "chance";
-
-        @Override
-        public VineDecoration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            return new VineDecoration(object.get(KEY_CHANCE).getAsFloat());
-        }
-
-        @Override
-        public JsonElement serialize(VineDecoration src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.addProperty(SharedSerializationConstants.KEY_DECORATION_TYPE, SharedSerializationConstants.DECORATION_TYPE_VINES);
-            object.addProperty(KEY_CHANCE, src.chance);
-            return object;
         }
     }
 }

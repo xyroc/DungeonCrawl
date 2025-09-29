@@ -18,92 +18,58 @@
 
 package xiroc.dungeoncrawl.dungeon.block.provider;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.provider.pattern.CheckerboardPattern;
-import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.init.ModRegistries;
+import xiroc.dungeoncrawl.util.StorageHelper;
 
-import java.lang.reflect.Type;
-import java.util.Locale;
+import java.util.function.Function;
 
 public interface BlockStateProvider {
-    static void gsonAdapters(GsonBuilder builder) {
-        builder.registerTypeAdapter(BlockStateProvider.class, new Deserializer())
-                .registerTypeAdapter(SingleBlock.class, new SingleBlock.Serializer())
-                .registerTypeAdapter(RandomBlock.class, new RandomBlock.Serializer())
-                .registerTypeAdapter(CheckerboardPattern.class, new CheckerboardPattern.Serializer());
+    static void register(RegisterEvent.RegisterHelper<MapCodec<? extends BlockStateProvider>> registry) {
+        registry.register(DungeonCrawl.locate("block"), SingleBlock.VERBOSE_CODEC);
+        registry.register(DungeonCrawl.locate("random_block"), RandomBlock.VERBOSE_CODEC);
+        registry.register(DungeonCrawl.locate("checkerboard"), CheckerboardPattern.CODEC);
     }
+
+    Codec<BlockStateProvider> VERBOSE_CODEC = Codec.lazyInitialized(() -> ModRegistries.BLOCK_STATE_PROVIDER_TYPE
+            .byNameCodec()
+            .dispatch(BlockStateProvider::type, Function.identity()));
 
     Codec<BlockStateProvider> CODEC = new Codec<>() {
         @Override
         public <T> DataResult<Pair<BlockStateProvider, T>> decode(DynamicOps<T> dynamicOps, T t) {
-            JsonElement asJson = dynamicOps.convertTo(JsonOps.INSTANCE, t);
-            try {
-                return DataResult.success(Pair.of(JSONUtils.GSON.fromJson(asJson, BlockStateProvider.class), dynamicOps.empty()));
-            } catch (Exception e) {
-                return DataResult.error(() -> "Error parsing block state provider: " + e.getMessage());
+            if (dynamicOps.getStringValue(t).isSuccess()) {
+                return SingleBlock.COMPACT_CODEC.decode(dynamicOps, t).map(StorageHelper::repack);
             }
+            if (dynamicOps.getList(t).isSuccess()) {
+                return RandomBlock.COMPACT_CODEC.decode(dynamicOps, t).map(StorageHelper::repack);
+            }
+            return VERBOSE_CODEC.decode(dynamicOps, t);
         }
 
         @Override
         public <T> DataResult<T> encode(BlockStateProvider blockStateProvider, DynamicOps<T> dynamicOps, T t) {
-            JsonElement asJson = JSONUtils.GSON.toJsonTree(blockStateProvider);
-            try {
-                return DataResult.success(JsonOps.INSTANCE.convertTo(dynamicOps, asJson));
-            } catch (Exception e) {
-                return DataResult.error(() -> "Error serializing block state provider: " + e.getMessage());
+            if (blockStateProvider instanceof SingleBlock singleBlock) {
+                return SingleBlock.COMPACT_CODEC.encode(singleBlock, dynamicOps, t);
             }
+            if (blockStateProvider instanceof RandomBlock randomBlock) {
+                return RandomBlock.COMPACT_CODEC.encode(randomBlock, dynamicOps, t);
+            }
+            return VERBOSE_CODEC.encode(blockStateProvider, dynamicOps, t);
         }
     };
 
     BlockState get(BlockPos pos, RandomSource random);
 
-    class Deserializer implements JsonDeserializer<BlockStateProvider> {
-        @Override
-        public BlockStateProvider deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if (json.isJsonPrimitive()) {
-                return context.deserialize(json, SingleBlock.class);
-            }
-            if (json.isJsonArray()) {
-                return context.deserialize(json, RandomBlock.class);
-            }
-            JsonObject object = json.getAsJsonObject();
-            if (!object.has(SharedSerializationConstants.KEY_PROVIDER_TYPE)) {
-                throw new JsonParseException("Missing block state provider type specification");
-            }
-            String type = object.get(SharedSerializationConstants.KEY_PROVIDER_TYPE).getAsString().toLowerCase(Locale.ROOT);
-            switch (type) {
-                case SharedSerializationConstants.TYPE_SINGLE_BLOCK -> {
-                    return context.deserialize(json, SingleBlock.class);
-                }
-                case SharedSerializationConstants.TYPE_RANDOM_BLOCK -> {
-                    return context.deserialize(json, RandomBlock.class);
-                }
-                case SharedSerializationConstants.TYPE_CHECKERBOARD_PATTERN -> {
-                    return context.deserialize(json, CheckerboardPattern.class);
-                }
-                default -> throw new JsonParseException("Unknown block state provider type: " + type);
-            }
-        }
-    }
-
-    interface SharedSerializationConstants {
-        String KEY_PROVIDER_TYPE = "type";
-
-        String TYPE_SINGLE_BLOCK = "block";
-        String TYPE_RANDOM_BLOCK = "random_block";
-        String TYPE_CHECKERBOARD_PATTERN = "checkerboard";
-    }
+    MapCodec<? extends BlockStateProvider> type();
 }

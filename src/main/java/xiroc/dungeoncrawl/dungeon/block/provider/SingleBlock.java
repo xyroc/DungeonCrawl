@@ -1,23 +1,23 @@
 package xiroc.dungeoncrawl.dungeon.block.provider;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
-
-import java.lang.reflect.Type;
 
 public class SingleBlock implements BlockStateProvider {
     public static final SingleBlock AIR = new SingleBlock(Blocks.CAVE_AIR.defaultBlockState());
+
+    public static final Codec<SingleBlock> COMPACT_CODEC = GlobalCodecs.BLOCK_STATE.xmap(SingleBlock::new, instance -> instance.state);
+
+    public static final MapCodec<SingleBlock> VERBOSE_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+            GlobalCodecs.BLOCK_STATE.fieldOf("block").forGetter(instance -> instance.state)
+    ).apply(builder, SingleBlock::new));
 
     private final BlockState state;
 
@@ -34,23 +34,8 @@ public class SingleBlock implements BlockStateProvider {
         return state;
     }
 
-    public static class Serializer implements JsonSerializer<SingleBlock>, JsonDeserializer<SingleBlock> {
-        private static final String KEY_BLOCK = "block";
-
-        @Override
-        public SingleBlock deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if (json.isJsonPrimitive()) {
-                final BlockState state = JSONUtils.parse(json, GlobalCodecs.BLOCK_STATE);
-                return new SingleBlock(state);
-            } else {
-                final BlockState state = JSONUtils.parse(json.getAsJsonObject().get(KEY_BLOCK), GlobalCodecs.BLOCK_STATE);
-                return new SingleBlock(state);
-            }
-        }
-
-        @Override
-        public JsonElement serialize(SingleBlock src, Type typeOfSrc, JsonSerializationContext context) {
-            return JSONUtils.encode(src.state, GlobalCodecs.BLOCK_STATE).getAsJsonPrimitive();
-        }
+    @Override
+    public MapCodec<? extends BlockStateProvider> type() {
+        return VERBOSE_CODEC;
     }
 }

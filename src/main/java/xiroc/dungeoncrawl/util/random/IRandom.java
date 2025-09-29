@@ -129,7 +129,7 @@ public interface IRandom<T> {
     }
 
     interface BaseCodecs {
-        Codec<Builder<BlockState>> BLOCK_STATE = makeBuilderCodec(GlobalCodecs.BLOCK_STATE, "block", null);
+        Codec<IRandom<BlockState>> BLOCK_STATE = makeCodec(makeBuilderCodec(GlobalCodecs.BLOCK_STATE, "block", null));
         Codec<IRandom<Item>> ITEM = makeCodec(makeBuilderCodec(GlobalCodecs.ITEM, "item", null));
     }
 

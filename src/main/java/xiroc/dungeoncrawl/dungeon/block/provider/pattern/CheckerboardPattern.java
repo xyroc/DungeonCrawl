@@ -1,20 +1,18 @@
 package xiroc.dungeoncrawl.dungeon.block.provider.pattern;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 
-import java.lang.reflect.Type;
-
 public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider block2) implements BlockStateProvider {
+    public static final MapCodec<CheckerboardPattern> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+            BlockStateProvider.CODEC.fieldOf("block_1").forGetter(CheckerboardPattern::block1),
+            BlockStateProvider.CODEC.fieldOf("block_2").forGetter(CheckerboardPattern::block2)
+    ).apply(builder, CheckerboardPattern::new));
+
     @Override
     public BlockState get(BlockPos pos, RandomSource random) {
         if (((pos.getX() & 1) ^ (pos.getZ() & 1)) == 1) { // X is odd XOR Z is odd
@@ -24,26 +22,8 @@ public record CheckerboardPattern(BlockStateProvider block1, BlockStateProvider 
         }
     }
 
-    public static class Serializer implements JsonSerializer<CheckerboardPattern>, JsonDeserializer<CheckerboardPattern> {
-        private static final String KEY_BLOCK_1 = "block_1";
-        private static final String KEY_BLOCK_2 = "block_2";
-
-        @Override
-        public CheckerboardPattern deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            BlockStateProvider block1 = context.deserialize(object.get(KEY_BLOCK_1), BlockStateProvider.class);
-            BlockStateProvider block2 = context.deserialize(object.get(KEY_BLOCK_2), BlockStateProvider.class);
-            return new CheckerboardPattern(block1, block2);
-        }
-
-        @Override
-        public JsonElement serialize(CheckerboardPattern src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_CHECKERBOARD_PATTERN);
-
-            object.add(KEY_BLOCK_1, context.serialize(src.block1));
-            object.add(KEY_BLOCK_2, context.serialize(src.block2));
-            return object;
-        }
+    @Override
+    public MapCodec<? extends BlockStateProvider> type() {
+        return CODEC;
     }
 }

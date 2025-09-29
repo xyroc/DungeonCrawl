@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.dungeon.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,6 +34,11 @@ public record MetaBlock(BlockState base) {
         @Override
         public BlockState get(BlockPos pos, RandomSource random) {
             return metaBlock.applyProperties(provider.get(pos, random));
+        }
+
+        @Override
+        public MapCodec<? extends BlockStateProvider> type() {
+            throw new UnsupportedOperationException("Attached block state providers must not be serialized");
         }
     }
 }

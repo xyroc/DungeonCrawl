@@ -18,13 +18,6 @@
 
 package xiroc.dungeoncrawl.dungeon.decoration;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
@@ -33,8 +26,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
-
-import java.lang.reflect.Type;
 
 public record ScatteredDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
     @Override
@@ -69,26 +60,6 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
                     }
                 }
             }
-        }
-    }
-
-    public static class Serializer implements JsonSerializer<ScatteredDecoration>, JsonDeserializer<ScatteredDecoration> {
-        private static final String KEY_BLOCK = "block";
-        private static final String KEY_CHANCE = "chance";
-
-        @Override
-        public ScatteredDecoration deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject object = json.getAsJsonObject();
-            return new ScatteredDecoration(context.deserialize(object.get(KEY_BLOCK), BlockStateProvider.class), object.get(KEY_CHANCE).getAsFloat());
-        }
-
-        @Override
-        public JsonElement serialize(ScatteredDecoration src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonObject object = new JsonObject();
-            object.addProperty(SharedSerializationConstants.KEY_DECORATION_TYPE, SharedSerializationConstants.DECORATION_TYPE_SCATTERED);
-            object.add(KEY_BLOCK, context.serialize(src.blockStateProvider));
-            object.addProperty(KEY_CHANCE, src.chance);
-            return object;
         }
     }
 }

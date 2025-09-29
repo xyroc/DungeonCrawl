@@ -1,21 +1,21 @@
 package xiroc.dungeoncrawl.dungeon.block.provider;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import xiroc.dungeoncrawl.util.JSONUtils;
+import org.checkerframework.checker.units.qual.C;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
-import java.lang.reflect.Type;
-
 public class RandomBlock implements BlockStateProvider {
+    public static final Codec<RandomBlock> COMPACT_CODEC = IRandom.BaseCodecs.BLOCK_STATE.xmap(RandomBlock::new, instance -> instance.states);
+
+    public static final MapCodec<RandomBlock> VERBOSE_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+            IRandom.BaseCodecs.BLOCK_STATE.fieldOf("blocks").forGetter(instance -> instance.states)
+    ).apply(builder, RandomBlock::new));
+
     private final IRandom<BlockState> states;
 
     public RandomBlock(IRandom<BlockState> states) {
@@ -27,53 +27,8 @@ public class RandomBlock implements BlockStateProvider {
         return states.roll(random);
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private final IRandom.Builder<BlockState> builder = new IRandom.Builder<>();
-
-        public Builder add(Block block) {
-            return add(block.defaultBlockState(), 1);
-        }
-
-        public Builder add(Block block, int weight) {
-            return add(block.defaultBlockState(), weight);
-        }
-
-        public Builder add(BlockState state) {
-            return add(state, 1);
-        }
-
-        public Builder add(BlockState state, int weight) {
-            builder.add(state, weight);
-            return this;
-        }
-
-        public RandomBlock build() {
-            return new RandomBlock(builder.build());
-        }
-    }
-
-    public static class Serializer implements JsonSerializer<RandomBlock>, JsonDeserializer<RandomBlock> {
-        private static final String KEY_BLOCKS = "blocks";
-
-        @Override
-        public RandomBlock deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if (json.isJsonArray()) {
-                return new RandomBlock(JSONUtils.parse(json, IRandom.BaseCodecs.BLOCK_STATE).build());
-            }
-            return new RandomBlock(JSONUtils.parse(json.getAsJsonObject().get(KEY_BLOCKS), IRandom.BaseCodecs.BLOCK_STATE).build());
-        }
-
-        @Override
-        public JsonElement serialize(RandomBlock src, Type typeOfSrc, JsonSerializationContext context) {
-            var json = JSONUtils.encode(new IRandom.Builder<BlockState>().addInstance(src.states), IRandom.BaseCodecs.BLOCK_STATE);
-            if (json.isJsonObject()) {
-                json.getAsJsonObject().addProperty(SharedSerializationConstants.KEY_PROVIDER_TYPE, SharedSerializationConstants.TYPE_RANDOM_BLOCK);
-            }
-            return json;
-        }
+    @Override
+    public MapCodec<? extends BlockStateProvider> type() {
+        return VERBOSE_CODEC;
     }
 }

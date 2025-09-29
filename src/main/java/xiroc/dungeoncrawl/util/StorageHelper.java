@@ -70,8 +70,9 @@ public interface StorageHelper {
      *
      * @return The converted pair.
      */
+    @SuppressWarnings("unchecked")
     static <A, B extends A, T> Pair<A, T> repack(Pair<B, T> pair) {
-        return Pair.of(pair.getFirst(), pair.getSecond());
+        return (Pair<A, T>) pair;
     }
 
     /**

@@ -123,7 +123,7 @@ public class LevelGenerator {
             return true;
         }
 
-        staircasePlanner.setBottom(boundingBox.minY + offset.getY(), boundingBox.maxY);
+        staircasePlanner.setBottom(piece, boundingBox.minY + offset.getY());
 
         final NodeElement staircase = new NodeElement(piece, generatorContext, 0);
         plan.add(staircase);

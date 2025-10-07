@@ -154,15 +154,15 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
                 -staircaseAnchor.position().getZ()
         );
 
-        final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
-        staircasePlanner.setTop(staircaseAnchor.position().getY(), entrancePosition.getY(), staircaseConstraint);
-
         final var section = dungeonBuilder.dungeonType.value().sections().getFirst();
         final var primaryTheme = section.primaryThemes().value().roll(dungeonBuilder.biome, random);
         final var secondaryTheme = section.secondaryThemes().value().roll(dungeonBuilder.biome, random);
         final BlueprintComponent entranceComponent = new BlueprintComponent(entrance, entrancePosition, entranceRotation);
         final DungeonPiece entrancePiece = new BlueprintPiece(entranceComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, entranceComponent.position().getY(), 0));
         dungeonBuilder.structurePiecesBuilder.addPiece(entrancePiece);
+
+        final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
+        staircasePlanner.setTop(entrancePiece, staircaseAnchor.position().getY(), staircaseConstraint);
         return true;
     }
 
@@ -177,7 +177,7 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
         final Direction staircaseConstraint = staircaseAnchor.direction().getAxis().isHorizontal() ? staircaseAnchor.direction() : null;
         final BlockPos offset = CoordinateSpace.rotate(staircaseAnchor.position(), piece.base.rotation(), piece.base.blueprint().value().xSpan(), piece.base.blueprint().value().zSpan());
         final StaircasePlanner staircasePlanner = new StaircasePlanner(piece.base.position().getX() + offset.getX(), piece.base.position().getZ() + offset.getZ());
-        staircasePlanner.setTop(offset.getY(), piece.base.position().getY(), staircaseConstraint);
+        staircasePlanner.setTop(piece, offset.getY(), staircaseConstraint);
         return staircasePlanner;
     }
 }

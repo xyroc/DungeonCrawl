@@ -21,13 +21,13 @@ public class StaircasePlanner {
      */
     private int staircaseTop = 0;
     /**
-     * The y coordinate at which the walls surrounding the staircase end at the bottom.
+     * The piece the staircase connects to at the top.
      */
-    private int wallBottom = 0;
+    private DungeonPiece topPiece = null;
     /**
-     * The y coordinate at which the walls surrounding the staircase end at the top.
+     * The piece the staircase connects to at the bottom.
      */
-    private int wallTop = 0;
+    private DungeonPiece bottomPiece = null;
 
     /**
      * The offset within the facings array used for this staircase.
@@ -52,13 +52,14 @@ public class StaircasePlanner {
     /**
      * Set the top of the staircase.
      *
+     * @param piece       the piece the staircase connects to at the top.
      * @param topRelative the relative vertical offset from minRoomY at which the staircase begins.
-     * @param minRoomY    the lowest absolute y coordinate within the room where the staircase should not be encased by walls.
      * @param constraint  if not null, the direction the staircase must be facing at the top.
      */
-    public void setTop(int topRelative, int minRoomY, @Nullable Direction constraint) {
+    public void setTop(DungeonPiece piece, int topRelative, @Nullable Direction constraint) {
+        final int minRoomY = piece.getBoundingBox().minY();
+        this.topPiece = piece;
         this.staircaseTop = minRoomY + topRelative;
-        this.wallTop = minRoomY - 1;
         if (constraint != null) {
             final Direction facingWithoutRotation = StaircaseComponent.getFacingAt(staircaseTop, 0);
             this.rotation = Orientation.numberOfClockwise90DegreeRotations(facingWithoutRotation, constraint);
@@ -68,12 +69,12 @@ public class StaircasePlanner {
     /**
      * Set the bottom of the staircase.
      *
-     * @param bottom   the absolute y coordinate at which the staircase ends.
-     * @param maxRoomY the highest absolute y coordinate at which the staircase should not be encased by walls.
+     * @param piece  the piece the staircase connects to at the bottom.
+     * @param bottom the absolute y coordinate at which the staircase ends.
      */
-    public void setBottom(int bottom, int maxRoomY) {
+    public void setBottom(DungeonPiece piece, int bottom) {
         this.staircaseBottom = bottom;
-        this.wallBottom = maxRoomY + 1;
+        this.bottomPiece = piece;
     }
 
     /**
@@ -97,12 +98,24 @@ public class StaircasePlanner {
     }
 
     public int getWallTop() {
-        return wallTop;
+        return topPiece.getBoundingBox().minY() - 1;
+    }
+
+    public int getWallBottom() {
+        return bottomPiece.getBoundingBox().maxY() + 1;
     }
 
     public DungeonPiece make(int stage, Holder<PrimaryTheme> primaryTheme, Holder<SecondaryTheme> secondaryTheme) {
-        BlockPos position = new BlockPos(centerX, staircaseBottom, centerZ);
-        int height = staircaseTop - staircaseBottom + 1;
+        int wallTop = getWallTop();
+        int wallBottom = getWallBottom();
+        if (staircaseTop > wallTop) {
+            topPiece.addComponent(new StaircaseComponent(new BlockPos(centerX, wallTop + 1, centerZ), staircaseTop - wallTop, 1, 0, rotation));
+        }
+        if (staircaseBottom < wallBottom) {
+            bottomPiece.addComponent(new StaircaseComponent(new BlockPos(centerX, staircaseBottom, centerZ), wallBottom - staircaseBottom, 1, 0, rotation));
+        }
+        BlockPos position = new BlockPos(centerX, wallBottom, centerZ);
+        int height = wallTop - wallBottom + 1;
         StaircaseComponent staircase = new StaircaseComponent(position, height, wallBottom, wallTop, rotation);
         return new DungeonPiece(staircase, new DungeonWorldGenContext(primaryTheme, secondaryTheme, Integer.MIN_VALUE, stage));
     }

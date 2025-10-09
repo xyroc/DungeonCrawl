@@ -34,7 +34,7 @@ import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 public record ScatteredDecoration(BlockStateProvider blockStateProvider, float chance) implements DungeonDecoration {
-    public static final MapCodec<ScatteredDecoration> CODEC = RecordCodecBuilder.mapCodec(builder ->builder.group(
+    public static final MapCodec<ScatteredDecoration> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             BlockStateProvider.CODEC.fieldOf("block").forGetter(ScatteredDecoration::blockStateProvider),
             Codec.FLOAT.fieldOf("chance").forGetter(ScatteredDecoration::chance)
     ).apply(builder, ScatteredDecoration::new));
@@ -46,32 +46,35 @@ public record ScatteredDecoration(BlockStateProvider blockStateProvider, float c
             for (int y = workingArea.minY(); y < workingArea.maxY(); y++) {
                 for (int z = workingArea.minZ(); z < workingArea.maxZ(); z++) {
                     cursor.set(x, y, z);
-                    if (workingArea.isInside(cursor)
-                            && !WorldEditor.Unsafe.isBlockProtected(level, cursor)
-                            && level.isEmptyBlock(cursor)
-                            && random.nextFloat() < chance) {
+                    if (WorldEditor.Unsafe.isBlockProtected(level, cursor)
+                            || !level.isEmptyBlock(cursor)
+                            || random.nextFloat() >= chance) {
+                        continue;
+                    }
 
-                        BlockPos north = cursor.north();
-                        BlockPos east = cursor.east();
-                        BlockPos south = cursor.south();
-                        BlockPos west = cursor.west();
-                        BlockPos up = cursor.above();
+                    cursor.set(x, y, z - 1);
+                    final boolean supportedNorth = workingArea.isInside(cursor) && level.getBlockState(cursor).isFaceSturdy(level, cursor, Direction.SOUTH);
+                    cursor.set(x + 1, y, z);
+                    final boolean supportedEast = workingArea.isInside(cursor) && level.getBlockState(cursor).isFaceSturdy(level, cursor, Direction.WEST);
+                    cursor.set(x, y, z + 1);
+                    final boolean supportedSouth = workingArea.isInside(cursor) && level.getBlockState(cursor).isFaceSturdy(level, cursor, Direction.NORTH);
+                    cursor.set(x - 1, y, z);
+                    final boolean supportedWest = workingArea.isInside(cursor) && level.getBlockState(cursor).isFaceSturdy(level, cursor, Direction.EAST);
+                    cursor.set(x, y + 1, z);
+                    final boolean supportedUp = workingArea.isInside(cursor) && level.getBlockState(cursor).isFaceSturdy(level, cursor, Direction.DOWN);
+                    cursor.set(x, y - 1, z);
+                    final boolean supportedDown = workingArea.isInside(cursor) && level.getBlockState(cursor).isFaceSturdy(level, cursor, Direction.UP);
+                    cursor.set(x, y, z);
 
-                        boolean supportedNorth = workingArea.isInside(north) && level.getBlockState(north).isFaceSturdy(level, north, Direction.SOUTH);
-                        boolean supportedEast = workingArea.isInside(east) && level.getBlockState(east).isFaceSturdy(level, east, Direction.WEST);
-                        boolean supportedSouth = workingArea.isInside(south) && level.getBlockState(south).isFaceSturdy(level, south, Direction.NORTH);
-                        boolean supportedWest = workingArea.isInside(west) && level.getBlockState(west).isFaceSturdy(level, west, Direction.EAST);
-                        boolean supportedUp = workingArea.isInside(up) && level.getBlockState(up).isFaceSturdy(level, up, Direction.DOWN);
-
-                        if (supportedNorth || supportedEast || supportedSouth || supportedWest || supportedUp) {
-                            BlockState state = blockStateProvider.get(cursor, random);
-                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.NORTH, supportedNorth);
-                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.EAST, supportedEast);
-                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.SOUTH, supportedSouth);
-                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.WEST, supportedWest);
-                            state = DungeonBlocks.applyProperty(state, BlockStateProperties.UP, supportedUp);
-                            level.setBlock(cursor, state, 2);
-                        }
+                    if (supportedNorth || supportedEast || supportedSouth || supportedWest || supportedUp) {
+                        BlockState state = blockStateProvider.get(cursor, random);
+                        state = DungeonBlocks.applyProperty(state, BlockStateProperties.NORTH, supportedNorth);
+                        state = DungeonBlocks.applyProperty(state, BlockStateProperties.EAST, supportedEast);
+                        state = DungeonBlocks.applyProperty(state, BlockStateProperties.SOUTH, supportedSouth);
+                        state = DungeonBlocks.applyProperty(state, BlockStateProperties.WEST, supportedWest);
+                        state = DungeonBlocks.applyProperty(state, BlockStateProperties.UP, supportedUp);
+                        state = DungeonBlocks.applyProperty(state, BlockStateProperties.DOWN, supportedDown);
+                        level.setBlock(cursor, state, 2);
                     }
                 }
             }

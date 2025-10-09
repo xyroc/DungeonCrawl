@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.Blocks;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.entity.JigsawBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.MetaBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
@@ -44,6 +46,8 @@ public interface TemplateLoader {
      * No realistic blueprint should ever get even remotely close to this limit, but we are checking regardless.
      */
     int THEORETICAL_MAX_BLUEPRINT_SIZE = (1 << 16) - 1;
+
+    FileToIdConverter ID_CONVERTER = new FileToIdConverter(StructureTemplateManager.STRUCTURE_RESOURCE_DIRECTORY_NAME, ".nbt");
 
     static void loadTemplateForBlueprint(ResourceManager resourceManager, Blueprint blueprint) {
         BlueprintConfiguration configuration = blueprint.configuration;
@@ -94,7 +98,7 @@ public interface TemplateLoader {
 
     private static Optional<StructureTemplate> loadTemplate(ResourceManager resourceManager, ResourceLocation key) {
         try {
-            ResourceLocation path = ResourceLocation.fromNamespaceAndPath(key.getNamespace(), "structures/" + key.getPath() + ".nbt");
+            ResourceLocation path = ID_CONVERTER.idToFile(key);
             if (resourceManager.getResource(path).isEmpty()) {
                 return Optional.empty();
             }

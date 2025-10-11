@@ -84,10 +84,6 @@ public class ClusterNodeGenerator {
 
         for (int roomAttempt = 0; roomAttempt < 3; ++roomAttempt) {
             final Holder<Blueprint> room = isClusterNode ? roomSet.roll(random) : levelGenerator.roomChooser.nextRoom(nextDepth, random);
-            final var entrances = room.value().entrances();
-            if (entrances.isEmpty()) {
-                continue;
-            }
 
             for (int entranceAttempt = 0; entranceAttempt < 4; ++entranceAttempt) {
                 final NodeElement node = NodeElement.attachRoom(this.context, anchor, room, nextDepth, isClusterNode);

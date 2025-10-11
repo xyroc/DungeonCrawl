@@ -35,11 +35,11 @@
   ],
   "parts": [
     {
-      "blueprints": [
+      "positions": "dungeoncrawl:floor",
+      "variants": [
         "dungeoncrawl:part/floor/5x5/solid",
         "dungeoncrawl:part/floor/5x5/fragile"
-      ],
-      "positions": "dungeoncrawl:floor"
+      ]
     }
   ],
   "template": "dungeoncrawl:room/eniko"

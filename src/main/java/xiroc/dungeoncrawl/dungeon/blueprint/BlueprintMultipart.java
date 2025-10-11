@@ -18,10 +18,10 @@ import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
-public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blueprint>> blueprints) {
+public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blueprint>> variants) {
     public static final Codec<BlueprintMultipart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("positions").forGetter(BlueprintMultipart::anchorType),
-            Blueprint.RANDOM_HOLDER_CODEC.fieldOf("blueprints").forGetter(BlueprintMultipart::blueprints)
+            Blueprint.RANDOM_HOLDER_CODEC.fieldOf("variants").forGetter(BlueprintMultipart::variants)
     ).apply(instance, BlueprintMultipart::new));
 
     public boolean addParts(DungeonPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator) {
@@ -32,7 +32,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blu
         CoordinateSpace parentCoordinateSpace = parent.blueprint().value().coordinateSpace(parent.position());
         for (Anchor anchor : anchors) {
             anchor = parentCoordinateSpace.rotateAndTranslateToOrigin(anchor, parent.rotation());
-            if (!addPart(anchor, blueprints, piece, parent, levelGenerator)) {
+            if (!addPart(anchor, variants, piece, parent, levelGenerator)) {
                 return false;
             }
         }

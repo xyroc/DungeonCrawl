@@ -148,7 +148,11 @@ public class NodeElement extends DungeonElement {
 
         final NodeElement node = new NodeElement(roomPiece, context, depth);
         context.dungeonPlan().add(node);
-        node.unusedEntrances.remove(chosenEntrance);
+        if (useClusterEntrances) {
+            node.unusedClusterEntrances.remove(chosenEntrance);
+        } else {
+            node.unusedEntrances.remove(chosenEntrance);
+        }
         final Anchor rotatedEntrance = room.value().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), roomRotation);
         node.addEntrance(rotatedEntrance, entrance);
         return node;

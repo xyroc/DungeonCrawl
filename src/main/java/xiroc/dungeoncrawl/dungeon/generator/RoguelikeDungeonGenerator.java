@@ -28,6 +28,7 @@ import xiroc.dungeoncrawl.dungeon.type.DungeonType;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
+import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import java.util.ArrayList;
@@ -114,9 +115,14 @@ public class RoguelikeDungeonGenerator implements DungeonGenerator {
     private Map<Integer, List<SecretRoom>> gatherGlobalSecretRooms(Holder<DungeonType> dungeonType, RandomSource random) {
         final Map<Integer, List<SecretRoom>> globalSecretRooms = new HashMap<>();
         for (final SecretRoom secretRoom : dungeonType.value().secretRooms()) {
+            final RandomValue possibleLevels = secretRoom.level();
+            if (possibleLevels == null) {
+                DungeonCrawl.LOGGER.warn("A global secret room in dungeon type {} does not have a range of possible levels defined and can therefore not generate.", dungeonType.getKey());
+                continue;
+            }
             final int amount = secretRoom.amount().nextInt(random);
             for (int i = 0; i < amount; ++i) {
-                final int level = secretRoom.level().nextInt(random);
+                final int level = possibleLevels.nextInt(random);
                 globalSecretRooms.computeIfAbsent(level, (ignored) -> new ArrayList<>()).add(secretRoom);
             }
         }

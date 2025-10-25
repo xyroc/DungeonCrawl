@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.RecordBuilder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public interface StorageHelper {
@@ -90,5 +91,17 @@ public interface StorageHelper {
                 return DataResult.error(e::getMessage);
             }
         };
+    }
+
+    /**
+     * Creates a function that invokes the provided function and wraps the return value in an {@code Optional}.
+     *
+     * @param function A function mapping instances of {@code T} to some {@code V} or {@code null}.
+     * @return A wrapper of the input function which returns an {@code Optional} holding the returned value, if any.
+     * @param <T> The type the function is invoked on.
+     * @param <V> The type of value the function returns.
+     */
+    static <T, V> Function<T, Optional<V>> emptyIfNull(Function<T, V> function) {
+        return input -> Optional.ofNullable(function.apply(input));
     }
 }

@@ -33,6 +33,12 @@ public interface RoomBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         final var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);
 
+        context.register(BlueprintKeys.Room.BEDROOM, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.BEDROOM)
+                .defaultPlacementSettings(TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .configureBlock(Blocks.TORCH, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+                .build()));
+
         context.register(BlueprintKeys.Room.CORNER, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.CORNER)
                 .build()));

@@ -7,13 +7,16 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import xiroc.dungeoncrawl.data.DataGen;
 
 public interface ChestLootTableKeys {
-    ResourceLocation __CHEST = DataGen.resource("chest");
+    ResourceLocation __CHEST = DataGen.resource("chests");
 
     ResourceKey<LootTable> LEVEL_0 = key(DataGen.resourceLevel(__CHEST, 0));
     ResourceKey<LootTable> LEVEL_1 = key(DataGen.resourceLevel(__CHEST, 1));
     ResourceKey<LootTable> LEVEL_2 = key(DataGen.resourceLevel(__CHEST, 2));
     ResourceKey<LootTable> LEVEL_3 = key(DataGen.resourceLevel(__CHEST, 3));
     ResourceKey<LootTable> LEVEL_4 = key(DataGen.resourceLevel(__CHEST, 4));
+    ResourceKey<LootTable> SECRET_ROOM =  key(DataGen.resource(__CHEST, "secret_room"));
+    ResourceKey<LootTable> SUPPLY = key(DataGen.resource(__CHEST, "supply"));
+    ResourceKey<LootTable> TREASURE = key(DataGen.resource(__CHEST, "treasure"));
 
     ResourceLocation __CONTENTS = DataGen.resource(__CHEST, "contents");
 
@@ -54,18 +57,24 @@ public interface ChestLootTableKeys {
 
     interface Speciality {
         ResourceLocation __SPECIALITY = DataGen.resource(__CONTENTS, "speciality");
-        ResourceLocation __RAW = DataGen.resource(__SPECIALITY, "raw");
+        ResourceKey<LootTable> LEVEL_0 = key(DataGen.resourceLevel(__SPECIALITY, 0));
+        ResourceKey<LootTable> LEVEL_1 = key(DataGen.resourceLevel(__SPECIALITY, 1));
+        ResourceKey<LootTable> LEVEL_2 = key(DataGen.resourceLevel(__SPECIALITY, 2));
+        ResourceKey<LootTable> LEVEL_3 = key(DataGen.resourceLevel(__SPECIALITY, 3));
+        ResourceKey<LootTable> LEVEL_4 = key(DataGen.resourceLevel(__SPECIALITY, 4));
 
-        ResourceKey<LootTable> TEMPERED_BLADE = key(DataGen.resource(__RAW, "tempered_blade"));
+        ResourceLocation __ITEM = DataGen.resource(__SPECIALITY, "item");
 
-        ResourceKey<LootTable> CASE_HARDENED_PICK = key(DataGen.resource(__RAW, "case_hardened_pick"));
-        ResourceKey<LootTable> CRYSTAL_PICK = key(DataGen.resource(__RAW, "crystal_pick"));
+        ResourceKey<LootTable> TEMPERED_BLADE = key(DataGen.resource(__ITEM, "tempered_blade"));
 
-        ResourceKey<LootTable> WOODLAND_HATCHET = key(DataGen.resource(__RAW, "woodland_hatchet"));
-        ResourceKey<LootTable> CRYSTAL_AXE = key(DataGen.resource(__RAW, "crystal_axe"));
+        ResourceKey<LootTable> CASE_HARDENED_PICK = key(DataGen.resource(__ITEM, "case_hardened_pick"));
+        ResourceKey<LootTable> CRYSTAL_PICK = key(DataGen.resource(__ITEM, "crystal_pick"));
 
-        ResourceKey<LootTable> GRAVE_SPADE = key(DataGen.resource(__RAW, "grave_spade"));
-        ResourceKey<LootTable> SOUL_SPADE = key(DataGen.resource(__RAW, "soul_spade"));
+        ResourceKey<LootTable> WOODLAND_HATCHET = key(DataGen.resource(__ITEM, "woodland_hatchet"));
+        ResourceKey<LootTable> CRYSTAL_AXE = key(DataGen.resource(__ITEM, "crystal_axe"));
+
+        ResourceKey<LootTable> GRAVE_SPADE = key(DataGen.resource(__ITEM, "grave_spade"));
+        ResourceKey<LootTable> SOUL_SPADE = key(DataGen.resource(__ITEM, "soul_spade"));
     }
     
     private static ResourceKey<LootTable> key(ResourceLocation location) {

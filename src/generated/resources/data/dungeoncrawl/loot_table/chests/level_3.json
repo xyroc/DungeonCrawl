@@ -1,0 +1,88 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/blocks/level_3"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/equipment/level_3"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/food/level_3"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/scrap/level_3"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/valuables/level_3"
+        }
+      ],
+      "name": "Level 3 Chest",
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 3.0
+      }
+    },
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 1.0,
+        "min": 0.0
+      },
+      "conditions": [
+        {
+          "chance": 0.15,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/speciality/level_3"
+        }
+      ],
+      "name": "Level 3 Chest: Speciality",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.1,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/jungle_temple",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/stronghold_crossing"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/stronghold_corridor"
+        }
+      ],
+      "name": "Level 3 Chest: Bonus",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/level_3"
+}

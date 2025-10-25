@@ -28,6 +28,12 @@ public record SpecialityLootTables(HolderLookup.Provider registries) implements 
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> collector) {
         final HolderLookup<Enchantment> enchantments = registries.lookupOrThrow(Registries.ENCHANTMENT);
 
+        collector.accept(ChestLootTableKeys.Speciality.LEVEL_0, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.Speciality.LEVEL_1, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.Speciality.LEVEL_2, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.Speciality.LEVEL_3, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.Speciality.LEVEL_4, LootTable.lootTable());
+
         collector.accept(ChestLootTableKeys.Speciality.TEMPERED_BLADE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Tempered Blade")

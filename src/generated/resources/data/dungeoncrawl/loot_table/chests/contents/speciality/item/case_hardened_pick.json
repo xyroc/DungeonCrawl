@@ -1,0 +1,114 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": "Case Hardened Pick",
+              "target": "item_name"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:efficiency": {
+                  "type": "minecraft:uniform",
+                  "max": 2.0,
+                  "min": 1.0
+                },
+                "minecraft:unbreaking": {
+                  "type": "minecraft:uniform",
+                  "max": 2.0,
+                  "min": 1.0
+                }
+              },
+              "function": "minecraft:set_enchantments"
+            },
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "chance": 0.2,
+                  "condition": "minecraft:random_chance"
+                }
+              ],
+              "enchantments": {
+                "minecraft:mending": 1.0
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:iron_pickaxe",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": "Case Hardened Pick of Precision",
+              "target": "item_name"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:efficiency": {
+                  "type": "minecraft:uniform",
+                  "max": 2.0,
+                  "min": 1.0
+                },
+                "minecraft:silk_touch": 1.0,
+                "minecraft:unbreaking": {
+                  "type": "minecraft:uniform",
+                  "max": 2.0,
+                  "min": 1.0
+                }
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:iron_pickaxe"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": "Case Hardened Pick of Prospecting",
+              "target": "item_name"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:efficiency": {
+                  "type": "minecraft:uniform",
+                  "max": 2.0,
+                  "min": 1.0
+                },
+                "minecraft:fortune": {
+                  "type": "minecraft:uniform",
+                  "max": 3.0,
+                  "min": 1.0
+                },
+                "minecraft:unbreaking": {
+                  "type": "minecraft:uniform",
+                  "max": 2.0,
+                  "min": 1.0
+                }
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:iron_pickaxe"
+        }
+      ],
+      "name": "Case Hardened Pick",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/speciality/item/case_hardened_pick"
+}

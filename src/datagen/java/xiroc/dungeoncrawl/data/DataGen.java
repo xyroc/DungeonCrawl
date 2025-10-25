@@ -30,10 +30,9 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.blueprint.Blueprints;
+import xiroc.dungeoncrawl.data.loot.NonValidatingLootTableProvider;
 import xiroc.dungeoncrawl.data.loot.chest.ChestLootTables;
-import xiroc.dungeoncrawl.data.loot.chest.contents.FoodLootTables;
-import xiroc.dungeoncrawl.data.loot.chest.contents.ScrapLootTables;
-import xiroc.dungeoncrawl.data.loot.chest.contents.SpecialityLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.contents.*;
 import xiroc.dungeoncrawl.data.mappings.DungeonTypeMappings;
 import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
 import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
@@ -89,11 +88,16 @@ public class DataGen {
 
         generator.addProvider(includeServer, builtinEntriesProvider);
 
-        generator.addProvider(includeServer, new LootTableProvider(event.getGenerator().getPackOutput(), Set.of(),
+        generator.addProvider(includeServer, new NonValidatingLootTableProvider(event.getGenerator().getPackOutput(),
+                Set.of(),
                 List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST),
-                        new LootTableProvider.SubProviderEntry(SpecialityLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(BlockLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(EquipmentLootTables::new, LootContextParamSets.CHEST),
                         new LootTableProvider.SubProviderEntry(FoodLootTables::new, LootContextParamSets.CHEST),
-                        new LootTableProvider.SubProviderEntry(ScrapLootTables::new, LootContextParamSets.CHEST)), event.getLookupProvider()));
+                        new LootTableProvider.SubProviderEntry(ScrapLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(SpecialityLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(ValuablesLootTables::new, LootContextParamSets.CHEST)),
+                event.getLookupProvider()));
 
         generator.addProvider(includeServer, new ModBiomeTags(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new BlueprintPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));

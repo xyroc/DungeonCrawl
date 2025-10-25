@@ -1,0 +1,79 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/blocks/level_1"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/equipment/level_1"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/food/level_1"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/scrap/level_1"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/valuables/level_1"
+        }
+      ],
+      "name": "Level 1 Chest",
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 3.0
+      }
+    },
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 1.0,
+        "min": 0.0
+      },
+      "conditions": [
+        {
+          "chance": 0.15,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/speciality/level_1"
+        }
+      ],
+      "name": "Level 1 Chest: Speciality",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.1,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/simple_dungeon"
+        }
+      ],
+      "name": "Level 1 Chest: Bonus",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/level_1"
+}

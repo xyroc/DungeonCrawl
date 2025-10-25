@@ -20,7 +20,7 @@
       }
     }
   ],
-  "loot_table": "dungeoncrawl:chest/contents/food/level_0",
+  "loot_table": "dungeoncrawl:chests/contents/food/level_0",
   "rooms": {
     "lower_staircase": [
       "dungeoncrawl:room/lower_staircase"
@@ -47,6 +47,15 @@
       },
       "variants": [
         "dungeoncrawl:room/smithy"
+      ]
+    },
+    {
+      "amount": 1,
+      "entrances": [
+        "dungeoncrawl:corridor/side/door"
+      ],
+      "variants": [
+        "dungeoncrawl:room/bedroom"
       ]
     }
   ],

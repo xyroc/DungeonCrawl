@@ -1,0 +1,83 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/blocks/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/equipment/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/food/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/scrap/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/valuables/level_0"
+        }
+      ],
+      "name": "Level 0 Chest",
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 3.0
+      }
+    },
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 1.0,
+        "min": 0.0
+      },
+      "conditions": [
+        {
+          "chance": 0.15,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chests/contents/speciality/level_0"
+        }
+      ],
+      "name": "Level 0 Chest: Speciality",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.1,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/abandoned_mineshaft"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/simple_dungeon"
+        }
+      ],
+      "name": "Level 0 Chest: Bonus",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/level_0"
+}

@@ -1,0 +1,55 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": "Tempered Blade",
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "color": "dark_green",
+                  "text": "Highly Durable"
+                }
+              ],
+              "mode": "append"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:mending": 1.0,
+                "minecraft:unbreaking": 3.0
+              },
+              "function": "minecraft:set_enchantments"
+            },
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "chance": 0.5,
+                  "condition": "minecraft:random_chance"
+                }
+              ],
+              "enchantments": {
+                "minecraft:sharpness": 1.0
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:iron_sword"
+        }
+      ],
+      "name": "Tempered Blade",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/speciality/item/tempered_blade"
+}

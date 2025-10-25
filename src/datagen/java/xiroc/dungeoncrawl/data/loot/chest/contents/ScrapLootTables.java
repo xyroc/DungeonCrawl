@@ -72,5 +72,10 @@ public record ScrapLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4))))
                         .add(LootItem.lootTableItem(Items.SADDLE)))
         );
+
+        collector.accept(ChestLootTableKeys.SCRAP_LEVEL_1, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.SCRAP_LEVEL_2, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.SCRAP_LEVEL_3, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.SCRAP_LEVEL_4, LootTable.lootTable());
     }
 }

@@ -223,19 +223,97 @@
           "name": "minecraft:book"
         },
         {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:white_candle"
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:candle",
+                    "weight": 16
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:cyan_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:black_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:blue_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:brown_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:gray_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:green_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:light_blue_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:light_gray_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:lime_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:magenta_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:orange_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:pink_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:purple_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:red_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:white_candle"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:yellow_candle"
+                  }
+                ],
+                "functions": [
+                  {
+                    "add": false,
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "max": 8.0,
+                      "min": 1.0
+                    },
+                    "function": "minecraft:set_count"
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          }
         },
         {
           "type": "minecraft:item",
@@ -288,7 +366,8 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:flint"
+          "name": "minecraft:flint",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -322,14 +401,56 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:fermented_spider_eye"
+          "name": "minecraft:fermented_spider_eye",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:saddle"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:honeycomb"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:leather_horse_armor",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_horse_armor"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_horse_armor"
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          }
         }
       ],
-      "name": "scrap",
+      "name": "Level 0 Scrap",
       "rolls": 1.0
     }
   ],

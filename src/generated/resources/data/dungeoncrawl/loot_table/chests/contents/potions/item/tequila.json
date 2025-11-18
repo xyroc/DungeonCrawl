@@ -1,0 +1,61 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "minecraft:potion_contents": {
+                  "custom_color": 3287060,
+                  "custom_effects": [
+                    {
+                      "amplifier": 2,
+                      "duration": 1200,
+                      "id": "minecraft:strength",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "duration": 1200,
+                      "id": "minecraft:mining_fatigue",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    }
+                  ]
+                }
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:hide_additional_tooltip": {}
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Tequila",
+                "translate": "item.dungeoncrawl.potion.tequila"
+              },
+              "target": "item_name"
+            }
+          ],
+          "name": "minecraft:potion"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/potions/item/tequila"
+}

@@ -1,0 +1,90 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "minecraft:potion_contents": {
+                  "custom_color": 3287060,
+                  "custom_effects": [
+                    {
+                      "duration": 100,
+                      "id": "minecraft:regeneration",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "amplifier": 1,
+                      "duration": 20,
+                      "id": "minecraft:saturation",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "amplifier": 1,
+                      "duration": 2400,
+                      "id": "minecraft:health_boost",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "duration": 2400,
+                      "id": "minecraft:resistance",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    }
+                  ]
+                }
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:hide_additional_tooltip": {}
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Stout",
+                "translate": "item.dungeoncrawl.potion.stout"
+              },
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "fallback": "\"It's good for you\"",
+                  "translate": "item.dungeoncrawl.potion.stout.lore"
+                }
+              ],
+              "mode": "append"
+            }
+          ],
+          "name": "minecraft:potion"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/potions/item/stout"
+}

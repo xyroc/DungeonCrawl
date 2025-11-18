@@ -1,0 +1,68 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:splash_potion",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:lingering_potion"
+        }
+      ],
+      "functions": [
+        {
+          "components": {
+            "minecraft:potion_contents": {
+              "custom_color": 3578166,
+              "custom_effects": [
+                {
+                  "duration": 400,
+                  "id": "minecraft:slowness",
+                  "neoforge:cures": [
+                    "milk",
+                    "protected_by_totem"
+                  ],
+                  "show_icon": true
+                },
+                {
+                  "duration": 400,
+                  "id": "minecraft:mining_fatigue",
+                  "neoforge:cures": [
+                    "milk",
+                    "protected_by_totem"
+                  ],
+                  "show_icon": true
+                },
+                {
+                  "duration": 400,
+                  "id": "minecraft:weakness",
+                  "neoforge:cures": [
+                    "milk",
+                    "protected_by_totem"
+                  ],
+                  "show_icon": true
+                }
+              ]
+            }
+          },
+          "function": "minecraft:set_components"
+        },
+        {
+          "function": "minecraft:set_name",
+          "name": {
+            "fallback": "Vile Mixture",
+            "translate": "item.dungeoncrawl.potion.vile_mixture"
+          },
+          "target": "item_name"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/potions/item/vile_mixture"
+}

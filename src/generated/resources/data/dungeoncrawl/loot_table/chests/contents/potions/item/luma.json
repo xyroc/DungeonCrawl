@@ -1,0 +1,61 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "minecraft:potion_contents": {
+                  "custom_color": 16448000,
+                  "custom_effects": [
+                    {
+                      "duration": 12000,
+                      "id": "minecraft:glowing",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    }
+                  ]
+                }
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:hide_additional_tooltip": {}
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Luma",
+                "translate": "item.dungeoncrawl.potion.luma"
+              },
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "fallback": "A glowstone extract.",
+                  "translate": "item.dungeoncrawl.potion.luma.lore"
+                }
+              ],
+              "mode": "append"
+            }
+          ],
+          "name": "minecraft:potion"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/potions/item/luma"
+}

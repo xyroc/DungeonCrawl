@@ -1,0 +1,71 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "minecraft:potion_contents": {
+                  "custom_color": 1315850,
+                  "custom_effects": [
+                    {
+                      "amplifier": 1,
+                      "duration": 12000,
+                      "id": "minecraft:haste",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "duration": 12000,
+                      "id": "minecraft:speed",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    }
+                  ]
+                }
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:hide_additional_tooltip": {}
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Coffee",
+                "translate": "item.dungeoncrawl.potion.coffee"
+              },
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "fallback": "A dark roast bean brew.",
+                  "translate": "item.dungeoncrawl.potion.coffee.lore"
+                }
+              ],
+              "mode": "append"
+            }
+          ],
+          "name": "minecraft:potion"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/potions/item/coffee"
+}

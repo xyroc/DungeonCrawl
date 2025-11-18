@@ -1,0 +1,101 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "minecraft:potion_contents": {
+                  "custom_color": 9843200,
+                  "custom_effects": [
+                    {
+                      "amplifier": 2,
+                      "duration": 160,
+                      "id": "minecraft:regeneration",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "amplifier": 1,
+                      "duration": 100,
+                      "id": "minecraft:weakness",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "amplifier": 1,
+                      "duration": 100,
+                      "id": "minecraft:slowness",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "amplifier": 1,
+                      "duration": 100,
+                      "id": "minecraft:mining_fatigue",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    },
+                    {
+                      "duration": 100,
+                      "id": "minecraft:nausea",
+                      "neoforge:cures": [
+                        "milk",
+                        "protected_by_totem"
+                      ],
+                      "show_icon": true
+                    }
+                  ]
+                }
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:hide_additional_tooltip": {}
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Laudanum",
+                "translate": "item.dungeoncrawl.potion.laudanum"
+              },
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "fallback": "A medicinal tincture.",
+                  "translate": "item.dungeoncrawl.potion.laudanum.lore"
+                }
+              ],
+              "mode": "append"
+            }
+          ],
+          "name": "minecraft:potion"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/potions/item/laudanum"
+}

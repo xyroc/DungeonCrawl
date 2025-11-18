@@ -55,6 +55,30 @@ public interface ChestLootTableKeys {
     ResourceKey<LootTable> EQUIPMENT_LEVEL_3 = key(DataGen.resourceLevel(__EQUIPMENT, 3));
     ResourceKey<LootTable> EQUIPMENT_LEVEL_4 = key(DataGen.resourceLevel(__EQUIPMENT, 4));
 
+    interface Potion {
+        ResourceLocation __POTIONS = DataGen.resource(__CONTENTS, "potions");
+        ResourceKey<LootTable> LEVEL_0 = key(DataGen.resourceLevel(__POTIONS, 0));
+        ResourceKey<LootTable> LEVEL_1 = key(DataGen.resourceLevel(__POTIONS, 1));
+        ResourceKey<LootTable> LEVEL_2 = key(DataGen.resourceLevel(__POTIONS, 2));
+        ResourceKey<LootTable> LEVEL_3 = key(DataGen.resourceLevel(__POTIONS, 3));
+        ResourceKey<LootTable> LEVEL_4 = key(DataGen.resourceLevel(__POTIONS, 4));
+
+        ResourceLocation __ITEM = DataGen.resource(__POTIONS, "item");
+
+        // Special Potions from Roguelike Dungeons.
+        ResourceKey<LootTable> ABSINTHE = key(DataGen.resource(__ITEM, "absinthe"));
+        ResourceKey<LootTable> ANIMUS = key(DataGen.resource(__ITEM, "animus"));
+        ResourceKey<LootTable> COFFEE = key(DataGen.resource(__ITEM, "coffee"));
+        ResourceKey<LootTable> LAUDANUM = key(DataGen.resource(__ITEM, "laudanum"));
+        ResourceKey<LootTable> LUMA = key(DataGen.resource(__ITEM, "luma"));
+        ResourceKey<LootTable> MOONSHINE = key(DataGen.resource(__ITEM, "moonshine"));
+        ResourceKey<LootTable> NECTAR = key(DataGen.resource(__ITEM, "nectar"));
+        ResourceKey<LootTable> STOUT = key(DataGen.resource(__ITEM, "stout"));
+        ResourceKey<LootTable> TEQUILA = key(DataGen.resource(__ITEM, "tequila"));
+        ResourceKey<LootTable> VILE_MIXTURE = key(DataGen.resource(__ITEM, "vile_mixture"));
+        ResourceKey<LootTable> VITAE = key(DataGen.resource(__ITEM, "vitae"));
+    }
+
     interface Speciality {
         ResourceLocation __SPECIALITY = DataGen.resource(__CONTENTS, "speciality");
         ResourceKey<LootTable> LEVEL_0 = key(DataGen.resourceLevel(__SPECIALITY, 0));

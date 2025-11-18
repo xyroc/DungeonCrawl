@@ -94,6 +94,7 @@ public class DataGen {
                         new LootTableProvider.SubProviderEntry(BlockLootTables::new, LootContextParamSets.CHEST),
                         new LootTableProvider.SubProviderEntry(EquipmentLootTables::new, LootContextParamSets.CHEST),
                         new LootTableProvider.SubProviderEntry(FoodLootTables::new, LootContextParamSets.CHEST),
+                        new LootTableProvider.SubProviderEntry(PotionLootTables::new, LootContextParamSets.CHEST),
                         new LootTableProvider.SubProviderEntry(ScrapLootTables::new, LootContextParamSets.CHEST),
                         new LootTableProvider.SubProviderEntry(SpecialityLootTables::new, LootContextParamSets.CHEST),
                         new LootTableProvider.SubProviderEntry(ValuablesLootTables::new, LootContextParamSets.CHEST)),

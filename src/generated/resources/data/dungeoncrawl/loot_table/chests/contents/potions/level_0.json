@@ -1,0 +1,144 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:healing"
+                      }
+                    ],
+                    "name": "minecraft:potion",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:strength"
+                      }
+                    ],
+                    "name": "minecraft:potion"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:poison"
+                      }
+                    ],
+                    "name": "minecraft:potion"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:regeneration"
+                      }
+                    ],
+                    "name": "minecraft:potion"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:healing"
+                      }
+                    ],
+                    "name": "minecraft:splash_potion"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:strength"
+                      }
+                    ],
+                    "name": "minecraft:splash_potion"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:poison"
+                      }
+                    ],
+                    "name": "minecraft:splash_potion"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "functions": [
+                      {
+                        "function": "minecraft:set_potion",
+                        "id": "minecraft:regeneration"
+                      }
+                    ],
+                    "name": "minecraft:splash_potion"
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          },
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:loot_table",
+                    "value": "dungeoncrawl:chests/contents/potions/item/laudanum"
+                  },
+                  {
+                    "type": "minecraft:loot_table",
+                    "value": "dungeoncrawl:chests/contents/potions/item/animus"
+                  },
+                  {
+                    "type": "minecraft:loot_table",
+                    "value": "dungeoncrawl:chests/contents/potions/item/coffee"
+                  },
+                  {
+                    "type": "minecraft:loot_table",
+                    "value": "dungeoncrawl:chests/contents/potions/item/luma"
+                  },
+                  {
+                    "type": "minecraft:loot_table",
+                    "value": "dungeoncrawl:chests/contents/potions/item/vitae"
+                  },
+                  {
+                    "type": "minecraft:loot_table",
+                    "value": "dungeoncrawl:chests/contents/potions/item/nectar"
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          }
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chests/contents/potions/level_0"
+}

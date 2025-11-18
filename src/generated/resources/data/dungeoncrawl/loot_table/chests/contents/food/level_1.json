@@ -319,6 +319,21 @@
             }
           ],
           "name": "minecraft:cooked_chicken"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:honey_bottle"
         }
       ],
       "name": "Level 1 Food",

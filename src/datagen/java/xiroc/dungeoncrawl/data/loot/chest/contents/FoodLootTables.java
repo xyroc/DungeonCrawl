@@ -63,6 +63,8 @@ public record FoodLootTables(HolderLookup.Provider registries) implements LootTa
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
                         .add(LootItem.lootTableItem(Items.CHICKEN)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
+                        .add(LootItem.lootTableItem(Items.HONEY_BOTTLE)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
                 )
         );
 
@@ -120,6 +122,8 @@ public record FoodLootTables(HolderLookup.Provider registries) implements LootTa
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
                         .add(LootItem.lootTableItem(Items.COOKED_CHICKEN)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 8))))
+                        .add(LootItem.lootTableItem(Items.HONEY_BOTTLE)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
                 )
         );
 

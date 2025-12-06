@@ -22,12 +22,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.functions.SetPotionFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -54,11 +56,21 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .when(LootItemRandomChanceCondition.randomChance(0.15f))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Speciality.LEVEL_0)))
                 .withPool(LootPool.lootPool()
-                        .name("Level 0 Chest: Bonus")
+                        .name("Level 0 Chest: Random Bonus")
                         .setRolls(ConstantValue.exactly(1))
                         .when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.ABANDONED_MINESHAFT))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.SIMPLE_DUNGEON)))
+                .withPool(LootPool.lootPool()
+                        .name("Level 0 Chest: Lucky Bonus")
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.GOLD_NUGGET)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 5))))
+                        .add(LootItem.lootTableItem(Items.RAW_GOLD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))))
+                        .add(LootItem.lootTableItem(Items.GOLD_INGOT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))))
         );
 
         collector.accept(ChestLootTableKeys.LEVEL_1, LootTable.lootTable()
@@ -78,10 +90,23 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .when(LootItemRandomChanceCondition.randomChance(0.15f))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Speciality.LEVEL_1)))
                 .withPool(LootPool.lootPool()
-                        .name("Level 1 Chest: Bonus")
+                        .name("Level 1 Chest: Random Bonus")
                         .setRolls(ConstantValue.exactly(1))
                         .when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.SIMPLE_DUNGEON)))
+                .withPool(LootPool.lootPool()
+                        .name("Level 1 Chest: Lucky Bonus")
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.GOLD_NUGGET)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 5))))
+                        .add(LootItem.lootTableItem(Items.RAW_GOLD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6))))
+                        .add(LootItem.lootTableItem(Items.GOLD_INGOT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6))))
+                        .add(LootItem.lootTableItem(Items.EMERALD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
+                                .setWeight(2)))
         );
 
         collector.accept(ChestLootTableKeys.LEVEL_2, LootTable.lootTable()
@@ -101,10 +126,22 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .when(LootItemRandomChanceCondition.randomChance(0.15f))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Speciality.LEVEL_2)))
                 .withPool(LootPool.lootPool()
-                        .name("Level 2 Chest: Bonus")
+                        .name("Level 2 Chest: Random Bonus")
                         .setRolls(ConstantValue.exactly(1))
                         .when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.JUNGLE_TEMPLE)))
+                .withPool(LootPool.lootPool()
+                        .name("Level 2 Chest: Lucky Bonus")
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.RAW_GOLD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 7))))
+                        .add(LootItem.lootTableItem(Items.GOLD_INGOT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 7))))
+                        .add(LootItem.lootTableItem(Items.EMERALD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
+                                .setWeight(2))
+                        .add(LootItem.lootTableItem(Items.DIAMOND)))
         );
 
         collector.accept(ChestLootTableKeys.LEVEL_3, LootTable.lootTable()
@@ -124,13 +161,29 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .when(LootItemRandomChanceCondition.randomChance(0.15f))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Speciality.LEVEL_3)))
                 .withPool(LootPool.lootPool()
-                        .name("Level 3 Chest: Bonus")
+                        .name("Level 3 Chest: Random Bonus")
                         .setRolls(ConstantValue.exactly(1))
                         .when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.JUNGLE_TEMPLE)
                                 .setWeight(2))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CROSSING))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CORRIDOR)))
+                .withPool(LootPool.lootPool()
+                        .name("Level 3 Chest: Lucky Bonus")
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.POTION)
+                                .apply(SetPotionFunction.setPotion(Potions.LUCK)))
+                        .add(LootItem.lootTableItem(Items.RAW_GOLD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 7))))
+                        .add(LootItem.lootTableItem(Items.GOLD_INGOT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 7)))
+                                .setWeight(2))
+                        .add(LootItem.lootTableItem(Items.EMERALD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
+                                .setWeight(2))
+                        .add(LootItem.lootTableItem(Items.DIAMOND)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
         );
 
         collector.accept(ChestLootTableKeys.LEVEL_4, LootTable.lootTable()
@@ -150,11 +203,27 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .when(LootItemRandomChanceCondition.randomChance(0.15f))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Speciality.LEVEL_4)))
                 .withPool(LootPool.lootPool()
-                        .name("Level 4 Chest: Bonus")
+                        .name("Level 4 Chest: Random Bonus")
                         .setRolls(ConstantValue.exactly(1))
                         .when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CROSSING))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CORRIDOR)))
+                .withPool(LootPool.lootPool()
+                        .name("Level 4 Chest: Lucky Bonus")
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.POTION)
+                                .apply(SetPotionFunction.setPotion(Potions.LUCK)))
+                        .add(LootItem.lootTableItem(Items.NETHERITE_SCRAP)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+                        .add(LootItem.lootTableItem(Items.GOLD_INGOT)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 7)))
+                                .setWeight(2))
+                        .add(LootItem.lootTableItem(Items.EMERALD)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
+                                .setWeight(2))
+                        .add(LootItem.lootTableItem(Items.DIAMOND)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))))
         );
 
         collector.accept(ChestLootTableKeys.SECRET_ROOM, LootTable.lootTable()

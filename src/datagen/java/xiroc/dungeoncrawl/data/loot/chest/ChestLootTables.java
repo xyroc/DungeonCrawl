@@ -19,6 +19,7 @@
 package xiroc.dungeoncrawl.data.loot.chest;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
@@ -28,6 +29,8 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
+import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction;
+import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.functions.SetPotionFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
@@ -271,6 +274,25 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                                 .add(LootItem.lootTableItem(Items.HOST_ARMOR_TRIM_SMITHING_TEMPLATE)))
                                         .build())
                                 .setWeight(2)))
+                .withPool(LootPool.lootPool()
+                        .name("Secret Room Chest: Lucky Bonus")
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
+                        .add(NestedLootTable.inlineLootTable(LootTable.lootTable()
+                                .withPool(LootPool.lootPool()
+                                        .add(LootItem.lootTableItem(Items.OMINOUS_BOTTLE)
+                                                .apply(SetComponentsFunction.setComponent(DataComponents.OMINOUS_BOTTLE_AMPLIFIER, 0)))
+                                        .add(LootItem.lootTableItem(Items.OMINOUS_BOTTLE)
+                                                .apply(SetComponentsFunction.setComponent(DataComponents.OMINOUS_BOTTLE_AMPLIFIER, 1)))
+                                        .add(LootItem.lootTableItem(Items.OMINOUS_BOTTLE)
+                                                .apply(SetComponentsFunction.setComponent(DataComponents.OMINOUS_BOTTLE_AMPLIFIER, 2)))
+                                        .add(LootItem.lootTableItem(Items.OMINOUS_BOTTLE)
+                                                .apply(SetComponentsFunction.setComponent(DataComponents.OMINOUS_BOTTLE_AMPLIFIER, 3)))
+                                        .add(LootItem.lootTableItem(Items.OMINOUS_BOTTLE)
+                                                .apply(SetComponentsFunction.setComponent(DataComponents.OMINOUS_BOTTLE_AMPLIFIER, 4))))
+                                .build()))
+                        .add(LootItem.lootTableItem(Items.BOOK)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(20,30)))))
         );
 
         collector.accept(ChestLootTableKeys.SUPPLY, LootTable.lootTable());

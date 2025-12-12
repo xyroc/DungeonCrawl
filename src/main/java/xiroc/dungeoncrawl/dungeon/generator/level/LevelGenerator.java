@@ -214,7 +214,7 @@ public class LevelGenerator {
         }
 
         for (BlueprintMultipart part : parts) {
-            if (!part.addParts(piece, baseComponent, this)) {
+            if (part.addParts(piece, baseComponent, this)) {
                 return null;
             }
         }

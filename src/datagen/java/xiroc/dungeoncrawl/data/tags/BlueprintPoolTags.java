@@ -1,4 +1,4 @@
-package xiroc.dungeoncrawl.data.tags.worldgen;
+package xiroc.dungeoncrawl.data.tags;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

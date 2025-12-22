@@ -42,7 +42,7 @@ import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
 import xiroc.dungeoncrawl.data.structure.ModStructureSets;
 import xiroc.dungeoncrawl.data.structure.ModStructures;
-import xiroc.dungeoncrawl.data.tags.worldgen.BlueprintPoolTags;
+import xiroc.dungeoncrawl.data.tags.BlueprintPoolTags;
 import xiroc.dungeoncrawl.data.tags.worldgen.ModBiomeTags;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;

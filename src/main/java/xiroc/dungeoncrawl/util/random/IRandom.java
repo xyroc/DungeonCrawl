@@ -51,6 +51,10 @@ public interface IRandom<T> {
 
     record Entry<T>(T value, int weight) {}
 
+    static <T> IRandomCodecBuilder<T> codecBuilder() {
+        return new IRandomCodecBuilder<>();
+    }
+
     static <T> Builder<T> builder() {
         return new Builder<>();
     }

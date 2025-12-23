@@ -3,8 +3,6 @@ package xiroc.dungeoncrawl.dungeon.blueprint;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -39,13 +37,11 @@ public class Blueprint {
     // Lazy initialization to break up cycle on class load
     public static final Codec<Blueprint> DIRECT_CODEC = Codec.lazyInitialized(() -> BlueprintConfiguration.CODEC.xmap(Blueprint::new, blueprint -> blueprint.configuration));
     public static final Codec<Holder<Blueprint>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.BLUEPRINT, DIRECT_CODEC, false);
-    public static final Codec<HolderSet<IRandom<Holder<Blueprint>>>> LIST_OF_RANDOM_HOLDER_CODEC = Codec.lazyInitialized(() -> RegistryCodecs.homogeneousList(DatapackRegistries.BLUEPRINT_POOLS, getRandomHolderCodec(), true));
-    public static final Codec<IRandom<Holder<Blueprint>>> RANDOM_HOLDER_CODEC = IRandom.makeCodec(IRandom.makeBuilderCodec(HOLDER_CODEC, "blueprint", LIST_OF_RANDOM_HOLDER_CODEC));
+    public static final Codec<IRandom<Holder<Blueprint>>> RANDOM_HOLDER_CODEC = IRandom.<Holder<Blueprint>>codecBuilder()
+            .valueCodec("blueprint", HOLDER_CODEC)
+            .pools(DatapackRegistries.BLUEPRINT_POOLS)
+            .build();
     public static final Codec<IRandom<IRandom<Holder<Blueprint>>>> RANDOM_RANDOM_HOLDER_CODEC = IRandom.makeCodec(IRandom.makeBuilderCodec(RANDOM_HOLDER_CODEC, "blueprints", null));
-
-    private static Codec<IRandom<Holder<Blueprint>>> getRandomHolderCodec() {
-        return RANDOM_HOLDER_CODEC;
-    }
 
     protected final BlueprintConfiguration configuration;
     protected Vec3i size;

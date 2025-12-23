@@ -3,8 +3,6 @@ package xiroc.dungeoncrawl.dungeon.theme;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
@@ -62,9 +60,10 @@ public record PrimaryTheme(BlockStateProvider masonry,
             )));
 
     public static final Codec<Holder<PrimaryTheme>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.PRIMARY_THEME, DIRECT_CODEC, false);
-    public static final Codec<IRandom<Holder<PrimaryTheme>>> RANDOM_HOLDER_CODEC = IRandom.makeCodec(IRandom.makeBuilderCodec(HOLDER_CODEC, "theme", null));
-    public static final Codec<HolderSet<IRandom<Holder<PrimaryTheme>>>> LIST_OF_RANDOM_HOLDER_CODEC = RegistryCodecs.homogeneousList(DatapackRegistries.PRIMARY_THEME_POOLS, RANDOM_HOLDER_CODEC, true);
-    public static final Codec<RandomMapping<Biome, PrimaryTheme>> BIOME_MAPPING_DIRECT_CODEC = RandomMapping.makeDirectCodec(Biome.LIST_CODEC, LIST_OF_RANDOM_HOLDER_CODEC);
+    public static final Codec<IRandom<Holder<PrimaryTheme>>> RANDOM_HOLDER_CODEC = IRandom.<Holder<PrimaryTheme>>codecBuilder()
+            .valueCodec("theme", HOLDER_CODEC)
+            .build();
+    public static final Codec<RandomMapping<Biome, PrimaryTheme>> BIOME_MAPPING_DIRECT_CODEC = RandomMapping.makeDirectCodec(Biome.LIST_CODEC, RANDOM_HOLDER_CODEC);
     public static final Codec<Holder<RandomMapping<Biome, PrimaryTheme>>> BIOME_MAPPING_HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.PRIMARY_THEME_MAPPINGS, BIOME_MAPPING_DIRECT_CODEC);
 
     public static Builder builder() {

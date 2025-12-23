@@ -13,7 +13,7 @@ public class DungeonTypes {
     public static void buildMapping(RegistryAccess registryAccess) {
         final var dungeonTypeMappings = registryAccess.registryOrThrow(DatapackRegistries.DUNGEON_TYPE_MAPPINGS);
         final RandomMapping.Builder<Biome, DungeonType> combinedMapping = new RandomMapping.Builder<>();
-        dungeonTypeMappings.forEach(combinedMapping::put);
+        dungeonTypeMappings.forEach(combinedMapping::combineWith);
         BIOME_TO_DUNGEON_TYPE_MAPPING = combinedMapping.build();
         DungeonCrawl.LOGGER.debug("Combined {} dungeon type mapping(s).", dungeonTypeMappings.size());
     }

@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
@@ -26,9 +24,10 @@ public record DungeonType(IRandom<Holder<Blueprint>> entrances, List<DungeonSect
     ).apply(instance, DungeonType::new));
 
     public static final Codec<Holder<DungeonType>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.DUNGEON_TYPE, DIRECT_CODEC);
-    public static final Codec<IRandom<Holder<DungeonType>>> RANDOM_HOLDER_CODEC = IRandom.makeCodec(IRandom.makeBuilderCodec(HOLDER_CODEC, "type", null));
-    public static final Codec<HolderSet<IRandom<Holder<DungeonType>>>> LIST_OF_RANDOM_HOLDER_CODEC = RegistryCodecs.homogeneousList(DatapackRegistries.DUNGEON_TYPE_POOLS, RANDOM_HOLDER_CODEC, true);
-    public static final Codec<RandomMapping<Biome, DungeonType>> BIOME_MAPPING_DIRECT_CODEC = RandomMapping.makeDirectCodec(Biome.LIST_CODEC, LIST_OF_RANDOM_HOLDER_CODEC);
+    public static final Codec<IRandom<Holder<DungeonType>>> RANDOM_HOLDER_CODEC = IRandom.<Holder<DungeonType>>codecBuilder()
+            .valueCodec("type", HOLDER_CODEC)
+            .build();
+    public static final Codec<RandomMapping<Biome, DungeonType>> BIOME_MAPPING_DIRECT_CODEC = RandomMapping.makeDirectCodec(Biome.LIST_CODEC, RANDOM_HOLDER_CODEC);
 
     public static class Builder {
         @Nullable

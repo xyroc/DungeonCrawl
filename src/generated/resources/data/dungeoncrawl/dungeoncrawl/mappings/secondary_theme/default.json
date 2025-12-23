@@ -1,8 +1,6 @@
 {
   "fallback": [
-    [
-      "dungeoncrawl:oak"
-    ]
+    "dungeoncrawl:oak"
   ],
-  "mapping": []
+  "mapping": {}
 }

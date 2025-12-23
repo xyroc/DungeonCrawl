@@ -1,8 +1,6 @@
 {
   "fallback": [
-    [
-      "dungeoncrawl:default"
-    ]
+    "dungeoncrawl:default"
   ],
-  "mapping": []
+  "mapping": {}
 }

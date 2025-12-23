@@ -19,4 +19,9 @@ public record SingleValueRandom<T>(T value) implements IRandom<T> {
     public void forEach(BiConsumer<T, Integer> consumer) {
         consumer.accept(value, 1);
     }
+
+    @Override
+    public void addTo(Builder<T> builder) {
+        builder.add(value);
+    }
 }

@@ -45,6 +45,14 @@ public class PooledRandom<T> implements IRandom<T> {
     }
 
     @Override
+    public void addTo(Builder<T> builder) {
+        builder.setPools(pools);
+        if (base != null) {
+            base.addTo(builder);
+        }
+    }
+
+    @Override
     public int totalWeight() {
         return weightedPools.get().totalWeight();
     }

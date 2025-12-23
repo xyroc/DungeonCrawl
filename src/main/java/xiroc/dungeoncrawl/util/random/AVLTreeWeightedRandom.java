@@ -45,4 +45,9 @@ public class AVLTreeWeightedRandom<T> implements IRandom<T> {
             }
         });
     }
+
+    @Override
+    public void addTo(Builder<T> builder) {
+        forEach(builder::add);
+    }
 }

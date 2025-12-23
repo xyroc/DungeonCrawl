@@ -44,6 +44,11 @@ public class ListWeightedRandom<T> implements IRandom<T> {
     }
 
     @Override
+    public void addTo(Builder<T> builder) {
+        forEach(builder::add);
+    }
+
+    @Override
     public int totalWeight() {
         return totalWeight;
     }

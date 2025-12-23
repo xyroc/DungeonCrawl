@@ -47,6 +47,8 @@ public interface IRandom<T> {
 
     void forEach(BiConsumer<T, Integer> consumer);
 
+    void addTo(Builder<T> builder);
+
     record Entry<T>(T value, int weight) {}
 
     static <T> Builder<T> builder() {
@@ -79,7 +81,7 @@ public interface IRandom<T> {
         }
 
         public Builder<T> addInstance(IRandom<T> random) {
-            random.forEach(this::add);
+            random.addTo(this);
             return this;
         }
 

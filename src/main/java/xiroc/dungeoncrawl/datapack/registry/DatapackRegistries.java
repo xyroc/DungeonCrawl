@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
@@ -19,6 +20,8 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 
 public interface DatapackRegistries {
+    ResourceKey<Registry<IRandom<BlockState>>> BLOCK_STATE_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.BLOCK_STATE_POOLS.path()));
+
     ResourceKey<Registry<SpawnerEntityProperties>> SPAWNER_ENTITY_PROPERTIES = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_ENTITY_PROPERTIES.path()));
     ResourceKey<Registry<SpawnerEntityType>> SPAWNER_ENTITY_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_ENTITIES.path()));
     ResourceKey<Registry<SpawnerType>> SPAWNER_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_TYPES.path()));
@@ -39,6 +42,8 @@ public interface DatapackRegistries {
     ResourceKey<Registry<IRandom<Holder<Blueprint>>>> BLUEPRINT_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.BLUEPRINT_POOLS.path()));
 
     static void register(final DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(BLOCK_STATE_POOLS, IRandom.BaseCodecs.BLOCK_STATE);
+
         event.dataPackRegistry(SPAWNER_ENTITY_PROPERTIES, SpawnerEntityProperties.DIRECT_CODEC);
         event.dataPackRegistry(SPAWNER_ENTITY_TYPE, SpawnerEntityType.DIRECT_CODEC);
         event.dataPackRegistry(SPAWNER_TYPE, SpawnerType.DIRECT_CODEC);

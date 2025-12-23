@@ -23,6 +23,7 @@ public interface DatapackDirectories {
     DatapackDirectory DUNGEON_TYPE_MAPPINGS = MAPPINGS.subdirectory("dungeon_type");
 
     DatapackDirectory POOLS = new DatapackDirectory("pools");
+    DatapackDirectory BLOCK_STATE_POOLS = POOLS.subdirectory("block");
     DatapackDirectory BLUEPRINT_POOLS = POOLS.subdirectory("blueprint");
     DatapackDirectory DUNGEON_TYPE_POOLS = POOLS.subdirectory("dungeon_type");
     DatapackDirectory PRIMARY_THEME_POOLS = POOLS.subdirectory("primary_theme");

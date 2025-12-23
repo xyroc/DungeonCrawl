@@ -28,6 +28,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 
@@ -135,7 +136,10 @@ public interface IRandom<T> {
     }
 
     interface BaseCodecs {
-        Codec<IRandom<BlockState>> BLOCK_STATE = makeCodec(makeBuilderCodec(GlobalCodecs.BLOCK_STATE, "block", null));
+        Codec<IRandom<BlockState>> BLOCK_STATE = IRandom.<BlockState>codecBuilder()
+                .valueCodec("block", GlobalCodecs.BLOCK_STATE)
+                .pools(DatapackRegistries.BLOCK_STATE_POOLS)
+                .build();
         Codec<IRandom<Item>> ITEM = makeCodec(makeBuilderCodec(GlobalCodecs.ITEM, "item", null));
     }
 

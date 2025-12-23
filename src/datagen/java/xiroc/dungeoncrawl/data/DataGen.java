@@ -38,6 +38,8 @@ import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
 import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
 import xiroc.dungeoncrawl.data.pool.BlueprintPools;
 import xiroc.dungeoncrawl.data.pool.block.BlockPools;
+import xiroc.dungeoncrawl.data.pool.theme.PrimaryThemePools;
+import xiroc.dungeoncrawl.data.pool.theme.SecondaryThemePools;
 import xiroc.dungeoncrawl.data.spawner.EntityProperties;
 import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
@@ -45,6 +47,8 @@ import xiroc.dungeoncrawl.data.structure.ModStructureSets;
 import xiroc.dungeoncrawl.data.structure.ModStructures;
 import xiroc.dungeoncrawl.data.tags.BlockPoolTags;
 import xiroc.dungeoncrawl.data.tags.BlueprintPoolTags;
+import xiroc.dungeoncrawl.data.tags.PrimaryThemePoolTags;
+import xiroc.dungeoncrawl.data.tags.SecondaryThemePoolTags;
 import xiroc.dungeoncrawl.data.tags.worldgen.ModBiomeTags;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
@@ -76,8 +80,8 @@ public class DataGen {
                         .add(DatapackRegistries.SPAWNER_TYPE, SpawnerTypes::generate)
                         .add(DatapackRegistries.PRIMARY_THEME, PrimaryThemes::generate)
                         .add(DatapackRegistries.SECONDARY_THEME, SecondaryThemes::generate)
-                        .add(DatapackRegistries.PRIMARY_THEME_POOLS, bootstrap -> {})
-                        .add(DatapackRegistries.SECONDARY_THEME_POOLS, bootstrap -> {})
+                        .add(DatapackRegistries.PRIMARY_THEME_POOLS, PrimaryThemePools::generate)
+                        .add(DatapackRegistries.SECONDARY_THEME_POOLS, SecondaryThemePools::generate)
                         .add(DatapackRegistries.PRIMARY_THEME_MAPPINGS, PrimaryThemeMappings::generate)
                         .add(DatapackRegistries.SECONDARY_THEME_MAPPINGS, SecondaryThemeMappings::generate)
                         .add(DatapackRegistries.LEVEL_TYPE, LevelTypes::generate)
@@ -106,6 +110,8 @@ public class DataGen {
         generator.addProvider(includeServer, new ModBiomeTags(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new BlockPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new BlueprintPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
+        generator.addProvider(includeServer, new PrimaryThemePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
+        generator.addProvider(includeServer, new SecondaryThemePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
     }
 
     public static ResourceLocation resource(String path) {

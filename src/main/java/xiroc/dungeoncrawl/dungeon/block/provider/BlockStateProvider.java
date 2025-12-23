@@ -60,10 +60,16 @@ public interface BlockStateProvider {
         @Override
         public <T> DataResult<T> encode(BlockStateProvider blockStateProvider, DynamicOps<T> dynamicOps, T t) {
             if (blockStateProvider instanceof SingleBlock singleBlock) {
-                return SingleBlock.COMPACT_CODEC.encode(singleBlock, dynamicOps, t);
+                DataResult<T> encoded = SingleBlock.COMPACT_CODEC.encode(singleBlock, dynamicOps, t);
+                if (encoded.flatMap(dynamicOps::getStringValue).isSuccess()) {
+                    return encoded;
+                }
             }
             if (blockStateProvider instanceof RandomBlock randomBlock) {
-                return RandomBlock.COMPACT_CODEC.encode(randomBlock, dynamicOps, t);
+                DataResult<T> encoded = RandomBlock.COMPACT_CODEC.encode(randomBlock, dynamicOps, t);
+                if (encoded.flatMap(dynamicOps::getList).isSuccess()) {
+                    return encoded;
+                }
             }
             return VERBOSE_CODEC.encode(blockStateProvider, dynamicOps, t);
         }

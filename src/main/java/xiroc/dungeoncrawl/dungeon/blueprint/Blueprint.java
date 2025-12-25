@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
@@ -81,6 +82,10 @@ public class Blueprint {
                         .applyProperties(provider.get(position, random))
                         .rotate(level, position, rotation);
                 templateBlockType.handlePlacement(level, blockPosition, state, true);
+
+                if (placementSettings.lootTable() != null && level.getBlockEntity(blockPosition) instanceof RandomizableContainerBlockEntity containerBlockEntity) {
+                    containerBlockEntity.setLootTable(placementSettings.lootTable().forTier(worldGenContext.level()));
+                }
             }
             if (columnPos.getY() <= worldGenContext.foundationHeight() && !level.getBlockState(columnPos).isAir()) {
                 WorldEditor.buildFoundation(level, columnPos, random, worldGenBounds, worldGenContext);

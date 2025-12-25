@@ -27,8 +27,11 @@ import java.util.List;
 public interface TieredResource<T> {
 
     interface Codecs {
-        Codec<TieredResource.Builder<ResourceKey<LootTable>>> LOOT_TABLE_BUILDER = new BuilderCodec<>(GlobalCodecs.LOOT_TABLE);
-        Codec<TieredResource<ResourceKey<LootTable>>> LOOT_TABLE = LOOT_TABLE_BUILDER.comapFlatMap(StorageHelper.tryToApply(Builder::build), Builder::new);
+        private static <T> Codec<TieredResource<T>> makeCodec(Codec<T> resourceCodec) {
+            return new BuilderCodec<>(resourceCodec).comapFlatMap(StorageHelper.tryToApply(Builder::build), Builder::new);
+        }
+
+        Codec<TieredResource<ResourceKey<LootTable>>> LOOT_TABLE = makeCodec(GlobalCodecs.LOOT_TABLE);
     }
 
     /**

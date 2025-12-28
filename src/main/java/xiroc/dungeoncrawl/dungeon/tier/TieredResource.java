@@ -1,19 +1,16 @@
 package xiroc.dungeoncrawl.dungeon.tier;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.RecordBuilder;
+import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootTable;
 import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents an n to 1 mapping from non-negative integers to objects of any type.
@@ -27,8 +24,28 @@ import java.util.List;
 public interface TieredResource<T> {
 
     interface Codecs {
-        private static <T> Codec<TieredResource<T>> makeCodec(Codec<T> resourceCodec) {
-            return new BuilderCodec<>(resourceCodec).comapFlatMap(StorageHelper.tryToApply(Builder::build), Builder::new);
+        static <T> Codec<TieredResource<T>> makeCodec(Codec<T> resourceCodec) {
+            final Codec<Builder<T>> singleTierBuilderCodec = resourceCodec.flatComapMap(Builder::new, builder -> {
+                if (!builder.followingTiers.isEmpty()) {
+                    return DataResult.error(() -> "Cannot serialize a multi-tier builder as a single tier builder");
+                }
+                return DataResult.success(builder.firstTier);
+            });
+            final Codec<Builder<T>> multiTierBuilderCodec = new UnboundedMapCodec<>(Codec.STRING, resourceCodec).comapFlatMap(
+                    Builder::fromMap,
+                    Builder::toMap
+            );
+            final Codec<Builder<T>> builderCodec = Codec.either(singleTierBuilderCodec, multiTierBuilderCodec).xmap(
+                    Either::unwrap,
+                    builder -> {
+                        if (builder.followingTiers.isEmpty()) {
+                            return Either.left(builder);
+                        }
+                        return Either.right(builder);
+                    }
+            );
+
+            return builderCodec.comapFlatMap(StorageHelper.tryToApply(Builder::build), Builder::new);
         }
 
         Codec<TieredResource<ResourceKey<LootTable>>> LOOT_TABLE = makeCodec(GlobalCodecs.LOOT_TABLE);
@@ -87,21 +104,35 @@ public interface TieredResource<T> {
             this.firstTier = firstTier;
         }
 
-        private Builder(List<Pair<Integer, T>> tiers) {
-            if (tiers.isEmpty()) {
-                throw new IllegalArgumentException("Specify at least one tier.");
+        private static <T> DataResult<Builder<T>> fromMap(Map<String, T> map) {
+            final T tierZero = map.get("0");
+            if (tierZero == null) {
+                return DataResult.error(() -> "Missing the required tier 0");
             }
-            tiers.sort(Comparator.comparingInt(Pair::getFirst));
 
-            var firstTier = tiers.getFirst();
-            if (firstTier.getFirst() != 0) {
-                throw new IllegalArgumentException("First tier must be zero, was " + firstTier.getFirst());
+            final Builder<T> builder = new Builder<>(tierZero);
+            for (var entry : map.entrySet()) {
+                if (entry.getKey().equals("0")) {
+                    continue;
+                }
+                try {
+                    final int tier = Integer.parseUnsignedInt(entry.getKey());
+                    builder.tier(entry.getValue(), tier);
+                } catch (NumberFormatException exception) {
+                    return DataResult.error(() -> "Invalid tier: " + entry.getKey());
+                }
             }
-            this.firstTier = firstTier.getSecond();
 
-            tiers.subList(1, tiers.size()).stream()
-                    .map(pair -> new Tier<>(pair.getSecond(), pair.getFirst()))
-                    .forEach(followingTiers::add);
+            return DataResult.success(builder);
+        }
+
+        private Map<String, T> toMap() {
+            final Map<String, T> map = new HashMap<>();
+            map.put("0", firstTier);
+            for (var tier : followingTiers) {
+                map.put(Integer.toString(tier.startingFrom), tier.resource);
+            }
+            return map;
         }
 
         public Builder<T> tier(T resource, int startingFrom) {
@@ -119,64 +150,6 @@ public interface TieredResource<T> {
 
         private void sortTiers() {
             followingTiers.sort(Comparator.comparingInt(Tier::startingFrom));
-        }
-    }
-
-    record BuilderCodec<T>(Codec<T> resourceCodec) implements Codec<Builder<T>> {
-        private static final String TIER_PREFIX = "tier_";
-
-        @Override
-        public <D> DataResult<Pair<Builder<T>, D>> decode(DynamicOps<D> dynamicOps, D input) {
-            final var asMap = dynamicOps.getMapValues(input).result();
-            if (asMap.isEmpty()) {
-                return resourceCodec.decode(dynamicOps, input).map(pair -> pair.mapFirst(Builder::new));
-            }
-
-            final DataResult<List<Pair<Integer, T>>> tiers = asMap.get()
-                    .map(pair -> pair
-                            // Parse keys.
-                            .mapFirst(dynamicOps::getStringValue)
-                            // Parse values.
-                            .mapSecond(d -> resourceCodec.decode(dynamicOps, d)))
-                    // Parse tiers.
-                    .reduce(DataResult.success(new ArrayList<>()), (tierListResult, rawTier) ->
-                            tierListResult.flatMap(tierList -> {
-                                DataResult<Pair<Integer, T>> tier = StorageHelper.unpack(rawTier).flatMap(tierDef -> {
-                                    String tierName = tierDef.getFirst();
-                                    if (!tierName.startsWith(TIER_PREFIX)) {
-                                        return DataResult.error(() -> "Invalid tier: " + tierName + " does not start with " + TIER_PREFIX);
-                                    }
-                                    String tierAsString = tierName.substring(TIER_PREFIX.length());
-                                    try {
-                                        T resource = tierDef.getSecond().getFirst();
-                                        return DataResult.success(Pair.of(Integer.parseUnsignedInt(tierAsString), resource));
-                                    } catch (NumberFormatException e) {
-                                        return DataResult.error(() -> "Invalid tier: " + tierAsString + " is not a non-negative integer");
-                                    }
-                                });
-                                return StorageHelper.addToList(tierList, tier);
-                            }), StorageHelper::concatenateLists);
-
-            return tiers.flatMap(StorageHelper.tryToApply(Builder::new)).map(builder -> Pair.of(builder, dynamicOps.empty()));
-        }
-
-        @Override
-        public <D> DataResult<D> encode(Builder<T> builder, DynamicOps<D> dynamicOps, D prefix) {
-            if (builder.followingTiers.isEmpty()) {
-                DataResult<D> encoded = resourceCodec.encode(builder.firstTier, dynamicOps, prefix);
-                if (encoded.result().isPresent() && dynamicOps.getMap(encoded.result().get()).result().isEmpty()) {
-                    return encoded;
-                }
-            }
-
-            RecordBuilder<D> tiers = dynamicOps.mapBuilder();
-            tiers.add(TIER_PREFIX + '0', resourceCodec.encodeStart(dynamicOps, builder.firstTier));
-
-            for (Tier<T> tier : builder.followingTiers) {
-                tiers.add(TIER_PREFIX + tier.startingFrom, resourceCodec.encodeStart(dynamicOps, tier.resource));
-            }
-
-            return tiers.build(prefix);
         }
     }
 }

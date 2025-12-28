@@ -3,6 +3,7 @@ package com.github.xyroc.dungeoncrawl.dungeon.tier;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -16,12 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
 public class TieredResourceTest {
-    private static final Codec<TieredResource.Builder<String>> STRING_CODEC = new TieredResource.BuilderCodec<>(Codec.STRING);
+    private static final Codec<TieredResource<String>> STRING_CODEC = TieredResource.Codecs.makeCodec(Codec.STRING);
 
     @Test
     void serializesSingleTierBuilderCorrectly() {
-        final var builder = new TieredResource.Builder<>("first tier");
-        final JsonElement json = STRING_CODEC.encodeStart(JsonOps.INSTANCE, builder).result().orElseThrow();
+        final var instance = new TieredResource.Builder<>("first tier").build();
+        final JsonElement json = STRING_CODEC.encodeStart(JsonOps.INSTANCE, instance).result().orElseThrow();
 
         assertThat(json).isNotNull();
         assertThat(json.getAsString()).isEqualTo("first tier");
@@ -29,59 +30,65 @@ public class TieredResourceTest {
 
     @Test
     void serializesMultiTierBuilderCorrectly() {
-        final var builder = new TieredResource.Builder<>("first tier")
+        final var instance = new TieredResource.Builder<>("first tier")
                 .tier("third tier", 5)
-                .tier("second tier", 2);
-        final JsonElement json = STRING_CODEC.encodeStart(JsonOps.INSTANCE, builder).result().orElseThrow();
+                .tier("second tier", 2)
+                .build();
+        final JsonElement json = STRING_CODEC.encodeStart(JsonOps.INSTANCE, instance).result().orElseThrow();
+
+        final JsonElement expected = JsonParser.parseString("""
+                {
+                    "0": "first tier",
+                    "2": "second tier",
+                    "5": "third tier"
+                }
+                """);
 
         assertThat(json).isNotNull();
-        assertThat(json.isJsonObject()).isTrue();
-        assertThat(json.getAsJsonObject().has("tier_0")).isTrue();
-        assertThat(json.getAsJsonObject().get("tier_0").getAsString()).isEqualTo("first tier");
-        assertThat(json.getAsJsonObject().has("tier_2")).isTrue();
-        assertThat(json.getAsJsonObject().get("tier_2").getAsString()).isEqualTo("second tier");
-        assertThat(json.getAsJsonObject().has("tier_5")).isTrue();
-        assertThat(json.getAsJsonObject().get("tier_5").getAsString()).isEqualTo("third tier");
+        assertThat(json).isEqualTo(expected);
     }
 
     @Test
     void deserializeErrorsWhenMissingTierZero() {
-        final JsonObject json = new JsonObject();
-        json.addProperty("tier_1", "second tier");
-        json.addProperty("tier_4", "third tier");
+        final JsonObject json = JsonParser.parseString("""
+                {
+                    "1": "second tier",
+                    "4": "third tier"
+                }
+                """).getAsJsonObject();
 
         final DataResult<?> decoded = STRING_CODEC.decode(JsonOps.INSTANCE, json);
 
         assertThat(decoded.error().isPresent()).isTrue();
+        assertThat(decoded.error().orElseThrow().message()).containsIgnoringCase("tier 0");
     }
 
     @Test
     void deserializesSingleTierBuilderCorrectly() {
         final JsonElement json = new JsonPrimitive("first tier");
 
-        final var actualBuilder = STRING_CODEC.decode(JsonOps.INSTANCE, json).result().orElseThrow().getFirst();
+        final var deserialized = STRING_CODEC.decode(JsonOps.INSTANCE, json).result().orElseThrow().getFirst();
 
-        assertThat(actualBuilder).isNotNull();
-        final var actualResource = actualBuilder.build();
-
-        assertThat(actualResource).isInstanceOf(TieredResource.SingleTier.class);
-        assertThat(actualResource.forTier(0)).isEqualTo("first tier");
+        assertThat(deserialized).isNotNull();
+        assertThat(deserialized).isInstanceOf(TieredResource.SingleTier.class);
+        assertThat(deserialized.forTier(0)).isEqualTo("first tier");
     }
 
     @Test
     void deserializesMultiTierBuilderCorrectly() {
-        final JsonObject json = new JsonObject();
-        json.addProperty("tier_0", "first tier");
-        json.addProperty("tier_3", "second tier");
+        final JsonElement json = JsonParser.parseString("""
+                {
+                    "0": "first tier",
+                    "3": "second tier"
+                }
+                """);
 
-        final var actualBuilder = STRING_CODEC.decode(JsonOps.INSTANCE, json).result().orElseThrow().getFirst();
+        final var deserialized = STRING_CODEC.decode(JsonOps.INSTANCE, json).result().orElseThrow().getFirst();
 
-        assertThat(actualBuilder).isNotNull();
-        final var actualResource = actualBuilder.build();
-
-        assertThat(actualResource).isInstanceOf(TieredResource.MultiTier.class);
-        assertThat(actualResource.forTier(0)).isEqualTo("first tier");
-        assertThat(actualResource.forTier(3)).isEqualTo("second tier");
+        assertThat(deserialized).isNotNull();
+        assertThat(deserialized).isInstanceOf(TieredResource.MultiTier.class);
+        assertThat(deserialized.forTier(0)).isEqualTo("first tier");
+        assertThat(deserialized.forTier(3)).isEqualTo("second tier");
     }
 
     @Test

@@ -7,7 +7,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.datapack.DatapackDirectories;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityProperties;
@@ -21,27 +20,27 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.RandomMapping;
 
 public interface DatapackRegistries {
-    ResourceKey<Registry<IRandom<BlockState>>> BLOCK_STATE_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.BLOCK_STATE_POOLS.path()));
-    ResourceKey<Registry<IRandom<Item>>> ITEM_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.ITEM_POOLS.path()));
+    ResourceKey<Registry<IRandom<BlockState>>> BLOCK_STATE_POOLS = DatapackDirectories.BLOCK_STATE_POOLS.asRegistry();
+    ResourceKey<Registry<IRandom<Item>>> ITEM_POOLS = DatapackDirectories.ITEM_POOLS.asRegistry();
 
-    ResourceKey<Registry<SpawnerEntityProperties>> SPAWNER_ENTITY_PROPERTIES = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_ENTITY_PROPERTIES.path()));
-    ResourceKey<Registry<SpawnerEntityType>> SPAWNER_ENTITY_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_ENTITIES.path()));
-    ResourceKey<Registry<SpawnerType>> SPAWNER_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SPAWNER_TYPES.path()));
+    ResourceKey<Registry<SpawnerEntityProperties>> SPAWNER_ENTITY_PROPERTIES = DatapackDirectories.SPAWNER_ENTITY_PROPERTIES.asRegistry();
+    ResourceKey<Registry<SpawnerEntityType>> SPAWNER_ENTITY_TYPE = DatapackDirectories.SPAWNER_ENTITIES.asRegistry();
+    ResourceKey<Registry<SpawnerType>> SPAWNER_TYPE = DatapackDirectories.SPAWNER_TYPES.asRegistry();
 
-    ResourceKey<Registry<LevelType>> LEVEL_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_LAYER_TYPES.path()));
-    ResourceKey<Registry<DungeonType>> DUNGEON_TYPE = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_TYPES.path()));
-    ResourceKey<Registry<IRandom<Holder<DungeonType>>>> DUNGEON_TYPE_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_TYPE_POOLS.path()));
-    ResourceKey<Registry<RandomMapping<Biome, DungeonType>>> DUNGEON_TYPE_MAPPINGS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.DUNGEON_TYPE_MAPPINGS.path()));
+    ResourceKey<Registry<LevelType>> LEVEL_TYPE = DatapackDirectories.DUNGEON_LAYER_TYPES.asRegistry();
+    ResourceKey<Registry<DungeonType>> DUNGEON_TYPE = DatapackDirectories.DUNGEON_TYPES.asRegistry();
+    ResourceKey<Registry<IRandom<Holder<DungeonType>>>> DUNGEON_TYPE_POOLS = DatapackDirectories.DUNGEON_TYPE_POOLS.asRegistry();
+    ResourceKey<Registry<RandomMapping<Biome, DungeonType>>> DUNGEON_TYPE_MAPPINGS = DatapackDirectories.DUNGEON_TYPE_MAPPINGS.asRegistry();
 
-    ResourceKey<Registry<PrimaryTheme>> PRIMARY_THEME = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.PRIMARY_THEMES.path()));
-    ResourceKey<Registry<SecondaryTheme>> SECONDARY_THEME = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SECONDARY_THEMES.path()));
-    ResourceKey<Registry<IRandom<Holder<PrimaryTheme>>>> PRIMARY_THEME_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.PRIMARY_THEME_POOLS.path()));
-    ResourceKey<Registry<IRandom<Holder<SecondaryTheme>>>> SECONDARY_THEME_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SECONDARY_THEME_POOLS.path()));
-    ResourceKey<Registry<RandomMapping<Biome, PrimaryTheme>>> PRIMARY_THEME_MAPPINGS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.PRIMARY_THEME_MAPPINGS.path()));
-    ResourceKey<Registry<RandomMapping<Biome, SecondaryTheme>>> SECONDARY_THEME_MAPPINGS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.SECONDARY_THEME_MAPPINGS.path()));
+    ResourceKey<Registry<PrimaryTheme>> PRIMARY_THEME = DatapackDirectories.PRIMARY_THEMES.asRegistry();
+    ResourceKey<Registry<SecondaryTheme>> SECONDARY_THEME = DatapackDirectories.SECONDARY_THEMES.asRegistry();
+    ResourceKey<Registry<IRandom<Holder<PrimaryTheme>>>> PRIMARY_THEME_POOLS = DatapackDirectories.PRIMARY_THEME_POOLS.asRegistry();
+    ResourceKey<Registry<IRandom<Holder<SecondaryTheme>>>> SECONDARY_THEME_POOLS = DatapackDirectories.SECONDARY_THEME_POOLS.asRegistry();
+    ResourceKey<Registry<RandomMapping<Biome, PrimaryTheme>>> PRIMARY_THEME_MAPPINGS = DatapackDirectories.PRIMARY_THEME_MAPPINGS.asRegistry();
+    ResourceKey<Registry<RandomMapping<Biome, SecondaryTheme>>> SECONDARY_THEME_MAPPINGS = DatapackDirectories.SECONDARY_THEME_MAPPINGS.asRegistry();
 
-    ResourceKey<Registry<Blueprint>> BLUEPRINT = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.BLUEPRINTS.path()));
-    ResourceKey<Registry<IRandom<Holder<Blueprint>>>> BLUEPRINT_POOLS = ResourceKey.createRegistryKey(DungeonCrawl.locate(DatapackDirectories.BLUEPRINT_POOLS.path()));
+    ResourceKey<Registry<Blueprint>> BLUEPRINT = DatapackDirectories.BLUEPRINTS.asRegistry();
+    ResourceKey<Registry<IRandom<Holder<Blueprint>>>> BLUEPRINT_POOLS = DatapackDirectories.BLUEPRINT_POOLS.asRegistry();
 
     static void register(final DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(BLOCK_STATE_POOLS, IRandom.BaseCodecs.BLOCK_STATE);

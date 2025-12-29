@@ -1,6 +1,9 @@
 package xiroc.dungeoncrawl.datapack;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+
 
 public record DatapackDirectory(String path) {
     public ResourceLocation resource(String namespace, String relativePath) {
@@ -21,5 +24,13 @@ public record DatapackDirectory(String path) {
 
     public DatapackDirectory subdirectory(String directory) {
         return new DatapackDirectory(this.path + '/' + directory);
+    }
+
+    public <T> ResourceKey<Registry<T>> asRegistry(String namespace) {
+        return ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(namespace, path));
+    }
+
+    public <T> ResourceKey<Registry<T>> asRegistry() {
+        return asRegistry(DatapackNamespaces.DEFAULT);
     }
 }

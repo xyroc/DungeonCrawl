@@ -38,6 +38,7 @@ import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
 import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
 import xiroc.dungeoncrawl.data.pool.BlueprintPools;
 import xiroc.dungeoncrawl.data.pool.block.BlockPools;
+import xiroc.dungeoncrawl.data.pool.item.ItemPools;
 import xiroc.dungeoncrawl.data.pool.theme.PrimaryThemePools;
 import xiroc.dungeoncrawl.data.pool.theme.SecondaryThemePools;
 import xiroc.dungeoncrawl.data.spawner.EntityProperties;
@@ -45,10 +46,7 @@ import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
 import xiroc.dungeoncrawl.data.structure.ModStructureSets;
 import xiroc.dungeoncrawl.data.structure.ModStructures;
-import xiroc.dungeoncrawl.data.tags.BlockPoolTags;
-import xiroc.dungeoncrawl.data.tags.BlueprintPoolTags;
-import xiroc.dungeoncrawl.data.tags.PrimaryThemePoolTags;
-import xiroc.dungeoncrawl.data.tags.SecondaryThemePoolTags;
+import xiroc.dungeoncrawl.data.tags.*;
 import xiroc.dungeoncrawl.data.tags.worldgen.ModBiomeTags;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
@@ -75,6 +73,7 @@ public class DataGen {
                         .add(Registries.STRUCTURE, ModStructures::generate)
                         .add(Registries.STRUCTURE_SET, ModStructureSets::generate)
                         .add(DatapackRegistries.BLOCK_STATE_POOLS, BlockPools::generate)
+                        .add(DatapackRegistries.ITEM_POOLS, ItemPools::generate)
                         .add(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, EntityProperties::generate)
                         .add(DatapackRegistries.SPAWNER_ENTITY_TYPE, SpawnerEntityTypes::generate)
                         .add(DatapackRegistries.SPAWNER_TYPE, SpawnerTypes::generate)
@@ -110,6 +109,7 @@ public class DataGen {
         generator.addProvider(includeServer, new ModBiomeTags(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new BlockPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new BlueprintPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
+        generator.addProvider(includeServer, new ItemPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new PrimaryThemePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new SecondaryThemePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
     }

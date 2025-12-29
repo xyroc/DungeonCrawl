@@ -80,11 +80,6 @@ public interface IRandom<T> {
             return this;
         }
 
-        public Builder<T> addBuilder(Builder<T> builder) {
-            entries.addAll(builder.entries);
-            return this;
-        }
-
         public Builder<T> addInstance(IRandom<T> random) {
             random.addTo(this);
             return this;
@@ -140,7 +135,10 @@ public interface IRandom<T> {
                 .valueCodec("block", GlobalCodecs.BLOCK_STATE)
                 .pools(DatapackRegistries.BLOCK_STATE_POOLS)
                 .build();
-        Codec<IRandom<Item>> ITEM = makeCodec(makeBuilderCodec(GlobalCodecs.ITEM, "item", null));
+        Codec<IRandom<Item>> ITEM = IRandom.<Item>codecBuilder()
+                .valueCodec("item", GlobalCodecs.ITEM)
+                .pools(DatapackRegistries.ITEM_POOLS)
+                .build();
     }
 
     /**

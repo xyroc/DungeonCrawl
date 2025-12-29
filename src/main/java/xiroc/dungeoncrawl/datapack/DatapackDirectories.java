@@ -26,6 +26,7 @@ public interface DatapackDirectories {
     DatapackDirectory BLOCK_STATE_POOLS = POOLS.subdirectory("block");
     DatapackDirectory BLUEPRINT_POOLS = POOLS.subdirectory("blueprint");
     DatapackDirectory DUNGEON_TYPE_POOLS = POOLS.subdirectory("dungeon_type");
+    DatapackDirectory ITEM_POOLS = POOLS.subdirectory("item");
     DatapackDirectory PRIMARY_THEME_POOLS = POOLS.subdirectory("primary_theme");
     DatapackDirectory SECONDARY_THEME_POOLS = POOLS.subdirectory("secondary_theme");
 }

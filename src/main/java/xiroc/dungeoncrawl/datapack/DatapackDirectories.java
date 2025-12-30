@@ -29,4 +29,6 @@ public interface DatapackDirectories {
     DatapackDirectory ITEM_POOLS = POOLS.subdirectory("item");
     DatapackDirectory PRIMARY_THEME_POOLS = POOLS.subdirectory("primary_theme");
     DatapackDirectory SECONDARY_THEME_POOLS = POOLS.subdirectory("secondary_theme");
+    DatapackDirectory SPAWNER_ENTITY_TYPE_POOLS = POOLS.subdirectory("spawner_entity_type");
+    DatapackDirectory SPAWNER_TYPE_POOLS = POOLS.subdirectory("spawner_type");
 }

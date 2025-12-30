@@ -33,7 +33,7 @@ public record LevelType(LevelGeneratorSettings settings,
             LevelGeneratorSettings.CODEC.fieldOf("settings").forGetter(LevelType::settings),
             GlobalCodecs.LOOT_TABLE.fieldOf("loot_table").forGetter(LevelType::lootTable),
             LevelRooms.DIRECT_CODEC.fieldOf("rooms").forGetter(LevelType::rooms),
-            SpawnerType.RANDOM_CODEC.fieldOf("spawner_types").forGetter(LevelType::spawners),
+            SpawnerType.RANDOM_HOLDER_CODEC.fieldOf("spawner_types").forGetter(LevelType::spawners),
             CorridorStyle.Codecs.RANDOM.fieldOf("corridor_styles").forGetter(LevelType::corridorStyles),
             SpecialRoom.CODEC.listOf().optionalFieldOf("special_rooms").forGetter(builder -> Optional.ofNullable(builder.specialRooms.isEmpty() ? null : builder.specialRooms)),
             SecretRoom.CODEC.listOf().optionalFieldOf("secret_rooms").forGetter(builder -> Optional.ofNullable(builder.secretRooms.isEmpty() ? null : builder.secretRooms))

@@ -26,6 +26,8 @@ public interface DatapackRegistries {
     ResourceKey<Registry<SpawnerEntityProperties>> SPAWNER_ENTITY_PROPERTIES = DatapackDirectories.SPAWNER_ENTITY_PROPERTIES.asRegistry();
     ResourceKey<Registry<SpawnerEntityType>> SPAWNER_ENTITY_TYPE = DatapackDirectories.SPAWNER_ENTITIES.asRegistry();
     ResourceKey<Registry<SpawnerType>> SPAWNER_TYPE = DatapackDirectories.SPAWNER_TYPES.asRegistry();
+    ResourceKey<Registry<IRandom<Holder<SpawnerEntityType>>>> SPAWNER_ENTITY_TYPE_POOLS = DatapackDirectories.SPAWNER_ENTITY_TYPE_POOLS.asRegistry();
+    ResourceKey<Registry<IRandom<Holder<SpawnerType>>>> SPAWNER_TYPE_POOLS = DatapackDirectories.SPAWNER_TYPE_POOLS.asRegistry();
 
     ResourceKey<Registry<LevelType>> LEVEL_TYPE = DatapackDirectories.DUNGEON_LAYER_TYPES.asRegistry();
     ResourceKey<Registry<DungeonType>> DUNGEON_TYPE = DatapackDirectories.DUNGEON_TYPES.asRegistry();
@@ -49,6 +51,8 @@ public interface DatapackRegistries {
         event.dataPackRegistry(SPAWNER_ENTITY_PROPERTIES, SpawnerEntityProperties.DIRECT_CODEC);
         event.dataPackRegistry(SPAWNER_ENTITY_TYPE, SpawnerEntityType.DIRECT_CODEC);
         event.dataPackRegistry(SPAWNER_TYPE, SpawnerType.DIRECT_CODEC);
+        event.dataPackRegistry(SPAWNER_ENTITY_TYPE_POOLS, SpawnerEntityType.RANDOM_HOLDER_CODEC);
+        event.dataPackRegistry(SPAWNER_TYPE_POOLS, SpawnerType.RANDOM_HOLDER_CODEC);
 
         event.dataPackRegistry(LEVEL_TYPE, LevelType.DIRECT_CODEC);
         event.dataPackRegistry(DUNGEON_TYPE, DungeonType.DIRECT_CODEC);

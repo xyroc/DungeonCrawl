@@ -12,7 +12,7 @@ import java.util.Optional;
 public record SpawnerSettings(Optional<IRandom<Holder<SpawnerType>>> types) {
     public static final Codec<SpawnerSettings> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    SpawnerType.RANDOM_CODEC.optionalFieldOf("type").forGetter(SpawnerSettings::types)
+                    SpawnerType.RANDOM_HOLDER_CODEC.optionalFieldOf("type").forGetter(SpawnerSettings::types)
             ).apply(instance, SpawnerSettings::new));
 
     public IRandom<Holder<SpawnerType>> getSpawnerTypes(LevelGenerator levelGenerator) {

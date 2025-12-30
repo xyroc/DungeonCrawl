@@ -18,8 +18,10 @@ import java.util.Optional;
 public record SpawnerEntityType(ResourceKey<EntityType<?>> entity, Optional<Holder<SpawnerEntityProperties>> properties) {
     public static final Codec<SpawnerEntityType> DIRECT_CODEC = Builder.CODEC.comapFlatMap(StorageHelper.tryToApply(Builder::build), Builder::new);
     public static final Codec<Holder<SpawnerEntityType>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.SPAWNER_ENTITY_TYPE, DIRECT_CODEC, true);
-    public static final Codec<IRandom.Builder<Holder<SpawnerEntityType>>> RANDOM_BUILDER_CODEC = IRandom.makeBuilderCodec(HOLDER_CODEC, "type", null);
-    public static final Codec<IRandom<Holder<SpawnerEntityType>>> RANDOM_CODEC = IRandom.makeCodec(RANDOM_BUILDER_CODEC);
+    public static final Codec<IRandom<Holder<SpawnerEntityType>>> RANDOM_HOLDER_CODEC = IRandom.<Holder<SpawnerEntityType>>codecBuilder()
+            .valueCodec("type", HOLDER_CODEC)
+            .pools(DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS)
+            .build();
 
     public static class Builder {
         public static final Codec<Builder> CODEC = RecordCodecBuilder.create(instance -> instance

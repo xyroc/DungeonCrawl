@@ -36,7 +36,7 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
 
     public static final Codec<SpawnerType> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    SpawnerEntityType.RANDOM_CODEC.fieldOf("entities").forGetter(SpawnerType::entities),
+                    SpawnerEntityType.RANDOM_HOLDER_CODEC.fieldOf("entities").forGetter(SpawnerType::entities),
                     SpawnerEntityProperties.HOLDER_CODEC.optionalFieldOf("properties").forGetter(SpawnerType::properties),
                     RandomValue.CODEC.fieldOf("spawn_amount").forGetter(SpawnerType::spawnAmount),
                     Range.CODEC.fieldOf("spawn_delay").forGetter(SpawnerType::spawnDelay),
@@ -46,8 +46,10 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
             )
             .apply(instance, SpawnerType::new));
     public static final Codec<Holder<SpawnerType>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.SPAWNER_TYPE, DIRECT_CODEC, true);
-    public static final Codec<IRandom.Builder<Holder<SpawnerType>>> RANDOM_BUILDER_CODEC = IRandom.makeBuilderCodec(HOLDER_CODEC, "type", null);
-    public static final Codec<IRandom<Holder<SpawnerType>>> RANDOM_CODEC = IRandom.makeCodec(RANDOM_BUILDER_CODEC);
+    public static final Codec<IRandom<Holder<SpawnerType>>> RANDOM_HOLDER_CODEC = IRandom.<Holder<SpawnerType>>codecBuilder()
+            .valueCodec("type", HOLDER_CODEC)
+            .pools(DatapackRegistries.SPAWNER_TYPE_POOLS)
+            .build();
 
     public CompoundTag createData(RandomSource random, int stage, RegistryAccess registryAccess) {
         CompoundTag nbt = new CompoundTag();

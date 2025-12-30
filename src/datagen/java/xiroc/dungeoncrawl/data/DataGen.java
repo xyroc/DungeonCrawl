@@ -32,13 +32,21 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.blueprint.Blueprints;
 import xiroc.dungeoncrawl.data.loot.NonValidatingLootTableProvider;
 import xiroc.dungeoncrawl.data.loot.chest.ChestLootTables;
-import xiroc.dungeoncrawl.data.loot.chest.contents.*;
+import xiroc.dungeoncrawl.data.loot.chest.contents.BlockLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.contents.EquipmentLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.contents.FoodLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.contents.PotionLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.contents.ScrapLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.contents.SpecialityLootTables;
+import xiroc.dungeoncrawl.data.loot.chest.contents.ValuablesLootTables;
 import xiroc.dungeoncrawl.data.mappings.DungeonTypeMappings;
 import xiroc.dungeoncrawl.data.mappings.PrimaryThemeMappings;
 import xiroc.dungeoncrawl.data.mappings.SecondaryThemeMappings;
 import xiroc.dungeoncrawl.data.pool.BlueprintPools;
 import xiroc.dungeoncrawl.data.pool.block.BlockPools;
 import xiroc.dungeoncrawl.data.pool.item.ItemPools;
+import xiroc.dungeoncrawl.data.pool.spawner.SpawnerEntityTypePools;
+import xiroc.dungeoncrawl.data.pool.spawner.SpawnerTypePools;
 import xiroc.dungeoncrawl.data.pool.theme.PrimaryThemePools;
 import xiroc.dungeoncrawl.data.pool.theme.SecondaryThemePools;
 import xiroc.dungeoncrawl.data.spawner.EntityProperties;
@@ -46,7 +54,13 @@ import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
 import xiroc.dungeoncrawl.data.structure.ModStructureSets;
 import xiroc.dungeoncrawl.data.structure.ModStructures;
-import xiroc.dungeoncrawl.data.tags.*;
+import xiroc.dungeoncrawl.data.tags.BlockPoolTags;
+import xiroc.dungeoncrawl.data.tags.BlueprintPoolTags;
+import xiroc.dungeoncrawl.data.tags.ItemPoolTags;
+import xiroc.dungeoncrawl.data.tags.PrimaryThemePoolTags;
+import xiroc.dungeoncrawl.data.tags.SecondaryThemePoolTags;
+import xiroc.dungeoncrawl.data.tags.spawner.SpawnerEntityTypePoolTags;
+import xiroc.dungeoncrawl.data.tags.spawner.SpawnerTypePoolTags;
 import xiroc.dungeoncrawl.data.tags.worldgen.ModBiomeTags;
 import xiroc.dungeoncrawl.data.themes.PrimaryThemes;
 import xiroc.dungeoncrawl.data.themes.SecondaryThemes;
@@ -77,6 +91,8 @@ public class DataGen {
                         .add(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, EntityProperties::generate)
                         .add(DatapackRegistries.SPAWNER_ENTITY_TYPE, SpawnerEntityTypes::generate)
                         .add(DatapackRegistries.SPAWNER_TYPE, SpawnerTypes::generate)
+                        .add(DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS, SpawnerEntityTypePools::generate)
+                        .add(DatapackRegistries.SPAWNER_TYPE_POOLS, SpawnerTypePools::generate)
                         .add(DatapackRegistries.PRIMARY_THEME, PrimaryThemes::generate)
                         .add(DatapackRegistries.SECONDARY_THEME, SecondaryThemes::generate)
                         .add(DatapackRegistries.PRIMARY_THEME_POOLS, PrimaryThemePools::generate)
@@ -112,6 +128,8 @@ public class DataGen {
         generator.addProvider(includeServer, new ItemPoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new PrimaryThemePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
         generator.addProvider(includeServer, new SecondaryThemePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
+        generator.addProvider(includeServer, new SpawnerEntityTypePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
+        generator.addProvider(includeServer, new SpawnerTypePoolTags(generator.getPackOutput(), builtinEntriesProvider.getRegistryProvider(), event.getExistingFileHelper()));
     }
 
     public static ResourceLocation resource(String path) {

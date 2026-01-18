@@ -26,6 +26,7 @@ public record TemplateBlockPlacementSettings(boolean fillAir,
 
     public static final TemplateBlockPlacementSettings NON_SOLID_PLACEMENT = new TemplateBlockPlacementSettings(false, true, null, null);
     public static final TemplateBlockPlacementSettings SOLID_PLACEMENT = new TemplateBlockPlacementSettings(true, true, null, null);
+    public static final TemplateBlockPlacementSettings ANTI_SOLID = new TemplateBlockPlacementSettings(true, false, null, null);
     public static final TemplateBlockPlacementSettings DEFAULT = NON_SOLID_PLACEMENT;
 
     public boolean canPlace(boolean isAir) {

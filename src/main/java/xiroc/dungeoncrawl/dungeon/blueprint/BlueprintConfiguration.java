@@ -68,6 +68,11 @@ public class BlueprintConfiguration {
             .put(Blocks.SPRUCE_FENCE, TemplateBlockType.FENCE.create())
             .put(Blocks.SPRUCE_FENCE_GATE, TemplateBlockType.FENCE_GATE.create())
             .put(Blocks.SPRUCE_DOOR, TemplateBlockType.DOOR.create(true))
+
+            .put(Blocks.CRIMSON_PLANKS, TemplateBlockType.MATERIAL.create())
+            .put(Blocks.CRIMSON_STAIRS, TemplateBlockType.MATERIAL_STAIRS.create())
+            .put(Blocks.CRIMSON_STEM, TemplateBlockType.MATERIAL_PILLAR.create())
+            .put(Blocks.CRIMSON_SLAB, TemplateBlockType.MATERIAL_SLAB.create())
             .build();
 
     private static final ImmutableMap<Block, TemplateBlockPlacementSettings> DEFAULT_BLOCK_PLACEMENTS = ImmutableMap.<Block, TemplateBlockPlacementSettings>builder()
@@ -109,6 +114,11 @@ public class BlueprintConfiguration {
             .put(Blocks.SPRUCE_TRAPDOOR, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
             .put(Blocks.SPRUCE_FENCE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
             .put(Blocks.SPRUCE_FENCE_GATE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+
+            .put(Blocks.CRIMSON_PLANKS, TemplateBlockPlacementSettings.ANTI_SOLID)
+            .put(Blocks.CRIMSON_STAIRS, TemplateBlockPlacementSettings.ANTI_SOLID)
+            .put(Blocks.CRIMSON_STEM, TemplateBlockPlacementSettings.ANTI_SOLID)
+            .put(Blocks.CRIMSON_SLAB, TemplateBlockPlacementSettings.ANTI_SOLID)
             .build();
 
     private static final ImmutableMap<ResourceLocation, EntranceType> DEFAULT_ENTRANCE_TYPES = ImmutableMap.of(

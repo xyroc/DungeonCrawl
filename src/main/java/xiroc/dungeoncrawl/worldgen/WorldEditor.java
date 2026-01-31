@@ -20,10 +20,6 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 
 
 public interface WorldEditor {
-    default void placeBlock(BlockStateProvider block, Vec3i pos, BoundingBox boundingBox, RandomSource random, boolean fillAir, boolean fillSolid, boolean postProcess) {
-        placeBlock(block, pos, boundingBox, Rotation.NONE, random, fillAir, fillSolid, postProcess);
-    }
-
     void placeBlock(BlockStateProvider block, Vec3i pos, BoundingBox boundingBox, Rotation blockRotation, RandomSource random, boolean fillAir, boolean fillSolid, boolean postProcess);
 
     void placeBlock(BlockState block, Vec3i pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess);
@@ -46,56 +42,6 @@ public interface WorldEditor {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
         Unsafe.fill(world, blocks, startVec, endVec, random, fillAir, fillSolid, postProcess);
-    }
-
-    static void fillWalls(LevelAccessor world, BlockStateProvider stateProvider, BlockPos from, BlockPos to, BoundingBox boundingBox, RandomSource random, boolean fillAir, boolean fillSolid) {
-        Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
-        Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
-
-        for (int x = startVec.getX(); x <= endVec.getX(); x++) {
-            for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
-                BlockPos bottom = new BlockPos(x, from.getY(), z);
-                BlockPos top = new BlockPos(x, to.getY(), z);
-                Unsafe.placeBlock(world, bottom, stateProvider.get(bottom, random), fillAir, fillSolid, false);
-                Unsafe.placeBlock(world, top, stateProvider.get(top, random), fillAir, fillSolid, false);
-            }
-        }
-
-        if (startVec.getX() == Math.min(from.getX(), to.getX())) {
-            for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
-                for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
-                    BlockPos pos = new BlockPos(startVec.getX(), y, z);
-                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
-                }
-            }
-        }
-
-        if (endVec.getX() == Math.max(from.getX(), to.getX())) {
-            for (int z = startVec.getZ(); z <= endVec.getZ(); z++) {
-                for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
-                    BlockPos pos = new BlockPos(endVec.getX(), y, z);
-                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
-                }
-            }
-        }
-
-        if (startVec.getZ() == Math.min(from.getZ(), to.getZ())) {
-            for (int x = startVec.getX(); x <= endVec.getX(); x++) {
-                for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
-                    BlockPos pos = new BlockPos(x, y, startVec.getZ());
-                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
-                }
-            }
-        }
-
-        if (endVec.getZ() == Math.max(from.getZ(), to.getZ())) {
-            for (int x = startVec.getX(); x <= endVec.getX(); x++) {
-                for (int y = startVec.getY() + 1; y < endVec.getY(); y++) {
-                    BlockPos pos = new BlockPos(x, y, endVec.getZ());
-                    Unsafe.placeBlock(world, pos, stateProvider.get(pos, random), fillAir, fillSolid, false);
-                }
-            }
-        }
     }
 
     static void fillRing(LevelAccessor world, BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, RandomSource random,

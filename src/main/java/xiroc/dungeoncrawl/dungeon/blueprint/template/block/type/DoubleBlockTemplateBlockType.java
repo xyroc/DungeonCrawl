@@ -24,11 +24,11 @@ public record DoubleBlockTemplateBlockType(BlockChooser blockChooser,
     }
 
     @Override
-    public void handlePlacement(LevelAccessor level, BlockPos position, BlockState state, boolean isSolid) {
+    public void handlePlacement(LevelAccessor level, BlockPos position, BlockState state) {
         if (!state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
             // May happen if a non-double block is specified for a theme field that expects double blocks, like doors.
             // Handling the block placement normally.
-            TemplateBlockType.super.handlePlacement(level, position, state, isSolid);
+            TemplateBlockType.super.handlePlacement(level, position, state);
             return;
         }
         DoubleBlockHalf half = state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF);
@@ -41,8 +41,8 @@ public record DoubleBlockTemplateBlockType(BlockChooser blockChooser,
         }
         // When handing the lower part, use the block state to place both the lower and the upper part.
         // This prevents theming related issues where the two parts wouldn't fit together.
-        TemplateBlockType.super.handlePlacement(level, position, state, true);
-        TemplateBlockType.super.handlePlacement(level, position.above(), state.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), true);
+        TemplateBlockType.super.handlePlacement(level, position, state);
+        TemplateBlockType.super.handlePlacement(level, position.above(), state.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER));
     }
 
     private boolean shouldPlace(LevelAccessor level, BlockPos position) {

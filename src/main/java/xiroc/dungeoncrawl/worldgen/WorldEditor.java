@@ -198,9 +198,6 @@ public interface WorldEditor {
         }
 
         static void placeBlock(LevelAccessor world, BlockPos pos, BlockState state, boolean fillAir, boolean fillSolid, boolean postProcess) {
-            if (isBlockProtected(world, pos)) {
-                return;
-            }
             if (!fillAir && world.isEmptyBlock(pos)) {
                 return;
             } else if (!fillSolid && !world.isEmptyBlock(pos)) {
@@ -210,9 +207,6 @@ public interface WorldEditor {
         }
 
         static void placeBlock(LevelAccessor world, BlockPos pos, @Nullable BlockStateProvider solid, @Nullable BlockStateProvider nonSolid, RandomSource random, boolean postProcess) {
-            if (isBlockProtected(world, pos)) {
-                return;
-            }
             BlockStateProvider state = world.isEmptyBlock(pos) ? nonSolid : solid;
             if (state == null) {
                 return;
@@ -220,7 +214,10 @@ public interface WorldEditor {
             placeBlock(world, pos, state.get(pos, random), postProcess);
         }
 
-        private static void placeBlock(LevelAccessor world, BlockPos pos, BlockState state, boolean postProcess) {
+        static void placeBlock(LevelAccessor world, BlockPos pos, BlockState state, boolean postProcess) {
+            if (isBlockProtected(world, pos)) {
+                return;
+            }
             world.setBlock(pos, state, 3);
             if (Config.TICK_FALLING_BLOCKS.get() && state.getBlock() instanceof FallingBlock) {
                 world.scheduleTick(pos, state.getBlock(), 1);

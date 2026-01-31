@@ -76,9 +76,8 @@ public interface TemplateBlockType extends BlockChooser {
      * @param level    the level to place the block in.
      * @param position the position to place the block at.
      * @param state    the block state to place.
-     * @param isSolid  whether this block state replaces air blocks or not.
      */
-    default void handlePlacement(LevelAccessor level, BlockPos position, BlockState state, boolean isSolid) {
-        WorldEditor.Unsafe.placeBlock(level, position, state, isSolid, true, true);
+    default void handlePlacement(LevelAccessor level, BlockPos position, BlockState state) {
+        WorldEditor.Unsafe.placeBlock(level, position, state, true);
     }
 }

@@ -81,7 +81,7 @@ public class Blueprint {
                 BlockState state = templateBlock.block()
                         .applyProperties(provider.get(position, random))
                         .rotate(level, position, rotation);
-                templateBlockType.handlePlacement(level, blockPosition, state, true);
+                templateBlockType.handlePlacement(level, blockPosition, state);
 
                 if (placementSettings.lootTable() != null && level.getBlockEntity(blockPosition) instanceof RandomizableContainerBlockEntity containerBlockEntity) {
                     containerBlockEntity.setLootTable(placementSettings.lootTable().forTier(worldGenContext.level()));

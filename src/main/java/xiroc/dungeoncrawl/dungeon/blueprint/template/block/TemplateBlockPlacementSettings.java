@@ -33,19 +33,19 @@ public record TemplateBlockPlacementSettings(boolean fillAir,
         return isAir && fillAir || !isAir && fillSolid;
     }
 
+    public TemplateBlockPlacementSettings withLoot(TieredResource<ResourceKey<LootTable>> lootTables) {
+        return new TemplateBlockPlacementSettings(fillAir, fillSolid, alternative, lootTables);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-
         TemplateBlockPlacementSettings that = (TemplateBlockPlacementSettings) o;
-        return fillAir == that.fillAir && fillSolid == that.fillSolid && Objects.equals(alternative, that.alternative);
+        return fillAir == that.fillAir && fillSolid == that.fillSolid && Objects.equals(alternative, that.alternative) && Objects.equals(lootTable, that.lootTable);
     }
 
     @Override
     public int hashCode() {
-        int result = Boolean.hashCode(fillAir);
-        result = 31 * result + Boolean.hashCode(fillSolid);
-        result = 31 * result + Objects.hashCode(alternative);
-        return result;
+        return Objects.hash(fillAir, fillSolid, alternative, lootTable);
     }
 }

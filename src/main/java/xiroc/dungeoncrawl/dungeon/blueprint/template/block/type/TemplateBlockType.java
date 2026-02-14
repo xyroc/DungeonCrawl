@@ -78,6 +78,6 @@ public interface TemplateBlockType extends BlockChooser {
      * @param state    the block state to place.
      */
     default void handlePlacement(LevelAccessor level, BlockPos position, BlockState state) {
-        WorldEditor.Unsafe.placeBlock(level, position, state, true);
+        WorldEditor.Unsafe.placeBlock(level, position, state, false);
     }
 }

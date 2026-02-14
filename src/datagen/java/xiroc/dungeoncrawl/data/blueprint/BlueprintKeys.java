@@ -19,6 +19,7 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> ENIKO = key(TemplateKeys.Room.ENIKO);
         ResourceKey<Blueprint> LIBRARY = key(TemplateKeys.Room.LIBRARY);
         ResourceKey<Blueprint> LOWER_STAIRCASE = key(TemplateKeys.Room.LOWER_STAIRCASE);
+        ResourceKey<Blueprint> POTION_LAB = key(TemplateKeys.Room.POTION_LAB);
         ResourceKey<Blueprint> SARCOPHAGUS = key(TemplateKeys.Room.SARCOPHAGUS);
         ResourceKey<Blueprint> SMITHY = key(TemplateKeys.Room.SMITHY);
         ResourceKey<Blueprint> UPPER_STAIRCASE = key(TemplateKeys.Room.UPPER_STAIRCASE);
@@ -42,6 +43,12 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> DINER_OPEN = key(TemplateKeys.Part.DINER_OPEN);
         ResourceKey<Blueprint> DINER_CLOSED_TABLE = key(TemplateKeys.Part.DINER_CLOSED_TABLE);
         ResourceKey<Blueprint> DINER_CLOSED_STORAGE = key(TemplateKeys.Part.DINER_CLOSED_STORAGE);
+
+        ResourceLocation __LAB_CONTAINER = TemplateKeys.Part.__LAB_CONTAINER;
+        ResourceKey<Blueprint> LAB_CONTAINER_CROPS = key(DataGen.resource(__LAB_CONTAINER, "crops"));
+        ResourceKey<Blueprint> LAB_CONTAINER_FLOWER = key(DataGen.resource(__LAB_CONTAINER, "flower"));
+        ResourceKey<Blueprint> LAB_CONTAINER_KELP = key(DataGen.resource(__LAB_CONTAINER, "kelp"));
+        ResourceKey<Blueprint> LAB_CONTAINER_SPAWNER = key(DataGen.resource(__LAB_CONTAINER, "spawner"));
     }
 
     interface Corridor {

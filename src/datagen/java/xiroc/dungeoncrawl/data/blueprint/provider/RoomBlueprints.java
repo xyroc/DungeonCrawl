@@ -3,12 +3,15 @@ package xiroc.dungeoncrawl.data.blueprint.provider;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
 import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
+import xiroc.dungeoncrawl.data.tags.BlueprintPoolTags;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
+import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
@@ -21,6 +24,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
+import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.FixedTemplateBlockType;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
 import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 import xiroc.dungeoncrawl.util.random.IRandom;
@@ -32,6 +36,7 @@ import java.util.Optional;
 public interface RoomBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         final var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);
+        final var blueprintPools = context.lookup(DatapackRegistries.BLUEPRINT_POOLS);
 
         context.register(BlueprintKeys.Room.BEDROOM, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.BEDROOM)
@@ -123,6 +128,28 @@ public interface RoomBlueprints {
                                 new Constant(1)),
                         new ChestSettings(),
                         new SpawnerSettings(Optional.empty())))
+                .build()));
+
+        context.register(BlueprintKeys.Room.POTION_LAB, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.POTION_LAB)
+                .multipart(new BlueprintMultipart(
+                        SharedKeys.Anchor.LAB_CONTAINER,
+                        IRandom.<Holder<Blueprint>>builder()
+                                .setPools(blueprintPools.getOrThrow(BlueprintPoolTags.LAB_CONTAINER))
+                                .build()
+                ))
+                .mapBlock(Blocks.BREWING_STAND, new FixedTemplateBlockType(new RandomBlock(IRandom.<BlockState>builder()
+                        .add(Blocks.BREWING_STAND.defaultBlockState())
+                        .add(Blocks.AIR.defaultBlockState(), 3)
+                        .build())))
+                .configureBlock(Blocks.CHEST, TemplateBlockPlacementSettings.SOLID_PLACEMENT.withLoot(
+                        new TieredResource.SingleTier<>(ChestLootTableKeys.LEVEL_0)
+                ))
+                .configureBlock(Blocks.CHAIN, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .feature(new SpawnerFeature(
+                        new PlacementSettings(Optional.of(SharedKeys.Anchor.Feature.SPAWNER), new Constant(1)),
+                        new SpawnerSettings(Optional.empty())
+                ))
                 .build()));
 
         context.register(BlueprintKeys.Room.SMITHY, new Blueprint(new BlueprintConfiguration.Builder()

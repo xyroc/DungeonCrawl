@@ -20,6 +20,7 @@ public interface TemplateKeys {
         ResourceLocation ENIKO = DataGen.resource(__ROOM, "eniko");
         ResourceLocation LIBRARY = DataGen.resource(__ROOM, "library");
         ResourceLocation LOWER_STAIRCASE = DataGen.resource(__ROOM, "lower_staircase");
+        ResourceLocation POTION_LAB = DataGen.resource(__ROOM, "potion_lab");
         ResourceLocation SARCOPHAGUS = DataGen.resource(__ROOM, "sarcophagus");
         ResourceLocation SMITHY = DataGen.resource(__ROOM, "smithy");
         ResourceLocation UPPER_STAIRCASE = DataGen.resource(__ROOM, "upper_staircase");
@@ -42,6 +43,14 @@ public interface TemplateKeys {
         ResourceLocation DINER_OPEN = DataGen.resource(Room.DINER, "open");
         ResourceLocation DINER_CLOSED_TABLE = DataGen.resource(Room.DINER, "closed/table");
         ResourceLocation DINER_CLOSED_STORAGE = DataGen.resource(Room.DINER, "closed/storage");
+
+        ResourceLocation __LAB = DataGen.resource(__PART, "lab");
+        ResourceLocation __LAB_CONTAINER = DataGen.resource(__LAB, "container");
+
+        ResourceLocation LAB_CONTAINER_KELP = DataGen.resource(__LAB_CONTAINER, "kelp");
+        ResourceLocation LAB_CONTAINER_SPAWNER = DataGen.resource(__LAB_CONTAINER, "spawner");
+        ResourceLocation LAB_CONTAINER_TORCHFLOWER = DataGen.resource(__LAB_CONTAINER, "torchflower");
+        ResourceLocation LAB_CONTAINER_WHEAT = DataGen.resource(__LAB_CONTAINER, "wheat");
     }
 
     interface Corridor {

@@ -1,0 +1,18 @@
+{
+  "default_placement_settings": {
+    "fill_air": true,
+    "fill_solid": true
+  },
+  "features": [
+    {
+      "type": "dungeoncrawl:spawner",
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:feature/spawner"
+      },
+      "spawner": {}
+    }
+  ],
+  "template": "dungeoncrawl:part/lab/container/spawner",
+  "use_global_default_placement_settings": false
+}

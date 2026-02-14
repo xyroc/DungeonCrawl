@@ -1,0 +1,19 @@
+{
+  "block_types": {
+    "minecraft:wheat": {
+      "type": "dungeoncrawl:block",
+      "block": {
+        "type": "dungeoncrawl:random_block",
+        "blocks": {
+          "pools": "#dungeoncrawl:crops/farmland"
+        }
+      }
+    }
+  },
+  "default_placement_settings": {
+    "fill_air": true,
+    "fill_solid": true
+  },
+  "template": "dungeoncrawl:part/lab/container/wheat",
+  "use_global_default_placement_settings": false
+}

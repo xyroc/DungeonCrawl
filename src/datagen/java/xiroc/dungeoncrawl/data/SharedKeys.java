@@ -25,6 +25,9 @@ public interface SharedKeys {
         }
 
         ResourceLocation FLOOR = DataGen.resource("floor");
+
+        ResourceLocation __LAB = DataGen.resource("lab");
+        ResourceLocation LAB_CONTAINER = DataGen.resource(__LAB, "container");
     }
 
     interface Spawner {

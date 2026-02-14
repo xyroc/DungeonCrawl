@@ -45,7 +45,7 @@ public record ResourceReloadHandler(RegistryAccess registryAccess) implements Pr
                 throw new DatapackLoadException("Failed to load blueprint " + blueprints.getKey(blueprint), e);
             }
         }
-        DungeonCrawl.LOGGER.info("Updated {} blueprints.", blueprintCounter);
+        DungeonCrawl.LOGGER.info("Loaded {} blueprints.", blueprintCounter);
         DungeonTypes.buildMapping(registryAccess);
     }
 

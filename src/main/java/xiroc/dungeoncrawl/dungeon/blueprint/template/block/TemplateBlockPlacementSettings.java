@@ -11,6 +11,14 @@ import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Specifies how a group of blocks within a blueprint should be generated.
+ *
+ * @param fillAir     Whether this block should generate through air blocks.
+ * @param fillSolid   Whether this block should generate through non-air blocks.
+ * @param alternative An alternative template to use if this block is not to be placed according to the above rules.
+ * @param lootTable   A loot table to use for this block.
+ */
 public record TemplateBlockPlacementSettings(boolean fillAir,
                                              boolean fillSolid,
                                              @Nullable TemplateBlockType alternative,
@@ -24,13 +32,21 @@ public record TemplateBlockPlacementSettings(boolean fillAir,
             ).apply(instance, (fillAir, fillSolid, alternative, lootTable) ->
                     new TemplateBlockPlacementSettings(fillAir, fillSolid, alternative.orElse(null), lootTable.orElse(null))));
 
-    public static final TemplateBlockPlacementSettings NON_SOLID_PLACEMENT = new TemplateBlockPlacementSettings(false, true, null, null);
-    public static final TemplateBlockPlacementSettings SOLID_PLACEMENT = new TemplateBlockPlacementSettings(true, true, null, null);
-    public static final TemplateBlockPlacementSettings ANTI_SOLID = new TemplateBlockPlacementSettings(true, false, null, null);
+    public static final TemplateBlockPlacementSettings NON_SOLID_PLACEMENT = new TemplateBlockPlacementSettings(false, true);
+    public static final TemplateBlockPlacementSettings SOLID_PLACEMENT = new TemplateBlockPlacementSettings(true, true);
+    public static final TemplateBlockPlacementSettings ANTI_SOLID = new TemplateBlockPlacementSettings(true, false);
     public static final TemplateBlockPlacementSettings DEFAULT = NON_SOLID_PLACEMENT;
+
+    public TemplateBlockPlacementSettings(boolean fillAir, boolean fillSolid) {
+        this(fillAir, fillSolid, null, null);
+    }
 
     public boolean canPlace(boolean isAir) {
         return isAir && fillAir || !isAir && fillSolid;
+    }
+
+    public TemplateBlockPlacementSettings withAlternative(TemplateBlockType alternative) {
+        return new TemplateBlockPlacementSettings(fillAir, fillSolid, alternative, lootTable);
     }
 
     public TemplateBlockPlacementSettings withLoot(TieredResource<ResourceKey<LootTable>> lootTables) {

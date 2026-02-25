@@ -148,7 +148,7 @@ public class LevelGenerator {
         secretRoomGenerator.generateSecretRooms(this);
     }
 
-    private void growNode(NodeElement node) {
+    protected void growNode(NodeElement node) {
         node.connectToAdjacentNodes();
 
         final BlueprintPiece piece = node.piece();
@@ -232,16 +232,12 @@ public class LevelGenerator {
         this.end = element;
     }
 
-    public void addActiveNode(NodeElement node) {
-        this.nodes.add(node);
-    }
-
     public boolean createClusterNode(Anchor attachmentPoint, int depth) {
         if (clusterNodesLeft == 0 || random.nextInt(10) != 0) {
             return false;
         }
         ClusterNodeGenerator clusterNodeGenerator = new ClusterNodeGenerator(generatorContext, attachmentPoint, random, depth + 1);
-        if (clusterNodeGenerator.generate()) {
+        if (clusterNodeGenerator.generateRecursively()) {
             --clusterNodesLeft;
             return true;
         }

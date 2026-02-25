@@ -10,6 +10,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.generator.level.ClusterNodeSettings;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
@@ -54,12 +55,12 @@ public record LevelType(LevelGeneratorSettings settings,
     public record LevelRooms(IRandom<Holder<Blueprint>> ordinary,
                              IRandom<Holder<Blueprint>> upperStaircase,
                              IRandom<Holder<Blueprint>> lowerStaircase,
-                             @Nullable IRandom<IRandom<Holder<Blueprint>>> cluster) {
+                             @Nullable IRandom<ClusterNodeSettings> cluster) {
         public static final Codec<LevelRooms> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
                         Blueprint.RANDOM_HOLDER_CODEC.fieldOf("ordinary").forGetter(LevelRooms::ordinary),
                         Blueprint.RANDOM_HOLDER_CODEC.fieldOf("upper_staircase").forGetter(LevelRooms::upperStaircase),
                         Blueprint.RANDOM_HOLDER_CODEC.fieldOf("lower_staircase").forGetter(LevelRooms::lowerStaircase),
-                        Blueprint.RANDOM_RANDOM_HOLDER_CODEC.optionalFieldOf("cluster").forGetter(levelRooms -> Optional.ofNullable(levelRooms.cluster))
+                        ClusterNodeSettings.RANDOM_CODEC.optionalFieldOf("cluster").forGetter(levelRooms -> Optional.ofNullable(levelRooms.cluster))
                 ).apply(instance, (rooms, upperStaircaseRooms, lowerStaircaseRooms, clusterRooms) ->
                         new LevelRooms(rooms, upperStaircaseRooms, lowerStaircaseRooms, clusterRooms.orElse(null)))
         );
@@ -72,7 +73,7 @@ public record LevelType(LevelGeneratorSettings settings,
             @Nullable
             private IRandom.Builder<Holder<Blueprint>> lowerStaircase = null;
             @Nullable
-            private IRandom.Builder<IRandom<Holder<Blueprint>>> cluster = null;
+            private IRandom.Builder<ClusterNodeSettings> cluster = null;
 
             public Builder ordinary(@Nullable IRandom.Builder<Holder<Blueprint>> ordinary) {
                 this.ordinary = ordinary;
@@ -89,7 +90,7 @@ public record LevelType(LevelGeneratorSettings settings,
                 return this;
             }
 
-            public Builder cluster(@Nullable IRandom.Builder<IRandom<Holder<Blueprint>>> cluster) {
+            public Builder cluster(@Nullable IRandom.Builder<ClusterNodeSettings> cluster) {
                 this.cluster = cluster;
                 return this;
             }

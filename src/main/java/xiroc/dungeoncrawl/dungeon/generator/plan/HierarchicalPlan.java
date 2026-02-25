@@ -9,8 +9,8 @@ import java.util.function.Predicate;
 /**
  * Logically combines two dungeon plans into one.
  * <p>
- * Except for adding an element, operations are executed first on the primary and then on the secondary plan.
- * Elements are only added to the primary plan.
+ * Modifications are done only on the primary plan.
+ * All other operations are executed first on the primary and then on the secondary plan.
  *
  * @param primary   The primary plan
  * @param secondary The secondary plan
@@ -19,6 +19,11 @@ public record HierarchicalPlan(DungeonPlan primary, DungeonPlan secondary) imple
     @Override
     public void add(DungeonElement element) {
         primary.add(element);
+    }
+
+    @Override
+    public boolean remove(DungeonElement element) {
+        return primary.remove(element);
     }
 
     @Override

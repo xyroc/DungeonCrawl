@@ -3,6 +3,7 @@ package xiroc.dungeoncrawl.dungeon.generator.level;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
@@ -11,6 +12,7 @@ import xiroc.dungeoncrawl.dungeon.generator.element.NodeElement;
 import xiroc.dungeoncrawl.dungeon.generator.plan.DungeonPlan;
 import xiroc.dungeoncrawl.dungeon.generator.plan.HierarchicalPlan;
 import xiroc.dungeoncrawl.dungeon.generator.plan.ListPlan;
+import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.util.ArrayList;
@@ -18,9 +20,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClusterNodeGenerator {
-    private static final int MIN_SIZE = 2;
-    private static final int MAX_SIZE = 5;
-
     /**
      * The initial attachment point.
      */
@@ -31,11 +30,6 @@ public class ClusterNodeGenerator {
      * The depth value which all node elements belonging to the cluster node will share.
      */
     private final int depth;
-
-    /**
-     * All eligible blueprints for parts of the cluster node.
-     */
-    private final IRandom<Holder<Blueprint>> roomSet;
 
     /**
      * A dungeon plan holding all nodes making up the cluster node.
@@ -61,16 +55,16 @@ public class ClusterNodeGenerator {
     private final GeneratorContext upperContext;
 
     /**
-     * The list of all node elements which haven't yet been considered to attach more nodes to.
+     * The cluster node settings in use.
      */
-    private final List<NodeElement> activeNodes = new ArrayList<>();
+    private final ClusterNodeSettings settings;
 
     public ClusterNodeGenerator(GeneratorContext upperContext, Anchor start, RandomSource random, int depth) {
         this.upperContext = upperContext;
         this.start = start;
         this.random = random;
         this.depth = depth;
-        this.roomSet = Objects.requireNonNull(upperContext.levelGenerator().levelType.rooms().cluster(), "No cluster room blueprints present").roll(random);
+        this.settings = Objects.requireNonNull(upperContext.levelGenerator().levelType.rooms().cluster(), "No cluster nodes specified").roll(random);
 
         this.preliminaryPlan = new ListPlan(BoundingBox.infinite());
         // Use a combined plan to allow for collision checks on the preliminary cluster node layout
@@ -78,56 +72,123 @@ public class ClusterNodeGenerator {
         this.context = new GeneratorContext(combinedPlan, upperContext.levelGenerator());
     }
 
-    private boolean attachNode(Anchor anchor, boolean isClusterNode) {
-        final LevelGenerator levelGenerator = context.levelGenerator();
-        final int nextDepth = isClusterNode ? depth : depth + 1;
-
+    @Nullable
+    private NodeElement attachNode(Anchor anchor, IRandom<Holder<Blueprint>> rooms, boolean useClusterEntrances) {
         for (int roomAttempt = 0; roomAttempt < 3; ++roomAttempt) {
-            final Holder<Blueprint> room = isClusterNode ? roomSet.roll(random) : levelGenerator.roomChooser.nextRoom(nextDepth, random);
-
+            final Holder<Blueprint> room = rooms.roll(random);
             for (int entranceAttempt = 0; entranceAttempt < 4; ++entranceAttempt) {
-                final NodeElement node = NodeElement.attachRoom(this.context, anchor, room, nextDepth, isClusterNode);
+                final NodeElement node = NodeElement.attachRoom(this.context, anchor, room, this.depth, useClusterEntrances);
                 if (node != null) {
-                    if (!isClusterNode) {
-                        // Mark the node as active so that the layer generator can use it for further generation
-                        levelGenerator.addActiveNode(node);
-                        levelGenerator.roomChooser.commit(node);
-                    }
-                    this.activeNodes.add(node);
-                    return true;
+                    return node;
                 }
             }
         }
-        return false;
+        return null;
+    }
+
+    record ClusterNode(NodeElement node, List<ClusterNode> children) {
+        public ClusterNode(NodeElement node) {
+            this(node, new ArrayList<>(node.unusedClusterEntrances.size()));
+        }
+
+        /**
+         * Recursively removes this node and all children from the dungeon plan.
+         *
+         * @param plan The plan to remove the nodes from.
+         */
+        void delete(DungeonPlan plan) {
+            plan.remove(node);
+            for (var child : children) {
+                child.delete(plan);
+            }
+        }
     }
 
     /**
-     * Attempts to attach more nodes to the provided node.
+     * Recursively attaches more nodes.
      *
-     * @param node               the node to attach more nodes to
-     * @param attachClusterNodes true if cluster node blueprints should be used, false for normal blueprints
-     * @return the number of nodes added
+     * @param clusterNode The node to attach new nodes to.
+     * @param budget      The maximum number of nodes that may be added by this operation.
+     * @param depth       The current recursive depth.
+     * @return The number of attached nodes. Will be zero in the case of failure.
      */
-    private int grow(NodeElement node, boolean attachClusterNodes) {
-        final List<Entrance> unusedEntrances = attachClusterNodes ? node.unusedClusterEntrances : node.unusedEntrances;
+    private int growRecursively(ClusterNode clusterNode, int budget, int depth) {
+        final NodeElement node = clusterNode.node;
+        final List<Entrance> unusedEntrances = node.unusedClusterEntrances;
         if (unusedEntrances.isEmpty()) {
             return 0;
         }
-        final int maxAttempts = unusedEntrances.size() * 2;
-        final int maxNodesAdded = Math.min(3, unusedEntrances.size());
-        int nodesAdded = 0;
-        for (int attempt = 0; attempt < maxAttempts && nodesAdded < maxNodesAdded; ++attempt) {
-            int chosenEntrance = random.nextInt(unusedEntrances.size());
-            Entrance entrance = unusedEntrances.get(chosenEntrance);
-            BlueprintComponent base = node.piece().base;
-            Anchor attachmentPoint = base.blueprint().value().coordinateSpace(base.position()).rotateAndTranslateToOrigin(entrance.placement(), base.rotation());
-            if (attachNode(attachmentPoint, attachClusterNodes)) {
-                ++nodesAdded;
-                unusedEntrances.remove(chosenEntrance);
+        int totalNodesAdded = 0;
+        final BlueprintComponent base = node.piece().base;
+        final CoordinateSpace coordinateSpace = base.blueprint().value().coordinateSpace(base.position());
+
+        for (int entrancesLeft = unusedEntrances.size(); entrancesLeft > 0; --entrancesLeft) {
+            final Entrance entrance = unusedEntrances.get(entrancesLeft - 1);
+            final Anchor attachmentPoint = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), base.rotation());
+            // Spread the remaining budget evenly across the remaining entrances
+            final int budgetForThisEntrance = budget / entrancesLeft;
+            final int nodesAdded = growRecursivelyFromAttachmentPoint(clusterNode, attachmentPoint, budgetForThisEntrance, depth);
+            if (nodesAdded > 0) {
+                totalNodesAdded += nodesAdded;
+                budget -= nodesAdded;
                 node.addEntrance(attachmentPoint, entrance);
+            } else {
+                clusterNode.delete(preliminaryPlan);
+                return 0;
             }
         }
-        return nodesAdded;
+        unusedEntrances.clear();
+        return totalNodesAdded;
+    }
+
+    /**
+     * Recursively attach more nodes to the parent node at the provided attachment point.
+     *
+     * @param parent          The parent node to attach new nodes to.
+     * @param attachmentPoint The attachment point at the parent node.
+     * @param budget          The maximum number of nodes that may be added.
+     * @param depth           The recursive depth of the operation.
+     * @return The number of attached nodes. Will be zero in the case of failure.
+     */
+    private int growRecursivelyFromAttachmentPoint(ClusterNode parent, Anchor attachmentPoint, int budget, int depth) {
+        if (budget <= 0) {
+            return 0;
+        }
+        boolean isTerminal = budget == 1;
+        // If there's only one room left in the budget,  try to add a terminal node.
+        IRandom<Holder<Blueprint>> rooms = isTerminal ? settings.terminals() : settings.nonTerminals();
+
+        int attemptsLeft = 2;
+
+        while (attemptsLeft > 0) {
+            --attemptsLeft;
+            if (attemptsLeft == 0) {
+                isTerminal = true;
+                rooms = settings.terminals();
+            }
+
+            final NodeElement newNode = attachNode(attachmentPoint, rooms, true);
+
+            if (newNode == null) {
+                continue;
+            }
+
+            final ClusterNode newClusterNode = new ClusterNode(newNode);
+            int totalNodesAdded = 1;
+
+            if (!isTerminal) {
+                final int nodesAdded = growRecursively(newClusterNode, budget - 1, depth + 1);
+                if (nodesAdded == 0) {
+                    continue;
+                }
+                totalNodesAdded += nodesAdded;
+
+            }
+            parent.children.add(newClusterNode);
+            return totalNodesAdded;
+        }
+
+        return 0;
     }
 
     /**
@@ -137,32 +198,24 @@ public class ClusterNodeGenerator {
      *
      * @return true if the generation was successful, false otherwise
      */
-    public boolean generate() {
-        if (!attachNode(start, true)) {
+    public boolean generateRecursively() {
+        NodeElement startNode = attachNode(start, settings.terminals(), false);
+        if (startNode == null) {
             return false;
         }
-
-        while (activeNodes.size() < MAX_SIZE && !activeNodes.isEmpty()) {
-            final NodeElement node = activeNodes.removeFirst();
-            if (node.depth > this.depth) {
-                continue;
+        int roomsAdded = 1 + growRecursively(new ClusterNode(startNode), settings.maxSize() - 1, 0);
+        if (roomsAdded < settings.minSize()) {
+            return false;
+        }
+        preliminaryPlan.forEach(this.upperContext.dungeonPlan()::add);
+        preliminaryPlan.forEach(element -> {
+            if (element instanceof NodeElement node && !node.unusedEntrances.isEmpty()) {
+                if (random.nextFloat() >= settings.fanOut()) {
+                    return;
+                }
+                this.upperContext.levelGenerator().growNode(node);
             }
-            grow(node, true);
-        }
-
-        if (activeNodes.size() < MIN_SIZE) {
-            return false;
-        }
-
-        int extraBorderNodes = 3;
-        while (extraBorderNodes > 0 && !activeNodes.isEmpty()) {
-            final NodeElement node = activeNodes.remove(random.nextInt(activeNodes.size()));
-            final int nodesAdded = grow(node, false);
-            extraBorderNodes -= nodesAdded;
-        }
-
-        // Add all node elements of the cluster node to the dungeon plan of the upper context.
-        this.preliminaryPlan.forEach(this.upperContext.dungeonPlan()::add);
+        });
         return true;
     }
 

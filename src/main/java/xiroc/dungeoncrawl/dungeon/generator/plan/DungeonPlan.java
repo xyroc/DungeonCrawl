@@ -9,6 +9,8 @@ import java.util.function.Predicate;
 public interface DungeonPlan {
     void add(DungeonElement element);
 
+    boolean remove(DungeonElement element);
+
     boolean isFree(Bounded boundingBox);
 
     void forEach(Consumer<DungeonElement> consumer);

@@ -22,6 +22,11 @@ public class ListPlan implements DungeonPlan {
     }
 
     @Override
+    public boolean remove(DungeonElement element) {
+        return elements.remove(element);
+    }
+
+    @Override
     public boolean isFree(Bounded boundingBox) {
         return boundingBox.encapsulatedBy(this.boundingBox) && elements.stream().noneMatch((element) -> element.collides(boundingBox));
     }

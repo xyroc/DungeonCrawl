@@ -18,11 +18,11 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> DINER = key(TemplateKeys.Room.DINER);
         ResourceKey<Blueprint> ENIKO = key(TemplateKeys.Room.ENIKO);
         ResourceKey<Blueprint> LIBRARY = key(TemplateKeys.Room.LIBRARY);
-        ResourceKey<Blueprint> LOWER_STAIRCASE = key(TemplateKeys.Room.LOWER_STAIRCASE);
         ResourceKey<Blueprint> POTION_LAB = key(TemplateKeys.Room.POTION_LAB);
         ResourceKey<Blueprint> SARCOPHAGUS = key(TemplateKeys.Room.SARCOPHAGUS);
         ResourceKey<Blueprint> SMITHY = key(TemplateKeys.Room.SMITHY);
-        ResourceKey<Blueprint> UPPER_STAIRCASE = key(TemplateKeys.Room.UPPER_STAIRCASE);
+        ResourceKey<Blueprint> STAIRCASE_LOWER = key(TemplateKeys.Room.STAIRCASE_LOWER);
+        ResourceKey<Blueprint> STAIRCASE_UPPER = key(TemplateKeys.Room.STAIRCASE_UPPER);
     }
 
     interface Part {

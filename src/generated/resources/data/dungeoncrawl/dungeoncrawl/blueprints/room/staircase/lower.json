@@ -8,5 +8,5 @@
       "fill_solid": true
     }
   },
-  "template": "dungeoncrawl:room/lower_staircase"
+  "template": "dungeoncrawl:room/staircase/lower"
 }

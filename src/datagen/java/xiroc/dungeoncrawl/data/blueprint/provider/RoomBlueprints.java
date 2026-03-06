@@ -115,12 +115,6 @@ public interface RoomBlueprints {
                 .configureBlock(Blocks.REDSTONE_LAMP, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
                 .build()));
 
-        // TODO: map cobblestone and entrance types
-        context.register(BlueprintKeys.Room.LOWER_STAIRCASE, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(TemplateKeys.Room.LOWER_STAIRCASE)
-                .configureBlock(Blocks.COBBLESTONE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT.withAlternative(TemplateBlockType.FENCING.create()))
-                .build()));
-
         context.register(BlueprintKeys.Room.SARCOPHAGUS, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.SARCOPHAGUS)
                 .feature(new SarcophagusFeature(
@@ -166,8 +160,14 @@ public interface RoomBlueprints {
                 .configureBlock(Blocks.COBBLESTONE_STAIRS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
                 .build()));
 
-        context.register(BlueprintKeys.Room.UPPER_STAIRCASE, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(TemplateKeys.Room.UPPER_STAIRCASE)
+        // TODO: map cobblestone and entrance types
+        context.register(BlueprintKeys.Room.STAIRCASE_LOWER, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.STAIRCASE_LOWER)
+                .configureBlock(Blocks.COBBLESTONE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT.withAlternative(TemplateBlockType.FENCING.create()))
+                .build()));
+
+        context.register(BlueprintKeys.Room.STAIRCASE_UPPER, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.STAIRCASE_UPPER)
                 .build()));
     }
 }

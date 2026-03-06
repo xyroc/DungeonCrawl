@@ -19,11 +19,13 @@ public interface TemplateKeys {
         ResourceLocation DINER = DataGen.resource(__ROOM, "diner");
         ResourceLocation ENIKO = DataGen.resource(__ROOM, "eniko");
         ResourceLocation LIBRARY = DataGen.resource(__ROOM, "library");
-        ResourceLocation LOWER_STAIRCASE = DataGen.resource(__ROOM, "lower_staircase");
         ResourceLocation POTION_LAB = DataGen.resource(__ROOM, "potion_lab");
         ResourceLocation SARCOPHAGUS = DataGen.resource(__ROOM, "sarcophagus");
         ResourceLocation SMITHY = DataGen.resource(__ROOM, "smithy");
-        ResourceLocation UPPER_STAIRCASE = DataGen.resource(__ROOM, "upper_staircase");
+
+        ResourceLocation __STAIRCASE =  DataGen.resource(__ROOM, "staircase");
+        ResourceLocation STAIRCASE_LOWER = DataGen.resource(__STAIRCASE, "lower");
+        ResourceLocation STAIRCASE_UPPER = DataGen.resource(__STAIRCASE, "upper");
     }
 
     interface Part {

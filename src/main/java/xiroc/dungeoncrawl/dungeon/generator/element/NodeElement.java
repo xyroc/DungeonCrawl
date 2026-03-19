@@ -60,9 +60,10 @@ public class NodeElement extends DungeonElement {
             return;
         }
 
-        for (Entrance entrance : unusedEntrances) {
-            final Anchor entrancePlacement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
-            for (FreeEntranceElement marker : nearbyUnusedEntrances) {
+        for (FreeEntranceElement marker : nearbyUnusedEntrances) {
+            for (int entranceIndex = 0; entranceIndex < unusedEntrances.size(); entranceIndex++) {
+                final Entrance entrance = unusedEntrances.get(entranceIndex);
+                final Anchor entrancePlacement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
                 // Check alignment.
                 if (entrancePlacement.direction() != marker.placement.direction().getOpposite()) {
                     continue;
@@ -85,12 +86,13 @@ public class NodeElement extends DungeonElement {
                 if (!context.dungeonPlan().isFree(corridorBox)) {
                     continue;
                 }
-                DungeonCrawl.LOGGER.info("Connected to adjacent node, starting at {}", corridorStart);
                 context.levelGenerator().createCorridor(corridorStart, entrancePlacement.direction(), corridorBox.create());
                 addEntrance(entrancePlacement, entrance);
-                marker.node.addEntrance(marker.placement,  marker.entrance);
+                marker.node.addEntrance(marker.placement, marker.entrance);
                 marker.node.unusedEntrances.remove(marker.entrance);
                 marker.invalidate();
+                unusedEntrances.remove(entranceIndex);
+                break; // Free entrance claimed. Continue with the next free entrance marker.
             }
         }
     }

@@ -168,12 +168,20 @@ public class NodeElement extends DungeonElement {
         entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.open(), piece, piece.base, context.levelGenerator()));
     }
 
+    private void closeOffEntrances(List<Entrance> entrances) {
+        for (Entrance entrance : entrances) {
+            if (entrance.customParts().isEmpty()) {
+                continue;
+            }
+            Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
+            BlueprintMultipart.addPart(position.opposite(), entrance.customParts().get().closed(), piece, piece.base, context.levelGenerator());
+        }
+    }
+
     @Override
     public void createPieces(Consumer<StructurePiece> consumer) {
-        for (Entrance entrance : unusedEntrances) {
-            Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
-            entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(position.opposite(), parts.closed(), piece, piece.base, context.levelGenerator()));
-        }
+        closeOffEntrances(unusedEntrances);
+        closeOffEntrances(unusedClusterEntrances);
         piece.updateBoundingBox();
         consumer.accept(piece);
     }

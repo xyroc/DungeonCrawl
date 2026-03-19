@@ -81,12 +81,11 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blu
         return false;
     }
 
-    public static boolean addPart(Anchor anchor, IRandom<Holder<Blueprint>> parts, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator) {
+    public static void addPart(Anchor anchor, IRandom<Holder<Blueprint>> parts, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator) {
         try {
-            return addPart(anchor, parts, piece, parent, levelGenerator, 0);
+            addPart(anchor, parts, piece, parent, levelGenerator, 0);
         } catch (ExceededMultipartDepthException e) {
             warnAboutDepthLimitExcession(e);
-            return false;
         }
     }
 

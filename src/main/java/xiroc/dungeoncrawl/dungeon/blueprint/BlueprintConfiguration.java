@@ -69,6 +69,10 @@ public class BlueprintConfiguration {
             .put(Blocks.SPRUCE_FENCE_GATE, TemplateBlockType.FENCE_GATE.create())
             .put(Blocks.SPRUCE_DOOR, TemplateBlockType.DOOR.create(true))
 
+            .put(Blocks.RED_NETHER_BRICKS, TemplateBlockType.MASONRY.create())
+            .put(Blocks.RED_NETHER_BRICK_STAIRS, TemplateBlockType.MASONRY_STAIRS.create())
+            .put(Blocks.RED_NETHER_BRICK_SLAB, TemplateBlockType.MASONRY_SLAB.create())
+
             .put(Blocks.CRIMSON_PLANKS, TemplateBlockType.MATERIAL.create())
             .put(Blocks.CRIMSON_STAIRS, TemplateBlockType.MATERIAL_STAIRS.create())
             .put(Blocks.CRIMSON_STEM, TemplateBlockType.MATERIAL_PILLAR.create())
@@ -114,6 +118,10 @@ public class BlueprintConfiguration {
             .put(Blocks.SPRUCE_TRAPDOOR, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
             .put(Blocks.SPRUCE_FENCE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
             .put(Blocks.SPRUCE_FENCE_GATE, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+
+            .put(Blocks.RED_NETHER_BRICKS, TemplateBlockPlacementSettings.ANTI_SOLID)
+            .put(Blocks.RED_NETHER_BRICK_STAIRS, TemplateBlockPlacementSettings.ANTI_SOLID)
+            .put(Blocks.RED_NETHER_BRICK_SLAB, TemplateBlockPlacementSettings.ANTI_SOLID)
 
             .put(Blocks.CRIMSON_PLANKS, TemplateBlockPlacementSettings.ANTI_SOLID)
             .put(Blocks.CRIMSON_STAIRS, TemplateBlockPlacementSettings.ANTI_SOLID)

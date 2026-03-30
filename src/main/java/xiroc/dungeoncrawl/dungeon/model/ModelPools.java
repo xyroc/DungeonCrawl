@@ -21,7 +21,7 @@ package xiroc.dungeoncrawl.dungeon.model;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -36,7 +36,7 @@ public class ModelPools {
 
     public static final Hashtable<String, ImmutableSet<Tuple<DungeonModel, Integer>>> POOLS = new Hashtable<>();
 
-    private static final ResourceLocation FILE = DungeonCrawl.locate("dungeon/model_pools.json");
+    private static final Identifier FILE = DungeonCrawl.locate("dungeon/model_pools.json");
 
     public static void load(ResourceManager resourceManager) {
         DungeonCrawl.LOGGER.debug("Loading {}", FILE);
@@ -51,7 +51,7 @@ public class ModelPools {
 
                 entry.getValue().getAsJsonArray().forEach((element) -> {
                     JsonObject modelEntry = element.getAsJsonObject();
-                    ResourceLocation key = ResourceLocation.parse(modelEntry.get("key").getAsString());
+                    Identifier key = Identifier.parse(modelEntry.get("key").getAsString());
                     if (!DungeonModels.KEY_TO_MODEL.containsKey(key)) {
                         DungeonCrawl.LOGGER.warn("Cannot resolve model key " + key + " in " + FILE);
                     } else {

@@ -23,7 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -114,7 +114,7 @@ public class JSONUtils {
      */
     public static JsonObject serializeBlockState(JsonObject object, BlockState state) {
         Block block = state.getBlock();
-        ResourceLocation registryName = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier registryName = BuiltInRegistries.BLOCK.getKey(block);
         if (registryName == null) {
             DungeonCrawl.LOGGER.error("No registry name found for block {} ({})", block, block.getClass());
             return new JsonObject();

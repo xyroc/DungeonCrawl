@@ -25,11 +25,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityEquipment;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -84,7 +85,7 @@ public class RandomEquipment {
     /**
      * Convenience method to load an armor file from json.
      */
-    private static void loadArmorFromJson(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
+    private static void loadArmorFromJson(ResourceManager resourceManager, Identifier file, int stage) throws IOException {
         Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
         try {
             DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
@@ -122,7 +123,7 @@ public class RandomEquipment {
     /**
      * Convenience method to load a weapon file from json.
      */
-    private static void loadWeaponsFromJson(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
+    private static void loadWeaponsFromJson(ResourceManager resourceManager, Identifier file, int stage) throws IOException {
         Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
         DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
         JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resource.open()))).getAsJsonObject();
@@ -140,66 +141,47 @@ public class RandomEquipment {
         }
     }
 
-    public static ItemStack[] createArmor(RandomSource rand, int stage, RegistryAccess registryAccess) {
+    public static void createArmor(EntityEquipment equipment, RandomSource rand, int stage, RegistryAccess registryAccess) {
         if (stage > HIGHEST_STAGE)
             stage = HIGHEST_STAGE;
 
-        ItemStack[] items = new ItemStack[4];
         float chance = 0.4F + 0.15F * stage;
-
 
         if (HELMET.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = HELMET.get(stage).roll(rand);
-                items[3] = createItemStack(rand, item, stage, registryAccess);
-                setArmorColor(items[3], getRandomColor(rand));
-            } else {
-                items[3] = ItemStack.EMPTY;
+                ItemStack helmet = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(helmet, getRandomColor(rand));
+                equipment.set(EquipmentSlot.HEAD, helmet);
             }
-        } else {
-            // This can only happen if a monster equipment file in the datapack is incomplete.
-            items[3] = ItemStack.EMPTY;
         }
 
         if (CHESTPLATE.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = CHESTPLATE.get(stage).roll(rand);
-                items[2] = createItemStack(rand, item, stage, registryAccess);
-                setArmorColor(items[2], getRandomColor(rand));
-            } else {
-                items[2] = ItemStack.EMPTY;
+                ItemStack chestplate = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(chestplate, getRandomColor(rand));
+                equipment.set(EquipmentSlot.CHEST, chestplate);
             }
-        } else {
-            // This can only happen if a monster equipment file in the datapack is incomplete.
-            items[2] = ItemStack.EMPTY;
         }
 
         if (LEGGINGS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = LEGGINGS.get(stage).roll(rand);
-                items[1] = createItemStack(rand, item, stage, registryAccess);
-                setArmorColor(items[1], getRandomColor(rand));
-            } else {
-                items[1] = ItemStack.EMPTY;
+                ItemStack leggings = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(leggings, getRandomColor(rand));
+                equipment.set(EquipmentSlot.LEGS, leggings);
             }
-        } else {
-            // This can only happen if a monster equipment file in the datapack is incomplete.
-            items[1] = ItemStack.EMPTY;
         }
 
         if (BOOTS.containsKey(stage)) {
             if (rand.nextFloat() < chance) {
                 Item item = BOOTS.get(stage).roll(rand);
-                items[0] = createItemStack(rand, item, stage, registryAccess);
-                setArmorColor(items[0], getRandomColor(rand));
-            } else {
-                items[0] = ItemStack.EMPTY;
+                ItemStack boots = createItemStack(rand, item, stage, registryAccess);
+                setArmorColor(boots, getRandomColor(rand));
+                equipment.set(EquipmentSlot.FEET, boots);
             }
-        } else {
-            // This can only happen if a monster equipment file in the datapack is incomplete.
-            items[0] = ItemStack.EMPTY;
         }
-        return items;
     }
 
     public static ItemStack createItemStack(RandomSource rand, Item item, int stage, RegistryAccess registryAccess) {
@@ -214,10 +196,10 @@ public class RandomEquipment {
     }
 
     public static void setArmorColor(ItemStack item, int color) {
-        if (item.is(ItemTags.DYEABLE)) {
+//        if (item.is(ItemTags.DYEABLE)) {
             DyedItemColor colorComponent = new DyedItemColor(color);
             item.set(DataComponents.DYED_COLOR, colorComponent);
-        }
+//        }
     }
 
     public static ItemStack getMeleeWeapon(RandomSource rand, int stage, RegistryAccess registryAccess) {
@@ -246,10 +228,10 @@ public class RandomEquipment {
         return ARMOR_COLORS[rand.nextInt(ARMOR_COLORS.length)];
     }
 
-    public static Item getItem(ResourceLocation resourceLocation) {
-        if (BuiltInRegistries.ITEM.containsKey(resourceLocation))
-            return BuiltInRegistries.ITEM.get(resourceLocation).map(Holder::value).orElse(Items.AIR);
-        DungeonCrawl.LOGGER.warn("Failed to get {} from the item registry.", resourceLocation.toString());
+    public static Item getItem(Identifier Identifier) {
+        if (BuiltInRegistries.ITEM.containsKey(Identifier))
+            return BuiltInRegistries.ITEM.get(Identifier).map(Holder::value).orElse(Items.AIR);
+        DungeonCrawl.LOGGER.warn("Failed to get {} from the item registry.", Identifier.toString());
         return null;
     }
 

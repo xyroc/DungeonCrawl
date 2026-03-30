@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import xiroc.dungeoncrawl.DungeonCrawl;
 
 public interface ModelLoader {
@@ -75,6 +75,6 @@ public interface ModelLoader {
         return new DungeonModel(key, modelBlocks.build(), width, height, length);
     };
 
-    DungeonModel load(CompoundTag nbt, ResourceLocation file, ResourceLocation key);
+    DungeonModel load(CompoundTag nbt, Identifier file, Identifier key);
 
 }

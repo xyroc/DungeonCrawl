@@ -23,7 +23,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -94,7 +94,7 @@ public class ModelHandler {
         return nbt;
     }
 
-    public static DungeonModel loadModelFromNBT(CompoundTag nbt, ResourceLocation file, ResourceLocation key) {
+    public static DungeonModel loadModelFromNBT(CompoundTag nbt, Identifier file, Identifier key) {
         int format = nbt.getInt("format").orElseThrow();
 
         if (format == 1) {

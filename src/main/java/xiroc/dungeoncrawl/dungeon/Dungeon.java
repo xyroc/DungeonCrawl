@@ -81,7 +81,7 @@ public class Dungeon extends Structure {
     private static boolean isInvalidSpot(GenerationContext context, int radius) {
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
-                ChunkPos pos = new ChunkPos(context.chunkPos().x + x, context.chunkPos().z + z);
+                ChunkPos pos = new ChunkPos(context.chunkPos().x() + x, context.chunkPos().z() + z);
                 int centerX = QuartPos.fromBlock(pos.getBlockX(7));
                 int centerZ = QuartPos.fromBlock(pos.getBlockZ(7));
                 Holder<Biome> centerBiome = context.chunkGenerator().getBiomeSource().getNoiseBiome(centerX, context.chunkGenerator()

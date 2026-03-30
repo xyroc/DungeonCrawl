@@ -23,7 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -51,7 +51,7 @@ public class JsonTheming {
      * @param object the json object
      * @return the resulting theme
      */
-    protected static Theme deserializeTheme(JsonObject object, ResourceLocation file) {
+    protected static Theme deserializeTheme(JsonObject object, Identifier file) {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
         Theme.Builder themeBuilder = Theme.builder();
 
@@ -77,7 +77,7 @@ public class JsonTheming {
             WeightedRandom.Builder<SecondaryTheme> builder = new WeightedRandom.Builder<>();
             object.getAsJsonArray("secondary_theme").forEach((element) -> {
                 JsonObject instance = element.getAsJsonObject();
-                ResourceLocation key = ResourceLocation.parse(instance.get("key").getAsString());
+                Identifier key = Identifier.parse(instance.get("key").getAsString());
                 if (Theme.KEY_TO_SECONDARY_THEME.containsKey(key)) {
                     builder.add(Theme.KEY_TO_SECONDARY_THEME.get(key), JSONUtils.getWeight(instance));
                 } else {
@@ -101,7 +101,7 @@ public class JsonTheming {
      * @param object the json object
      * @return the resulting sub-theme
      */
-    protected static SecondaryTheme deserializeSecondaryTheme(JsonObject object, ResourceLocation file) {
+    protected static SecondaryTheme deserializeSecondaryTheme(JsonObject object, Identifier file) {
         JsonObject themeObject = object.get("theme").getAsJsonObject();
 
         SecondaryTheme.Builder themeBuilder = SecondaryTheme.builder();
@@ -130,10 +130,10 @@ public class JsonTheming {
      * @param object the json object
      * @param file   the location of the theme file
      */
-    protected static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, WeightedRandom.Builder<Theme> defaultBuilder, ResourceLocation file) {
+    protected static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, WeightedRandom.Builder<Theme> defaultBuilder, Identifier file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-                ArrayList<Tuple<ResourceLocation, Integer>> entries = listThemes(entry);
+                ArrayList<Tuple<Identifier, Integer>> entries = listThemes(entry);
                 entries.forEach((tuple) -> {
                     if (!Theme.KEY_TO_THEME.containsKey(tuple.getA())) {
                         throw new DatapackLoadException("Cannot resolve theme key " + tuple.getA() + " in " + file.toString());
@@ -144,7 +144,7 @@ public class JsonTheming {
             if (object.has("default")) {
                 object.getAsJsonArray("default").forEach((element) -> {
                     JsonObject entry = element.getAsJsonObject();
-                    ResourceLocation theme = ResourceLocation.parse(entry.get("key").getAsString());
+                    Identifier theme = Identifier.parse(entry.get("key").getAsString());
                     if (!Theme.KEY_TO_THEME.containsKey(theme)) {
                         throw new DatapackLoadException("Cannot resolve theme key " + theme + " in the default case of " + file);
                     }
@@ -160,10 +160,10 @@ public class JsonTheming {
      * @param object the json object
      * @param file   the location of the sub-theme file
      */
-    protected static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, WeightedRandom.Builder<SecondaryTheme> defaultBuilder, ResourceLocation file) {
+    protected static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, WeightedRandom.Builder<SecondaryTheme> defaultBuilder, Identifier file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-                ArrayList<Tuple<ResourceLocation, Integer>> entries = listThemes(entry);
+                ArrayList<Tuple<Identifier, Integer>> entries = listThemes(entry);
                 entries.forEach((tuple) -> {
                     if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(tuple.getA())) {
                         throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
@@ -174,7 +174,7 @@ public class JsonTheming {
             if (object.has("default")) {
                 object.getAsJsonArray("default").forEach((element) -> {
                     JsonObject entry = element.getAsJsonObject();
-                    ResourceLocation theme = ResourceLocation.parse(entry.get("key").getAsString());
+                    Identifier theme = Identifier.parse(entry.get("key").getAsString());
                     if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(theme)) {
                         throw new DatapackLoadException("Cannot resolve secondary theme key " + theme + " in the default case of " + file);
                     }
@@ -184,21 +184,21 @@ public class JsonTheming {
         }
     }
 
-    private static ArrayList<Tuple<ResourceLocation, Integer>> listThemes(Map.Entry<String, JsonElement> entry) {
-        ArrayList<Tuple<ResourceLocation, Integer>> entries = new ArrayList<>();
+    private static ArrayList<Tuple<Identifier, Integer>> listThemes(Map.Entry<String, JsonElement> entry) {
+        ArrayList<Tuple<Identifier, Integer>> entries = new ArrayList<>();
         entry.getValue().getAsJsonArray().forEach((element) -> {
             JsonObject jsonObject = element.getAsJsonObject();
-            entries.add(new Tuple<>(ResourceLocation.parse(jsonObject.get("key").getAsString()), JSONUtils.getWeight(jsonObject)));
+            entries.add(new Tuple<>(Identifier.parse(jsonObject.get("key").getAsString()), JSONUtils.getWeight(jsonObject)));
         });
         return entries;
     }
 
-    protected static void deserializeRandomThemeFile(JsonObject object, WeightedRandom.Builder<Theme> themes, WeightedRandom.Builder<SecondaryTheme> secondaryThemes, ResourceLocation file) {
+    protected static void deserializeRandomThemeFile(JsonObject object, WeightedRandom.Builder<Theme> themes, WeightedRandom.Builder<SecondaryTheme> secondaryThemes, Identifier file) {
         if (JSONUtils.areRequirementsMet(object)) {
             if (object.has("primary_themes")) {
                 object.getAsJsonArray("primary_themes").forEach((element) -> {
                     JsonObject entry = element.getAsJsonObject();
-                    ResourceLocation key = ResourceLocation.parse(entry.get("key").getAsString());
+                    Identifier key = Identifier.parse(entry.get("key").getAsString());
                     if (Theme.KEY_TO_THEME.containsKey(key)) {
                         themes.add(Theme.KEY_TO_THEME.get(key), JSONUtils.getWeight(entry));
                     } else {
@@ -210,7 +210,7 @@ public class JsonTheming {
             if (object.has("secondary_themes")) {
                 object.getAsJsonArray("secondary_themes").forEach((element) -> {
                     JsonObject entry = element.getAsJsonObject();
-                    ResourceLocation key = ResourceLocation.parse(entry.get("key").getAsString());
+                    Identifier key = Identifier.parse(entry.get("key").getAsString());
                     if (Theme.KEY_TO_SECONDARY_THEME.containsKey(key)) {
                         secondaryThemes.add(Theme.KEY_TO_SECONDARY_THEME.get(key), JSONUtils.getWeight(entry));
                     } else {
@@ -221,7 +221,7 @@ public class JsonTheming {
         }
     }
 
-    public static BlockStateProvider deserialize(JsonObject base, String name, ResourceLocation file) {
+    public static BlockStateProvider deserialize(JsonObject base, String name, Identifier file) {
         if (!base.has(name)) {
             DungeonCrawl.LOGGER.warn("Missing BlockState Provider \"{}\" in {}", name, file.toString());
             return null;
@@ -236,7 +236,7 @@ public class JsonTheming {
                 for (JsonElement blockElement : blockObjects) {
                     JsonObject blockObject = (JsonObject) blockElement;
                     Block block = BuiltInRegistries.BLOCK
-                            .get(ResourceLocation.parse(blockObject.get("block").getAsString())).map(Holder::value).orElse(null);
+                            .get(Identifier.parse(blockObject.get("block").getAsString())).map(Holder::value).orElse(null);
                     if (block != null) {
                         BlockState state = JSONUtils.deserializeBlockStateProperties(block, blockObject);
                         builder.add(state, JSONUtils.getWeight(blockObject));
@@ -247,7 +247,7 @@ public class JsonTheming {
                 return new WeightedRandomBlock(builder.build());
             } else if (type.equalsIgnoreCase("block")) {
                 Block block = BuiltInRegistries.BLOCK
-                        .get(ResourceLocation.parse(object.get("block").getAsString())).map(Holder::value).orElse(null);
+                        .get(Identifier.parse(object.get("block").getAsString())).map(Holder::value).orElse(null);
                 if (block != null) {
                     BlockState state = JSONUtils.deserializeBlockStateProperties(block, object);
                     return new SingleBlock(state);

@@ -22,7 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EntityType;
@@ -49,7 +49,7 @@ public class WeightedRandomEntity implements IRandom<EntityType<?>> {
         int i = 0;
         for (Tuple<String, Integer> entry : entries) {
             float weight = (float) entry.getB() / (float) totalWeight;
-            this.entries[i] = new WeightedRandomEntity.WeightedEntry(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(entry.getA()))
+            this.entries[i] = new WeightedRandomEntity.WeightedEntry(BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(entry.getA()))
                     .map(Holder::value)
                     .orElseThrow(), weight + f);
             f += weight;

@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
@@ -38,7 +38,7 @@ public class WeightedRandom<T> implements IRandom<T> {
         entries.forEach((element) -> {
             JsonObject entry = element.getAsJsonObject();
             int weight = JSONUtils.getWeight(entry);
-            builder.add(RandomEquipment.getItem(ResourceLocation.parse(entry.get("item").getAsString())), weight);
+            builder.add(RandomEquipment.getItem(Identifier.parse(entry.get("item").getAsString())), weight);
         });
         return builder.build();
     };

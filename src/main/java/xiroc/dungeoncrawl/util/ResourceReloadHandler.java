@@ -65,10 +65,8 @@ public class ResourceReloadHandler implements PreparableReloadListener {
     }
 
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier stage, ResourceManager resourceManager, Executor backgroundExecutor, Executor gameExecutor) {
-        return stage.wait(Unit.INSTANCE).thenRunAsync(() -> {
-            this.reload(resourceManager);
-        }, gameExecutor);
+    public CompletableFuture<Void> reload(SharedState currentReload, Executor taskExecutor, PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+        return preparationBarrier.wait(Unit.INSTANCE).thenRunAsync(() -> reload(currentReload.resourceManager()));
     }
 
     @Override

@@ -26,7 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -39,7 +39,7 @@ import java.util.List;
 
 public class DungeonModel {
 
-    private final ResourceLocation key;
+    private final Identifier key;
     public final int width, height, length;
     public final ImmutableList<DungeonModelBlock> blocks;
 
@@ -63,7 +63,7 @@ public class DungeonModel {
     private boolean hasMultipart = false;
     private boolean variation = false;
 
-    public DungeonModel(ResourceLocation key, ImmutableList<DungeonModelBlock> blocks, int width, int height, int length) {
+    public DungeonModel(Identifier key, ImmutableList<DungeonModelBlock> blocks, int width, int height, int length) {
         this.key = key;
         this.blocks = blocks;
         this.width = width;
@@ -78,7 +78,7 @@ public class DungeonModel {
         return blocks;
     }
 
-    public void loadMetadata(JsonObject object, ResourceLocation file) throws JsonParseException {
+    public void loadMetadata(JsonObject object, Identifier file) throws JsonParseException {
         if (object.has("id")) {
             this.id = object.get("id").getAsInt();
             this.hasId = true;
@@ -114,7 +114,7 @@ public class DungeonModel {
         }
 
         if (object.has("loot")) {
-            this.lootTable = ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.parse(object.get("loot").getAsString()));
+            this.lootTable = ResourceKey.create(Registries.LOOT_TABLE, Identifier.parse(object.get("loot").getAsString()));
         }
 
         if (object.has("multipart")) {
@@ -127,7 +127,7 @@ public class DungeonModel {
     }
 
     @Nullable
-    public static List<MultipartModelData> parseMultipartData(JsonObject multipartData, ResourceLocation file) {
+    public static List<MultipartModelData> parseMultipartData(JsonObject multipartData, Identifier file) {
         if (multipartData.size() > 0) {
             ArrayList<MultipartModelData> list = new ArrayList<>();
             multipartData.entrySet().forEach((entry) -> {
@@ -142,7 +142,7 @@ public class DungeonModel {
         }
     }
 
-    public ResourceLocation getKey() {
+    public Identifier getKey() {
         return key;
     }
 

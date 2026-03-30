@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Tuple;
@@ -45,13 +45,13 @@ public class ModelBlockDefinition {
 
     private static final String DIRECTORY = "dev/block_definitions";
 
-    public static final Hashtable<ResourceLocation, ModelBlockDefinition> DEFINITIONS = new Hashtable<>();
+    public static final Hashtable<Identifier, ModelBlockDefinition> DEFINITIONS = new Hashtable<>();
 
     private static final Hashtable<Block, DungeonModelBlockType> DEFAULT = new Hashtable<>();
 
     private static final ModelBlockDefinition DEFAULT_DEFINITION;
 
-    private static final ResourceLocation DEFAULT_LOCATION = DungeonCrawl.locate("default");
+    private static final Identifier DEFAULT_LOCATION = DungeonCrawl.locate("default");
 
     static {
         DEFAULT.put(Blocks.AIR, DungeonModelBlockType.AIR);
@@ -93,8 +93,8 @@ public class ModelBlockDefinition {
     private final Hashtable<Block, DungeonModelBlockType> definition;
     private final Hashtable<DungeonModelBlockType, Block> invertedDefinition;
 
-    private static ImmutableSet<ResourceLocation> KEYS;
-    private static ImmutableSet.Builder<ResourceLocation> keySetBuilder;
+    private static ImmutableSet<Identifier> KEYS;
+    private static ImmutableSet.Builder<Identifier> keySetBuilder;
 
     public ModelBlockDefinition(Hashtable<Block, DungeonModelBlockType> definition) {
         this.definition = definition;
@@ -132,12 +132,12 @@ public class ModelBlockDefinition {
 
     public static void loadJson(ResourceManager resourceManager) {
         keySetBuilder = new ImmutableSet.Builder<>();
-        List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate = Lists.newArrayList();
+        List<Tuple<ModelBlockDefinition, Identifier>> referencesToUpdate = Lists.newArrayList();
         resourceManager.listResources(DIRECTORY, (s) -> s.getPath().endsWith(".json"))
                 .forEach((file, resource) -> loadDefinition(resourceManager, file, referencesToUpdate));
 
-        for (Tuple<ModelBlockDefinition, ResourceLocation> reference : referencesToUpdate) {
-            ResourceLocation key = reference.getB();
+        for (Tuple<ModelBlockDefinition, Identifier> reference : referencesToUpdate) {
+            Identifier key = reference.getB();
             if (DEFINITIONS.containsKey(key)) {
                 reference.getA().fallback = DEFINITIONS.get(key);
             } else {
@@ -150,15 +150,15 @@ public class ModelBlockDefinition {
     /**
      * Convenience method to load a single model block definition file.
      */
-    private static void loadDefinition(ResourceManager resourceManager, ResourceLocation resourceLocation, List<Tuple<ModelBlockDefinition, ResourceLocation>> referencesToUpdate) {
-        DungeonCrawl.LOGGER.debug("Loading {}", resourceLocation);
+    private static void loadDefinition(ResourceManager resourceManager, Identifier Identifier, List<Tuple<ModelBlockDefinition, Identifier>> referencesToUpdate) {
+        DungeonCrawl.LOGGER.debug("Loading {}", Identifier);
         Hashtable<Block, DungeonModelBlockType> definition = new Hashtable<>();
-        Resource resource = resourceManager.getResource(resourceLocation).orElseThrow();
+        Resource resource = resourceManager.getResource(Identifier).orElseThrow();
         try {
             JsonObject object = JsonParser.parseReader(new InputStreamReader(resource.open())).getAsJsonObject();
             object.getAsJsonObject("definition").entrySet().forEach((entry) -> {
                 String key = entry.getKey();
-                Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(key)).map(Holder::value).orElse(null);
+                Block block = BuiltInRegistries.BLOCK.get(Identifier.parse(key)).map(Holder::value).orElse(null);
                 if (block != null) {
                     String value = entry.getValue().getAsString().toUpperCase();
                     if (DungeonModelBlockType.NAME_TO_TYPE.containsKey(value)) {
@@ -174,10 +174,10 @@ public class ModelBlockDefinition {
             ModelBlockDefinition blockDefinition = new ModelBlockDefinition(definition);
 
             if (object.has("fallback")) {
-                referencesToUpdate.add(new Tuple<>(blockDefinition, ResourceLocation.parse(object.get("fallback").getAsString())));
+                referencesToUpdate.add(new Tuple<>(blockDefinition, Identifier.parse(object.get("fallback").getAsString())));
             }
 
-            ResourceLocation key = DungeonCrawl.key(resourceLocation, DIRECTORY, ".json");
+            Identifier key = DungeonCrawl.key(Identifier, DIRECTORY, ".json");
             DEFINITIONS.put(key, blockDefinition);
             keySetBuilder.add(key);
         } catch (IOException e) {
@@ -189,7 +189,7 @@ public class ModelBlockDefinition {
         return DEFINITIONS.getOrDefault(DEFAULT_LOCATION, DEFAULT_DEFINITION);
     }
 
-    public static ImmutableSet<ResourceLocation> getKeys() {
+    public static ImmutableSet<Identifier> getKeys() {
         return KEYS;
     }
 }

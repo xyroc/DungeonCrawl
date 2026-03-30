@@ -24,7 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
@@ -47,12 +47,12 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-public record DungeonType(ResourceLocation source,
+public record DungeonType(Identifier source,
                           DungeonGeneratorSettings dungeonSettings,
                           Layer[] layers,
                           WeightedRandom<DungeonModel> entrances) {
 
-    private static final Hashtable<ResourceLocation, DungeonType> KEY_TO_TYPE = new Hashtable<>();
+    private static final Hashtable<Identifier, DungeonType> KEY_TO_TYPE = new Hashtable<>();
 
     private static final Hashtable<String, WeightedRandom<DungeonType>> BIOME_TO_TYPE = new Hashtable<>();
     private static WeightedRandom<DungeonType> DEFAULT_TYPE;
@@ -93,7 +93,7 @@ public record DungeonType(ResourceLocation source,
                     });
                 }
 
-                ResourceLocation key = DungeonCrawl.key(file, TYPES_DIRECTORY, ".json");
+                Identifier key = DungeonCrawl.key(file, TYPES_DIRECTORY, ".json");
                 KEY_TO_TYPE.put(key, builder.build());
             } catch (IOException e) {
                 DungeonCrawl.LOGGER.error("Failed to load dungeon type " + resource);
@@ -146,16 +146,16 @@ public record DungeonType(ResourceLocation source,
         }
     }
 
-    private static WeightedRandom<DungeonType> dungeonTypeWeightedRandom(JsonArray entries, ResourceLocation resource) {
+    private static WeightedRandom<DungeonType> dungeonTypeWeightedRandom(JsonArray entries, Identifier resource) {
         WeightedRandom.Builder<DungeonType> builder = new WeightedRandom.Builder<>();
         addEntries(builder, entries, resource);
         return builder.build();
     }
 
-    private static void addEntries(WeightedRandom.Builder<DungeonType> builder, JsonArray entries, ResourceLocation resource) {
+    private static void addEntries(WeightedRandom.Builder<DungeonType> builder, JsonArray entries, Identifier resource) {
         entries.forEach((element) -> {
             JsonObject entry = element.getAsJsonObject();
-            ResourceLocation key = ResourceLocation.parse(entry.get("key").getAsString());
+            Identifier key = Identifier.parse(entry.get("key").getAsString());
             if (!KEY_TO_TYPE.containsKey(key)) {
                 throw new DatapackLoadException("Cannot resolve dungeon type " + key + " in " + resource);
             }
@@ -163,7 +163,7 @@ public record DungeonType(ResourceLocation source,
         });
     }
 
-    public static DungeonType randomType(ResourceLocation biome, RandomSource rand) {
+    public static DungeonType randomType(Identifier biome, RandomSource rand) {
         if (biome == null) {
             return DEFAULT_TYPE.roll(rand);
         } else {
@@ -171,13 +171,13 @@ public record DungeonType(ResourceLocation source,
         }
     }
 
-    private static ImmutableMap<ResourceLocation, List<MultipartModelData>> getMultipartOverrides(JsonObject layer, ResourceLocation file) {
+    private static ImmutableMap<Identifier, List<MultipartModelData>> getMultipartOverrides(JsonObject layer, Identifier file) {
         if (layer.has("multipart")) {
-            ImmutableMap.Builder<ResourceLocation, List<MultipartModelData>> builder = new ImmutableMap.Builder<>();
+            ImmutableMap.Builder<Identifier, List<MultipartModelData>> builder = new ImmutableMap.Builder<>();
             JsonObject multipart = layer.getAsJsonObject("multipart");
             multipart.entrySet().forEach((entry) -> {
                 JsonObject object = entry.getValue().getAsJsonObject();
-                ResourceLocation target = ResourceLocation.parse(entry.getKey());
+                Identifier target = Identifier.parse(entry.getKey());
                 if (DungeonModels.KEY_TO_MODEL.containsKey(target)) {
                     String action = object.get("action").getAsString();
                     switch (action) {
@@ -232,7 +232,7 @@ public record DungeonType(ResourceLocation source,
     public record Layer(DungeonLayerType layerType,
                         LayerGeneratorSettings settings,
                         ModelSelector modelSelector,
-                        ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides) {
+                        ImmutableMap<Identifier, List<MultipartModelData>> multipartOverrides) {
 
         public boolean hasMultipartOverride(DungeonModel model) {
             return multipartOverrides.containsKey(model.getKey());
@@ -246,13 +246,13 @@ public record DungeonType(ResourceLocation source,
 
     public static class Builder {
 
-        private final ResourceLocation source;
+        private final Identifier source;
         private final List<Layer> layers;
         private WeightedRandom<DungeonModel> entrances;
 
         private DungeonGeneratorSettings settings;
 
-        public Builder(ResourceLocation source) {
+        public Builder(Identifier source) {
             this.source = source;
             this.layers = new ArrayList<>();
         }
@@ -267,7 +267,7 @@ public record DungeonType(ResourceLocation source,
             return this;
         }
 
-        public Builder layer(DungeonLayerType type, LayerGeneratorSettings settings, ModelSelector modelSelector, ImmutableMap<ResourceLocation, List<MultipartModelData>> multipartOverrides) {
+        public Builder layer(DungeonLayerType type, LayerGeneratorSettings settings, ModelSelector modelSelector, ImmutableMap<Identifier, List<MultipartModelData>> multipartOverrides) {
             this.layers.add(new Layer(type, settings, modelSelector, multipartOverrides));
             return this;
         }

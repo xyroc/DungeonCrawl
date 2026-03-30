@@ -19,12 +19,12 @@
 package xiroc.dungeoncrawl.dungeon.generator;
 
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 public record DungeonGeneratorSettings(int maxLayers) {
 
-    public static DungeonGeneratorSettings fromJson(JsonObject settings, ResourceLocation file) {
+    public static DungeonGeneratorSettings fromJson(JsonObject settings, Identifier file) {
         if (settings.has("max_layers")) {
             return new DungeonGeneratorSettings(settings.get("max_layers").getAsInt());
         } else {

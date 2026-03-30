@@ -23,7 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
@@ -79,8 +79,8 @@ public class Theme {
     protected static final Hashtable<String, IRandom<Theme>> BIOME_TO_THEME = new Hashtable<>();
     protected static final Hashtable<String, IRandom<SecondaryTheme>> BIOME_TO_SECONDARY_THEME = new Hashtable<>();
 
-    public static final Hashtable<ResourceLocation, Theme> KEY_TO_THEME = new Hashtable<>();
-    public static final Hashtable<ResourceLocation, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
+    public static final Hashtable<Identifier, Theme> KEY_TO_THEME = new Hashtable<>();
+    public static final Hashtable<Identifier, SecondaryTheme> KEY_TO_SECONDARY_THEME = new Hashtable<>();
 
     private static WeightedRandom<Theme> DEFAULT_TOP_THEME = null;
     private static WeightedRandom<SecondaryTheme> DEFAULT_SECONDARY_TOP_THEME = null;
@@ -110,10 +110,10 @@ public class Theme {
     public static final Hashtable<Integer, SecondaryTheme> ID_TO_SECONDARY_THEME = new Hashtable<>();
 
     // Fallback themes, used if there is no default case in the theme mappings.
-    private static final ResourceLocation PRIMARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/default");
-    private static final ResourceLocation SECONDARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/oak");
+    private static final Identifier PRIMARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/default");
+    private static final Identifier SECONDARY_THEME_FALLBACK = DungeonCrawl.locate("vanilla/oak");
 
-    public static final ResourceLocation PRIMARY_HELL_MOSSY = DungeonCrawl.locate("vanilla/hell/mossy");
+    public static final Identifier PRIMARY_HELL_MOSSY = DungeonCrawl.locate("vanilla/hell/mossy");
 
     private static final String PRIMARY_THEME_DIRECTORY = "theming/primary_themes";
     private static final String SECONDARY_THEME_DIRECTORY = "theming/secondary_themes";
@@ -125,11 +125,11 @@ public class Theme {
     private static final String CATACOMBS_THEMES_DIRECTORY = "theming/lower_layers/catacombs";
     private static final String HELL_THEMES_DIRECTORY = "theming/lower_layers/hell";
 
-    private static ImmutableSet<ResourceLocation> THEME_KEYS, SECONDARY_THEME_KEYS;
+    private static ImmutableSet<Identifier> THEME_KEYS, SECONDARY_THEME_KEYS;
 
     static {
-        BUILTIN_DEFAULT_THEME.key = ResourceLocation.parse("builtin:default");
-        BUILTIN_DEFAULT_SECONDARY_THEME.key = ResourceLocation.parse("builtin:default");
+        BUILTIN_DEFAULT_THEME.key = Identifier.parse("builtin:default");
+        BUILTIN_DEFAULT_SECONDARY_THEME.key = Identifier.parse("builtin:default");
         KEY_TO_THEME.put(BUILTIN_DEFAULT_THEME.getKey(), BUILTIN_DEFAULT_THEME);
         KEY_TO_SECONDARY_THEME.put(BUILTIN_DEFAULT_SECONDARY_THEME.getKey(), BUILTIN_DEFAULT_SECONDARY_THEME);
     }
@@ -138,7 +138,7 @@ public class Theme {
 
     public IRandom<SecondaryTheme> secondaryTheme;
 
-    protected ResourceLocation key;
+    protected Identifier key;
 
     @Nullable
     private DungeonDecoration[] decorations;
@@ -180,7 +180,7 @@ public class Theme {
         return decorations != null;
     }
 
-    public ResourceLocation getKey() {
+    public Identifier getKey() {
         return key;
     }
 
@@ -270,14 +270,14 @@ public class Theme {
         BIOME_TO_THEME.clear();
         BIOME_TO_SECONDARY_THEME.clear();
 
-        ImmutableSet.Builder<ResourceLocation> themeKeySetBuilder = new ImmutableSet.Builder<>();
-        ImmutableSet.Builder<ResourceLocation> secondaryThemeKeySetBuilder = new ImmutableSet.Builder<>();
+        ImmutableSet.Builder<Identifier> themeKeySetBuilder = new ImmutableSet.Builder<>();
+        ImmutableSet.Builder<Identifier> secondaryThemeKeySetBuilder = new ImmutableSet.Builder<>();
 
         resourceManager.listResources(DungeonCrawl.locate(SECONDARY_THEME_DIRECTORY).getPath(), (s) -> s.getPath().endsWith(".json")).forEach((file, resource) -> {
             DungeonCrawl.LOGGER.debug("Loading {}", file);
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resource.open()));
-                ResourceLocation key = DungeonCrawl.key(file, SECONDARY_THEME_DIRECTORY, ".json");
+                Identifier key = DungeonCrawl.key(file, SECONDARY_THEME_DIRECTORY, ".json");
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
                     SecondaryTheme theme = JsonTheming.deserializeSecondaryTheme(json, file);
@@ -296,7 +296,7 @@ public class Theme {
             DungeonCrawl.LOGGER.debug("Loading {}", file);
             try {
                 JsonReader reader = new JsonReader(new InputStreamReader(resource.open()));
-                ResourceLocation key = DungeonCrawl.key(file, PRIMARY_THEME_DIRECTORY, ".json");
+                Identifier key = DungeonCrawl.key(file, PRIMARY_THEME_DIRECTORY, ".json");
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 if (JSONUtils.areRequirementsMet(json)) {
                     Theme theme = JsonTheming.deserializeTheme(json, file);
@@ -430,11 +430,11 @@ public class Theme {
         return HELL_SECONDARY_THEME.roll(rand);
     }
 
-    public static Theme getTheme(ResourceLocation key) {
+    public static Theme getTheme(Identifier key) {
         return KEY_TO_THEME.getOrDefault(key, KEY_TO_THEME.getOrDefault(PRIMARY_THEME_FALLBACK, BUILTIN_DEFAULT_THEME));
     }
 
-    public static SecondaryTheme getSecondaryTheme(ResourceLocation key) {
+    public static SecondaryTheme getSecondaryTheme(Identifier key) {
         return KEY_TO_SECONDARY_THEME.getOrDefault(key, KEY_TO_SECONDARY_THEME.getOrDefault(SECONDARY_THEME_FALLBACK, BUILTIN_DEFAULT_SECONDARY_THEME));
     }
 
@@ -446,11 +446,11 @@ public class Theme {
         return ID_TO_SECONDARY_THEME.getOrDefault(id, ID_TO_SECONDARY_THEME.getOrDefault(0, BUILTIN_DEFAULT_SECONDARY_THEME));
     }
 
-    public static ImmutableSet<ResourceLocation> getThemeKeys() {
+    public static ImmutableSet<Identifier> getThemeKeys() {
         return THEME_KEYS;
     }
 
-    public static ImmutableSet<ResourceLocation> getSecondaryThemeKeys() {
+    public static ImmutableSet<Identifier> getSecondaryThemeKeys() {
         return SECONDARY_THEME_KEYS;
     }
 

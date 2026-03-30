@@ -19,7 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.Range;
 
@@ -87,7 +87,7 @@ public class LayerGeneratorSettings {
         this.maxDistance = maxDistance;
     }
 
-    public static LayerGeneratorSettings fromJson(JsonObject settings, ResourceLocation resource) {
+    public static LayerGeneratorSettings fromJson(JsonObject settings, Identifier resource) {
         return new LayerGeneratorSettings(
                 getValue("min_rooms", settings, resource),
                 getValue("max_rooms", settings, resource),
@@ -103,7 +103,7 @@ public class LayerGeneratorSettings {
                 getValue("max_distance", settings, resource));
     }
 
-    private static int getValue(String name, JsonObject object, ResourceLocation resource) {
+    private static int getValue(String name, JsonObject object, Identifier resource) {
         if (object.has(name)) {
             return object.getAsJsonPrimitive(name).getAsInt();
         } else {

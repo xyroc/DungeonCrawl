@@ -21,13 +21,12 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.storage.ValueOutput;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
@@ -42,69 +41,12 @@ public class RandomMonster {
 
     public static WeightedRandomEntity[] COMMON, RARE;
 
-    private static final CompoundTag VILLAGER_OFFERS;
 
     static {
-        VILLAGER_OFFERS = new CompoundTag();
-        ListTag recipes = new ListTag();
-        recipes.add(offer("minecraft:paper", (byte) 1, "minecraft:air", (byte) 0, "minecraft:paper", (byte) 1));
-        VILLAGER_OFFERS.put("Recipes", recipes);
-
         NBT_PATCHERS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
-            nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.location().toString());
+            nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.identifier().toString());
             nbt.putLong("DeathLootTableSeed", rand.nextInt());
         });
-
-        NBT_PATCHERS.put(EntityType.ZOMBIE_VILLAGER, (nbt, rand, stage) -> {
-            nbt.put("Offers", VILLAGER_OFFERS.copy());
-            nbt.putInt("Xp", 1);
-            nbt.putBoolean("Willing", false);
-            CompoundTag villagerData = nbt.getCompound("villagerData").orElseThrow();
-            villagerData.putInt("level", 5);
-        });
-    }
-
-    private static CompoundTag offer(String buy, byte buyCount, String buyB, byte buyBCount, String sell, byte sellCount) {
-        CompoundTag offer = new CompoundTag();
-
-        CompoundTag buyNbt = new CompoundTag();
-        buyNbt.putString("id", buy);
-        buyNbt.putBoolean("Count", true);
-        buyNbt.putInt("MaxUses", 3);
-        buyNbt.putByte("Count", buyCount);
-        CompoundTag buyTag = new CompoundTag();
-        buyTag.putInt("Damage", 0);
-        buyNbt.put("tag", buyTag);
-
-        CompoundTag buyBNbt = new CompoundTag();
-        buyBNbt.putString("id", buyB);
-        buyBNbt.putBoolean("Count", true);
-        buyBNbt.putInt("MaxUses", 3);
-        buyBNbt.putByte("Count", buyBCount);
-        CompoundTag buyBTag = new CompoundTag();
-        buyBTag.putInt("Damage", 0);
-        buyBNbt.put("tag", buyBTag);
-
-        CompoundTag sellNbt = new CompoundTag();
-        sellNbt.putString("id", sell);
-        sellNbt.putBoolean("Count", true);
-        sellNbt.putInt("MaxUses", 3);
-        sellNbt.putByte("Count", sellCount);
-        CompoundTag sellTag = new CompoundTag();
-        sellTag.putInt("Damage", 0);
-        sellNbt.put("tag", sellTag);
-
-        offer.put("buy", buyNbt);
-        offer.put("buyB", buyBNbt);
-        offer.put("sell", sellNbt);
-        offer.putInt("uses", 0);
-        offer.putInt("xp", 0);
-        offer.putFloat("priceMultiplier", 0F);
-        offer.putInt("demand", 0);
-        offer.putInt("specialPrice", 0);
-        offer.putBoolean("rewardXp", false);
-
-        return offer;
     }
 
     /**
@@ -129,7 +71,7 @@ public class RandomMonster {
     /**
      * Convenience method to load a single entity file.
      */
-    private static void loadEntityFile(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
+    private static void loadEntityFile(ResourceManager resourceManager, Identifier file, int stage) throws IOException {
         DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
         Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
         JsonObject object = JsonParser.parseReader(new JsonReader(new InputStreamReader(resource.open()))).getAsJsonObject();
@@ -166,7 +108,7 @@ public class RandomMonster {
     @FunctionalInterface
     public interface MobNBTPatcher {
 
-        void patch(CompoundTag nbt, RandomSource rand, int stage);
+        void patch(ValueOutput nbt, RandomSource rand, int stage);
 
     }
 

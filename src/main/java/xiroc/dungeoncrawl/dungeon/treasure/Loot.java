@@ -19,11 +19,12 @@
 package xiroc.dungeoncrawl.dungeon.treasure;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.RandomizableContainer;
@@ -31,8 +32,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.function.EnchantedBook;
 import xiroc.dungeoncrawl.dungeon.treasure.function.MaterialBlocks;
@@ -44,19 +45,14 @@ import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
 
 public interface Loot {
-
-    DeferredHolder<LootItemFunctionType<?>, ?> ENCHANTED_BOOK = DungeonCrawl.LOOT_FUNCTION_TYPE.register("enchanted_book",
-            () -> new LootItemFunctionType<>(EnchantedBook.CODEC));
-    DeferredHolder<LootItemFunctionType<?>, ?> MATERIAL_BLOCKS = DungeonCrawl.LOOT_FUNCTION_TYPE.register("material_blocks",
-            () -> new LootItemFunctionType<>(MaterialBlocks.CODEC));
-    DeferredHolder<LootItemFunctionType<?>, ?> RANDOM_ITEM = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_item",
-            () -> new LootItemFunctionType<>(RandomItem.CODEC));
-    DeferredHolder<LootItemFunctionType<?>, ?> RANDOM_POTION = DungeonCrawl.LOOT_FUNCTION_TYPE.register("random_potion",
-            () -> new LootItemFunctionType<>(RandomPotion.CODEC));
-    DeferredHolder<LootItemFunctionType<?>, ?> SHIELD = DungeonCrawl.LOOT_FUNCTION_TYPE.register("shield",
-            () -> new LootItemFunctionType<>(Shield.CODEC));
-    DeferredHolder<LootItemFunctionType<?>, ?> SUSPICIOUS_STEW = DungeonCrawl.LOOT_FUNCTION_TYPE.register("suspicious_stew",
-            () -> new LootItemFunctionType<>(SuspiciousStew.CODEC));
+    static void registerLootFunctions(RegisterEvent.RegisterHelper<MapCodec<? extends LootItemFunction>> registry) {
+        registry.register(DungeonCrawl.locate("enchanted_book"), EnchantedBook.CODEC);
+        registry.register(DungeonCrawl.locate("material_blocks"), MaterialBlocks.CODEC);
+        registry.register(DungeonCrawl.locate("random_item"), RandomItem.CODEC);
+        registry.register(DungeonCrawl.locate("random_potion"), RandomPotion.CODEC);
+        registry.register(DungeonCrawl.locate("shield"), Shield.CODEC);
+        registry.register(DungeonCrawl.locate("suspicious_stew"), SuspiciousStew.CODEC);
+    }
 
     String KEY_LOOT_LEVEL = "loot_level";
 
@@ -118,8 +114,8 @@ public interface Loot {
     static Tuple<Theme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
         CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID).orElseThrow();
         return new Tuple<>(
-                Theme.getTheme(ResourceLocation.parse(data.getString("theme").orElseThrow())),
-                Theme.getSecondaryTheme(ResourceLocation.parse(data.getString("secondaryTheme").orElseThrow()))
+                Theme.getTheme(Identifier.parse(data.getString("theme").orElseThrow())),
+                Theme.getSecondaryTheme(Identifier.parse(data.getString("secondaryTheme").orElseThrow()))
         );
     }
 

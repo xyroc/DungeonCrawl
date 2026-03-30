@@ -27,11 +27,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.FarmlandBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -372,7 +372,7 @@ public final class DungeonModelFeature {
         Type CROPS = new Type() {
             @Override
             public void place(LevelAccessor world, RandomSource rand, BlockPos pos, Direction direction, BoundingBox bounds, Theme theme, SecondaryTheme secondaryTheme, int stage) {
-                if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmBlock) {
+                if (bounds.isInside(pos) && world.getBlockState(pos.below()).getBlock() instanceof FarmlandBlock) {
                     BlockState crop = DungeonBlocks.CROPS.roll(rand).defaultBlockState();
                     if (crop.hasProperty(BlockStateProperties.AGE_7))
                         crop = crop.setValue(BlockStateProperties.AGE_7, 4 + rand.nextInt(4));
@@ -404,11 +404,11 @@ public final class DungeonModelFeature {
 
     }
 
-    public static DungeonModelFeature fromJson(JsonObject object, ResourceLocation file) {
+    public static DungeonModelFeature fromJson(JsonObject object, Identifier file) {
         return fromJson(object, file, null);
     }
 
-    private static DungeonModelFeature fromJson(JsonObject object, ResourceLocation file, Position[] positions) {
+    private static DungeonModelFeature fromJson(JsonObject object, Identifier file, Position[] positions) {
         String type = object.get("type").getAsString();
         if (!Type.TYPES.containsKey(type)) {
             throw new DatapackLoadException("Unknown feature type " + type + " in " + file);

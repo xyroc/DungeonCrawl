@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
@@ -66,8 +66,8 @@ public class DungeonBuilder {
     public DungeonBuilder(Structure.GenerationContext generationContext, int startHeight, BlockPos groundPos) {
         this.generationContext = generationContext;
         this.groundPos = groundPos;
-        this.startPos = new BlockPos(generationContext.chunkPos().x * 16 - HALF_GRID_SIZE * 9 - 4, startHeight,
-                generationContext.chunkPos().z * 16 - HALF_GRID_SIZE * 9 - 4);
+        this.startPos = new BlockPos(generationContext.chunkPos().x() * 16 - HALF_GRID_SIZE * 9 - 4, startHeight,
+                generationContext.chunkPos().z() * 16 - HALF_GRID_SIZE * 9 - 4);
 
         DungeonCrawl.LOGGER.debug("Creating a dungeon at (" + startPos.getX() + " | " + startPos.getY() + " | "
                 + startPos.getZ() + ").");
@@ -149,7 +149,7 @@ public class DungeonBuilder {
     }
 
     private void determineThemes() {
-        ResourceLocation registryName = this.generationContext.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome);
+        Identifier registryName = this.generationContext.registryAccess().lookupOrThrow(Registries.BIOME).getKey(biome);
 
         if (registryName != null) {
             if (this.theme == null) this.theme = Theme.randomTheme(registryName.toString(), this.generationContext.random());

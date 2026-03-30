@@ -21,7 +21,7 @@ package xiroc.dungeoncrawl.data.themes;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
@@ -43,7 +43,7 @@ public class PrimaryThemes implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput directoryCache) {
-        HashMap<ResourceLocation, Theme> themes = new HashMap<>();
+        HashMap<Identifier, Theme> themes = new HashMap<>();
         collectThemes(((resourceLocation, theme) -> {
             if (themes.containsKey(resourceLocation)) {
                 throw new IllegalStateException("Duplicate primary theme " + resourceLocation.toString());
@@ -58,7 +58,7 @@ public class PrimaryThemes implements DataProvider {
 
     }
 
-    private static Path createPath(Path p_218439_0_, ResourceLocation p_218439_1_) {
+    private static Path createPath(Path p_218439_0_, Identifier p_218439_1_) {
         return p_218439_0_.resolve("data/" + p_218439_1_.getNamespace() + "/theming/primary_themes/" + p_218439_1_.getPath() + ".json");
     }
 
@@ -67,7 +67,7 @@ public class PrimaryThemes implements DataProvider {
         return "Dungeon Crawl Primary Themes";
     }
 
-    public void collectThemes(BiConsumer<ResourceLocation, Theme> collector) {
+    public void collectThemes(BiConsumer<Identifier, Theme> collector) {
         collector.accept(catacombs("crumbled"), Theme.builder()
                 .addDecoration(new VineDecoration(0.5F))
                 .solid(WeightedRandomBlock.builder()
@@ -146,20 +146,20 @@ public class PrimaryThemes implements DataProvider {
                 .wall(new SingleBlock(Blocks.NETHER_BRICK_WALL)).build());
     }
 
-    private static ResourceLocation catacombs(String name) {
+    private static Identifier catacombs(String name) {
         return catacombs(DungeonCrawl.MOD_ID, name);
     }
 
-    private static ResourceLocation catacombs(String namespace, String name) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, "catacombs/" + name);
+    private static Identifier catacombs(String namespace, String name) {
+        return Identifier.fromNamespaceAndPath(namespace, "catacombs/" + name);
     }
 
-    private static ResourceLocation hell(String name) {
+    private static Identifier hell(String name) {
         return hell(DungeonCrawl.MOD_ID, name);
     }
 
-    private static ResourceLocation hell(String namespace, String name) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, "hell/" + name);
+    private static Identifier hell(String namespace, String name) {
+        return Identifier.fromNamespaceAndPath(namespace, "hell/" + name);
     }
 
 }

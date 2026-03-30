@@ -1,7 +1,7 @@
 package xiroc.dungeoncrawl.theme;
 
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 
@@ -11,7 +11,7 @@ public class SecondaryTheme {
 
     public final BlockStateProvider pillar, trapDoor, door, material, stairs, slab, fence, fenceGate, button, pressurePlate;
 
-    protected ResourceLocation key;
+    protected Identifier key;
 
     @Nullable
     protected Integer id;
@@ -38,7 +38,7 @@ public class SecondaryTheme {
         this.pressurePlate = pressurePlate;
     }
 
-    public ResourceLocation getKey() {
+    public Identifier getKey() {
         return key;
     }
 

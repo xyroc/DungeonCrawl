@@ -23,7 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
@@ -120,9 +120,9 @@ public abstract class DungeonPiece extends StructurePiece {
         this.stage = p_i51343_2_.getInt("stage").orElseThrow();
         this.rotation = Orientation.getRotation(p_i51343_2_.getInt("rotation").orElseThrow());
 
-        this.theme = Theme.getTheme(ResourceLocation.parse(p_i51343_2_.getString("theme").orElseThrow()));
-        this.secondaryTheme = Theme.getSecondaryTheme(ResourceLocation.parse(p_i51343_2_.getString("secondaryTheme").orElseThrow()));
-        this.model = DungeonModels.KEY_TO_MODEL.get(ResourceLocation.parse(p_i51343_2_.getString("model").orElseThrow()));
+        this.theme = Theme.getTheme(Identifier.parse(p_i51343_2_.getString("theme").orElseThrow()));
+        this.secondaryTheme = Theme.getSecondaryTheme(Identifier.parse(p_i51343_2_.getString("secondaryTheme").orElseThrow()));
+        this.model = DungeonModels.KEY_TO_MODEL.get(Identifier.parse(p_i51343_2_.getString("model").orElseThrow()));
 
         if (p_i51343_2_.contains("features")) {
             this.features = readAllFeatures(p_i51343_2_.getList("features").orElseThrow());

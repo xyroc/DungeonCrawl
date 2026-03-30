@@ -24,20 +24,17 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.level.storage.ValueOutput;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.Range;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
@@ -74,7 +71,7 @@ public class RandomPotionEffect {
     /**
      * Convenience method to load a single potion effect file.
      */
-    private static void loadFile(ResourceManager resourceManager, ResourceLocation file, int stage) throws IOException {
+    private static void loadFile(ResourceManager resourceManager, Identifier file, int stage) throws IOException {
         Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
         try {
             DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
@@ -109,7 +106,7 @@ public class RandomPotionEffect {
                                     effect.getAsJsonObject("amplifier").get("max").getAsInt())
                             : new Range(0, 0);
                     GUARANTEED_EFFECTS[stage][i] = new PotionEffect(
-                            BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effect.get("effect").getAsString())).orElseThrow(),
+                            BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(effect.get("effect").getAsString())).orElseThrow(),
                             effect.get("duration").getAsInt(), amplifier);
                 }
             }
@@ -121,26 +118,23 @@ public class RandomPotionEffect {
     }
 
     /**
-     * @return An NBT list of potion effects or null.
+     * Creates a list of random potion effects based on the stage and adds them to the output list.
      */
-    @Nullable
-    public static ListTag createPotionEffects(RandomSource rand, int stage) {
+    public static void createPotionEffects(ValueOutput.TypedOutputList<MobEffectInstance> effectsOutput, RandomSource rand, int stage) {
         if (stage > 4)
             stage = 4;
         boolean chance = rand.nextFloat() < CHANCES[stage];
         boolean guaranteed = GUARANTEED_EFFECTS[stage] != null;
         if (chance || guaranteed) {
-            ListTag list = new ListTag();
             if (chance) {
                 int rolls = ROLLS[stage].nextInt(rand);
                 if (rolls > 0) {
                     Set<Holder<MobEffect>> effects = new HashSet<>();
-                    loop:
                     for (int i = 0; i < rolls; i++) {
                         WeightedRandomPotionEffect.WeightedEntry effect = EFFECTS[stage].roll(rand);
                         if (effect != null) {
                             if (effects.add(effect.effect())) {
-                                list.add(toNBT(effect.effect(), effect.duration(), effect.amplifier().nextInt(rand)));
+                                effectsOutput.add(new MobEffectInstance(effect.effect(), effect.duration(), effect.amplifier().nextInt(rand)));
                             }
                         }
                     }
@@ -148,20 +142,10 @@ public class RandomPotionEffect {
             }
             if (guaranteed) {
                 for (PotionEffect effect : GUARANTEED_EFFECTS[stage]) {
-                    list.add(toNBT(effect.effect, effect.duration, effect.amplifier.nextInt(rand)));
+                    effectsOutput.add(new MobEffectInstance(effect.effect(), effect.duration(), effect.amplifier().nextInt(rand)));
                 }
             }
-            return list;
         }
-
-        return null;
-    }
-
-    /**
-     * Creates an NBT-representation of the given effect.
-     */
-    private static Tag toNBT(Holder<MobEffect> effect, int duration, int amplifier) {
-        return MobEffectInstance.CODEC.encodeStart(NbtOps.INSTANCE, new MobEffectInstance(effect, duration, amplifier)).getOrThrow();
     }
 
     private record PotionEffect(Holder<MobEffect> effect, int duration,

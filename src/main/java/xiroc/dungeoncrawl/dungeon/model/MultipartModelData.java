@@ -23,7 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
@@ -88,7 +88,7 @@ public class MultipartModelData {
         return result;
     }
 
-    public static MultipartModelData fromJson(String name, JsonObject object, ResourceLocation file) {
+    public static MultipartModelData fromJson(String name, JsonObject object, Identifier file) {
         MultipartModelData multipartModelData = new MultipartModelData(name);
 
         if (object.has("conditions")) {
@@ -127,7 +127,7 @@ public class MultipartModelData {
     }
 
     @Nullable
-    private static WeightedRandom<Instance> getInstancesFromJson(JsonArray array, ResourceLocation file) {
+    private static WeightedRandom<Instance> getInstancesFromJson(JsonArray array, Identifier file) {
         List<Tuple<Instance, Integer>> entries = getRawInstancesFromJson(array, file);
         if (entries.isEmpty()) {
             return null;
@@ -135,7 +135,7 @@ public class MultipartModelData {
         return new WeightedRandom<>(entries);
     }
 
-    public static List<Tuple<Instance, Integer>> getRawInstancesFromJson(JsonArray array, ResourceLocation file) {
+    public static List<Tuple<Instance, Integer>> getRawInstancesFromJson(JsonArray array, Identifier file) {
         ArrayList<Tuple<Instance, Integer>> list = new ArrayList<>();
         array.forEach((element) -> {
             JsonObject object1 = element.getAsJsonObject();
@@ -166,7 +166,7 @@ public class MultipartModelData {
         public final Vec3i offset;
         public final Rotation rotation;
 
-        private final ResourceLocation file;
+        private final Identifier file;
 
         /**
          * This will be null for EMPTY.
@@ -174,9 +174,9 @@ public class MultipartModelData {
         @Nullable
         public DungeonModel model;
 
-        private final ResourceLocation key;
+        private final Identifier key;
 
-        public Instance(ResourceLocation file, ResourceLocation key, Vec3i offset, Rotation rotation) {
+        public Instance(Identifier file, Identifier key, Vec3i offset, Rotation rotation) {
             this.file = file;
             this.key = key;
             this.offset = offset;
@@ -213,13 +213,13 @@ public class MultipartModelData {
             }
         }
 
-        public static Instance fromJson(JsonObject object, ResourceLocation file) {
+        public static Instance fromJson(JsonObject object, Identifier file) {
             if (object.has("model")) {
                 Vec3i offset = object.has("offset") ? JSONUtils.getOffset(object.getAsJsonObject("offset")) : DungeonModels.NO_OFFSET;
 
                 Rotation rotation = object.has("rotation") ? Rotation.valueOf(object.get("rotation").getAsString().toUpperCase(Locale.ROOT)) : Rotation.NONE;
 
-                return new Instance(file, ResourceLocation.parse(object.get("model").getAsString()), offset, rotation);
+                return new Instance(file, Identifier.parse(object.get("model").getAsString()), offset, rotation);
             } else {
                 return EMPTY;
             }

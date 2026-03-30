@@ -33,7 +33,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 import java.util.List;
 
-@EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = DungeonCrawl.MOD_ID)
 public class DataGen {
 
     @SubscribeEvent
@@ -42,7 +42,7 @@ public class DataGen {
 
         DataGenerator generator = event.getGenerator();
 
-        generator.addProvider(true, new LootTableProvider(event.getGenerator().getPackOutput(""),
+        generator.addProvider(true, new LootTableProvider(event.getGenerator().getPackOutput(),
                 Loot.ALL_LOOT_TABLES,
                 List.of(new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST)), event.getLookupProvider()));
         generator.addProvider(true, new PrimaryThemes(generator.getPackOutput()));

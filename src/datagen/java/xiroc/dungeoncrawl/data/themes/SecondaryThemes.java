@@ -18,16 +18,11 @@
 
 package xiroc.dungeoncrawl.data.themes;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.block.provider.WeightedRandomBlock;
@@ -47,7 +42,7 @@ public class SecondaryThemes implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput directoryCache) {
-        HashMap<ResourceLocation, SecondaryTheme> themes = new HashMap<>();
+        HashMap<Identifier, SecondaryTheme> themes = new HashMap<>();
         collectThemes(((resourceLocation, theme) -> {
             if (themes.containsKey(resourceLocation)) {
                 throw new IllegalStateException("Duplicate primary theme " + resourceLocation.toString());
@@ -66,7 +61,7 @@ public class SecondaryThemes implements DataProvider {
         return "Dungeon Crawl Secondary Themes";
     }
 
-    public void collectThemes(BiConsumer<ResourceLocation, SecondaryTheme> collector) {
+    public void collectThemes(BiConsumer<Identifier, SecondaryTheme> collector) {
         collector.accept(catacombs("crumbled"), SecondaryTheme.builder()
                 .pillar(new SingleBlock(Blocks.BASALT))
                 .trapdoor(SingleBlock.AIR)
@@ -108,20 +103,20 @@ public class SecondaryThemes implements DataProvider {
                 .build());
     }
 
-    private static ResourceLocation catacombs(String name) {
+    private static Identifier catacombs(String name) {
         return catacombs(DungeonCrawl.MOD_ID, name);
     }
 
-    private static ResourceLocation catacombs(String namespace, String name) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, "catacombs/" + name);
+    private static Identifier catacombs(String namespace, String name) {
+        return Identifier.fromNamespaceAndPath(namespace, "catacombs/" + name);
     }
 
-    private static ResourceLocation hell(String name) {
+    private static Identifier hell(String name) {
         return hell(DungeonCrawl.MOD_ID, name);
     }
 
-    private static ResourceLocation hell(String namespace, String name) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, "hell/" + name);
+    private static Identifier hell(String namespace, String name) {
+        return Identifier.fromNamespaceAndPath(namespace, "hell/" + name);
     }
 
 }

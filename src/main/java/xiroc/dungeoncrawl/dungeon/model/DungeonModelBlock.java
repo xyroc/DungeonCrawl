@@ -25,7 +25,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -53,10 +53,10 @@ public class DungeonModelBlock {
     public final Integer variation;
     public final Block block;
     @Nullable
-    public final ResourceLocation blockName;
+    public final Identifier blockName;
     // A custom loot table, can be defined in model metadata.
     @Nullable
-    public ResourceLocation lootTable;
+    public Identifier lootTable;
 
     private DungeonModelBlock(DungeonModelBlockType type, Vec3i position) {
         this(type, position, null, null, Blocks.CAVE_AIR, null);
@@ -67,7 +67,7 @@ public class DungeonModelBlock {
                               @Nullable PropertyHolder[] properties,
                               @Nullable Integer variation,
                               Block block,
-                              @Nullable ResourceLocation blockName) {
+                              @Nullable Identifier blockName) {
         this.type = type;
         this.position = position;
         this.properties = properties;
@@ -85,7 +85,7 @@ public class DungeonModelBlock {
         PropertyHolder[] blockProperties = properties.isEmpty() ? null : properties.toArray(new PropertyHolder[0]);
         Integer variation = null;
         Block block;
-        ResourceLocation blockName = null;
+        Identifier blockName = null;
         if (type == DungeonModelBlockType.CARPET) {
 //            Iterator<Holder<Block>> carpets = Registry.BLOCK.getTagOrEmpty(BlockTags.CARPETS).iterator();
 //            int index = 0;
@@ -170,10 +170,10 @@ public class DungeonModelBlock {
 
         DungeonModelBlockType blockType = DungeonModelBlockType.NAME_TO_TYPE.get(type);
         Block block;
-        ResourceLocation blockName = null;
+        Identifier blockName = null;
 
         if (nbt.contains("resourceName")) {
-            blockName = ResourceLocation.parse(nbt.getString("resourceName").orElseThrow());
+            blockName = Identifier.parse(nbt.getString("resourceName").orElseThrow());
             if (BuiltInRegistries.BLOCK.containsKey(blockName)) {
                 block = BuiltInRegistries.BLOCK.get(blockName).map(Holder::value).orElse(Blocks.CAVE_AIR);
             } else {

@@ -22,7 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import xiroc.dungeoncrawl.util.IRandom;
@@ -49,7 +49,7 @@ public class WeightedRandomPotionEffect implements IRandom<WeightedRandomPotionE
         int i = 0;
         for (Builder.Entry entry : entries) {
             float weight = (float) entry.weight / (float) totalWeight;
-            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(entry.effect)).orElseThrow(), entry.duration,
+            this.entries[i] = new WeightedRandomPotionEffect.WeightedEntry(BuiltInRegistries.MOB_EFFECT.get(Identifier.parse(entry.effect)).orElseThrow(), entry.duration,
                     entry.amplifier,
                 weight + f);
             f += weight;

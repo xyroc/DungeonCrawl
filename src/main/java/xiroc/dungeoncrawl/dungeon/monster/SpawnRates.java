@@ -2,7 +2,7 @@ package xiroc.dungeoncrawl.dungeon.monster;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -39,7 +39,7 @@ public class SpawnRates {
     public static void loadJson(ResourceManager resourceManager) {
         DELAY = new Range[5];
         AMOUNT = new Range[5];
-        ResourceLocation file = DungeonCrawl.locate("monster/spawn_rates.json");
+        Identifier file = DungeonCrawl.locate("monster/spawn_rates.json");
         DungeonCrawl.LOGGER.debug("Loading {}", file.toString());
         Resource resource = resourceManager.getResource(file).orElseThrow(() -> new DatapackLoadException("Missing file: " + file));
         try {
@@ -58,7 +58,7 @@ public class SpawnRates {
     /**
      * Convenience method to load a single level instance from a spawn rate file.
      */
-    private static void loadLevel(JsonObject object, ResourceLocation resource, int level) {
+    private static void loadLevel(JsonObject object, Identifier resource, int level) {
         String entry = "level_" + (level + 1);
         if (object.has(entry)) {
             JsonObject data = object.getAsJsonObject(entry);

@@ -27,9 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import xiroc.dungeoncrawl.dungeon.treasure.Loot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,8 +76,8 @@ public class SuspiciousStew extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType getType() {
-        return Loot.SUSPICIOUS_STEW.get();
+    public MapCodec<? extends LootItemConditionalFunction> codec() {
+        return CODEC;
     }
 
     public static SuspiciousStewEffects createEffectList(RandomSource rand) {

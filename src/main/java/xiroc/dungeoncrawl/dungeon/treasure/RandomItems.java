@@ -26,7 +26,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -61,35 +61,35 @@ public class RandomItems {
 
             // TODO: introduce a method to load single file
             {
-                ResourceLocation stage1 = DungeonCrawl.locate("treasure/stage_1.json");
+                Identifier stage1 = DungeonCrawl.locate("treasure/stage_1.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage1.toString());
                 JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage1).orElseThrow().open()))).getAsJsonArray();
                 STAGE_1 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
-                ResourceLocation stage2 = DungeonCrawl.locate("treasure/stage_2.json");
+                Identifier stage2 = DungeonCrawl.locate("treasure/stage_2.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage2.toString());
                 JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage2).orElseThrow().open()))).getAsJsonArray();
                 STAGE_2 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
-                ResourceLocation stage3 = DungeonCrawl.locate("treasure/stage_3.json");
+                Identifier stage3 = DungeonCrawl.locate("treasure/stage_3.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage3.toString());
                 JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage3).orElseThrow().open()))).getAsJsonArray();
                 STAGE_3 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
-                ResourceLocation stage4 = DungeonCrawl.locate("treasure/stage_4.json");
+                Identifier stage4 = DungeonCrawl.locate("treasure/stage_4.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage4.toString());
                 JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage4).orElseThrow().open()))).getAsJsonArray();
                 STAGE_4 = WeightedRandom.ITEM.fromJson(array);
             }
 
             {
-                ResourceLocation stage5 = DungeonCrawl.locate("treasure/stage_5.json");
+                Identifier stage5 = DungeonCrawl.locate("treasure/stage_5.json");
                 DungeonCrawl.LOGGER.debug("Loading {}", stage5.toString());
                 JsonArray array = JsonParser.parseReader(new JsonReader(new InputStreamReader(resourceManager.getResource(stage5).orElseThrow().open()))).getAsJsonArray();
                 STAGE_5 = WeightedRandom.ITEM.fromJson(array);

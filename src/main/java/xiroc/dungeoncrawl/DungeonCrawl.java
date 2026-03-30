@@ -19,10 +19,9 @@
 package xiroc.dungeoncrawl;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -30,6 +29,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import xiroc.dungeoncrawl.config.Config;
@@ -49,7 +49,6 @@ public class DungeonCrawl {
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    public static final DeferredRegister<LootItemFunctionType<?>> LOOT_FUNCTION_TYPE = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MOD_ID);
     public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPE = DeferredRegister.create(Registries.STRUCTURE_TYPE, MOD_ID);
     public static final DeferredRegister<StructurePieceType> STRUCTURE_PIECE_TYPE = DeferredRegister.create(Registries.STRUCTURE_PIECE, MOD_ID);
 
@@ -60,9 +59,10 @@ public class DungeonCrawl {
 
         IEventBus modEventBus = Objects.requireNonNull(modContainer.getEventBus());
 
-        LOOT_FUNCTION_TYPE.register(modEventBus);
         STRUCTURE_TYPE.register(modEventBus);
         STRUCTURE_PIECE_TYPE.register(modEventBus);
+
+        modEventBus.addListener(this::onRegister);
 
         IEventBus forgeEventBus = NeoForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
@@ -72,25 +72,29 @@ public class DungeonCrawl {
         ModStructurePieceTypes.init();
     }
 
+    private void onRegister(final RegisterEvent event) {
+        event.register(Registries.LOOT_FUNCTION_TYPE, Loot::registerLootFunctions);
+    }
+
     private void onAddReloadListener(final AddServerReloadListenersEvent event) {
         event.addListener(locate("server_resources"), new ResourceReloadHandler());
     }
 
-    public static ResourceLocation locate(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier locate(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     /**
      * Creates a key for a given resource location. Removes the base directory, the following slash and the file ending.
      *
-     * @param resourceLocation the initial resource location.
+     * @param identifier the initial resource location.
      * @param baseDirectory    the base path without the last slash. ( dirA/dirB not dirA/dirB/ )
      * @param fileEnding       the file ending to remove at the end of the path
      * @return the key
      */
-    public static ResourceLocation key(ResourceLocation resourceLocation, String baseDirectory, String fileEnding) {
-        String path = resourceLocation.getPath();
-        return ResourceLocation.fromNamespaceAndPath(resourceLocation.getNamespace(), path.substring(baseDirectory.length() + 1, path.length() - fileEnding.length()));
+    public static Identifier key(Identifier identifier, String baseDirectory, String fileEnding) {
+        String path = identifier.getPath();
+        return Identifier.fromNamespaceAndPath(identifier.getNamespace(), path.substring(baseDirectory.length() + 1, path.length() - fileEnding.length()));
     }
 
 }

@@ -20,7 +20,7 @@ package xiroc.dungeoncrawl.dungeon.decoration;
 
 import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
@@ -42,7 +42,7 @@ public interface DungeonDecoration {
 
     JsonObject serialize();
 
-    static DungeonDecoration fromJson(JsonObject object, ResourceLocation file) {
+    static DungeonDecoration fromJson(JsonObject object, Identifier file) {
         if (object.has("type")) {
             String type = object.get("type").getAsString().toLowerCase();
             switch (type) {

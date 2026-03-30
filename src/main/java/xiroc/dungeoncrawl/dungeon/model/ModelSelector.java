@@ -19,7 +19,7 @@
 package xiroc.dungeoncrawl.dungeon.model;
 
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -49,7 +49,7 @@ public class ModelSelector {
         this.corridorLinkers = corridorLinkers;
     }
 
-    public static ModelSelector fromJson(JsonObject object, ResourceLocation resource) {
+    public static ModelSelector fromJson(JsonObject object, Identifier resource) {
         return new ModelSelector(
                 loadRandom("rooms", object, resource),
                 loadRandom("full_nodes", object, resource),
@@ -71,7 +71,7 @@ public class ModelSelector {
      * @param resource the file containing the json object
      * @return the WeightedRandom instance
      */
-    public static WeightedRandom<DungeonModel> loadRandom(String name, JsonObject object, ResourceLocation resource) {
+    public static WeightedRandom<DungeonModel> loadRandom(String name, JsonObject object, Identifier resource) {
         WeightedRandom.Builder<DungeonModel> builder = new WeightedRandom.Builder<>();
         JsonObject models = object.getAsJsonObject(name);
 
@@ -88,7 +88,7 @@ public class ModelSelector {
         if (models.has("models")) {
             models.getAsJsonArray("models").forEach((element) -> {
                 JsonObject entry = element.getAsJsonObject();
-                ResourceLocation key = ResourceLocation.parse(entry.get("key").getAsString());
+                Identifier key = Identifier.parse(entry.get("key").getAsString());
                 if (DungeonModels.KEY_TO_MODEL.containsKey(key)) {
                     builder.add(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeight(entry));
                 } else {

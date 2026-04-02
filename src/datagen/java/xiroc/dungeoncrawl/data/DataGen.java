@@ -72,7 +72,7 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import java.util.List;
 import java.util.Set;
 
-@EventBusSubscriber(modid = DungeonCrawl.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = DungeonCrawl.MOD_ID)
 public class DataGen {
 
     @SubscribeEvent

@@ -15,11 +15,13 @@ import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.EquipmentTable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.SpawnData;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
+import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -50,6 +52,10 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
             .valueCodec("type", HOLDER_CODEC)
             .pools(DatapackRegistries.SPAWNER_TYPE_POOLS)
             .build();
+
+    public void applyToSpawner(SpawnerBlockEntity spawner, RandomSource random, DungeonWorldGenContext context, RegistryAccess registryAccess) {
+        spawner.getSpawner().load(spawner.getLevel(), spawner.getBlockPos(), createData(random, context.level(), registryAccess));
+    }
 
     public CompoundTag createData(RandomSource random, int stage, RegistryAccess registryAccess) {
         CompoundTag nbt = new CompoundTag();
@@ -134,10 +140,6 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         private Short activationRange = 0;
 
         public Builder() {}
-
-        public Builder(SpawnerType instance) {
-
-        }
 
         public Builder entities(IRandom.Builder<Holder<SpawnerEntityType>> entities) {
             this.entities = entities;

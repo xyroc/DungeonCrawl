@@ -31,7 +31,7 @@ public record SpawnerComponent(BlockPos position, Holder<SpawnerType> type) impl
         WorldEditor.Unsafe.placeBlock(level, position, Blocks.SPAWNER.defaultBlockState(), false);
         BlockEntity blockEntity = level.getBlockEntity(position);
         if (blockEntity instanceof SpawnerBlockEntity spawner) {
-            spawner.getSpawner().load(spawner.getLevel(), position, type.value().createData(random, worldGenContext.level(), level.registryAccess()));
+            type.value().applyToSpawner(spawner, random, worldGenContext, level.registryAccess());
         } else {
             DungeonCrawl.LOGGER.warn("Could not fetch a spawner entity at {}", position);
         }

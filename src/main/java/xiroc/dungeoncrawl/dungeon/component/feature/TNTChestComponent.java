@@ -17,6 +17,7 @@ import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
+import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 public record TNTChestComponent(Anchor placement, ResourceKey<LootTable> lootTable) implements DungeonComponent {
     public static final MapCodec<TNTChestComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
@@ -33,8 +34,8 @@ public record TNTChestComponent(Anchor placement, ResourceKey<LootTable> lootTab
         if (!level.getBlockState(position.below()).isFaceSturdy(level, position.below(), Direction.UP)) {
             return;
         }
-        level.setBlock(position, Blocks.TRAPPED_CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction()), 3);
-        level.setBlock(position.below(2), Blocks.TNT.defaultBlockState(), 3);
+        WorldEditor.Unsafe.placeBlock(level, position, Blocks.TRAPPED_CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction()), false);
+        WorldEditor.Unsafe.placeBlock(level, position.below(2), Blocks.TNT.defaultBlockState(), false);
         if (level.getBlockEntity(position) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) {
             randomizableContainerBlockEntity.setLootTable(lootTable);
         }

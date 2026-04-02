@@ -15,6 +15,7 @@ import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
+import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 public record SpawnerComponent(BlockPos position, Holder<SpawnerType> type) implements DungeonComponent {
     public static final MapCodec<SpawnerComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
@@ -27,7 +28,7 @@ public record SpawnerComponent(BlockPos position, Holder<SpawnerType> type) impl
         if (!worldGenBounds.isInside(position)) {
             return;
         }
-        level.setBlock(position, Blocks.SPAWNER.defaultBlockState(), 2);
+        WorldEditor.Unsafe.placeBlock(level, position, Blocks.SPAWNER.defaultBlockState(), false);
         BlockEntity blockEntity = level.getBlockEntity(position);
         if (blockEntity instanceof SpawnerBlockEntity spawner) {
             spawner.getSpawner().load(spawner.getLevel(), position, type.value().createData(random, worldGenContext.level(), level.registryAccess()));

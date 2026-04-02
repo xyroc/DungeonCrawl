@@ -19,6 +19,7 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
+import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 public record FurnaceComponent(Anchor placement, boolean lit) implements DungeonComponent {
     public static final MapCodec<FurnaceComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
@@ -37,7 +38,7 @@ public record FurnaceComponent(Anchor placement, boolean lit) implements Dungeon
         BlockState block = Blocks.FURNACE.defaultBlockState()
                 .setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction())
                 .setValue(BlockStateProperties.LIT, lit);
-        level.setBlock(position, block, 3);
+        WorldEditor.Unsafe.placeBlock(level, position, block, false);
         if (level.getBlockEntity(position) instanceof AbstractFurnaceBlockEntity furnace) {
             furnace.setItem(1, new ItemStack(Items.COAL, COAL_AMOUNT.nextInt(random)));
         }

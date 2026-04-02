@@ -104,9 +104,12 @@ public class NodeElement extends DungeonElement {
         final BlockPos corridorStart = attachmentPoint.position().relative(attachmentPoint.direction());
         final Direction corridorDirection = attachmentPoint.direction();
         final int corridorLength = levelGenerator.levelType.settings().corridorLength.nextInt(levelGenerator.random);
-        final BoundingBoxBuilder corridorBox = BoundingBoxBuilder.tunnel(corridorStart, corridorDirection, corridorLength, 8, 2);
 
-        if (!context.dungeonPlan().isFree(corridorBox)) {
+        final BoundingBoxBuilder corridorBox = corridorLength > 0
+                ? BoundingBoxBuilder.tunnel(corridorStart, corridorDirection, corridorLength, 8, 2)
+                : null;
+
+        if (corridorBox != null && !context.dungeonPlan().isFree(corridorBox)) {
             return null;
         }
 
@@ -116,7 +119,9 @@ public class NodeElement extends DungeonElement {
             return null;
         }
 
-        levelGenerator.createCorridor(corridorStart, corridorDirection, corridorBox.create());
+        if (corridorBox != null) {
+            levelGenerator.createCorridor(corridorStart, corridorDirection, corridorBox.create());
+        }
         return node;
     }
 

@@ -29,7 +29,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
-import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.init.ModStructureTypes;
 
 import java.util.Optional;
@@ -57,13 +56,12 @@ public class Dungeon extends Structure {
         }
 
         int minGroundHeight = minHeight(context, centerX, centerZ, centerHeight);
-        if (minGroundHeight < 45) {
+        int marginToBottom = minGroundHeight - context.heightAccessor().getMinBuildHeight();
+        if (marginToBottom < 45) {
             return Optional.empty();
         }
 
-        int startHeight = Config.FIXED_GENERATION_HEIGHT.get()
-                ? context.chunkGenerator().getSpawnHeight(context.heightAccessor()) - 20
-                : (minGroundHeight > 80 ? (80 + ((minGroundHeight - 80) / 3)) : minGroundHeight) - 20;
+        int startHeight = minGroundHeight - 24;
 
         BlockPos position = new BlockPos(centerX, centerHeight, centerZ);
 

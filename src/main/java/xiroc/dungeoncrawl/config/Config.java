@@ -20,9 +20,6 @@ package xiroc.dungeoncrawl.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.util.Iterator;
-import java.util.function.Function;
-
 public class Config {
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -39,8 +36,7 @@ public class Config {
             EXTENDED_DEBUG,
             TICK_FALLING_BLOCKS,
             OVERWRITE_ENTITY_LOOT_TABLES,
-            SECRET_ROOMS,
-            FIXED_GENERATION_HEIGHT;
+            SECRET_ROOMS;
 
     private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------+\n";
 
@@ -68,9 +64,6 @@ public class Config {
                 .comment(SEPARATOR_LINE +
                         " Whether the dungeons should have secret rooms or not.\n")
                 .define("secret_rooms", true);
-        FIXED_GENERATION_HEIGHT = BUILDER.comment(SEPARATOR_LINE +
-                        "\nWhether the dungeons should generate at a fixed height or not. Enable this if the dungeons are generating too high.")
-                .define("fixed_generation_height", false);
         OVERWRITE_ENTITY_LOOT_TABLES = BUILDER.
                 comment(SEPARATOR_LINE +
                         " Whether loot tables of certain spawner entities should be overwritten.\n" +
@@ -100,16 +93,4 @@ public class Config {
 
         CONFIG = BUILDER.build();
     }
-
-    private static <T> String commaSeparated(Iterator<T> elements, Function<T, String> toString) {
-        StringBuilder builder = new StringBuilder();
-        while (elements.hasNext()) {
-            builder.append(toString.apply(elements.next()));
-            if (elements.hasNext()) {
-                builder.append(", ");
-            }
-        }
-        return builder.toString();
-    }
-
 }

@@ -84,9 +84,6 @@ public interface Loot {
         return ResourceKey.create(Registries.LOOT_TABLE, DungeonCrawl.locate(path));
     }
 
-    static void init() {
-    }
-
     static void setLoot(LevelAccessor world, BlockPos pos, RandomizableContainerBlockEntity tile, ResourceKey<LootTable> lootTable, Theme theme, SecondaryTheme secondaryTheme,
                         RandomSource rand) {
         RandomizableContainer.setBlockEntityLootTable(world, rand, pos, lootTable);

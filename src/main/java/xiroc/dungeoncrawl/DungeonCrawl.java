@@ -67,8 +67,7 @@ public class DungeonCrawl {
         IEventBus forgeEventBus = NeoForge.EVENT_BUS;
         forgeEventBus.addListener(this::onAddReloadListener);
 
-        Loot.init();
-        ModStructureTypes.init();
+        ModStructureTypes.init();https://github.com/xyroc/DungeonCrawl-Dev.git
         ModStructurePieceTypes.init();
     }
 

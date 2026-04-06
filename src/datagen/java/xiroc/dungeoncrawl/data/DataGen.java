@@ -38,8 +38,6 @@ public class DataGen {
 
     @SubscribeEvent
     public static void gatherData(GatherDataEvent.Server event) {
-        Loot.init(); // Register loot function types
-
         DataGenerator generator = event.getGenerator();
 
         generator.addProvider(true, new LootTableProvider(event.getGenerator().getPackOutput(),

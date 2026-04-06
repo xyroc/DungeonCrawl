@@ -23,3 +23,6 @@ runs
 run-data
 
 repo
+
+# data gen cache files
+/src/generated/resources/.cache/

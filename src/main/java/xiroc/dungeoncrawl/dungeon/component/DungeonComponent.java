@@ -33,12 +33,12 @@ public interface DungeonComponent {
         registry.register(DungeonCrawl.locate("staircase"), StaircaseComponent.CODEC);
         registry.register(DungeonCrawl.locate("tunnel"), TunnelComponent.CODEC);
 
-        registry.register(DungeonCrawl.locate("chest"), ChestComponent.CODEC);
-        registry.register(DungeonCrawl.locate("flower_pot"), FlowerPotComponent.CODEC);
-        registry.register(DungeonCrawl.locate("furnace"), FurnaceComponent.CODEC);
-        registry.register(DungeonCrawl.locate("sarcophagus"), SarcophagusComponent.CODEC);
-        registry.register(DungeonCrawl.locate("spawner"), SpawnerComponent.CODEC);
-        registry.register(DungeonCrawl.locate("tnt_chest"), TNTChestComponent.CODEC);
+        registry.register(DungeonCrawl.locate("feature/chest"), ChestComponent.CODEC);
+        registry.register(DungeonCrawl.locate("feature/flower_pot"), FlowerPotComponent.CODEC);
+        registry.register(DungeonCrawl.locate("feature/furnace"), FurnaceComponent.CODEC);
+        registry.register(DungeonCrawl.locate("feature/sarcophagus"), SarcophagusComponent.CODEC);
+        registry.register(DungeonCrawl.locate("feature/spawner"), SpawnerComponent.CODEC);
+        registry.register(DungeonCrawl.locate("feature/tnt_chest"), TNTChestComponent.CODEC);
     }
 
     void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext);

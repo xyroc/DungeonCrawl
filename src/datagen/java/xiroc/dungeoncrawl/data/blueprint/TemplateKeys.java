@@ -14,6 +14,7 @@ public interface TemplateKeys {
         ResourceLocation __ROOM = DataGen.resource("room");
 
         ResourceLocation BEDROOM = DataGen.resource(__ROOM, "bedroom");
+        ResourceLocation BRICK = DataGen.resource(__ROOM, "brick");
         ResourceLocation CORNER = DataGen.resource(__ROOM, "corner");
         ResourceLocation DARK_HALL = DataGen.resource(__ROOM, "dark_hall");
         ResourceLocation DINER = DataGen.resource(__ROOM, "diner");

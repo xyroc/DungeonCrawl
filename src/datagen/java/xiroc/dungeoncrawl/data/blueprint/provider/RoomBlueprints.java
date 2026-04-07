@@ -44,6 +44,18 @@ public interface RoomBlueprints {
                 .configureBlock(Blocks.TORCH, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
                 .build()));
 
+        context.register(BlueprintKeys.Room.BRICK, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.BRICK)
+                .feature(new SpawnerFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/spawner")), new Constant(1)),
+                        new SpawnerSettings(Optional.empty())
+                ))
+                .feature(new ChestFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/chest")), new Range(1, 2)),
+                        new ChestSettings()
+                ))
+                .build()));
+
         context.register(BlueprintKeys.Room.CORNER, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.CORNER)
                 .build()));

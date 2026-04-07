@@ -13,6 +13,7 @@ public interface BlueprintKeys {
 
     interface Room {
         ResourceKey<Blueprint> BEDROOM = key(TemplateKeys.Room.BEDROOM);
+        ResourceKey<Blueprint> BRICK = key(TemplateKeys.Room.BRICK);
         ResourceKey<Blueprint> CORNER = key(TemplateKeys.Room.CORNER);
         ResourceKey<Blueprint> DARK_HALL = key(TemplateKeys.Room.DARK_HALL);
         ResourceKey<Blueprint> DINER = key(TemplateKeys.Room.DINER);

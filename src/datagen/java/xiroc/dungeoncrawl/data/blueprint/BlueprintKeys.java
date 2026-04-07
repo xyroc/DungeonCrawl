@@ -23,6 +23,7 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> SMITHY = key(TemplateKeys.Room.SMITHY);
         ResourceKey<Blueprint> STAIRCASE_LOWER = key(TemplateKeys.Room.STAIRCASE_LOWER);
         ResourceKey<Blueprint> STAIRCASE_UPPER = key(TemplateKeys.Room.STAIRCASE_UPPER);
+        ResourceKey<Blueprint> STORAGE = key(TemplateKeys.Room.STORAGE);
     }
 
     interface Part {

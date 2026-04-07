@@ -171,5 +171,13 @@ public interface RoomBlueprints {
         context.register(BlueprintKeys.Room.STAIRCASE_UPPER, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.STAIRCASE_UPPER)
                 .build()));
+
+        context.register(BlueprintKeys.Room.STORAGE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.STORAGE)
+                .feature(new ChestFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/chest")), new Range(1, 2)),
+                        new ChestSettings()
+                ))
+                .build()));
     }
 }

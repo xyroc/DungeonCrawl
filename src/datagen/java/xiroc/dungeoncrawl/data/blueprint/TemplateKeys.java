@@ -22,6 +22,7 @@ public interface TemplateKeys {
         ResourceLocation POTION_LAB = DataGen.resource(__ROOM, "potion_lab");
         ResourceLocation SARCOPHAGUS = DataGen.resource(__ROOM, "sarcophagus");
         ResourceLocation SMITHY = DataGen.resource(__ROOM, "smithy");
+        ResourceLocation STORAGE = DataGen.resource(__ROOM, "storage");
 
         ResourceLocation __STAIRCASE =  DataGen.resource(__ROOM, "staircase");
         ResourceLocation STAIRCASE_LOWER = DataGen.resource(__STAIRCASE, "lower");

@@ -1,0 +1,16 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:chest",
+      "chest": {},
+      "placement": {
+        "amount": {
+          "max": 2,
+          "min": 1
+        },
+        "positions": "dungeoncrawl:feature/chest"
+      }
+    }
+  ],
+  "template": "dungeoncrawl:room/storage"
+}

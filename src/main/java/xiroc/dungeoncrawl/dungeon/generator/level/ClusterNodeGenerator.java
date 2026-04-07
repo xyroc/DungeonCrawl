@@ -88,7 +88,7 @@ public class ClusterNodeGenerator {
 
     record ClusterNode(NodeElement node, List<ClusterNode> children) {
         public ClusterNode(NodeElement node) {
-            this(node, new ArrayList<>(node.unusedClusterEntrances.size()));
+            this(node, new ArrayList<>(node.clusterEntrances.size()));
         }
 
         /**
@@ -114,7 +114,7 @@ public class ClusterNodeGenerator {
      */
     private int growRecursively(ClusterNode clusterNode, int budget, int depth) {
         final NodeElement node = clusterNode.node;
-        final List<Entrance> unusedEntrances = node.unusedClusterEntrances;
+        final NodeElement.EntranceChooser unusedEntrances = node.clusterEntrances;
         if (unusedEntrances.isEmpty()) {
             return 0;
         }
@@ -167,7 +167,7 @@ public class ClusterNodeGenerator {
                 rooms = settings.terminals();
             }
 
-            final NodeElement newNode = attachNode(attachmentPoint, rooms, true);
+            final NodeElement newNode = attachNode(attachmentPoint, rooms, isTerminal);
 
             if (newNode == null) {
                 continue;
@@ -209,7 +209,7 @@ public class ClusterNodeGenerator {
         }
         preliminaryPlan.forEach(this.upperContext.dungeonPlan()::add);
         preliminaryPlan.forEach(element -> {
-            if (element instanceof NodeElement node && !node.unusedEntrances.isEmpty()) {
+            if (element instanceof NodeElement node && !node.normalEntrances.isEmpty()) {
                 if (random.nextFloat() >= settings.fanOut()) {
                     return;
                 }

@@ -64,6 +64,7 @@ public interface TemplateLoader {
 
         HashMap<ResourceLocation, ImmutableList.Builder<Anchor>> anchors = new HashMap<>();
         ImmutableList.Builder<Entrance> entrances = ImmutableList.builder();
+        ImmutableList.Builder<Entrance> hybridEntrances = ImmutableList.builder();
         ImmutableList.Builder<Entrance> clusterEntrances = ImmutableList.builder();
 
         Map<Integer, TemplateBlockColumn.Builder> blockColumns = new HashMap<>();
@@ -78,10 +79,10 @@ public interface TemplateLoader {
             anchors.computeIfAbsent(anchorType, (k) -> ImmutableList.builder()).add(anchor);
             var entranceType = configuration.entranceTypes.get(anchorType);
             if (entranceType != null) {
-                if (entranceType.isClusterEntrance()) {
-                    clusterEntrances.add(entranceType.make(anchor));
-                } else {
-                    entrances.add(entranceType.make(anchor));
+                switch (entranceType.type()) {
+                    case NORMAL -> entrances.add(entranceType.make(anchor));
+                    case HYBRID -> hybridEntrances.add(entranceType.make(anchor));
+                    case CLUSTER ->  clusterEntrances.add(entranceType.make(anchor));
                 }
             }
         }));
@@ -93,6 +94,7 @@ public interface TemplateLoader {
         blueprint.blockColumns = blockColumns.values().stream().map(TemplateBlockColumn.Builder::build).toList();
         blueprint.anchors = immutableAnchors.build();
         blueprint.entrances = entrances.build();
+        blueprint.hybridEntrances = hybridEntrances.build();
         blueprint.clusterEntrances = clusterEntrances.build();
     }
 

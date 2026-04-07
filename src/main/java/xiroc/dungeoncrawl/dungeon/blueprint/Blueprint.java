@@ -42,13 +42,13 @@ public class Blueprint {
             .valueCodec("blueprint", HOLDER_CODEC)
             .pools(DatapackRegistries.BLUEPRINT_POOLS)
             .build();
-    public static final Codec<IRandom<IRandom<Holder<Blueprint>>>> RANDOM_RANDOM_HOLDER_CODEC = IRandom.makeCodec(IRandom.makeBuilderCodec(RANDOM_HOLDER_CODEC, "blueprints", null));
 
     protected final BlueprintConfiguration configuration;
     protected Vec3i size;
     protected List<TemplateBlockColumn> blockColumns;
     protected Map<ResourceLocation, List<Anchor>> anchors;
     protected List<Entrance> entrances;
+    protected List<Entrance> hybridEntrances;
     protected List<Entrance> clusterEntrances;
 
     public Blueprint(BlueprintConfiguration configuration) {
@@ -132,6 +132,10 @@ public class Blueprint {
 
     public List<Entrance> entrances() {
         return this.entrances;
+    }
+
+    public List<Entrance> hybridEntrances() {
+        return this.hybridEntrances;
     }
 
     public List<Entrance> clusterEntrances() {

@@ -155,10 +155,10 @@ public class LevelGenerator {
         final CoordinateSpace coordinateSpace = piece.base.blueprint().value().coordinateSpace(piece.base.position());
         final int nextDepth = node.depth + 1;
         int placementsLeft = 1 + (1 + random.nextInt(4)) / 2;
-        final List<Entrance> entrances = node.unusedEntrances;
+        final NodeElement.EntranceChooser entrances = node.normalEntrances;
 
         for (int attempt = 0; !entrances.isEmpty() && attempt < 4 && placementsLeft > 0; ++attempt) {
-            final int entranceIndex = random.nextInt(entrances.size());
+            final int entranceIndex = entrances.chooseEntrance(random);
             final Entrance entrance = entrances.get(entranceIndex);
             final Anchor placement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
 
@@ -179,7 +179,7 @@ public class LevelGenerator {
         }
 
         // Add marker elements for unused entrances.
-        for (Entrance entrance : node.unusedEntrances) {
+        for (Entrance entrance : node.normalEntrances) {
             final Anchor placement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
             final BoundingBox boundingBox = BoundingBoxBuilder.fromPosition(placement.position())
                     .resize(placement.direction(), 16)

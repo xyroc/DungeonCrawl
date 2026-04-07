@@ -4,10 +4,11 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
@@ -18,7 +19,10 @@ import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
+import xiroc.dungeoncrawl.util.collections.iterators.IteratorSequence;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -28,24 +32,51 @@ public class NodeElement extends DungeonElement {
     private final CoordinateSpace coordinateSpace;
 
     public final int depth;
-    public final List<Entrance> unusedEntrances;
-    public final List<Entrance> unusedClusterEntrances;
+
+    public final EntranceChooser normalEntrances;
+    public final EntranceChooser clusterEntrances;
 
     public NodeElement(BlueprintPiece piece, GeneratorContext context, int depth) {
+        this(piece, context, depth, null, null);
+    }
+
+    /**
+     * Instantiates a new node element.
+     *
+     * @param piece            The blueprint piece with the main blueprint of the node.
+     * @param context          The generator context.
+     * @param depth            The generation depth of the node.
+     * @param normalEntrances  The normal entrances to use for this node.
+     * @param clusterEntrances The cluster entrances to use for this node.
+     */
+    public NodeElement(BlueprintPiece piece, GeneratorContext context, int depth, @Nullable EntranceChooser normalEntrances, @Nullable EntranceChooser clusterEntrances) {
         super(piece.getBoundingBox());
         this.piece = piece;
         this.context = context;
-        this.coordinateSpace = piece.base
-                .blueprint()
-                .value()
-                .coordinateSpace(piece.base.position());
+        final Blueprint blueprint = piece.base.blueprint().value();
+        this.coordinateSpace = blueprint.coordinateSpace(piece.base.position());
         this.depth = depth;
-        this.unusedEntrances = Lists.newArrayList(piece.base.blueprint().value().entrances());
-        this.unusedClusterEntrances = Lists.newArrayList(piece.base.blueprint().value().clusterEntrances());
+        if (normalEntrances != null && clusterEntrances != null) {
+            this.normalEntrances = normalEntrances;
+            this.clusterEntrances = clusterEntrances;
+        } else if (normalEntrances == null && clusterEntrances == null) {
+            final var hybridEntrances = new ArrayList<>(blueprint.hybridEntrances());
+            this.normalEntrances = new EntranceChooser(new ArrayList<>(blueprint.entrances()), hybridEntrances);
+            this.clusterEntrances = new EntranceChooser(new ArrayList<>(blueprint.clusterEntrances()), hybridEntrances);
+        } else if (normalEntrances != null) {
+            this.normalEntrances = normalEntrances;
+            this.clusterEntrances = new EntranceChooser(new ArrayList<>(blueprint.clusterEntrances()), normalEntrances.hybridEntrances);
+        } else {
+            this.normalEntrances = new EntranceChooser(new ArrayList<>(blueprint.entrances()), clusterEntrances.hybridEntrances);
+            this.clusterEntrances = clusterEntrances;
+        }
     }
 
+    /**
+     * Searches for unused entrances of nearby adjacent nodes and attempts to connect to them with a corridor.
+     */
     public void connectToAdjacentNodes() {
-        if (unusedEntrances.isEmpty()) {
+        if (normalEntrances.isEmpty()) {
             return;
         }
 
@@ -61,8 +92,8 @@ public class NodeElement extends DungeonElement {
         }
 
         for (FreeEntranceElement marker : nearbyUnusedEntrances) {
-            for (int entranceIndex = 0; entranceIndex < unusedEntrances.size(); entranceIndex++) {
-                final Entrance entrance = unusedEntrances.get(entranceIndex);
+            for (int entranceIndex = 0; entranceIndex < normalEntrances.size(); entranceIndex++) {
+                final Entrance entrance = normalEntrances.get(entranceIndex);
                 final Anchor entrancePlacement = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
                 // Check alignment.
                 if (entrancePlacement.direction() != marker.placement.direction().getOpposite()) {
@@ -89,9 +120,9 @@ public class NodeElement extends DungeonElement {
                 context.levelGenerator().createCorridor(corridorStart, entrancePlacement.direction(), corridorBox.create());
                 addEntrance(entrancePlacement, entrance);
                 marker.node.addEntrance(marker.placement, marker.entrance);
-                marker.node.unusedEntrances.remove(marker.entrance);
+                marker.node.normalEntrances.remove(marker.entrance);
                 marker.invalidate();
-                unusedEntrances.remove(entranceIndex);
+                normalEntrances.remove(entranceIndex);
                 break; // Free entrance claimed. Continue with the next free entrance marker.
             }
         }
@@ -132,12 +163,12 @@ public class NodeElement extends DungeonElement {
 
     @Nullable
     public static NodeElement attachRoom(GeneratorContext context, Anchor attachmentPoint, Holder<Blueprint> room, int depth, boolean useClusterEntrances) {
-        final LevelGenerator levelGenerator = context.levelGenerator();
-        final var entrances = useClusterEntrances ? room.value().clusterEntrances() : room.value().entrances();
+        final EntranceChooser entrances = useClusterEntrances ? EntranceChooser.clusterEntrances(room.value()) : EntranceChooser.normalEntrances(room.value());
         if (entrances.isEmpty()) {
             return null;
         }
-        final int chosenEntrance = levelGenerator.random.nextInt(entrances.size());
+        final LevelGenerator levelGenerator = context.levelGenerator();
+        final int chosenEntrance = entrances.chooseEntrance(levelGenerator.random);
         final Entrance entrance = entrances.get(chosenEntrance);
         final var roomPlacement = entrance.placement().latchOnto(attachmentPoint, room.value());
         final BlockPos roomPosition = roomPlacement.getFirst();
@@ -153,13 +184,9 @@ public class NodeElement extends DungeonElement {
             return null;
         }
 
-        final NodeElement node = new NodeElement(roomPiece, context, depth);
+        final NodeElement node = new NodeElement(roomPiece, context, depth, useClusterEntrances ? null : entrances, useClusterEntrances ? entrances : null);
         context.dungeonPlan().add(node);
-        if (useClusterEntrances) {
-            node.unusedClusterEntrances.remove(chosenEntrance);
-        } else {
-            node.unusedEntrances.remove(chosenEntrance);
-        }
+        entrances.remove(chosenEntrance);
         final Anchor rotatedEntrance = room.value().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), roomRotation);
         node.addEntrance(rotatedEntrance, entrance);
         return node;
@@ -173,7 +200,7 @@ public class NodeElement extends DungeonElement {
         entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.open(), piece, piece.base, context.levelGenerator()));
     }
 
-    private void closeOffEntrances(List<Entrance> entrances) {
+    private void closeOffEntrances(Iterable<Entrance> entrances) {
         for (Entrance entrance : entrances) {
             if (entrance.customParts().isEmpty()) {
                 continue;
@@ -185,13 +212,98 @@ public class NodeElement extends DungeonElement {
 
     @Override
     public void createPieces(Consumer<StructurePiece> consumer) {
-        closeOffEntrances(unusedEntrances);
-        closeOffEntrances(unusedClusterEntrances);
+        closeOffEntrances(normalEntrances);
+        // Clear hybrid entrances since they were already handled through the normal entrances.
+        clusterEntrances.hybridEntrances.clear();
+        closeOffEntrances(clusterEntrances);
         piece.updateBoundingBox();
         consumer.accept(piece);
     }
 
     public BlueprintPiece piece() {
         return this.piece;
+    }
+
+    public record EntranceChooser(List<Entrance> entrances,
+                                  List<Entrance> hybridEntrances) implements Iterable<Entrance> {
+        public static EntranceChooser normalEntrances(Blueprint blueprint) {
+            return new EntranceChooser(new ArrayList<>(blueprint.entrances()), new ArrayList<>(blueprint.hybridEntrances()));
+        }
+
+        public static EntranceChooser clusterEntrances(Blueprint blueprint) {
+            return new EntranceChooser(new ArrayList<>(blueprint.clusterEntrances()), new ArrayList<>(blueprint.hybridEntrances()));
+        }
+
+        public boolean isEmpty() {
+            return entrances.isEmpty() && hybridEntrances.isEmpty();
+        }
+
+        public int size() {
+            return entrances.size() + hybridEntrances.size();
+        }
+
+        /**
+         * Returns the index of a random entrance in the pool.
+         *
+         * @param random The source of randomness to use.
+         * @return The random index.
+         */
+        public int chooseEntrance(RandomSource random) {
+            return random.nextInt(size());
+        }
+
+        /**
+         * Returns the entrance at the specified index.
+         *
+         * @param index The index of the entrance to retrieve.
+         * @return The entrance.
+         * @throws IndexOutOfBoundsException if the index is out of range.
+         */
+        public Entrance get(int index) {
+            if (index >= entrances.size()) {
+                return hybridEntrances.get(index - entrances.size());
+            }
+            return entrances.get(index);
+        }
+
+        /**
+         * Removes the entrance at the specified index from the pool.
+         *
+         * @param index The index of the entrance to remove.
+         * @return The removed entrance.
+         * @throws IndexOutOfBoundsException if the index is out of range.
+         */
+        public Entrance remove(int index) {
+            if (index >= entrances.size()) {
+                return hybridEntrances.remove(index - entrances.size());
+            }
+            return entrances.remove(index);
+        }
+
+        /**
+         * Removes an entrance from the pool.
+         *
+         * @param entrance The entrance to remove.
+         * @return {@code true} if the entrance was in the pool.
+         */
+        public boolean remove(Entrance entrance) {
+            if (entrances.remove(entrance)) {
+                return true;
+            }
+            return hybridEntrances.remove(entrance);
+        }
+
+        /**
+         * Removes all remaining entrances.
+         */
+        public void clear() {
+            entrances.clear();
+            hybridEntrances.clear();
+        }
+
+        @Override
+        public @NotNull Iterator<Entrance> iterator() {
+            return new IteratorSequence<>(List.of(entrances, hybridEntrances));
+        }
     }
 }

@@ -11,8 +11,7 @@
     }
   },
   "default_placement_settings": {
-    "fill_air": true,
-    "fill_solid": true
+    "fill_air": true
   },
   "template": "dungeoncrawl:part/lab/container/wheat",
   "use_global_default_placement_settings": false

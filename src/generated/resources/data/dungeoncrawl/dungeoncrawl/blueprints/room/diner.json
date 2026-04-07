@@ -15,16 +15,13 @@
   },
   "placement_settings": {
     "minecraft:fire": {
-      "fill_air": true,
-      "fill_solid": true
+      "fill_air": true
     },
     "minecraft:iron_bars": {
-      "fill_air": true,
-      "fill_solid": true
+      "fill_air": true
     },
     "minecraft:netherrack": {
-      "fill_air": true,
-      "fill_solid": true
+      "fill_air": true
     }
   },
   "template": "dungeoncrawl:room/diner"

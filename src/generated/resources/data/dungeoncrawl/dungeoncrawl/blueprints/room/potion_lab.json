@@ -31,12 +31,10 @@
   ],
   "placement_settings": {
     "minecraft:chain": {
-      "fill_air": true,
-      "fill_solid": true
+      "fill_air": true
     },
     "minecraft:chest": {
       "fill_air": true,
-      "fill_solid": true,
       "loot_table": "dungeoncrawl:chests/level_0"
     }
   },

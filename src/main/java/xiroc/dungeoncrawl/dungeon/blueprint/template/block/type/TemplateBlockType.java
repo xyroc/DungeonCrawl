@@ -73,11 +73,12 @@ public interface TemplateBlockType extends BlockChooser {
      * It is assumed that the {@code position} parameter is within valid bounds.
      * Perform adequate checks beforehand.
      *
-     * @param level    the level to place the block in.
-     * @param position the position to place the block at.
-     * @param state    the block state to place.
+     * @param level       the level to place the block in.
+     * @param position    the position to place the block at.
+     * @param state       the block state to place.
+     * @param postProcess whether to mark the block for post-processing
      */
-    default void handlePlacement(LevelAccessor level, BlockPos position, BlockState state) {
-        WorldEditor.Unsafe.placeBlock(level, position, state, false);
+    default void handlePlacement(LevelAccessor level, BlockPos position, BlockState state, boolean postProcess) {
+        WorldEditor.Unsafe.placeBlock(level, position, state, postProcess);
     }
 }

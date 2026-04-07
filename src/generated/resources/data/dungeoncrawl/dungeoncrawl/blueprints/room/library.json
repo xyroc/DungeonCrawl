@@ -14,12 +14,10 @@
   },
   "placement_settings": {
     "minecraft:redstone_block": {
-      "fill_air": true,
-      "fill_solid": true
+      "fill_air": true
     },
     "minecraft:redstone_lamp": {
-      "fill_air": true,
-      "fill_solid": true
+      "fill_air": true
     }
   },
   "template": "dungeoncrawl:room/library"

@@ -21,36 +21,55 @@ import java.util.Optional;
  */
 public record TemplateBlockPlacementSettings(boolean fillAir,
                                              boolean fillSolid,
+                                             boolean postProcess,
                                              @Nullable TemplateBlockType alternative,
                                              @Nullable TieredResource<ResourceKey<LootTable>> lootTable) {
+    private interface Defaults {
+        boolean FILL_AIR = false;
+        boolean FILL_SOLID = true;
+        boolean POST_PROCESS = false;
+    }
+
     public static final Codec<TemplateBlockPlacementSettings> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Codec.BOOL.fieldOf("fill_air").forGetter(TemplateBlockPlacementSettings::fillAir),
-                    Codec.BOOL.fieldOf("fill_solid").forGetter(TemplateBlockPlacementSettings::fillSolid),
+                    Codec.BOOL.optionalFieldOf("fill_air").forGetter(settings ->
+                            settings.fillAir == Defaults.FILL_AIR ? Optional.empty() : Optional.of(settings.fillAir)),
+                    Codec.BOOL.optionalFieldOf("fill_solid").forGetter(settings ->
+                            settings.fillSolid == Defaults.FILL_SOLID ? Optional.empty() : Optional.of(settings.fillSolid)),
+                    Codec.BOOL.optionalFieldOf("post_process").forGetter(settings ->
+                            settings.postProcess == Defaults.POST_PROCESS ? Optional.empty() : Optional.of(settings.postProcess)),
                     TemplateBlockType.CODEC.optionalFieldOf("alternative").forGetter(settings -> Optional.ofNullable(settings.alternative)),
                     TieredResource.Codecs.LOOT_TABLE.optionalFieldOf("loot_table").forGetter(settings -> Optional.ofNullable(settings.lootTable))
-            ).apply(instance, (fillAir, fillSolid, alternative, lootTable) ->
-                    new TemplateBlockPlacementSettings(fillAir, fillSolid, alternative.orElse(null), lootTable.orElse(null))));
+            ).apply(instance, (fillAir, fillSolid, postProcess, alternative, lootTable) ->
+                    new TemplateBlockPlacementSettings(fillAir.orElse(Defaults.FILL_AIR),
+                            fillSolid.orElse(Defaults.FILL_SOLID),
+                            postProcess.orElse(Defaults.POST_PROCESS),
+                            alternative.orElse(null),
+                            lootTable.orElse(null))));
 
-    public static final TemplateBlockPlacementSettings NON_SOLID_PLACEMENT = new TemplateBlockPlacementSettings(false, true);
-    public static final TemplateBlockPlacementSettings SOLID_PLACEMENT = new TemplateBlockPlacementSettings(true, true);
-    public static final TemplateBlockPlacementSettings ANTI_SOLID = new TemplateBlockPlacementSettings(true, false);
+    public static final TemplateBlockPlacementSettings NON_SOLID_PLACEMENT = new TemplateBlockPlacementSettings(false, true, false);
+    public static final TemplateBlockPlacementSettings SOLID_PLACEMENT = new TemplateBlockPlacementSettings(true, true, false);
+    public static final TemplateBlockPlacementSettings ANTI_SOLID = new TemplateBlockPlacementSettings(true, false, false);
     public static final TemplateBlockPlacementSettings DEFAULT = NON_SOLID_PLACEMENT;
 
-    public TemplateBlockPlacementSettings(boolean fillAir, boolean fillSolid) {
-        this(fillAir, fillSolid, null, null);
+    public TemplateBlockPlacementSettings(boolean fillAir, boolean fillSolid, boolean postProcess) {
+        this(fillAir, fillSolid, postProcess, null, null);
     }
 
     public boolean canPlace(boolean isAir) {
         return isAir && fillAir || !isAir && fillSolid;
     }
 
+    public TemplateBlockPlacementSettings withPostProcessing() {
+        return new TemplateBlockPlacementSettings(fillAir, fillSolid, true, alternative, lootTable);
+    }
+
     public TemplateBlockPlacementSettings withAlternative(TemplateBlockType alternative) {
-        return new TemplateBlockPlacementSettings(fillAir, fillSolid, alternative, lootTable);
+        return new TemplateBlockPlacementSettings(fillAir, fillSolid, postProcess, alternative, lootTable);
     }
 
     public TemplateBlockPlacementSettings withLoot(TieredResource<ResourceKey<LootTable>> lootTables) {
-        return new TemplateBlockPlacementSettings(fillAir, fillSolid, alternative, lootTables);
+        return new TemplateBlockPlacementSettings(fillAir, fillSolid, postProcess, alternative, lootTables);
     }
 
     @Override

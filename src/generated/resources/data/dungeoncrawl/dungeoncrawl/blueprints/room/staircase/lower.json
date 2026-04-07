@@ -4,8 +4,7 @@
       "alternative": {
         "type": "dungeoncrawl:fencing"
       },
-      "fill_air": false,
-      "fill_solid": true
+      "post_process": true
     }
   },
   "template": "dungeoncrawl:room/staircase/lower"

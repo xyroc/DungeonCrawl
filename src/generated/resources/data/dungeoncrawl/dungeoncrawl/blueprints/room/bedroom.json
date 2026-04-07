@@ -1,13 +1,9 @@
 {
   "default_placement_settings": {
-    "fill_air": true,
-    "fill_solid": true
+    "fill_air": true
   },
   "placement_settings": {
-    "minecraft:torch": {
-      "fill_air": false,
-      "fill_solid": true
-    }
+    "minecraft:torch": {}
   },
   "template": "dungeoncrawl:room/bedroom"
 }

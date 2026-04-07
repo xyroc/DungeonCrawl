@@ -5,6 +5,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.data.DataGen;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
@@ -16,7 +17,6 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
-import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChestFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.SarcophagusFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.SpawnerFeature;
@@ -50,7 +50,7 @@ public interface RoomBlueprints {
 
         context.register(BlueprintKeys.Room.DARK_HALL, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.DARK_HALL)
-                .entranceType(BuiltinAnchorTypes.ENTRANCE, null, new Entrance.CustomParts.Builder()
+                .entranceType(DataGen.resource("entrance"), null, new Entrance.CustomParts.Builder()
                         .open(new IRandom.Builder<Holder<Blueprint>>()
                                 .add(blueprints.getOrThrow(BlueprintKeys.Part.DARK_HALL_OPEN))
                                 .build())
@@ -62,7 +62,7 @@ public interface RoomBlueprints {
 
         context.register(BlueprintKeys.Room.DINER, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.DINER)
-                .entranceType(BuiltinAnchorTypes.ENTRANCE, Entrance.Decoration.PRIMARY, new Entrance.CustomParts.Builder()
+                .entranceType(DataGen.resource("entrance"), Entrance.Decoration.PRIMARY, new Entrance.CustomParts.Builder()
                         .open(IRandom.<Holder<Blueprint>>builder()
                                 .add(blueprints.getOrThrow(BlueprintKeys.Part.DINER_OPEN))
                                 .build())
@@ -79,7 +79,7 @@ public interface RoomBlueprints {
 
         context.register(BlueprintKeys.Room.ENIKO, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.ENIKO)
-                .entranceType(BuiltinAnchorTypes.ENTRANCE, Entrance.Decoration.PRIMARY,
+                .entranceType(DataGen.resource("entrance"), Entrance.Decoration.PRIMARY,
                         new Entrance.CustomParts.Builder()
                                 .open(new IRandom.Builder<Holder<Blueprint>>()
                                         .add(blueprints.getOrThrow(BlueprintKeys.Part.FLOOR_3x3_SOLID))
@@ -102,7 +102,7 @@ public interface RoomBlueprints {
 
         context.register(BlueprintKeys.Room.LIBRARY, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.LIBRARY)
-                .entranceType(BuiltinAnchorTypes.ENTRANCE, null, new Entrance.CustomParts.Builder()
+                .entranceType(DataGen.resource("entrance"), null, new Entrance.CustomParts.Builder()
                         .open(new IRandom.Builder<Holder<Blueprint>>()
                                 .add(blueprints.getOrThrow(BlueprintKeys.Part.LIBRARY_ENTRANCE))
                                 .build())

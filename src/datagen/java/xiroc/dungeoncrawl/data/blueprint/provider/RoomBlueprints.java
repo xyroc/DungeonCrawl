@@ -163,7 +163,9 @@ public interface RoomBlueprints {
         // TODO: map cobblestone and entrance types
         context.register(BlueprintKeys.Room.STAIRCASE_LOWER, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.STAIRCASE_LOWER)
-                .configureBlock(Blocks.COBBLESTONE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT.withAlternative(TemplateBlockType.FENCING.create()))
+                .configureBlock(Blocks.COBBLESTONE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT
+                        .withAlternative(TemplateBlockType.FENCING.create())
+                        .withPostProcessing())
                 .build()));
 
         context.register(BlueprintKeys.Room.STAIRCASE_UPPER, new Blueprint(new BlueprintConfiguration.Builder()

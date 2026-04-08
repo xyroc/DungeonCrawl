@@ -19,13 +19,32 @@
 package xiroc.dungeoncrawl.util;
 
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Rotation;
 
 public interface Orientation {
+    Direction[] HORIZONTAL_DIRECTIONS = {
+            Direction.NORTH,
+            Direction.EAST,
+            Direction.SOUTH,
+            Direction.WEST
+    };
+
+    /**
+     * Represents a uniform distribution over all horizontal directions.
+     *
+     * @param random The source of randomness.
+     * @return A random horizontal direction.
+     */
+    static Direction randomHorizontalDirection(RandomSource random) {
+        return HORIZONTAL_DIRECTIONS[random.nextInt(HORIZONTAL_DIRECTIONS.length)];
+    }
+
     /**
      * Determines the {@code Rotation} that must be applied to a {@code Direction} to end up at another.
+     *
      * @param from the direction to start off.
-     * @param to the direction we want to end up at.
+     * @param to   the direction we want to end up at.
      * @return The rotation necessary to do so.
      */
     static Rotation horizontalRotation(Direction from, Direction to) {
@@ -48,7 +67,7 @@ public interface Orientation {
      * Determines the number of 90 degree clockwise rotations needed to go from one direction to another.
      *
      * @param from The direction to start off.
-     * @param to The goal.
+     * @param to   The goal.
      * @return The number of rotations.
      */
     static int numberOfClockwise90DegreeRotations(Direction from, Direction to) {

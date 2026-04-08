@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.loot.LootTable;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
+import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
@@ -34,7 +35,11 @@ public record ChestComponent(Anchor placement, ResourceKey<LootTable> lootTable)
         if (!level.getBlockState(position.below()).isFaceSturdy(level, position.below(), Direction.UP)) {
             return;
         }
-        WorldEditor.Unsafe.placeBlock(level, position, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction()), false);
+        Direction facing = placement.direction();
+        if (!facing.getAxis().isHorizontal()) {
+            facing = Orientation.randomHorizontalDirection(random);
+        }
+        WorldEditor.Unsafe.placeBlock(level, position, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing), false);
         if (level.getBlockEntity(position) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) {
             randomizableContainerBlockEntity.setLootTable(lootTable);
         }

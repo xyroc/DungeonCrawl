@@ -1,0 +1,34 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:chest",
+      "chest": {},
+      "placement": {
+        "amount": {
+          "max": 2,
+          "min": 1
+        },
+        "positions": "dungeoncrawl:feature/chest"
+      }
+    }
+  ],
+  "parts": [
+    {
+      "positions": "dungeoncrawl:part/spawner_pillar",
+      "variants": [
+        "dungeoncrawl:room/fort/spawner_pillar"
+      ]
+    },
+    {
+      "positions": "dungeoncrawl:part/ceiling/7x7",
+      "variants": [
+        "dungeoncrawl:part/ceiling/7x7/flat",
+        {
+          "blueprint": "dungeoncrawl:part/ceiling/7x7/lava_pit",
+          "weight": 2
+        }
+      ]
+    }
+  ],
+  "template": "dungeoncrawl:room/fort"
+}

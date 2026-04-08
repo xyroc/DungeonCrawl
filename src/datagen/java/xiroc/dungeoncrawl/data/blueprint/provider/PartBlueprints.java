@@ -3,6 +3,7 @@ package xiroc.dungeoncrawl.data.blueprint.provider;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import xiroc.dungeoncrawl.data.DataGen;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
@@ -25,6 +26,18 @@ import java.util.Optional;
 public interface PartBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         final var blockStatePools = context.lookup(DatapackRegistries.BLOCK_STATE_POOLS);
+
+        context.register(BlueprintKeys.Part.CEILING_7X7_DOME, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_7X7_DOME)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CEILING_7X7_FLAT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_7X7_FLAT)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CEILING_7X7_LAVA_PIT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_7X7_LAVA_PIT)
+                .build()));
 
         context.register(BlueprintKeys.Part.DARK_HALL_OPEN, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.DARK_HALL_OPEN)
@@ -62,6 +75,14 @@ public interface PartBlueprints {
 
         context.register(BlueprintKeys.Part.FLOOR_5x5_FRAGILE, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.FLOOR_5x5)
+                .build()));
+
+        context.register(BlueprintKeys.Part.FORT_SPAWNER_PILLAR, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.FORT_SPAWNER_PILLAR)
+                .feature(new SpawnerFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/spawner")), new Constant(1)),
+                        new SpawnerSettings(Optional.empty())
+                ))
                 .build()));
 
         context.register(BlueprintKeys.Part.LAB_CONTAINER_CROPS, new Blueprint(new BlueprintConfiguration.Builder()

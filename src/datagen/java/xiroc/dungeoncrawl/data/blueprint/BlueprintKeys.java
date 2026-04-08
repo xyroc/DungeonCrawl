@@ -18,6 +18,7 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> DARK_HALL = key(TemplateKeys.Room.DARK_HALL);
         ResourceKey<Blueprint> DINER = key(TemplateKeys.Room.DINER);
         ResourceKey<Blueprint> ENIKO = key(TemplateKeys.Room.ENIKO);
+        ResourceKey<Blueprint> FORT = key(TemplateKeys.Room.FORT);
         ResourceKey<Blueprint> LIBRARY = key(TemplateKeys.Room.LIBRARY);
         ResourceKey<Blueprint> POTION_LAB = key(TemplateKeys.Room.POTION_LAB);
         ResourceKey<Blueprint> SARCOPHAGUS = key(TemplateKeys.Room.SARCOPHAGUS);
@@ -28,7 +29,10 @@ public interface BlueprintKeys {
     }
 
     interface Part {
-        ResourceLocation FLOOR_3X3 = TemplateKeys.Part.FLOOR_3X3;
+        ResourceKey<Blueprint> CEILING_7X7_DOME = key(TemplateKeys.Part.CEILING_7X7_DOME);
+        ResourceKey<Blueprint> CEILING_7X7_FLAT = key(TemplateKeys.Part.CEILING_7X7_FLAT);
+        ResourceKey<Blueprint> CEILING_7X7_LAVA_PIT = key(TemplateKeys.Part.CEILING_7X7_LAVA_PIT);
+
         ResourceKey<Blueprint> FLOOR_3x3_MASONRY = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "masonry"));
         ResourceKey<Blueprint> FLOOR_3x3_SOLID = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "solid"));
 
@@ -45,6 +49,8 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> DINER_OPEN = key(TemplateKeys.Part.DINER_OPEN);
         ResourceKey<Blueprint> DINER_CLOSED_TABLE = key(TemplateKeys.Part.DINER_CLOSED_TABLE);
         ResourceKey<Blueprint> DINER_CLOSED_STORAGE = key(TemplateKeys.Part.DINER_CLOSED_STORAGE);
+
+        ResourceKey<Blueprint> FORT_SPAWNER_PILLAR = key(TemplateKeys.Part.FORT_SPAWNER_PILLAR);
 
         ResourceLocation __LAB_CONTAINER = TemplateKeys.Part.__LAB_CONTAINER;
         ResourceKey<Blueprint> LAB_CONTAINER_CROPS = key(DataGen.resource(__LAB_CONTAINER, "crops"));

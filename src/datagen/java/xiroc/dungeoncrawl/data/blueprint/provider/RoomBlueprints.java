@@ -112,6 +112,21 @@ public interface RoomBlueprints {
                         .build()))
                 .build()));
 
+        context.register(BlueprintKeys.Room.FORT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.FORT)
+                .multipart(new BlueprintMultipart(DataGen.resource("part/spawner_pillar"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.FORT_SPAWNER_PILLAR))
+                        .build()))
+                .multipart(new BlueprintMultipart(DataGen.resource("part/ceiling/7x7"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_7X7_FLAT))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_7X7_LAVA_PIT), 2)
+                        .build()))
+                .feature(new ChestFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/chest")), new Range(1, 2)),
+                        new ChestSettings()
+                ))
+                .build()));
+
         context.register(BlueprintKeys.Room.LIBRARY, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.LIBRARY)
                 .entranceType(DataGen.resource("entrance"), null, new Entrance.CustomParts.Builder()

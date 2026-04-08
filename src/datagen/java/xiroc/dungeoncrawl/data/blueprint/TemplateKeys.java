@@ -19,19 +19,26 @@ public interface TemplateKeys {
         ResourceLocation DARK_HALL = DataGen.resource(__ROOM, "dark_hall");
         ResourceLocation DINER = DataGen.resource(__ROOM, "diner");
         ResourceLocation ENIKO = DataGen.resource(__ROOM, "eniko");
+        ResourceLocation FORT = DataGen.resource(__ROOM, "fort");
         ResourceLocation LIBRARY = DataGen.resource(__ROOM, "library");
         ResourceLocation POTION_LAB = DataGen.resource(__ROOM, "potion_lab");
         ResourceLocation SARCOPHAGUS = DataGen.resource(__ROOM, "sarcophagus");
         ResourceLocation SMITHY = DataGen.resource(__ROOM, "smithy");
         ResourceLocation STORAGE = DataGen.resource(__ROOM, "storage");
 
-        ResourceLocation __STAIRCASE =  DataGen.resource(__ROOM, "staircase");
+        ResourceLocation __STAIRCASE = DataGen.resource(__ROOM, "staircase");
         ResourceLocation STAIRCASE_LOWER = DataGen.resource(__STAIRCASE, "lower");
         ResourceLocation STAIRCASE_UPPER = DataGen.resource(__STAIRCASE, "upper");
     }
 
     interface Part {
         ResourceLocation __PART = DataGen.resource("part");
+
+        ResourceLocation __CEILING = DataGen.resource(__PART, "ceiling");
+        ResourceLocation __CEILING_7X7 = DataGen.resource(__CEILING, "7x7");
+        ResourceLocation CEILING_7X7_DOME = DataGen.resource(__CEILING_7X7, "dome");
+        ResourceLocation CEILING_7X7_FLAT = DataGen.resource(__CEILING_7X7, "flat");
+        ResourceLocation CEILING_7X7_LAVA_PIT = DataGen.resource(__CEILING_7X7, "lava_pit");
 
         ResourceLocation __FLOOR = DataGen.resource(__PART, "floor");
         ResourceLocation FLOOR_3X3 = DataGen.resource(__FLOOR, "3x3");
@@ -47,6 +54,8 @@ public interface TemplateKeys {
         ResourceLocation DINER_OPEN = DataGen.resource(Room.DINER, "open");
         ResourceLocation DINER_CLOSED_TABLE = DataGen.resource(Room.DINER, "closed/table");
         ResourceLocation DINER_CLOSED_STORAGE = DataGen.resource(Room.DINER, "closed/storage");
+
+        ResourceLocation FORT_SPAWNER_PILLAR = DataGen.resource(Room.FORT, "spawner_pillar");
 
         ResourceLocation __LAB = DataGen.resource(__PART, "lab");
         ResourceLocation __LAB_CONTAINER = DataGen.resource(__LAB, "container");

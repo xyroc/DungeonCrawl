@@ -1,0 +1,13 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:spawner",
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:feature/spawner"
+      },
+      "spawner": {}
+    }
+  ],
+  "template": "dungeoncrawl:room/fort/spawner_pillar"
+}

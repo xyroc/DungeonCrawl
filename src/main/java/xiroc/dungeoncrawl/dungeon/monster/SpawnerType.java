@@ -169,9 +169,10 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         @Nullable
         private SpawnData.CustomSpawnRules spawnRules;
         @Nullable
-        private Short activationRange = 0;
+        private Short activationRange = null;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         public Builder entities(IRandom.Builder<Holder<SpawnerEntityType>> entities) {
             this.entities = entities;

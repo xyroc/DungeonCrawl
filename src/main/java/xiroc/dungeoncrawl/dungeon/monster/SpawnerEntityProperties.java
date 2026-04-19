@@ -7,6 +7,7 @@ import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.entity.EquipmentTable;
 import net.minecraft.world.item.Item;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
+import xiroc.dungeoncrawl.dungeon.monster.attribute.RandomizedAttributeMap;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 import javax.annotation.Nullable;
@@ -18,7 +19,8 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                                       Optional<IRandom<Item>> chestplate,
                                       Optional<IRandom<Item>> leggings,
                                       Optional<IRandom<Item>> boots,
-                                      Optional<EquipmentTable> drops) {
+                                      Optional<EquipmentTable> drops,
+                                      Optional<RandomizedAttributeMap> attributes) {
     public static final Codec<SpawnerEntityProperties> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("main_hand").forGetter(SpawnerEntityProperties::mainHand),
@@ -27,7 +29,8 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("chestplate").forGetter(SpawnerEntityProperties::chestplate),
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("leggings").forGetter(SpawnerEntityProperties::leggings),
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("boots").forGetter(SpawnerEntityProperties::boots),
-                    EquipmentTable.CODEC.optionalFieldOf("drops").forGetter(SpawnerEntityProperties::drops)
+                    EquipmentTable.CODEC.optionalFieldOf("drops").forGetter(SpawnerEntityProperties::drops),
+                    RandomizedAttributeMap.CODEC.optionalFieldOf("attributes").forGetter(SpawnerEntityProperties::attributes)
             ).apply(instance, SpawnerEntityProperties::new));
 
     public static final Codec<Holder<SpawnerEntityProperties>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, DIRECT_CODEC, true);
@@ -49,6 +52,9 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
 
         @Nullable
         private EquipmentTable drops = null;
+
+        @Nullable
+        private RandomizedAttributeMap attributes = null;
 
         public Builder() {
         }
@@ -98,6 +104,11 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
             return this;
         }
 
+        public Builder attributes(RandomizedAttributeMap attributeMap) {
+            this.attributes = attributeMap;
+            return this;
+        }
+
         public SpawnerEntityProperties build() {
             return new SpawnerEntityProperties(
                     Optional.ofNullable(mainHand).map(IRandom.Builder::build),
@@ -106,7 +117,8 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                     Optional.ofNullable(chestplate).map(IRandom.Builder::build),
                     Optional.ofNullable(leggings).map(IRandom.Builder::build),
                     Optional.ofNullable(boots).map(IRandom.Builder::build),
-                    Optional.ofNullable(drops));
+                    Optional.ofNullable(drops),
+                    Optional.ofNullable(attributes));
         }
     }
 }

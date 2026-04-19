@@ -3,7 +3,9 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -12,12 +14,19 @@ import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentTable;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
+import xiroc.dungeoncrawl.dungeon.monster.attribute.RandomizedAttributeMap;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
@@ -67,6 +76,7 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
             entity.putString("id", entityType.entity().location().toString());
 
             putEquipment(entity, entityType, random, stage, registryAccess);
+            putAttributes(entity, entityType, random, registryAccess);
             final Optional<EquipmentTable> drops = property(entityType, SpawnerEntityProperties::drops);
 
             if (!Config.NATURAL_DESPAWN.get()) {
@@ -112,6 +122,28 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, offHand.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
 
         nbt.put("HandItems", handItems);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void putAttributes(CompoundTag entityNbt, SpawnerEntityType entityType, RandomSource randomSource, RegistryAccess registryAccess) {
+        RandomizedAttributeMap attributes = property(entityType, SpawnerEntityProperties::attributes).orElse(null);
+        if (attributes == null) {
+            return;
+        }
+        Registry<EntityType<?>> entityTypes = registryAccess.registryOrThrow(Registries.ENTITY_TYPE);
+        try {
+            EntityType<? extends LivingEntity> entity = (EntityType<? extends LivingEntity>) entityTypes.get(entityType.entity());
+            if (entity == null) {
+                return;
+            }
+            AttributeMap mobAttributes = new AttributeMap(DefaultAttributes.getSupplier(entity));
+            attributes.applyRandomModifiers(mobAttributes, randomSource);
+            entityNbt.put("attributes", mobAttributes.save());
+            // Set health to max health in case it was modified
+            entityNbt.putFloat("Health", (float) (mobAttributes.getValue(Attributes.MAX_HEALTH)));
+        } catch (ClassCastException ignored) {
+            DungeonCrawl.LOGGER.warn("Cannot apply attribute modifications to entity of type {}", entityType.entity());
+        }
     }
 
     private <T> Optional<T> property(SpawnerEntityType entityType, Function<SpawnerEntityProperties, Optional<T>> mapper) {

@@ -71,8 +71,9 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         SpawnerEntityType entityType = entities.roll(random).value();
         SimpleWeightedRandomList.Builder<SpawnData> potentialSpawns = SimpleWeightedRandomList.builder();
         for (int i = 0; i < Config.SPAWNER_ENTITIES.getAsInt(); ++i) {
-            CompoundTag entity = new CompoundTag();
-
+            CompoundTag entity = property(entityType, SpawnerEntityProperties::nbt)
+                    .map(CompoundTag::copy)
+                    .orElseGet(CompoundTag::new);
             entity.putString("id", entityType.entity().location().toString());
 
             putEquipment(entity, entityType, random, stage, registryAccess);

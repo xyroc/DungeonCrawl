@@ -3,14 +3,15 @@ package xiroc.dungeoncrawl.dungeon.monster;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.entity.EquipmentTable;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.monster.attribute.RandomizedAttributeMap;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
@@ -20,7 +21,8 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                                       Optional<IRandom<Item>> leggings,
                                       Optional<IRandom<Item>> boots,
                                       Optional<EquipmentTable> drops,
-                                      Optional<RandomizedAttributeMap> attributes) {
+                                      Optional<RandomizedAttributeMap> attributes,
+                                      Optional<CompoundTag> nbt) {
     public static final Codec<SpawnerEntityProperties> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("main_hand").forGetter(SpawnerEntityProperties::mainHand),
@@ -30,7 +32,8 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("leggings").forGetter(SpawnerEntityProperties::leggings),
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("boots").forGetter(SpawnerEntityProperties::boots),
                     EquipmentTable.CODEC.optionalFieldOf("drops").forGetter(SpawnerEntityProperties::drops),
-                    RandomizedAttributeMap.CODEC.optionalFieldOf("attributes").forGetter(SpawnerEntityProperties::attributes)
+                    RandomizedAttributeMap.CODEC.optionalFieldOf("attributes").forGetter(SpawnerEntityProperties::attributes),
+                    CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(SpawnerEntityProperties::nbt)
             ).apply(instance, SpawnerEntityProperties::new));
 
     public static final Codec<Holder<SpawnerEntityProperties>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, DIRECT_CODEC, true);
@@ -55,6 +58,9 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
 
         @Nullable
         private RandomizedAttributeMap attributes = null;
+
+        @Nullable
+        private CompoundTag nbt = null;
 
         public Builder() {
         }
@@ -109,6 +115,11 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
             return this;
         }
 
+        public Builder nbtData(CompoundTag nbt) {
+            this.nbt = nbt;
+            return this;
+        }
+
         public SpawnerEntityProperties build() {
             return new SpawnerEntityProperties(
                     Optional.ofNullable(mainHand).map(IRandom.Builder::build),
@@ -118,7 +129,8 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                     Optional.ofNullable(leggings).map(IRandom.Builder::build),
                     Optional.ofNullable(boots).map(IRandom.Builder::build),
                     Optional.ofNullable(drops),
-                    Optional.ofNullable(attributes));
+                    Optional.ofNullable(attributes),
+                    Optional.ofNullable(nbt));
         }
     }
 }

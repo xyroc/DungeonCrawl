@@ -92,6 +92,7 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         nbt.putShort("MinSpawnDelay", (short) spawnDelay.min());
         nbt.putShort("MaxSpawnDelay", (short) spawnDelay.max());
         nbt.putShort("SpawnCount", (short) spawnAmount.nextInt(random));
+        nbt.putShort("MaxNearbyEntities", (short) 8);
         nbt.putShort("RequiredPlayerRange", activationRange.orElse(Config.SPAWNER_RANGE.get().shortValue()));
         nbt.putShort("SpawnDelay", (short) initialSpawnDelay.orElse(spawnDelay).nextInt(random));
         return nbt;

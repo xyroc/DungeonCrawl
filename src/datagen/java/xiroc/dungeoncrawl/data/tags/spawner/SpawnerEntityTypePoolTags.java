@@ -23,6 +23,12 @@ public class SpawnerEntityTypePoolTags extends TagsProvider<IRandom<Holder<Spawn
 
     public static final TagKey<IRandom<Holder<SpawnerEntityType>>> LEVEL_0 = key(SpawnerEntityTypePoolKeys.LEVEL_0.location());
 
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_0 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_0.location());
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_1 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_1.location());
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_2 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_2.location());
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_3 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_3.location());
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_4 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4.location());
+
     private static TagKey<IRandom<Holder<SpawnerEntityType>>> key(ResourceLocation identifier) {
         return TagKey.create(DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS, identifier);
     }
@@ -31,5 +37,17 @@ public class SpawnerEntityTypePoolTags extends TagsProvider<IRandom<Holder<Spawn
     protected void addTags(HolderLookup.Provider provider) {
         tag(LEVEL_0)
                 .add(SpawnerEntityTypePoolKeys.LEVEL_0);
+
+        tag(CAVE_SPIDER_LEVEL_0)
+                .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_0);
+        tag(CAVE_SPIDER_LEVEL_1)
+                .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_1);
+        tag(CAVE_SPIDER_LEVEL_2)
+                .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_2);
+        tag(CAVE_SPIDER_LEVEL_3)
+                .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_3);
+        tag(CAVE_SPIDER_LEVEL_4)
+                .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4);
+
     }
 }

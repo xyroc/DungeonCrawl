@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "pools": "#dungeoncrawl:cave_spider/level_4"
+  },
+  "initial_spawn_delay": {
+    "max": 20,
+    "min": 5
+  },
+  "max_light_level": {
+    "sky_light_limit": [
+      0,
+      10
+    ]
+  },
+  "spawn_amount": {
+    "max": 3,
+    "min": 2
+  },
+  "spawn_delay": {
+    "max": 140,
+    "min": 100
+  }
+}

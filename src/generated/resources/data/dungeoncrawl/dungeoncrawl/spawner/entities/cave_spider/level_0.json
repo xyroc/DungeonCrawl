@@ -1,0 +1,12 @@
+{
+  "entity_type": "minecraft:cave_spider",
+  "properties": {
+    "helmet": {
+      "pools": "#dungeoncrawl:monster_equipment/helmet/level_0"
+    },
+    "main_hand": [
+      "minecraft:wooden_hoe",
+      "minecraft:wooden_shovel"
+    ]
+  }
+}

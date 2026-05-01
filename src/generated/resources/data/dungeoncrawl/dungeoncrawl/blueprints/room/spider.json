@@ -1,0 +1,66 @@
+{
+  "block_types": {
+    "minecraft:air": {
+      "type": "dungeoncrawl:block",
+      "block": [
+        {
+          "block": "minecraft:cave_air",
+          "weight": 5
+        },
+        {
+          "block": "minecraft:cobweb",
+          "weight": 10
+        },
+        {
+          "block": "minecraft:gravel",
+          "weight": 3
+        }
+      ]
+    }
+  },
+  "features": [
+    {
+      "type": "dungeoncrawl:chest",
+      "chest": {},
+      "placement": {
+        "amount": {
+          "max": 3,
+          "min": 2
+        },
+        "positions": "dungeoncrawl:feature/chest"
+      }
+    },
+    {
+      "type": "dungeoncrawl:spawner",
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:feature/spawner"
+      },
+      "spawner": {
+        "type": {
+          "0": [
+            "dungeoncrawl:cave_spider/level_0"
+          ],
+          "1": [
+            "dungeoncrawl:cave_spider/level_1"
+          ],
+          "2": [
+            "dungeoncrawl:cave_spider/level_2"
+          ],
+          "3": [
+            "dungeoncrawl:cave_spider/level_3"
+          ],
+          "4": [
+            "dungeoncrawl:cave_spider/level_4"
+          ]
+        }
+      }
+    }
+  ],
+  "placement_settings": {
+    "minecraft:air": {
+      "fill_air": true
+    }
+  },
+  "template": "dungeoncrawl:room/spider"
+}

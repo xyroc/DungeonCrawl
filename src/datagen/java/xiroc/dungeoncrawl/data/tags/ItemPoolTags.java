@@ -27,12 +27,28 @@ public class ItemPoolTags extends TagsProvider<IRandom<Item>> {
     public static final TagKey<IRandom<Item>> MAIN_HAND_LEVEL_0 = key(ItemPoolKeys.MAIN_HAND_LEVEL_0.location());
     public static final TagKey<IRandom<Item>> MAIN_HAND_LEVEL_1 = key(ItemPoolKeys.MAIN_HAND_LEVEL_1.location());
 
+    public static final TagKey<IRandom<Item>> HELMET_LEVEL_0 = key(ItemPoolKeys.HELMET_LEVEL_0.location());
+    public static final TagKey<IRandom<Item>> HELMET_LEVEL_1 = key(ItemPoolKeys.HELMET_LEVEL_1.location());
+    public static final TagKey<IRandom<Item>> HELMET_LEVEL_2 = key(ItemPoolKeys.HELMET_LEVEL_2.location());
+    public static final TagKey<IRandom<Item>> HELMET_LEVEL_3 = key(ItemPoolKeys.HELMET_LEVEL_3.location());
+    public static final TagKey<IRandom<Item>> HELMET_LEVEL_4 = key(ItemPoolKeys.HELMET_LEVEL_4.location());
+
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(MAIN_HAND_LEVEL_0)
                 .add(ItemPoolKeys.MAIN_HAND_LEVEL_0);
-
         tag(MAIN_HAND_LEVEL_1)
                 .add(ItemPoolKeys.MAIN_HAND_LEVEL_1);
+
+        tag(HELMET_LEVEL_0)
+                .add(ItemPoolKeys.HELMET_LEVEL_0);
+        tag(HELMET_LEVEL_1)
+                .add(ItemPoolKeys.HELMET_LEVEL_1);
+        tag(HELMET_LEVEL_2)
+                .add(ItemPoolKeys.HELMET_LEVEL_2);
+        tag(HELMET_LEVEL_3)
+                .add(ItemPoolKeys.HELMET_LEVEL_3);
+        tag(HELMET_LEVEL_4)
+                .add(ItemPoolKeys.HELMET_LEVEL_4);
     }
 }

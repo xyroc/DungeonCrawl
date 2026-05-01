@@ -26,6 +26,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.FixedTemplateBlockType;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
+import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.tier.TieredResource;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.Constant;
@@ -37,6 +38,7 @@ public interface RoomBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         final var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);
         final var blueprintPools = context.lookup(DatapackRegistries.BLUEPRINT_POOLS);
+        final var spawnerTypes = context.lookup(DatapackRegistries.SPAWNER_TYPE);
 
         context.register(BlueprintKeys.Room.BEDROOM, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.BEDROOM)
@@ -185,6 +187,39 @@ public interface RoomBlueprints {
                 .noGlobalDefaultPlacementSettings()
                 .configureBlock(Blocks.COBBLESTONE, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
                 .configureBlock(Blocks.COBBLESTONE_STAIRS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+                .build()));
+
+        context.register(BlueprintKeys.Room.SPIDER, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.SPIDER)
+                .feature(new ChestFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/chest")), new Range(2, 3)),
+                        new ChestSettings()
+                ))
+                .feature(new SpawnerFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/spawner")), new Constant(1)),
+                        new SpawnerSettings(Optional.of(new TieredResource.Builder<>(IRandom.<Holder<SpawnerType>>builder()
+                                .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_0))
+                                .build())
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_1))
+                                        .build(), 1)
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_2))
+                                        .build(), 2)
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_3))
+                                        .build(), 3)
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_4))
+                                        .build(), 4)
+                                .build()))
+                ))
+                .mapBlock(Blocks.AIR, new FixedTemplateBlockType(new RandomBlock(IRandom.<BlockState>builder()
+                        .add(Blocks.CAVE_AIR.defaultBlockState(), 5)
+                        .add(Blocks.COBWEB.defaultBlockState(), 10)
+                        .add(Blocks.GRAVEL.defaultBlockState(), 3)
+                        .build())))
+                .configureBlock(Blocks.AIR, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
                 .build()));
 
         // TODO: map cobblestone and entrance types

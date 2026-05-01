@@ -14,5 +14,25 @@ public interface SpawnerEntityTypePools {
         context.register(SpawnerEntityTypePoolKeys.LEVEL_0, IRandom.<Holder<SpawnerEntityType>>builder()
                 .add(spawnerEntities.getOrThrow(SharedKeys.Spawner.EntityType.ZOMBIE))
                 .build());
+
+        context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_0, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_0))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_1, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_1))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_2, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_2))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_3, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_3))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_4))
+                .build());
     }
 }

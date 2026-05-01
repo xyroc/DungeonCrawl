@@ -23,6 +23,7 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> POTION_LAB = key(TemplateKeys.Room.POTION_LAB);
         ResourceKey<Blueprint> SARCOPHAGUS = key(TemplateKeys.Room.SARCOPHAGUS);
         ResourceKey<Blueprint> SMITHY = key(TemplateKeys.Room.SMITHY);
+        ResourceKey<Blueprint> SPIDER = key(TemplateKeys.Room.SPIDER);
         ResourceKey<Blueprint> STAIRCASE_LOWER = key(TemplateKeys.Room.STAIRCASE_LOWER);
         ResourceKey<Blueprint> STAIRCASE_UPPER = key(TemplateKeys.Room.STAIRCASE_UPPER);
         ResourceKey<Blueprint> STORAGE = key(TemplateKeys.Room.STORAGE);

@@ -1,0 +1,23 @@
+{
+  "entity_type": "minecraft:cave_spider",
+  "properties": {
+    "helmet": {
+      "pools": "#dungeoncrawl:monster_equipment/helmet/level_4"
+    },
+    "main_hand": [
+      {
+        "item": "minecraft:stone_axe",
+        "weight": 2
+      },
+      {
+        "item": "minecraft:iron_axe",
+        "weight": 4
+      },
+      {
+        "item": "minecraft:diamond_axe",
+        "weight": 2
+      },
+      "minecraft:netherite_axe"
+    ]
+  }
+}

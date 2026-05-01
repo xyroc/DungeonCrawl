@@ -1,0 +1,12 @@
+[
+  "minecraft:chainmail_helmet",
+  {
+    "item": "minecraft:golden_helmet",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_helmet",
+    "weight": 3
+  },
+  "minecraft:diamond_helmet"
+]

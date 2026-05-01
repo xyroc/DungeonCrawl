@@ -8,9 +8,9 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 public interface ItemPoolKeys {
-    ResourceLocation __EQUIPMENT = DataGen.resource("equipment");
-    ResourceLocation __MAIN_HAND = DataGen.resource(__EQUIPMENT, "main_hand");
+    ResourceLocation __EQUIPMENT = DataGen.resource("monster_equipment");
 
+    ResourceLocation __MAIN_HAND = DataGen.resource(__EQUIPMENT, "main_hand");
     ResourceKey<IRandom<Item>> MAIN_HAND_LEVEL_0 = key(DataGen.resourceLevel(__MAIN_HAND, 0));
     ResourceKey<IRandom<Item>> MAIN_HAND_LEVEL_1 = key(DataGen.resourceLevel(__MAIN_HAND, 1));
 

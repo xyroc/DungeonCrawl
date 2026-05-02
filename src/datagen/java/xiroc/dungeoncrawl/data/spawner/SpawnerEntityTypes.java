@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.tags.ItemPoolTags;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityProperties;
@@ -18,7 +17,7 @@ public interface SpawnerEntityTypes {
     static void generate(BootstrapContext<SpawnerEntityType> context) {
         var itemPools = context.lookup(DatapackRegistries.ITEM_POOLS);
 
-        context.register(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_0, new SpawnerEntityType.Builder()
+        context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_0, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
                         .helmet(IRandom.<Item>builder()
@@ -29,7 +28,7 @@ public interface SpawnerEntityTypes {
                         .build()))
                 .build());
 
-        context.register(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_1, new SpawnerEntityType.Builder()
+        context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_1, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
                         .helmet(IRandom.<Item>builder()
@@ -40,7 +39,7 @@ public interface SpawnerEntityTypes {
                         .build()))
                 .build());
 
-        context.register(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_2, new SpawnerEntityType.Builder()
+        context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_2, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
                         .helmet(IRandom.<Item>builder()
@@ -53,7 +52,7 @@ public interface SpawnerEntityTypes {
                         .build()))
                 .build());
 
-        context.register(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_3, new SpawnerEntityType.Builder()
+        context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_3, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
                         .helmet(IRandom.<Item>builder()
@@ -64,7 +63,7 @@ public interface SpawnerEntityTypes {
                         .build()))
                 .build());
 
-        context.register(SharedKeys.Spawner.EntityType.CAVE_SPIDER_LEVEL_4, new SpawnerEntityType.Builder()
+        context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_4, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
                         .helmet(IRandom.<Item>builder()
@@ -77,7 +76,7 @@ public interface SpawnerEntityTypes {
                         .build()))
                 .build());
 
-        context.register(SharedKeys.Spawner.EntityType.ZOMBIE, new SpawnerEntityType.Builder()
+        context.register(SpawnerEntityTypeKeys.ZOMBIE, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.ZOMBIE))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
                         .helmet(IRandom.<Item>builder()

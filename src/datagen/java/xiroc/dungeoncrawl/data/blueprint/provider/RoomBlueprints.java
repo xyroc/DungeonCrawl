@@ -10,6 +10,7 @@ import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
 import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
+import xiroc.dungeoncrawl.data.spawner.SpawnerTypeKeys;
 import xiroc.dungeoncrawl.data.tags.BlueprintPoolTags;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
@@ -198,19 +199,19 @@ public interface RoomBlueprints {
                 .feature(new SpawnerFeature(
                         new PlacementSettings(Optional.of(DataGen.resource("feature/spawner")), new Constant(1)),
                         new SpawnerSettings(Optional.of(new TieredResource.Builder<>(IRandom.<Holder<SpawnerType>>builder()
-                                .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_0))
+                                .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_0))
                                 .build())
                                 .tier(IRandom.<Holder<SpawnerType>>builder()
-                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_1))
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_1))
                                         .build(), 1)
                                 .tier(IRandom.<Holder<SpawnerType>>builder()
-                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_2))
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_2))
                                         .build(), 2)
                                 .tier(IRandom.<Holder<SpawnerType>>builder()
-                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_3))
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_3))
                                         .build(), 3)
                                 .tier(IRandom.<Holder<SpawnerType>>builder()
-                                        .add(spawnerTypes.getOrThrow(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_4))
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_4))
                                         .build(), 4)
                                 .build()))
                 ))

@@ -140,7 +140,12 @@ public class DataGen {
         return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/" + name);
     }
 
+    public static ResourceLocation resourceLevel(int level) {
+        return resource("level_" + level);
+    }
+
     public static ResourceLocation resourceLevel(ResourceLocation directory, int level) {
-        return ResourceLocation.fromNamespaceAndPath(directory.getNamespace(), directory.getPath() + "/level_" + level);
+        ResourceLocation resourceLevel = resourceLevel(level);
+        return resource(directory, resourceLevel.getPath());
     }
 }

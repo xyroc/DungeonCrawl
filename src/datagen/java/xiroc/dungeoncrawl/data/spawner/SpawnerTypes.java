@@ -18,7 +18,7 @@ public interface SpawnerTypes {
         var spawnerEntityTypes = context.lookup(DatapackRegistries.SPAWNER_ENTITY_TYPE);
         var spawnerEntityTypePools = context.lookup(DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS);
 
-        context.register(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_0, new SpawnerType.Builder()
+        context.register(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_0, new SpawnerType.Builder()
                 .entities(IRandom.<Holder<SpawnerEntityType>>builder()
                         .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.CAVE_SPIDER_LEVEL_0)))
                 .spawnAmount(new Range(1, 3))
@@ -26,7 +26,7 @@ public interface SpawnerTypes {
                 .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 12), new InclusiveRange<>(0, 10)))
                 .build());
 
-        context.register(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_1, new SpawnerType.Builder()
+        context.register(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_1, new SpawnerType.Builder()
                 .entities(IRandom.<Holder<SpawnerEntityType>>builder()
                         .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.CAVE_SPIDER_LEVEL_1)))
                 .spawnAmount(new Range(1, 3))
@@ -34,7 +34,7 @@ public interface SpawnerTypes {
                 .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 12), new InclusiveRange<>(0, 10)))
                 .build());
 
-        context.register(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_2, new SpawnerType.Builder()
+        context.register(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_2, new SpawnerType.Builder()
                 .entities(IRandom.<Holder<SpawnerEntityType>>builder()
                         .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.CAVE_SPIDER_LEVEL_2)))
                 .spawnAmount(new Range(1, 3))
@@ -42,7 +42,7 @@ public interface SpawnerTypes {
                 .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 12), new InclusiveRange<>(0, 10)))
                 .build());
 
-        context.register(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_3, new SpawnerType.Builder()
+        context.register(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_3, new SpawnerType.Builder()
                 .entities(IRandom.<Holder<SpawnerEntityType>>builder()
                         .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.CAVE_SPIDER_LEVEL_3)))
                 .spawnAmount(new Range(2, 3))
@@ -50,7 +50,7 @@ public interface SpawnerTypes {
                 .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 12), new InclusiveRange<>(0, 10)))
                 .build());
 
-        context.register(SharedKeys.Spawner.Type.CAVE_SPIDER_LEVEL_4, new SpawnerType.Builder()
+        context.register(SpawnerTypeKeys.CAVE_SPIDER_LEVEL_4, new SpawnerType.Builder()
                 .entities(IRandom.<Holder<SpawnerEntityType>>builder()
                         .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.CAVE_SPIDER_LEVEL_4)))
                 .spawnAmount(new Range(2, 3))
@@ -58,11 +58,11 @@ public interface SpawnerTypes {
                 .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 15), new InclusiveRange<>(0, 10)))
                 .build());
 
-        context.register(SharedKeys.Spawner.Type.DEFAULT, new SpawnerType.Builder()
-                        .entities(IRandom.<Holder<SpawnerEntityType>>builder()
-                                .add(spawnerEntityTypes.getOrThrow(SharedKeys.Spawner.EntityType.ZOMBIE)))
-                        .spawnAmount(new Range(1, 2))
-                        .spawnDelay(new Range(100, 200))
+        context.register(SpawnerTypeKeys.DEFAULT, new SpawnerType.Builder()
+                .entities(IRandom.<Holder<SpawnerEntityType>>builder()
+                        .add(spawnerEntityTypes.getOrThrow(SpawnerEntityTypeKeys.ZOMBIE)))
+                .spawnAmount(new Range(1, 2))
+                .spawnDelay(new Range(100, 200))
                 .build());
     }
 }

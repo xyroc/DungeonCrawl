@@ -5,6 +5,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
+import xiroc.dungeoncrawl.data.spawner.SpawnerTypeKeys;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
@@ -67,7 +68,7 @@ public interface LevelTypes {
                                 .add(blueprints.getOrThrow(BlueprintKeys.Corridor.Side.DOOR))
                                 .build()))
                 .spawnerTypes(new IRandom.Builder<Holder<SpawnerType>>()
-                        .add(spawnerTypes.get(SharedKeys.Spawner.Type.DEFAULT).orElseThrow()))
+                        .add(spawnerTypes.get(SpawnerTypeKeys.DEFAULT).orElseThrow()))
                 .lootTable(ChestLootTableKeys.FOOD_LEVEL_0)
                 .secretRoom(new SecretRoom.Builder()
                         .amount(new Constant(1))

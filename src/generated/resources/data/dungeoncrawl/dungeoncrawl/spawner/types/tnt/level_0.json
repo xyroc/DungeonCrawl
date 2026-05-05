@@ -1,0 +1,27 @@
+{
+  "activation_range": 5,
+  "entities": [
+    {
+      "type": {
+        "entity_type": "minecraft:tnt",
+        "properties": {
+          "nbt": {
+            "fuse": 80
+          }
+        }
+      }
+    }
+  ],
+  "initial_spawn_delay": {
+    "max": 15,
+    "min": 5
+  },
+  "spawn_amount": {
+    "max": 3,
+    "min": 1
+  },
+  "spawn_delay": {
+    "max": 400,
+    "min": 200
+  }
+}

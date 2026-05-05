@@ -1,34 +1,38 @@
 package xiroc.dungeoncrawl.datapack;
 
 public interface DatapackDirectories {
-    DatapackDirectory DUNGEON = new DatapackDirectory("dungeon");
-    DatapackDirectory DUNGEON_TYPES = DUNGEON.subdirectory("types");
-    DatapackDirectory DUNGEON_LAYER = DUNGEON.subdirectory("layer");
+    DatapackDirectory __DUNGEON__ = new DatapackDirectory("dungeon");
+    DatapackDirectory DUNGEON_TYPES = __DUNGEON__.subdirectory("types");
+    DatapackDirectory DUNGEON_LAYER = __DUNGEON__.subdirectory("layer");
     DatapackDirectory DUNGEON_LAYER_TYPES = DUNGEON_LAYER.subdirectory("types");
 
     DatapackDirectory BLUEPRINTS = new DatapackDirectory("blueprints");
 
-    DatapackDirectory THEMES = new DatapackDirectory("themes");
-    DatapackDirectory PRIMARY_THEMES = THEMES.subdirectory("primary");
-    DatapackDirectory SECONDARY_THEMES = THEMES.subdirectory("secondary");
+    DatapackDirectory __THEMES__ = new DatapackDirectory("themes");
+    DatapackDirectory PRIMARY_THEMES = __THEMES__.subdirectory("primary");
+    DatapackDirectory SECONDARY_THEMES = __THEMES__.subdirectory("secondary");
 
-    DatapackDirectory SPAWNER = new DatapackDirectory("spawner");
-    DatapackDirectory SPAWNER_TYPES = SPAWNER.subdirectory("types");
-    DatapackDirectory SPAWNER_ENTITIES = SPAWNER.subdirectory("entities");
-    DatapackDirectory SPAWNER_ENTITY_PROPERTIES = SPAWNER.subdirectory("profiles");
+    DatapackDirectory __SPAWNER__ = new DatapackDirectory("spawner");
+    DatapackDirectory SPAWNER_TYPES = __SPAWNER__.subdirectory("types");
+    DatapackDirectory SPAWNER_ENTITIES = __SPAWNER__.subdirectory("entities");
+    DatapackDirectory SPAWNER_ENTITY_PROPERTIES = __SPAWNER__.subdirectory("profiles");
 
-    DatapackDirectory MAPPINGS = new DatapackDirectory("mappings");
-    DatapackDirectory PRIMARY_THEME_MAPPINGS = MAPPINGS.subdirectory("primary_theme");
-    DatapackDirectory SECONDARY_THEME_MAPPINGS = MAPPINGS.subdirectory("secondary_theme");
-    DatapackDirectory DUNGEON_TYPE_MAPPINGS = MAPPINGS.subdirectory("dungeon_type");
+    DatapackDirectory __MAPPINGS__ = new DatapackDirectory("mappings");
+    DatapackDirectory PRIMARY_THEME_MAPPINGS = __MAPPINGS__.subdirectory("primary_theme");
+    DatapackDirectory SECONDARY_THEME_MAPPINGS = __MAPPINGS__.subdirectory("secondary_theme");
+    DatapackDirectory DUNGEON_TYPE_MAPPINGS = __MAPPINGS__.subdirectory("dungeon_type");
 
-    DatapackDirectory POOLS = new DatapackDirectory("pools");
-    DatapackDirectory BLOCK_STATE_POOLS = POOLS.subdirectory("block");
-    DatapackDirectory BLUEPRINT_POOLS = POOLS.subdirectory("blueprint");
-    DatapackDirectory DUNGEON_TYPE_POOLS = POOLS.subdirectory("dungeon_type");
-    DatapackDirectory ITEM_POOLS = POOLS.subdirectory("item");
-    DatapackDirectory PRIMARY_THEME_POOLS = POOLS.subdirectory("primary_theme");
-    DatapackDirectory SECONDARY_THEME_POOLS = POOLS.subdirectory("secondary_theme");
-    DatapackDirectory SPAWNER_ENTITY_TYPE_POOLS = POOLS.subdirectory("spawner_entity_type");
-    DatapackDirectory SPAWNER_TYPE_POOLS = POOLS.subdirectory("spawner_type");
+    DatapackDirectory __POOLS__ = new DatapackDirectory("pool");
+    DatapackDirectory BLOCK_STATE_POOLS = __POOLS__.subdirectory("block");
+    DatapackDirectory BLUEPRINT_POOLS = __POOLS__.subdirectory("blueprint");
+    DatapackDirectory DUNGEON_TYPE_POOLS = __POOLS__.subdirectory("dungeon_type");
+    DatapackDirectory ITEM_POOLS = __POOLS__.subdirectory("item");
+
+    DatapackDirectory __THEME_POOLS__ = __POOLS__.subdirectory("theme");
+    DatapackDirectory PRIMARY_THEME_POOLS = __THEME_POOLS__.subdirectory("primary");
+    DatapackDirectory SECONDARY_THEME_POOLS = __THEME_POOLS__.subdirectory("theme");
+
+    DatapackDirectory __SPAWNER_POOLS__ = __POOLS__.subdirectory("spawner");
+    DatapackDirectory SPAWNER_ENTITY_TYPE_POOLS = __SPAWNER_POOLS__.subdirectory("entity");
+    DatapackDirectory SPAWNER_TYPE_POOLS = __SPAWNER_POOLS__.subdirectory("type");
 }

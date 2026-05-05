@@ -13,9 +13,9 @@ public interface DatapackDirectories {
     DatapackDirectory SECONDARY_THEMES = __THEMES__.subdirectory("secondary");
 
     DatapackDirectory __SPAWNER__ = new DatapackDirectory("spawner");
-    DatapackDirectory SPAWNER_TYPES = __SPAWNER__.subdirectory("types");
-    DatapackDirectory SPAWNER_ENTITIES = __SPAWNER__.subdirectory("entities");
-    DatapackDirectory SPAWNER_ENTITY_PROPERTIES = __SPAWNER__.subdirectory("profiles");
+    DatapackDirectory SPAWNER_TYPES = __SPAWNER__.subdirectory("type");
+    DatapackDirectory SPAWNER_ENTITIES = __SPAWNER__.subdirectory("entity");
+    DatapackDirectory SPAWNER_ENTITY_PROPERTIES = __SPAWNER__.subdirectory("entity_profile");
 
     DatapackDirectory __MAPPINGS__ = new DatapackDirectory("mappings");
     DatapackDirectory PRIMARY_THEME_MAPPINGS = __MAPPINGS__.subdirectory("primary_theme");

@@ -24,8 +24,8 @@ public class ItemPoolTags extends TagsProvider<IRandom<Item>> {
         return TagKey.create(DatapackRegistries.ITEM_POOLS, identifier);
     }
 
-    public static final TagKey<IRandom<Item>> MAIN_HAND_LEVEL_0 = key(ItemPoolKeys.MAIN_HAND_LEVEL_0.location());
-    public static final TagKey<IRandom<Item>> MAIN_HAND_LEVEL_1 = key(ItemPoolKeys.MAIN_HAND_LEVEL_1.location());
+    public static final TagKey<IRandom<Item>> MELEE_WEAPON_LEVEL_0 = key(ItemPoolKeys.MELEE_WEAPON_LEVEL_0.location());
+    public static final TagKey<IRandom<Item>> MELEE_WEAPON_LEVEL_1 = key(ItemPoolKeys.MELEE_WEAPON_LEVEL_1.location());
 
     public static final TagKey<IRandom<Item>> HELMET_LEVEL_0 = key(ItemPoolKeys.HELMET_LEVEL_0.location());
     public static final TagKey<IRandom<Item>> HELMET_LEVEL_1 = key(ItemPoolKeys.HELMET_LEVEL_1.location());
@@ -35,10 +35,10 @@ public class ItemPoolTags extends TagsProvider<IRandom<Item>> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(MAIN_HAND_LEVEL_0)
-                .add(ItemPoolKeys.MAIN_HAND_LEVEL_0);
-        tag(MAIN_HAND_LEVEL_1)
-                .add(ItemPoolKeys.MAIN_HAND_LEVEL_1);
+        tag(MELEE_WEAPON_LEVEL_0)
+                .add(ItemPoolKeys.MELEE_WEAPON_LEVEL_0);
+        tag(MELEE_WEAPON_LEVEL_1)
+                .add(ItemPoolKeys.MELEE_WEAPON_LEVEL_1);
 
         tag(HELMET_LEVEL_0)
                 .add(ItemPoolKeys.HELMET_LEVEL_0);

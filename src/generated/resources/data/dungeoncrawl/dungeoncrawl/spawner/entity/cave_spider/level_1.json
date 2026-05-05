@@ -2,7 +2,7 @@
   "entity_type": "minecraft:cave_spider",
   "properties": {
     "helmet": {
-      "pools": "#dungeoncrawl:monster_equipment/helmet/level_1"
+      "pools": "#dungeoncrawl:monster_equipment/armor/helmet/level_1"
     },
     "main_hand": [
       "minecraft:wooden_sword",

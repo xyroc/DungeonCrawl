@@ -8,18 +8,22 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 public interface ItemPoolKeys {
-    ResourceLocation __EQUIPMENT = DataGen.resource("monster_equipment");
+    ResourceLocation __EQUIPMENT__ = DataGen.resource("monster_equipment");
 
-    ResourceLocation __MAIN_HAND = DataGen.resource(__EQUIPMENT, "main_hand");
-    ResourceKey<IRandom<Item>> MAIN_HAND_LEVEL_0 = key(DataGen.resourceLevel(__MAIN_HAND, 0));
-    ResourceKey<IRandom<Item>> MAIN_HAND_LEVEL_1 = key(DataGen.resourceLevel(__MAIN_HAND, 1));
+    ResourceLocation __WEAPON__ = DataGen.resource(__EQUIPMENT__, "weapon");
 
-    ResourceLocation __HELMET = DataGen.resource(__EQUIPMENT, "helmet");
-    ResourceKey<IRandom<Item>> HELMET_LEVEL_0 = key(DataGen.resourceLevel(__HELMET, 0));
-    ResourceKey<IRandom<Item>> HELMET_LEVEL_1 = key(DataGen.resourceLevel(__HELMET, 1));
-    ResourceKey<IRandom<Item>> HELMET_LEVEL_2 = key(DataGen.resourceLevel(__HELMET, 2));
-    ResourceKey<IRandom<Item>> HELMET_LEVEL_3 = key(DataGen.resourceLevel(__HELMET, 3));
-    ResourceKey<IRandom<Item>> HELMET_LEVEL_4 = key(DataGen.resourceLevel(__HELMET, 4));
+    ResourceLocation __MELEE_WEAPON__ = DataGen.resource(__WEAPON__, "melee");
+    ResourceKey<IRandom<Item>> MELEE_WEAPON_LEVEL_0 = key(DataGen.resourceLevel(__MELEE_WEAPON__, 0));
+    ResourceKey<IRandom<Item>> MELEE_WEAPON_LEVEL_1 = key(DataGen.resourceLevel(__MELEE_WEAPON__, 1));
+
+    ResourceLocation __ARMOR__ = DataGen.resource(__EQUIPMENT__, "armor");
+
+    ResourceLocation __HELMET__ = DataGen.resource(__ARMOR__, "helmet");
+    ResourceKey<IRandom<Item>> HELMET_LEVEL_0 = key(DataGen.resourceLevel(__HELMET__, 0));
+    ResourceKey<IRandom<Item>> HELMET_LEVEL_1 = key(DataGen.resourceLevel(__HELMET__, 1));
+    ResourceKey<IRandom<Item>> HELMET_LEVEL_2 = key(DataGen.resourceLevel(__HELMET__, 2));
+    ResourceKey<IRandom<Item>> HELMET_LEVEL_3 = key(DataGen.resourceLevel(__HELMET__, 3));
+    ResourceKey<IRandom<Item>> HELMET_LEVEL_4 = key(DataGen.resourceLevel(__HELMET__, 4));
 
     private static ResourceKey<IRandom<Item>> key(ResourceLocation identifier) {
         return ResourceKey.create(DatapackRegistries.ITEM_POOLS, identifier);

@@ -108,10 +108,10 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
 
         RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, registryAccess);
 
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, boots.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, leggings.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, chestplate.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, helmet.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, boots.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, leggings.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, chestplate.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, helmet.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
 
         nbt.put("ArmorItems", armor);
 
@@ -120,8 +120,8 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
 
         ListTag handItems = new ListTag();
 
-        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, mainHand.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, offHand.map(items -> EquipmentHelper.createArmorPiece(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, mainHand.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, offHand.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
 
         nbt.put("HandItems", handItems);
     }

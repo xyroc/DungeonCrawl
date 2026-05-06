@@ -20,9 +20,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.config.Config;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
@@ -32,7 +34,6 @@ import xiroc.dungeoncrawl.util.random.value.RandomValue;
 import xiroc.dungeoncrawl.util.random.value.Range;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -104,14 +105,16 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         var leggings = property(entityType, SpawnerEntityProperties::leggings);
         var boots = property(entityType, SpawnerEntityProperties::boots);
 
+        var chances = property(entityType, SpawnerEntityProperties::equipmentChances).orElse(SpawnerEntityProperties.EquipmentChances.DEFAULT);
+
         ListTag armor = new ListTag();
 
         RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, registryAccess);
 
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, boots.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, leggings.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, chestplate.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, helmet.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(boots.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(leggings.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(chestplate.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(helmet.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
 
         nbt.put("ArmorItems", armor);
 
@@ -120,10 +123,17 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
 
         ListTag handItems = new ListTag();
 
-        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, mainHand.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
-        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, offHand.map(items -> EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess)).orElse(ItemStack.EMPTY)).getOrThrow());
+        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(mainHand.orElse(null), chances.mainHand(), random, stage, registryAccess)).getOrThrow());
+        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(offHand.orElse(null), chances.offHand(), random, stage, registryAccess)).getOrThrow());
 
         nbt.put("HandItems", handItems);
+    }
+
+    private ItemStack makeItem(@Nullable IRandom<Item> items, float chance, RandomSource random, int stage, RegistryAccess registryAccess) {
+        if (items == null || random.nextFloat() > chance) {
+            return ItemStack.EMPTY;
+        }
+        return EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess);
     }
 
     @SuppressWarnings("unchecked")

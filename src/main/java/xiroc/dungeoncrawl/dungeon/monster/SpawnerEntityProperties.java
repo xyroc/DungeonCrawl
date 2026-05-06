@@ -1,6 +1,7 @@
 package xiroc.dungeoncrawl.dungeon.monster;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import xiroc.dungeoncrawl.dungeon.monster.attribute.RandomizedAttributeMap;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                                       Optional<IRandom<Item>> offHand,
@@ -21,6 +23,7 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                                       Optional<IRandom<Item>> leggings,
                                       Optional<IRandom<Item>> boots,
                                       Optional<EquipmentTable> drops,
+                                      Optional<EquipmentChances> equipmentChances,
                                       Optional<RandomizedAttributeMap> attributes,
                                       Optional<CompoundTag> nbt) {
     public static final Codec<SpawnerEntityProperties> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance
@@ -32,11 +35,40 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("leggings").forGetter(SpawnerEntityProperties::leggings),
                     IRandom.BaseCodecs.ITEM.optionalFieldOf("boots").forGetter(SpawnerEntityProperties::boots),
                     EquipmentTable.CODEC.optionalFieldOf("drops").forGetter(SpawnerEntityProperties::drops),
+                    EquipmentChances.MAP_CODEC.codec().optionalFieldOf("equipment_chances").forGetter(SpawnerEntityProperties::equipmentChances),
                     RandomizedAttributeMap.CODEC.optionalFieldOf("attributes").forGetter(SpawnerEntityProperties::attributes),
                     CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(SpawnerEntityProperties::nbt)
             ).apply(instance, SpawnerEntityProperties::new));
 
     public static final Codec<Holder<SpawnerEntityProperties>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, DIRECT_CODEC, true);
+
+    public record EquipmentChances(
+            float mainHand,
+            float offHand,
+            float armor
+    ) {
+        public static EquipmentChances DEFAULT = new EquipmentChances(1.0F, 1.0F, 1.0F);
+
+        private static Function<EquipmentChances, Optional<Float>> chanceIfNotGuaranteed(Function<EquipmentChances, Float> getter) {
+            return (equipmentChances) -> {
+                float chance = getter.apply(equipmentChances);
+                if (chance == 1.0F) {
+                    return Optional.empty();
+                }
+                return Optional.of(chance);
+            };
+        }
+
+        public static final MapCodec<EquipmentChances> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+                Codec.floatRange(0.0f, 1.0f).optionalFieldOf("main_hand").forGetter(chanceIfNotGuaranteed(EquipmentChances::mainHand)),
+                Codec.floatRange(0.0f, 1.0f).optionalFieldOf("off_hand").forGetter(chanceIfNotGuaranteed(EquipmentChances::offHand)),
+                Codec.floatRange(0.0f, 1.0f).optionalFieldOf("armor_hand").forGetter(chanceIfNotGuaranteed(EquipmentChances::armor))
+        ).apply(builder, (mainHand, offHand, armor) -> new EquipmentChances(
+                mainHand.orElse(1.0F),
+                offHand.orElse(1.0F),
+                armor.orElse(1.0F)
+        )));
+    }
 
     public static class Builder {
         @Nullable
@@ -55,6 +87,9 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
 
         @Nullable
         private EquipmentTable drops = null;
+
+        @Nullable
+        private EquipmentChances equipmentChances = null;
 
         @Nullable
         private RandomizedAttributeMap attributes = null;
@@ -110,6 +145,11 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
             return this;
         }
 
+        public Builder equipmentChances(EquipmentChances chances) {
+            this.equipmentChances = chances;
+            return this;
+        }
+
         public Builder attributes(RandomizedAttributeMap attributeMap) {
             this.attributes = attributeMap;
             return this;
@@ -129,6 +169,7 @@ public record SpawnerEntityProperties(Optional<IRandom<Item>> mainHand,
                     Optional.ofNullable(leggings).map(IRandom.Builder::build),
                     Optional.ofNullable(boots).map(IRandom.Builder::build),
                     Optional.ofNullable(drops),
+                    Optional.ofNullable(equipmentChances),
                     Optional.ofNullable(attributes),
                     Optional.ofNullable(nbt));
         }

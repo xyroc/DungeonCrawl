@@ -5,6 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
+import xiroc.dungeoncrawl.exception.DatapackLoadException;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -37,6 +38,17 @@ public class PooledRandom<T> implements IRandom<T> {
             }
             return builder.build();
         });
+
+        if (this.pools instanceof HolderSet.Named<IRandom<T>> named) {
+            // Instantiate the pooled random and throw an error if the tag is empty
+            named.addInvalidationListener(() -> {
+                try {
+                    this.weightedPools.get();
+                } catch (Exception e) {
+                    throw new DatapackLoadException("Could not load a random instance with pool tag " + named.key(), e);
+                }
+            });
+        }
     }
 
     @Override

@@ -11,10 +11,6 @@ public interface SpawnerEntityTypePools {
     static void generate(BootstrapContext<IRandom<Holder<SpawnerEntityType>>> context) {
         var spawnerEntities = context.lookup(DatapackRegistries.SPAWNER_ENTITY_TYPE);
 
-        context.register(SpawnerEntityTypePoolKeys.LEVEL_0, IRandom.<Holder<SpawnerEntityType>>builder()
-                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.ZOMBIE))
-                .build());
-
         context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_0, IRandom.<Holder<SpawnerEntityType>>builder()
                 .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_0))
                 .build());
@@ -33,6 +29,26 @@ public interface SpawnerEntityTypePools {
 
         context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4, IRandom.<Holder<SpawnerEntityType>>builder()
                 .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_4))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_0, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_0))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_1, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_1))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_2, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_2))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_3, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_3))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_4, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_4))
                 .build());
     }
 }

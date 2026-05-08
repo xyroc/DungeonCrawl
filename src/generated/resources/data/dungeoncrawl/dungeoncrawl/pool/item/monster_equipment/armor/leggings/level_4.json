@@ -1,0 +1,23 @@
+[
+  {
+    "item": "minecraft:leather_leggings",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:chainmail_leggings",
+    "weight": 3
+  },
+  {
+    "item": "minecraft:golden_leggings",
+    "weight": 3
+  },
+  {
+    "item": "minecraft:iron_leggings",
+    "weight": 5
+  },
+  {
+    "item": "minecraft:diamond_leggings",
+    "weight": 5
+  },
+  "minecraft:netherite_leggings"
+]

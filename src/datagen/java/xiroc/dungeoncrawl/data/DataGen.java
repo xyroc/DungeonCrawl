@@ -49,7 +49,7 @@ import xiroc.dungeoncrawl.data.pool.spawner.SpawnerEntityTypePools;
 import xiroc.dungeoncrawl.data.pool.spawner.SpawnerTypePools;
 import xiroc.dungeoncrawl.data.pool.theme.PrimaryThemePools;
 import xiroc.dungeoncrawl.data.pool.theme.SecondaryThemePools;
-import xiroc.dungeoncrawl.data.spawner.EntityProperties;
+import xiroc.dungeoncrawl.data.spawner.SpawnerEntityProfiles;
 import xiroc.dungeoncrawl.data.spawner.SpawnerEntityTypes;
 import xiroc.dungeoncrawl.data.spawner.SpawnerTypes;
 import xiroc.dungeoncrawl.data.structure.ModStructureSets;
@@ -88,7 +88,7 @@ public class DataGen {
                         .add(Registries.STRUCTURE_SET, ModStructureSets::generate)
                         .add(DatapackRegistries.BLOCK_STATE_POOLS, BlockPools::generate)
                         .add(DatapackRegistries.ITEM_POOLS, ItemPools::generate)
-                        .add(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, EntityProperties::generate)
+                        .add(DatapackRegistries.SPAWNER_ENTITY_PROPERTIES, SpawnerEntityProfiles::generate)
                         .add(DatapackRegistries.SPAWNER_ENTITY_TYPE, SpawnerEntityTypes::generate)
                         .add(DatapackRegistries.SPAWNER_TYPE, SpawnerTypes::generate)
                         .add(DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS, SpawnerEntityTypePools::generate)

@@ -1,0 +1,16 @@
+[
+  "minecraft:leather_boots",
+  {
+    "item": "minecraft:chainmail_boots",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:golden_boots",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_boots",
+    "weight": 4
+  },
+  "minecraft:diamond_boots"
+]

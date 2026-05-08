@@ -1,8 +1,0 @@
-{
-  "helmet": {
-    "pools": "#dungeoncrawl:monster_equipment/armor/helmet/level_0"
-  },
-  "main_hand": {
-    "pools": "#dungeoncrawl:monster_equipment/weapon/melee/level_0"
-  }
-}

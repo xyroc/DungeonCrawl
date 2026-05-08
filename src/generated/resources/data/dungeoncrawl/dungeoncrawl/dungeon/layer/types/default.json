@@ -71,7 +71,7 @@
     "min_separation": 10,
     "min_staircase_depth": 3
   },
-  "spawner_types": [
-    "dungeoncrawl:default"
-  ]
+  "spawner_types": {
+    "pools": "#dungeoncrawl:level_0"
+  }
 }

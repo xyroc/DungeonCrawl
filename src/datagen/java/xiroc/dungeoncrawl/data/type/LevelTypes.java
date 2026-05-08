@@ -5,7 +5,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.data.blueprint.BlueprintKeys;
 import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
-import xiroc.dungeoncrawl.data.spawner.SpawnerTypeKeys;
+import xiroc.dungeoncrawl.data.tags.spawner.SpawnerTypePoolTags;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
@@ -19,7 +19,7 @@ import xiroc.dungeoncrawl.util.random.value.Range;
 
 public interface LevelTypes {
     static void generate(BootstrapContext<LevelType> context) {
-        final var spawnerTypes = context.lookup(DatapackRegistries.SPAWNER_TYPE);
+        final var spawnerTypePools = context.lookup(DatapackRegistries.SPAWNER_TYPE_POOLS);
         final var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);
 
         context.register(SharedKeys.Dungeon.Level.DEFAULT, new LevelType.Builder()
@@ -68,7 +68,7 @@ public interface LevelTypes {
                                 .add(blueprints.getOrThrow(BlueprintKeys.Corridor.Side.DOOR))
                                 .build()))
                 .spawnerTypes(new IRandom.Builder<Holder<SpawnerType>>()
-                        .add(spawnerTypes.get(SpawnerTypeKeys.DEFAULT).orElseThrow()))
+                        .setPools(spawnerTypePools.getOrThrow(SpawnerTypePoolTags.LEVEL_O)))
                 .lootTable(ChestLootTableKeys.FOOD_LEVEL_0)
                 .secretRoom(new SecretRoom.Builder()
                         .amount(new Constant(1))

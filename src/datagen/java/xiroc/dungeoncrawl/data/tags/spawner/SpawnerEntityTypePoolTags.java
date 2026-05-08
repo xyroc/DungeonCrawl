@@ -4,11 +4,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.data.DataGen;
 import xiroc.dungeoncrawl.data.pool.spawner.SpawnerEntityTypePoolKeys;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerEntityType;
@@ -21,13 +23,27 @@ public class SpawnerEntityTypePoolTags extends TagsProvider<IRandom<Holder<Spawn
         super(pOutput, DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS, pLookupProvider, DungeonCrawl.MOD_ID, existingFileHelper);
     }
 
-    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> LEVEL_0 = key(SpawnerEntityTypePoolKeys.LEVEL_0.location());
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> LEVEL_0 = key(DataGen.resourceLevel(0));
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> LEVEL_1 = key(DataGen.resourceLevel(1));
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> LEVEL_2 = key(DataGen.resourceLevel(2));
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> LEVEL_3 = key(DataGen.resourceLevel(3));
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> LEVEL_4 = key(DataGen.resourceLevel(4));
 
-    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_0 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_0.location());
-    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_1 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_1.location());
-    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_2 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_2.location());
-    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_3 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_3.location());
-    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_4 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4.location());
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_0 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_0);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_1 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_1);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_2 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_2);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_3 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_3);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_4 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4);
+
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> ZOMBIE_LIKE_LEVEL_0 = key(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_0);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> ZOMBIE_LIKE_LEVEL_1 = key(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_1);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> ZOMBIE_LIKE_LEVEL_2 = key(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_2);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> ZOMBIE_LIKE_LEVEL_3 = key(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_3);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> ZOMBIE_LIKE_LEVEL_4 = key(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_4);
+
+    private static TagKey<IRandom<Holder<SpawnerEntityType>>> key(ResourceKey<?> key) {
+        return key(key.location());
+    }
 
     private static TagKey<IRandom<Holder<SpawnerEntityType>>> key(ResourceLocation identifier) {
         return TagKey.create(DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS, identifier);
@@ -36,7 +52,15 @@ public class SpawnerEntityTypePoolTags extends TagsProvider<IRandom<Holder<Spawn
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(LEVEL_0)
-                .add(SpawnerEntityTypePoolKeys.LEVEL_0);
+                .addTag(ZOMBIE_LIKE_LEVEL_0);
+        tag(LEVEL_1)
+                .addTag(ZOMBIE_LIKE_LEVEL_1);
+        tag(LEVEL_2)
+                .addTag(ZOMBIE_LIKE_LEVEL_2);
+        tag(LEVEL_3)
+                .addTag(ZOMBIE_LIKE_LEVEL_3);
+        tag(LEVEL_4)
+                .addTag(ZOMBIE_LIKE_LEVEL_4);
 
         tag(CAVE_SPIDER_LEVEL_0)
                 .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_0);
@@ -49,5 +73,15 @@ public class SpawnerEntityTypePoolTags extends TagsProvider<IRandom<Holder<Spawn
         tag(CAVE_SPIDER_LEVEL_4)
                 .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4);
 
+        tag(ZOMBIE_LIKE_LEVEL_0)
+                .add(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_0);
+        tag(ZOMBIE_LIKE_LEVEL_1)
+                .add(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_1);
+        tag(ZOMBIE_LIKE_LEVEL_2)
+                .add(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_2);
+        tag(ZOMBIE_LIKE_LEVEL_3)
+                .add(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_3);
+        tag(ZOMBIE_LIKE_LEVEL_4)
+                .add(SpawnerEntityTypePoolKeys.ZOMBIE_LIKE_LEVEL_4);
     }
 }

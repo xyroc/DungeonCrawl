@@ -9,9 +9,11 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 public interface SpawnerTypePoolKeys {
-    ResourceLocation __DEFAULT = DataGen.resource("default");
-
-    ResourceKey<IRandom<Holder<SpawnerType>>> LEVEL_O = key(DataGen.resourceLevel(__DEFAULT, 0));
+    ResourceKey<IRandom<Holder<SpawnerType>>> LEVEL_O = key(DataGen.resourceLevel(0));
+    ResourceKey<IRandom<Holder<SpawnerType>>> LEVEL_1 = key(DataGen.resourceLevel(1));
+    ResourceKey<IRandom<Holder<SpawnerType>>> LEVEL_2 = key(DataGen.resourceLevel(2));
+    ResourceKey<IRandom<Holder<SpawnerType>>> LEVEL_3 = key(DataGen.resourceLevel(3));
+    ResourceKey<IRandom<Holder<SpawnerType>>> LEVEL_4 = key(DataGen.resourceLevel(4));
 
     private static ResourceKey<IRandom<Holder<SpawnerType>>> key(ResourceLocation identifier) {
         return ResourceKey.create(DatapackRegistries.SPAWNER_TYPE_POOLS, identifier);

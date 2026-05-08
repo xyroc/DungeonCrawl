@@ -1,3 +1,35 @@
 [
-  "minecraft:wooden_axe"
+  "minecraft:wooden_axe",
+  {
+    "item": "minecraft:wooden_hoe",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:wooden_pickaxe",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:wooden_shovel",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:wooden_sword",
+    "weight": 2
+  },
+  "minecraft:stone_hoe",
+  "minecraft:stone_pickaxe",
+  {
+    "item": "minecraft:stone_shovel",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:stone_sword",
+    "weight": 2
+  },
+  "minecraft:golden_hoe",
+  "minecraft:golden_pickaxe",
+  "minecraft:golden_shovel",
+  "minecraft:golden_sword",
+  "minecraft:iron_hoe",
+  "minecraft:iron_shovel"
 ]

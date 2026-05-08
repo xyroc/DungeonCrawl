@@ -1,0 +1,19 @@
+[
+  "minecraft:leather_chestplate",
+  {
+    "item": "minecraft:chainmail_chestplate",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:golden_chestplate",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:iron_chestplate",
+    "weight": 5
+  },
+  {
+    "item": "minecraft:diamond_chestplate",
+    "weight": 2
+  }
+]

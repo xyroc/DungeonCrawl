@@ -1,0 +1,53 @@
+[
+  {
+    "item": "minecraft:stone_axe",
+    "weight": 2
+  },
+  "minecraft:stone_hoe",
+  "minecraft:stone_pickaxe",
+  {
+    "item": "minecraft:stone_shovel",
+    "weight": 2
+  },
+  "minecraft:stone_sword",
+  {
+    "item": "minecraft:iron_axe",
+    "weight": 4
+  },
+  "minecraft:iron_hoe",
+  {
+    "item": "minecraft:iron_pickaxe",
+    "weight": 3
+  },
+  "minecraft:iron_shovel",
+  {
+    "item": "minecraft:iron_sword",
+    "weight": 8
+  },
+  "minecraft:golden_axe",
+  {
+    "item": "minecraft:golden_sword",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:diamond_axe",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:diamond_hoe",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:diamond_pickaxe",
+    "weight": 3
+  },
+  {
+    "item": "minecraft:diamond_shovel",
+    "weight": 2
+  },
+  {
+    "item": "minecraft:diamond_sword",
+    "weight": 6
+  },
+  "minecraft:netherite_sword"
+]

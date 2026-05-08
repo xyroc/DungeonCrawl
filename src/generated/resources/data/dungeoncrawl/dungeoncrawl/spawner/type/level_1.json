@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "pools": "#dungeoncrawl:level_1"
+  },
+  "initial_spawn_delay": {
+    "max": 10,
+    "min": 5
+  },
+  "max_light_level": {
+    "sky_light_limit": [
+      0,
+      10
+    ]
+  },
+  "spawn_amount": {
+    "max": 2,
+    "min": 1
+  },
+  "spawn_delay": {
+    "max": 228,
+    "min": 114
+  }
+}

@@ -1,0 +1,9 @@
+[
+  "minecraft:leather_leggings",
+  {
+    "item": "minecraft:chainmail_leggings",
+    "weight": 2
+  },
+  "minecraft:golden_leggings",
+  "minecraft:iron_leggings"
+]

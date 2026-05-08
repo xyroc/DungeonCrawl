@@ -29,10 +29,14 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.armortrim.ArmorTrim;
+import net.minecraft.world.item.armortrim.TrimMaterial;
+import net.minecraft.world.item.armortrim.TrimPattern;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import xiroc.dungeoncrawl.config.Config;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +66,9 @@ public class EquipmentHelper {
         if (itemStack.has(DataComponents.BANNER_PATTERNS)) {
             itemStack.set(DataComponents.BANNER_PATTERNS, createPatterns(random, registryAccess));
         }
+        if (itemStack.is(ItemTags.TRIMMABLE_ARMOR) && random.nextFloat() <= Config.ARMOR_TRIM_CHANCE.get()) {
+            itemStack.set(DataComponents.TRIM, createArmorTrim(random, registryAccess));
+        }
         return itemStack;
     }
 
@@ -82,5 +89,18 @@ public class EquipmentHelper {
             layers.add(new BannerPatternLayers.Layer(pattern, DyeColor.byId(rand.nextInt(16))));
         }
         return new BannerPatternLayers(layers);
+    }
+
+    /**
+     * Creates a random armor trim.
+     *
+     * @param random The source of randomness.
+     * @param registryAccess Registry access to get all armor trims materials and patterns.
+     * @return The resulting armor trim.
+     */
+    private static ArmorTrim createArmorTrim(RandomSource random,  RegistryAccess registryAccess) {
+        Registry<TrimMaterial> trimMaterials = registryAccess.registryOrThrow(Registries.TRIM_MATERIAL);
+        Registry<TrimPattern> trimPatters = registryAccess.registryOrThrow(Registries.TRIM_PATTERN);
+        return new ArmorTrim(trimMaterials.getRandom(random).orElseThrow(), trimPatters.getRandom(random).orElseThrow());
     }
 }

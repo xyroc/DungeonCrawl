@@ -39,6 +39,8 @@ public class Config {
             SECRET_ROOMS,
             FIXED_GENERATION_HEIGHT;
 
+    public static final ModConfigSpec.DoubleValue ARMOR_TRIM_CHANCE;
+
     private static final String SEPARATOR_LINE = "----------------------------------------------------------------------------------------------------+\n";
 
     static {
@@ -89,6 +91,10 @@ public class Config {
                 .comment(SEPARATOR_LINE +
                         " Whether custom mob spawners with equipment, etc.. should be used.\n")
                 .define("custom_spawners", true);
+        ARMOR_TRIM_CHANCE = BUILDER
+                .comment(SEPARATOR_LINE +
+                        "The chance for each piece of a mob's armor to receive an armor trim. A value of 0.32 would mean a chance of 32 percent.")
+                .defineInRange("armor_trim_chance", 0.5, 0.0, 1.0);
         NATURAL_DESPAWN = BUILDER
                 .comment(SEPARATOR_LINE +
                         " Whether mobs from spawners should despawn naturally or not.\n")

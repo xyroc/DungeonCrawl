@@ -1,0 +1,8 @@
+{
+  "off_hand": {
+    "chance": 0.7,
+    "items": {
+      "pools": "#dungeoncrawl:monster_equipment/shield/level_4"
+    }
+  }
+}

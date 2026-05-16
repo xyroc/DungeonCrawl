@@ -1,0 +1,26 @@
+{
+  "boots": {
+    "chance": 0.7,
+    "items": {
+      "pools": "#dungeoncrawl:monster_equipment/armor/boots/level_2"
+    }
+  },
+  "chestplate": {
+    "chance": 0.7,
+    "items": {
+      "pools": "#dungeoncrawl:monster_equipment/armor/chestplate/level_2"
+    }
+  },
+  "helmet": {
+    "chance": 0.7,
+    "items": {
+      "pools": "#dungeoncrawl:monster_equipment/armor/helmet/level_2"
+    }
+  },
+  "leggings": {
+    "chance": 0.7,
+    "items": {
+      "pools": "#dungeoncrawl:monster_equipment/armor/leggings/level_2"
+    }
+  }
+}

@@ -115,23 +115,43 @@ public interface ItemPools {
                 .add(Items.NETHERITE_SWORD)
                 .build());
 
-        context.register(ItemPoolKeys.OFF_HAND_LEVEL_0, IRandom.<Item>builder()
+        context.register(ItemPoolKeys.BOW_LEVEL_0, IRandom.<Item>builder()
+                .add(Items.BOW)
+                .build());
+
+        context.register(ItemPoolKeys.BOW_LEVEL_1, IRandom.<Item>builder()
+                .add(Items.BOW)
+                .build());
+
+        context.register(ItemPoolKeys.BOW_LEVEL_2, IRandom.<Item>builder()
+                .add(Items.BOW)
+                .build());
+
+        context.register(ItemPoolKeys.BOW_LEVEL_3, IRandom.<Item>builder()
+                .add(Items.BOW)
+                .build());
+
+        context.register(ItemPoolKeys.BOW_LEVEL_4, IRandom.<Item>builder()
+                .add(Items.BOW)
+                .build());
+
+        context.register(ItemPoolKeys.SHIELD_LEVEL_0, IRandom.<Item>builder()
                 .add(Items.SHIELD)
                 .build());
 
-        context.register(ItemPoolKeys.OFF_HAND_LEVEL_1, IRandom.<Item>builder()
+        context.register(ItemPoolKeys.SHIELD_LEVEL_1, IRandom.<Item>builder()
                 .add(Items.SHIELD)
                 .build());
 
-        context.register(ItemPoolKeys.OFF_HAND_LEVEL_2, IRandom.<Item>builder()
+        context.register(ItemPoolKeys.SHIELD_LEVEL_2, IRandom.<Item>builder()
                 .add(Items.SHIELD)
                 .build());
 
-        context.register(ItemPoolKeys.OFF_HAND_LEVEL_3, IRandom.<Item>builder()
+        context.register(ItemPoolKeys.SHIELD_LEVEL_3, IRandom.<Item>builder()
                 .add(Items.SHIELD)
                 .build());
 
-        context.register(ItemPoolKeys.OFF_HAND_LEVEL_4, IRandom.<Item>builder()
+        context.register(ItemPoolKeys.SHIELD_LEVEL_4, IRandom.<Item>builder()
                 .add(Items.SHIELD)
                 .build());
 

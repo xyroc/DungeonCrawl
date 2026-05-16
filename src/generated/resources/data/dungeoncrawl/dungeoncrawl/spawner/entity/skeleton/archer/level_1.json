@@ -1,0 +1,7 @@
+{
+  "entity_type": "minecraft:skeleton",
+  "properties": [
+    "dungeoncrawl:archer/level_1",
+    "dungeoncrawl:armored/level_1"
+  ]
+}

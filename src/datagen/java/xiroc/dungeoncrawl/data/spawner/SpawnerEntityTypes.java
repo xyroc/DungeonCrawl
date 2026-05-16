@@ -21,85 +21,169 @@ public interface SpawnerEntityTypes {
         context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_0, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
-                        .helmet(IRandom.<Item>builder()
-                                .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_0)))
-                                .mainHand(IRandom.<Item>builder()
-                                        .add(Items.WOODEN_HOE)
-                                        .add(Items.WOODEN_SHOVEL))
+                        .helmet(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_0))
+                                        .build(), 1.0f))
+                        .mainHand(new SpawnerEntityProperties.EquipmentWithChance(IRandom.<Item>builder()
+                                .add(Items.WOODEN_HOE)
+                                .add(Items.WOODEN_SHOVEL)
+                                .build(), 1.0f))
                         .build()))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_1, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
-                        .helmet(IRandom.<Item>builder()
-                                .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_1)))
-                        .mainHand(IRandom.<Item>builder()
-                                .add(Items.WOODEN_SWORD)
-                                .add(Items.WOODEN_SHOVEL))
+                        .helmet(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_1))
+                                        .build(), 1.0f))
+                        .mainHand(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .add(Items.WOODEN_SWORD)
+                                        .add(Items.WOODEN_SHOVEL)
+                                        .build(), 1.0f))
                         .build()))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_2, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
-                        .helmet(IRandom.<Item>builder()
-                                .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_2)))
-                        .mainHand(IRandom.<Item>builder()
-                                .add(Items.WOODEN_SWORD, 3)
-                                .add(Items.STONE_SHOVEL, 2)
-                                .add(Items.WOODEN_AXE)
-                                .add(Items.STONE_AXE))
+                        .helmet(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_2))
+                                        .build(), 1.0f))
+                        .mainHand(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .add(Items.WOODEN_SWORD, 3)
+                                        .add(Items.STONE_SHOVEL, 2)
+                                        .add(Items.WOODEN_AXE)
+                                        .add(Items.STONE_AXE)
+                                        .build(), 1.0f))
                         .build()))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_3, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
-                        .helmet(IRandom.<Item>builder()
-                                .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_3)))
-                        .mainHand(IRandom.<Item>builder()
-                                .add(Items.STONE_AXE, 3)
-                                .add(Items.IRON_AXE))
+                        .helmet(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_3))
+                                        .build(), 1.0f))
+                        .mainHand(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .add(Items.STONE_AXE, 3)
+                                        .add(Items.IRON_AXE)
+                                        .build(), 1.0f))
                         .build()))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_4, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.CAVE_SPIDER))
                 .properties(Holder.direct(new SpawnerEntityProperties.Builder()
-                        .helmet(IRandom.<Item>builder()
-                                .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_4)))
-                        .mainHand(IRandom.<Item>builder()
-                                .add(Items.STONE_AXE, 2)
-                                .add(Items.IRON_AXE, 4)
-                                .add(Items.DIAMOND_AXE, 2)
-                                .add(Items.NETHERITE_AXE))
+                        .helmet(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .setPools(itemPools.getOrThrow(ItemPoolTags.HELMET_LEVEL_4))
+                                        .build(), 1.0f))
+                        .mainHand(new SpawnerEntityProperties.EquipmentWithChance(
+                                IRandom.<Item>builder()
+                                        .add(Items.STONE_AXE, 2)
+                                        .add(Items.IRON_AXE, 4)
+                                        .add(Items.DIAMOND_AXE, 2)
+                                        .add(Items.NETHERITE_AXE)
+                                        .build(), 1.0f))
                         .build()))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_0, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.ZOMBIE))
-                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_UNIT_LEVEL_0))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_0))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_0))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_1, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.ZOMBIE))
-                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_UNIT_LEVEL_1))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_1))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_1))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_2, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.ZOMBIE))
-                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_UNIT_LEVEL_2))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_2))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_2))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_3, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.ZOMBIE))
-                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_UNIT_LEVEL_3))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_3))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_3))
                 .build());
 
         context.register(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_4, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.ZOMBIE))
-                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_UNIT_LEVEL_4))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_4))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_4))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_ARCHER_LEVEL_0, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARCHER_LEVEL_0))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_0))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_ARCHER_LEVEL_1, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARCHER_LEVEL_1))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_1))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_ARCHER_LEVEL_2, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARCHER_LEVEL_2))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_2))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_ARCHER_LEVEL_3, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARCHER_LEVEL_3))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_3))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_ARCHER_LEVEL_4, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARCHER_LEVEL_4))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_4))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_WARRIOR_LEVEL_0, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_0))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_0))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_WARRIOR_LEVEL_1, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_1))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_1))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_WARRIOR_LEVEL_2, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_2))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_2))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_WARRIOR_LEVEL_3, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_3))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_3))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.SKELETON_WARRIOR_LEVEL_4, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.SKELETON))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_4))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_4))
                 .build());
     }
 

@@ -1,0 +1,11 @@
+[
+  {
+    "type": "dungeoncrawl:zombie/level_3",
+    "weight": 5
+  },
+  {
+    "type": "dungeoncrawl:skeleton/archer/level_3",
+    "weight": 2
+  },
+  "dungeoncrawl:skeleton/warrior/level_3"
+]

@@ -1,4 +1,7 @@
 {
   "entity_type": "minecraft:zombie",
-  "properties": "dungeoncrawl:melee_unit/level_3"
+  "properties": [
+    "dungeoncrawl:melee/level_3",
+    "dungeoncrawl:armored/level_3"
+  ]
 }

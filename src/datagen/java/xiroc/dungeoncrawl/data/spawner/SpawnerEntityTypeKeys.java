@@ -21,6 +21,20 @@ public interface SpawnerEntityTypeKeys {
     ResourceKey<SpawnerEntityType> ZOMBIE_LEVEL_3 = key(DataGen.resourceLevel(__ZOMBIE__, 3));
     ResourceKey<SpawnerEntityType> ZOMBIE_LEVEL_4 = key(DataGen.resourceLevel(__ZOMBIE__, 4));
 
+     ResourceLocation __SKELETON__ = DataGen.resource("skeleton");
+    ResourceLocation __SKELETON_ARCHER__ = DataGen.resource(__SKELETON__, "archer");
+    ResourceKey<SpawnerEntityType> SKELETON_ARCHER_LEVEL_0 = key(DataGen.resourceLevel(__SKELETON_ARCHER__, 0));
+    ResourceKey<SpawnerEntityType> SKELETON_ARCHER_LEVEL_1 = key(DataGen.resourceLevel(__SKELETON_ARCHER__, 1));
+    ResourceKey<SpawnerEntityType> SKELETON_ARCHER_LEVEL_2 = key(DataGen.resourceLevel(__SKELETON_ARCHER__, 2));
+    ResourceKey<SpawnerEntityType> SKELETON_ARCHER_LEVEL_3 = key(DataGen.resourceLevel(__SKELETON_ARCHER__, 3));
+    ResourceKey<SpawnerEntityType> SKELETON_ARCHER_LEVEL_4 = key(DataGen.resourceLevel(__SKELETON_ARCHER__, 4));
+    ResourceLocation __SKELETON_WARRIOR__ = DataGen.resource(__SKELETON__, "warrior");
+    ResourceKey<SpawnerEntityType> SKELETON_WARRIOR_LEVEL_0 = key(DataGen.resourceLevel(__SKELETON_WARRIOR__, 0));
+    ResourceKey<SpawnerEntityType> SKELETON_WARRIOR_LEVEL_1 = key(DataGen.resourceLevel(__SKELETON_WARRIOR__, 1));
+    ResourceKey<SpawnerEntityType> SKELETON_WARRIOR_LEVEL_2 = key(DataGen.resourceLevel(__SKELETON_WARRIOR__, 2));
+    ResourceKey<SpawnerEntityType> SKELETON_WARRIOR_LEVEL_3 = key(DataGen.resourceLevel(__SKELETON_WARRIOR__, 3));
+    ResourceKey<SpawnerEntityType> SKELETON_WARRIOR_LEVEL_4 = key(DataGen.resourceLevel(__SKELETON_WARRIOR__, 4));
+
     private static ResourceKey<SpawnerEntityType> key(ResourceLocation identifier) {
         return ResourceKey.create(DatapackRegistries.SPAWNER_ENTITY_TYPE, identifier);
     }

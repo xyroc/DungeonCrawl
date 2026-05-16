@@ -18,13 +18,20 @@ public interface ItemPoolKeys {
     ResourceKey<IRandom<Item>> MELEE_WEAPON_LEVEL_2 = key(DataGen.resourceLevel(__MELEE_WEAPON__, 2));
     ResourceKey<IRandom<Item>> MELEE_WEAPON_LEVEL_3 = key(DataGen.resourceLevel(__MELEE_WEAPON__, 3));
     ResourceKey<IRandom<Item>> MELEE_WEAPON_LEVEL_4 = key(DataGen.resourceLevel(__MELEE_WEAPON__, 4));
+    
+    ResourceLocation __BOW__ = DataGen.resource(__WEAPON__, "bow");
+    ResourceKey<IRandom<Item>> BOW_LEVEL_0 = key(DataGen.resourceLevel(__BOW__, 0));
+    ResourceKey<IRandom<Item>> BOW_LEVEL_1 = key(DataGen.resourceLevel(__BOW__, 1));
+    ResourceKey<IRandom<Item>> BOW_LEVEL_2 = key(DataGen.resourceLevel(__BOW__, 2));
+    ResourceKey<IRandom<Item>> BOW_LEVEL_3 = key(DataGen.resourceLevel(__BOW__, 3));
+    ResourceKey<IRandom<Item>> BOW_LEVEL_4 = key(DataGen.resourceLevel(__BOW__, 4));
 
-    ResourceLocation __OFF_HAND__ = DataGen.resource(__EQUIPMENT__, "off_hand");
-    ResourceKey<IRandom<Item>> OFF_HAND_LEVEL_0 = key(DataGen.resourceLevel(__OFF_HAND__, 0));
-    ResourceKey<IRandom<Item>> OFF_HAND_LEVEL_1 = key(DataGen.resourceLevel(__OFF_HAND__, 1));
-    ResourceKey<IRandom<Item>> OFF_HAND_LEVEL_2 = key(DataGen.resourceLevel(__OFF_HAND__, 2));
-    ResourceKey<IRandom<Item>> OFF_HAND_LEVEL_3 = key(DataGen.resourceLevel(__OFF_HAND__, 3));
-    ResourceKey<IRandom<Item>> OFF_HAND_LEVEL_4 = key(DataGen.resourceLevel(__OFF_HAND__, 4));
+    ResourceLocation __SHIELD__ = DataGen.resource(__EQUIPMENT__, "shield");
+    ResourceKey<IRandom<Item>> SHIELD_LEVEL_0 = key(DataGen.resourceLevel(__SHIELD__, 0));
+    ResourceKey<IRandom<Item>> SHIELD_LEVEL_1 = key(DataGen.resourceLevel(__SHIELD__, 1));
+    ResourceKey<IRandom<Item>> SHIELD_LEVEL_2 = key(DataGen.resourceLevel(__SHIELD__, 2));
+    ResourceKey<IRandom<Item>> SHIELD_LEVEL_3 = key(DataGen.resourceLevel(__SHIELD__, 3));
+    ResourceKey<IRandom<Item>> SHIELD_LEVEL_4 = key(DataGen.resourceLevel(__SHIELD__, 4));
 
     ResourceLocation __ARMOR__ = DataGen.resource(__EQUIPMENT__, "armor");
 

@@ -1,0 +1,7 @@
+{
+  "entity_type": "minecraft:skeleton",
+  "properties": [
+    "dungeoncrawl:melee/level_2",
+    "dungeoncrawl:armored/level_2"
+  ]
+}

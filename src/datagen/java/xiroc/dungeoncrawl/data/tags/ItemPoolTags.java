@@ -35,11 +35,17 @@ public class ItemPoolTags extends TagsProvider<IRandom<Item>> {
     public static final TagKey<IRandom<Item>> MELEE_WEAPON_LEVEL_3 = key(ItemPoolKeys.MELEE_WEAPON_LEVEL_3);
     public static final TagKey<IRandom<Item>> MELEE_WEAPON_LEVEL_4 = key(ItemPoolKeys.MELEE_WEAPON_LEVEL_4);
 
-    public static final TagKey<IRandom<Item>> OFF_HAND_LEVEL_0 = key(ItemPoolKeys.OFF_HAND_LEVEL_0);
-    public static final TagKey<IRandom<Item>> OFF_HAND_LEVEL_1 = key(ItemPoolKeys.OFF_HAND_LEVEL_1);
-    public static final TagKey<IRandom<Item>> OFF_HAND_LEVEL_2 = key(ItemPoolKeys.OFF_HAND_LEVEL_2);
-    public static final TagKey<IRandom<Item>> OFF_HAND_LEVEL_3 = key(ItemPoolKeys.OFF_HAND_LEVEL_3);
-    public static final TagKey<IRandom<Item>> OFF_HAND_LEVEL_4 = key(ItemPoolKeys.OFF_HAND_LEVEL_4);
+    public static final TagKey<IRandom<Item>> BOW_LEVEL_0 = key(ItemPoolKeys.BOW_LEVEL_0);
+    public static final TagKey<IRandom<Item>> BOW_LEVEL_1 = key(ItemPoolKeys.BOW_LEVEL_1);
+    public static final TagKey<IRandom<Item>> BOW_LEVEL_2 = key(ItemPoolKeys.BOW_LEVEL_2);
+    public static final TagKey<IRandom<Item>> BOW_LEVEL_3 = key(ItemPoolKeys.BOW_LEVEL_3);
+    public static final TagKey<IRandom<Item>> BOW_LEVEL_4 = key(ItemPoolKeys.BOW_LEVEL_4);
+
+    public static final TagKey<IRandom<Item>> SHIELD_LEVEL_0 = key(ItemPoolKeys.SHIELD_LEVEL_0);
+    public static final TagKey<IRandom<Item>> SHIELD_LEVEL_1 = key(ItemPoolKeys.SHIELD_LEVEL_1);
+    public static final TagKey<IRandom<Item>> SHIELD_LEVEL_2 = key(ItemPoolKeys.SHIELD_LEVEL_2);
+    public static final TagKey<IRandom<Item>> SHIELD_LEVEL_3 = key(ItemPoolKeys.SHIELD_LEVEL_3);
+    public static final TagKey<IRandom<Item>> SHIELD_LEVEL_4 = key(ItemPoolKeys.SHIELD_LEVEL_4);
 
     public static final TagKey<IRandom<Item>> HELMET_LEVEL_0 = key(ItemPoolKeys.HELMET_LEVEL_0);
     public static final TagKey<IRandom<Item>> HELMET_LEVEL_1 = key(ItemPoolKeys.HELMET_LEVEL_1);
@@ -78,16 +84,27 @@ public class ItemPoolTags extends TagsProvider<IRandom<Item>> {
         tag(MELEE_WEAPON_LEVEL_4)
                 .add(ItemPoolKeys.MELEE_WEAPON_LEVEL_4);
 
-        tag(OFF_HAND_LEVEL_0)
-                .add(ItemPoolKeys.OFF_HAND_LEVEL_0);
-        tag(OFF_HAND_LEVEL_1)
-                .add(ItemPoolKeys.OFF_HAND_LEVEL_1);
-        tag(OFF_HAND_LEVEL_2)
-                .add(ItemPoolKeys.OFF_HAND_LEVEL_2);
-        tag(OFF_HAND_LEVEL_3)
-                .add(ItemPoolKeys.OFF_HAND_LEVEL_3);
-        tag(OFF_HAND_LEVEL_4)
-                .add(ItemPoolKeys.OFF_HAND_LEVEL_4);
+        tag(BOW_LEVEL_0)
+                .add(ItemPoolKeys.BOW_LEVEL_0);
+        tag(BOW_LEVEL_1)
+                .add(ItemPoolKeys.BOW_LEVEL_1);
+        tag(BOW_LEVEL_2)
+                .add(ItemPoolKeys.BOW_LEVEL_2);
+        tag(BOW_LEVEL_3)
+                .add(ItemPoolKeys.BOW_LEVEL_3);
+        tag(BOW_LEVEL_4)
+                .add(ItemPoolKeys.BOW_LEVEL_4);
+
+        tag(SHIELD_LEVEL_0)
+                .add(ItemPoolKeys.SHIELD_LEVEL_0);
+        tag(SHIELD_LEVEL_1)
+                .add(ItemPoolKeys.SHIELD_LEVEL_1);
+        tag(SHIELD_LEVEL_2)
+                .add(ItemPoolKeys.SHIELD_LEVEL_2);
+        tag(SHIELD_LEVEL_3)
+                .add(ItemPoolKeys.SHIELD_LEVEL_3);
+        tag(SHIELD_LEVEL_4)
+                .add(ItemPoolKeys.SHIELD_LEVEL_4);
 
         tag(HELMET_LEVEL_0)
                 .add(ItemPoolKeys.HELMET_LEVEL_0);

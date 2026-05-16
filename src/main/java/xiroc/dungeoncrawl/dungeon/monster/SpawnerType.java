@@ -20,7 +20,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
@@ -75,7 +74,7 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
             CompoundTag entity = property(entityType, SpawnerEntityProperties::nbt)
                     .map(CompoundTag::copy)
                     .orElseGet(CompoundTag::new);
-            entity.putString("id", entityType.entity().location().toString());
+            entity.putString("id", entityType.entity.location().toString());
 
             putEquipment(entity, entityType, random, stage, registryAccess);
             putAttributes(entity, entityType, random, registryAccess);
@@ -105,16 +104,14 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         var leggings = property(entityType, SpawnerEntityProperties::leggings);
         var boots = property(entityType, SpawnerEntityProperties::boots);
 
-        var chances = property(entityType, SpawnerEntityProperties::equipmentChances).orElse(SpawnerEntityProperties.EquipmentChances.DEFAULT);
-
         ListTag armor = new ListTag();
 
         RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, registryAccess);
 
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(boots.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(leggings.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(chestplate.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
-        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(helmet.orElse(null), chances.armor(), random, stage, registryAccess)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(boots.orElse(null), random, stage, registryAccess)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(leggings.orElse(null), random, stage, registryAccess)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(chestplate.orElse(null), random, stage, registryAccess)).getOrThrow());
+        armor.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(helmet.orElse(null), random, stage, registryAccess)).getOrThrow());
 
         nbt.put("ArmorItems", armor);
 
@@ -123,17 +120,17 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
 
         ListTag handItems = new ListTag();
 
-        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(mainHand.orElse(null), chances.mainHand(), random, stage, registryAccess)).getOrThrow());
-        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(offHand.orElse(null), chances.offHand(), random, stage, registryAccess)).getOrThrow());
+        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(mainHand.orElse(null), random, stage, registryAccess)).getOrThrow());
+        handItems.add(ItemStack.OPTIONAL_CODEC.encodeStart(ops, makeItem(offHand.orElse(null), random, stage, registryAccess)).getOrThrow());
 
         nbt.put("HandItems", handItems);
     }
 
-    private ItemStack makeItem(@Nullable IRandom<Item> items, float chance, RandomSource random, int stage, RegistryAccess registryAccess) {
-        if (items == null || random.nextFloat() > chance) {
+    private ItemStack makeItem(@Nullable SpawnerEntityProperties.EquipmentWithChance equipment, RandomSource random, int stage, RegistryAccess registryAccess) {
+        if (equipment == null || random.nextFloat() > equipment.chance()) {
             return ItemStack.EMPTY;
         }
-        return EquipmentHelper.randomizedItem(items.roll(random), random, stage, registryAccess);
+        return EquipmentHelper.randomizedItem(equipment.items().roll(random), random, stage, registryAccess);
     }
 
     @SuppressWarnings("unchecked")
@@ -144,7 +141,7 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
         }
         Registry<EntityType<?>> entityTypes = registryAccess.registryOrThrow(Registries.ENTITY_TYPE);
         try {
-            EntityType<? extends LivingEntity> entity = (EntityType<? extends LivingEntity>) entityTypes.get(entityType.entity());
+            EntityType<? extends LivingEntity> entity = (EntityType<? extends LivingEntity>) entityTypes.get(entityType.entity);
             if (entity == null) {
                 return;
             }
@@ -154,12 +151,12 @@ public record SpawnerType(IRandom<Holder<SpawnerEntityType>> entities,
             // Set health to max health in case it was modified
             entityNbt.putFloat("Health", (float) (mobAttributes.getValue(Attributes.MAX_HEALTH)));
         } catch (ClassCastException ignored) {
-            DungeonCrawl.LOGGER.warn("Cannot apply attribute modifications to entity of type {}", entityType.entity());
+            DungeonCrawl.LOGGER.warn("Cannot apply attribute modifications to entity of type {}", entityType.entity);
         }
     }
 
     private <T> Optional<T> property(SpawnerEntityType entityType, Function<SpawnerEntityProperties, Optional<T>> mapper) {
-        return entityType.properties().map(Holder::value).flatMap(mapper).or(() -> properties.map(Holder::value).flatMap(mapper));
+        return mapper.apply(entityType.properties()).or(() -> properties.map(Holder::value).flatMap(mapper));
     }
 
     public static class Builder {

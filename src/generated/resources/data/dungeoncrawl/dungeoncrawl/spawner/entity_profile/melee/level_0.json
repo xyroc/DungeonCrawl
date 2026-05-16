@@ -1,0 +1,8 @@
+{
+  "main_hand": {
+    "chance": 0.6,
+    "items": {
+      "pools": "#dungeoncrawl:monster_equipment/weapon/melee/level_0"
+    }
+  }
+}

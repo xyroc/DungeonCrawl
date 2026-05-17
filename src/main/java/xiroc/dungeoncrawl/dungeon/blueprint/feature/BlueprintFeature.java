@@ -53,11 +53,11 @@ public interface BlueprintFeature {
             }
             CoordinateSpace coordinateSpace = blueprint.coordinateSpace(offset);
             placement().drawPositions(positions, levelGenerator.random, (anchor) ->
-                    features.accept(createInstance(levelGenerator, coordinateSpace.rotateAndTranslateToOrigin(anchor, rotation)))
+                    createAt(features, levelGenerator, coordinateSpace.rotateAndTranslateToOrigin(anchor, rotation))
             );
         }
 
-        DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor);
+        void createAt(Consumer<DungeonComponent> components, LevelGenerator levelGenerator, Anchor anchor);
 
         PlacementSettings placement();
     }

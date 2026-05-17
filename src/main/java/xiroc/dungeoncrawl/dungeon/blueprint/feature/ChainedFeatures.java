@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 public record ChainedFeatures(PlacementSettings placement, List<BlueprintFeature> features) implements BlueprintFeature {
     public static final MapCodec<ChainedFeatures> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            PlacementSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_PLACEMENT_SETTINGS).forGetter(ChainedFeatures::placement),
+            PlacementSettings.CODEC.fieldOf("placement").forGetter(ChainedFeatures::placement),
             BlueprintFeature.CODEC.listOf().fieldOf("features").forGetter(ChainedFeatures::features)
     ).apply(instance, ChainedFeatures::new));
 

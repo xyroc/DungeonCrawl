@@ -9,16 +9,18 @@ import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SpawnerComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
+import java.util.function.Consumer;
+
 public record SpawnerFeature(PlacementSettings placement, SpawnerSettings spawner) implements BlueprintFeature.AnchorBased {
     public static final MapCodec<SpawnerFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            PlacementSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_PLACEMENT_SETTINGS).forGetter(SpawnerFeature::placement),
-            SpawnerSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_SPAWNER_SETTINGS).forGetter(SpawnerFeature::spawner)
+            PlacementSettings.CODEC.fieldOf("placement").forGetter(SpawnerFeature::placement),
+            SpawnerSettings.CODEC.fieldOf("spawner").forGetter(SpawnerFeature::spawner)
     ).apply(instance, SpawnerFeature::new));
 
     @Override
-    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
+    public void createAt(Consumer<DungeonComponent> components, LevelGenerator levelGenerator, Anchor anchor) {
         var spawnerType = spawner.getSpawnerTypes(levelGenerator).roll(levelGenerator.random);
-        return new SpawnerComponent(anchor.position(), spawnerType);
+        components.accept(new SpawnerComponent(anchor.position(), spawnerType));
     }
 
     @Override

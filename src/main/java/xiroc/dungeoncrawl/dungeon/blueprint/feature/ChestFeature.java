@@ -9,15 +9,17 @@ import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.ChestComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
+import java.util.function.Consumer;
+
 public record ChestFeature(PlacementSettings placement, ChestSettings chest) implements BlueprintFeature.AnchorBased {
     public static final MapCodec<ChestFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            PlacementSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_PLACEMENT_SETTINGS).forGetter(ChestFeature::placement),
-            ChestSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_CHEST_SETTINGS).forGetter(ChestFeature::chest)
+            PlacementSettings.CODEC.fieldOf("placement").forGetter(ChestFeature::placement),
+            ChestSettings.CODEC.fieldOf("chest").forGetter(ChestFeature::chest)
     ).apply(instance, ChestFeature::new));
 
     @Override
-    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
-        return new ChestComponent(anchor, chest.getLootTable(levelGenerator));
+    public void createAt(Consumer<DungeonComponent> components, LevelGenerator levelGenerator, Anchor anchor) {
+        components.accept(new ChestComponent(anchor, chest.getLootTable(levelGenerator)));
     }
 
     @Override

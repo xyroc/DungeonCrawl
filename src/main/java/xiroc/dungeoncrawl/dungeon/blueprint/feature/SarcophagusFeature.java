@@ -10,18 +10,20 @@ import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SarcophagusComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
+import java.util.function.Consumer;
+
 public record SarcophagusFeature(PlacementSettings placement, ChestSettings chest, SpawnerSettings spawner) implements BlueprintFeature.AnchorBased {
     public static final MapCodec<SarcophagusFeature> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            PlacementSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_PLACEMENT_SETTINGS).forGetter(SarcophagusFeature::placement),
-            ChestSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_CHEST_SETTINGS).forGetter(SarcophagusFeature::chest),
-            SpawnerSettings.CODEC.fieldOf(SharedSerializationConstants.KEY_SPAWNER_SETTINGS).forGetter(SarcophagusFeature::spawner)
+            PlacementSettings.CODEC.fieldOf("placement").forGetter(SarcophagusFeature::placement),
+            ChestSettings.CODEC.fieldOf("chest").forGetter(SarcophagusFeature::chest),
+            SpawnerSettings.CODEC.fieldOf("spawner").forGetter(SarcophagusFeature::spawner)
     ).apply(instance, SarcophagusFeature::new));
 
     @Override
-    public DungeonComponent createInstance(LevelGenerator levelGenerator, Anchor anchor) {
+    public void createAt(Consumer<DungeonComponent> components, LevelGenerator levelGenerator, Anchor anchor) {
         var spawnerType = spawner.getSpawnerTypes(levelGenerator).roll(levelGenerator.random);
         var lootTable = chest.getLootTable(levelGenerator);
-        return new SarcophagusComponent(anchor, spawnerType, lootTable);
+        components.accept(new SarcophagusComponent(anchor, spawnerType, lootTable));
     }
 
     @Override

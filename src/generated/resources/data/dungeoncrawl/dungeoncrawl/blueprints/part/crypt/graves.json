@@ -1,0 +1,41 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:feature_chain",
+      "features": [
+        {
+          "type": "dungeoncrawl:grave",
+          "chest": {},
+          "placement": {
+            "amount": {
+              "max": 3,
+              "min": 1
+            }
+          },
+          "spawner": {}
+        },
+        {
+          "type": "dungeoncrawl:grave",
+          "placement": {
+            "amount": {
+              "max": 3,
+              "min": 1
+            }
+          }
+        }
+      ],
+      "placement": {
+        "amount": 0,
+        "positions": "dungeoncrawl:feature/grave"
+      }
+    }
+  ],
+  "placement_settings": {
+    "minecraft:red_nether_brick_stairs": {
+      "fill_air": true,
+      "fill_solid": false,
+      "post_process": true
+    }
+  },
+  "template": "dungeoncrawl:part/crypt/graves"
+}

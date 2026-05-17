@@ -1,7 +1,22 @@
 {
+  "decorations": [
+    {
+      "type": "dungeoncrawl:scattered",
+      "block": "minecraft:vine",
+      "chance": 0.2
+    }
+  ],
   "fencing": "minecraft:iron_bars",
   "floor": "minecraft:smooth_stone_slab[type=double]",
   "fluid": "minecraft:water",
+  "grave_seal": [
+    {
+      "block": "minecraft:quartz_block",
+      "weight": 2
+    },
+    "minecraft:quartz_bricks",
+    "minecraft:chiseled_quartz_block"
+  ],
   "masonry": [
     {
       "block": "minecraft:stone_bricks",

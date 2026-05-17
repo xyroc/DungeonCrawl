@@ -22,18 +22,40 @@
   ],
   "loot_table": "dungeoncrawl:chests/contents/food/level_0",
   "rooms": {
+    "cluster": [
+      {
+        "settings": {
+          "fan_out_chance": 1.0,
+          "max_size": 6,
+          "min_size": 3,
+          "non_terminals": [
+            "dungeoncrawl:room/crypt/turn"
+          ],
+          "terminals": [
+            "dungeoncrawl:room/crypt/turn"
+          ]
+        }
+      }
+    ],
     "lower_staircase": [
-      "dungeoncrawl:room/lower_staircase"
+      "dungeoncrawl:room/staircase/lower"
     ],
     "ordinary": [
+      "dungeoncrawl:room/brick",
       "dungeoncrawl:room/corner",
       "dungeoncrawl:room/dark_hall",
       "dungeoncrawl:room/eniko",
+      "dungeoncrawl:room/fort",
       "dungeoncrawl:room/potion_lab",
-      "dungeoncrawl:room/sarcophagus"
+      "dungeoncrawl:room/sarcophagus",
+      {
+        "blueprint": "dungeoncrawl:room/spider",
+        "weight": 4
+      },
+      "dungeoncrawl:room/storage"
     ],
     "upper_staircase": [
-      "dungeoncrawl:room/upper_staircase"
+      "dungeoncrawl:room/staircase/upper"
     ]
   },
   "secret_rooms": [
@@ -65,7 +87,7 @@
       "max": 20,
       "min": 3
     },
-    "max_cluster_nodes": 0,
+    "max_cluster_nodes": 2,
     "max_depth": 8,
     "max_rooms": 64,
     "min_separation": 10,

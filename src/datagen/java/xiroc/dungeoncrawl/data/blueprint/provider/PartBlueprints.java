@@ -12,7 +12,10 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChainedFeatures;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.GraveFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.SpawnerFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
@@ -20,7 +23,9 @@ import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.FixedTemplateBlo
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.Constant;
+import xiroc.dungeoncrawl.util.random.value.Range;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PartBlueprints {
@@ -37,6 +42,47 @@ public interface PartBlueprints {
 
         context.register(BlueprintKeys.Part.CEILING_7X7_LAVA_PIT, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.CEILING_7X7_LAVA_PIT)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CEILING_9X3_FLAT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_9X3_FLAT)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CEILING_9X3_ORNATE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_9X3_ORNATE)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CEILING_CENTERED_5X5_FLAT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_CENTERED_5X5_FLAT)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CEILING_CENTERED_5X5_ORNATE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_CENTERED_5X5_ORNATE)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CEILING_CENTERED_5X5_RAISED, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CEILING_CENTERED_5X5_RAISED)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CRYPT_GRAVES, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_GRAVES)
+                .configureBlock(Blocks.RED_NETHER_BRICK_STAIRS, TemplateBlockPlacementSettings.ANTI_SOLID.withPostProcessing())
+                .feature(new ChainedFeatures(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/grave")), new Constant(0)),
+                        List.of(new GraveFeature(
+                                        new PlacementSettings(Optional.empty(), new Range(1, 3)),
+                                        Optional.of(new SpawnerSettings(Optional.empty())),
+                                        Optional.of(new ChestSettings())),
+                                new GraveFeature(
+                                        new PlacementSettings(Optional.empty(), new Range(1, 3)),
+                                        Optional.empty(),
+                                        Optional.empty()
+                                )
+                        )))
+                .build()));
+
+        context.register(BlueprintKeys.Part.CRYPT_GRAVES_WALL, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_GRAVES_WALL)
                 .build()));
 
         context.register(BlueprintKeys.Part.DARK_HALL_OPEN, new Blueprint(new BlueprintConfiguration.Builder()
@@ -126,6 +172,19 @@ public interface PartBlueprints {
 
         context.register(BlueprintKeys.Part.LIBRARY_FLOWERS, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.LIBRARY_FLOWERS)
+                .build()));
+
+        context.register(BlueprintKeys.Part.SARCOPHAGUS_SMALL_EMPTY, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.SARCOPHAGUS_SMALL)
+                .build()));
+
+        context.register(BlueprintKeys.Part.SARCOPHAGUS_SMALL_GRAVE, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.SARCOPHAGUS_SMALL)
+                .feature(new GraveFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/grave")), new Constant(1)),
+                        Optional.of(new SpawnerSettings(Optional.empty())),
+                        Optional.of(new ChestSettings())
+                ))
                 .build()));
     }
 }

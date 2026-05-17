@@ -8,6 +8,7 @@ import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
 import xiroc.dungeoncrawl.data.tags.spawner.SpawnerTypePoolTags;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.dungeon.generator.level.ClusterNodeSettings;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGeneratorSettings;
 import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
@@ -32,15 +33,31 @@ public interface LevelTypes {
                         .maxClusterNodes(2))
                 .rooms(new LevelType.LevelRooms.Builder()
                         .ordinary(new IRandom.Builder<Holder<Blueprint>>()
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.BRICK))
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.CORNER))
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.DARK_HALL))
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.ENIKO))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.FORT))
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.POTION_LAB))
-                                .add(blueprints.getOrThrow(BlueprintKeys.Room.SARCOPHAGUS)))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.SARCOPHAGUS))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.SPIDER), 4)
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.STORAGE)))
                         .lowerStaircase(new IRandom.Builder<Holder<Blueprint>>()
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.STAIRCASE_LOWER)))
                         .upperStaircase(new IRandom.Builder<Holder<Blueprint>>()
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.STAIRCASE_UPPER)))
+                        .cluster(new IRandom.Builder<ClusterNodeSettings>()
+                                .add(new ClusterNodeSettings(
+                                        3,
+                                        6,
+                                        1.0f,
+                                        IRandom.<Holder<Blueprint>>builder()
+                                                .add(blueprints.getOrThrow(BlueprintKeys.Room.CRYPT_TURN))
+                                                .build(),
+                                        IRandom.<Holder<Blueprint>>builder()
+                                                .add(blueprints.getOrThrow(BlueprintKeys.Room.CRYPT_TURN))
+                                                .build()
+                                )))
                         .build())
                 .corridorStyles(new IRandom.Builder<CorridorStyle>()
                         .add(new CorridorStyle.Builder()

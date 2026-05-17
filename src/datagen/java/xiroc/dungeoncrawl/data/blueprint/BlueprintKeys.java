@@ -27,12 +27,22 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> STAIRCASE_LOWER = key(TemplateKeys.Room.STAIRCASE_LOWER);
         ResourceKey<Blueprint> STAIRCASE_UPPER = key(TemplateKeys.Room.STAIRCASE_UPPER);
         ResourceKey<Blueprint> STORAGE = key(TemplateKeys.Room.STORAGE);
+
+        ResourceKey<Blueprint> CRYPT_TURN = key(TemplateKeys.Room.CRYPT_TURN);
     }
 
     interface Part {
         ResourceKey<Blueprint> CEILING_7X7_DOME = key(TemplateKeys.Part.CEILING_7X7_DOME);
         ResourceKey<Blueprint> CEILING_7X7_FLAT = key(TemplateKeys.Part.CEILING_7X7_FLAT);
         ResourceKey<Blueprint> CEILING_7X7_LAVA_PIT = key(TemplateKeys.Part.CEILING_7X7_LAVA_PIT);
+        ResourceKey<Blueprint> CEILING_9X3_FLAT = key(TemplateKeys.Part.CEILING_9X3_FLAT);
+        ResourceKey<Blueprint> CEILING_9X3_ORNATE = key(TemplateKeys.Part.CEILING_9X3_ORNATE);
+        ResourceKey<Blueprint> CEILING_CENTERED_5X5_FLAT = key(TemplateKeys.Part.CEILING_CENTERED_5X5_FLAT);
+        ResourceKey<Blueprint> CEILING_CENTERED_5X5_ORNATE = key(TemplateKeys.Part.CEILING_CENTERED_5X5_ORNATE);
+        ResourceKey<Blueprint> CEILING_CENTERED_5X5_RAISED = key(TemplateKeys.Part.CEILING_CENTERED_5X5_RAISED);
+
+        ResourceKey<Blueprint> CRYPT_GRAVES = key(TemplateKeys.Part.CRYPT_GRAVES);
+        ResourceKey<Blueprint> CRYPT_GRAVES_WALL = key(TemplateKeys.Part.CRYPT_GRAVES_WALL);
 
         ResourceKey<Blueprint> FLOOR_3x3_MASONRY = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "masonry"));
         ResourceKey<Blueprint> FLOOR_3x3_SOLID = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "solid"));
@@ -53,11 +63,14 @@ public interface BlueprintKeys {
 
         ResourceKey<Blueprint> FORT_SPAWNER_PILLAR = key(TemplateKeys.Part.FORT_SPAWNER_PILLAR);
 
-        ResourceLocation __LAB_CONTAINER = TemplateKeys.Part.__LAB_CONTAINER;
-        ResourceKey<Blueprint> LAB_CONTAINER_CROPS = key(DataGen.resource(__LAB_CONTAINER, "crops"));
-        ResourceKey<Blueprint> LAB_CONTAINER_FLOWER = key(DataGen.resource(__LAB_CONTAINER, "flower"));
-        ResourceKey<Blueprint> LAB_CONTAINER_KELP = key(DataGen.resource(__LAB_CONTAINER, "kelp"));
-        ResourceKey<Blueprint> LAB_CONTAINER_SPAWNER = key(DataGen.resource(__LAB_CONTAINER, "spawner"));
+        ResourceKey<Blueprint> SARCOPHAGUS_SMALL_EMPTY = key(DataGen.resource(TemplateKeys.Part.SARCOPHAGUS_SMALL, "empty"));
+        ResourceKey<Blueprint> SARCOPHAGUS_SMALL_GRAVE = key(DataGen.resource(TemplateKeys.Part.SARCOPHAGUS_SMALL, "grave"));
+
+        ResourceLocation __LAB_CONTAINER__ = TemplateKeys.Part.__LAB_CONTAINER__;
+        ResourceKey<Blueprint> LAB_CONTAINER_CROPS = key(DataGen.resource(__LAB_CONTAINER__, "crops"));
+        ResourceKey<Blueprint> LAB_CONTAINER_FLOWER = key(DataGen.resource(__LAB_CONTAINER__, "flower"));
+        ResourceKey<Blueprint> LAB_CONTAINER_KELP = key(DataGen.resource(__LAB_CONTAINER__, "kelp"));
+        ResourceKey<Blueprint> LAB_CONTAINER_SPAWNER = key(DataGen.resource(__LAB_CONTAINER__, "spawner"));
     }
 
     interface Corridor {

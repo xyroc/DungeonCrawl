@@ -26,12 +26,14 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 import xiroc.dungeoncrawl.data.SharedKeys;
 import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
+import xiroc.dungeoncrawl.dungeon.decoration.ScatteredDecoration;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
 public interface PrimaryThemes {
     static void generate(BootstrapContext<PrimaryTheme> context) {
         context.register(SharedKeys.Theme.Primary.FOREST, PrimaryTheme.builder()
+                .withDecoration(new ScatteredDecoration(new SingleBlock(Blocks.VINE), 0.2f))
                 .masonry(new RandomBlock(new IRandom.Builder<BlockState>()
                         .add(Blocks.STONE_BRICKS.defaultBlockState(), 4)
                         .add(Blocks.CRACKED_STONE_BRICKS.defaultBlockState(), 2)
@@ -47,6 +49,11 @@ public interface PrimaryThemes {
                 .fluid(new SingleBlock(Blocks.WATER))
                 .fencing(new SingleBlock(Blocks.IRON_BARS))
                 .wall(new SingleBlock(Blocks.MOSSY_STONE_BRICK_WALL))
+                .graveSeal(new RandomBlock(IRandom.<BlockState>builder()
+                        .add(Blocks.QUARTZ_BLOCK.defaultBlockState(), 2)
+                        .add(Blocks.QUARTZ_BRICKS.defaultBlockState())
+                        .add(Blocks.CHISELED_QUARTZ_BLOCK.defaultBlockState())
+                        .build()))
                 .build());
     }
 }

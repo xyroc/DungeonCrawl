@@ -1,0 +1,53 @@
+{
+  "entrance_types": {
+    "dungeoncrawl:entrance/hybrid": {
+      "type": "hybrid"
+    }
+  },
+  "features": [
+    {
+      "type": "dungeoncrawl:grave",
+      "chest": {},
+      "placement": {
+        "amount": 2,
+        "positions": "dungeoncrawl:feature/grave"
+      },
+      "spawner": {}
+    }
+  ],
+  "parts": [
+    {
+      "positions": "dungeoncrawl:part/crypt/sarcophagus",
+      "variants": [
+        "dungeoncrawl:part/crypt/sarcophagus/small/empty",
+        "dungeoncrawl:part/crypt/sarcophagus/small/grave"
+      ]
+    },
+    {
+      "positions": "dungeoncrawl:part/crypt/graves",
+      "variants": [
+        {
+          "blueprint": "dungeoncrawl:part/crypt/graves",
+          "weight": 2
+        },
+        "dungeoncrawl:part/crypt/graves/wall"
+      ]
+    },
+    {
+      "positions": "dungeoncrawl:part/ceiling/centered/5x5",
+      "variants": [
+        "dungeoncrawl:part/ceiling/centered/5x5/flat",
+        "dungeoncrawl:part/ceiling/centered/5x5/ornate",
+        "dungeoncrawl:part/ceiling/centered/5x5/raised"
+      ]
+    },
+    {
+      "positions": "dungeoncrawl:part/ceiling/9x3",
+      "variants": [
+        "dungeoncrawl:part/ceiling/9x3/flat",
+        "dungeoncrawl:part/ceiling/9x3/ornate"
+      ]
+    }
+  ],
+  "template": "dungeoncrawl:room/crypt/turn"
+}

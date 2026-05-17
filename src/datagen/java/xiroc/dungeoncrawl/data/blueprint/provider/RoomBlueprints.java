@@ -19,6 +19,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChestFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.GraveFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.SarcophagusFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.SpawnerFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
@@ -61,6 +62,33 @@ public interface RoomBlueprints {
 
         context.register(BlueprintKeys.Room.CORNER, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.CORNER)
+                .build()));
+
+        context.register(BlueprintKeys.Room.CRYPT_TURN, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.CRYPT_TURN)
+                .entranceType(DataGen.resource("entrance/hybrid"), BlueprintConfiguration.EntranceType.HYBRID, null, null)
+                .multipart(new BlueprintMultipart(DataGen.resource("part/crypt/sarcophagus"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.SARCOPHAGUS_SMALL_EMPTY))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.SARCOPHAGUS_SMALL_GRAVE))
+                        .build()))
+                .multipart(new BlueprintMultipart(DataGen.resource("part/crypt/graves"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_GRAVES), 2)
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_GRAVES_WALL))
+                        .build()))
+                .multipart(new BlueprintMultipart(DataGen.resource("part/ceiling/centered/5x5"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_CENTERED_5X5_FLAT))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_CENTERED_5X5_ORNATE))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_CENTERED_5X5_RAISED))
+                        .build()))
+                .multipart(new BlueprintMultipart(DataGen.resource("part/ceiling/9x3"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_9X3_FLAT))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_9X3_ORNATE))
+                        .build()))
+                .feature(new GraveFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/grave")), new Constant(2)),
+                        Optional.of(new SpawnerSettings(Optional.empty())),
+                        Optional.of(new ChestSettings())
+                ))
                 .build()));
 
         context.register(BlueprintKeys.Room.DARK_HALL, new Blueprint(new BlueprintConfiguration.Builder()

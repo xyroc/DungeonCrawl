@@ -10,6 +10,7 @@ import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.component.feature.ChestComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.FlowerPotComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.FurnaceComponent;
+import xiroc.dungeoncrawl.dungeon.component.feature.GraveComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SarcophagusComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SpawnerComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.TNTChestComponent;
@@ -36,6 +37,7 @@ public interface DungeonComponent {
         registry.register(DungeonCrawl.locate("feature/chest"), ChestComponent.CODEC);
         registry.register(DungeonCrawl.locate("feature/flower_pot"), FlowerPotComponent.CODEC);
         registry.register(DungeonCrawl.locate("feature/furnace"), FurnaceComponent.CODEC);
+        registry.register(DungeonCrawl.locate("feature/grave"), GraveComponent.CODEC);
         registry.register(DungeonCrawl.locate("feature/sarcophagus"), SarcophagusComponent.CODEC);
         registry.register(DungeonCrawl.locate("feature/spawner"), SpawnerComponent.CODEC);
         registry.register(DungeonCrawl.locate("feature/tnt_chest"), TNTChestComponent.CODEC);

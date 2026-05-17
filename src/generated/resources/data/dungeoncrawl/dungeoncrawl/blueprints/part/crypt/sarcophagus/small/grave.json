@@ -1,0 +1,14 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:grave",
+      "chest": {},
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:feature/grave"
+      },
+      "spawner": {}
+    }
+  ],
+  "template": "dungeoncrawl:part/crypt/sarcophagus/small"
+}

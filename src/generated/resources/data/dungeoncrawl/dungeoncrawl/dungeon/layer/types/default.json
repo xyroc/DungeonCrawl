@@ -20,7 +20,7 @@
       }
     }
   ],
-  "loot_table": "dungeoncrawl:chests/contents/food/level_0",
+  "loot_table": "dungeoncrawl:chests/level_0",
   "rooms": {
     "cluster": [
       {

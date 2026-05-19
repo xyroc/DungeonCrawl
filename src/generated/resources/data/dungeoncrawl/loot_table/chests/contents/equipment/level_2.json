@@ -1,4 +1,252 @@
 {
   "type": "minecraft:chest",
+  "functions": [
+    {
+      "conditions": [
+        {
+          "chance": 0.5,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "function": "minecraft:enchant_with_levels",
+      "levels": {
+        "type": "minecraft:binomial",
+        "n": 25.0,
+        "p": 0.5
+      },
+      "options": "#minecraft:on_random_loot"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:wooden_pickaxe"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:wooden_shovel"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:stone_pickaxe"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:stone_shovel"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_axe"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_shovel",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_pickaxe",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_axe"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_shovel",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_pickaxe",
+                    "weight": 2
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          },
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:wooden_sword"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:stone_sword",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_sword"
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 3
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          },
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:leather_boots",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:chainmail_boots",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_boots",
+                    "weight": 3
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_boots",
+                    "weight": 3
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:leather_leggings",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:chainmail_leggings",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_leggings",
+                    "weight": 3
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_leggings",
+                    "weight": 3
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:leather_chestplate",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:chainmail_chestplate",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_chestplate",
+                    "weight": 3
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_chestplate",
+                    "weight": 3
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          }
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": {
+            "pools": [
+              {
+                "bonus_rolls": 0.0,
+                "entries": [
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:leather_helmet",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:chainmail_helmet",
+                    "weight": 2
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:golden_helmet",
+                    "weight": 3
+                  },
+                  {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_helmet",
+                    "weight": 3
+                  }
+                ],
+                "rolls": 1.0
+              }
+            ]
+          }
+        }
+      ],
+      "name": "Level 2 Chest: Equipment",
+      "rolls": 1.0
+    }
+  ],
   "random_sequence": "dungeoncrawl:chests/contents/equipment/level_2"
 }

@@ -86,7 +86,7 @@ public interface LevelTypes {
                                 .build()))
                 .spawnerTypes(new IRandom.Builder<Holder<SpawnerType>>()
                         .setPools(spawnerTypePools.getOrThrow(SpawnerTypePoolTags.LEVEL_O)))
-                .lootTable(ChestLootTableKeys.FOOD_LEVEL_0)
+                .lootTable(ChestLootTableKeys.LEVEL_0)
                 .secretRoom(new SecretRoom.Builder()
                         .amount(new Constant(1))
                         .entrances(new IRandom.Builder<Holder<Blueprint>>()

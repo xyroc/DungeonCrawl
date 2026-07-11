@@ -8,7 +8,6 @@ import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.SpawnerSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
-import xiroc.dungeoncrawl.dungeon.component.feature.ChestComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.GraveComponent;
 import xiroc.dungeoncrawl.dungeon.component.feature.SpawnerComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
@@ -31,8 +30,7 @@ public record GraveFeature(PlacementSettings placement, Optional<SpawnerSettings
         }
 
         if (chest.isPresent()) {
-            BlockPos chestPos = anchor.position();
-            components.accept(new ChestComponent(new Anchor(chestPos, anchor.direction()), chest.get().getLootTable(levelGenerator)));
+            components.accept(chest.get().create(anchor, levelGenerator));
         }
 
         BlockPos sealPos = anchor.position().relative(anchor.direction(), 2);

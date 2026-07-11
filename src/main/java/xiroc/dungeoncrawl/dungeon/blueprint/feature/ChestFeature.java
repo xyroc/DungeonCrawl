@@ -6,7 +6,6 @@ import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
-import xiroc.dungeoncrawl.dungeon.component.feature.ChestComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 
 import java.util.function.Consumer;
@@ -19,7 +18,7 @@ public record ChestFeature(PlacementSettings placement, ChestSettings chest) imp
 
     @Override
     public void createAt(Consumer<DungeonComponent> components, LevelGenerator levelGenerator, Anchor anchor) {
-        components.accept(new ChestComponent(anchor, chest.getLootTable(levelGenerator)));
+        components.accept(chest.create(anchor, levelGenerator));
     }
 
     @Override

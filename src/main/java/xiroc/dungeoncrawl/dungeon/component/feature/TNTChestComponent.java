@@ -1,49 +1,36 @@
 package xiroc.dungeoncrawl.dungeon.component.feature;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.storage.loot.LootTable;
-import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
-import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
-public record TNTChestComponent(Anchor placement, ResourceKey<LootTable> lootTable) implements DungeonComponent {
-    public static final MapCodec<TNTChestComponent> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-            Anchor.CODEC.fieldOf("placement").forGetter(TNTChestComponent::placement),
-            GlobalCodecs.LOOT_TABLE.fieldOf("loot_table").forGetter(TNTChestComponent::lootTable)
-    ).apply(builder, TNTChestComponent::new));
+public record TNTChestComponent(ChestComponent chest) implements DungeonComponent {
+    public static final MapCodec<TNTChestComponent> CODEC = ChestComponent.CODEC.xmap(TNTChestComponent::new, TNTChestComponent::chest);
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
-        BlockPos position = placement.position();
-        if (!worldGenBounds.isInside(position)) {
+        chest.generate(level, worldGenBounds, random, worldGenContext);
+
+        BlockPos tntPosition = chest.placement().position().below(2);
+        if (!worldGenBounds.isInside(tntPosition)) {
             return;
         }
-        if (!level.getBlockState(position.below()).isFaceSturdy(level, position.below(), Direction.UP)) {
-            return;
-        }
-        WorldEditor.Unsafe.placeBlock(level, position, Blocks.TRAPPED_CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, placement.direction()), false);
-        WorldEditor.Unsafe.placeBlock(level, position.below(2), Blocks.TNT.defaultBlockState(), false);
-        if (level.getBlockEntity(position) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) {
-            randomizableContainerBlockEntity.setLootTable(lootTable);
-        }
+
+        WorldEditor.Unsafe.placeBlock(level, tntPosition, Blocks.TNT.defaultBlockState(), false);
     }
 
     @Override
     public BoundingBoxBuilder boundingBox() {
-        return BoundingBoxBuilder.fromCorners(placement.position(), placement.position().below(2));
+        BoundingBoxBuilder bounds = chest.boundingBox();
+        bounds.encapsulate(BoundingBoxBuilder.fromPosition(chest.placement().position().below(2)));
+        return bounds;
     }
 
     @Override

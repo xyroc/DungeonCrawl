@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
@@ -22,7 +23,12 @@ public record SecondaryTheme(BlockStateProvider material,
                              BlockStateProvider fence,
                              BlockStateProvider fenceGate,
                              BlockStateProvider button,
-                             BlockStateProvider pressurePlate) {
+                             BlockStateProvider pressurePlate,
+                             BlockStateProvider chest,
+                             BlockStateProvider trappedChest) {
+
+    private static final BlockStateProvider DEFAULT_CHEST = new SingleBlock(Blocks.CHEST);
+    private static final BlockStateProvider DEFAULT_TRAPPED_CHEST = new SingleBlock(Blocks.TRAPPED_CHEST);
 
     public static final Codec<SecondaryTheme> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockStateProvider.CODEC.fieldOf("material").forGetter(SecondaryTheme::material),
@@ -34,7 +40,9 @@ public record SecondaryTheme(BlockStateProvider material,
             BlockStateProvider.CODEC.fieldOf("fence").forGetter(SecondaryTheme::fence),
             BlockStateProvider.CODEC.fieldOf("fence_gate").forGetter(SecondaryTheme::fenceGate),
             BlockStateProvider.CODEC.fieldOf("button").forGetter(SecondaryTheme::button),
-            BlockStateProvider.CODEC.fieldOf("pressure_plate").forGetter(SecondaryTheme::pressurePlate)
+            BlockStateProvider.CODEC.fieldOf("pressure_plate").forGetter(SecondaryTheme::pressurePlate),
+            BlockStateProvider.CODEC.optionalFieldOf("chest", DEFAULT_CHEST).forGetter(SecondaryTheme::chest),
+            BlockStateProvider.CODEC.optionalFieldOf("trapped_chest", DEFAULT_TRAPPED_CHEST).forGetter(SecondaryTheme::trappedChest)
     ).apply(instance, SecondaryTheme::new));
 
     public static final Codec<Holder<SecondaryTheme>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.SECONDARY_THEME, DIRECT_CODEC, false);
@@ -59,9 +67,21 @@ public record SecondaryTheme(BlockStateProvider material,
         private BlockStateProvider slab = SingleBlock.AIR;
         private BlockStateProvider stairs = SingleBlock.AIR;
         private BlockStateProvider trapdoor = SingleBlock.AIR;
+        private BlockStateProvider chest = DEFAULT_CHEST;
+        private BlockStateProvider trappedChest = DEFAULT_TRAPPED_CHEST;
 
         public Builder button(BlockStateProvider provider) {
             this.button = provider;
+            return this;
+        }
+
+        public Builder chest(BlockStateProvider chest) {
+            this.chest = chest;
+            return this;
+        }
+
+        public Builder trappedChest(BlockStateProvider trappedChest) {
+            this.trappedChest = trappedChest;
             return this;
         }
 
@@ -121,7 +141,7 @@ public record SecondaryTheme(BlockStateProvider material,
             Objects.requireNonNull(fenceGate);
             Objects.requireNonNull(button);
             Objects.requireNonNull(pressurePlate);
-            return new SecondaryTheme(material, pillar, stairs, slab, door, trapdoor, fence, fenceGate, button, pressurePlate);
+            return new SecondaryTheme(material, pillar, stairs, slab, door, trapdoor, fence, fenceGate, button, pressurePlate, chest, trappedChest);
         }
     }
 }

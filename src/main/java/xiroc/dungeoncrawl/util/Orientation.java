@@ -41,11 +41,13 @@ public interface Orientation {
     }
 
     /**
-     * Determines the {@code Rotation} that must be applied to a {@code Direction} to end up at another.
+     * Determines the {@link Rotation} that must be applied to {@link Direction} {@code from} to end up at {@link Direction} {@code to}.
+     * Both directions must be horizontal.
      *
      * @param from the direction to start off.
      * @param to   the direction we want to end up at.
      * @return The rotation necessary to do so.
+     * @throws IllegalArgumentException if either of the two directions is not horizontal.
      */
     static Rotation horizontalRotation(Direction from, Direction to) {
         if (from.getAxis() == Direction.Axis.Y || to.getAxis() == Direction.Axis.Y) {
@@ -64,7 +66,7 @@ public interface Orientation {
     }
 
     /**
-     * Determines the number of 90 degree clockwise rotations needed to go from one direction to another.
+     * Determines the number of 90 degree clockwise rotations needed to go from direction {@code from} to direction {@code to}.
      *
      * @param from The direction to start off.
      * @param to   The goal.

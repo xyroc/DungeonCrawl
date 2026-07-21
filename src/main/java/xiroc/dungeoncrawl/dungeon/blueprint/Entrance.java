@@ -39,18 +39,21 @@ public record Entrance(Anchor placement, @Nullable Decoration decoration, @Nulla
         return new EntranceComponent(new Anchor(placement.position().above(), placement.direction()), decoration);
     }
 
-    public record CustomParts(IRandom<Holder<Blueprint>> open, IRandom<Holder<Blueprint>> closed) {
+    public record CustomParts(IRandom<Holder<Blueprint>> open, IRandom<Holder<Blueprint>> closed, @Nullable IRandom<Holder<Blueprint>> clusterOpen) {
         public static final Codec<CustomParts> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Blueprint.RANDOM_HOLDER_CODEC.fieldOf("open").forGetter(CustomParts::open),
-                Blueprint.RANDOM_HOLDER_CODEC.fieldOf("closed").forGetter(CustomParts::closed)
-        ).apply(instance, CustomParts::new));
+                Blueprint.RANDOM_HOLDER_CODEC.fieldOf("closed").forGetter(CustomParts::closed),
+                Blueprint.RANDOM_HOLDER_CODEC.optionalFieldOf("cluster_open").forGetter(parts -> Optional.ofNullable(parts.clusterOpen))
+        ).apply(instance, (open, closed, clusterOpen) ->
+                new CustomParts(open, closed, clusterOpen.orElse(null))));
 
         public static class Builder {
             private IRandom<Holder<Blueprint>> open = null;
             private IRandom<Holder<Blueprint>> closed = null;
+            private IRandom<Holder<Blueprint>> clusterOpen = null;
 
             public CustomParts build() {
-                return new CustomParts(Objects.requireNonNull(open), Objects.requireNonNull(closed));
+                return new CustomParts(Objects.requireNonNull(open), Objects.requireNonNull(closed), clusterOpen);
             }
 
             public Builder open(IRandom<Holder<Blueprint>> open) {
@@ -60,6 +63,11 @@ public record Entrance(Anchor placement, @Nullable Decoration decoration, @Nulla
 
             public Builder closed(IRandom<Holder<Blueprint>> closed) {
                 this.closed = Objects.requireNonNull(closed);
+                return this;
+            }
+
+            public Builder clusterOpen(IRandom<Holder<Blueprint>> clusterOpen) {
+                this.clusterOpen = clusterOpen;
                 return this;
             }
         }

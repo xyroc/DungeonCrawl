@@ -131,7 +131,7 @@ public class ClusterNodeGenerator {
             if (nodesAdded > 0) {
                 totalNodesAdded += nodesAdded;
                 budget -= nodesAdded;
-                node.addEntrance(attachmentPoint, entrance);
+                node.addEntrance(attachmentPoint, entrance, true);
             } else {
                 clusterNode.delete(preliminaryPlan);
                 return 0;

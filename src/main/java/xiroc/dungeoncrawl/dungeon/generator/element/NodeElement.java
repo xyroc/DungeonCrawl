@@ -20,6 +20,7 @@ import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.collections.iterators.IteratorSequence;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -118,8 +119,8 @@ public class NodeElement extends DungeonElement {
                     continue;
                 }
                 context.levelGenerator().createCorridor(corridorStart, entrancePlacement.direction(), corridorBox.create());
-                addEntrance(entrancePlacement, entrance);
-                marker.node.addEntrance(marker.placement, marker.entrance);
+                addEntrance(entrancePlacement, entrance, false);
+                marker.node.addEntrance(marker.placement, marker.entrance, false);
                 marker.node.normalEntrances.remove(marker.entrance);
                 marker.invalidate();
                 normalEntrances.remove(entranceIndex);
@@ -188,25 +189,31 @@ public class NodeElement extends DungeonElement {
         context.dungeonPlan().add(node);
         entrances.remove(chosenEntrance);
         final Anchor rotatedEntrance = room.value().coordinateSpace(roomPosition).rotateAndTranslateToOrigin(entrance.placement(), roomRotation);
-        node.addEntrance(rotatedEntrance, entrance);
+        node.addEntrance(rotatedEntrance, entrance, useClusterEntrances);
         return node;
     }
 
-    public void addEntrance(Anchor placement, Entrance entrance) {
+    public void addEntrance(Anchor placement, Entrance entrance, boolean useClusterParts) {
         EntranceComponent placedEntrance = entrance.place(placement);
         if (placedEntrance != null) {
             piece.addComponent(placedEntrance);
         }
-        entrance.customParts().ifPresent(parts -> BlueprintMultipart.addPart(placement.opposite(), parts.open(), piece, piece.base, context.levelGenerator()));
+        if (entrance.customParts() != null) {
+            IRandom<Holder<Blueprint>> parts = useClusterParts
+                    ? entrance.customParts().clusterOpen() != null ? entrance.customParts().clusterOpen() : entrance.customParts().open()
+                    : entrance.customParts().open();
+
+            BlueprintMultipart.addPart(placement.opposite(), parts, piece, piece.base, context.levelGenerator());
+        }
     }
 
     private void closeOffEntrances(Iterable<Entrance> entrances) {
         for (Entrance entrance : entrances) {
-            if (entrance.customParts().isEmpty()) {
+            if (entrance.customParts() == null) {
                 continue;
             }
             Anchor position = coordinateSpace.rotateAndTranslateToOrigin(entrance.placement(), piece.base.rotation());
-            BlueprintMultipart.addPart(position.opposite(), entrance.customParts().get().closed(), piece, piece.base, context.levelGenerator());
+            BlueprintMultipart.addPart(position.opposite(), entrance.customParts().closed(), piece, piece.base, context.levelGenerator());
         }
     }
 

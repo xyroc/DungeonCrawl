@@ -172,7 +172,7 @@ public class LevelGenerator {
             }
 
             if (nodeCreated) {
-                node.addEntrance(placement, entrance);
+                node.addEntrance(placement, entrance, false);
                 --placementsLeft;
                 entrances.remove(entranceIndex);
             }

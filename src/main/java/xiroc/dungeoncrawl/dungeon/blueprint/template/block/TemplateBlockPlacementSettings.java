@@ -32,18 +32,15 @@ public record TemplateBlockPlacementSettings(boolean fillAir,
 
     public static final Codec<TemplateBlockPlacementSettings> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Codec.BOOL.optionalFieldOf("fill_air").forGetter(settings ->
-                            settings.fillAir == Defaults.FILL_AIR ? Optional.empty() : Optional.of(settings.fillAir)),
-                    Codec.BOOL.optionalFieldOf("fill_solid").forGetter(settings ->
-                            settings.fillSolid == Defaults.FILL_SOLID ? Optional.empty() : Optional.of(settings.fillSolid)),
-                    Codec.BOOL.optionalFieldOf("post_process").forGetter(settings ->
-                            settings.postProcess == Defaults.POST_PROCESS ? Optional.empty() : Optional.of(settings.postProcess)),
+                    Codec.BOOL.optionalFieldOf("fill_air", Defaults.FILL_AIR).forGetter(TemplateBlockPlacementSettings::fillAir),
+                    Codec.BOOL.optionalFieldOf("fill_solid", Defaults.FILL_SOLID).forGetter(TemplateBlockPlacementSettings::fillSolid),
+                    Codec.BOOL.optionalFieldOf("post_process", Defaults.POST_PROCESS).forGetter(TemplateBlockPlacementSettings::postProcess),
                     TemplateBlockType.CODEC.optionalFieldOf("alternative").forGetter(settings -> Optional.ofNullable(settings.alternative)),
                     TieredResource.Codecs.LOOT_TABLE.optionalFieldOf("loot_table").forGetter(settings -> Optional.ofNullable(settings.lootTable))
             ).apply(instance, (fillAir, fillSolid, postProcess, alternative, lootTable) ->
-                    new TemplateBlockPlacementSettings(fillAir.orElse(Defaults.FILL_AIR),
-                            fillSolid.orElse(Defaults.FILL_SOLID),
-                            postProcess.orElse(Defaults.POST_PROCESS),
+                    new TemplateBlockPlacementSettings(fillAir,
+                            fillSolid,
+                            postProcess,
                             alternative.orElse(null),
                             lootTable.orElse(null))));
 

@@ -6,8 +6,6 @@ import net.minecraft.core.Holder;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.util.random.IRandom;
 
-import java.util.Optional;
-
 /**
  *
  * @param minSize      The minimum number of nodes forming a cluster node.
@@ -27,19 +25,10 @@ public record ClusterNodeSettings(int minSize,
     public static final Codec<ClusterNodeSettings> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.fieldOf("min_size").forGetter(ClusterNodeSettings::minSize),
             Codec.INT.fieldOf("max_size").forGetter(ClusterNodeSettings::maxSize),
-            Codec.floatRange(0.0f, 1.0f).optionalFieldOf("fan_out_chance").forGetter(settings ->
-                    settings.fanOut == DEFAULT_FAN_OUT ? Optional.empty() : Optional.of(settings.fanOut)),
+            Codec.floatRange(0.0f, 1.0f).optionalFieldOf("fan_out_chance", DEFAULT_FAN_OUT).forGetter(ClusterNodeSettings::fanOut),
             Blueprint.RANDOM_HOLDER_CODEC.fieldOf("non_terminals").forGetter(ClusterNodeSettings::nonTerminals),
             Blueprint.RANDOM_HOLDER_CODEC.fieldOf("terminals").forGetter(ClusterNodeSettings::terminals)
-    ).apply(builder, (minSize, maxSize, fanOut, nonTerminals, terminals) ->
-            new ClusterNodeSettings(
-                    minSize,
-                    maxSize,
-                    fanOut.orElse(DEFAULT_FAN_OUT),
-                    nonTerminals,
-                    terminals
-            )
-    ));
+    ).apply(builder, ClusterNodeSettings::new));
 
     public static final Codec<IRandom<ClusterNodeSettings>> RANDOM_CODEC = IRandom.<ClusterNodeSettings>codecBuilder()
             .valueCodec("settings", CODEC)

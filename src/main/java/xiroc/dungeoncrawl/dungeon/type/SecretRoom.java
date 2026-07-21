@@ -10,6 +10,7 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.RandomValue;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public record SecretRoom(IRandom<Holder<Blueprint>> variants, @Nullable RandomValue level, RandomValue amount,
                          IRandom<Holder<Blueprint>> entrances) {
@@ -17,7 +18,7 @@ public record SecretRoom(IRandom<Holder<Blueprint>> variants, @Nullable RandomVa
 
     public static class Builder {
         public static final Codec<Builder> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                RandomValue.CODEC.optionalFieldOf("level").forGetter(StorageHelper.emptyIfNull(builder -> builder.level)),
+                RandomValue.CODEC.optionalFieldOf("level").forGetter(builder -> Optional.ofNullable(builder.level)),
                 RandomValue.CODEC.fieldOf("amount").forGetter(builder -> builder.amount),
                 Blueprint.RANDOM_HOLDER_CODEC.fieldOf("variants").forGetter(builder -> builder.variants),
                 Blueprint.RANDOM_HOLDER_CODEC.fieldOf("entrances").forGetter(builder -> builder.entrances)

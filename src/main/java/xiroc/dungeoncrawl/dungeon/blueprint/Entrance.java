@@ -9,6 +9,7 @@ import net.minecraft.core.IdMapper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.component.EntranceComponent;
@@ -16,13 +17,12 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public record Entrance(Anchor placement, Optional<Decoration> decoration, Optional<CustomParts> customParts) {
+public record Entrance(Anchor placement, @Nullable Decoration decoration, @Nullable CustomParts customParts) {
     public Entrance(Anchor placement) {
-        this(placement, Optional.of(Decoration.PRIMARY), Optional.empty());
+        this(placement, Decoration.PRIMARY, null);
     }
 
     /**
@@ -33,7 +33,10 @@ public record Entrance(Anchor placement, Optional<Decoration> decoration, Option
      */
     @Nullable
     public EntranceComponent place(Anchor placement) {
-        return decoration.map(value -> new EntranceComponent(new Anchor(placement.position().above(), placement.direction()), value)).orElse(null);
+        if (decoration == null) {
+            return null;
+        }
+        return new EntranceComponent(new Anchor(placement.position().above(), placement.direction()), decoration);
     }
 
     public record CustomParts(IRandom<Holder<Blueprint>> open, IRandom<Holder<Blueprint>> closed) {

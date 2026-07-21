@@ -5,13 +5,17 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.RecordBuilder;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public interface StorageHelper {
     /**
      * Maps the list and entry results to a result of the list containing the entry.
-     * @param list The result for the list to add the entry to.
+     *
+     * @param list  The result for the list to add the entry to.
      * @param entry The result for the entry to add to the list.
      * @return The result for the resulting list.
      */
@@ -97,11 +101,27 @@ public interface StorageHelper {
      * Creates a function that invokes the provided function and wraps the return value in an {@code Optional}.
      *
      * @param function A function mapping instances of {@code T} to some {@code V} or {@code null}.
+     * @param <T>      The type the function is invoked on.
+     * @param <V>      The type of value the function returns.
      * @return A wrapper of the input function which returns an {@code Optional} holding the returned value, if any.
-     * @param <T> The type the function is invoked on.
-     * @param <V> The type of value the function returns.
      */
     static <T, V> Function<T, Optional<V>> emptyIfNull(Function<T, V> function) {
         return input -> Optional.ofNullable(function.apply(input));
+    }
+
+    /**
+     * Returns a map with all entries of {@code a} that do not have an equal counterpart in {@code b}.
+     * Value comparison is done using {@link Objects#equals(Object, Object)}.
+     *
+     * @param a   The map to take the entries from.
+     * @param b   A map holding the entries that should not be included in the result.
+     * @param <K> The key type of map {@code a}. Map {@code b} may use a different type.
+     * @param <V> The value type of map {@code a}. Map {@code b} may use a different type.
+     * @return The resulting difference map.
+     */
+    static <K, V> Map<K, V> mapDifference(Map<K, V> a, Map<?, ?> b) {
+        return a.entrySet().stream()
+                .filter(entry -> !Objects.equals(entry.getValue(), b.get(entry.getKey())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

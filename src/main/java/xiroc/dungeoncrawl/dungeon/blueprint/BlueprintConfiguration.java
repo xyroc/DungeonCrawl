@@ -19,6 +19,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.FixedTemplateBlockType;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
+import xiroc.dungeoncrawl.util.StorageHelper;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 
 import java.util.HashMap;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class BlueprintConfiguration {
     private static final ImmutableMap<Block, TemplateBlockType> DEFAULT_BLOCK_TYPES = ImmutableMap.<Block, TemplateBlockType>builder()
@@ -132,7 +132,7 @@ public class BlueprintConfiguration {
             .build();
 
     private static final ImmutableMap<ResourceLocation, ConfiguredEntrance> DEFAULT_ENTRANCE_TYPES = ImmutableMap.of(
-            BuiltinAnchorTypes.ENTRANCE, new ConfiguredEntrance(Optional.of(Entrance.Decoration.PRIMARY), Optional.empty(), EntranceType.NORMAL)
+            BuiltinAnchorTypes.ENTRANCE, new ConfiguredEntrance(Entrance.Decoration.PRIMARY, null, EntranceType.NORMAL)
     );
 
     // Default values for optional fields
@@ -149,32 +149,32 @@ public class BlueprintConfiguration {
             ResourceLocation.CODEC.fieldOf("template").forGetter(configuration -> configuration.template),
 
             BLOCK_TYPE_MAP_CODEC.optionalFieldOf("block_types").forGetter(configuration -> {
-                final var nonDefaultTypes = configuration.blockTypes.entrySet().stream()
-                        .filter(entry -> entry.getValue() != DEFAULT_BLOCK_TYPES.get(entry.getKey()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                return nonDefaultTypes.isEmpty() ? Optional.empty() : Optional.of(nonDefaultTypes);
+                final var types = configuration.useGlobalDefaultBlockTypes
+                        ? StorageHelper.mapDifference(configuration.blockTypes, DEFAULT_BLOCK_TYPES) // Only serialize non-default types.
+                        : configuration.blockTypes; // No default types. Need to serialize all specified ones.
+                return types.isEmpty() ? Optional.empty() : Optional.of(types);
             }),
 
-            Codec.BOOL.optionalFieldOf("use_global_default_block_types").forGetter(configuration ->
-                    configuration.useGlobalDefaultBlockTypes == Defaults.USE_GLOBAL_DEFAULT_BLOCK_TYPES ? Optional.empty() : Optional.of(configuration.useGlobalDefaultBlockTypes)),
+            Codec.BOOL.optionalFieldOf("use_global_default_block_types", Defaults.USE_GLOBAL_DEFAULT_BLOCK_TYPES)
+                    .forGetter(blueprintConfiguration -> blueprintConfiguration.useGlobalDefaultBlockTypes),
 
             BLOCK_SETTINGS_MAP_CODEC.optionalFieldOf("placement_settings").forGetter(configuration -> {
-                final var nonDefaultSettings = configuration.placementSettings.entrySet().stream()
-                        .filter(entry -> entry.getValue() != DEFAULT_BLOCK_PLACEMENTS.get(entry.getKey()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-                return nonDefaultSettings.isEmpty() ? Optional.empty() : Optional.of(nonDefaultSettings);
+                final var settings = configuration.useGlobalDefaultPlacementSettings
+                        ? StorageHelper.mapDifference(configuration.placementSettings, DEFAULT_BLOCK_PLACEMENTS) // Only serialize non-default settings.
+                        : configuration.placementSettings; // No default placement settings. Need to serialize all specified ones.
+                return settings.isEmpty() ? Optional.empty() : Optional.of(settings);
             }),
 
-            Codec.BOOL.optionalFieldOf("use_global_default_placement_settings").forGetter(configuration ->
-                    configuration.useGlobalDefaultPlacementSettings == Defaults.USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS ? Optional.empty() : Optional.of(configuration.useGlobalDefaultPlacementSettings)),
+            Codec.BOOL.optionalFieldOf("use_global_default_placement_settings", Defaults.USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS)
+                    .forGetter(configuration -> configuration.useGlobalDefaultPlacementSettings),
 
-            TemplateBlockPlacementSettings.CODEC.optionalFieldOf("default_placement_settings").forGetter(configuration -> {
-                final var settings = configuration.defaultPlacementSettings;
-                return settings == TemplateBlockPlacementSettings.DEFAULT ? Optional.empty() : Optional.of(settings);
+            TemplateBlockPlacementSettings.CODEC.optionalFieldOf("default_placement_settings", TemplateBlockPlacementSettings.DEFAULT)
+                    .forGetter(configuration -> configuration.defaultPlacementSettings),
+
+            ENTRANCE_TYPE_MAP_CODEC.optionalFieldOf("entrance_types").forGetter(configuration -> {
+                final var nonDefaultTypes = StorageHelper.mapDifference(configuration.entranceTypes, DEFAULT_ENTRANCE_TYPES);
+                return nonDefaultTypes.isEmpty() ? Optional.empty() : Optional.of(nonDefaultTypes);
             }),
-
-            ENTRANCE_TYPE_MAP_CODEC.optionalFieldOf("entrance_types").forGetter(configuration ->
-                    configuration.entranceTypes.equals(DEFAULT_ENTRANCE_TYPES) ? Optional.empty() : Optional.of(configuration.entranceTypes)),
 
             BlueprintFeature.CODEC.listOf().optionalFieldOf("features").forGetter(configuration ->
                     configuration.features.isEmpty() ? Optional.empty() : Optional.of(configuration.features)),
@@ -192,10 +192,10 @@ public class BlueprintConfiguration {
                        parts) ->
             new BlueprintConfiguration(template,
                     blockTypes.orElse(Map.of()),
-                    useGlobalDefaultBlockTypes.orElse(Defaults.USE_GLOBAL_DEFAULT_BLOCK_TYPES),
+                    useGlobalDefaultBlockTypes,
                     placementSettings.orElse(Map.of()),
-                    useGlobalDefaultPlacementSettings.orElse(Defaults.USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS),
-                    defaultPlacementSettings.orElse(TemplateBlockPlacementSettings.DEFAULT),
+                    useGlobalDefaultPlacementSettings,
+                    defaultPlacementSettings,
                     entranceTypes.orElse(DEFAULT_ENTRANCE_TYPES),
                     features.orElse(List.of()),
                     parts.orElse(List.of()))
@@ -308,16 +308,15 @@ public class BlueprintConfiguration {
         }
     }
 
-    protected record ConfiguredEntrance(Optional<Entrance.Decoration> decoration,
-                                        Optional<Entrance.CustomParts> customParts,
+    protected record ConfiguredEntrance(@Nullable Entrance.Decoration decoration,
+                                        @Nullable Entrance.CustomParts customParts,
                                         EntranceType type) {
         public static final Codec<ConfiguredEntrance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Entrance.Decoration.BY_NAME_CODEC.optionalFieldOf("decoration").forGetter(ConfiguredEntrance::decoration),
-                Entrance.CustomParts.CODEC.optionalFieldOf("custom_parts").forGetter(ConfiguredEntrance::customParts),
-                EntranceType.CODEC.optionalFieldOf("type")
-                        .forGetter(entrance -> entrance.type != EntranceType.NORMAL ? Optional.of(entrance.type) : Optional.empty())
+                Entrance.Decoration.BY_NAME_CODEC.optionalFieldOf("decoration").forGetter(entrance -> Optional.ofNullable(entrance.decoration)),
+                Entrance.CustomParts.CODEC.optionalFieldOf("custom_parts").forGetter(entrance -> Optional.ofNullable(entrance.customParts)),
+                EntranceType.CODEC.optionalFieldOf("type", EntranceType.NORMAL).forGetter(ConfiguredEntrance::type)
         ).apply(instance, (decoration, customParts, type) ->
-                new ConfiguredEntrance(decoration, customParts, type.orElse(EntranceType.NORMAL))));
+                new ConfiguredEntrance(decoration.orElse(null), customParts.orElse(null), type)));
 
         public Entrance make(Anchor placement) {
             return new Entrance(placement, decoration, customParts);
@@ -387,7 +386,7 @@ public class BlueprintConfiguration {
         }
 
         public Builder entranceType(ResourceLocation anchorType, EntranceType type, @Nullable Entrance.Decoration decoration, @Nullable Entrance.CustomParts customParts) {
-            return entranceType(anchorType, new ConfiguredEntrance(Optional.ofNullable(decoration), Optional.ofNullable(customParts), type));
+            return entranceType(anchorType, new ConfiguredEntrance(decoration, customParts, type));
         }
 
         private Builder entranceType(ResourceLocation anchorType, ConfiguredEntrance type) {

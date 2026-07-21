@@ -76,11 +76,15 @@ public record TemplateBlockPlacementSettings(boolean fillAir,
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         TemplateBlockPlacementSettings that = (TemplateBlockPlacementSettings) o;
-        return fillAir == that.fillAir && fillSolid == that.fillSolid && Objects.equals(alternative, that.alternative) && Objects.equals(lootTable, that.lootTable);
+        return fillAir == that.fillAir &&
+                fillSolid == that.fillSolid &&
+                postProcess == that.postProcess &&
+                Objects.equals(alternative, that.alternative) &&
+                Objects.equals(lootTable, that.lootTable);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fillAir, fillSolid, alternative, lootTable);
+        return Objects.hash(fillAir, fillSolid, postProcess, alternative, lootTable);
     }
 }

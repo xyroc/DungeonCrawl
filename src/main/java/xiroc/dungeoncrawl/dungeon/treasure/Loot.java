@@ -26,7 +26,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -43,6 +42,7 @@ import xiroc.dungeoncrawl.dungeon.treasure.function.Shield;
 import xiroc.dungeoncrawl.dungeon.treasure.function.SuspiciousStew;
 import xiroc.dungeoncrawl.theme.SecondaryTheme;
 import xiroc.dungeoncrawl.theme.Theme;
+import xiroc.dungeoncrawl.util.Pair;
 
 public interface Loot {
     static void registerLootFunctions(RegisterEvent.RegisterHelper<MapCodec<? extends LootItemFunction>> registry) {
@@ -108,9 +108,9 @@ public interface Loot {
         nbt.put(DungeonCrawl.MOD_ID, data);
     }
 
-    static Tuple<Theme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
+    static Pair<Theme, SecondaryTheme> getLootInformation(CompoundTag nbt) {
         CompoundTag data = nbt.getCompound(DungeonCrawl.MOD_ID).orElseThrow();
-        return new Tuple<>(
+        return new Pair<>(
                 Theme.getTheme(Identifier.parse(data.getString("theme").orElseThrow())),
                 Theme.getSecondaryTheme(Identifier.parse(data.getString("secondaryTheme").orElseThrow()))
         );

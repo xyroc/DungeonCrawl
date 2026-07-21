@@ -21,9 +21,9 @@ package xiroc.dungeoncrawl.dungeon;
 import com.google.common.collect.Lists;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.dungeon.generator.layer.SideRoomData;
 import xiroc.dungeoncrawl.dungeon.model.DungeonModels;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
@@ -126,7 +126,7 @@ public class DungeonLayer {
         return true;
     }
 
-    public Tuple<Position2D, Rotation> findStarterRoomData(Position2D start, RandomSource rand) {
+    public SideRoomData findStarterRoomData(Position2D start, RandomSource rand) {
         int index = rand.nextInt(4);
 
         for (int i = 0; i < 4; i++) {
@@ -136,7 +136,7 @@ public class DungeonLayer {
                 if (current.isValid(width, length) && grid[current.x][current.z] != null
                         && grid[current.x][current.z].piece.getDungeonPieceType() == DungeonPiece.CORRIDOR
                         && grid[current.x][current.z].piece.connectedSides < 4) {
-                    Tuple<Position2D, Rotation> data = findSideRoomData(new Position2D(current.x, current.z), rand);
+                    SideRoomData data = findSideRoomData(new Position2D(current.x, current.z), rand);
                     if (data != null) {
                         return data;
                     }
@@ -146,34 +146,34 @@ public class DungeonLayer {
         return null;
     }
 
-    public Tuple<Position2D, Rotation> findSideRoomData(Position2D base, RandomSource rand) {
+    public SideRoomData findSideRoomData(Position2D base, RandomSource rand) {
         Position2D north = base.shift(Direction.NORTH, 1), east = base.shift(Direction.EAST, 1),
                 south = base.shift(Direction.SOUTH, 1), west = base.shift(Direction.WEST, 1);
 
         if (rand.nextBoolean()) {
             if (north.isValid(width, length) && isTileFree(north))
-                return new Tuple<>(north, Rotation.COUNTERCLOCKWISE_90);
+                return new SideRoomData(north, Rotation.COUNTERCLOCKWISE_90);
 
             if (east.isValid(width, length) && isTileFree(east))
-                return new Tuple<>(east, Rotation.NONE);
+                return new SideRoomData(east, Rotation.NONE);
 
             if (south.isValid(width, length) && isTileFree(south))
-                return new Tuple<>(south, Rotation.CLOCKWISE_90);
+                return new SideRoomData(south, Rotation.CLOCKWISE_90);
 
             if (west.isValid(width, length) && isTileFree(west))
-                return new Tuple<>(west, Rotation.CLOCKWISE_180);
+                return new SideRoomData(west, Rotation.CLOCKWISE_180);
         } else {
             if (west.isValid(width, length) && isTileFree(west))
-                return new Tuple<>(west, Rotation.CLOCKWISE_180);
+                return new SideRoomData(west, Rotation.CLOCKWISE_180);
 
             if (south.isValid(width, length) && isTileFree(south))
-                return new Tuple<>(south, Rotation.CLOCKWISE_90);
+                return new SideRoomData(south, Rotation.CLOCKWISE_90);
 
             if (east.isValid(width, length) && isTileFree(east))
-                return new Tuple<>(east, Rotation.NONE);
+                return new SideRoomData(east, Rotation.NONE);
 
             if (north.isValid(width, length) && isTileFree(north))
-                return new Tuple<>(north, Rotation.COUNTERCLOCKWISE_90);
+                return new SideRoomData(north, Rotation.COUNTERCLOCKWISE_90);
         }
 
         return null;

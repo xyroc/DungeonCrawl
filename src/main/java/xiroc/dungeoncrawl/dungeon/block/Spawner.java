@@ -29,6 +29,7 @@ import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -57,10 +58,15 @@ import java.util.Set;
 
 public class Spawner implements IBlockPlacementHandler {
 
-    public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
-            .add(EntityType.ZOMBIE).add(EntityType.SKELETON).add(EntityType.HUSK).add(EntityType.STRAY).add(EntityType.WITHER_SKELETON).build();
     public static final Set<EntityType<?>> RANGED_INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
-            .add(EntityType.SKELETON).add(EntityType.STRAY).build();
+            .add(EntityTypes.SKELETON)
+            .add(EntityTypes.STRAY)
+            .add(EntityTypes.BOGGED).build();
+    public static final Set<EntityType<?>> INVENTORY_ENTITIES = ImmutableSet.<EntityType<?>>builder()
+            .add(EntityTypes.ZOMBIE)
+            .add(EntityTypes.HUSK)
+            .add(EntityTypes.WITHER_SKELETON)
+            .addAll(RANGED_INVENTORY_ENTITIES).build();
 
     @Override
     public void place(LevelAccessor world, BlockState state, BlockPos pos, RandomSource rand, Theme theme, SecondaryTheme secondaryTheme, int stage) {

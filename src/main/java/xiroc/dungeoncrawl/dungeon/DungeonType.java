@@ -27,7 +27,6 @@ import com.google.gson.JsonParser;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.neoforged.fml.ModList;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.generator.DungeonGeneratorSettings;
@@ -38,6 +37,7 @@ import xiroc.dungeoncrawl.dungeon.model.ModelSelector;
 import xiroc.dungeoncrawl.dungeon.model.MultipartModelData;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.Pair;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.io.IOException;
@@ -188,16 +188,16 @@ public record DungeonType(Identifier source,
                             }
                         }
                         case "add" -> {
-                            HashMap<String, Tuple<List<Tuple<MultipartModelData.Instance, Integer>>, List<Tuple<MultipartModelData.Instance, Integer>>>> additions = new HashMap<>();
+                            HashMap<String, Pair<List<Pair<MultipartModelData.Instance, Integer>>, List<Pair<MultipartModelData.Instance, Integer>>>> additions = new HashMap<>();
                             object.getAsJsonObject("additions").entrySet().forEach(((entry1) -> {
                                 JsonObject object1 = entry1.getValue().getAsJsonObject();
-                                List<Tuple<MultipartModelData.Instance, Integer>> models = object1.has("models")
+                                List<Pair<MultipartModelData.Instance, Integer>> models = object1.has("models")
                                         ? MultipartModelData.getRawInstancesFromJson(object1.getAsJsonArray("models"), file)
                                         : new ArrayList<>(0);
-                                List<Tuple<MultipartModelData.Instance, Integer>> alternatives = object1.has("alternatives")
+                                List<Pair<MultipartModelData.Instance, Integer>> alternatives = object1.has("alternatives")
                                         ? MultipartModelData.getRawInstancesFromJson(object1.getAsJsonArray("alternatives"), file)
                                         : new ArrayList<>(0);
-                                additions.put(entry1.getKey(), new Tuple<>(models, alternatives));
+                                additions.put(entry1.getKey(), new Pair<>(models, alternatives));
                             }));
 
                             DungeonModel model = DungeonModels.KEY_TO_MODEL.get(target);
@@ -206,8 +206,8 @@ public record DungeonType(Identifier source,
                                 ImmutableList.Builder<MultipartModelData> newDataBuilder = new ImmutableList.Builder<>();
                                 multipartData.forEach((data) -> {
                                     if (additions.containsKey(data.name)) {
-                                        Tuple<List<Tuple<MultipartModelData.Instance, Integer>>, List<Tuple<MultipartModelData.Instance, Integer>>> addition = additions.get(data.name);
-                                        newDataBuilder.add(data.combine(addition.getA(), addition.getB()));
+                                        Pair<List<Pair<MultipartModelData.Instance, Integer>>, List<Pair<MultipartModelData.Instance, Integer>>> addition = additions.get(data.name);
+                                        newDataBuilder.add(data.combine(addition.left(), addition.right()));
                                     } else {
                                         newDataBuilder.add(data);
                                     }

@@ -24,7 +24,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import xiroc.dungeoncrawl.dungeon.monster.RandomEquipment;
 
@@ -44,19 +43,19 @@ public class WeightedRandom<T> implements IRandom<T> {
     };
 
     private final int totalWeight;
-    private final ImmutableList<Tuple<T, Integer>> entries;
+    private final ImmutableList<Pair<T, Integer>> entries;
 
     // All the entries and their absolute weight values.
-    private final ImmutableList<Tuple<T, Integer>> originalEntries;
+    private final ImmutableList<Pair<T, Integer>> originalEntries;
 
-    public WeightedRandom(List<Tuple<T, Integer>> entries) {
+    public WeightedRandom(List<Pair<T, Integer>> entries) {
         this.originalEntries = ImmutableList.copyOf(entries);
-        ImmutableList.Builder<Tuple<T, Integer>> builder = new ImmutableList.Builder<>();
+        ImmutableList.Builder<Pair<T, Integer>> builder = new ImmutableList.Builder<>();
         int weight = 0;
-        for (Tuple<T, Integer> entry : entries) {
-            if (entry.getB() > 0) {
-                weight += entry.getB();
-                builder.add(new Tuple<>(entry.getA(), weight));
+        for (Pair<T, Integer> entry : entries) {
+            if (entry.right() > 0) {
+                weight += entry.right();
+                builder.add(new Pair<>(entry.left(), weight));
             }
         }
         this.entries = builder.build();
@@ -66,9 +65,9 @@ public class WeightedRandom<T> implements IRandom<T> {
     @Override
     public T roll(RandomSource rand) {
         int r = rand.nextInt(totalWeight);
-        for (Tuple<T, Integer> entry : entries) {
-            if (r < entry.getB()) {
-                return entry.getA();
+        for (Pair<T, Integer> entry : entries) {
+            if (r < entry.right()) {
+                return entry.left();
             }
         }
         return null;
@@ -82,24 +81,24 @@ public class WeightedRandom<T> implements IRandom<T> {
         return entries.size();
     }
 
-    public ImmutableList<Tuple<T, Integer>> getEntries() {
+    public ImmutableList<Pair<T, Integer>> getEntries() {
         return originalEntries;
     }
 
     public static class Builder<T> {
 
-        public final List<Tuple<T, Integer>> entries;
+        public final List<Pair<T, Integer>> entries;
 
         public Builder() {
             entries = Lists.newArrayList();
         }
 
         public WeightedRandom.Builder<T> add(T t, int weight) {
-            entries.add(new Tuple<>(t, weight));
+            entries.add(new Pair<>(t, weight));
             return this;
         }
 
-        public void addAll(Collection<Tuple<T, Integer>> entries) {
+        public void addAll(Collection<Pair<T, Integer>> entries) {
             this.entries.addAll(entries);
         }
 

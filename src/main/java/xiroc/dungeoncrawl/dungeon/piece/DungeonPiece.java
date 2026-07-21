@@ -347,7 +347,7 @@ public abstract class DungeonPiece extends StructurePiece {
         }
 
         if (block.hasProperties || !state.getProperties().isEmpty()) {
-            world.getChunk(position).markPosForPostprocessing(position);
+            world.getChunk(position).markPosForPostProcessing(position);
         }
 
         if (expandDownwards) {
@@ -371,7 +371,7 @@ public abstract class DungeonPiece extends StructurePiece {
 
             worldIn.setBlock(blockPos, blockState, 2);
             if (postProcessing) {
-                worldIn.getChunk(blockPos).markPosForPostprocessing(blockPos);
+                worldIn.getChunk(blockPos).markPosForPostProcessing(blockPos);
             }
 
             FluidState fluidstate = worldIn.getFluidState(blockPos);

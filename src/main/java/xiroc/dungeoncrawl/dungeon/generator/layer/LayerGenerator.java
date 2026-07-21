@@ -20,8 +20,6 @@ package xiroc.dungeoncrawl.dungeon.generator.layer;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
-import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.dungeon.DungeonBuilder;
 import xiroc.dungeoncrawl.dungeon.DungeonLayer;
 import xiroc.dungeoncrawl.dungeon.Tile;
@@ -93,21 +91,21 @@ public abstract class LayerGenerator {
     }
 
     public static void createStarterRoom(DungeonLayer dungeonLayer, RandomSource rand, int layer) {
-        Tuple<Position2D, Rotation> sideRoomData = dungeonLayer.findStarterRoomData(dungeonLayer.start, rand);
+        SideRoomData sideRoomData = dungeonLayer.findStarterRoomData(dungeonLayer.start, rand);
         if (sideRoomData != null) {
             DungeonSideRoom room = new DungeonSideRoom();
 
-            Direction dir = sideRoomData.getB().rotate(Direction.WEST);
+            Direction dir = sideRoomData.rotation().rotate(Direction.WEST);
             room.openSide(dir);
-            room.setGridPosition(sideRoomData.getA().x, sideRoomData.getA().z);
-            room.setRotation(sideRoomData.getB());
+            room.setGridPosition(sideRoomData.position().x, sideRoomData.position().z);
+            room.setRotation(sideRoomData.rotation());
             room.model = DungeonModels.KEY_TO_MODEL.get(DungeonModels.STARTER_ROOM);
             room.stage = layer;
 
-            dungeonLayer.map.markPositionAsOccupied(sideRoomData.getA());
-            dungeonLayer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new Tile(room).addFlag(Tile.Flag.FIXED_MODEL);
+            dungeonLayer.map.markPositionAsOccupied(sideRoomData.position());
+            dungeonLayer.grid[sideRoomData.position().x][sideRoomData.position().z] = new Tile(room).addFlag(Tile.Flag.FIXED_MODEL);
 
-            Position2D connectedSegment = sideRoomData.getA().shift(dir, 1);
+            Position2D connectedSegment = sideRoomData.position().shift(dir, 1);
             if (dungeonLayer.grid[connectedSegment.x][connectedSegment.z] != null) {
                 dungeonLayer.grid[connectedSegment.x][connectedSegment.z].piece.openSide(dir.getOpposite());
                 dungeonLayer.rotatePiece(dungeonLayer.grid[connectedSegment.x][connectedSegment.z], rand);

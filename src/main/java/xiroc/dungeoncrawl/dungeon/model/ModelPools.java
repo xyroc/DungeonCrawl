@@ -23,10 +23,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Tuple;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.Pair;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +34,7 @@ import java.util.Hashtable;
 
 public class ModelPools {
 
-    public static final Hashtable<String, ImmutableSet<Tuple<DungeonModel, Integer>>> POOLS = new Hashtable<>();
+    public static final Hashtable<String, ImmutableSet<Pair<DungeonModel, Integer>>> POOLS = new Hashtable<>();
 
     private static final Identifier FILE = DungeonCrawl.locate("dungeon/model_pools.json");
 
@@ -47,7 +47,7 @@ public class ModelPools {
             JsonObject pools = file.getAsJsonObject("pools");
 
             pools.entrySet().forEach((entry) -> {
-                ImmutableSet.Builder<Tuple<DungeonModel, Integer>> builder = new ImmutableSet.Builder<>();
+                ImmutableSet.Builder<Pair<DungeonModel, Integer>> builder = new ImmutableSet.Builder<>();
 
                 entry.getValue().getAsJsonArray().forEach((element) -> {
                     JsonObject modelEntry = element.getAsJsonObject();
@@ -55,11 +55,11 @@ public class ModelPools {
                     if (!DungeonModels.KEY_TO_MODEL.containsKey(key)) {
                         DungeonCrawl.LOGGER.warn("Cannot resolve model key " + key + " in " + FILE);
                     } else {
-                        builder.add(new Tuple<>(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeight(modelEntry)));
+                        builder.add(new Pair<>(DungeonModels.KEY_TO_MODEL.get(key), JSONUtils.getWeight(modelEntry)));
                     }
                 });
 
-                ImmutableSet<Tuple<DungeonModel, Integer>> pool = builder.build();
+                ImmutableSet<Pair<DungeonModel, Integer>> pool = builder.build();
 
                 if (pool.isEmpty()) {
                     throw new DatapackLoadException("Empty model pool " + entry.getKey() + " in " + FILE);

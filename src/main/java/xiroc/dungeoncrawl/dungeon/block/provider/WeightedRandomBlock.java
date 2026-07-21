@@ -33,8 +33,8 @@ public class WeightedRandomBlock implements BlockStateProvider {
 
         JsonArray blocks = new JsonArray();
         randomBlockState.getEntries().forEach((entry) -> {
-            JsonObject block = JSONUtils.serializeBlockState(new JsonObject(), entry.getA());
-            block.addProperty("weight", entry.getB());
+            JsonObject block = JSONUtils.serializeBlockState(new JsonObject(), entry.left());
+            block.addProperty("weight", entry.right());
             blocks.add(block);
         });
 

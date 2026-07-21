@@ -29,7 +29,6 @@ import xiroc.dungeoncrawl.dungeon.Tile;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonCorridor;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonStairs;
-import xiroc.dungeoncrawl.dungeon.piece.room.DungeonMegaNodePart;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonNodeRoom;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonRoom;
 import xiroc.dungeoncrawl.util.Orientation;
@@ -42,20 +41,15 @@ import java.util.function.Consumer;
 
 public class NewLayerGenerator extends LayerGenerator {
 
+    public static final NewLayerGenerator INSTANCE = new NewLayerGenerator();
+
     private int roomsLeft, nodesLeft;
     private int rooms, nodes;
-
-    private int megaNodes;
-
-    public static final NewLayerGenerator INSTANCE = new NewLayerGenerator();
 
     private boolean secretRoom;
     private final ArrayList<DungeonCorridor> corridors;
     private ArrayList<LayerElement> newElements;
     private boolean placeStairs;
-
-    private static final Consumer<NewLayerGenerator> NOOP = (generator) -> {
-    };
 
     private static final Consumer<NewLayerGenerator> ON_ROOM_PLACED = (generator) -> {
         generator.roomsLeft--;
@@ -66,9 +60,6 @@ public class NewLayerGenerator extends LayerGenerator {
         generator.nodesLeft--;
         generator.nodes++;
     };
-
-    private static final Consumer<NewLayerGenerator> ON_MEGA_NODE_PLACED = ON_NODE_PLACED
-            .andThen((generator) -> generator.megaNodes++);
 
     private static final Consumer<NewLayerGenerator> ON_STAIRS_PLACED = (generator) -> generator.placeStairs = false;
 
@@ -86,7 +77,6 @@ public class NewLayerGenerator extends LayerGenerator {
         this.nodesLeft = settings.nodes.nextInt(rand);
         this.rooms = 0;
         this.nodes = 0;
-        this.megaNodes = 0;
     }
 
     @Override
@@ -286,7 +276,7 @@ public class NewLayerGenerator extends LayerGenerator {
      * @param end          the end element
      * @return true if the connection can be built, false if not.
      */
-    public boolean canConnectStraight(DungeonLayer dungeonLayer, LayerElement start, LayerElement end) {
+    private boolean canConnectStraight(DungeonLayer dungeonLayer, LayerElement start, LayerElement end) {
         if (start.position.x != end.position.x || start.position.z != end.position.z) {
             if (start.position.x == end.position.x) {
                 if (start.position.z > end.position.z) {
@@ -393,59 +383,6 @@ public class NewLayerGenerator extends LayerGenerator {
         @Override
         public Position2D getConnectionPoint(Direction connectionSide) {
             return position.shift(connectionSide, 1);
-        }
-
-    }
-
-    private static class MegaNodeElement extends LayerElement {
-
-        public final int id;
-
-        MegaNodeElement(int id, Position2D position, Direction toOrigin, int depth) {
-            super(new DungeonMegaNodePart(), position, toOrigin, ON_MEGA_NODE_PLACED, depth);
-            this.id = id;
-        }
-
-        @Override
-        public void update(NewLayerGenerator layerGenerator, DungeonLayer dungeonLayer, RandomSource rand) {
-            super.update(layerGenerator, dungeonLayer, rand);
-        }
-
-        @Override
-        public void place(DungeonLayer layer) {
-            super.place(layer);
-        }
-
-        @Override
-        public Position2D getConnectionPoint(Direction connectionSide) {
-            return position.shift(connectionSide, 1);
-        }
-
-        /**
-         * Evaluates whether a new mega node part can be placed at the given position.
-         *
-         * @param position the center of the next part
-         * @param layer    the dungeon layer
-         * @return true, if this mega node can be extended to that position.
-         */
-        private boolean canExtendTo(Position2D position, DungeonLayer layer) {
-            return layer.isTileFree(position) &&
-                    canObtainTile(position.x + 1, position.z, layer) &&
-                    canObtainTile(position.x, position.z + 1, layer) &&
-                    canObtainTile(position.x - 1, position.z, layer) &&
-                    canObtainTile(position.x, position.z - 1, layer) &&
-                    canObtainTile(position.x + 1, position.z + 1, layer) &&
-                    canObtainTile(position.x + 1, position.z - 1, layer) &&
-                    canObtainTile(position.x - 1, position.z + 1, layer) &&
-                    canObtainTile(position.x - 1, position.z - 1, layer);
-        }
-
-        private boolean canObtainTile(int x, int z, DungeonLayer layer) {
-            if (layer.isTileFree(x, z)) {
-                return true;
-            }
-            Tile tile = layer.grid[x][z];
-            return tile != null && tile.piece.getDungeonPieceType() == DungeonPiece.MEGA_NODE_PART && tile.getId() == id;
         }
 
     }

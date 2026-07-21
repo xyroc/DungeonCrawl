@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,6 +36,7 @@ import xiroc.dungeoncrawl.dungeon.block.provider.pattern.TerracottaPattern;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.Pair;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import java.util.ArrayList;
@@ -133,12 +133,12 @@ public class JsonTheming {
     protected static void deserializeThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<Theme>> themeMappingBuilders, WeightedRandom.Builder<Theme> defaultBuilder, Identifier file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-                ArrayList<Tuple<Identifier, Integer>> entries = listThemes(entry);
-                entries.forEach((tuple) -> {
-                    if (!Theme.KEY_TO_THEME.containsKey(tuple.getA())) {
-                        throw new DatapackLoadException("Cannot resolve theme key " + tuple.getA() + " in " + file.toString());
+                ArrayList<Pair<Identifier, Integer>> mappings = listThemes(entry);
+                mappings.forEach((mapping) -> {
+                    if (!Theme.KEY_TO_THEME.containsKey(mapping.left())) {
+                        throw new DatapackLoadException("Cannot resolve theme key " + mapping.left() + " in " + file.toString());
                     }
-                    themeMappingBuilders.computeIfAbsent(entry.getKey(), (key) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_THEME.get(tuple.getA()), tuple.getB());
+                    themeMappingBuilders.computeIfAbsent(entry.getKey(), (_) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_THEME.get(mapping.left()), mapping.right());
                 });
             });
             if (object.has("default")) {
@@ -163,12 +163,12 @@ public class JsonTheming {
     protected static void deserializeSecondaryThemeMapping(JsonObject object, Map<String, WeightedRandom.Builder<SecondaryTheme>> secondaryThemeMappingBuilders, WeightedRandom.Builder<SecondaryTheme> defaultBuilder, Identifier file) {
         if (JSONUtils.areRequirementsMet(object)) {
             object.getAsJsonObject("mapping").entrySet().forEach((entry) -> {
-                ArrayList<Tuple<Identifier, Integer>> entries = listThemes(entry);
-                entries.forEach((tuple) -> {
-                    if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(tuple.getA())) {
-                        throw new DatapackLoadException("Cannot resolve secondary theme key " + tuple.getA() + " in " + file.toString());
+                ArrayList<Pair<Identifier, Integer>> mappings = listThemes(entry);
+                mappings.forEach((mapping) -> {
+                    if (!Theme.KEY_TO_SECONDARY_THEME.containsKey(mapping.left())) {
+                        throw new DatapackLoadException("Cannot resolve secondary theme key " + mapping.right() + " in " + file.toString());
                     }
-                    secondaryThemeMappingBuilders.computeIfAbsent(entry.getKey(), (key) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_SECONDARY_THEME.get(tuple.getA()), tuple.getB());
+                    secondaryThemeMappingBuilders.computeIfAbsent(entry.getKey(), (_) -> new WeightedRandom.Builder<>()).add(Theme.KEY_TO_SECONDARY_THEME.get(mapping.left()), mapping.right());
                 });
             });
             if (object.has("default")) {
@@ -184,11 +184,11 @@ public class JsonTheming {
         }
     }
 
-    private static ArrayList<Tuple<Identifier, Integer>> listThemes(Map.Entry<String, JsonElement> entry) {
-        ArrayList<Tuple<Identifier, Integer>> entries = new ArrayList<>();
+    private static ArrayList<Pair<Identifier, Integer>> listThemes(Map.Entry<String, JsonElement> entry) {
+        ArrayList<Pair<Identifier, Integer>> entries = new ArrayList<>();
         entry.getValue().getAsJsonArray().forEach((element) -> {
             JsonObject jsonObject = element.getAsJsonObject();
-            entries.add(new Tuple<>(Identifier.parse(jsonObject.get("key").getAsString()), JSONUtils.getWeight(jsonObject)));
+            entries.add(new Pair<>(Identifier.parse(jsonObject.get("key").getAsString()), JSONUtils.getWeight(jsonObject)));
         });
         return entries;
     }

@@ -24,45 +24,44 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EntityType;
 import xiroc.dungeoncrawl.util.IRandom;
+import xiroc.dungeoncrawl.util.Pair;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WeightedRandomEntity implements IRandom<EntityType<?>> {
 
-    public static final WeightedRandomEntity EMPTY = new WeightedRandomEntity(new Builder.Entry[0]);
+    public static final WeightedRandomEntity EMPTY = new WeightedRandomEntity(List.of());
 
-    private final WeightedRandomEntity.WeightedEntry[] entries;
+    private final List<Pair<EntityType<?>, Float>> entries;
 
-    private WeightedRandomEntity(Tuple<String, Integer>[] entries) {
+    private WeightedRandomEntity(List<Pair<String, Integer>> entries) {
         int weight = 0;
-        for (Tuple<String, Integer> entry : entries)
-            weight += entry.getB();
-        this.entries = new WeightedRandomEntity.WeightedEntry[entries.length];
+        for (Pair<String, Integer> entry : entries)
+            weight += entry.right();
+        this.entries = new ArrayList<>(entries.size());
         this.assign(entries, weight);
     }
 
-    private void assign(Tuple<String, Integer>[] entries, int totalWeight) {
+    private void assign(List<Pair<String, Integer>> entries, int totalWeight) {
         float f = 0.0F;
-        int i = 0;
-        for (Tuple<String, Integer> entry : entries) {
-            float weight = (float) entry.getB() / (float) totalWeight;
-            this.entries[i] = new WeightedRandomEntity.WeightedEntry(BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(entry.getA()))
+        for (Pair<String, Integer> entry : entries) {
+            float weight = (float) entry.right() / (float) totalWeight;
+            this.entries.add( new Pair<>(BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(entry.left()))
                     .map(Holder::value)
-                    .orElseThrow(), weight + f);
+                    .orElseThrow(), weight + f));
             f += weight;
-            i++;
         }
     }
 
     @Override
     public EntityType<?> roll(RandomSource rand) {
         float f = rand.nextFloat();
-        for (WeightedRandomEntity.WeightedEntry entry : entries)
-            if (entry.getB() >= f)
-                return entry.getA();
+        for (Pair<EntityType<?>, Float> entry : entries)
+            if (entry.right() >= f)
+                return entry.left();
         return null;
     }
 
@@ -79,23 +78,16 @@ public class WeightedRandomEntity implements IRandom<EntityType<?>> {
         return builder.build();
     }
 
-    private static class WeightedEntry extends Tuple<EntityType<?>, Float> {
-
-        public WeightedEntry(EntityType<?> aIn, Float bIn) {
-            super(aIn, bIn);
-        }
-    }
-
     public static class Builder {
 
-        private final ArrayList<WeightedRandomEntity.Builder.Entry> list;
+        private final ArrayList<Pair<String, Integer>> list;
 
         public Builder() {
             list = new ArrayList<>();
         }
 
         public WeightedRandomEntity.Builder add(String item, int weight) {
-            list.add(new WeightedRandomEntity.Builder.Entry(item, weight));
+            list.add(new Pair<>(item, weight));
             return this;
         }
 
@@ -103,14 +95,7 @@ public class WeightedRandomEntity implements IRandom<EntityType<?>> {
             if (list.isEmpty()) {
                 return EMPTY;
             }
-            return new WeightedRandomEntity(list.toArray(new WeightedRandomEntity.Builder.Entry[0]));
-        }
-
-        private static class Entry extends Tuple<String, Integer> {
-
-            public Entry(String aIn, Integer bIn) {
-                super(aIn, bIn);
-            }
+            return new WeightedRandomEntity(list);
         }
 
     }

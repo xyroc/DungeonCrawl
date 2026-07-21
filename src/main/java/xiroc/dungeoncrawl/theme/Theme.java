@@ -26,7 +26,6 @@ import com.google.gson.stream.JsonReader;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Blocks;
 import org.jline.utils.InputStreamReader;
 import xiroc.dungeoncrawl.DungeonCrawl;
@@ -36,6 +35,7 @@ import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.util.IRandom;
 import xiroc.dungeoncrawl.util.JSONUtils;
+import xiroc.dungeoncrawl.util.Pair;
 import xiroc.dungeoncrawl.util.WeightedRandom;
 
 import javax.annotation.Nullable;
@@ -354,21 +354,21 @@ public class Theme {
         THEME_KEYS = themeKeySetBuilder.build();
         SECONDARY_THEME_KEYS = secondaryThemeKeySetBuilder.build();
 
-        Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> catacombs = loadRandomThemeFiles(UPPER_CATACOMBS_THEMES_DIRECTORY, resourceManager);
-        Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> lowerCatacombs = loadRandomThemeFiles(CATACOMBS_THEMES_DIRECTORY, resourceManager);
-        Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> hell = loadRandomThemeFiles(HELL_THEMES_DIRECTORY, resourceManager);
+        Pair<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> catacombs = loadRandomThemeFiles(UPPER_CATACOMBS_THEMES_DIRECTORY, resourceManager);
+        Pair<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> lowerCatacombs = loadRandomThemeFiles(CATACOMBS_THEMES_DIRECTORY, resourceManager);
+        Pair<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> hell = loadRandomThemeFiles(HELL_THEMES_DIRECTORY, resourceManager);
 
-        CATACOMBS_THEME = catacombs.getA();
-        CATACOMBS_SECONDARY_THEME = catacombs.getB();
+        CATACOMBS_THEME = catacombs.left();
+        CATACOMBS_SECONDARY_THEME = catacombs.right();
 
-        LOWER_CATACOMBS_THEME = lowerCatacombs.getA();
-        LOWER_CATACOMBS_SECONDARY_THEME = lowerCatacombs.getB();
+        LOWER_CATACOMBS_THEME = lowerCatacombs.left();
+        LOWER_CATACOMBS_SECONDARY_THEME = lowerCatacombs.right();
 
-        HELL_THEME = hell.getA();
-        HELL_SECONDARY_THEME = hell.getB();
+        HELL_THEME = hell.left();
+        HELL_SECONDARY_THEME = hell.right();
     }
 
-    private static Tuple<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> loadRandomThemeFiles(String directory, ResourceManager resourceManager) {
+    private static Pair<WeightedRandom<Theme>, WeightedRandom<SecondaryTheme>> loadRandomThemeFiles(String directory, ResourceManager resourceManager) {
         WeightedRandom.Builder<Theme> primary = new WeightedRandom.Builder<>();
         WeightedRandom.Builder<SecondaryTheme> secondary = new WeightedRandom.Builder<>();
         resourceManager.listResources(directory, (s) -> s.getPath().endsWith(".json")).forEach((file, resource) -> {
@@ -387,7 +387,7 @@ public class Theme {
         if (secondary.entries.isEmpty()) {
             throw new DatapackLoadException("No secondary themes were present after loading " + directory);
         }
-        return new Tuple<>(primary.build(), secondary.build());
+        return new Pair<>(primary.build(), secondary.build());
     }
 
     public static Theme getBuiltinDefaultTheme() {

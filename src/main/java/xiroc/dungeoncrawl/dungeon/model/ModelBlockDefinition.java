@@ -27,10 +27,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import xiroc.dungeoncrawl.DungeonCrawl;
+import xiroc.dungeoncrawl.util.Pair;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -117,7 +117,7 @@ public class ModelBlockDefinition {
             if (block.block != null) {
                 return block.block;
             } else {
-                return Blocks.WHITE_CARPET;
+                return Blocks.CARPET.white();
             }
         }
         if (invertedDefinition.containsKey(block.type)) {
@@ -132,14 +132,14 @@ public class ModelBlockDefinition {
 
     public static void loadJson(ResourceManager resourceManager) {
         keySetBuilder = new ImmutableSet.Builder<>();
-        List<Tuple<ModelBlockDefinition, Identifier>> referencesToUpdate = Lists.newArrayList();
+        List<Pair<ModelBlockDefinition, Identifier>> referencesToUpdate = Lists.newArrayList();
         resourceManager.listResources(DIRECTORY, (s) -> s.getPath().endsWith(".json"))
                 .forEach((file, resource) -> loadDefinition(resourceManager, file, referencesToUpdate));
 
-        for (Tuple<ModelBlockDefinition, Identifier> reference : referencesToUpdate) {
-            Identifier key = reference.getB();
+        for (Pair<ModelBlockDefinition, Identifier> reference : referencesToUpdate) {
+            Identifier key = reference.right();
             if (DEFINITIONS.containsKey(key)) {
-                reference.getA().fallback = DEFINITIONS.get(key);
+                reference.left().fallback = DEFINITIONS.get(key);
             } else {
                 DungeonCrawl.LOGGER.warn("Unknown fallback model block definition: {}", key);
             }
@@ -150,7 +150,7 @@ public class ModelBlockDefinition {
     /**
      * Convenience method to load a single model block definition file.
      */
-    private static void loadDefinition(ResourceManager resourceManager, Identifier Identifier, List<Tuple<ModelBlockDefinition, Identifier>> referencesToUpdate) {
+    private static void loadDefinition(ResourceManager resourceManager, Identifier Identifier, List<Pair<ModelBlockDefinition, Identifier>> referencesToUpdate) {
         DungeonCrawl.LOGGER.debug("Loading {}", Identifier);
         Hashtable<Block, DungeonModelBlockType> definition = new Hashtable<>();
         Resource resource = resourceManager.getResource(Identifier).orElseThrow();
@@ -174,7 +174,7 @@ public class ModelBlockDefinition {
             ModelBlockDefinition blockDefinition = new ModelBlockDefinition(definition);
 
             if (object.has("fallback")) {
-                referencesToUpdate.add(new Tuple<>(blockDefinition, Identifier.parse(object.get("fallback").getAsString())));
+                referencesToUpdate.add(new Pair<>(blockDefinition, Identifier.parse(object.get("fallback").getAsString())));
             }
 
             Identifier key = DungeonCrawl.key(Identifier, DIRECTORY, ".json");

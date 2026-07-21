@@ -25,13 +25,13 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.block.Rotation;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonMultipartModelPiece;
 import xiroc.dungeoncrawl.dungeon.piece.DungeonPiece;
 import xiroc.dungeoncrawl.util.JSONUtils;
 import xiroc.dungeoncrawl.util.Orientation;
+import xiroc.dungeoncrawl.util.Pair;
 import xiroc.dungeoncrawl.util.ResourceReloadHandler;
 import xiroc.dungeoncrawl.util.Updatable;
 import xiroc.dungeoncrawl.util.WeightedRandom;
@@ -40,7 +40,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class MultipartModelData {
 
@@ -60,12 +59,12 @@ public class MultipartModelData {
         this.alternatives = null;
     }
 
-    public MultipartModelData combine(@Nullable List<Tuple<Instance, Integer>> models, @Nullable List<Tuple<Instance, Integer>> alternatives) {
+    public MultipartModelData combine(@Nullable List<Pair<Instance, Integer>> models, @Nullable List<Pair<Instance, Integer>> alternatives) {
         MultipartModelData result = new MultipartModelData(this.name);
         result.conditions.addAll(this.conditions);
         if (models != null) {
-            ImmutableList<Tuple<Instance, Integer>> base = this.models.getEntries();
-            List<Tuple<Instance, Integer>> combined = new ArrayList<>(base.size() + models.size());
+            ImmutableList<Pair<Instance, Integer>> base = this.models.getEntries();
+            List<Pair<Instance, Integer>> combined = new ArrayList<>(base.size() + models.size());
             combined.addAll(base);
             combined.addAll(models);
             result.models = new WeightedRandom<>(combined);
@@ -74,8 +73,8 @@ public class MultipartModelData {
         }
         if (alternatives != null) {
             if (this.alternatives != null) {
-                ImmutableList<Tuple<Instance, Integer>> base = this.alternatives.getEntries();
-                List<Tuple<Instance, Integer>> combined = new ArrayList<>(base.size() + alternatives.size());
+                ImmutableList<Pair<Instance, Integer>> base = this.alternatives.getEntries();
+                List<Pair<Instance, Integer>> combined = new ArrayList<>(base.size() + alternatives.size());
                 combined.addAll(base);
                 combined.addAll(alternatives);
                 result.alternatives = new WeightedRandom<>(combined);
@@ -128,19 +127,19 @@ public class MultipartModelData {
 
     @Nullable
     private static WeightedRandom<Instance> getInstancesFromJson(JsonArray array, Identifier file) {
-        List<Tuple<Instance, Integer>> entries = getRawInstancesFromJson(array, file);
+        List<Pair<Instance, Integer>> entries = getRawInstancesFromJson(array, file);
         if (entries.isEmpty()) {
             return null;
         }
         return new WeightedRandom<>(entries);
     }
 
-    public static List<Tuple<Instance, Integer>> getRawInstancesFromJson(JsonArray array, Identifier file) {
-        ArrayList<Tuple<Instance, Integer>> list = new ArrayList<>();
+    public static List<Pair<Instance, Integer>> getRawInstancesFromJson(JsonArray array, Identifier file) {
+        ArrayList<Pair<Instance, Integer>> list = new ArrayList<>();
         array.forEach((element) -> {
             JsonObject object1 = element.getAsJsonObject();
             MultipartModelData.Instance data = MultipartModelData.Instance.fromJson(object1, file);
-            list.add(new Tuple<>(data, JSONUtils.getWeight(object1)));
+            list.add(new Pair<>(data, JSONUtils.getWeight(object1)));
             if (data != MultipartModelData.Instance.EMPTY) {
                 ResourceReloadHandler.PENDING_UPDATES.add(data); // Enqueue reference update
             }

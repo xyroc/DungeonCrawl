@@ -26,10 +26,18 @@ import xiroc.dungeoncrawl.util.WeightedRandom;
 
 public class DungeonBlocks {
 
-    public static final Block[] CARPET = new Block[]{Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET,
-            Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET, Blocks.LIME_CARPET, Blocks.PINK_CARPET,
-            Blocks.CYAN_CARPET, Blocks.BLUE_CARPET, Blocks.PURPLE_CARPET, Blocks.GREEN_CARPET,
-            Blocks.BROWN_CARPET, Blocks.RED_CARPET};
+    public static final Block[] CARPET = new Block[]{Blocks.CARPET.orange(),
+            Blocks.CARPET.magenta(),
+            Blocks.CARPET.lightBlue(),
+            Blocks.CARPET.yellow(),
+            Blocks.CARPET.lime(),
+            Blocks.CARPET.pink(),
+            Blocks.CARPET.cyan(),
+            Blocks.CARPET.blue(),
+            Blocks.CARPET.purple(),
+            Blocks.CARPET.green(),
+            Blocks.CARPET.brown(),
+            Blocks.CARPET.red()};
 
     public static final WeightedRandom<Block> CROPS = new WeightedRandom.Builder<Block>()
             .add(Blocks.POTATOES, 2)

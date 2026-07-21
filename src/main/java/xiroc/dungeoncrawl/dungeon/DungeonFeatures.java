@@ -22,8 +22,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
-import net.minecraft.world.level.block.Rotation;
+import xiroc.dungeoncrawl.dungeon.generator.layer.SideRoomData;
 import xiroc.dungeoncrawl.dungeon.piece.room.DungeonSideRoom;
 import xiroc.dungeoncrawl.util.Position2D;
 
@@ -38,18 +37,18 @@ public class DungeonFeatures {
 
         CORRIDOR_FEATURES.add(((builder, layer, x, z, rand, lyr, stage, startPos) -> {
             if (layer.grid[x][z].piece.connectedSides < 4 && rand.nextFloat() < 0.075) {
-                Tuple<Position2D, Rotation> sideRoomData = layer.findSideRoomData(new Position2D(x, z), rand);
+                SideRoomData sideRoomData = layer.findSideRoomData(new Position2D(x, z), rand);
                 if (sideRoomData != null) {
                     DungeonSideRoom sideRoom = new DungeonSideRoom();
-                    Direction dir = sideRoomData.getB().rotate(Direction.WEST);
+                    Direction dir = sideRoomData.rotation().rotate(Direction.WEST);
                     sideRoom.openSide(dir);
-                    sideRoom.setGridPosition(sideRoomData.getA());
-                    sideRoom.setRotation(sideRoomData.getB());
+                    sideRoom.setGridPosition(sideRoomData.position());
+                    sideRoom.setRotation(sideRoomData.rotation());
                     sideRoom.stage = stage;
 
-                    layer.grid[sideRoomData.getA().x][sideRoomData.getA().z] = new Tile(sideRoom);
+                    layer.grid[sideRoomData.position().x][sideRoomData.position().z] = new Tile(sideRoom);
                     layer.grid[x][z].piece.openSide(dir.getOpposite());
-                    layer.map.markPositionAsOccupied(sideRoomData.getA());
+                    layer.map.markPositionAsOccupied(sideRoomData.position());
                     layer.rotatePiece(layer.grid[x][z], rand);
                     return true;
                 }

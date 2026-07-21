@@ -26,6 +26,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.ValueOutput;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.treasure.Loot;
@@ -43,7 +44,7 @@ public class RandomMonster {
 
 
     static {
-        NBT_PATCHERS.put(EntityType.WITHER_SKELETON, (nbt, rand, stage) -> {
+        NBT_PATCHERS.put(EntityTypes.WITHER_SKELETON, (nbt, rand, stage) -> {
             nbt.putString("DeathLootTable", Loot.WITHER_SKELETON.identifier().toString());
             nbt.putLong("DeathLootTableSeed", rand.nextInt());
         });

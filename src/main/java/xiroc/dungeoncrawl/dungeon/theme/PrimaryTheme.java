@@ -16,7 +16,6 @@ import xiroc.dungeoncrawl.util.random.RandomMapping;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public record PrimaryTheme(BlockStateProvider masonry,
                            BlockStateProvider pillar,
@@ -28,42 +27,22 @@ public record PrimaryTheme(BlockStateProvider masonry,
                            BlockStateProvider wall,
                            BlockStateProvider graveSeal,
                            List<DungeonDecoration> decorations) {
+    private static final BlockStateProvider DEFAULT_FENCING = new SingleBlock(Blocks.IRON_BARS);
+    private static final BlockStateProvider DEFAULT_FLUID = new SingleBlock(Blocks.WATER);
     private static final BlockStateProvider DEFAULT_GRAVE_SEAL = new SingleBlock(Blocks.QUARTZ_BLOCK);
 
     public static final Codec<PrimaryTheme> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockStateProvider.CODEC.fieldOf("masonry").forGetter(PrimaryTheme::masonry),
-            BlockStateProvider.CODEC.fieldOf("pillar").forGetter(PrimaryTheme::pillar),
+            BlockStateProvider.CODEC.fieldOf("masonry_pillar").forGetter(PrimaryTheme::pillar),
             BlockStateProvider.CODEC.fieldOf("floor").forGetter(PrimaryTheme::floor),
-            BlockStateProvider.CODEC.fieldOf("fluid").forGetter(PrimaryTheme::fluid),
-            BlockStateProvider.CODEC.fieldOf("fencing").forGetter(PrimaryTheme::fencing),
-            BlockStateProvider.CODEC.fieldOf("stairs").forGetter(PrimaryTheme::stairs),
-            BlockStateProvider.CODEC.fieldOf("slab").forGetter(PrimaryTheme::slab),
+            BlockStateProvider.CODEC.optionalFieldOf("fluid", DEFAULT_FLUID).forGetter(PrimaryTheme::fluid),
+            BlockStateProvider.CODEC.optionalFieldOf("fencing", DEFAULT_FENCING).forGetter(PrimaryTheme::fencing),
+            BlockStateProvider.CODEC.fieldOf("masonry_stairs").forGetter(PrimaryTheme::stairs),
+            BlockStateProvider.CODEC.fieldOf("masonry_slab").forGetter(PrimaryTheme::slab),
             BlockStateProvider.CODEC.fieldOf("wall").forGetter(PrimaryTheme::wall),
             BlockStateProvider.CODEC.optionalFieldOf("grave_seal", DEFAULT_GRAVE_SEAL).forGetter(PrimaryTheme::graveSeal),
-            DungeonDecoration.CODEC.listOf().optionalFieldOf("decorations").forGetter(primaryTheme ->
-                    primaryTheme.decorations.isEmpty() ? Optional.empty() : Optional.of(primaryTheme.decorations))
-    ).apply(instance, (masonry,
-                       pillar,
-                       floor,
-                       fluid,
-                       fencing,
-                       stairs,
-                       slab,
-                       wall,
-                       graveSeal,
-                       decorations) ->
-            new PrimaryTheme(
-                    masonry,
-                    pillar,
-                    floor,
-                    fluid,
-                    fencing,
-                    stairs,
-                    slab,
-                    wall,
-                    graveSeal,
-                    decorations.orElse(List.of())
-            )));
+            DungeonDecoration.CODEC.listOf().optionalFieldOf("decorations", List.of()).forGetter(PrimaryTheme::decorations)
+    ).apply(instance, PrimaryTheme::new));
 
     public static final Codec<Holder<PrimaryTheme>> HOLDER_CODEC = RegistryFileCodec.create(DatapackRegistries.PRIMARY_THEME, DIRECT_CODEC, false);
     public static final Codec<IRandom<Holder<PrimaryTheme>>> RANDOM_HOLDER_CODEC = IRandom.<Holder<PrimaryTheme>>codecBuilder()
@@ -83,8 +62,8 @@ public record PrimaryTheme(BlockStateProvider masonry,
         private BlockStateProvider stairs = SingleBlock.AIR;
         private BlockStateProvider wall = SingleBlock.AIR;
         private BlockStateProvider slab = SingleBlock.AIR;
-        private BlockStateProvider fencing = SingleBlock.AIR;
-        private BlockStateProvider fluid = SingleBlock.AIR;
+        private BlockStateProvider fencing = DEFAULT_FENCING;
+        private BlockStateProvider fluid = DEFAULT_FLUID;
         private BlockStateProvider graveSeal = DEFAULT_GRAVE_SEAL;
 
         private final List<DungeonDecoration> decorations = new ArrayList<>(0);

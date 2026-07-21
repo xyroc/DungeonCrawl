@@ -12,6 +12,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.theme.PrimaryTheme;
+import xiroc.dungeoncrawl.util.Orientation;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import xiroc.dungeoncrawl.worldgen.WorldEditor;
@@ -28,7 +29,7 @@ public record StaircaseComponent(BlockPos center, int height, int wallBottom, in
     /**
      * Staircase facings, in the order of clockwise 90 degree rotations, starting from north.
      */
-    public static final Direction[] FACINGS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+    public static final Direction[] FACINGS = Orientation.HORIZONTAL_DIRECTIONS;
 
     public static Direction getFacingAt(int y, int rotation) {
         int facing = (y + rotation) % FACINGS.length;

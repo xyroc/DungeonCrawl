@@ -43,8 +43,8 @@ import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 import java.util.List;
 
 public class DungeonPiece extends StructurePiece {
-    private static final String NBT_KEY_COMPONENTS = "Components";
-    private static final String NBT_KEY_WORLD_GEN_CONTEXT = "WorldGenContext";
+    private static final String NBT_KEY_COMPONENTS = "DungeonCrawl::Components";
+    private static final String NBT_KEY_WORLD_GEN_CONTEXT = "DungeonCrawl::WorldGenContext";
 
     private final DungeonWorldGenContext worldGenContext;
     private final List<DungeonComponent> components;

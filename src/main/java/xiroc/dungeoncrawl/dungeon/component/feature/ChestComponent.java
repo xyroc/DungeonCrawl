@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -42,6 +43,10 @@ public record ChestComponent(BlockState chest, Anchor placement, ResourceKey<Loo
             facing = Orientation.randomHorizontalDirection(random);
         }
         BlockState chest = DungeonBlocks.applyProperty(this.chest, BlockStateProperties.HORIZONTAL_FACING, facing);
+
+        if (level.getFluidState(position).is(FluidTags.WATER)) {
+            chest = DungeonBlocks.applyProperty(chest, BlockStateProperties.WATERLOGGED, true);
+        }
 
         WorldEditor.Unsafe.placeBlock(level, position, chest, false);
         if (level.getBlockEntity(position) instanceof RandomizableContainerBlockEntity randomizableContainerBlockEntity) {

@@ -25,7 +25,7 @@
     {
       "positions": "dungeoncrawl:lab/container",
       "variants": {
-        "pools": "#dungeoncrawl:lab/container"
+        "pools": "#dungeoncrawl:part/lab/container"
       }
     }
   ],

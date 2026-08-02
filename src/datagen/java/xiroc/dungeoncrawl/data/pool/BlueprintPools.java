@@ -12,8 +12,10 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 
 public interface BlueprintPools {
 
-    ResourceLocation __LAB = DataGen.resource("lab");
-    ResourceKey<IRandom<Holder<Blueprint>>> LAB_CONTAINER = key(DataGen.resource(__LAB, "container"));
+    ResourceLocation __PART__ = DataGen.resource("part");
+
+    ResourceLocation __LAB__ = DataGen.resource(__PART__, "lab");
+    ResourceKey<IRandom<Holder<Blueprint>>> LAB_CONTAINER = key(DataGen.resource(__LAB__, "container"));
 
     static void generate(BootstrapContext<IRandom<Holder<Blueprint>>> context) {
         var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);

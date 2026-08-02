@@ -9,7 +9,10 @@
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Case Hardened Pick",
+              "name": {
+                "fallback": "Case Hardened Pick",
+                "translate": "item.dungeoncrawl.speciality.case_hardened_pick"
+              },
               "target": "item_name"
             },
             {
@@ -50,7 +53,10 @@
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Case Hardened Pick of Precision",
+              "name": {
+                "fallback": "Case Hardened Pick of Precision",
+                "translate": "item.dungeoncrawl.speciality.case_hardened_pick_of_precision"
+              },
               "target": "item_name"
             },
             {
@@ -71,14 +77,18 @@
               "function": "minecraft:set_enchantments"
             }
           ],
-          "name": "minecraft:iron_pickaxe"
+          "name": "minecraft:iron_pickaxe",
+          "quality": 2
         },
         {
           "type": "minecraft:item",
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Case Hardened Pick of Prospecting",
+              "name": {
+                "fallback": "Case Hardened Pick of Prospecting",
+                "translate": "item.dungeoncrawl.speciality.case_hardened_pick_of_prospecting"
+              },
               "target": "item_name"
             },
             {
@@ -103,10 +113,11 @@
               "function": "minecraft:set_enchantments"
             }
           ],
-          "name": "minecraft:iron_pickaxe"
+          "name": "minecraft:iron_pickaxe",
+          "quality": 2
         }
       ],
-      "name": "Case Hardened Pick",
+      "name": "Speciality: Case Hardened Pick",
       "rolls": 1.0
     }
   ],

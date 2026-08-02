@@ -9,7 +9,10 @@
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Soul Spade",
+              "name": {
+                "fallback": "Soul Spade",
+                "translate": "item.dungeoncrawl.speciality.soul_spade"
+              },
               "target": "item_name"
             },
             {
@@ -28,7 +31,7 @@
           "name": "minecraft:diamond_shovel"
         }
       ],
-      "name": "Soul Spade",
+      "name": "Speciality: Soul Spade",
       "rolls": 1.0
     }
   ],

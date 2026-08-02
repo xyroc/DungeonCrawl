@@ -96,6 +96,7 @@ public interface ChestLootTableKeys {
 
         ResourceLocation __ITEM = DataGen.resource(__SPECIALITY__, "item");
 
+        ResourceKey<LootTable> ELDRITCH_BLADE = key((DataGen.resource(__ITEM, "eldritch_blade")));
         ResourceKey<LootTable> TEMPERED_BLADE = key(DataGen.resource(__ITEM, "tempered_blade"));
 
         ResourceKey<LootTable> CASE_HARDENED_PICK = key(DataGen.resource(__ITEM, "case_hardened_pick"));

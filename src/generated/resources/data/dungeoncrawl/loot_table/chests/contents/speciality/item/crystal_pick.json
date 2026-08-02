@@ -9,7 +9,10 @@
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Crystal Pick",
+              "name": {
+                "fallback": "Crystal Pick",
+                "translate": "item.dungeoncrawl.speciality.crystal_pick"
+              },
               "target": "item_name"
             },
             {
@@ -33,7 +36,10 @@
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Crystal Pick of Precision",
+              "name": {
+                "fallback": "Crystal Pick of Precision",
+                "translate": "item.dungeoncrawl.speciality.crystal_pick_of_precison"
+              },
               "target": "item_name"
             },
             {
@@ -50,14 +56,18 @@
               "function": "minecraft:set_enchantments"
             }
           ],
-          "name": "minecraft:diamond_pickaxe"
+          "name": "minecraft:diamond_pickaxe",
+          "quality": 2
         },
         {
           "type": "minecraft:item",
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Crystal Pick of Prospecting",
+              "name": {
+                "fallback": "Crystal Pick of Prospecting",
+                "translate": "item.dungeoncrawl.speciality.crystal_pick_of_prospecting"
+              },
               "target": "item_name"
             },
             {
@@ -78,10 +88,11 @@
               "function": "minecraft:set_enchantments"
             }
           ],
-          "name": "minecraft:diamond_pickaxe"
+          "name": "minecraft:diamond_pickaxe",
+          "quality": 2
         }
       ],
-      "name": "Crystal Pick",
+      "name": "Speciality: Crystal Pick",
       "rolls": 1.0
     }
   ],

@@ -9,7 +9,10 @@
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Tempered Blade",
+              "name": {
+                "fallback": "Tempered Blade",
+                "translate": "item.dungeoncrawl.speciality.tempered_blade"
+              },
               "target": "item_name"
             },
             {
@@ -17,7 +20,8 @@
               "lore": [
                 {
                   "color": "dark_green",
-                  "text": "Highly Durable"
+                  "fallback": "Highly Durable",
+                  "translate": "item.dungeoncrawl.speciality.tempered_blade.lore"
                 }
               ],
               "mode": "append"
@@ -47,7 +51,7 @@
           "name": "minecraft:iron_sword"
         }
       ],
-      "name": "Tempered Blade",
+      "name": "Speciality: Tempered Blade",
       "rolls": 1.0
     }
   ],

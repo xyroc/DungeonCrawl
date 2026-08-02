@@ -9,7 +9,10 @@
           "functions": [
             {
               "function": "minecraft:set_name",
-              "name": "Crystal Head Axe",
+              "name": {
+                "fallback": "Crystal Head Axe",
+                "translate": "item.dungeoncrawl.speciality.crystal_head_axe"
+              },
               "target": "item_name"
             },
             {
@@ -28,7 +31,7 @@
           "name": "minecraft:diamond_axe"
         }
       ],
-      "name": "Crystal Head Axe",
+      "name": "Speciality: Crystal Head Axe",
       "rolls": 1.0
     }
   ],

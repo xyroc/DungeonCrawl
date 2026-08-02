@@ -18,6 +18,12 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import java.util.concurrent.CompletableFuture;
 
 public class BlueprintPoolTags extends TagsProvider<IRandom<Holder<Blueprint>>> {
+    public static final TagKey<IRandom<Holder<Blueprint>>> CEILING_CENTERED_5X5 = key(BlueprintPools.CEILING_CENTERED_5X5);
+
+    public static final TagKey<IRandom<Holder<Blueprint>>> CRYPT_CEILING_CENTERED_5X5 = key(BlueprintPools.CRYPT_CEILING_CENTERED_5X5);
+    public static final TagKey<IRandom<Holder<Blueprint>>> CRYPT_WALL = key(BlueprintPools.CRYPT_WALL);
+    public static final TagKey<IRandom<Holder<Blueprint>>> CRYPT_SARCOPHAGUS_SMALL = key(BlueprintPools.CRYPT_SARCOPHAGUS_SMALL);
+
     public static final TagKey<IRandom<Holder<Blueprint>>> LAB_CONTAINER = key(BlueprintPools.LAB_CONTAINER);
 
     public BlueprintPoolTags(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
@@ -26,6 +32,19 @@ public class BlueprintPoolTags extends TagsProvider<IRandom<Holder<Blueprint>>> 
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
+        tag(CEILING_CENTERED_5X5)
+                .add(BlueprintPools.CEILING_CENTERED_5X5);
+
+        tag(CRYPT_CEILING_CENTERED_5X5)
+                .addTag(CEILING_CENTERED_5X5)
+                .add(BlueprintPools.CRYPT_CEILING_CENTERED_5X5);
+
+        tag(CRYPT_SARCOPHAGUS_SMALL)
+                .add(BlueprintPools.CRYPT_SARCOPHAGUS_SMALL);
+
+        tag(CRYPT_WALL)
+                .add(BlueprintPools.CRYPT_WALL);
+
         tag(LAB_CONTAINER)
                 .add(BlueprintPools.LAB_CONTAINER);
     }

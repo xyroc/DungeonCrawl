@@ -53,9 +53,11 @@ public interface LevelTypes {
                                         1.0f,
                                         IRandom.<Holder<Blueprint>>builder()
                                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.CRYPT_TURN))
+                                                .add(blueprints.getOrThrow(BlueprintKeys.Room.CRYPT_CROSSING))
                                                 .build(),
                                         IRandom.<Holder<Blueprint>>builder()
                                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.CRYPT_TURN))
+                                                .add(blueprints.getOrThrow(BlueprintKeys.Room.CRYPT_CROSSING))
                                                 .build()
                                 )))
                         .build())

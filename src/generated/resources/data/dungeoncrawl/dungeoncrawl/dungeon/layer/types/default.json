@@ -29,10 +29,12 @@
           "max_size": 6,
           "min_size": 3,
           "non_terminals": [
-            "dungeoncrawl:room/crypt/turn"
+            "dungeoncrawl:room/crypt/turn",
+            "dungeoncrawl:room/crypt/crossing"
           ],
           "terminals": [
-            "dungeoncrawl:room/crypt/turn"
+            "dungeoncrawl:room/crypt/turn",
+            "dungeoncrawl:room/crypt/crossing"
           ]
         }
       }

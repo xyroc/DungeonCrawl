@@ -32,6 +32,7 @@ public interface TemplateKeys {
         ResourceLocation STAIRCASE_UPPER = DataGen.resource(__STAIRCASE__, "upper");
 
         ResourceLocation __CRYPT__ = DataGen.resource(__ROOM__, "crypt");
+        ResourceLocation CRYPT_CROSSING = DataGen.resource(__CRYPT__, "crossing");
         ResourceLocation CRYPT_TURN = DataGen.resource(__CRYPT__, "turn");
     }
 
@@ -55,6 +56,11 @@ public interface TemplateKeys {
         ResourceLocation CEILING_CENTERED_5X5_ORNATE = DataGen.resource(__CEILING_CENTERED_5X5__, "ornate");
         ResourceLocation CEILING_CENTERED_5X5_RAISED = DataGen.resource(__CEILING_CENTERED_5X5__, "raised");
 
+        ResourceLocation __ENTRANCE__ = DataGen.resource(__PART__, "entrance");
+        ResourceLocation __ENTRANCE_CLOSED__ = DataGen.resource(__ENTRANCE__, "closed");
+        ResourceLocation ENTRANCE_CLOSED_5X5 = DataGen.resource(__ENTRANCE_CLOSED__, "5x5");
+        ResourceLocation ENTRANCE_CLOSED_5X9 = DataGen.resource(__ENTRANCE_CLOSED__ , "5x9");
+
         ResourceLocation __FLOOR__ = DataGen.resource(__PART__, "floor");
         ResourceLocation FLOOR_3X3 = DataGen.resource(__FLOOR__, "3x3");
         ResourceLocation FLOOR_5x5 = DataGen.resource(__FLOOR__, "5x5");
@@ -74,8 +80,15 @@ public interface TemplateKeys {
 
         ResourceLocation __CRYPT__ = DataGen.resource(__PART__, "crypt");
 
-        ResourceLocation CRYPT_GRAVES = DataGen.resource(__CRYPT__, "graves");
-        ResourceLocation CRYPT_GRAVES_WALL = DataGen.resource(CRYPT_GRAVES, "wall");
+        ResourceLocation __CRYPT_ENTRANCE__ = DataGen.resource(__CRYPT__, "entrance");
+        ResourceLocation CRYPT_ENTRANCE_OPEN = DataGen.resource(__CRYPT_ENTRANCE__, "open");
+        ResourceLocation CRYPT_ENTRANCE_CLUSTER_OPEN = DataGen.resource(__CRYPT_ENTRANCE__, "cluster_open");
+        ResourceLocation CRYPT_ENTRANCE_CLUSTER_OPEN_LEFT = DataGen.resource(__CRYPT_ENTRANCE__, "cluster_open_left");
+        ResourceLocation CRYPT_ENTRANCE_CLUSTER_OPEN_RIGHT = DataGen.resource(__CRYPT_ENTRANCE__, "cluster_open_right");
+
+        ResourceLocation __CRYPT_WALL__ = DataGen.resource(__CRYPT__, "wall");
+        ResourceLocation CRYPT_WALL_MAUSOLEUM = DataGen.resource(__CRYPT_WALL__, "mausoleum");
+        ResourceLocation CRYPT_WALL_PLAIN = DataGen.resource(__CRYPT_WALL__, "plain");
 
         ResourceLocation __CRYPT_SARCOPHAGUS__ = DataGen.resource(__CRYPT__, "sarcophagus");
         ResourceLocation SARCOPHAGUS_SMALL = DataGen.resource(__CRYPT_SARCOPHAGUS__, "small");

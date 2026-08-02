@@ -64,8 +64,24 @@ public interface PartBlueprints {
                 .template(TemplateKeys.Part.CEILING_CENTERED_5X5_RAISED)
                 .build()));
 
-        context.register(BlueprintKeys.Part.CRYPT_GRAVES, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(TemplateKeys.Part.CRYPT_GRAVES)
+        context.register(BlueprintKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_LEFT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_LEFT)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_RIGHT, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_RIGHT)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CRYPT_ENTRANCE_OPEN, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_ENTRANCE_OPEN)
+                .build()));
+
+        context.register(BlueprintKeys.Part.CRYPT_WALL_MAUSOLEUM, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_WALL_MAUSOLEUM)
                 .configureBlock(Blocks.RED_NETHER_BRICK_STAIRS, TemplateBlockPlacementSettings.ANTI_SOLID.withPostProcessing())
                 .feature(new ChainedFeatures(
                         new PlacementSettings(Optional.of(DataGen.resource("feature/grave")), new Constant(0)),
@@ -81,8 +97,8 @@ public interface PartBlueprints {
                         )))
                 .build()));
 
-        context.register(BlueprintKeys.Part.CRYPT_GRAVES_WALL, new Blueprint(new BlueprintConfiguration.Builder()
-                .template(TemplateKeys.Part.CRYPT_GRAVES_WALL)
+        context.register(BlueprintKeys.Part.CRYPT_WALL_PLAIN, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.CRYPT_WALL_PLAIN)
                 .build()));
 
         context.register(BlueprintKeys.Part.DARK_HALL_OPEN, new Blueprint(new BlueprintConfiguration.Builder()
@@ -103,6 +119,14 @@ public interface PartBlueprints {
 
         context.register(BlueprintKeys.Part.DINER_CLOSED_STORAGE, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.DINER_CLOSED_STORAGE)
+                .build()));
+
+        context.register(BlueprintKeys.Part.ENTRANCE_CLOSED_5X5, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.ENTRANCE_CLOSED_5X5)
+                .build()));
+
+        context.register(BlueprintKeys.Part.ENTRANCE_CLOSED_5X9, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.ENTRANCE_CLOSED_5X9)
                 .build()));
 
         context.register(BlueprintKeys.Part.FLOOR_3x3_MASONRY, new Blueprint(new BlueprintConfiguration.Builder()

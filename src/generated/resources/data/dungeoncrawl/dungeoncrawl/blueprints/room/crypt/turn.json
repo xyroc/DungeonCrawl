@@ -1,7 +1,32 @@
 {
   "entrance_types": {
-    "dungeoncrawl:entrance/hybrid": {
-      "type": "hybrid"
+    "dungeoncrawl:entrance/left": {
+      "type": "hybrid",
+      "custom_parts": {
+        "closed": [
+          "dungeoncrawl:part/entrance/closed/5x9"
+        ],
+        "cluster_open": [
+          "dungeoncrawl:part/crypt/entrance/cluster_open_left"
+        ],
+        "open": [
+          "dungeoncrawl:part/crypt/entrance/open"
+        ]
+      }
+    },
+    "dungeoncrawl:entrance/right": {
+      "type": "hybrid",
+      "custom_parts": {
+        "closed": [
+          "dungeoncrawl:part/entrance/closed/5x9"
+        ],
+        "cluster_open": [
+          "dungeoncrawl:part/crypt/entrance/cluster_open_right"
+        ],
+        "open": [
+          "dungeoncrawl:part/crypt/entrance/open"
+        ]
+      }
     }
   },
   "features": [
@@ -18,28 +43,21 @@
   "parts": [
     {
       "positions": "dungeoncrawl:part/crypt/sarcophagus",
-      "variants": [
-        "dungeoncrawl:part/crypt/sarcophagus/small/empty",
-        "dungeoncrawl:part/crypt/sarcophagus/small/grave"
-      ]
+      "variants": {
+        "pools": "#dungeoncrawl:part/crypt/sarcophagus/small"
+      }
     },
     {
       "positions": "dungeoncrawl:part/crypt/graves",
-      "variants": [
-        {
-          "blueprint": "dungeoncrawl:part/crypt/graves",
-          "weight": 2
-        },
-        "dungeoncrawl:part/crypt/graves/wall"
-      ]
+      "variants": {
+        "pools": "#dungeoncrawl:part/crypt/wall"
+      }
     },
     {
       "positions": "dungeoncrawl:part/ceiling/centered/5x5",
-      "variants": [
-        "dungeoncrawl:part/ceiling/centered/5x5/flat",
-        "dungeoncrawl:part/ceiling/centered/5x5/ornate",
-        "dungeoncrawl:part/ceiling/centered/5x5/raised"
-      ]
+      "variants": {
+        "pools": "#dungeoncrawl:part/ceiling/ceiling/centered/5x5"
+      }
     },
     {
       "positions": "dungeoncrawl:part/ceiling/9x3",

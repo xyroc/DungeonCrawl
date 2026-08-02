@@ -28,6 +28,7 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> STAIRCASE_UPPER = key(TemplateKeys.Room.STAIRCASE_UPPER);
         ResourceKey<Blueprint> STORAGE = key(TemplateKeys.Room.STORAGE);
 
+        ResourceKey<Blueprint> CRYPT_CROSSING = key(TemplateKeys.Room.CRYPT_CROSSING);
         ResourceKey<Blueprint> CRYPT_TURN = key(TemplateKeys.Room.CRYPT_TURN);
     }
 
@@ -41,8 +42,16 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> CEILING_CENTERED_5X5_ORNATE = key(TemplateKeys.Part.CEILING_CENTERED_5X5_ORNATE);
         ResourceKey<Blueprint> CEILING_CENTERED_5X5_RAISED = key(TemplateKeys.Part.CEILING_CENTERED_5X5_RAISED);
 
-        ResourceKey<Blueprint> CRYPT_GRAVES = key(TemplateKeys.Part.CRYPT_GRAVES);
-        ResourceKey<Blueprint> CRYPT_GRAVES_WALL = key(TemplateKeys.Part.CRYPT_GRAVES_WALL);
+        ResourceKey<Blueprint> CRYPT_ENTRANCE_OPEN = key(TemplateKeys.Part.CRYPT_ENTRANCE_OPEN);
+        ResourceKey<Blueprint> CRYPT_ENTRANCE_CLUSTER_OPEN = key(TemplateKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN);
+        ResourceKey<Blueprint> CRYPT_ENTRANCE_CLUSTER_OPEN_LEFT = key(TemplateKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_LEFT);
+        ResourceKey<Blueprint> CRYPT_ENTRANCE_CLUSTER_OPEN_RIGHT = key(TemplateKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_RIGHT);
+
+        ResourceKey<Blueprint> CRYPT_WALL_MAUSOLEUM = key(TemplateKeys.Part.CRYPT_WALL_MAUSOLEUM);
+        ResourceKey<Blueprint> CRYPT_WALL_PLAIN = key(TemplateKeys.Part.CRYPT_WALL_PLAIN);
+
+        ResourceKey<Blueprint> ENTRANCE_CLOSED_5X5 = key(TemplateKeys.Part.ENTRANCE_CLOSED_5X5);
+        ResourceKey<Blueprint> ENTRANCE_CLOSED_5X9 = key(TemplateKeys.Part.ENTRANCE_CLOSED_5X9);
 
         ResourceKey<Blueprint> FLOOR_3x3_MASONRY = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "masonry"));
         ResourceKey<Blueprint> FLOOR_3x3_SOLID = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "solid"));

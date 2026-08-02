@@ -18,6 +18,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChainedFeatures;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChestFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.GraveFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.SarcophagusFeature;
@@ -34,6 +35,7 @@ import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.Constant;
 import xiroc.dungeoncrawl.util.random.value.Range;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RoomBlueprints {
@@ -64,21 +66,79 @@ public interface RoomBlueprints {
                 .template(TemplateKeys.Room.CORNER)
                 .build()));
 
+        context.register(BlueprintKeys.Room.CRYPT_CROSSING, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.CRYPT_CROSSING)
+                .entranceType(DataGen.resource("entrance"), BlueprintConfiguration.EntranceType.HYBRID, null,
+                        new Entrance.CustomParts.Builder()
+                                .open(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_ENTRANCE_OPEN))
+                                        .build())
+                                .closed(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.ENTRANCE_CLOSED_5X5))
+                                        .build())
+                                .clusterOpen(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN))
+                                        .build())
+                                .build())
+                .multipart(new BlueprintMultipart(DataGen.resource("part/ceiling/centered/5x5"), IRandom.<Holder<Blueprint>>builder()
+                        .setPools(blueprintPools.getOrThrow(BlueprintPoolTags.CRYPT_CEILING_CENTERED_5X5))
+                        .build()))
+                .feature(new ChainedFeatures(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/grave")), new Constant(0)),
+                        List.of(
+                                new GraveFeature(
+                                        new PlacementSettings(Optional.empty(), new Range(2, 4)),
+                                        Optional.of(new SpawnerSettings(Optional.empty())),
+                                        Optional.of(new ChestSettings())
+                                ),
+                                new GraveFeature(
+                                        new PlacementSettings(Optional.empty(), new Range(1, 2)),
+                                        Optional.empty(),
+                                        Optional.of(new ChestSettings())
+                                ),
+                                new GraveFeature(
+                                        new PlacementSettings(Optional.empty(), new Range(2, 4)),
+                                        Optional.empty(),
+                                        Optional.empty()
+                                )
+                        )))
+                .build()));
+
         context.register(BlueprintKeys.Room.CRYPT_TURN, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.CRYPT_TURN)
-                .entranceType(DataGen.resource("entrance/hybrid"), BlueprintConfiguration.EntranceType.HYBRID, null, null)
+                .entranceType(DataGen.resource("entrance/left"), BlueprintConfiguration.EntranceType.HYBRID, null,
+                        new Entrance.CustomParts.Builder()
+                                .open(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_ENTRANCE_OPEN))
+                                        .build())
+                                .closed(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.ENTRANCE_CLOSED_5X9))
+                                        .build())
+                                .clusterOpen(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_LEFT))
+                                        .build())
+                                .build()
+                )
+                .entranceType(DataGen.resource("entrance/right"), BlueprintConfiguration.EntranceType.HYBRID, null,
+                        new Entrance.CustomParts.Builder()
+                                .open(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_ENTRANCE_OPEN))
+                                        .build())
+                                .closed(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.ENTRANCE_CLOSED_5X9))
+                                        .build())
+                                .clusterOpen(IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_ENTRANCE_CLUSTER_OPEN_RIGHT))
+                                        .build())
+                                .build())
                 .multipart(new BlueprintMultipart(DataGen.resource("part/crypt/sarcophagus"), IRandom.<Holder<Blueprint>>builder()
-                        .add(blueprints.getOrThrow(BlueprintKeys.Part.SARCOPHAGUS_SMALL_EMPTY))
-                        .add(blueprints.getOrThrow(BlueprintKeys.Part.SARCOPHAGUS_SMALL_GRAVE))
+                        .setPools(blueprintPools.getOrThrow(BlueprintPoolTags.CRYPT_SARCOPHAGUS_SMALL))
                         .build()))
                 .multipart(new BlueprintMultipart(DataGen.resource("part/crypt/graves"), IRandom.<Holder<Blueprint>>builder()
-                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_GRAVES), 2)
-                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CRYPT_GRAVES_WALL))
+                        .setPools(blueprintPools.getOrThrow(BlueprintPoolTags.CRYPT_WALL))
                         .build()))
                 .multipart(new BlueprintMultipart(DataGen.resource("part/ceiling/centered/5x5"), IRandom.<Holder<Blueprint>>builder()
-                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_CENTERED_5X5_FLAT))
-                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_CENTERED_5X5_ORNATE))
-                        .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_CENTERED_5X5_RAISED))
+                        .setPools(blueprintPools.getOrThrow(BlueprintPoolTags.CRYPT_CEILING_CENTERED_5X5))
                         .build()))
                 .multipart(new BlueprintMultipart(DataGen.resource("part/ceiling/9x3"), IRandom.<Holder<Blueprint>>builder()
                         .add(blueprints.getOrThrow(BlueprintKeys.Part.CEILING_9X3_FLAT))

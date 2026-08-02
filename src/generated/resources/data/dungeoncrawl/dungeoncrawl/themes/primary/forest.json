@@ -28,14 +28,14 @@
     },
     "minecraft:mossy_stone_bricks"
   ],
-  "pillar": [
+  "masonry_pillar": [
     {
       "block": "minecraft:cracked_stone_bricks",
       "weight": 3
     },
     "minecraft:mossy_stone_bricks"
   ],
-  "slab": "minecraft:stone_brick_slab",
-  "stairs": "minecraft:stone_brick_stairs",
+  "masonry_slab": "minecraft:stone_brick_slab",
+  "masonry_stairs": "minecraft:stone_brick_stairs",
   "wall": "minecraft:mossy_stone_brick_wall"
 }

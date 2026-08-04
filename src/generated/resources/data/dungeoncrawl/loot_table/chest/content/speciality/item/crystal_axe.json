@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Crystal Head Axe",
+                "translate": "item.dungeoncrawl.speciality.crystal_head_axe"
+              },
+              "target": "item_name"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:efficiency": {
+                  "type": "minecraft:uniform",
+                  "max": 5.0,
+                  "min": 3.0
+                },
+                "minecraft:unbreaking": 3.0
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:diamond_axe"
+        }
+      ],
+      "name": "Speciality: Crystal Head Axe",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chest/content/speciality/item/crystal_axe"
+}

@@ -79,7 +79,8 @@ public record BonusLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.DIAMOND)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
+                                .setQuality(1)))
         );
 
         collector.accept(ChestLootTableKeys.LUCK_BONUS_LEVEL_4, LootTable.lootTable()
@@ -90,7 +91,8 @@ public record BonusLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.POTION)
                                 .apply(SetPotionFunction.setPotion(Potions.LUCK)))
                         .add(LootItem.lootTableItem(Items.NETHERITE_SCRAP)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
+                                .setQuality(1))
                         .add(LootItem.lootTableItem(Items.GOLD_INGOT)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 7)))
                                 .setWeight(2))
@@ -98,7 +100,8 @@ public record BonusLootTables(HolderLookup.Provider registries) implements LootT
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6)))
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.DIAMOND)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))))
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))
+                                .setQuality(1)))
         );
     }
 }

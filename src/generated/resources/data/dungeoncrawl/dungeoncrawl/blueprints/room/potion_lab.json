@@ -35,7 +35,7 @@
     },
     "minecraft:chest": {
       "fill_air": true,
-      "loot_table": "dungeoncrawl:chests/level_0"
+      "loot_table": "dungeoncrawl:chest/level_0"
     }
   },
   "template": "dungeoncrawl:room/potion_lab"

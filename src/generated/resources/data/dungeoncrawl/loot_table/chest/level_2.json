@@ -1,0 +1,98 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/blocks/level_2"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/level_2",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/food/level_2",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "quality": -1,
+          "value": "dungeoncrawl:chest/content/scrap/level_2",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:loot_table",
+          "quality": 1,
+          "value": "dungeoncrawl:chest/content/valuables/level_2"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/potion/level_2"
+        }
+      ],
+      "name": "Level 2 Chest",
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 8.0,
+        "min": 4.0
+      }
+    },
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 1.0,
+        "min": 0.0
+      },
+      "conditions": [
+        {
+          "chance": 0.15,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/speciality/level_2"
+        }
+      ],
+      "name": "Level 2 Chest: Speciality",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.1,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "minecraft:chests/jungle_temple"
+        }
+      ],
+      "name": "Level 2 Chest: Random Bonus",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/luck_bonus/level_2"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chest/level_2"
+}

@@ -1,0 +1,142 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Eldritch Blade",
+                "translate": "item.dungeoncrawl.speciality.eldritch_blade"
+              },
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "color": "dark_green",
+                  "fallback": "Rune Etched",
+                  "translate": "item.dungeoncrawl.speciality.eldritch_blade.lore"
+                }
+              ],
+              "mode": "append"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:mending": 1.0
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:diamond_sword",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Eldritch Blade of Plundering",
+                "translate": "item.dungeoncrawl.speciality.eldritch_blade_of_plundering"
+              },
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "color": "dark_green",
+                  "fallback": "The loot taker",
+                  "translate": "item.dungeoncrawl.speciality.eldritch_blade_of_plundering.lore"
+                }
+              ],
+              "mode": "append"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:looting": {
+                  "type": "minecraft:uniform",
+                  "max": 3.0,
+                  "min": 2.0
+                }
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:diamond_sword",
+          "quality": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "fallback": "Eldritch Blade of the Inferno",
+                "translate": "item.dungeoncrawl.speciality.eldritch_blade_of_the_inferno"
+              },
+              "target": "item_name"
+            },
+            {
+              "function": "minecraft:set_lore",
+              "lore": [
+                {
+                  "color": "dark_green",
+                  "fallback": "From the fiery depths",
+                  "translate": "item.dungeoncrawl.speciality.eldritch_blade_of_the_inferno.lore"
+                }
+              ],
+              "mode": "append"
+            },
+            {
+              "add": false,
+              "enchantments": {
+                "minecraft:fire_aspect": {
+                  "type": "minecraft:uniform",
+                  "max": 3.0,
+                  "min": 2.0
+                }
+              },
+              "function": "minecraft:set_enchantments"
+            }
+          ],
+          "name": "minecraft:diamond_sword",
+          "quality": 2
+        }
+      ],
+      "functions": [
+        {
+          "add": false,
+          "enchantments": {
+            "minecraft:unbreaking": 3.0
+          },
+          "function": "minecraft:set_enchantments"
+        },
+        {
+          "add": false,
+          "conditions": [
+            {
+              "chance": 0.9,
+              "condition": "minecraft:random_chance"
+            }
+          ],
+          "enchantments": {
+            "minecraft:vanishing_curse": 1.0
+          },
+          "function": "minecraft:set_enchantments"
+        }
+      ],
+      "name": "Speciality: Eldritch Blade",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chest/content/speciality/item/eldritch_blade"
+}

@@ -18,11 +18,15 @@
 
 package xiroc.dungeoncrawl.data.loot.chest;
 
+import net.minecraft.advancements.critereon.BlockPredicate;
+import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -31,7 +35,9 @@ import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.predicates.WeatherCheck;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
@@ -43,13 +49,19 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
         collector.accept(ChestLootTableKeys.LEVEL_0, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Level 0 Chest")
-                        .setRolls(UniformGenerator.between(3, 5))
+                        .setRolls(UniformGenerator.between(4, 8))
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_0))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_0))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_0))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_0))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_0)))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_0)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_0)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_0)
+                                .setWeight(5)
+                                .setQuality(-1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_0)
+                                .setQuality(1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Potion.LEVEL_0)))
                 .withPool(LootPool.lootPool()
                         .name("Level 0 Chest: Speciality")
                         .setRolls(ConstantValue.exactly(1))
@@ -70,13 +82,19 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
         collector.accept(ChestLootTableKeys.LEVEL_1, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Level 1 Chest")
-                        .setRolls(UniformGenerator.between(3, 5))
+                        .setRolls(UniformGenerator.between(4, 8))
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_1))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_1))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_1))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_1))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_1)))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_1)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_1)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_1)
+                                .setWeight(5)
+                                .setQuality(-1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_1)
+                                .setQuality(1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Potion.LEVEL_1)))
                 .withPool(LootPool.lootPool()
                         .name("Level 1 Chest: Speciality")
                         .setRolls(ConstantValue.exactly(1))
@@ -96,13 +114,19 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
         collector.accept(ChestLootTableKeys.LEVEL_2, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Level 2 Chest")
-                        .setRolls(UniformGenerator.between(3, 5))
+                        .setRolls(UniformGenerator.between(4, 8))
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_2))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_2))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_2))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_2))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_2)))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_2)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_2)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_2)
+                                .setWeight(5)
+                                .setQuality(-1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_2)
+                                .setQuality(1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Potion.LEVEL_2)))
                 .withPool(LootPool.lootPool()
                         .name("Level 2 Chest: Speciality")
                         .setRolls(ConstantValue.exactly(1))
@@ -122,13 +146,19 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
         collector.accept(ChestLootTableKeys.LEVEL_3, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Level 3 Chest")
-                        .setRolls(UniformGenerator.between(3, 5))
+                        .setRolls(UniformGenerator.between(4, 8))
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_3))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_3))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_3))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_3))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_3)))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_3)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_3)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_3)
+                                .setWeight(5)
+                                .setQuality(-1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_3)
+                                .setQuality(1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Potion.LEVEL_3)))
                 .withPool(LootPool.lootPool()
                         .name("Level 3 Chest: Speciality")
                         .setRolls(ConstantValue.exactly(1))
@@ -151,13 +181,19 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
         collector.accept(ChestLootTableKeys.LEVEL_4, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Level 4 Chest")
-                        .setRolls(UniformGenerator.between(3, 5))
+                        .setRolls(UniformGenerator.between(4, 8))
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_4))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_4))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_4))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_4))
-                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_4)))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_4)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_4)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_4)
+                                .setWeight(5)
+                                .setQuality(-1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_4)
+                                .setQuality(1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Potion.LEVEL_4)))
                 .withPool(LootPool.lootPool()
                         .name("Level 4 Chest: Speciality")
                         .setRolls(ConstantValue.exactly(1))
@@ -238,10 +274,45 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                                                 .apply(SetComponentsFunction.setComponent(DataComponents.OMINOUS_BOTTLE_AMPLIFIER, 4))))
                                 .build()))
                         .add(LootItem.lootTableItem(Items.BOOK)
-                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(20,30)))))
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(20, 30)))))
         );
 
-        collector.accept(ChestLootTableKeys.SUPPLY, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.SUPPLY, LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .name("Supply Chest: Guaranteed Tool")
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.TOOL_LEVEL_0))
+                        .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(6, 10))))
+                .withPool(LootPool.lootPool()
+                        .name("Supply Chest: Guaranteed Weapon")
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.WEAPON_LEVEL_0))
+                        .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(6, 10))))
+                .withPool(LootPool.lootPool()
+                        .name("Supply Chest: Guaranteed Armor")
+                        .setRolls(ConstantValue.exactly(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.BOOTS_LEVEL_0))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_0))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.CHESTPLATE_LEVEL_0))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.HELMET_LEVEL_0))
+                        .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(6, 10))))
+                .withPool(LootPool.lootPool()
+                        .name("Supply Chest")
+                        .setRolls(UniformGenerator.between(3, 5))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_0)
+                                .setWeight(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_0)))
+                .withPool(LootPool.lootPool()
+                        .name("Supply Chest: Sunken Trident")
+                        .setRolls(ConstantValue.exactly(1))
+                        .when(WeatherCheck.weather().setRaining(true))
+                        .when(LocationCheck.checkLocation(LocationPredicate.Builder.location()
+                                .setBlock(BlockPredicate.Builder.block()
+                                        .setProperties(StatePropertiesPredicate.Builder.properties()
+                                                .hasProperty(BlockStateProperties.WATERLOGGED, true)))))
+                        .add(LootItem.lootTableItem(Items.TRIDENT)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(18, 22))))));
+
         collector.accept(ChestLootTableKeys.TREASURE, LootTable.lootTable());
     }
 }

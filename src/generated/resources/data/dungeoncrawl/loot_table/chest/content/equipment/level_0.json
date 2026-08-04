@@ -1,0 +1,56 @@
+{
+  "type": "minecraft:chest",
+  "functions": [
+    {
+      "conditions": [
+        {
+          "chance": 0.3,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "function": "minecraft:enchant_with_levels",
+      "levels": {
+        "type": "minecraft:binomial",
+        "n": 10.0,
+        "p": 0.5
+      },
+      "options": "#minecraft:on_random_loot"
+    }
+  ],
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/tool/level_0",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/weapon/level_0",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/boots/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/leggings/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/chestplate/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/helmet/level_0"
+        }
+      ],
+      "name": "Level 0 Chest: Equipment",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chest/content/equipment/level_0"
+}

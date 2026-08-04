@@ -1,0 +1,142 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/tool/level_0"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:enchant_with_levels",
+          "levels": {
+            "type": "minecraft:uniform",
+            "max": 10.0,
+            "min": 6.0
+          },
+          "options": "#minecraft:on_random_loot"
+        }
+      ],
+      "name": "Supply Chest: Guaranteed Tool",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/weapon/level_0"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:enchant_with_levels",
+          "levels": {
+            "type": "minecraft:uniform",
+            "max": 10.0,
+            "min": 6.0
+          },
+          "options": "#minecraft:on_random_loot"
+        }
+      ],
+      "name": "Supply Chest: Guaranteed Weapon",
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/boots/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/leggings/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/chestplate/level_0"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/equipment/helmet/level_0"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:enchant_with_levels",
+          "levels": {
+            "type": "minecraft:uniform",
+            "max": 10.0,
+            "min": 6.0
+          },
+          "options": "#minecraft:on_random_loot"
+        }
+      ],
+      "name": "Supply Chest: Guaranteed Armor",
+      "rolls": 2.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/scrap/level_0",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/food/level_0"
+        }
+      ],
+      "name": "Supply Chest",
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 3.0
+      }
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:weather_check",
+          "raining": true
+        },
+        {
+          "condition": "minecraft:location_check",
+          "predicate": {
+            "block": {
+              "state": {
+                "waterlogged": "true"
+              }
+            }
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:uniform",
+                "max": 22.0,
+                "min": 18.0
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "minecraft:trident"
+        }
+      ],
+      "name": "Supply Chest: Sunken Trident",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dungeoncrawl:chest/supply"
+}

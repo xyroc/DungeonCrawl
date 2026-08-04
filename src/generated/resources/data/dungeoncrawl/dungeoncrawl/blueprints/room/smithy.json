@@ -3,7 +3,7 @@
     {
       "type": "dungeoncrawl:chest",
       "chest": {
-        "loot_table": "dungeoncrawl:chests/contents/speciality/item/tempered_blade"
+        "loot_table": "dungeoncrawl:chest/content/speciality/item/tempered_blade"
       },
       "placement": {
         "amount": 1,
@@ -20,6 +20,10 @@
       ]
     }
   ],
+  "placement_settings": {
+    "minecraft:cobblestone": {},
+    "minecraft:cobblestone_stairs": {}
+  },
   "template": "dungeoncrawl:room/smithy",
   "use_global_default_placement_settings": false
 }

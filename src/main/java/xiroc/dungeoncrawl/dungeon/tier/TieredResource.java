@@ -23,6 +23,10 @@ import java.util.*;
  */
 public interface TieredResource<T> {
 
+    static <T> TieredResource<T> single(T resource) {
+        return new SingleTier<>(resource);
+    }
+
     interface Codecs {
         static <T> Codec<TieredResource<T>> makeCodec(Codec<T> resourceCodec) {
             final Codec<Builder<T>> singleTierBuilderCodec = resourceCodec.flatComapMap(Builder::new, builder -> {

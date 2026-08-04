@@ -48,6 +48,7 @@ public interface RoomBlueprints {
                 .template(TemplateKeys.Room.BEDROOM)
                 .defaultPlacementSettings(TemplateBlockPlacementSettings.SOLID_PLACEMENT)
                 .configureBlock(Blocks.TORCH, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT)
+                .configureBlock(Blocks.CHEST, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT.withLoot(TieredResource.single(ChestLootTableKeys.SUPPLY)))
                 .build()));
 
         context.register(BlueprintKeys.Room.BRICK, new Blueprint(new BlueprintConfiguration.Builder()

@@ -3,6 +3,9 @@
     "fill_air": true
   },
   "placement_settings": {
+    "minecraft:chest": {
+      "loot_table": "dungeoncrawl:chest/supply"
+    },
     "minecraft:torch": {}
   },
   "template": "dungeoncrawl:room/bedroom"

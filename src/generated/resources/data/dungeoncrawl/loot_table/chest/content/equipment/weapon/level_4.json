@@ -10,15 +10,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:wooden_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:stone_sword",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:golden_sword"
         },
         {
@@ -30,7 +21,7 @@
           "type": "minecraft:item",
           "name": "minecraft:diamond_sword",
           "quality": 2,
-          "weight": 2
+          "weight": 3
         }
       ],
       "name": "Weapon: Level 4",

@@ -8,9 +8,6 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
-import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import xiroc.dungeoncrawl.data.loot.chest.ChestLootTableKeys;
 
@@ -31,8 +28,6 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_0))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.CHESTPLATE_LEVEL_0))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.HELMET_LEVEL_0)))
-                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(10, 0.5f))
-                        .when(LootItemRandomChanceCondition.randomChance(0.3F)))
         );
 
         collector.accept(ChestLootTableKeys.EQUIPMENT_LEVEL_1, LootTable.lootTable()
@@ -47,8 +42,6 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.CHESTPLATE_LEVEL_1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.HELMET_LEVEL_1)))
-                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(18, 0.5f))
-                        .when(LootItemRandomChanceCondition.randomChance(0.4F)))
         );
 
         collector.accept(ChestLootTableKeys.EQUIPMENT_LEVEL_2, LootTable.lootTable()
@@ -63,8 +56,7 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.CHESTPLATE_LEVEL_2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_2)))
-                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(25, 0.5f))
-                        .when(LootItemRandomChanceCondition.randomChance(0.5F)))
+
         );
 
         collector.accept(ChestLootTableKeys.EQUIPMENT_LEVEL_3, LootTable.lootTable()
@@ -79,8 +71,6 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_3))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.CHESTPLATE_LEVEL_3))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.HELMET_LEVEL_3)))
-                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(33, 0.5f))
-                        .when(LootItemRandomChanceCondition.randomChance(0.6F)))
         );
 
         collector.accept(ChestLootTableKeys.EQUIPMENT_LEVEL_4, LootTable.lootTable()
@@ -95,8 +85,6 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_4))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.CHESTPLATE_LEVEL_4))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Equipment.HELMET_LEVEL_4)))
-                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(40, 0.5f))
-                        .when(LootItemRandomChanceCondition.randomChance(0.7F)))
         );
 
         collector.accept(ChestLootTableKeys.Equipment.TOOL_LEVEL_0, LootTable.lootTable()
@@ -180,10 +168,6 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                 .withPool(LootPool.lootPool()
                         .name("Tool: Level 4")
                         .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.WOODEN_PICKAXE))
-                        .add(LootItem.lootTableItem(Items.WOODEN_SHOVEL))
-                        .add(LootItem.lootTableItem(Items.STONE_PICKAXE))
-                        .add(LootItem.lootTableItem(Items.STONE_SHOVEL))
                         .add(LootItem.lootTableItem(Items.GOLDEN_AXE))
                         .add(LootItem.lootTableItem(Items.GOLDEN_SHOVEL)
                                 .setWeight(2))
@@ -196,13 +180,13 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                         .add(LootItem.lootTableItem(Items.IRON_PICKAXE)
                                 .setWeight(4))
                         .add(LootItem.lootTableItem(Items.DIAMOND_PICKAXE)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(1))
                         .add(LootItem.lootTableItem(Items.DIAMOND_SHOVEL)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(1))
                         .add(LootItem.lootTableItem(Items.DIAMOND_AXE)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(1))
                 ));
 
@@ -262,14 +246,11 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                         .name("Weapon: Level 4")
                         .setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(Items.BOW))
-                        .add(LootItem.lootTableItem(Items.WOODEN_SWORD))
-                        .add(LootItem.lootTableItem(Items.STONE_SWORD)
-                                .setWeight(2))
                         .add(LootItem.lootTableItem(Items.GOLDEN_SWORD))
                         .add(LootItem.lootTableItem(Items.IRON_SWORD)
                                 .setWeight(3))
                         .add(LootItem.lootTableItem(Items.DIAMOND_SWORD)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(2))));
 
         collector.accept(ChestLootTableKeys.Equipment.BOOTS_LEVEL_0, LootTable.lootTable()
@@ -328,14 +309,13 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                 .withPool(LootPool.lootPool()
                         .name("Boots: Level 4")
                         .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.LEATHER_BOOTS))
                         .add(LootItem.lootTableItem(Items.CHAINMAIL_BOOTS))
                         .add(LootItem.lootTableItem(Items.GOLDEN_BOOTS)
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.IRON_BOOTS)
                                 .setWeight(4))
                         .add(LootItem.lootTableItem(Items.DIAMOND_BOOTS)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(2))));
 
         collector.accept(ChestLootTableKeys.Equipment.LEGGINGS_LEVEL_0, LootTable.lootTable()
@@ -394,14 +374,13 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                 .withPool(LootPool.lootPool()
                         .name("Leggings: Level 4")
                         .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.LEATHER_LEGGINGS))
                         .add(LootItem.lootTableItem(Items.CHAINMAIL_LEGGINGS))
                         .add(LootItem.lootTableItem(Items.GOLDEN_LEGGINGS)
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.IRON_LEGGINGS)
                                 .setWeight(4))
                         .add(LootItem.lootTableItem(Items.DIAMOND_LEGGINGS)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(2))));
 
         collector.accept(ChestLootTableKeys.Equipment.CHESTPLATE_LEVEL_0, LootTable.lootTable()
@@ -460,14 +439,13 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                 .withPool(LootPool.lootPool()
                         .name("Chestplate: Level 4")
                         .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.LEATHER_CHESTPLATE))
                         .add(LootItem.lootTableItem(Items.CHAINMAIL_CHESTPLATE))
                         .add(LootItem.lootTableItem(Items.GOLDEN_CHESTPLATE)
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.IRON_CHESTPLATE)
                                 .setWeight(4))
                         .add(LootItem.lootTableItem(Items.DIAMOND_CHESTPLATE)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(2))));
 
         collector.accept(ChestLootTableKeys.Equipment.HELMET_LEVEL_0, LootTable.lootTable()
@@ -526,14 +504,13 @@ public record EquipmentLootTables(HolderLookup.Provider registries) implements L
                 .withPool(LootPool.lootPool()
                         .name("Helmet: Level 4")
                         .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.LEATHER_HELMET))
                         .add(LootItem.lootTableItem(Items.CHAINMAIL_HELMET))
                         .add(LootItem.lootTableItem(Items.GOLDEN_HELMET)
                                 .setWeight(2))
                         .add(LootItem.lootTableItem(Items.IRON_HELMET)
                                 .setWeight(4))
                         .add(LootItem.lootTableItem(Items.DIAMOND_HELMET)
-                                .setWeight(2)
+                                .setWeight(3)
                                 .setQuality(2))));
     }
 }

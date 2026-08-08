@@ -116,6 +116,8 @@ public interface ChestLootTableKeys {
 
         ResourceLocation __ITEM__ = DataGen.resource(__POTION__, "item");
 
+        ResourceKey<LootTable> SUPER_LUCK_POTION = key(DataGen.resource(__ITEM__, "super_luck_potion"));
+
         // Special Potions from Roguelike Dungeons.
         ResourceKey<LootTable> ABSINTHE = key(DataGen.resource(__ITEM__, "absinthe"));
         ResourceKey<LootTable> ANIMUS = key(DataGen.resource(__ITEM__, "animus"));

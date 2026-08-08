@@ -23,8 +23,10 @@ import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -38,6 +40,7 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.predicates.WeatherCheck;
+import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
@@ -46,6 +49,8 @@ import java.util.function.BiConsumer;
 public record ChestLootTables(HolderLookup.Provider registries) implements LootTableSubProvider {
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> collector) {
+        var enchantments = registries.lookupOrThrow(Registries.ENCHANTMENT);
+
         collector.accept(ChestLootTableKeys.LEVEL_0, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .name("Level 0 Chest")
@@ -53,7 +58,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_0))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_0)
-                                .setWeight(2))
+                                .setWeight(2)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(10, 0.5f))
+                                        .when(LootItemRandomChanceCondition.randomChance(0.3F))))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_0)
                                 .setWeight(2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_0)
@@ -75,7 +82,8 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.ABANDONED_MINESHAFT))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.SIMPLE_DUNGEON)))
                 .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1))
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.LUCK_BONUS_LEVEL_0)))
         );
 
@@ -86,7 +94,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_1)
-                                .setWeight(2))
+                                .setWeight(2)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(18, 0.5f))
+                                        .when(LootItemRandomChanceCondition.randomChance(0.4F))))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_1)
                                 .setWeight(2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_1)
@@ -107,7 +117,8 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.SIMPLE_DUNGEON)))
                 .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1))
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.LUCK_BONUS_LEVEL_1)))
         );
 
@@ -118,7 +129,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_2)
-                                .setWeight(2))
+                                .setWeight(2)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(25, 0.5f))
+                                        .when(LootItemRandomChanceCondition.randomChance(0.5F))))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_2)
                                 .setWeight(2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_2)
@@ -139,7 +152,8 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .when(LootItemRandomChanceCondition.randomChance(0.1f))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.JUNGLE_TEMPLE)))
                 .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1))
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.LUCK_BONUS_LEVEL_2)))
         );
 
@@ -150,7 +164,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_3))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_3)
-                                .setWeight(2))
+                                .setWeight(2)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(33, 0.5f))
+                                        .when(LootItemRandomChanceCondition.randomChance(0.6F))))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_3)
                                 .setWeight(2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_3)
@@ -174,7 +190,8 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CROSSING))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CORRIDOR)))
                 .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1))
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.LUCK_BONUS_LEVEL_3)))
         );
 
@@ -185,7 +202,9 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .setBonusRolls(UniformGenerator.between(1, 2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.BLOCKS_LEVEL_4))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_4)
-                                .setWeight(2))
+                                .setWeight(2)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(40, 0.5f))
+                                        .when(LootItemRandomChanceCondition.randomChance(0.7F))))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_4)
                                 .setWeight(2))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.SCRAP_LEVEL_4)
@@ -207,7 +226,8 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CROSSING))
                         .add(NestedLootTable.lootTableReference(BuiltInLootTables.STRONGHOLD_CORRIDOR)))
                 .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1))
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
                         .add(NestedLootTable.lootTableReference(ChestLootTableKeys.LUCK_BONUS_LEVEL_4)))
         );
 
@@ -313,6 +333,28 @@ public record ChestLootTables(HolderLookup.Provider registries) implements LootT
                         .add(LootItem.lootTableItem(Items.TRIDENT)
                                 .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, UniformGenerator.between(18, 22))))));
 
-        collector.accept(ChestLootTableKeys.TREASURE, LootTable.lootTable());
+        collector.accept(ChestLootTableKeys.TREASURE, LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .name("Treasure Chest")
+                        .setRolls(BinomialDistributionGenerator.binomial(30, 0.25f))
+                        .setBonusRolls(ConstantValue.exactly(3))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.VALUABLES_LEVEL_4)
+                                .setWeight(2)
+                                .setQuality(2))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.EQUIPMENT_LEVEL_4)
+                                .setWeight(2)
+                                .setQuality(1)
+                                .apply(EnchantWithLevelsFunction.enchantWithLevels(registries, BinomialDistributionGenerator.binomial(50, 0.5f))
+                                        .fromOptions(enchantments.getOrThrow(EnchantmentTags.ON_RANDOM_LOOT))))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.FOOD_LEVEL_4))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Potion.LEVEL_4))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.LUCK_BONUS_LEVEL_4)))
+                .withPool(LootPool.lootPool()
+                        .name("Treasure Chest: Super Luck Potion")
+                        .setRolls(ConstantValue.exactly(0))
+                        .setBonusRolls(ConstantValue.exactly(1))
+                        .when(LootItemRandomChanceCondition.randomChance(0.25f))
+                        .add(NestedLootTable.lootTableReference(ChestLootTableKeys.Potion.SUPER_LUCK_POTION)))
+        );
     }
 }

@@ -6,10 +6,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:leather_leggings"
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:chainmail_leggings"
         },
         {
@@ -26,7 +22,7 @@
           "type": "minecraft:item",
           "name": "minecraft:diamond_leggings",
           "quality": 2,
-          "weight": 2
+          "weight": 3
         }
       ],
       "name": "Leggings: Level 4",

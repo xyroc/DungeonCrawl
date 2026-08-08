@@ -1,4 +1,69 @@
 {
   "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 3.0,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "quality": 2,
+          "value": "dungeoncrawl:chest/content/valuables/level_4",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:binomial",
+                "n": 50.0,
+                "p": 0.5
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "quality": 1,
+          "value": "dungeoncrawl:chest/content/equipment/level_4",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/food/level_4"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/potion/level_4"
+        },
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/luck_bonus/level_4"
+        }
+      ],
+      "name": "Treasure Chest",
+      "rolls": {
+        "type": "minecraft:binomial",
+        "n": 30.0,
+        "p": 0.25
+      }
+    },
+    {
+      "bonus_rolls": 1.0,
+      "conditions": [
+        {
+          "chance": 0.25,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "value": "dungeoncrawl:chest/content/potion/item/super_luck_potion"
+        }
+      ],
+      "name": "Treasure Chest: Super Luck Potion",
+      "rolls": 0.0
+    }
+  ],
   "random_sequence": "dungeoncrawl:chest/treasure"
 }

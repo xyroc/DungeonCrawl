@@ -2,7 +2,7 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "bonus_rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -67,7 +67,7 @@
         }
       ],
       "name": "Level 1 Chest: Lucky Bonus",
-      "rolls": 0.0
+      "rolls": 1.0
     }
   ],
   "random_sequence": "dungeoncrawl:chest/content/luck_bonus/level_1"

@@ -6,10 +6,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:leather_chestplate"
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:chainmail_chestplate"
         },
         {
@@ -26,7 +22,7 @@
           "type": "minecraft:item",
           "name": "minecraft:diamond_chestplate",
           "quality": 2,
-          "weight": 2
+          "weight": 3
         }
       ],
       "name": "Chestplate: Level 4",

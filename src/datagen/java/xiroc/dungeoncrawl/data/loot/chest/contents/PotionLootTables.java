@@ -258,6 +258,19 @@ public record PotionLootTables(HolderLookup.Provider registries) implements Loot
                                 .build())))
         );
 
+        collector.accept(ChestLootTableKeys.Potion.SUPER_LUCK_POTION, LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.POTION)
+                                .apply(SetComponentsFunction.setComponent(DataComponents.POTION_CONTENTS, new PotionContents(
+                                        Optional.empty(),
+                                        Optional.empty(),
+                                        List.of(new MobEffectInstance(MobEffects.LUCK, 30 * TICKS_PER_SECOND, 2))
+                                )))
+                                .apply(SetComponentsFunction.setComponent(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true))
+                                .apply(SetNameFunction.setName(Component.translatableWithFallback("item.dungeoncrawl.potion.super_luck", "Super Luck Potion"), SetNameFunction.Target.ITEM_NAME))))
+        );
+
         collector.accept(ChestLootTableKeys.Potion.ABSINTHE, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))

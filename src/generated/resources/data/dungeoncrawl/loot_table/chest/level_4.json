@@ -14,6 +14,23 @@
         },
         {
           "type": "minecraft:loot_table",
+          "functions": [
+            {
+              "conditions": [
+                {
+                  "chance": 0.7,
+                  "condition": "minecraft:random_chance"
+                }
+              ],
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:binomial",
+                "n": 40.0,
+                "p": 0.5
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
           "value": "dungeoncrawl:chest/content/equipment/level_4",
           "weight": 2
         },
@@ -88,14 +105,14 @@
       "rolls": 1.0
     },
     {
-      "bonus_rolls": 0.0,
+      "bonus_rolls": 1.0,
       "entries": [
         {
           "type": "minecraft:loot_table",
           "value": "dungeoncrawl:chest/content/luck_bonus/level_4"
         }
       ],
-      "rolls": 1.0
+      "rolls": 0.0
     }
   ],
   "random_sequence": "dungeoncrawl:chest/level_4"

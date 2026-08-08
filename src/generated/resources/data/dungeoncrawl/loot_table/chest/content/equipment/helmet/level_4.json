@@ -6,10 +6,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:leather_helmet"
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:chainmail_helmet"
         },
         {
@@ -26,7 +22,7 @@
           "type": "minecraft:item",
           "name": "minecraft:diamond_helmet",
           "quality": 2,
-          "weight": 2
+          "weight": 3
         }
       ],
       "name": "Helmet: Level 4",

@@ -45,7 +45,7 @@ public class Config {
         EXTENDED_DEBUG = BUILDER
                 .comment(SEPARATOR_LINE +
                         " Enables extended debug logging to help detecting errors. Enabled by default.\n")
-                .define("extended_debug", true);
+                .define("extended_debug", false);
         BUILDER.pop();
 
         BUILDER.push("World Generation");

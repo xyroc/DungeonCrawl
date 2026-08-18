@@ -96,6 +96,36 @@ public interface SpawnerEntityTypes {
                         .build()))
                 .build());
 
+        context.register(SpawnerEntityTypeKeys.DROWNED_LEVEL_0, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.DROWNED))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_0))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_0))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.DROWNED_LEVEL_1, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.DROWNED))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_1))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_1))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.DROWNED_LEVEL_2, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.DROWNED))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_2))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_2))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.DROWNED_LEVEL_3, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.DROWNED))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_3))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_3))
+                .build());
+
+        context.register(SpawnerEntityTypeKeys.DROWNED_LEVEL_4, new SpawnerEntityType.Builder()
+                .entity(getKey(EntityType.DROWNED))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_4))
+                .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.ARMORED_LEVEL_4))
+                .build());
+
         context.register(SpawnerEntityTypeKeys.ZOMBIE_LEVEL_0, new SpawnerEntityType.Builder()
                 .entity(getKey(EntityType.ZOMBIE))
                 .properties(entityProfiles.getOrThrow(SpawnerEntityProfileKeys.MELEE_LEVEL_0))

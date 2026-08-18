@@ -14,6 +14,7 @@ import xiroc.dungeoncrawl.dungeon.monster.SpawnerType;
 import xiroc.dungeoncrawl.dungeon.type.SecretRoom;
 import xiroc.dungeoncrawl.dungeon.type.level.CorridorStyle;
 import xiroc.dungeoncrawl.dungeon.type.level.LevelType;
+import xiroc.dungeoncrawl.dungeon.type.level.SpecialRoom;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.util.random.value.Constant;
 import xiroc.dungeoncrawl.util.random.value.Range;
@@ -77,6 +78,13 @@ public interface LevelTypes {
                                         .add(blueprints.getOrThrow(BlueprintKeys.Corridor.Side.MASONRY))
                                         .build())
                                 .build()))
+                .specialRoom(new SpecialRoom(
+                        new IRandom.Builder<Holder<Blueprint>>()
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.POOL))
+                                .build(),
+                        new Constant(4),
+                        new Constant(1)
+                ))
                 .secretRoom(new SecretRoom.Builder()
                         .variants(new IRandom.Builder<Holder<Blueprint>>()
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.SMITHY))

@@ -1,0 +1,50 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:chest",
+      "chest": {},
+      "placement": {
+        "amount": {
+          "max": 3,
+          "min": 1
+        },
+        "positions": "dungeoncrawl:feature/chest"
+      }
+    },
+    {
+      "type": "dungeoncrawl:spawner",
+      "placement": {
+        "amount": {
+          "max": 2,
+          "min": 1
+        },
+        "positions": "dungeoncrawl:feature/spawner"
+      },
+      "spawner": {
+        "type": {
+          "0": [
+            "dungeoncrawl:drowned/level_0"
+          ],
+          "1": [
+            "dungeoncrawl:drowned/level_1"
+          ],
+          "2": [
+            "dungeoncrawl:drowned/level_2"
+          ],
+          "3": [
+            "dungeoncrawl:drowned/level_3"
+          ],
+          "4": [
+            "dungeoncrawl:drowned/level_4"
+          ]
+        }
+      }
+    }
+  ],
+  "placement_settings": {
+    "minecraft:water": {
+      "fill_air": true
+    }
+  },
+  "template": "dungeoncrawl:room/pool"
+}

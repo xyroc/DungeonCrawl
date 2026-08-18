@@ -243,6 +243,35 @@ public interface RoomBlueprints {
                         new SpawnerSettings(Optional.empty())))
                 .build()));
 
+        context.register(BlueprintKeys.Room.POOL, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.POOL)
+                .feature(new ChestFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/chest")), new Range(1, 3)),
+                        new ChestSettings(Optional.empty()))
+                )
+                .feature(new SpawnerFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("feature/spawner")), new Range(1, 2)),
+                        new SpawnerSettings(Optional.of(new TieredResource.Builder<>(
+                                IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.DROWNED_LEVEL_0))
+                                        .build())
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.DROWNED_LEVEL_1))
+                                        .build(), 1)
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.DROWNED_LEVEL_2))
+                                        .build(), 2)
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.DROWNED_LEVEL_3))
+                                        .build(), 3)
+                                .tier(IRandom.<Holder<SpawnerType>>builder()
+                                        .add(spawnerTypes.getOrThrow(SpawnerTypeKeys.DROWNED_LEVEL_4))
+                                        .build(), 4)
+                                .build())))
+                )
+                .configureBlock(Blocks.WATER, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .build()));
+
         context.register(BlueprintKeys.Room.POTION_LAB, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Room.POTION_LAB)
                 .multipart(new BlueprintMultipart(

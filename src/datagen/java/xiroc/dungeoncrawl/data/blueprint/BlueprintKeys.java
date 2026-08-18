@@ -20,6 +20,7 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> ENIKO = key(TemplateKeys.Room.ENIKO);
         ResourceKey<Blueprint> FORT = key(TemplateKeys.Room.FORT);
         ResourceKey<Blueprint> LIBRARY = key(TemplateKeys.Room.LIBRARY);
+        ResourceKey<Blueprint>  POOL = key(TemplateKeys.Room.POOL);
         ResourceKey<Blueprint> POTION_LAB = key(TemplateKeys.Room.POTION_LAB);
         ResourceKey<Blueprint> SARCOPHAGUS = key(TemplateKeys.Room.SARCOPHAGUS);
         ResourceKey<Blueprint> SMITHY = key(TemplateKeys.Room.SMITHY);

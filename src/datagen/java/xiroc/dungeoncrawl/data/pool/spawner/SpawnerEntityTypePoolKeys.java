@@ -22,6 +22,13 @@ public interface SpawnerEntityTypePoolKeys {
     ResourceKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_3 = key(DataGen.resourceLevel(__CAVE_SPIDER__, 3));
     ResourceKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_4 = key(DataGen.resourceLevel(__CAVE_SPIDER__, 4));
 
+    ResourceLocation __DROWNED__ = DataGen.resource("drowned");
+    ResourceKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_0 = key(DataGen.resourceLevel(__DROWNED__, 0));
+    ResourceKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_1 = key(DataGen.resourceLevel(__DROWNED__, 1));
+    ResourceKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_2 = key(DataGen.resourceLevel(__DROWNED__, 2));
+    ResourceKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_3 = key(DataGen.resourceLevel(__DROWNED__, 3));
+    ResourceKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_4 = key(DataGen.resourceLevel(__DROWNED__, 4));
+
     private static ResourceKey<IRandom<Holder<SpawnerEntityType>>> key(ResourceLocation identifier) {
         return ResourceKey.create(DatapackRegistries.SPAWNER_ENTITY_TYPE_POOLS, identifier);
     }

@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "pools": "#dungeoncrawl:drowned/level_4"
+  },
+  "initial_spawn_delay": {
+    "max": 10,
+    "min": 0
+  },
+  "max_light_level": {
+    "sky_light_limit": [
+      0,
+      10
+    ]
+  },
+  "spawn_amount": {
+    "max": 3,
+    "min": 1
+  },
+  "spawn_delay": {
+    "max": 195,
+    "min": 98
+  }
+}

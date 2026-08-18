@@ -98,5 +98,45 @@ public interface SpawnerTypes {
                 .spawnDelay(new Range(0, 10), new Range(minSpawnDelay.atStep(4), maxSpawnDelay.atStep(4)))
                 .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 15), new InclusiveRange<>(0, 10)))
                 .build());
+
+        context.register(SpawnerTypeKeys.DROWNED_LEVEL_0, new SpawnerType.Builder()
+                .entities(IRandom.<Holder<SpawnerEntityType>>builder()
+                        .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.DROWNED_LEVEL_0)))
+                .spawnAmount(new Range(1, 2))
+                .spawnDelay(new Range(5, 10), new Range(minSpawnDelay.atStep(0), maxSpawnDelay.atStep(0)))
+                .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 15), new InclusiveRange<>(0, 10)))
+                .build());
+
+        context.register(SpawnerTypeKeys.DROWNED_LEVEL_1, new SpawnerType.Builder()
+                .entities(IRandom.<Holder<SpawnerEntityType>>builder()
+                        .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.DROWNED_LEVEL_1)))
+                .spawnAmount(new Range(1, 2))
+                .spawnDelay(new Range(0, 10), new Range(minSpawnDelay.atStep(1), maxSpawnDelay.atStep(1)))
+                .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 15), new InclusiveRange<>(0, 10)))
+                .build());
+
+        context.register(SpawnerTypeKeys.DROWNED_LEVEL_2, new SpawnerType.Builder()
+                .entities(IRandom.<Holder<SpawnerEntityType>>builder()
+                        .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.DROWNED_LEVEL_2)))
+                .spawnAmount(new Range(1, 3))
+                .spawnDelay(new Range(0, 10), new Range(minSpawnDelay.atStep(2), maxSpawnDelay.atStep(2)))
+                .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 15), new InclusiveRange<>(0, 10)))
+                .build());
+
+        context.register(SpawnerTypeKeys.DROWNED_LEVEL_3, new SpawnerType.Builder()
+                .entities(IRandom.<Holder<SpawnerEntityType>>builder()
+                        .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.DROWNED_LEVEL_3)))
+                .spawnAmount(new Range(1, 3))
+                .spawnDelay(new Range(0, 10), new Range(minSpawnDelay.atStep(3), maxSpawnDelay.atStep(3)))
+                .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 15), new InclusiveRange<>(0, 10)))
+                .build());
+
+        context.register(SpawnerTypeKeys.DROWNED_LEVEL_4, new SpawnerType.Builder()
+                .entities(IRandom.<Holder<SpawnerEntityType>>builder()
+                        .setPools(spawnerEntityTypePools.getOrThrow(SpawnerEntityTypePoolTags.DROWNED_LEVEL_4)))
+                .spawnAmount(new Range(1, 3))
+                .spawnDelay(new Range(0, 10), new Range(minSpawnDelay.atStep(4), maxSpawnDelay.atStep(4)))
+                .spawnRules(new SpawnData.CustomSpawnRules(new InclusiveRange<>(0, 15), new InclusiveRange<>(0, 10)))
+                .build());
     }
 }

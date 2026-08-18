@@ -97,5 +97,14 @@
   },
   "spawner_types": {
     "pools": "#dungeoncrawl:level_0"
-  }
+  },
+  "special_rooms": [
+    {
+      "amount": 1,
+      "min_depth": 4,
+      "variants": [
+        "dungeoncrawl:room/pool"
+      ]
+    }
+  ]
 }

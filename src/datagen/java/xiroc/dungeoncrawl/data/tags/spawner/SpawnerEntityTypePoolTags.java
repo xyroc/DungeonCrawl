@@ -34,6 +34,12 @@ public class SpawnerEntityTypePoolTags extends TagsProvider<IRandom<Holder<Spawn
     public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_3 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_3);
     public static final TagKey<IRandom<Holder<SpawnerEntityType>>> CAVE_SPIDER_LEVEL_4 = key(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4);
 
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_0 = key(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_0);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_1 = key(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_1);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_2 = key(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_2);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_3 = key(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_3);
+    public static final TagKey<IRandom<Holder<SpawnerEntityType>>> DROWNED_LEVEL_4 = key(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_4);
+
     private static TagKey<IRandom<Holder<SpawnerEntityType>>> key(ResourceKey<?> key) {
         return key(key.location());
     }
@@ -65,5 +71,16 @@ public class SpawnerEntityTypePoolTags extends TagsProvider<IRandom<Holder<Spawn
                 .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_3);
         tag(CAVE_SPIDER_LEVEL_4)
                 .add(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4);
+
+        tag(DROWNED_LEVEL_0)
+                .add(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_0);
+        tag(DROWNED_LEVEL_1)
+                .add(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_1);
+        tag(DROWNED_LEVEL_2)
+                .add(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_2);
+        tag(DROWNED_LEVEL_3)
+                .add(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_3);
+        tag(DROWNED_LEVEL_4)
+                .add(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_4);
     }
 }

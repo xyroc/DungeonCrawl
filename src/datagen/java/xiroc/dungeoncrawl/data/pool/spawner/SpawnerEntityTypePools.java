@@ -60,5 +60,25 @@ public interface SpawnerEntityTypePools {
         context.register(SpawnerEntityTypePoolKeys.CAVE_SPIDER_LEVEL_4, IRandom.<Holder<SpawnerEntityType>>builder()
                 .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.CAVE_SPIDER_LEVEL_4))
                 .build());
+
+        context.register(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_0, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.DROWNED_LEVEL_0))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_1, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.DROWNED_LEVEL_1))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_2, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.DROWNED_LEVEL_2))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_3, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.DROWNED_LEVEL_3))
+                .build());
+
+        context.register(SpawnerEntityTypePoolKeys.DROWNED_LEVEL_4, IRandom.<Holder<SpawnerEntityType>>builder()
+                .add(spawnerEntities.getOrThrow(SpawnerEntityTypeKeys.DROWNED_LEVEL_4))
+                .build());
     }
 }

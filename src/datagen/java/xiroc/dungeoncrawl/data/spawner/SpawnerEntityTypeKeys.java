@@ -14,6 +14,13 @@ public interface SpawnerEntityTypeKeys {
     ResourceKey<SpawnerEntityType> CAVE_SPIDER_LEVEL_3 = key(DataGen.resourceLevel(__CAVE_SPIDER__, 3));
     ResourceKey<SpawnerEntityType> CAVE_SPIDER_LEVEL_4 = key(DataGen.resourceLevel(__CAVE_SPIDER__, 4));
 
+    ResourceLocation __DROWNED__ = DataGen.resource("drowned");
+    ResourceKey<SpawnerEntityType> DROWNED_LEVEL_0 = key(DataGen.resourceLevel(__DROWNED__, 0));
+    ResourceKey<SpawnerEntityType> DROWNED_LEVEL_1 = key(DataGen.resourceLevel(__DROWNED__, 1));
+    ResourceKey<SpawnerEntityType> DROWNED_LEVEL_2 = key(DataGen.resourceLevel(__DROWNED__, 2));
+    ResourceKey<SpawnerEntityType> DROWNED_LEVEL_3 = key(DataGen.resourceLevel(__DROWNED__, 3));
+    ResourceKey<SpawnerEntityType> DROWNED_LEVEL_4 = key(DataGen.resourceLevel(__DROWNED__, 4));
+
     ResourceLocation __ZOMBIE__ = DataGen.resource("zombie");
     ResourceKey<SpawnerEntityType> ZOMBIE_LEVEL_0 = key(DataGen.resourceLevel(__ZOMBIE__, 0));
     ResourceKey<SpawnerEntityType> ZOMBIE_LEVEL_1 = key(DataGen.resourceLevel(__ZOMBIE__, 1));

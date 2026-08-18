@@ -3,6 +3,7 @@ package xiroc.dungeoncrawl.dungeon.component.feature;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -32,17 +33,31 @@ public record FlowerPotComponent(BlockPos position, Block soil, Block flower) im
 
     @Override
     public void generate(LevelAccessor level, BoundingBox worldGenBounds, RandomSource random, DungeonWorldGenContext worldGenContext) {
-        SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().value();
-        WorldEditor.placeBlock(level, soil.defaultBlockState(), position, worldGenBounds, true, true, false);
+        if (!worldGenBounds.isInside(position)) {
+            return;
+        }
+
+        BlockPos belowSoil = position.below();
+        // Only generate when there is a proper supporting block below
+        if (!level.getBlockState(belowSoil).isFaceSturdy(level, belowSoil, Direction.UP)) {
+            return;
+        }
+
+        WorldEditor.Unsafe.placeBlock(level, position, soil.defaultBlockState(), true, true, false);
+
         BlockState flowerState = flower.defaultBlockState();
-        if (flowerState.canSurvive(level, position.above())) {
+        BlockPos flowerBasePos = position.above();
+
+        if (worldGenBounds.isInside(flowerBasePos) && flowerState.canSurvive(level, position.above())) {
             if (isDoublePlant()) {
-                WorldEditor.placeBlock(level, DungeonBlocks.applyProperty(flowerState, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), position.above(), worldGenBounds, true, true, false);
-                WorldEditor.placeBlock(level, DungeonBlocks.applyProperty(flowerState, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), position.above(2), worldGenBounds, true, true, false);
+                WorldEditor.placeBlock(level, DungeonBlocks.applyProperty(flowerState, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER), flowerBasePos, worldGenBounds, true, true, false);
+                WorldEditor.placeBlock(level, DungeonBlocks.applyProperty(flowerState, BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), flowerBasePos.above(), worldGenBounds, true, true, false);
             } else {
                 WorldEditor.placeBlock(level, flowerState, position.above(), worldGenBounds, true, true, false);
             }
         }
+
+        SecondaryTheme secondaryTheme = worldGenContext.secondaryTheme().value();
         WorldEditor.placeBlock(level, DungeonBlocks.TRAPDOOR_OPEN_NORTH.attach(secondaryTheme.trapDoor()), position.north(), worldGenBounds, random, true, false, false);
         WorldEditor.placeBlock(level, DungeonBlocks.TRAPDOOR_OPEN_EAST.attach(secondaryTheme.trapDoor()), position.east(), worldGenBounds, random, true, false, false);
         WorldEditor.placeBlock(level, DungeonBlocks.TRAPDOOR_OPEN_SOUTH.attach(secondaryTheme.trapDoor()), position.south(), worldGenBounds, random, true, false, false);

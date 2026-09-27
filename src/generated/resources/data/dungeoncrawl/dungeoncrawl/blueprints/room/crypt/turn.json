@@ -1,31 +1,34 @@
 {
-  "entrance_types": {
-    "dungeoncrawl:entrance/left": {
-      "type": "hybrid",
-      "custom_parts": {
-        "closed": [
-          "dungeoncrawl:part/entrance/closed/5x9"
-        ],
-        "cluster_open": [
-          "dungeoncrawl:part/crypt/entrance/cluster_open_left"
-        ],
-        "open": [
-          "dungeoncrawl:part/crypt/entrance/open"
-        ]
-      }
-    },
-    "dungeoncrawl:entrance/right": {
-      "type": "hybrid",
-      "custom_parts": {
-        "closed": [
-          "dungeoncrawl:part/entrance/closed/5x9"
-        ],
-        "cluster_open": [
-          "dungeoncrawl:part/crypt/entrance/cluster_open_right"
-        ],
-        "open": [
-          "dungeoncrawl:part/crypt/entrance/open"
-        ]
+  "assembly": {
+    "type": "dungeoncrawl:default",
+    "entrance_types": {
+      "dungeoncrawl:entrance/left": {
+        "type": "hybrid",
+        "custom_parts": {
+          "closed": [
+            "dungeoncrawl:part/entrance/closed/5x9"
+          ],
+          "cluster_open": [
+            "dungeoncrawl:part/crypt/entrance/cluster_open_left"
+          ],
+          "open": [
+            "dungeoncrawl:part/crypt/entrance/open"
+          ]
+        }
+      },
+      "dungeoncrawl:entrance/right": {
+        "type": "hybrid",
+        "custom_parts": {
+          "closed": [
+            "dungeoncrawl:part/entrance/closed/5x9"
+          ],
+          "cluster_open": [
+            "dungeoncrawl:part/crypt/entrance/cluster_open_right"
+          ],
+          "open": [
+            "dungeoncrawl:part/crypt/entrance/open"
+          ]
+        }
       }
     }
   },

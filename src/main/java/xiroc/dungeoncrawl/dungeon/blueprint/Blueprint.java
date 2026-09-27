@@ -15,6 +15,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
+import xiroc.dungeoncrawl.dungeon.blueprint.assembly.type.AssemblyType;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockColumn;
@@ -47,9 +48,7 @@ public class Blueprint {
     protected Vec3i size;
     protected List<TemplateBlockColumn> blockColumns;
     protected Map<ResourceLocation, List<Anchor>> anchors;
-    protected List<Entrance> entrances;
-    protected List<Entrance> hybridEntrances;
-    protected List<Entrance> clusterEntrances;
+    protected AssemblyType assemblyType;
 
     public Blueprint(BlueprintConfiguration configuration) {
         this.configuration = configuration;
@@ -130,16 +129,8 @@ public class Blueprint {
         return this.configuration.parts;
     }
 
-    public List<Entrance> entrances() {
-        return this.entrances;
-    }
-
-    public List<Entrance> hybridEntrances() {
-        return this.hybridEntrances;
-    }
-
-    public List<Entrance> clusterEntrances() {
-        return clusterEntrances;
+    public AssemblyType assemblyType() {
+        return this.assemblyType;
     }
 
     public BoundingBoxBuilder boundingBox(Rotation rotation) {

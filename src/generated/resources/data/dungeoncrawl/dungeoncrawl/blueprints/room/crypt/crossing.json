@@ -1,17 +1,20 @@
 {
-  "entrance_types": {
-    "dungeoncrawl:entrance": {
-      "type": "hybrid",
-      "custom_parts": {
-        "closed": [
-          "dungeoncrawl:part/entrance/closed/5x5"
-        ],
-        "cluster_open": [
-          "dungeoncrawl:part/crypt/entrance/cluster_open"
-        ],
-        "open": [
-          "dungeoncrawl:part/crypt/entrance/open"
-        ]
+  "assembly": {
+    "type": "dungeoncrawl:default",
+    "entrance_types": {
+      "dungeoncrawl:entrance": {
+        "type": "hybrid",
+        "custom_parts": {
+          "closed": [
+            "dungeoncrawl:part/entrance/closed/5x5"
+          ],
+          "cluster_open": [
+            "dungeoncrawl:part/crypt/entrance/cluster_open"
+          ],
+          "open": [
+            "dungeoncrawl:part/crypt/entrance/open"
+          ]
+        }
       }
     }
   },

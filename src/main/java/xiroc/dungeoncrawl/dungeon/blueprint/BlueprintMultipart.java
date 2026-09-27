@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Rotation;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
@@ -64,7 +65,7 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blu
         for (Anchor anchor : anchors) {
             anchor = parentCoordinateSpace.rotateAndTranslateToOrigin(anchor, parent.rotation());
             try {
-                if (!addPart(anchor, variants, piece, parent, levelGenerator, depth)) {
+                if (addPart(anchor, variants, piece, parent, levelGenerator, depth) == null) {
                     return true;
                 }
             } catch (ExceededMultipartDepthException exception) {
@@ -81,30 +82,35 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blu
         return false;
     }
 
-    public static void addPart(Anchor anchor, IRandom<Holder<Blueprint>> parts, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator) {
+    @Nullable
+    public static BlueprintComponent addPart(Anchor anchor, IRandom<Holder<Blueprint>> parts, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator) {
         try {
-            addPart(anchor, parts, piece, parent, levelGenerator, 0);
+            return addPart(anchor, parts, piece, parent, levelGenerator, 0);
         } catch (ExceededMultipartDepthException e) {
             warnAboutDepthLimitExcession(e);
         }
+        return null;
     }
 
-    private static boolean addPart(Anchor anchor, IRandom<Holder<Blueprint>> parts, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator, int depth) {
+    @Nullable
+    private static BlueprintComponent addPart(Anchor anchor, IRandom<Holder<Blueprint>> parts, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator, int depth) {
         for (int attempt = 0; attempt < 4; ++attempt) {
             Holder<Blueprint> part = parts.roll(levelGenerator.random);
-            if (addPart(anchor, part, piece, parent, levelGenerator, depth)) {
-                return true;
+            BlueprintComponent component = addPart(anchor, part, piece, parent, levelGenerator, depth);
+            if (component != null) {
+                return component;
             }
         }
-        return false;
+        return null;
     }
 
-    private static boolean addPart(Anchor anchor, Holder<Blueprint> part, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator, int depth) {
+    @Nullable
+    private static BlueprintComponent addPart(Anchor anchor, Holder<Blueprint> part, BlueprintPiece piece, BlueprintComponent parent, LevelGenerator levelGenerator, int depth) {
         BoundingBoxBuilder parentBox = parent.boundingBox();
         Blueprint blueprint = part.value();
         var junctures = blueprint.anchors().get(BuiltinAnchorTypes.JUNCTURE);
         if (junctures == null || junctures.isEmpty()) {
-            return false;
+            return null;
         }
         boolean horizontalAnchor = anchor.direction().getAxis().isHorizontal();
         for (int attempt = 0; attempt < junctures.size(); ++attempt) {
@@ -125,17 +131,21 @@ public record BlueprintMultipart(ResourceLocation anchorType, IRandom<Holder<Blu
                 continue;
             }
             BlueprintComponent component = new BlueprintComponent(part, pos, rotation);
-            piece.addComponent(component);
-            blueprint.populateFeatures(levelGenerator, pos, rotation, piece::addComponent);
-            for (var subPart : blueprint.parts()) {
-                if (subPart.addParts(piece, component, levelGenerator, depth + 1)) {
-                    return false;
-                }
-            }
-            return true;
+            addBlueprintPart(piece, component, levelGenerator, depth);
+            return component;
         }
-        return false;
+        return null;
     }
+
+    public static void addBlueprintPart(BlueprintPiece piece, BlueprintComponent part, LevelGenerator levelGenerator, int depth) {
+        piece.addComponent(part);
+        Blueprint partBlueprint = part.blueprint().value();
+        partBlueprint.populateFeatures(levelGenerator, part.position(), part.rotation(), piece::addComponent);
+        for (var subPart : partBlueprint.parts()) {
+            subPart.addParts(piece, part, levelGenerator, depth + 1);
+        }
+    }
+
 
     /**
      * Reconstructs the chain of blueprints that was populated from the chain of exceptions and prints a warning about it.

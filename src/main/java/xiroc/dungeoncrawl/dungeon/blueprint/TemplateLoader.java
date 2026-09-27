@@ -22,6 +22,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import xiroc.dungeoncrawl.DungeonCrawl;
 import xiroc.dungeoncrawl.dungeon.block.MetaBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
+import xiroc.dungeoncrawl.dungeon.blueprint.assembly.type.AssemblyTypeBuilder;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockColumn;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.TemplateBlockType;
@@ -63,11 +64,9 @@ public interface TemplateLoader {
         StructureTemplateAccessor accessor = (StructureTemplateAccessor) template.get();
 
         HashMap<ResourceLocation, ImmutableList.Builder<Anchor>> anchors = new HashMap<>();
-        ImmutableList.Builder<Entrance> entrances = ImmutableList.builder();
-        ImmutableList.Builder<Entrance> hybridEntrances = ImmutableList.builder();
-        ImmutableList.Builder<Entrance> clusterEntrances = ImmutableList.builder();
-
         Map<Integer, TemplateBlockColumn.Builder> blockColumns = new HashMap<>();
+
+        AssemblyTypeBuilder assemblyTypeBuilder = configuration.assemblyConfig.makeTypeBuilder();
 
         accessor.palettes().getFirst().blocks().forEach((info) -> loadBlock(configuration, info, block -> {
             int x = block.position().getX();
@@ -77,14 +76,7 @@ public interface TemplateLoader {
             blockColumns.computeIfAbsent(columnId, ignored -> new TemplateBlockColumn.Builder(x, z)).addBlock(block);
         }, (anchorType, anchor) -> {
             anchors.computeIfAbsent(anchorType, (k) -> ImmutableList.builder()).add(anchor);
-            var entranceType = configuration.entranceTypes.get(anchorType);
-            if (entranceType != null) {
-                switch (entranceType.type()) {
-                    case NORMAL -> entrances.add(entranceType.make(anchor));
-                    case HYBRID -> hybridEntrances.add(entranceType.make(anchor));
-                    case CLUSTER ->  clusterEntrances.add(entranceType.make(anchor));
-                }
-            }
+            assemblyTypeBuilder.noteAnchor(anchorType, anchor);
         }));
 
         ImmutableMap.Builder<ResourceLocation, List<Anchor>> immutableAnchors = ImmutableMap.builder();
@@ -93,9 +85,7 @@ public interface TemplateLoader {
         blueprint.size = template.get().getSize();
         blueprint.blockColumns = blockColumns.values().stream().map(TemplateBlockColumn.Builder::build).toList();
         blueprint.anchors = immutableAnchors.build();
-        blueprint.entrances = entrances.build();
-        blueprint.hybridEntrances = hybridEntrances.build();
-        blueprint.clusterEntrances = clusterEntrances.build();
+        blueprint.assemblyType = assemblyTypeBuilder.buildAssemblyType(blueprint);
     }
 
     private static Optional<StructureTemplate> loadTemplate(ResourceManager resourceManager, ResourceLocation key) {

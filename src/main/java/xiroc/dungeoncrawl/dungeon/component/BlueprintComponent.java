@@ -9,6 +9,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
+import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.storage.GlobalCodecs;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
@@ -33,5 +34,9 @@ public record BlueprintComponent(Holder<Blueprint> blueprint, BlockPos position,
     @Override
     public MapCodec<? extends DungeonComponent> codec() {
         return CODEC;
+    }
+
+    public CoordinateSpace coordinateSpace() {
+        return blueprint.value().coordinateSpace(position);
     }
 }

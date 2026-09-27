@@ -1,15 +1,18 @@
 {
-  "entrance_types": {
-    "dungeoncrawl:entrance": {
-      "custom_parts": {
-        "closed": [
-          "dungeoncrawl:part/floor/3x3/masonry"
-        ],
-        "open": [
-          "dungeoncrawl:part/floor/3x3/solid"
-        ]
-      },
-      "decoration": "primary"
+  "assembly": {
+    "type": "dungeoncrawl:default",
+    "entrance_types": {
+      "dungeoncrawl:entrance": {
+        "custom_parts": {
+          "closed": [
+            "dungeoncrawl:part/floor/3x3/masonry"
+          ],
+          "open": [
+            "dungeoncrawl:part/floor/3x3/solid"
+          ]
+        },
+        "decoration": "primary"
+      }
     }
   },
   "features": [

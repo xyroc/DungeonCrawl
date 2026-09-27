@@ -11,6 +11,7 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.Orientation;
 
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 public record Anchor(BlockPos position, Direction direction) {
@@ -29,7 +30,7 @@ public record Anchor(BlockPos position, Direction direction) {
     }
 
     /**
-     * Assuming the {@link Blueprint} {@code parent} is holding this anchor, this method calculates the position and rotation it must be placed at so that this
+     * Assuming the {@link Blueprint} {@code parent} is holding this anchor, this method calculates the position and rotation the blueprint must be placed at so that this
      * {@link Anchor} ends up in opposition to the provided {@link Anchor} {@code anchor}.
      *
      * @param anchor the anchor to attach this anchor to.
@@ -41,5 +42,17 @@ public record Anchor(BlockPos position, Direction direction) {
         Vec3i offset = CoordinateSpace.rotate(this.position, rotation, parent.xSpan(), parent.zSpan());
         BlockPos.MutableBlockPos position = anchor.position.mutable().move(anchor.direction).move(-offset.getX(), -offset.getY(), -offset.getZ());
         return new Pair<>(position, rotation);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Anchor anchor = (Anchor) o;
+        return direction == anchor.direction && Objects.equals(position, anchor.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, direction);
     }
 }

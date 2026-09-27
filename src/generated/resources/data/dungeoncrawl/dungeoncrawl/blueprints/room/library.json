@@ -1,14 +1,17 @@
 {
-  "entrance_types": {
-    "dungeoncrawl:entrance": {
-      "custom_parts": {
-        "closed": [
-          "dungeoncrawl:room/library/desk",
-          "dungeoncrawl:room/library/flowers"
-        ],
-        "open": [
-          "dungeoncrawl:room/library/entrance"
-        ]
+  "assembly": {
+    "type": "dungeoncrawl:default",
+    "entrance_types": {
+      "dungeoncrawl:entrance": {
+        "custom_parts": {
+          "closed": [
+            "dungeoncrawl:room/library/desk",
+            "dungeoncrawl:room/library/flowers"
+          ],
+          "open": [
+            "dungeoncrawl:room/library/entrance"
+          ]
+        }
       }
     }
   },

@@ -12,8 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
+import xiroc.dungeoncrawl.dungeon.blueprint.EntranceContainer;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.component.EntranceComponent;
+import xiroc.dungeoncrawl.dungeon.blueprint.assembly.context.AssemblyContext;
+import xiroc.dungeoncrawl.dungeon.blueprint.assembly.type.AssemblyType;
+import xiroc.dungeoncrawl.dungeon.component.BlueprintComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.GeneratorContext;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.dungeon.piece.BlueprintPiece;
@@ -31,6 +34,7 @@ public class NodeElement extends DungeonElement {
     private final BlueprintPiece piece;
     private final GeneratorContext context;
     private final CoordinateSpace coordinateSpace;
+    private final AssemblyContext assemblyContext;
 
     public final int depth;
 
@@ -57,18 +61,24 @@ public class NodeElement extends DungeonElement {
         final Blueprint blueprint = piece.base.blueprint().value();
         this.coordinateSpace = blueprint.coordinateSpace(piece.base.position());
         this.depth = depth;
+
+        AssemblyType assemblyType = blueprint.assemblyType();
+        this.assemblyContext = assemblyType.createContext();
+
+        EntranceContainer entrances = assemblyType.entrances();
+
         if (normalEntrances != null && clusterEntrances != null) {
             this.normalEntrances = normalEntrances;
             this.clusterEntrances = clusterEntrances;
         } else if (normalEntrances == null && clusterEntrances == null) {
-            final var hybridEntrances = new ArrayList<>(blueprint.hybridEntrances());
-            this.normalEntrances = new EntranceChooser(new ArrayList<>(blueprint.entrances()), hybridEntrances);
-            this.clusterEntrances = new EntranceChooser(new ArrayList<>(blueprint.clusterEntrances()), hybridEntrances);
+            final var hybridEntrances = new ArrayList<>(entrances.hybridEntrances());
+            this.normalEntrances = new EntranceChooser(new ArrayList<>(entrances.normalEntrances()), hybridEntrances);
+            this.clusterEntrances = new EntranceChooser(new ArrayList<>(entrances.clusterEntrances()), hybridEntrances);
         } else if (normalEntrances != null) {
             this.normalEntrances = normalEntrances;
-            this.clusterEntrances = new EntranceChooser(new ArrayList<>(blueprint.clusterEntrances()), normalEntrances.hybridEntrances);
+            this.clusterEntrances = new EntranceChooser(new ArrayList<>(entrances.clusterEntrances()), normalEntrances.hybridEntrances);
         } else {
-            this.normalEntrances = new EntranceChooser(new ArrayList<>(blueprint.entrances()), clusterEntrances.hybridEntrances);
+            this.normalEntrances = new EntranceChooser(new ArrayList<>(entrances.normalEntrances()), clusterEntrances.hybridEntrances);
             this.clusterEntrances = clusterEntrances;
         }
     }
@@ -194,17 +204,15 @@ public class NodeElement extends DungeonElement {
     }
 
     public void addEntrance(Anchor placement, Entrance entrance, boolean useClusterParts) {
-        EntranceComponent placedEntrance = entrance.place(placement);
-        if (placedEntrance != null) {
-            piece.addComponent(placedEntrance);
-        }
+        BlueprintComponent entrancePart = null;
         if (entrance.customParts() != null) {
             IRandom<Holder<Blueprint>> parts = useClusterParts
                     ? entrance.customParts().clusterOpen() != null ? entrance.customParts().clusterOpen() : entrance.customParts().open()
                     : entrance.customParts().open();
 
-            BlueprintMultipart.addPart(placement.opposite(), parts, piece, piece.base, context.levelGenerator());
+            entrancePart = BlueprintMultipart.addPart(placement.opposite(), parts, piece, piece.base, context.levelGenerator());
         }
+        assemblyContext.noteOpenEntrance(entrance, placement, entrancePart);
     }
 
     private void closeOffEntrances(Iterable<Entrance> entrances) {
@@ -223,6 +231,8 @@ public class NodeElement extends DungeonElement {
         // Clear hybrid entrances since they were already handled through the normal entrances.
         clusterEntrances.hybridEntrances.clear();
         closeOffEntrances(clusterEntrances);
+
+        assemblyContext.assemble(piece, context.levelGenerator());
         piece.updateBoundingBox();
         consumer.accept(piece);
     }
@@ -234,11 +244,13 @@ public class NodeElement extends DungeonElement {
     public record EntranceChooser(List<Entrance> entrances,
                                   List<Entrance> hybridEntrances) implements Iterable<Entrance> {
         public static EntranceChooser normalEntrances(Blueprint blueprint) {
-            return new EntranceChooser(new ArrayList<>(blueprint.entrances()), new ArrayList<>(blueprint.hybridEntrances()));
+            var entrances = blueprint.assemblyType().entrances();
+            return new EntranceChooser(new ArrayList<>(entrances.normalEntrances()), new ArrayList<>(entrances.hybridEntrances()));
         }
 
         public static EntranceChooser clusterEntrances(Blueprint blueprint) {
-            return new EntranceChooser(new ArrayList<>(blueprint.clusterEntrances()), new ArrayList<>(blueprint.hybridEntrances()));
+            var entrances = blueprint.assemblyType().entrances();
+            return new EntranceChooser(new ArrayList<>(entrances.clusterEntrances()), new ArrayList<>(entrances.hybridEntrances()));
         }
 
         public boolean isEmpty() {

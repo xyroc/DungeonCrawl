@@ -41,6 +41,21 @@ public interface Orientation {
     }
 
     /**
+     * Finds the inverse of a rotation.
+     *
+     * @param rotation The rotation to invert.
+     * @return The inverse rotation.
+     */
+    static Rotation inverseRotation(Rotation rotation) {
+        return switch (rotation) {
+            case NONE -> Rotation.NONE;
+            case CLOCKWISE_90 -> Rotation.COUNTERCLOCKWISE_90;
+            case CLOCKWISE_180 -> Rotation.CLOCKWISE_180;
+            case COUNTERCLOCKWISE_90 -> Rotation.CLOCKWISE_90;
+        };
+    }
+
+    /**
      * Determines the {@link Rotation} that must be applied to {@link Direction} {@code from} to end up at {@link Direction} {@code to}.
      * Both directions must be horizontal.
      *

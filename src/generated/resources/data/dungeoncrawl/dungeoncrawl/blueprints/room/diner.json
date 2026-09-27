@@ -1,16 +1,19 @@
 {
-  "entrance_types": {
-    "dungeoncrawl:entrance": {
-      "custom_parts": {
-        "closed": [
-          "dungeoncrawl:room/diner/closed/table",
-          "dungeoncrawl:room/diner/closed/storage"
-        ],
-        "open": [
-          "dungeoncrawl:room/diner/open"
-        ]
-      },
-      "decoration": "primary"
+  "assembly": {
+    "type": "dungeoncrawl:default",
+    "entrance_types": {
+      "dungeoncrawl:entrance": {
+        "custom_parts": {
+          "closed": [
+            "dungeoncrawl:room/diner/closed/table",
+            "dungeoncrawl:room/diner/closed/storage"
+          ],
+          "open": [
+            "dungeoncrawl:room/diner/open"
+          ]
+        },
+        "decoration": "primary"
+      }
     }
   },
   "placement_settings": {

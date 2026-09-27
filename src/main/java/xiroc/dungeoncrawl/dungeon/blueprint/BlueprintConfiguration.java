@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
-import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
-import xiroc.dungeoncrawl.dungeon.blueprint.anchor.BuiltinAnchorTypes;
+import xiroc.dungeoncrawl.dungeon.blueprint.assembly.config.AssemblyConfig;
+import xiroc.dungeoncrawl.dungeon.blueprint.assembly.config.SimpleAssemblyConfig;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.TemplateBlockPlacementSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.template.block.type.FixedTemplateBlockType;
@@ -131,19 +131,16 @@ public class BlueprintConfiguration {
             .put(Blocks.CRIMSON_SLAB, TemplateBlockPlacementSettings.ANTI_SOLID)
             .build();
 
-    private static final ImmutableMap<ResourceLocation, ConfiguredEntrance> DEFAULT_ENTRANCE_TYPES = ImmutableMap.of(
-            BuiltinAnchorTypes.ENTRANCE, new ConfiguredEntrance(Entrance.Decoration.PRIMARY, null, EntranceType.NORMAL)
-    );
-
     // Default values for optional fields
     private interface Defaults {
         boolean USE_GLOBAL_DEFAULT_BLOCK_TYPES = true;
         boolean USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS = true;
+
+        AssemblyConfig ASSEMBLY_CONFIG = SimpleAssemblyConfig.DEFAULT;
     }
 
     private static final Codec<Map<Block, TemplateBlockType>> BLOCK_TYPE_MAP_CODEC = new UnboundedMapCodec<>(GlobalCodecs.BLOCK, TemplateBlockType.CODEC);
     private static final Codec<Map<Block, TemplateBlockPlacementSettings>> BLOCK_SETTINGS_MAP_CODEC = new UnboundedMapCodec<>(GlobalCodecs.BLOCK, TemplateBlockPlacementSettings.CODEC);
-    private static final Codec<Map<ResourceLocation, ConfiguredEntrance>> ENTRANCE_TYPE_MAP_CODEC = new UnboundedMapCodec<>(ResourceLocation.CODEC, ConfiguredEntrance.CODEC);
 
     public static final Codec<BlueprintConfiguration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("template").forGetter(configuration -> configuration.template),
@@ -171,34 +168,31 @@ public class BlueprintConfiguration {
             TemplateBlockPlacementSettings.CODEC.optionalFieldOf("default_placement_settings", TemplateBlockPlacementSettings.DEFAULT)
                     .forGetter(configuration -> configuration.defaultPlacementSettings),
 
-            ENTRANCE_TYPE_MAP_CODEC.optionalFieldOf("entrance_types").forGetter(configuration -> {
-                final var nonDefaultTypes = StorageHelper.mapDifference(configuration.entranceTypes, DEFAULT_ENTRANCE_TYPES);
-                return nonDefaultTypes.isEmpty() ? Optional.empty() : Optional.of(nonDefaultTypes);
-            }),
-
             BlueprintFeature.CODEC.listOf().optionalFieldOf("features").forGetter(configuration ->
                     configuration.features.isEmpty() ? Optional.empty() : Optional.of(configuration.features)),
 
             BlueprintMultipart.CODEC.listOf().optionalFieldOf("parts").forGetter(configuration ->
-                    configuration.parts.isEmpty() ? Optional.empty() : Optional.of(configuration.parts))
+                    configuration.parts.isEmpty() ? Optional.empty() : Optional.of(configuration.parts)),
+
+            AssemblyConfig.CODEC.optionalFieldOf("assembly", Defaults.ASSEMBLY_CONFIG).forGetter(configuration -> configuration.assemblyConfig)
     ).apply(instance, (template,
                        blockTypes,
                        useGlobalDefaultBlockTypes,
                        placementSettings,
                        useGlobalDefaultPlacementSettings,
                        defaultPlacementSettings,
-                       entranceTypes,
                        features,
-                       parts) ->
+                       parts,
+                       assemblyConfig) ->
             new BlueprintConfiguration(template,
                     blockTypes.orElse(Map.of()),
                     useGlobalDefaultBlockTypes,
                     placementSettings.orElse(Map.of()),
                     useGlobalDefaultPlacementSettings,
                     defaultPlacementSettings,
-                    entranceTypes.orElse(DEFAULT_ENTRANCE_TYPES),
                     features.orElse(List.of()),
-                    parts.orElse(List.of()))
+                    parts.orElse(List.of()),
+                    assemblyConfig)
     ));
 
     /**
@@ -226,10 +220,6 @@ public class BlueprintConfiguration {
      */
     private final TemplateBlockPlacementSettings defaultPlacementSettings;
     /**
-     * Custom entrance types for anchor types.
-     */
-    protected final Map<ResourceLocation, ConfiguredEntrance> entranceTypes;
-    /**
      * A list of all features for the blueprint.
      */
     public final List<BlueprintFeature> features;
@@ -237,6 +227,10 @@ public class BlueprintConfiguration {
      * A list of all multi-parts for the blueprint.
      */
     public final List<BlueprintMultipart> parts;
+    /**
+     * The blueprint's assembly configuration.
+     */
+    public final AssemblyConfig assemblyConfig;
 
     private BlueprintConfiguration(ResourceLocation template,
                                    Map<Block, TemplateBlockType> blockTypes,
@@ -244,18 +238,18 @@ public class BlueprintConfiguration {
                                    Map<Block, TemplateBlockPlacementSettings> placementSettings,
                                    boolean useGlobalDefaultPlacementSettings,
                                    TemplateBlockPlacementSettings defaultPlacementSettings,
-                                   Map<ResourceLocation, ConfiguredEntrance> entranceTypes,
                                    List<BlueprintFeature> features,
-                                   List<BlueprintMultipart> parts) {
+                                   List<BlueprintMultipart> parts,
+                                   AssemblyConfig assemblyConfig) {
         this.template = template;
         this.blockTypes = blockTypes;
         this.useGlobalDefaultBlockTypes = useGlobalDefaultBlockTypes;
         this.placementSettings = placementSettings;
         this.useGlobalDefaultPlacementSettings = useGlobalDefaultPlacementSettings;
         this.defaultPlacementSettings = defaultPlacementSettings;
-        this.entranceTypes = entranceTypes;
         this.features = features;
         this.parts = parts;
+        this.assemblyConfig = assemblyConfig;
     }
 
     private BlueprintConfiguration(Builder builder) {
@@ -264,10 +258,10 @@ public class BlueprintConfiguration {
         this.useGlobalDefaultBlockTypes = builder.useDefaultBlockTypes;
         this.features = builder.features.build();
         this.parts = builder.parts.build();
-        this.entranceTypes = builder.entrances == null ? DEFAULT_ENTRANCE_TYPES : builder.entrances.build();
         this.placementSettings = builder.placementSettings.build();
         this.defaultPlacementSettings = builder.defaultPlacementSettings != null ? builder.defaultPlacementSettings : TemplateBlockPlacementSettings.DEFAULT;
         this.useGlobalDefaultPlacementSettings = builder.useGlobalDefaultPlacementSettings;
+        this.assemblyConfig = builder.assemblyConfig;
     }
 
     protected TemplateBlockType blockType(BlockState block) {
@@ -308,37 +302,26 @@ public class BlueprintConfiguration {
         }
     }
 
-    protected record ConfiguredEntrance(@Nullable Entrance.Decoration decoration,
-                                        @Nullable Entrance.CustomParts customParts,
-                                        EntranceType type) {
-        public static final Codec<ConfiguredEntrance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Entrance.Decoration.BY_NAME_CODEC.optionalFieldOf("decoration").forGetter(entrance -> Optional.ofNullable(entrance.decoration)),
-                Entrance.CustomParts.CODEC.optionalFieldOf("custom_parts").forGetter(entrance -> Optional.ofNullable(entrance.customParts)),
-                EntranceType.CODEC.optionalFieldOf("type", EntranceType.NORMAL).forGetter(ConfiguredEntrance::type)
-        ).apply(instance, (decoration, customParts, type) ->
-                new ConfiguredEntrance(decoration.orElse(null), customParts.orElse(null), type)));
-
-        public Entrance make(Anchor placement) {
-            return new Entrance(placement, decoration, customParts);
-        }
-    }
-
     public static class Builder {
         private ResourceLocation template;
         private boolean useDefaultBlockTypes = Defaults.USE_GLOBAL_DEFAULT_BLOCK_TYPES;
         private final HashMap<Block, TemplateBlockType> blockTypes = new HashMap<>();
         private final ImmutableList.Builder<BlueprintFeature> features = ImmutableList.builder();
         private final ImmutableList.Builder<BlueprintMultipart> parts = ImmutableList.builder();
-        @Nullable
-        private ImmutableMap.Builder<ResourceLocation, ConfiguredEntrance> entrances = null;
         private final ImmutableMap.Builder<Block, TemplateBlockPlacementSettings> placementSettings = ImmutableMap.builder();
         @Nullable
         private TemplateBlockPlacementSettings defaultPlacementSettings = null;
         private boolean useGlobalDefaultPlacementSettings = Defaults.USE_GLOBAL_DEFAULT_PLACEMENT_SETTINGS;
+        private AssemblyConfig assemblyConfig = Defaults.ASSEMBLY_CONFIG;
 
         public BlueprintConfiguration build() {
             Objects.requireNonNull(template);
             return new BlueprintConfiguration(this);
+        }
+
+        public Builder assembly(AssemblyConfig assemblyConfig) {
+            this.assemblyConfig = assemblyConfig;
+            return this;
         }
 
         public Builder feature(BlueprintFeature configuration) {
@@ -378,22 +361,6 @@ public class BlueprintConfiguration {
 
         public Builder noGlobalDefaultPlacementSettings() {
             this.useGlobalDefaultPlacementSettings = false;
-            return this;
-        }
-
-        public Builder entranceType(ResourceLocation anchorType, @Nullable Entrance.Decoration decoration, @Nullable Entrance.CustomParts customParts) {
-            return entranceType(anchorType, EntranceType.NORMAL, decoration, customParts);
-        }
-
-        public Builder entranceType(ResourceLocation anchorType, EntranceType type, @Nullable Entrance.Decoration decoration, @Nullable Entrance.CustomParts customParts) {
-            return entranceType(anchorType, new ConfiguredEntrance(decoration, customParts, type));
-        }
-
-        private Builder entranceType(ResourceLocation anchorType, ConfiguredEntrance type) {
-            if (entrances == null) {
-                entrances = ImmutableMap.builder();
-            }
-            entrances.put(anchorType, type);
             return this;
         }
     }

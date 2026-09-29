@@ -20,7 +20,7 @@
   },
   "features": [
     {
-      "type": "dungeoncrawl:feature_chain",
+      "type": "dungeoncrawl:composite/chain",
       "features": [
         {
           "type": "dungeoncrawl:grave",

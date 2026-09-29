@@ -23,11 +23,10 @@ public record ChainedFeatures(PlacementSettings placement, List<BlueprintFeature
 
     @Override
     public void create(LevelGenerator levelGenerator, Consumer<DungeonComponent> consumer, @Nullable ArrayList<Anchor> positions, Blueprint blueprint, BlockPos offset, Rotation rotation) {
-        var anchors = placement.anchors(blueprint);
-        if (anchors.isEmpty()) {
+        positions = BlueprintFeature.gatherPositions(positions, blueprint, placement);
+        if (positions == null) {
             return;
         }
-        positions = anchors.get();
         for (BlueprintFeature supplier : features) {
             supplier.create(levelGenerator, consumer, positions, blueprint, offset, rotation);
         }

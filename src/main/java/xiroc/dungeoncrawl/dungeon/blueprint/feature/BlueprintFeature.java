@@ -14,6 +14,7 @@ import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
 import xiroc.dungeoncrawl.dungeon.generator.level.LevelGenerator;
 import xiroc.dungeoncrawl.init.ModRegistries;
 import xiroc.dungeoncrawl.util.CoordinateSpace;
+import xiroc.dungeoncrawl.util.random.IRandom;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -25,13 +26,18 @@ public interface BlueprintFeature {
             Function.identity()
     );
 
+    Codec<IRandom<BlueprintFeature>> RANDOM_CODEC = IRandom.<BlueprintFeature>codecBuilder()
+            .valueCodec("feature", CODEC)
+            .build();
+
     static void register(RegisterEvent.RegisterHelper<MapCodec<? extends BlueprintFeature>> registry) {
-        registry.register(DungeonCrawl.locate("feature_chain"), ChainedFeatures.CODEC);
+        registry.register(DungeonCrawl.locate("composite/chain"), ChainedFeatures.CODEC);
+        registry.register(DungeonCrawl.locate("composite/random"), RandomFeature.CODEC);
         registry.register(DungeonCrawl.locate("chest"), ChestFeature.CODEC);
         registry.register(DungeonCrawl.locate("grave"), GraveFeature.CODEC);
         registry.register(DungeonCrawl.locate("spawner"), SpawnerFeature.CODEC);
         registry.register(DungeonCrawl.locate("flower_pot"), FlowerPotFeature.CODEC);
-        registry.register(DungeonCrawl.locate("sarcophagus"),  SarcophagusFeature.CODEC);
+        registry.register(DungeonCrawl.locate("sarcophagus"), SarcophagusFeature.CODEC);
     }
 
     MapCodec<? extends BlueprintFeature> type();

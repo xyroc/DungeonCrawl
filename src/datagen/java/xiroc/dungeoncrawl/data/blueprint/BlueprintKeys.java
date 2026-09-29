@@ -20,8 +20,9 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> ENIKO = key(TemplateKeys.Room.ENIKO);
         ResourceKey<Blueprint> FORT = key(TemplateKeys.Room.FORT);
         ResourceKey<Blueprint> LIBRARY = key(TemplateKeys.Room.LIBRARY);
-        ResourceKey<Blueprint>  POOL = key(TemplateKeys.Room.POOL);
+        ResourceKey<Blueprint> POOL = key(TemplateKeys.Room.POOL);
         ResourceKey<Blueprint> POTION_LAB = key(TemplateKeys.Room.POTION_LAB);
+        ResourceKey<Blueprint> PRISON = key(TemplateKeys.Room.PRISON);
         ResourceKey<Blueprint> SARCOPHAGUS = key(TemplateKeys.Room.SARCOPHAGUS);
         ResourceKey<Blueprint> SMITHY = key(TemplateKeys.Room.SMITHY);
         ResourceKey<Blueprint> SPIDER = key(TemplateKeys.Room.SPIDER);
@@ -53,6 +54,8 @@ public interface BlueprintKeys {
 
         ResourceKey<Blueprint> ENTRANCE_CLOSED_5X5 = key(TemplateKeys.Part.ENTRANCE_CLOSED_5X5);
         ResourceKey<Blueprint> ENTRANCE_CLOSED_5X9 = key(TemplateKeys.Part.ENTRANCE_CLOSED_5X9);
+        ResourceKey<Blueprint> ENTRANCE_FENCING_CLOSED_3X3 = key(TemplateKeys.Part.ENTRANCE_FENCING_CLOSED_3X3);
+        ResourceKey<Blueprint> ENTRANCE_FENCING_OPEN_3X3 = key(TemplateKeys.Part.ENTRANCE_FENCING_OPEN_3X3);
 
         ResourceKey<Blueprint> FLOOR_3x3_MASONRY = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "masonry"));
         ResourceKey<Blueprint> FLOOR_3x3_SOLID = key(DataGen.resource(TemplateKeys.Part.FLOOR_3X3, "solid"));
@@ -81,6 +84,12 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> LAB_CONTAINER_FLOWER = key(DataGen.resource(__LAB_CONTAINER__, "flower"));
         ResourceKey<Blueprint> LAB_CONTAINER_KELP = key(DataGen.resource(__LAB_CONTAINER__, "kelp"));
         ResourceKey<Blueprint> LAB_CONTAINER_SPAWNER = key(DataGen.resource(__LAB_CONTAINER__, "spawner"));
+
+        ResourceKey<Blueprint> PRISON_CELL = key(TemplateKeys.Part.PRISON_CELL);
+        ResourceKey<Blueprint> PRISON_CELL_CORNER = key(TemplateKeys.Part.PRISON_CELL_CORNER);
+
+        ResourceKey<Blueprint> PRISON_ENTRANCE_INSET = key(TemplateKeys.Part.PRISON_ENTRANCE_INSET);
+        ResourceKey<Blueprint> PRISON_ENTRANCE_OPEN = key(TemplateKeys.Part.PRISON_ENTRANCE_OPEN);
     }
 
     interface Corridor {

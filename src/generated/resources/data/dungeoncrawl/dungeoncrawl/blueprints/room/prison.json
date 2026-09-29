@@ -1,0 +1,25 @@
+{
+  "assembly": {
+    "type": "dungeoncrawl:cardinal_entrances",
+    "anchor_type": "dungeoncrawl:prison_cell",
+    "corner_pieces": [
+      "dungeoncrawl:part/prison/corner_cell"
+    ],
+    "entrance": {
+      "type": "hybrid",
+      "custom_parts": {
+        "closed": [
+          "dungeoncrawl:room/prison/inset"
+        ],
+        "open": [
+          "dungeoncrawl:room/prison/entrance"
+        ]
+      },
+      "decoration": "primary"
+    },
+    "single_pieces": [
+      "dungeoncrawl:part/prison/cell"
+    ]
+  },
+  "template": "dungeoncrawl:room/prison"
+}

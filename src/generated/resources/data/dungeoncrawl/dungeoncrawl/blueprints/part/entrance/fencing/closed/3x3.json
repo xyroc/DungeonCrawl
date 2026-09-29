@@ -1,0 +1,8 @@
+{
+  "placement_settings": {
+    "minecraft:iron_bars": {
+      "fill_air": true
+    }
+  },
+  "template": "dungeoncrawl:part/entrance/fencing/closed/3x3"
+}

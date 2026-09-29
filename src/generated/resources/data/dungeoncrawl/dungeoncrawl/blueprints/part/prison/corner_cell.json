@@ -1,0 +1,46 @@
+{
+  "features": [
+    {
+      "type": "dungeoncrawl:composite/random",
+      "features": [
+        {
+          "feature": {
+            "type": "dungeoncrawl:spawner",
+            "placement": {
+              "amount": 1
+            },
+            "spawner": {}
+          }
+        },
+        {
+          "feature": {
+            "type": "dungeoncrawl:chest",
+            "chest": {},
+            "placement": {
+              "amount": 1
+            }
+          }
+        },
+        {
+          "feature": {
+            "type": "dungeoncrawl:nothing"
+          }
+        }
+      ],
+      "placement": {
+        "amount": 1,
+        "positions": "dungeoncrawl:generic"
+      }
+    }
+  ],
+  "parts": [
+    {
+      "positions": "dungeoncrawl:fencing",
+      "variants": [
+        "dungeoncrawl:part/entrance/fencing/closed/3x3",
+        "dungeoncrawl:part/entrance/fencing/open/3x3"
+      ]
+    }
+  ],
+  "template": "dungeoncrawl:part/prison/corner_cell"
+}

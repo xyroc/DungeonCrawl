@@ -23,6 +23,7 @@ public interface TemplateKeys {
         ResourceLocation LIBRARY = DataGen.resource(__ROOM__, "library");
         ResourceLocation POOL = DataGen.resource(__ROOM__, "pool");
         ResourceLocation POTION_LAB = DataGen.resource(__ROOM__, "potion_lab");
+         ResourceLocation PRISON = DataGen.resource(__ROOM__, "prison");
         ResourceLocation SARCOPHAGUS = DataGen.resource(__ROOM__, "sarcophagus");
         ResourceLocation SMITHY = DataGen.resource(__ROOM__, "smithy");
         ResourceLocation SPIDER = DataGen.resource(__ROOM__, "spider");
@@ -60,7 +61,12 @@ public interface TemplateKeys {
         ResourceLocation __ENTRANCE__ = DataGen.resource(__PART__, "entrance");
         ResourceLocation __ENTRANCE_CLOSED__ = DataGen.resource(__ENTRANCE__, "closed");
         ResourceLocation ENTRANCE_CLOSED_5X5 = DataGen.resource(__ENTRANCE_CLOSED__, "5x5");
-        ResourceLocation ENTRANCE_CLOSED_5X9 = DataGen.resource(__ENTRANCE_CLOSED__ , "5x9");
+        ResourceLocation ENTRANCE_CLOSED_5X9 = DataGen.resource(__ENTRANCE_CLOSED__, "5x9");
+        ResourceLocation __ENTRANCE_FENCING__ = DataGen.resource(__ENTRANCE__, "fencing");
+        ResourceLocation __ENTRANCE_FENCING_OPEN__ = DataGen.resource(__ENTRANCE_FENCING__, "open");
+        ResourceLocation ENTRANCE_FENCING_OPEN_3X3 = DataGen.resource(__ENTRANCE_FENCING_OPEN__, "3x3");
+        ResourceLocation __ENTRANCE_FENCING_CLOSED__ = DataGen.resource(__ENTRANCE_FENCING__, "closed");
+        ResourceLocation ENTRANCE_FENCING_CLOSED_3X3 = DataGen.resource(__ENTRANCE_FENCING_CLOSED__, "3x3");
 
         ResourceLocation __FLOOR__ = DataGen.resource(__PART__, "floor");
         ResourceLocation FLOOR_3X3 = DataGen.resource(__FLOOR__, "3x3");
@@ -101,6 +107,13 @@ public interface TemplateKeys {
         ResourceLocation LAB_CONTAINER_SPAWNER = DataGen.resource(__LAB_CONTAINER__, "spawner");
         ResourceLocation LAB_CONTAINER_TORCHFLOWER = DataGen.resource(__LAB_CONTAINER__, "torchflower");
         ResourceLocation LAB_CONTAINER_WHEAT = DataGen.resource(__LAB_CONTAINER__, "wheat");
+
+        ResourceLocation __PRISON__ = DataGen.resource(__PART__, "prison");
+        ResourceLocation PRISON_CELL = DataGen.resource(__PRISON__, "cell");
+        ResourceLocation PRISON_CELL_CORNER = DataGen.resource(__PRISON__, "corner_cell");
+
+        ResourceLocation PRISON_ENTRANCE_INSET = DataGen.resource(Room.PRISON, "inset");
+        ResourceLocation PRISON_ENTRANCE_OPEN = DataGen.resource(Room.PRISON, "entrance");
     }
 
     interface Corridor {

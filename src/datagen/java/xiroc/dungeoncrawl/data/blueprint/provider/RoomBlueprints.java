@@ -18,6 +18,8 @@ import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
 import xiroc.dungeoncrawl.dungeon.blueprint.Entrance;
+import xiroc.dungeoncrawl.dungeon.blueprint.EntranceConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.assembly.config.CardinalEntrancesAssemblyConfig;
 import xiroc.dungeoncrawl.dungeon.blueprint.assembly.config.SimpleAssemblyConfig;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChainedFeatures;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChestFeature;
@@ -305,6 +307,28 @@ public interface RoomBlueprints {
                         new PlacementSettings(Optional.of(SharedKeys.Anchor.Feature.SPAWNER), new Constant(1)),
                         new SpawnerSettings(Optional.empty())
                 ))
+                .build()));
+
+        context.register(BlueprintKeys.Room.PRISON, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.PRISON)
+                .assembly(new CardinalEntrancesAssemblyConfig.Builder()
+                        .anchorType(DataGen.resource("prison_cell"))
+                        .entranceConfiguration(new EntranceConfiguration(Entrance.Decoration.PRIMARY, new Entrance.CustomParts(
+                                IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.PRISON_ENTRANCE_OPEN))
+                                        .build(),
+                                IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.PRISON_ENTRANCE_INSET))
+                                        .build(),
+                                null
+                        ), BlueprintConfiguration.EntranceType.HYBRID))
+                        .cornerPieces(IRandom.<Holder<Blueprint>>builder()
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.PRISON_CELL_CORNER))
+                                .build())
+                        .singlePieces(IRandom.<Holder<Blueprint>>builder()
+                                .add(blueprints.getOrThrow(BlueprintKeys.Part.PRISON_CELL))
+                                .build())
+                        .build())
                 .build()));
 
         context.register(BlueprintKeys.Room.SMITHY, new Blueprint(new BlueprintConfiguration.Builder()

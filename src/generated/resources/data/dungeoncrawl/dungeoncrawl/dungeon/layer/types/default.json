@@ -49,11 +49,12 @@
       "dungeoncrawl:room/eniko",
       "dungeoncrawl:room/fort",
       "dungeoncrawl:room/potion_lab",
-      "dungeoncrawl:room/sarcophagus",
       {
-        "blueprint": "dungeoncrawl:room/spider",
+        "blueprint": "dungeoncrawl:room/prison",
         "weight": 4
       },
+      "dungeoncrawl:room/sarcophagus",
+      "dungeoncrawl:room/spider",
       "dungeoncrawl:room/storage"
     ],
     "upper_staircase": [

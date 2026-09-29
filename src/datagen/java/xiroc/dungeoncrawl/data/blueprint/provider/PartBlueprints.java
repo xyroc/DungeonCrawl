@@ -1,5 +1,6 @@
 package xiroc.dungeoncrawl.data.blueprint.provider;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,8 +13,13 @@ import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
+import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.BlueprintFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChainedFeatures;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.ChestFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.NothingFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.GraveFeature;
+import xiroc.dungeoncrawl.dungeon.blueprint.feature.RandomFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.SpawnerFeature;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.ChestSettings;
 import xiroc.dungeoncrawl.dungeon.blueprint.feature.settings.PlacementSettings;
@@ -31,6 +37,7 @@ import java.util.Optional;
 public interface PartBlueprints {
     static void generate(BootstrapContext<Blueprint> context) {
         final var blockStatePools = context.lookup(DatapackRegistries.BLOCK_STATE_POOLS);
+        final var blueprints = context.lookup(DatapackRegistries.BLUEPRINT);
 
         context.register(BlueprintKeys.Part.CEILING_7X7_DOME, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.CEILING_7X7_DOME)
@@ -125,6 +132,16 @@ public interface PartBlueprints {
                 .template(TemplateKeys.Part.ENTRANCE_CLOSED_5X5)
                 .build()));
 
+        context.register(BlueprintKeys.Part.ENTRANCE_FENCING_CLOSED_3X3, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.ENTRANCE_FENCING_CLOSED_3X3)
+                .configureBlock(Blocks.IRON_BARS, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .build()));
+
+        context.register(BlueprintKeys.Part.ENTRANCE_FENCING_OPEN_3X3, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.ENTRANCE_FENCING_OPEN_3X3)
+                .configureBlock(Blocks.IRON_BARS, TemplateBlockPlacementSettings.SOLID_PLACEMENT)
+                .build()));
+
         context.register(BlueprintKeys.Part.ENTRANCE_CLOSED_5X9, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.ENTRANCE_CLOSED_5X9)
                 .build()));
@@ -196,6 +213,54 @@ public interface PartBlueprints {
 
         context.register(BlueprintKeys.Part.LIBRARY_FLOWERS, new Blueprint(new BlueprintConfiguration.Builder()
                 .template(TemplateKeys.Part.LIBRARY_FLOWERS)
+                .build()));
+
+        context.register(BlueprintKeys.Part.PRISON_CELL, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.PRISON_CELL)
+                .multipart(new BlueprintMultipart(DataGen.resource("fencing"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.ENTRANCE_FENCING_CLOSED_3X3))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.ENTRANCE_FENCING_OPEN_3X3))
+                        .build()))
+                .feature(new RandomFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("generic")), new Constant(1)),
+                        IRandom.<BlueprintFeature>builder()
+                                .add(new SpawnerFeature(
+                                        new PlacementSettings(Optional.empty(), new Constant(1)),
+                                        new SpawnerSettings(Optional.empty())))
+                                .add(new ChestFeature(
+                                        new PlacementSettings(Optional.empty(), new Constant(1)),
+                                        new ChestSettings(Optional.empty())))
+                                .add(new NothingFeature())
+                                .build()
+                ))
+                .build()));
+
+        context.register(BlueprintKeys.Part.PRISON_CELL_CORNER, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.PRISON_CELL_CORNER)
+                .multipart(new BlueprintMultipart(DataGen.resource("fencing"), IRandom.<Holder<Blueprint>>builder()
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.ENTRANCE_FENCING_CLOSED_3X3))
+                        .add(blueprints.getOrThrow(BlueprintKeys.Part.ENTRANCE_FENCING_OPEN_3X3))
+                        .build()))
+                .feature(new RandomFeature(
+                        new PlacementSettings(Optional.of(DataGen.resource("generic")), new Constant(1)),
+                        IRandom.<BlueprintFeature>builder()
+                                .add(new SpawnerFeature(
+                                        new PlacementSettings(Optional.empty(), new Constant(1)),
+                                        new SpawnerSettings(Optional.empty())))
+                                .add(new ChestFeature(
+                                        new PlacementSettings(Optional.empty(), new Constant(1)),
+                                        new ChestSettings(Optional.empty())))
+                                .add(new NothingFeature())
+                                .build()
+                ))
+                .build()));
+
+        context.register(BlueprintKeys.Part.PRISON_ENTRANCE_INSET, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.PRISON_ENTRANCE_INSET)
+                .build()));
+
+        context.register(BlueprintKeys.Part.PRISON_ENTRANCE_OPEN, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.PRISON_ENTRANCE_OPEN)
                 .build()));
 
         context.register(BlueprintKeys.Part.SARCOPHAGUS_SMALL_EMPTY, new Blueprint(new BlueprintConfiguration.Builder()

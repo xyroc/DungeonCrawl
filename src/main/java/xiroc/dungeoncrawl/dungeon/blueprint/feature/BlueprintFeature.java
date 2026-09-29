@@ -35,6 +35,7 @@ public interface BlueprintFeature {
         registry.register(DungeonCrawl.locate("composite/random"), RandomFeature.CODEC);
         registry.register(DungeonCrawl.locate("chest"), ChestFeature.CODEC);
         registry.register(DungeonCrawl.locate("grave"), GraveFeature.CODEC);
+        registry.register(DungeonCrawl.locate("nothing"), NothingFeature.CODEC);
         registry.register(DungeonCrawl.locate("spawner"), SpawnerFeature.CODEC);
         registry.register(DungeonCrawl.locate("flower_pot"), FlowerPotFeature.CODEC);
         registry.register(DungeonCrawl.locate("sarcophagus"), SarcophagusFeature.CODEC);

@@ -204,7 +204,7 @@ public class LevelGenerator {
     @Nullable
     public BlueprintPiece assemblePiece(Holder<Blueprint> blueprint, BlockPos position, Rotation rotation) {
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
-        BlueprintPiece piece = new BlueprintPiece(baseComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, this.startHeight, stage));
+        BlueprintPiece piece = new BlueprintPiece(baseComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, baseComponent.position().getY(), stage));
 
         blueprint.value().populateFeatures(this, piece.base.position(), piece.base.rotation(), piece::addComponent);
 

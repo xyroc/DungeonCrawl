@@ -1,0 +1,30 @@
+{
+  "assembly": {
+    "type": "dungeoncrawl:default",
+    "entrance_types": {
+      "dungeoncrawl:entrance": {
+        "custom_parts": {
+          "closed": [
+            "dungeoncrawl:room/sewer/entrance/closed"
+          ],
+          "open": [
+            "dungeoncrawl:room/sewer/entrance/open"
+          ]
+        },
+        "decoration": "primary"
+      }
+    }
+  },
+  "block_types": {
+    "minecraft:blue_stained_glass": {
+      "type": "dungeoncrawl:block",
+      "block": "minecraft:water"
+    }
+  },
+  "placement_settings": {
+    "minecraft:iron_bars": {
+      "post_process": true
+    }
+  },
+  "template": "dungeoncrawl:room/sewer/main"
+}

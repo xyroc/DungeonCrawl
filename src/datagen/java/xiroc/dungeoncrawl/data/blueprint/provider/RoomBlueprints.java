@@ -14,6 +14,7 @@ import xiroc.dungeoncrawl.data.spawner.SpawnerTypeKeys;
 import xiroc.dungeoncrawl.data.tags.BlueprintPoolTags;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
@@ -328,6 +329,22 @@ public interface RoomBlueprints {
                         .singlePieces(IRandom.<Holder<Blueprint>>builder()
                                 .add(blueprints.getOrThrow(BlueprintKeys.Part.PRISON_CELL))
                                 .build())
+                        .build())
+                .build()));
+
+        context.register(BlueprintKeys.Room.SEWER, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Room.SEWER_MAIN)
+                .mapBlock(Blocks.BLUE_STAINED_GLASS, new FixedTemplateBlockType(new SingleBlock(Blocks.WATER.defaultBlockState())))
+                .configureBlock(Blocks.IRON_BARS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT.withPostProcessing())
+                .assembly(new SimpleAssemblyConfig.Builder()
+                        .entranceType(DataGen.resource("entrance"), Entrance.Decoration.PRIMARY, new Entrance.CustomParts(
+                                IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.SEWER_ENTRANCE_OPEN))
+                                        .build(),
+                                IRandom.<Holder<Blueprint>>builder()
+                                        .add(blueprints.getOrThrow(BlueprintKeys.Part.SEWER_ENTRANCE_CLOSED))
+                                        .build(),
+                                null))
                         .build())
                 .build()));
 

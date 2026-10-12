@@ -42,6 +42,7 @@ public interface LevelTypes {
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.POTION_LAB))
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.PRISON), 4)
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.SARCOPHAGUS))
+                                .add(blueprints.getOrThrow(BlueprintKeys.Room.SEWER))
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.SPIDER))
                                 .add(blueprints.getOrThrow(BlueprintKeys.Room.STORAGE)))
                         .lowerStaircase(new IRandom.Builder<Holder<Blueprint>>()

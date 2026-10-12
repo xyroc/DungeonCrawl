@@ -33,6 +33,9 @@ public interface TemplateKeys {
         ResourceLocation STAIRCASE_LOWER = DataGen.resource(__STAIRCASE__, "lower");
         ResourceLocation STAIRCASE_UPPER = DataGen.resource(__STAIRCASE__, "upper");
 
+        ResourceLocation __SEWER__ = DataGen.resource(__ROOM__, "sewer");
+        ResourceLocation SEWER_MAIN = DataGen.resource(__SEWER__, "main");
+
         ResourceLocation __CRYPT__ = DataGen.resource(__ROOM__, "crypt");
         ResourceLocation CRYPT_CROSSING = DataGen.resource(__CRYPT__, "crossing");
         ResourceLocation CRYPT_TURN = DataGen.resource(__CRYPT__, "turn");
@@ -114,6 +117,10 @@ public interface TemplateKeys {
 
         ResourceLocation PRISON_ENTRANCE_INSET = DataGen.resource(Room.PRISON, "inset");
         ResourceLocation PRISON_ENTRANCE_OPEN = DataGen.resource(Room.PRISON, "entrance");
+
+        ResourceLocation __SEWER_ENTRANCE__ = DataGen.resource(Room.__SEWER__, "entrance");
+        ResourceLocation SEWER_ENTRANCE_CLOSED = DataGen.resource(__SEWER_ENTRANCE__, "closed");
+        ResourceLocation SEWER_ENTRANCE_OPEN = DataGen.resource(__SEWER_ENTRANCE__, "open");
     }
 
     interface Corridor {

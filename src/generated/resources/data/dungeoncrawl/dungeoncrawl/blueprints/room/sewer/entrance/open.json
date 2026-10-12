@@ -1,0 +1,8 @@
+{
+  "placement_settings": {
+    "minecraft:iron_bars": {
+      "post_process": true
+    }
+  },
+  "template": "dungeoncrawl:room/sewer/entrance/open"
+}

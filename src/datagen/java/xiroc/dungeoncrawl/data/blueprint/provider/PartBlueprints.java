@@ -11,6 +11,7 @@ import xiroc.dungeoncrawl.data.blueprint.TemplateKeys;
 import xiroc.dungeoncrawl.data.tags.BlockPoolTags;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.RandomBlock;
+import xiroc.dungeoncrawl.dungeon.block.provider.SingleBlock;
 import xiroc.dungeoncrawl.dungeon.blueprint.Blueprint;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintConfiguration;
 import xiroc.dungeoncrawl.dungeon.blueprint.BlueprintMultipart;
@@ -274,6 +275,17 @@ public interface PartBlueprints {
                         Optional.of(new SpawnerSettings(Optional.empty())),
                         Optional.of(new ChestSettings())
                 ))
+                .build()));
+
+        context.register(BlueprintKeys.Part.SEWER_ENTRANCE_CLOSED, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.SEWER_ENTRANCE_CLOSED)
+                .mapBlock(Blocks.BLUE_STAINED_GLASS, new FixedTemplateBlockType(new SingleBlock(Blocks.WATER.defaultBlockState())))
+                .configureBlock(Blocks.IRON_BARS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT.withPostProcessing())
+                .build()));
+
+        context.register(BlueprintKeys.Part.SEWER_ENTRANCE_OPEN, new Blueprint(new BlueprintConfiguration.Builder()
+                .template(TemplateKeys.Part.SEWER_ENTRANCE_OPEN)
+                .configureBlock(Blocks.IRON_BARS, TemplateBlockPlacementSettings.NON_SOLID_PLACEMENT.withPostProcessing())
                 .build()));
     }
 }

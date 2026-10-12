@@ -1,0 +1,14 @@
+{
+  "block_types": {
+    "minecraft:blue_stained_glass": {
+      "type": "dungeoncrawl:block",
+      "block": "minecraft:water"
+    }
+  },
+  "placement_settings": {
+    "minecraft:iron_bars": {
+      "post_process": true
+    }
+  },
+  "template": "dungeoncrawl:room/sewer/entrance/closed"
+}

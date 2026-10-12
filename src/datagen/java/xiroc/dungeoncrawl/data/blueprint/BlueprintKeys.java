@@ -12,6 +12,8 @@ public interface BlueprintKeys {
     }
 
     interface Room {
+        ResourceLocation __ROOM__ = DataGen.resource("room");
+
         ResourceKey<Blueprint> BEDROOM = key(TemplateKeys.Room.BEDROOM);
         ResourceKey<Blueprint> BRICK = key(TemplateKeys.Room.BRICK);
         ResourceKey<Blueprint> CORNER = key(TemplateKeys.Room.CORNER);
@@ -24,6 +26,7 @@ public interface BlueprintKeys {
         ResourceKey<Blueprint> POTION_LAB = key(TemplateKeys.Room.POTION_LAB);
         ResourceKey<Blueprint> PRISON = key(TemplateKeys.Room.PRISON);
         ResourceKey<Blueprint> SARCOPHAGUS = key(TemplateKeys.Room.SARCOPHAGUS);
+        ResourceKey<Blueprint> SEWER = key(DataGen.resource(__ROOM__, "sewer"));
         ResourceKey<Blueprint> SMITHY = key(TemplateKeys.Room.SMITHY);
         ResourceKey<Blueprint> SPIDER = key(TemplateKeys.Room.SPIDER);
         ResourceKey<Blueprint> STAIRCASE_LOWER = key(TemplateKeys.Room.STAIRCASE_LOWER);
@@ -90,6 +93,9 @@ public interface BlueprintKeys {
 
         ResourceKey<Blueprint> PRISON_ENTRANCE_INSET = key(TemplateKeys.Part.PRISON_ENTRANCE_INSET);
         ResourceKey<Blueprint> PRISON_ENTRANCE_OPEN = key(TemplateKeys.Part.PRISON_ENTRANCE_OPEN);
+
+        ResourceKey<Blueprint> SEWER_ENTRANCE_CLOSED = key(TemplateKeys.Part.SEWER_ENTRANCE_CLOSED);
+        ResourceKey<Blueprint> SEWER_ENTRANCE_OPEN = key(TemplateKeys.Part.SEWER_ENTRANCE_OPEN);
     }
 
     interface Corridor {

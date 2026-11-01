@@ -7,7 +7,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -20,18 +19,6 @@ import xiroc.dungeoncrawl.util.bounds.BoundingBoxUtils;
 
 
 public interface WorldEditor {
-    void placeBlock(BlockStateProvider block, Vec3i pos, BoundingBox boundingBox, Rotation blockRotation, RandomSource random, boolean fillAir, boolean fillSolid, boolean postProcess);
-
-    void placeBlock(BlockState block, Vec3i pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess);
-
-    void fill(BlockStateProvider stateProvider, Vec3i from, Vec3i to, BoundingBox boundingBox, RandomSource random, boolean fillAir, boolean fillSolid, boolean postProcess);
-
-    void fillRing(BlockStateProvider blocks, BlockPos center, int radius, int thickness, int height, BoundingBox boundingBox, RandomSource random, boolean fillAir,
-                  boolean fillSolid, boolean postProcess);
-
-    void placeStairs(BlockStateProvider stairs, BlockPos pos, Half half, Direction facing, BoundingBox boundingBox, RandomSource random, boolean fillAir, boolean fillSolid,
-                     boolean postProcess);
-
     static void fill(LevelAccessor world, @Nullable BlockStateProvider solid, @Nullable BlockStateProvider nonSolid, Vec3i from, Vec3i to, BoundingBox boundingBox, RandomSource random, boolean postProcess) {
         Vec3i startVec = BoundingBoxUtils.start(from, to, boundingBox);
         Vec3i endVec = BoundingBoxUtils.end(from, to, boundingBox);
@@ -82,12 +69,6 @@ public interface WorldEditor {
         Unsafe.placeBlock(world, pos, stair, fillAir, fillSolid, postProcess);
     }
 
-    static void placeBlock(LevelAccessor world, BlockPos pos, @Nullable BlockStateProvider solid, @Nullable BlockStateProvider nonSolid, BoundingBox boundingBox, RandomSource random, boolean postProcess) {
-        if (boundingBox.isInside(pos)) {
-            Unsafe.placeBlock(world, pos, solid, nonSolid, random, postProcess);
-        }
-    }
-
     static void placeBlock(LevelAccessor world, BlockStateProvider block, BlockPos pos, BoundingBox boundingBox, RandomSource random, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
             Unsafe.placeBlock(world, pos, block.get(pos, random), fillAir, fillSolid, postProcess);
@@ -97,20 +78,6 @@ public interface WorldEditor {
     static void placeBlock(LevelAccessor world, BlockState block, BlockPos pos, BoundingBox boundingBox, boolean fillAir, boolean fillSolid, boolean postProcess) {
         if (boundingBox.isInside(pos)) {
             Unsafe.placeBlock(world, pos, block, fillAir, fillSolid, postProcess);
-        }
-    }
-
-    static void buildFoundation(LevelAccessor world, BlockPos pos, RandomSource random, BoundingBox worldGenBounds, DungeonWorldGenContext context) {
-        if (!worldGenBounds.isInside(pos)) {
-            return;
-        }
-        boolean pillar = ((pos.getX() & 2) | (pos.getZ() & 2)) == 0;
-        BlockStateProvider palette = context.primaryTheme().value().masonry();
-        if (pillar) {
-            int downwards = Math.max(Unsafe.countEmptyBlocksDownwards(world, pos.below()), 1);
-            fill(world, palette, palette, pos.below(), pos.below(downwards), worldGenBounds, random, false);
-        } else {
-            placeBlock(world, palette, pos.below(), worldGenBounds, random, true, true, false);
         }
     }
 

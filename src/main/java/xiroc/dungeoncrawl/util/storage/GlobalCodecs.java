@@ -2,10 +2,8 @@ package xiroc.dungeoncrawl.util.storage;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -18,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-import java.util.Map;
+import java.util.stream.IntStream;
 
 public interface GlobalCodecs {
     Codec<Block> BLOCK = BuiltInRegistries.BLOCK.byNameCodec();
@@ -71,4 +69,6 @@ public interface GlobalCodecs {
         builder.append("=");
         builder.append(property.getName((T) value));
     }
+
+    Codec<int[]> INT_ARRAY = Codec.INT_STREAM.xmap(IntStream::toArray, IntStream::of);
 }

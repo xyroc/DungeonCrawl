@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import org.jetbrains.annotations.Nullable;
 import xiroc.dungeoncrawl.datapack.registry.DatapackRegistries;
 import xiroc.dungeoncrawl.dungeon.block.provider.BlockStateProvider;
 import xiroc.dungeoncrawl.dungeon.blueprint.anchor.Anchor;
@@ -29,7 +30,6 @@ import xiroc.dungeoncrawl.util.CoordinateSpace;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.util.random.IRandom;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
-import xiroc.dungeoncrawl.worldgen.WorldEditor;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class Blueprint {
 
     protected final BlueprintConfiguration configuration;
     protected Vec3i size;
-    protected List<TemplateBlockColumn> blockColumns;
+    protected List<@Nullable TemplateBlockColumn> blockColumns;
     protected Map<ResourceLocation, List<Anchor>> anchors;
     protected AssemblyType assemblyType;
 
@@ -60,6 +60,9 @@ public class Blueprint {
         CoordinateSpace coordinateSpace = coordinateSpace(position);
 
         this.blockColumns.forEach((column) -> {
+            if (column == null) {
+                return;
+            }
             BlockPos columnPos = coordinateSpace.rotateAndTranslateToOrigin(column.x(), column.lowestY(), column.z(), rotation);
             if (!worldGenBounds.isInside(columnPos)) {
                 return;
@@ -86,9 +89,6 @@ public class Blueprint {
                     containerBlockEntity.setLootTable(placementSettings.lootTable().forTier(worldGenContext.level()));
                 }
             }
-            if (columnPos.getY() <= worldGenContext.foundationHeight() && !level.getBlockState(columnPos).isAir()) {
-                WorldEditor.buildFoundation(level, columnPos, random, worldGenBounds, worldGenContext);
-            }
         });
     }
 
@@ -103,6 +103,15 @@ public class Blueprint {
         for (BlueprintFeature feature : features()) {
             feature.create(levelGenerator, collector, null, this, offset, rotation);
         }
+    }
+
+    protected int columnIndex(int x, int z) {
+        return x + z * xSpan();
+    }
+
+    @Nullable
+    public TemplateBlockColumn columnAt(int x, int z) {
+        return blockColumns.get(columnIndex(x, z));
     }
 
     public int xSpan() {

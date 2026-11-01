@@ -84,7 +84,7 @@ public class CorridorElement extends DungeonElement {
             if (!placementFailed) {
                 final Anchor corridorAnchor = corridorAnchors.get(context.levelGenerator().random.nextInt(corridorAnchors.size()));
                 final var placement = corridorAnchor.latchOnto(attachmentPoint, segmentDelegate.value());
-                final BlueprintPiece corridor = context.levelGenerator().assemblePiece(segmentDelegate, placement.getFirst(), placement.getSecond());
+                final BlueprintPiece corridor = context.levelGenerator().assemblePiece(segmentDelegate, placement.getFirst(), placement.getSecond(), start.getY());
                 if (corridor != null) {
                     fragments.add(new Fragment(corridor));
                 } else {

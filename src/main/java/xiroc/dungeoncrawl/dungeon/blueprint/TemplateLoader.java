@@ -30,9 +30,9 @@ import xiroc.dungeoncrawl.exception.DatapackLoadException;
 import xiroc.dungeoncrawl.mixin.accessor.StructureTemplateAccessor;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -60,20 +60,31 @@ public interface TemplateLoader {
         if (templateSize.getX() > THEORETICAL_MAX_BLUEPRINT_SIZE || templateSize.getZ() > THEORETICAL_MAX_BLUEPRINT_SIZE) {
             throw new DatapackLoadException("Blueprint is too large! The maximum width/length is " + THEORETICAL_MAX_BLUEPRINT_SIZE);
         }
+        blueprint.size = template.get().getSize();
 
         StructureTemplateAccessor accessor = (StructureTemplateAccessor) template.get();
 
         HashMap<ResourceLocation, ImmutableList.Builder<Anchor>> anchors = new HashMap<>();
-        Map<Integer, TemplateBlockColumn.Builder> blockColumns = new HashMap<>();
+        TemplateBlockColumn.Builder[] columns = new TemplateBlockColumn.Builder[templateSize.getX() * templateSize.getZ()];
 
         AssemblyTypeBuilder assemblyTypeBuilder = configuration.assemblyConfig.makeTypeBuilder();
 
         accessor.palettes().getFirst().blocks().forEach((info) -> loadBlock(configuration, info, block -> {
             int x = block.position().getX();
             int z = block.position().getZ();
-            // Pack x into the 16 most significant bits and z into the 16 least significant bits.
-            int columnId = x << 16 | z;
-            blockColumns.computeIfAbsent(columnId, ignored -> new TemplateBlockColumn.Builder(x, z)).addBlock(block);
+
+            if (x < 0 || x >= templateSize.getX() || z < 0 || z >= templateSize.getZ()) {
+                return;
+            }
+
+            int index = blueprint.columnIndex(x, z);
+            TemplateBlockColumn.Builder builder = columns[index];
+            if (builder == null) {
+                builder = new TemplateBlockColumn.Builder(x, z);
+                columns[index] =  builder;
+            }
+
+            builder.addBlock(block);
         }, (anchorType, anchor) -> {
             anchors.computeIfAbsent(anchorType, (k) -> ImmutableList.builder()).add(anchor);
             assemblyTypeBuilder.noteAnchor(anchorType, anchor);
@@ -82,8 +93,12 @@ public interface TemplateLoader {
         ImmutableMap.Builder<ResourceLocation, List<Anchor>> immutableAnchors = ImmutableMap.builder();
         anchors.forEach((type, builder) -> immutableAnchors.put(type, builder.build()));
 
-        blueprint.size = template.get().getSize();
-        blueprint.blockColumns = blockColumns.values().stream().map(TemplateBlockColumn.Builder::build).toList();
+        blueprint.blockColumns = Arrays.stream(columns).map(builder -> {
+            if (builder == null) {
+                return null;
+            }
+            return builder.build();
+        }).toList();
         blueprint.anchors = immutableAnchors.build();
         blueprint.assemblyType = assemblyTypeBuilder.buildAssemblyType(blueprint);
     }

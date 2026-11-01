@@ -118,7 +118,7 @@ public class LevelGenerator {
             return true;
         }
 
-        final BlueprintPiece piece = assemblePiece(roomHolder, roomPos, rotation);
+        final BlueprintPiece piece = assemblePiece(roomHolder, roomPos, rotation, startHeight - downwards);
         if (piece == null) {
             return true;
         }
@@ -202,9 +202,9 @@ public class LevelGenerator {
     }
 
     @Nullable
-    public BlueprintPiece assemblePiece(Holder<Blueprint> blueprint, BlockPos position, Rotation rotation) {
+    public BlueprintPiece assemblePiece(Holder<Blueprint> blueprint, BlockPos position, Rotation rotation, int foundationHeight) {
         BlueprintComponent baseComponent = new BlueprintComponent(blueprint, position, rotation);
-        BlueprintPiece piece = new BlueprintPiece(baseComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, baseComponent.position().getY(), stage));
+        BlueprintPiece piece = new BlueprintPiece(baseComponent, new DungeonWorldGenContext(primaryTheme, secondaryTheme, foundationHeight, stage));
 
         blueprint.value().populateFeatures(this, piece.base.position(), piece.base.rotation(), piece::addComponent);
 

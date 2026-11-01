@@ -190,7 +190,7 @@ public class NodeElement extends DungeonElement {
             return null;
         }
 
-        final BlueprintPiece roomPiece = levelGenerator.assemblePiece(room, roomPosition, roomRotation);
+        final BlueprintPiece roomPiece = levelGenerator.assemblePiece(room, roomPosition, roomRotation, attachmentPoint.position().getY());
         if (roomPiece == null) {
             return null;
         }
@@ -233,6 +233,9 @@ public class NodeElement extends DungeonElement {
         closeOffEntrances(clusterEntrances);
 
         assemblyContext.assemble(piece, context.levelGenerator());
+        // Need up-to-date bounding box for the foundation planning
+        piece.updateBoundingBox();
+        piece.planFoundation();
         piece.updateBoundingBox();
         consumer.accept(piece);
     }

@@ -18,6 +18,7 @@ import xiroc.dungeoncrawl.init.ModRegistries;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
 import xiroc.dungeoncrawl.worldgen.DungeonWorldGenContext;
 
+import java.util.List;
 import java.util.function.Function;
 
 public interface DungeonComponent {
@@ -27,12 +28,15 @@ public interface DungeonComponent {
             Function.identity()
     );
 
+    Codec<List<DungeonComponent>> LIST_CODEC = CODEC.listOf();
+
     static void register(RegisterEvent.RegisterHelper<MapCodec<? extends DungeonComponent>> registry) {
         registry.register(DungeonCrawl.locate("blueprint"), BlueprintComponent.CODEC);
         registry.register(DungeonCrawl.locate("cuboid"), CuboidComponent.CODEC);
         registry.register(DungeonCrawl.locate("entrance"), EntranceComponent.CODEC);
         registry.register(DungeonCrawl.locate("staircase"), StaircaseComponent.CODEC);
         registry.register(DungeonCrawl.locate("tunnel"), TunnelComponent.CODEC);
+        registry.register(DungeonCrawl.locate("foundation"), FoundationComponent.CODEC);
 
         registry.register(DungeonCrawl.locate("feature/chest"), ChestComponent.CODEC);
         registry.register(DungeonCrawl.locate("feature/flower_pot"), FlowerPotComponent.CODEC);

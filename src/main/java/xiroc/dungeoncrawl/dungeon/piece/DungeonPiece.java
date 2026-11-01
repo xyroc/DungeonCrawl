@@ -34,6 +34,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import xiroc.dungeoncrawl.dungeon.component.DungeonComponent;
+import xiroc.dungeoncrawl.dungeon.component.FoundationComponent;
 import xiroc.dungeoncrawl.dungeon.decoration.DungeonDecoration;
 import xiroc.dungeoncrawl.init.ModStructurePieceTypes;
 import xiroc.dungeoncrawl.util.bounds.BoundingBoxBuilder;
@@ -46,7 +47,7 @@ public class DungeonPiece extends StructurePiece {
     private static final String NBT_KEY_COMPONENTS = "DungeonCrawl::Components";
     private static final String NBT_KEY_WORLD_GEN_CONTEXT = "DungeonCrawl::WorldGenContext";
 
-    private final DungeonWorldGenContext worldGenContext;
+    public final DungeonWorldGenContext worldGenContext;
     private final List<DungeonComponent> components;
 
     public static DungeonPiece withComponents(List<DungeonComponent> components, DungeonWorldGenContext worldGenContext) {
@@ -73,7 +74,7 @@ public class DungeonPiece extends StructurePiece {
         super(ModStructurePieceTypes.GENERIC.get(), nbt);
         DynamicOps<Tag> registryNbtOps = RegistryOps.create(NbtOps.INSTANCE, context.registryAccess());
         this.worldGenContext = DungeonWorldGenContext.CODEC.parse(registryNbtOps, nbt.get(NBT_KEY_WORLD_GEN_CONTEXT)).getOrThrow();
-        this.components = DungeonComponent.CODEC.listOf().parse(registryNbtOps, nbt.get(NBT_KEY_COMPONENTS)).getOrThrow();
+        this.components = DungeonComponent.LIST_CODEC.parse(registryNbtOps, nbt.get(NBT_KEY_COMPONENTS)).getOrThrow();
         updateBoundingBox();
     }
 
@@ -81,7 +82,7 @@ public class DungeonPiece extends StructurePiece {
     public void addAdditionalSaveData(StructurePieceSerializationContext context, CompoundTag nbt) {
         DynamicOps<Tag> registryNbtOps = RegistryOps.create(NbtOps.INSTANCE, context.registryAccess());
         nbt.put(NBT_KEY_WORLD_GEN_CONTEXT, DungeonWorldGenContext.CODEC.encodeStart(registryNbtOps, worldGenContext).getOrThrow());
-        nbt.put(NBT_KEY_COMPONENTS, DungeonComponent.CODEC.listOf().encodeStart(registryNbtOps, components).getOrThrow());
+        nbt.put(NBT_KEY_COMPONENTS, DungeonComponent.LIST_CODEC.encodeStart(registryNbtOps, components).getOrThrow());
     }
 
     @Override
@@ -105,5 +106,9 @@ public class DungeonPiece extends StructurePiece {
 
     public void addComponent(DungeonComponent component) {
         this.components.add(component);
+    }
+
+    public void planFoundation() {
+        addComponent(new FoundationComponent(boundingBox, components, worldGenContext));
     }
 }
